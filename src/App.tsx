@@ -36,7 +36,9 @@ const TournamentPage = lazy(() => import('@/pages/TournamentsPage'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
 const CommunityPage = lazy(() => import('@/pages/CommunityPage'));
-const EnhancedChallengesPageV2 = lazy(() => import('@/pages/EnhancedChallengesPageV2'));
+const EnhancedChallengesPageV2 = lazy(
+  () => import('@/pages/EnhancedChallengesPageV2')
+);
 const CalendarPage = lazy(() => import('@/pages/CalendarPage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
 const WalletPage = lazy(() => import('@/pages/PaymentPage'));
@@ -73,62 +75,170 @@ const AppContent = () => {
   const { PopupComponent } = useRealtimeNotifications();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className='min-h-screen bg-background'>
       <Suspense fallback={<AppLoadingFallback />}>
-         <Routes>
-           {/* Public routes - no authentication required */}
-           <Route path="/" element={<HomePage />} />
-           <Route path="/about" element={<AboutPage />} />
-           <Route path="/contact" element={<ContactPage />} />
-           <Route path="/privacy" element={<PrivacyPolicyPage />} />
-           <Route path="/terms" element={<TermsOfServicePage />} />
-           <Route path="/news" element={<NewsPage />} />
+        <Routes>
+          {/* Public routes - no authentication required */}
+          <Route path='/' element={<HomePage />} />
+          <Route path='/about' element={<AboutPage />} />
+          <Route path='/contact' element={<ContactPage />} />
+          <Route path='/privacy' element={<PrivacyPolicyPage />} />
+          <Route path='/terms' element={<TermsOfServicePage />} />
+          <Route path='/news' element={<NewsPage />} />
 
-           {/* Auth routes - only accessible when NOT logged in */}
-           <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
-           <Route path="/auth/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
-           <Route path="/auth/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
-           <Route path="/auth/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
-           <Route path="/auth/callback" element={<AuthCallbackPage />} />
+          {/* Auth routes - only accessible when NOT logged in */}
+          <Route
+            path='/auth'
+            element={
+              <PublicRoute>
+                <AuthPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path='/auth/login'
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path='/auth/register'
+            element={
+              <PublicRoute>
+                <RegisterPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path='/auth/forgot-password'
+            element={
+              <PublicRoute>
+                <ForgotPasswordPage />
+              </PublicRoute>
+            }
+          />
+          <Route path='/auth/callback' element={<AuthCallbackPage />} />
 
-           {/* Protected routes with MainLayout - these will show the sidebar */}
-           <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="challenges" element={<EnhancedChallengesPageV2 />} />
-              <Route path="community" element={<CommunityPage />} />
-              <Route path="calendar" element={<CalendarPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-              <Route path="wallet" element={<WalletPage />} />
-              <Route path="club-registration" element={<ClubRegistrationPage />} />
-              <Route path="feed" element={<FeedPage />} />
-              <Route path="marketplace" element={<MarketplacePage />} />
-              <Route path="auth-test" element={<AuthTestPage />} />
-             
-             {/* Public pages accessible through sidebar when logged in */}
-             <Route path="tournaments" element={<TournamentPage />} />
-             <Route path="leaderboard" element={<LeaderboardPage />} />
-             <Route path="clubs" element={<ClubsPage />} />
-             <Route path="clubs/:id" element={<ClubDetailPage />} />
-           </Route>
+          {/* Protected routes with MainLayout - these will show the sidebar */}
+          <Route
+            path='/'
+            element={
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path='dashboard' element={<Dashboard />} />
+            <Route path='profile' element={<ProfilePage />} />
+            <Route path='challenges' element={<EnhancedChallengesPageV2 />} />
+            <Route path='community' element={<CommunityPage />} />
+            <Route path='calendar' element={<CalendarPage />} />
+            <Route path='settings' element={<SettingsPage />} />
+            <Route path='wallet' element={<WalletPage />} />
+            <Route
+              path='club-registration'
+              element={<ClubRegistrationPage />}
+            />
+            <Route path='feed' element={<FeedPage />} />
+            <Route path='marketplace' element={<MarketplacePage />} />
+            <Route path='auth-test' element={<AuthTestPage />} />
 
-           {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}
-           <Route path="/admin/*" element={<AdminRoute><AdminRouter /></AdminRoute>} />
+            {/* Public pages accessible through sidebar when logged in */}
+            <Route path='tournaments' element={<TournamentPage />} />
+            <Route path='leaderboard' element={<LeaderboardPage />} />
+            <Route path='clubs' element={<ClubsPage />} />
+            <Route path='clubs/:id' element={<ClubDetailPage />} />
+          </Route>
 
-            {/* Club management routes - protected and require club owner privileges */}
-            <Route path="/club-management" element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-            <Route path="/club-management/tournaments" element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-            <Route path="/club-management/challenges" element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-            <Route path="/club-management/verification" element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-            <Route path="/club-management/members" element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-            <Route path="/club-management/notifications" element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-            <Route path="/club-management/schedule" element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-            <Route path="/club-management/payments" element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-            <Route path="/club-management/settings" element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
+          {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}
+          <Route
+            path='/admin/*'
+            element={
+              <AdminRoute>
+                <AdminRouter />
+              </AdminRoute>
+            }
+          />
 
-           {/* Fallback route */}
-           <Route path="*" element={<NotFoundPage />} />
-         </Routes>
+          {/* Club management routes - protected and require club owner privileges */}
+          <Route
+            path='/club-management'
+            element={
+              <ProtectedRoute>
+                <ClubManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/club-management/tournaments'
+            element={
+              <ProtectedRoute>
+                <ClubManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/club-management/challenges'
+            element={
+              <ProtectedRoute>
+                <ClubManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/club-management/verification'
+            element={
+              <ProtectedRoute>
+                <ClubManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/club-management/members'
+            element={
+              <ProtectedRoute>
+                <ClubManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/club-management/notifications'
+            element={
+              <ProtectedRoute>
+                <ClubManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/club-management/schedule'
+            element={
+              <ProtectedRoute>
+                <ClubManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/club-management/payments'
+            element={
+              <ProtectedRoute>
+                <ClubManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/club-management/settings'
+            element={
+              <ProtectedRoute>
+                <ClubManagementPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Fallback route */}
+          <Route path='*' element={<NotFoundPage />} />
+        </Routes>
       </Suspense>
       {/* ✅ Render notification popup */}
       <PopupComponent />

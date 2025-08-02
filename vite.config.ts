@@ -30,66 +30,11 @@ export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          // Admin code splitting - separate chunk for admin
-          if (id.includes('/admin/') || id.includes('AdminRouter') || id.includes('AdminProvider')) {
-            return 'admin';
-          }
-          
-          // Core React libraries
-          if (id.includes('react') || id.includes('react-dom')) {
-            return 'react-vendor';
-          }
-          
-          // Routing
-          if (id.includes('react-router-dom')) {
-            return 'router';
-          }
-          
-          // UI Components (split by usage frequency)
-          if (id.includes('@radix-ui/react-dialog') || 
-              id.includes('@radix-ui/react-dropdown-menu') || 
-              id.includes('@radix-ui/react-slot')) {
-            return 'ui-core';
-          }
-          
-          if (id.includes('@radix-ui/react-select') || 
-              id.includes('@radix-ui/react-checkbox') || 
-              id.includes('react-hook-form')) {
-            return 'ui-forms';
-          }
-          
-          if (id.includes('@radix-ui/react-tabs') || 
-              id.includes('@radix-ui/react-accordion') || 
-              id.includes('@radix-ui/react-navigation-menu')) {
-            return 'ui-advanced';
-          }
-          
-          // Data & State Management
-          if (id.includes('@tanstack/react-query') || id.includes('@supabase/supabase-js')) {
-            return 'data';
-          }
-          
-          // Utilities
-          if (id.includes('date-fns') || id.includes('clsx') || id.includes('tailwind-merge')) {
-            return 'utils';
-          }
-          
-          // Charts & Visualization
-          if (id.includes('recharts') || id.includes('d3')) {
-            return 'charts';
-          }
-          
-          // Performance & Virtualization
-          if (id.includes('react-window')) {
-            return 'performance';
-          }
-          
-          // Less frequently used libraries
-          if (id.includes('framer-motion') || id.includes('react-helmet-async')) {
-            return 'misc';
-          }
-        },
+        // ❌ DISABLED ALL MANUAL CHUNKING - Fix initialization errors
+        // Manual chunking can cause 'ft' initialization, createContext, 'As' initialization errors
+        // Let Vite handle automatic chunking for better stability
+        
+        // manualChunks: undefined, // Explicitly disable manual chunking
       },
     },
     chunkSizeWarningLimit: 1000,

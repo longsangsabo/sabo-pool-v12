@@ -261,6 +261,8 @@ const OptimizedMobileProfile = () => {
     advanced: { label: 'Khá', color: 'bg-purple-100 text-purple-800' },
     pro: { label: 'Chuyên nghiệp', color: 'bg-gold-100 text-gold-800' },
   };
+  // Fallback nếu skill_level không hợp lệ
+  const skillKey = skillLevels[profile.skill_level] ? profile.skill_level : 'beginner';
 
   return (
     <PageLayout variant='dashboard'>
@@ -321,9 +323,9 @@ const OptimizedMobileProfile = () => {
                   </Badge>
                   <Badge
                     variant='outline'
-                    className={`text-xs ${skillLevels[profile.skill_level].color}`}
+                    className={`text-xs ${skillLevels[skillKey].color}`}
                   >
-                    {skillLevels[profile.skill_level].label}
+                    {skillLevels[skillKey].label}
                   </Badge>
                 </div>
               </div>

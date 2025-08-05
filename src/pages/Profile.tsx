@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import ResponsiveProfilePage from '@/components/profile/ResponsiveProfilePage';
-import ArenaProfilePage from '@/components/profile/ArenaProfilePage';
+import OptimizedMobileProfile from './OptimizedMobileProfile';
 
 const Profile: React.FC = () => {
   const { isMobile } = useOptimizedResponsive();
@@ -13,9 +13,10 @@ const Profile: React.FC = () => {
     userAgent: navigator.userAgent.includes('Mobile'),
   });
 
+
   if (isMobile) {
-    console.log('🎯 [Profile] Rendering ArenaProfilePage for mobile');
-    return <ArenaProfilePage />;
+    console.log('🎯 [Profile] Rendering OptimizedMobileProfile for mobile');
+    return <OptimizedMobileProfile />;
   }
 
   console.log('🎯 [Profile] Rendering ResponsiveProfilePage for desktop');

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface NavItem {
   path: string;
@@ -23,6 +24,14 @@ interface NavItem {
 
 export const MobileNavigation = () => {
   const location = useLocation();
+  const { user } = useAuth();
+
+  // Haptic feedback function
+  const triggerHapticFeedback = () => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50); // Light haptic feedback
+    }
+  };
 
   // Get notification count
   const { data: notificationCount } = useQuery({
@@ -57,7 +66,7 @@ export const MobileNavigation = () => {
 
   const navItems: NavItem[] = [
     {
-      path: '/',
+      path: '/dashboard',
       label: 'Trang chủ',
       icon: Home,
     },
@@ -78,22 +87,21 @@ export const MobileNavigation = () => {
       icon: BarChart3,
     },
     {
-      path: '/notifications',
-      label: 'Thông báo',
-      icon: Bell,
-      badge: notificationCount,
+      path: '/profile',
+      label: 'Hồ sơ',
+      icon: User,
     },
   ];
 
   const isActive = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
+    if (path === '/dashboard') {
+      return location.pathname === '/' || location.pathname === '/dashboard';
     }
     return location.pathname.startsWith(path);
   };
 
   return (
-    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border lg:hidden'>
+    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t border-border lg:hidden mobile-safe-area-bottom'>
       <div className='flex items-center justify-around py-2 px-4'>
         {navItems.map(item => {
           const Icon = item.icon;
@@ -103,26 +111,29 @@ export const MobileNavigation = () => {
             <NavLink
               key={item.path}
               to={item.path}
-              className={`relative flex flex-col items-center justify-center min-w-0 flex-1 py-2 px-1 rounded-lg transition-colors ${
+              onClick={triggerHapticFeedback}
+              className={`relative flex flex-col items-center justify-center min-w-0 flex-1 py-2 px-1 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 ${
                 active
-                  ? 'text-primary bg-primary/10'
+                  ? 'text-primary bg-primary/10 scale-105'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
               }`}
             >
               <div className='relative'>
-                <Icon className={`w-5 h-5 ${active ? 'fill-current' : ''}`} />
+                <Icon className={`w-5 h-5 transition-all duration-200 ${
+                  active ? 'fill-current scale-110' : 'hover:scale-105'
+                }`} />
                 {item.badge && Number(item.badge) > 0 && (
                   <Badge
                     variant='destructive'
-                    className='absolute -top-2 -right-2 w-5 h-5 text-xs p-0 flex items-center justify-center'
+                    className='absolute -top-2 -right-2 w-5 h-5 text-xs p-0 flex items-center justify-center animate-pulse'
                   >
                     {Number(item.badge) > 99 ? '99+' : item.badge}
                   </Badge>
                 )}
               </div>
               <span
-                className={`text-xs mt-1 font-medium truncate w-full text-center ${
-                  active ? 'text-primary' : 'text-muted-foreground'
+                className={`text-xs mt-1 font-medium truncate w-full text-center transition-all duration-200 ${
+                  active ? 'text-primary font-semibold' : 'text-muted-foreground'
                 }`}
               >
                 {item.label}

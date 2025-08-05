@@ -34,7 +34,7 @@ const TournamentPage = lazy(() => import('@/pages/TournamentsPage'));
 
 // Protected pages - User dashboard and features
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
+const Profile = lazy(() => import('@/pages/Profile'));
 const CommunityPage = lazy(() => import('@/pages/CommunityPage'));
 const EnhancedChallengesPageV2 = lazy(
   () => import('@/pages/EnhancedChallengesPageV2')
@@ -45,6 +45,7 @@ const WalletPage = lazy(() => import('@/pages/PaymentPage'));
 const ClubRegistrationPage = lazy(() => import('@/pages/ClubRegistrationPage'));
 const FeedPage = lazy(() => import('@/pages/FeedPage'));
 const MarketplacePage = lazy(() => import('@/pages/EnhancedMarketplacePage'));
+const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'));
 
 // Admin components
 const AdminRouter = lazy(() => import('@/router/AdminRouter'));
@@ -130,8 +131,9 @@ const AppContent = () => {
               </ProtectedRoute>
             }
           >
+            <Route index element={<Dashboard />} />
             <Route path='dashboard' element={<Dashboard />} />
-            <Route path='profile' element={<ProfilePage />} />
+            <Route path='profile' element={<Profile />} />
             <Route path='challenges' element={<EnhancedChallengesPageV2 />} />
             <Route path='community' element={<CommunityPage />} />
             <Route path='calendar' element={<CalendarPage />} />
@@ -143,6 +145,7 @@ const AppContent = () => {
             />
             <Route path='feed' element={<FeedPage />} />
             <Route path='marketplace' element={<MarketplacePage />} />
+            <Route path='notifications' element={<NotificationsPage />} />
             <Route path='auth-test' element={<AuthTestPage />} />
 
             {/* Public pages accessible through sidebar when logged in */}

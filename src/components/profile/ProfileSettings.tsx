@@ -18,7 +18,7 @@ import {
   X,
   Edit,
 } from 'lucide-react';
-// Define UserProfile type locally since it's not exported from ProfilePage
+// Define UserProfile type locally (ProfilePage has been removed)
 interface UserProfile {
   user_id: string;
   full_name: string | null;

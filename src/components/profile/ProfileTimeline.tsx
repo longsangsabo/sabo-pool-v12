@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
-// Define ProfilePost type locally since it's not exported from ProfilePage
+// Define ProfilePost type locally (ProfilePage has been removed)
 interface ProfilePost {
   id: string;
   user_id: string;

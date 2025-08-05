@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import UserMobileHeader from './UserMobileHeader';
+import { MobileHeader } from './MobileHeader';
 import { MobileNavigation } from './MobileNavigation';
 
 interface UserMobileLayoutProps {
@@ -24,7 +24,7 @@ export const UserMobileLayout: React.FC<UserMobileLayoutProps> = ({
   return (
     <div className='min-h-screen bg-background'>
       {/* Social Header with Theme Toggle */}
-      <UserMobileHeader
+      <MobileHeader
         title={title}
         showSearch={showSearch}
         showProfile={showProfile}

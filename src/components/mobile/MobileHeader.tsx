@@ -33,7 +33,7 @@ interface MobileHeaderProps {
 }
 
 export const MobileHeader: React.FC<MobileHeaderProps> = ({
-  title = 'Sabo Pool',
+  title = 'SABO ARENA',
   showSearch = true,
   showProfile = true,
   showNotifications = true,
@@ -132,36 +132,46 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   };
 
   return (
-    <header className='sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:hidden'>
-      <div className='flex h-14 items-center px-4'>
+    <header className='sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:hidden mobile-safe-area-top'>
+      <div className='flex h-16 items-center px-4'>
         {/* Left section */}
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-3 flex-1'>
           {onMenuClick && (
             <Button
               variant='ghost'
               size='sm'
               onClick={onMenuClick}
-              className='mr-2'
+              className='hover:bg-muted transition-colors'
             >
               <Menu className='w-5 h-5' />
             </Button>
           )}
 
-          <h1 className='font-bold text-lg truncate'>{title}</h1>
+          {/* Brand Logo & Title */}
+          <div className='flex items-center gap-2'>
+            {/* SABO Logo */}
+            <div className='relative'>
+              <div className='w-9 h-9 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 rounded-xl flex items-center justify-center shadow-lg'>
+                <span className='text-white font-black text-lg tracking-tight'>S</span>
+              </div>
+              <div className='absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-gradient-to-br from-orange-400 to-red-500 rounded-full border-2 border-background'></div>
+            </div>
+            
+            {/* Title with gradient */}
+            <div className='flex flex-col'>
+              <h1 className='font-black text-lg bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent leading-none tracking-tight'>
+                SABO
+              </h1>
+              <span className='text-xs font-bold text-muted-foreground leading-none tracking-wider'>
+                ARENA
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Right section */}
-        <div className='flex items-center gap-2 ml-auto'>
-          {/* Search */}
-          {showSearch && (
-            <Button
-              variant='ghost'
-              size='sm'
-              onClick={() => navigate('/search')}
-            >
-              <Search className='w-5 h-5' />
-            </Button>
-          )}
+        <div className='flex items-center gap-1'>
+          {/* Search button đã bị loại bỏ theo yêu cầu */}
 
           {/* Wallet */}
           {showWallet && wallet && (
@@ -169,13 +179,15 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
               variant='ghost'
               size='sm'
               onClick={() => navigate('/wallet')}
-              className='flex items-center gap-1 px-2'
+              className='flex items-center gap-1.5 px-2 hover:bg-muted/50 transition-colors'
             >
-              <Wallet className='w-4 h-4' />
-              <span className='text-xs font-medium'>
+              <div className='w-5 h-5 bg-gradient-to-br from-green-500 to-emerald-600 rounded-md flex items-center justify-center'>
+                <Wallet className='w-3 h-3 text-white' />
+              </div>
+              <span className='text-xs font-semibold text-green-600'>
                 {wallet && (wallet as any).points_balance
-                  ? formatCurrency((wallet as any).points_balance)
-                  : '0 SPA'}
+                  ? `${(wallet as any).points_balance.toLocaleString()} SP`
+                  : '0 SP'}
               </span>
             </Button>
           )}
@@ -186,13 +198,13 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
               variant='ghost'
               size='sm'
               onClick={() => navigate('/notifications')}
-              className='relative'
+              className='relative hover:bg-muted/50 transition-colors'
             >
               <Bell className='w-5 h-5' />
               {notificationCount && notificationCount > 0 && (
                 <Badge
                   variant='destructive'
-                  className='absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center'
+                  className='absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center animate-pulse'
                 >
                   {notificationCount > 99 ? '99+' : notificationCount}
                 </Badge>
@@ -204,10 +216,10 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           {showProfile && user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant='ghost' size='sm' className='p-1'>
-                  <Avatar className='w-8 h-8'>
+                <Button variant='ghost' size='sm' className='p-1 hover:bg-muted/50 transition-colors'>
+                  <Avatar className='w-8 h-8 ring-2 ring-primary/20'>
                     <AvatarImage src={profile?.avatar_url} />
-                    <AvatarFallback>
+                    <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold'>
                       {profile?.display_name?.[0] ||
                         profile?.full_name?.[0] ||
                         'U'}
@@ -216,9 +228,9 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align='end' className='w-56'>
-                <div className='px-2 py-2'>
-                  <p className='text-sm font-medium'>
+              <DropdownMenuContent align='end' className='w-56 bg-background/95 backdrop-blur-sm border shadow-lg'>
+                <div className='px-3 py-2'>
+                  <p className='text-sm font-semibold'>
                     {profile?.display_name ||
                       profile?.full_name ||
                       'Người dùng'}
@@ -228,24 +240,24 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                <DropdownMenuItem onClick={() => navigate('/profile')} className='hover:bg-muted/50 cursor-pointer'>
                   <User className='w-4 h-4 mr-2' />
                   Hồ sơ cá nhân
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={() => navigate('/wallet')}>
+                <DropdownMenuItem onClick={() => navigate('/wallet')} className='hover:bg-muted/50 cursor-pointer'>
                   <Wallet className='w-4 h-4 mr-2' />
                   Ví của tôi
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={() => navigate('/settings')}>
+                <DropdownMenuItem onClick={() => navigate('/settings')} className='hover:bg-muted/50 cursor-pointer'>
                   <Settings className='w-4 h-4 mr-2' />
                   Cài đặt
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={handleSignOut}>
+                <DropdownMenuItem onClick={handleSignOut} className='hover:bg-destructive/10 text-destructive cursor-pointer'>
                   <LogOut className='w-4 h-4 mr-2' />
                   Đăng xuất
                 </DropdownMenuItem>

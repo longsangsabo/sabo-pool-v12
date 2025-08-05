@@ -6,47 +6,6 @@
   NODE_VERSION = "18"
   NPM_FLAGS = "--prefer-offline --no-audit"
 
-# Specific SPA routes only - NO catch-all
-[[redirects]]
-  from = "/dashboard"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/profile"
-  to = "/index.html"  
-  status = 200
-
-[[redirects]]
-  from = "/challenges"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/tournaments"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/leaderboard"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/clubs"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/admin/*"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/auth/*"
-  to = "/index.html"
-  status = 200
-
 [context.production.environment]
   NODE_ENV = "production"
 

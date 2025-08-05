@@ -6,7 +6,35 @@
   NODE_VERSION = "18"
   NPM_FLAGS = "--prefer-offline --no-audit"
 
-# SPA routing only
+# Static assets must be served directly - PRIORITY 1
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
+  force = false
+
+# CSS files
+[[redirects]]
+  from = "*.css"
+  to = "/:splat"
+  status = 200
+  force = false
+
+# JS files  
+[[redirects]]
+  from = "*.js"
+  to = "/:splat"
+  status = 200
+  force = false
+
+# Don't redirect API calls
+[[redirects]]
+  from = "/api/*"
+  to = "/api/:splat"
+  status = 200
+  force = false
+
+# SPA routing - LAST PRIORITY
 [[redirects]]
   from = "/*"
   to = "/index.html"

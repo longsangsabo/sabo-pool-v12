@@ -4442,9 +4442,7 @@ export type Database = {
         Returns: Json
       }
       sabo_tournament_coordinator: {
-        Args:
-          | Record<PropertyKey, never>
-          | { p_tournament_id: string; p_match_id: string }
+        Args: { p_tournament_id: string; p_match_id: string }
         Returns: Json
       }
       seed_demo_users: {

@@ -46,23 +46,7 @@ cp .env.example .env
 npm run dev
 ```
 
-## � Documentation
-
-### Quick Links
-- **[🚀 Deployment Guide](docs/DEPLOYMENT.md)** - Complete deployment instructions
-- **[🧪 Testing Guide](docs/TESTING.md)** - Testing strategies and procedures  
-- **[📊 Monitoring Guide](docs/MONITORING.md)** - Performance and analytics setup
-- **[🎯 Features Documentation](docs/FEATURES.md)** - Detailed feature implementation
-- **[🗄️ Database Schema](DATABASE_SCHEMA.md)** - Database structure and relationships
-- **[🔧 Troubleshooting](TROUBLESHOOTING.md)** - Common issues and solutions
-- **[🔐 Security Guide](SECURITY_ENV_GUIDE.md)** - Security best practices
-
-### Development Resources
-- **[Setup Guide](SETUP_GUIDE.md)** - Initial project setup
-- **[Handover Guide](HANDOVER_GUIDE.md)** - Project handover information
-- **[Archive](docs/archive/)** - Historical documentation and completed tasks
-
-## �🔧 Development
+## 🔧 Development
 
 ### Available Scripts
 ```bash

@@ -52,6 +52,24 @@ export default defineConfig(({ mode }) => {
           // Let Vite handle automatic chunking for better stability
           
           // manualChunks: undefined, // Explicitly disable manual chunking
+          
+          // Ensure proper asset file naming
+          assetFileNames: (assetInfo) => {
+            const info = assetInfo.name?.split('.') || [];
+            const ext = info[info.length - 1];
+            if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+              return `assets/images/[name]-[hash][extname]`;
+            }
+            if (/css/i.test(ext)) {
+              return `assets/css/[name]-[hash][extname]`;
+            }
+            if (/woff2?|eot|ttf|otf/i.test(ext)) {
+              return `assets/fonts/[name]-[hash][extname]`;
+            }
+            return `assets/[name]-[hash][extname]`;
+          },
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
         },
       },
       chunkSizeWarningLimit: 1000,
@@ -60,6 +78,8 @@ export default defineConfig(({ mode }) => {
       minify: 'esbuild',
       // Split CSS
       cssCodeSplit: true,
+      // Ensure assets are properly identified
+      assetsDir: 'assets',
     },
     optimizeDeps: {
       include: ['react', 'react-dom', 'react-router-dom'],

@@ -1,11 +1,14 @@
 /assets/*.css
-  Content-Type: text/css
+  Content-Type: text/css; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
 
 /assets/*.js
-  Content-Type: application/javascript
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
 
 /assets/*.mjs
-  Content-Type: application/javascript
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
 
 /assets/*.woff2
   Content-Type: font/woff2

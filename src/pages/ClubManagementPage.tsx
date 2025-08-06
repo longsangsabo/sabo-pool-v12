@@ -96,7 +96,8 @@ const ClubManagementPage = () => {
 
   return (
     <ClubResponsiveLayout>
-      <div className='mb-8'>
+      {/* Header ẩn để giao diện gọn gàng */}
+      <div className='hidden mb-8'>
         <h1 className='text-3xl font-bold text-foreground'>
           Quản lý Câu lạc bộ
         </h1>
@@ -107,7 +108,8 @@ const ClubManagementPage = () => {
       </div>
 
       <Tabs value={getActiveTab()} className='space-y-6'>
-        <TabsList className='grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1'>
+        {/* TabsList ẩn để giao diện gọn gàng */}
+        <TabsList className='hidden'>
           <TabsTrigger
             value='overview'
             className='flex items-center gap-2 px-3 py-2'
@@ -172,10 +174,6 @@ const ClubManagementPage = () => {
 
         <TabsContent value='challenges'>
           <ClubChallengesTab clubId={clubProfile?.id || ''} />
-        </TabsContent>
-
-        <TabsContent value='verification'>
-          <ClubRankVerificationTab />
         </TabsContent>
 
         <TabsContent value='members'>

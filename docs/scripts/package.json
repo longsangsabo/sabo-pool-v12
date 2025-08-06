@@ -1,0 +1,41 @@
+{
+  "name": "doc-cleanup-automation",
+  "version": "1.0.0",
+  "description": "Intelligent document cleanup automation system",
+  "main": "doc-cleanup.js",
+  "scripts": {
+    "start": "node doc-cleanup.js run",
+    "daemon": "node doc-cleanup.js daemon",
+    "analyze": "node doc-cleanup.js analyze",
+    "install-deps": "npm install",
+    "test": "node test/test-runner.js"
+  },
+  "keywords": [
+    "automation",
+    "cleanup",
+    "documents",
+    "file-management",
+    "nlp",
+    "duplicate-detection"
+  ],
+  "author": "Doc Cleanup System",
+  "license": "MIT",
+  "dependencies": {
+    "node-cron": "^3.0.3",
+    "chokidar": "^3.5.3",
+    "nodemailer": "^6.9.8"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/longsangsabo/sabo-pool-v11.git"
+  },
+  "bin": {
+    "doc-cleanup": "./doc-cleanup.js"
+  }
+}

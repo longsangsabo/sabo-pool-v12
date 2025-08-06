@@ -27,7 +27,7 @@ import {
   TournamentMatch,
 } from '@/hooks/useMatchManagement';
 import { useAuth } from '@/hooks/useAuth';
-import { SABODoubleEliminationViewer } from '@/tournaments/sabo/SABODoubleEliminationViewer';
+import { SABODoubleEliminationViewer } from '@/components/tournaments/sabo';
 
 interface AdminBracketViewerProps {
   tournamentId: string;

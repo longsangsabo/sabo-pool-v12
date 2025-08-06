@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { useCompletedTournamentTemplates } from '@/hooks/useCompletedTournamentTemplates';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TournamentBracket } from '../TournamentBracket';
-import { SABODoubleEliminationViewer } from '@/tournaments/sabo/SABODoubleEliminationViewer';
+import { SABODoubleEliminationViewer } from '@/components/tournaments/sabo';
 
 interface Participant {
   id: string;

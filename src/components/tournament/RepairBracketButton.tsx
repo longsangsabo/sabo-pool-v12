@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Wrench, Loader2 } from 'lucide-react';
-import { useDoubleEliminationBracket } from '@/hooks/useDoubleEliminationBracket';
+import { useSABOBracket } from '@/hooks/useDoubleEliminationBracket';
 
 interface RepairBracketButtonProps {
   tournamentId: string;
@@ -30,7 +30,7 @@ const RepairBracketButton: React.FC<RepairBracketButtonProps> = ({
   onRepaired,
 }) => {
   const { createBracket, isCreatingBracket } =
-    useDoubleEliminationBracket(tournamentId);
+    useSABOBracket(tournamentId);
 
   // Only show for double elimination tournaments that might need repairs
   const shouldShowButton =

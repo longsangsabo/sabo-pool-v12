@@ -212,6 +212,8 @@ const UnifiedChallengeCard: React.FC<UnifiedChallengeCardProps> = ({
       display_name?: string;
       full_name?: string;
       avatar_url?: string;
+      verified_rank?: string;
+      spa_points?: number;
     } | null,
     isChallenger: boolean = false,
     showVsLabel: boolean = false,

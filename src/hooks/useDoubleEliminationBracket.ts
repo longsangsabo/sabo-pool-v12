@@ -4,10 +4,9 @@ import { toast } from 'sonner';
 import { useTournamentMatches } from './useTournamentMatches';
 import {
   SABOLogicCore,
-  SABO_STRUCTURE,
   type SABOMatch,
   type SABOOrganizedMatches,
-} from '@/tournaments/sabo/SABOLogicCore';
+} from '@/components/tournaments/sabo';
 
 interface SubmitScoreParams {
   matchId: string;
@@ -25,7 +24,7 @@ interface AutomationResult {
   automationTriggered: boolean;
 }
 
-export const useDoubleEliminationBracket = (tournamentId: string) => {
+export const useSABOBracket = (tournamentId: string) => {
   const queryClient = useQueryClient();
   const { matches, loading, error, refetch } =
     useTournamentMatches(tournamentId);
@@ -166,19 +165,19 @@ export const useDoubleEliminationBracket = (tournamentId: string) => {
   // Check progression and automation
   const checkProgression = async (): Promise<AutomationResult | null> => {
     try {
-      const { data, error } = await supabase.rpc(
-        'get_double_elimination_status',
-        {
-          p_tournament_id: tournamentId,
-        }
-      );
+      // Since get_double_elimination_status was removed in cleanup, 
+      // we'll use the tournament matches directly to assess status
+      const { data: tournament, error } = await supabase
+        .from('tournaments')
+        .select('status')
+        .eq('id', tournamentId)
+        .single();
 
       if (error) throw error;
 
-      const status = data as any;
       return {
-        tournamentStatus: status?.tournament_status || 'unknown',
-        progression: status?.bracket_progression || {},
+        tournamentStatus: tournament?.status || 'unknown',
+        progression: {},
         automationTriggered: false,
       };
     } catch (error) {

@@ -14,7 +14,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { SABODoubleEliminationViewer } from '@/tournaments/sabo/SABODoubleEliminationViewer';
+import { SABODoubleEliminationViewer } from '@/components/tournaments/sabo';
 
 interface TournamentBracketViewerProps {
   tournamentId: string;

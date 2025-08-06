@@ -16,7 +16,7 @@ import {
   Eye,
   Users,
 } from 'lucide-react';
-import { useDoubleEliminationBracket } from '@/hooks/useDoubleEliminationBracket';
+import { useSABOBracket } from '@/hooks/useDoubleEliminationBracket';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
@@ -39,7 +39,7 @@ export const TournamentBracketManager: React.FC<
   TournamentBracketManagerProps
 > = ({ tournaments, onRefresh }) => {
   const { createBracket, isCreatingBracket } =
-    useDoubleEliminationBracket('admin-hook');
+    useSABOBracket('admin-hook');
   const { toast } = useToast();
   const [selectedTournament, setSelectedTournament] = useState<string | null>(
     null

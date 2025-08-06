@@ -1,3 +1,5 @@
-// Export unified double elimination hooks - centralized exports
+// Export unified SABO tournament hooks - centralized exports
 export { useTournamentMatches as useTournamentBracket } from './useTournamentMatches';
-export { useDoubleEliminationBracket } from './useDoubleEliminationBracket';
+export { useSABOBracket } from './useDoubleEliminationBracket';
+// Legacy export for compatibility
+export { useSABOBracket as useDoubleEliminationBracket } from './useDoubleEliminationBracket';

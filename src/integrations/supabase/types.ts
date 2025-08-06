@@ -3556,22 +3556,6 @@ export type Database = {
         Args: { p_tournament_id: string }
         Returns: Json
       }
-      advance_double_elimination_loser: {
-        Args: { p_match_id: string; p_loser_id: string }
-        Returns: Json
-      }
-      advance_double_elimination_v9_fixed: {
-        Args: { p_tournament_id: string }
-        Returns: Json
-      }
-      advance_double_elimination_winner_comprehensive_v2: {
-        Args: { p_match_id: string }
-        Returns: Json
-      }
-      advance_double_elimination_winner_comprehensive_v4: {
-        Args: { p_match_id: string }
-        Returns: Json
-      }
       advance_loser_branch_a: {
         Args: {
           p_tournament_id: string
@@ -3934,10 +3918,6 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
-      fix_double_elimination_bracket_sub_types: {
-        Args: { p_tournament_id?: string }
-        Returns: Json
-      }
       fix_double1_tournament_bracket: {
         Args: Record<PropertyKey, never>
         Returns: Json
@@ -4020,14 +4000,6 @@ export type Database = {
           | { p_tournament_id: string; p_generation_type?: string }
         Returns: Json
       }
-      generate_double_elimination_bracket_complete_v8: {
-        Args: { p_tournament_id: string }
-        Returns: Json
-      }
-      generate_double_elimination_bracket_v9: {
-        Args: { p_tournament_id: string }
-        Returns: Json
-      }
       generate_sabo_tournament_bracket: {
         Args: { p_tournament_id: string; p_seeding_method?: string }
         Returns: Json
@@ -4053,18 +4025,6 @@ export type Database = {
         Returns: {
           system_status: Json
         }[]
-      }
-      get_double_elimination_next_loser_match: {
-        Args: { p_match_id: string }
-        Returns: string
-      }
-      get_double_elimination_next_winner_match: {
-        Args: { p_match_id: string }
-        Returns: string
-      }
-      get_double_elimination_status: {
-        Args: { p_tournament_id: string }
-        Returns: Json
       }
       get_notification_stats: {
         Args: { p_user_id: string }
@@ -4401,10 +4361,6 @@ export type Database = {
         Args: { p_tournament_id: string }
         Returns: Json
       }
-      repair_double_elimination_v9: {
-        Args: { p_tournament_id: string }
-        Returns: Json
-      }
       repair_sabo12_bracket: {
         Args: Record<PropertyKey, never>
         Returns: Json
@@ -4489,18 +4445,6 @@ export type Database = {
           p_challenger_score: number
           p_opponent_score: number
           p_add_rack_result?: boolean
-        }
-        Returns: Json
-      }
-      standardize_double_elimination_structure: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      submit_double_elimination_score_v9: {
-        Args: {
-          p_match_id: string
-          p_player1_score: number
-          p_player2_score: number
         }
         Returns: Json
       }
@@ -4606,10 +4550,6 @@ export type Database = {
       update_win_streak: {
         Args: { p_user_id: string }
         Returns: undefined
-      }
-      validate_double_elimination_structure: {
-        Args: { p_tournament_id: string }
-        Returns: Json
       }
       validate_double1_advancement_rules: {
         Args: Record<PropertyKey, never>

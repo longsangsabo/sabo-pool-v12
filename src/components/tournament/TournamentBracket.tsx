@@ -3,7 +3,7 @@ import { useTournaments } from '@/hooks/useTournaments';
 import { SingleEliminationBracket } from '../tournaments/SingleEliminationBracket';
 import { OptimizedTournamentBracket } from '../tournaments/OptimizedTournamentBracket';
 
-import { SABODoubleEliminationViewer } from '../../tournaments/sabo/SABODoubleEliminationViewer';
+import { SABODoubleEliminationViewer } from '@/components/tournaments/sabo';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
 import { useAvatar } from '@/contexts/AvatarContext';
+import { useTheme } from '@/hooks/useTheme';
 import PageLayout from '@/components/layout/PageLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,6 +49,7 @@ interface ProfileData {
 const OptimizedMobileProfile = () => {
   const { user } = useAuth();
   const { avatarUrl, updateAvatar } = useAvatar();
+  const { theme } = useTheme();
   const [profile, setProfile] = useState<ProfileData>({
     user_id: '',
     display_name: '',
@@ -263,6 +265,11 @@ const OptimizedMobileProfile = () => {
   };
   // Fallback nếu skill_level không hợp lệ
   const skillKey = skillLevels[profile.skill_level] ? profile.skill_level : 'beginner';
+  
+  // Dynamic colors based on theme
+  const borderColor = theme === 'light' ? '#000000' : '#ffffff';
+  const shadowColor = theme === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)';
+  const frameStroke = theme === 'light' ? 'black' : 'white';
 
   return (
     <PageLayout variant='dashboard'>
@@ -270,146 +277,191 @@ const OptimizedMobileProfile = () => {
         <title>Hồ sơ cá nhân - SABO ARENA</title>
       </Helmet>
 
-      <div className='space-y-4 pb-20'>
-        {/* Header Profile Card - Compact */}
-        <Card className='border-gradient-primary bg-gradient-subtle'>
-          <CardContent className='p-4'>
-            <div className='flex items-center space-x-4'>
-              {/* Avatar */}
-              <div className='relative'>
-                <Avatar className='w-16 h-16 border-2 border-primary/20'>
-                  <AvatarImage src={profile.avatar_url || avatarUrl} />
-                  <AvatarFallback className='text-lg font-racing-sans-one'>
-                    {profile.display_name
-                      ? profile.display_name[0]?.toUpperCase()
-                      : user?.email?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <label className='absolute -bottom-1 -right-1 bg-primary hover:bg-primary/90 w-6 h-6 rounded-full border-2 border-background cursor-pointer flex items-center justify-center transition-colors'>
-                  <Camera className='w-3 h-3 text-primary-foreground' />
-                  <input
-                    type='file'
-                    accept='image/*'
-                    onChange={handleAvatarUpload}
-                    className='hidden'
-                  />
-                </label>
-                {uploading && (
-                  <div className='absolute inset-0 bg-black/50 rounded-full flex items-center justify-center'>
-                    <div className='animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent' />
-                  </div>
-                )}
-                {/* Verified Badge */}
-                <div className='absolute -top-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-background flex items-center justify-center'>
-                  <Trophy className='w-2.5 h-2.5 text-white' />
-                </div>
-              </div>
+      <div className='pb-20 -mt-20'>
+        {/* SABO ARENA Avatar Container */}
+        <div className='flex flex-col items-center justify-start -mt-24'>
+          <div className='avatar-container relative w-[90vw] max-w-[360px] h-[90vw] max-h-[360px] flex items-center justify-center'>
+            {/* Avatar with SABO ARENA styling */}
+            <div className='relative w-[90%] h-[90%]'>
+              <img
+                className='avatar absolute w-full h-full object-cover'
+                src={profile.avatar_url || avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.display_name || 'User')}&background=random`}
+                alt="User Avatar"
+                style={{
+                  clipPath: 'polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%)',
+                  boxShadow: `0 0 20px 5px ${shadowColor}`
+                }}
+              />
+              
+              {/* Upload overlay */}
+              <label 
+                className='absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center z-10'
+                style={{
+                  clipPath: 'polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%)'
+                }}
+              >
+                <Camera className='w-8 h-8 text-white' />
+                <input
+                  type='file'
+                  accept='image/*'
+                  onChange={handleAvatarUpload}
+                  className='hidden'
+                />
+              </label>
 
-              {/* User Info */}
-              <div className='flex-1 min-w-0'>
-                <h1 className='text-lg font-bebas-neue text-foreground truncate'>
-                  {profile.display_name || 'Chưa đặt tên'}
-                </h1>
-                <p className='text-sm text-muted-foreground'>
+              {uploading && (
+                <div 
+                  className='absolute inset-0 bg-black/70 flex items-center justify-center z-20'
+                  style={{
+                    clipPath: 'polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%)'
+                  }}
+                >
+                  <div className='animate-spin rounded-full h-8 w-8 border-2 border-white border-t-transparent' />
+                </div>
+              )}
+            </div>
+
+            {/* Frame SVG with mask for stamp */}
+            <div className='frame absolute w-full h-full pointer-events-none'>
+              <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" className='w-full h-full'>
+                <defs>
+                  {profile.verified_rank && (
+                    <mask id="frame-mask">
+                      <rect width="400" height="400" fill="white" />
+                      {/* Circular hole for stamp - positioned at bottom right */}
+                      <circle cx="350" cy="360" r="35" fill="black" />
+                    </mask>
+                  )}
+                </defs>
+                <g mask={profile.verified_rank ? "url(#frame-mask)" : undefined}>
+                  <polygon points="50,10 350,10 390,50 390,350 350,390 50,390 10,350 10,50" stroke={frameStroke} strokeWidth="4" fill="none" />
+                  <polygon points="0,80 80,0 320,0 400,80 400,320 320,400 80,400 0,320" stroke={frameStroke} strokeWidth="2" fill="none" />
+                </g>
+              </svg>
+            </div>
+
+            {/* Verified Stamp */}
+            {profile.verified_rank && (
+              <div className='stamp absolute bottom-[-35px] right-[-10px] w-[32%] h-auto z-20' style={{ filter: `drop-shadow(0 0 6px ${shadowColor})` }}>
+                <img 
+                  src="https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//certified-sabo-arena.png"
+                  alt="Certified SABO ARENA"
+                  className='w-full h-full object-contain'
+                />
+              </div>
+            )}
+          </div>
+
+          {/* User Info */}
+          <div className='user-info mt-4 flex items-center justify-center gap-0'>
+            <div 
+              className={`username-box px-5 py-1 text-base font-bold flex items-center h-9 rounded-l-lg ${
+                theme === 'light' 
+                  ? 'bg-white text-black border-2 border-black' 
+                  : 'bg-black text-white border-2 border-white'
+              }`}
+              style={{ boxShadow: `0 0 6px ${shadowColor}` }}
+            >
+              {profile.display_name || 'Chưa đặt tên'}
+            </div>
+            <div 
+              className={`rank-box text-base font-bold w-11 h-9 flex items-center justify-center rounded-r-lg ${
+                theme === 'light'
+                  ? 'bg-black text-white'
+                  : 'bg-white text-black'
+              }`}
+              style={{ boxShadow: `0 0 6px ${shadowColor}` }}
+            >
+              {profile.verified_rank ? profile.verified_rank[0]?.toUpperCase() : 'K'}
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className='stats mt-5 flex justify-center gap-1.5 w-[90vw] max-w-[360px]'>
+            <div 
+              className={`stat-box flex-1 flex flex-col items-center text-xs rounded-md p-1 ${
+                theme === 'light' 
+                  ? 'bg-black/5 border border-black' 
+                  : 'bg-white/5 border border-white'
+              }`}
+              style={{ boxShadow: `0 0 4px ${theme === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'}` }}
+            >
+              <div className='stat-icon text-base mb-0.5'>
+                <Trophy className='w-4 h-4 text-yellow-400' />
+              </div>
+              <div>ELO</div>
+              <strong>1000</strong>
+            </div>
+            <div 
+              className={`stat-box flex-1 flex flex-col items-center text-xs rounded-md p-1 ${
+                theme === 'light' 
+                  ? 'bg-black/5 border border-black' 
+                  : 'bg-white/5 border border-white'
+              }`}
+              style={{ boxShadow: `0 0 4px ${theme === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'}` }}
+            >
+              <div className='stat-icon text-base mb-0.5'>
+                <Zap className='w-4 h-4 text-blue-400' />
+              </div>
+              <div>SPA</div>
+              <strong>2225</strong>
+            </div>
+            <div 
+              className={`stat-box flex-1 flex flex-col items-center text-xs rounded-md p-1 ${
+                theme === 'light' 
+                  ? 'bg-black/5 border border-black' 
+                  : 'bg-white/5 border border-white'
+              }`}
+              style={{ boxShadow: `0 0 4px ${theme === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'}` }}
+            >
+              <div className='stat-icon text-base mb-0.5'>
+                <Award className='w-4 h-4 text-orange-400' />
+              </div>
+              <div>Xếp hạng</div>
+              <strong>Top 5%</strong>
+            </div>
+            <div 
+              className={`stat-box flex-1 flex flex-col items-center text-xs rounded-md p-1 ${
+                theme === 'light' 
+                  ? 'bg-black/5 border border-black' 
+                  : 'bg-white/5 border border-white'
+              }`}
+              style={{ boxShadow: `0 0 4px ${theme === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'}` }}
+            >
+              <div className='stat-icon text-base mb-0.5'>
+                <Target className='w-4 h-4 text-green-400' />
+              </div>
+              <div>Số trận</div>
+              <strong>6</strong>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Profile Info */}
+        <Card className='bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20'>
+          <CardContent className='p-3'>
+            <div className='flex items-center justify-between text-sm'>
+              <div className='flex items-center gap-2'>
+                <Badge
+                  variant='outline'
+                  className={`text-xs ${skillLevels[skillKey].color}`}
+                >
+                  {skillLevels[skillKey].label}
+                </Badge>
+                <span className='text-muted-foreground'>•</span>
+                <span className='text-muted-foreground'>
                   {profile.member_since
                     ? `Từ ${new Date(profile.member_since).getFullYear()}`
                     : 'Thành viên mới'}
-                </p>
-                <div className='flex items-center gap-2 mt-1'>
-                  <Badge variant='secondary' className='text-xs'>
-                    {profile.verified_rank
-                      ? profile.verified_rank
-                      : 'Người mới'}
-                  </Badge>
-                  <Badge
-                    variant='outline'
-                    className={`text-xs ${skillLevels[skillKey].color}`}
-                  >
-                    {skillLevels[skillKey].label}
-                  </Badge>
-                </div>
+                </span>
               </div>
-
-              {/* Basic Stats */}
-              <div className='text-right'>
-                <div className='text-lg font-racing-sans-one text-primary'>
-                  6
-                </div>
-                <div className='text-xs text-muted-foreground'>Trận đấu</div>
-                <div className='text-sm font-medium text-green-600 mt-1'>
-                  50%
-                </div>
+              <div className='flex items-center gap-1 text-xs text-primary'>
+                <Calendar className='w-3 h-3' />
+                <span>Hoạt động</span>
               </div>
             </div>
           </CardContent>
         </Card>
-
-        {/* Performance Stats Cards - 2x2 Grid */}
-        <div className='grid grid-cols-2 gap-3'>
-          {/* ELO/Rank Card */}
-          <Card className='h-20'>
-            <CardContent className='p-3 h-full flex flex-col justify-center'>
-              <div className='flex items-center justify-between mb-1'>
-                <Trophy className='w-4 h-4 text-primary' />
-                <span className='text-2xl font-racing-sans-one text-primary'>
-                  {profile.verified_rank ? profile.verified_rank : 'K'}
-                </span>
-              </div>
-              <div className='text-xs text-muted-foreground'>Hạng hiện tại</div>
-              <div className='text-xs text-primary font-medium'>1000 ELO</div>
-            </CardContent>
-          </Card>
-
-          {/* SPA Points Card */}
-          <Card className='h-20'>
-            <CardContent className='p-3 h-full flex flex-col justify-center'>
-              <div className='flex items-center justify-between mb-1'>
-                <Star className='w-4 h-4 text-yellow-500' />
-                <span className='text-2xl font-racing-sans-one text-yellow-600'>
-                  2225
-                </span>
-              </div>
-              <div className='text-xs text-muted-foreground'>SPA Points</div>
-              <div className='text-xs text-green-600 font-medium'>
-                +50 tuần này
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Weekly Rank Card */}
-          <Card className='h-20'>
-            <CardContent className='p-3 h-full flex flex-col justify-center'>
-              <div className='flex items-center justify-between mb-1'>
-                <TrendingUp className='w-4 h-4 text-blue-500' />
-                <span className='text-2xl font-racing-sans-one text-blue-600'>
-                  #7
-                </span>
-              </div>
-              <div className='text-xs text-muted-foreground'>Xếp hạng tuần</div>
-              <div className='text-xs text-green-600 font-medium'>
-                ↗️ +3 bậc
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Activity Card */}
-          <Card className='h-20'>
-            <CardContent className='p-3 h-full flex flex-col justify-center'>
-              <div className='flex items-center justify-between mb-1'>
-                <Activity className='w-4 h-4 text-orange-500' />
-                <span className='text-2xl font-racing-sans-one text-orange-600'>
-                  6
-                </span>
-              </div>
-              <div className='text-xs text-muted-foreground'>
-                Trận tháng này
-              </div>
-              <div className='text-xs text-orange-600 font-medium'>
-                Tích cực
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Quick Actions - 2x3 Grid */}
         <Card>

@@ -10,6 +10,8 @@ import {
   User,
   Settings,
   LogOut,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -22,6 +24,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useTheme } from '@/hooks/useTheme';
 
 interface MobileHeaderProps {
   title?: string;
@@ -37,10 +40,11 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   showSearch = true,
   showProfile = true,
   showNotifications = true,
-  showWallet = true,
+  showWallet = false, // Bỏ tab ví theo yêu cầu
   onMenuClick,
 }) => {
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   // Get current user
   const { data: user } = useQuery({
@@ -151,10 +155,11 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           <div className='flex items-center gap-2'>
             {/* SABO Logo */}
             <div className='relative'>
-              <div className='w-9 h-9 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 rounded-xl flex items-center justify-center shadow-lg'>
-                <span className='text-white font-black text-lg tracking-tight'>S</span>
-              </div>
-              <div className='absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-gradient-to-br from-orange-400 to-red-500 rounded-full border-2 border-background'></div>
+              <img 
+                src="https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png"
+                alt="SABO ARENA Logo"
+                className='w-9 h-9 object-cover rounded-full'
+              />
             </div>
             
             {/* Title with gradient */}
@@ -171,26 +176,19 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 
         {/* Right section */}
         <div className='flex items-center gap-1'>
-          {/* Search button đã bị loại bỏ theo yêu cầu */}
-
-          {/* Wallet */}
-          {showWallet && wallet && (
-            <Button
-              variant='ghost'
-              size='sm'
-              onClick={() => navigate('/wallet')}
-              className='flex items-center gap-1.5 px-2 hover:bg-muted/50 transition-colors'
-            >
-              <div className='w-5 h-5 bg-gradient-to-br from-green-500 to-emerald-600 rounded-md flex items-center justify-center'>
-                <Wallet className='w-3 h-3 text-white' />
-              </div>
-              <span className='text-xs font-semibold text-green-600'>
-                {wallet && (wallet as any).points_balance
-                  ? `${(wallet as any).points_balance.toLocaleString()} SP`
-                  : '0 SP'}
-              </span>
-            </Button>
-          )}
+          {/* Theme Toggle */}
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            className='hover:bg-muted/50 transition-colors'
+          >
+            {theme === 'light' ? (
+              <Moon className='w-5 h-5' />
+            ) : (
+              <Sun className='w-5 h-5' />
+            )}
+          </Button>
 
           {/* Notifications */}
           {showNotifications && (

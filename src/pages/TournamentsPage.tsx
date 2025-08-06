@@ -17,11 +17,13 @@ import { Badge } from '@/components/ui/badge';
 import { Tournament } from '@/types/tournament';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import { Search, Filter, Plus, Calendar, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 
 const TournamentsPage = () => {
+  const { theme } = useTheme();
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -217,9 +219,24 @@ const TournamentsPage = () => {
   }
 
   return (
-    <div className={`container mx-auto px-4 ${isMobile ? 'py-4' : 'py-8'}`}>
+    <>
+      {/* Full Screen Background Overlay - Mobile Tournaments */}
+      {theme === 'dark' && isMobile && (
+        <div 
+          className='fixed inset-0 w-full h-full z-0'
+          style={{
+            backgroundImage: 'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        />
+      )}
+      
+      <div className={`container mx-auto px-4 ${isMobile ? 'py-2 relative z-10 -mt-16' : 'py-8'} ${theme === 'dark' && isMobile ? 'bg-transparent' : ''}`}>
       <div
-        className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 ${isMobile ? 'mb-4' : 'mb-8'}`}
+        className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 ${isMobile ? 'mb-3 mt-2' : 'mb-8'}`}
       >
         <div>
           <h1
@@ -431,6 +448,7 @@ const TournamentsPage = () => {
         />
       )}
     </div>
+    </>
   );
 };
 

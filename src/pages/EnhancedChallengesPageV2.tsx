@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import { useResponsive } from '@/hooks/useResponsive';
 import { useOptimizedChallenges } from '@/hooks/useOptimizedChallenges';
 import { useState as useStateForMatches } from 'react';
@@ -65,6 +66,7 @@ interface ChallengeStats {
 
 const EnhancedChallengesPageV2: React.FC = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const { isDesktop, isMobile, width } = useResponsive();
 
   // Use the optimized hook to prevent multiple fetches
@@ -851,11 +853,27 @@ const EnhancedChallengesPageV2: React.FC = () => {
 
   // Mobile Layout Component - Enhanced with MobileChallengeManager
   const MobileLayout = () => (
-    <div className='min-h-screen bg-background'>
-      <div className='px-0 py-0'>
-        <MobileChallengeManager className='h-screen' />
+    <>
+      {/* Full Screen Background Overlay - Mobile Challenges */}
+      {theme === 'dark' && (
+        <div 
+          className='fixed inset-0 w-full h-full z-0'
+          style={{
+            backgroundImage: 'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        />
+      )}
+      
+      <div className={`min-h-screen relative z-10 ${theme === 'dark' ? 'bg-transparent' : 'bg-background'}`}>
+        <div className='px-0 py-0 -mt-16'>
+          <MobileChallengeManager className='h-screen' />
+        </div>
       </div>
-    </div>
+    </>
   );
 
   return (

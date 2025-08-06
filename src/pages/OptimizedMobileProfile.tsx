@@ -27,6 +27,8 @@ import {
   ChevronRight,
   Settings,
   Award,
+  Shield,
+  Building,
 } from 'lucide-react';
 import { isAdminUser } from '@/utils/adminHelpers';
 
@@ -68,6 +70,7 @@ const OptimizedMobileProfile = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [activeTab, setActiveTab] = useState('activities');
 
   // Handle scroll for back-to-top button
   useEffect(() => {
@@ -272,12 +275,32 @@ const OptimizedMobileProfile = () => {
   const frameStroke = theme === 'light' ? 'black' : 'white';
 
   return (
-    <PageLayout variant='dashboard'>
-      <Helmet>
-        <title>Hồ sơ cá nhân - SABO ARENA</title>
-      </Helmet>
+    <>
+      {/* Full Screen Background Overlay - Outside PageLayout */}
+      {theme === 'dark' && (
+        <div 
+          className='fixed inset-0 w-full h-full z-0'
+          style={{
+            backgroundImage: 'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        />
+      )}
+      
+      <PageLayout variant='dashboard' className={theme === 'dark' ? 'relative z-10 bg-transparent' : ''}>
+        <Helmet>
+          <title>Hồ sơ cá nhân - SABO ARENA</title>
+        </Helmet>
 
-      <div className='pb-20 -mt-20'>
+        <div 
+          className='pb-20 -mt-20 min-h-screen relative'
+          style={theme === 'light' ? {
+            backgroundImage: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)'
+          } : undefined}
+        >
         {/* SABO ARENA Avatar Container */}
         <div className='flex flex-col items-center justify-start -mt-24'>
           <div className='avatar-container relative w-[90vw] max-w-[360px] h-[90vw] max-h-[360px] flex items-center justify-center'>
@@ -437,95 +460,245 @@ const OptimizedMobileProfile = () => {
           </div>
         </div>
 
-        {/* Additional Profile Info */}
-        <Card className='bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20'>
-          <CardContent className='p-3'>
-            <div className='flex items-center justify-between text-sm'>
-              <div className='flex items-center gap-2'>
-                <Badge
-                  variant='outline'
-                  className={`text-xs ${skillLevels[skillKey].color}`}
-                >
-                  {skillLevels[skillKey].label}
-                </Badge>
-                <span className='text-muted-foreground'>•</span>
-                <span className='text-muted-foreground'>
-                  {profile.member_since
-                    ? `Từ ${new Date(profile.member_since).getFullYear()}`
-                    : 'Thành viên mới'}
-                </span>
-              </div>
-              <div className='flex items-center gap-1 text-xs text-primary'>
-                <Calendar className='w-3 h-3' />
-                <span>Hoạt động</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick Actions - 2x3 Grid */}
+        {/* Profile Content Tabs */}
         <Card>
-          <CardHeader className='pb-3'>
-            <CardTitle className='text-base font-epilogue'>
-              Hành động nhanh
-            </CardTitle>
-          </CardHeader>
-          <CardContent className='p-4 pt-0'>
-            <div className='grid grid-cols-2 gap-3'>
-              <Button
-                variant='default'
-                size='sm'
-                className='h-12 flex-col gap-1'
+          <CardContent className='p-0'>
+            {/* Tab Navigation */}
+            <div className='flex border-b border-border'>
+              <button 
+                className={`flex-1 px-3 py-3 text-sm font-medium ${
+                  activeTab === 'activities' 
+                    ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                onClick={() => setActiveTab('activities')}
               >
-                <Edit3 className='w-4 h-4' />
-                <span className='text-xs'>Chỉnh sửa</span>
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                className='h-12 flex-col gap-1'
-                onClick={() => (window.location.href = '/leaderboard')}
+                <Trophy className='w-4 h-4 mx-auto mb-1' />
+                <div className='text-xs'>Hoạt động</div>
+              </button>
+              <button 
+                className={`flex-1 px-3 py-3 text-sm font-medium ${
+                  activeTab === 'basic' 
+                    ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                onClick={() => setActiveTab('basic')}
               >
-                <Trophy className='w-4 h-4' />
-                <span className='text-xs'>Bảng xếp hạng</span>
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                className='h-12 flex-col gap-1'
-                onClick={() => (window.location.href = '/challenges')}
+                <User className='w-4 h-4 mx-auto mb-1' />
+                <div className='text-xs'>Cá nhân</div>
+              </button>
+              <button 
+                className={`flex-1 px-3 py-3 text-sm font-medium ${
+                  activeTab === 'rank' 
+                    ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                onClick={() => setActiveTab('rank')}
               >
-                <Target className='w-4 h-4' />
-                <span className='text-xs'>Thách đấu</span>
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                className='h-12 flex-col gap-1'
-                onClick={() => (window.location.href = '/settings')}
+                <Shield className='w-4 h-4 mx-auto mb-1' />
+                <div className='text-xs'>Đăng ký hạng</div>
+              </button>
+              <button 
+                className={`flex-1 px-3 py-3 text-sm font-medium ${
+                  activeTab === 'club' 
+                    ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                onClick={() => setActiveTab('club')}
               >
-                <Settings className='w-4 h-4' />
-                <span className='text-xs'>Cài đặt</span>
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                className='h-12 flex-col gap-1 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200'
-                onClick={() => (window.location.href = '/rank-registration')}
-              >
-                <Award className='w-4 h-4 text-amber-600' />
-                <span className='text-xs text-amber-700'>Đăng ký hạng</span>
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                className='h-12 flex-col gap-1'
-                onClick={() => (window.location.href = '/wallet')}
-              >
-                <Zap className='w-4 h-4' />
-                <span className='text-xs'>Ví & Điểm</span>
-              </Button>
+                <Building className='w-4 h-4 mx-auto mb-1' />
+                <div className='text-xs'>Đăng ký CLB</div>
+              </button>
             </div>
+
+            {/* Tab Content - Activities */}
+            {activeTab === 'activities' && (
+              <div className='p-4 space-y-3'>
+                {/* Recent Match Results */}
+                <div className='space-y-2'>
+                  <h4 className='text-sm font-medium mb-2'>Kết quả trận đấu gần đây</h4>
+                  <div className='flex items-center gap-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-500'>
+                    <div className='w-8 h-8 bg-green-500 rounded-full flex items-center justify-center'>
+                      <Trophy className='w-4 h-4 text-white' />
+                    </div>
+                    <div className='flex-1'>
+                      <div className='text-sm font-medium'>Thắng vs Nguyễn Văn A</div>
+                      <div className='text-xs text-muted-foreground'>10-8 • 2 giờ trước</div>
+                    </div>
+                    <div className='text-xs font-bold text-green-600'>+25 ELO</div>
+                  </div>
+
+                  <div className='flex items-center gap-3 p-3 bg-red-50 rounded-lg border-l-4 border-red-500'>
+                    <div className='w-8 h-8 bg-red-500 rounded-full flex items-center justify-center'>
+                      <Target className='w-4 h-4 text-white' />
+                    </div>
+                    <div className='flex-1'>
+                      <div className='text-sm font-medium'>Thua vs Trần Văn B</div>
+                      <div className='text-xs text-muted-foreground'>8-10 • 1 ngày trước</div>
+                    </div>
+                    <div className='text-xs font-bold text-red-600'>-15 ELO</div>
+                  </div>
+                </div>
+
+                {/* Active Challenges */}
+                <div className='space-y-2'>
+                  <h4 className='text-sm font-medium mb-2'>Thách đấu đang chờ</h4>
+                  <div className='flex items-center gap-3 p-3 bg-blue-50 rounded-lg'>
+                    <Zap className='w-5 h-5 text-blue-500' />
+                    <div className='flex-1'>
+                      <div className='text-sm font-medium'>Thách đấu từ Lê Văn C</div>
+                      <div className='text-xs text-muted-foreground'>Hạn: 2 ngày nữa</div>
+                    </div>
+                    <Button size='sm' variant='outline' className='text-xs'>
+                      Xem chi tiết
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className='grid grid-cols-2 gap-3 mt-4'>
+                  <Button variant='outline' size='sm' className='h-12 flex-col gap-1'>
+                    <Target className='w-4 h-4' />
+                    <span className='text-xs'>Tạo thách đấu</span>
+                  </Button>
+                  <Button variant='outline' size='sm' className='h-12 flex-col gap-1'>
+                    <Trophy className='w-4 h-4' />
+                    <span className='text-xs'>Xem bảng xếp hạng</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Tab Content - Personal Info */}
+            {activeTab === 'basic' && (
+              <div className='p-4 space-y-3'>
+                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
+                  <Phone className='w-4 h-4 text-muted-foreground' />
+                  <div>
+                    <div className='text-sm font-medium'>Số điện thoại</div>
+                    <div className='text-xs text-muted-foreground'>
+                      {profile.phone || 'Chưa cập nhật'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
+                  <MapPin className='w-4 h-4 text-muted-foreground' />
+                  <div>
+                    <div className='text-sm font-medium'>Địa điểm</div>
+                    <div className='text-xs text-muted-foreground'>
+                      {profile.city && profile.district 
+                        ? `${profile.district}, ${profile.city}`
+                        : 'Chưa cập nhật'
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
+                  <Star className='w-4 h-4 text-muted-foreground' />
+                  <div>
+                    <div className='text-sm font-medium'>Trình độ</div>
+                    <div className='text-xs text-muted-foreground'>
+                      {skillLevels[skillKey].label}
+                    </div>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
+                  <Calendar className='w-4 h-4 text-muted-foreground' />
+                  <div>
+                    <div className='text-sm font-medium'>Thành viên từ</div>
+                    <div className='text-xs text-muted-foreground'>
+                      {profile.member_since
+                        ? new Date(profile.member_since).toLocaleDateString('vi-VN')
+                        : 'Không rõ'
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <Button 
+                  variant='outline' 
+                  size='sm' 
+                  className='w-full mt-4'
+                  onClick={() => (window.location.href = '/settings')}
+                >
+                  <Edit3 className='w-4 h-4 mr-2' />
+                  Chỉnh sửa thông tin
+                </Button>
+              </div>
+            )}
+
+            {/* Tab Content - Rank Verification */}
+            {activeTab === 'rank' && (
+              <div className='p-4 space-y-3'>
+                <div className='text-center py-6'>
+                  <Shield className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
+                  <h4 className='text-sm font-medium mb-2'>Đăng ký xác nhận hạng</h4>
+                  <p className='text-xs text-muted-foreground mb-4'>
+                    Xác nhận trình độ chơi bida của bạn thông qua câu lạc bộ uy tín
+                  </p>
+                  {profile.verified_rank ? (
+                    <div className='bg-green-50 border border-green-200 rounded-lg p-3'>
+                      <div className='text-sm font-medium text-green-800'>
+                        Đã xác thực: {profile.verified_rank}
+                      </div>
+                      <div className='text-xs text-green-600 mt-1'>
+                        Tài khoản của bạn đã được xác thực
+                      </div>
+                    </div>
+                  ) : (
+                    <Button 
+                      variant='outline' 
+                      size='sm'
+                      onClick={() => (window.location.href = '/rank-registration')}
+                    >
+                      <Award className='w-4 h-4 mr-2' />
+                      Đăng ký xác nhận hạng
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Tab Content - Club Registration */}
+            {activeTab === 'club' && (
+              <div className='p-4 space-y-3'>
+                <div className='text-center py-6'>
+                  <Building className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
+                  <h4 className='text-sm font-medium mb-2'>Đăng ký câu lạc bộ</h4>
+                  <p className='text-xs text-muted-foreground mb-4'>
+                    Tạo và đăng ký câu lạc bộ bida của riêng bạn
+                  </p>
+                  {profile.role === 'club_owner' || profile.role === 'both' ? (
+                    <div className='space-y-2'>
+                      <div className='bg-blue-50 border border-blue-200 rounded-lg p-3'>
+                        <div className='text-sm font-medium text-blue-800'>
+                          Bạn đã là chủ CLB
+                        </div>
+                        <div className='text-xs text-blue-600 mt-1'>
+                          Quản lý câu lạc bộ hiện tại của bạn
+                        </div>
+                      </div>
+                      <Button variant='outline' size='sm' className='w-full'>
+                        <Building className='w-4 h-4 mr-2' />
+                        Quản lý CLB hiện tại
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      variant='outline' 
+                      size='sm'
+                      onClick={() => (window.location.href = '/club-registration')}
+                    >
+                      <Building className='w-4 h-4 mr-2' />
+                      Đăng ký CLB mới
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -648,6 +821,7 @@ const OptimizedMobileProfile = () => {
         </Button>
       )}
     </PageLayout>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useTheme } from '@/hooks/useTheme';
 import MobileStoryReel from '../components/mobile/cards/MobileStoryReel';
 import MobileFeedCard from '../components/mobile/cards/MobileFeedCard';
 import MobileFloatingActionButton from '../components/mobile/common/MobileFloatingActionButton';
@@ -13,6 +14,8 @@ import { toast } from 'sonner';
 // Dashboard now uses real data from useSocialFeed hook
 
 const Dashboard = () => {
+  const { theme } = useTheme();
+  
   // Use real social feed data
   const {
     feedPosts,
@@ -101,6 +104,20 @@ const Dashboard = () => {
 
   return (
     <>
+      {/* Full Screen Background Overlay for Dark Mode */}
+      {theme === 'dark' && (
+        <div 
+          className='fixed inset-0 w-full h-full z-0'
+          style={{
+            backgroundImage: 'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        />
+      )}
+      
       <Helmet>
         <title>SABO Arena - Social Feed</title>
         <meta
@@ -111,7 +128,7 @@ const Dashboard = () => {
 
       <div
         ref={combinedRef}
-        className='min-h-screen bg-background overflow-auto'
+        className={`min-h-screen overflow-auto ${theme === 'dark' ? 'relative z-10 bg-transparent' : 'bg-background'}`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}

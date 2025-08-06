@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import OptimizedTournamentCard from '@/components/tournament/OptimizedTournamentCard';
+import ResponsiveTournamentCard from '@/components/tournament/ResponsiveTournamentCard';
+import TournamentCardSkeleton from '@/components/tournament/TournamentCardSkeleton';
 import { EnhancedTournamentDetailsModal } from '@/components/tournament/EnhancedTournamentDetailsModal';
 import { SimpleRegistrationModal } from '@/components/tournament/SimpleRegistrationModal';
 import { Button } from '@/components/ui/button';
@@ -400,30 +401,43 @@ const TournamentsPage = () => {
         <div
           className={`grid grid-cols-1 ${isMobile ? 'gap-3' : 'md:grid-cols-2 lg:grid-cols-3 gap-6'}`}
         >
-          {filteredTournaments.map(tournament => (
-            <OptimizedTournamentCard
-              key={tournament.id}
-              tournament={tournament}
-              onViewDetails={() => {
-                setSelectedTournament(tournament);
-                setIsModalOpen(true);
-              }}
-              onRegister={() => {
-                if (!user) {
-                  toast({
-                    title: 'Cần đăng nhập',
-                    description:
-                      'Bạn cần đăng nhập để đăng ký tham gia giải đấu',
-                    variant: 'destructive',
-                  });
-                  return;
-                }
+          {loading ? (
+            // Show skeletons during loading
+            Array.from({ length: 6 }).map((_, index) => (
+              <TournamentCardSkeleton 
+                key={index} 
+                isMobile={isMobile} 
+                variant={isMobile ? 'mobile' : 'card'} 
+              />
+            ))
+          ) : (
+            filteredTournaments.map((tournament, index) => (
+              <ResponsiveTournamentCard
+                key={tournament.id}
+                tournament={tournament}
+                index={index}
+                priority={index < 3 ? 'high' : index < 6 ? 'medium' : 'low'}
+                onViewDetails={() => {
+                  setSelectedTournament(tournament);
+                  setIsModalOpen(true);
+                }}
+                onRegister={() => {
+                  if (!user) {
+                    toast({
+                      title: 'Cần đăng nhập',
+                      description:
+                        'Bạn cần đăng nhập để đăng ký tham gia giải đấu',
+                      variant: 'destructive',
+                    });
+                    return;
+                  }
 
-                setRegistrationTournament(tournament);
-                setShowRegistrationModal(true);
-              }}
-            />
-          ))}
+                  setRegistrationTournament(tournament);
+                  setShowRegistrationModal(true);
+                }}
+              />
+            ))
+          )}
         </div>
       )}
 

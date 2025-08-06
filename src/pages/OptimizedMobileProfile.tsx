@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { SaboAvatar } from '@/components/ui/sabo-avatar';
+import { AvatarCustomizer } from '@/components/ui/avatar-customizer';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import {
@@ -29,6 +31,7 @@ import {
   Award,
   Shield,
   Building,
+  Palette,
 } from 'lucide-react';
 import { isAdminUser } from '@/utils/adminHelpers';
 
@@ -301,78 +304,18 @@ const OptimizedMobileProfile = () => {
             backgroundImage: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)'
           } : undefined}
         >
-        {/* SABO ARENA Avatar Container */}
+        {/* SABO ARENA Avatar Container với Rainbow Effects */}
         <div className='flex flex-col items-center justify-start -mt-24'>
-          <div className='avatar-container relative w-[90vw] max-w-[360px] h-[90vw] max-h-[360px] flex items-center justify-center'>
-            {/* Avatar with SABO ARENA styling */}
-            <div className='relative w-[90%] h-[90%]'>
-              <img
-                className='avatar absolute w-full h-full object-cover'
-                src={profile.avatar_url || avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.display_name || 'User')}&background=random`}
-                alt="User Avatar"
-                style={{
-                  clipPath: 'polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%)',
-                  boxShadow: `0 0 20px 5px ${shadowColor}`
-                }}
-              />
-              
-              {/* Upload overlay */}
-              <label 
-                className='absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center z-10'
-                style={{
-                  clipPath: 'polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%)'
-                }}
-              >
-                <Camera className='w-8 h-8 text-white' />
-                <input
-                  type='file'
-                  accept='image/*'
-                  onChange={handleAvatarUpload}
-                  className='hidden'
-                />
-              </label>
-
-              {uploading && (
-                <div 
-                  className='absolute inset-0 bg-black/70 flex items-center justify-center z-20'
-                  style={{
-                    clipPath: 'polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%)'
-                  }}
-                >
-                  <div className='animate-spin rounded-full h-8 w-8 border-2 border-white border-t-transparent' />
-                </div>
-              )}
-            </div>
-
-            {/* Frame SVG with mask for stamp */}
-            <div className='frame absolute w-full h-full pointer-events-none'>
-              <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" className='w-full h-full'>
-                <defs>
-                  {profile.verified_rank && (
-                    <mask id="frame-mask">
-                      <rect width="400" height="400" fill="white" />
-                      {/* Circular hole for stamp - positioned at bottom right */}
-                      <circle cx="350" cy="360" r="35" fill="black" />
-                    </mask>
-                  )}
-                </defs>
-                <g mask={profile.verified_rank ? "url(#frame-mask)" : undefined}>
-                  <polygon points="50,10 350,10 390,50 390,350 350,390 50,390 10,350 10,50" stroke={frameStroke} strokeWidth="4" fill="none" />
-                  <polygon points="0,80 80,0 320,0 400,80 400,320 320,400 80,400 0,320" stroke={frameStroke} strokeWidth="2" fill="none" />
-                </g>
-              </svg>
-            </div>
-
-            {/* Verified Stamp */}
-            {profile.verified_rank && (
-              <div className='stamp absolute bottom-[-35px] right-[-10px] w-[32%] h-auto z-20' style={{ filter: `drop-shadow(0 0 6px ${shadowColor})` }}>
-                <img 
-                  src="https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//certified-sabo-arena.png"
-                  alt="Certified SABO ARENA"
-                  className='w-full h-full object-contain'
-                />
-              </div>
-            )}
+          <div className='avatar-container relative w-[80vw] max-w-[300px] h-[100vw] max-h-[400px] flex items-center justify-center'>
+            <SaboAvatar 
+              size="custom"
+              className="w-[90%] h-[90%]"
+              showUpload={true}
+              onAvatarUpload={handleAvatarUpload}
+              fallbackName={profile.display_name || 'User'}
+              isUploading={uploading}
+              profile={profile}
+            />
           </div>
 
           {/* User Info */}
@@ -476,6 +419,20 @@ const OptimizedMobileProfile = () => {
                 <Trophy className='w-4 h-4 mx-auto mb-1' />
                 <div className='text-xs'>Hoạt động</div>
               </button>
+              {/* Avatar tab temporarily hidden - Premium Octagon is now default */}
+              {false && (
+                <button 
+                  className={`flex-1 px-3 py-3 text-sm font-medium ${
+                    activeTab === 'avatar' 
+                      ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                  onClick={() => setActiveTab('avatar')}
+                >
+                  <Palette className='w-4 h-4 mx-auto mb-1' />
+                  <div className='text-xs'>Avatar</div>
+                </button>
+              )}
               <button 
                 className={`flex-1 px-3 py-3 text-sm font-medium ${
                   activeTab === 'basic' 
@@ -566,6 +523,19 @@ const OptimizedMobileProfile = () => {
                     <span className='text-xs'>Xem bảng xếp hạng</span>
                   </Button>
                 </div>
+              </div>
+            )}
+
+            {/* Tab Content - Avatar Customizer - Temporarily Hidden */}
+            {false && activeTab === 'avatar' && (
+              <div className='p-4'>
+                <AvatarCustomizer 
+                  size="lg"
+                  showControls={true}
+                  showUpload={true}
+                  fallbackName={profile.display_name || 'User'}
+                  className="w-full"
+                />
               </div>
             )}
 

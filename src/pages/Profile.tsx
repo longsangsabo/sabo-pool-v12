@@ -13,7 +13,6 @@ const Profile: React.FC = () => {
     userAgent: navigator.userAgent.includes('Mobile'),
   });
 
-
   if (isMobile) {
     console.log('🎯 [Profile] Rendering OptimizedMobileProfile for mobile');
     return <OptimizedMobileProfile />;

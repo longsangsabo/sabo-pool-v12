@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -25,12 +24,13 @@ import {
 import { DashboardSkeleton } from '@/components/skeleton/DashboardSkeleton';
 import { EnhancedWalletBalance } from '@/components/enhanced/EnhancedWalletBalance';
 import { Link } from 'react-router-dom';
+import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
 const OptimizedMobileDashboard = () => {
   const { user, loading } = useAuth();
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   // Mock data - in real app this would come from APIs
   const walletData = {
@@ -154,26 +154,7 @@ const OptimizedMobileDashboard = () => {
   }
 
   return (
-    <>
-      {/* Full Screen Background Overlay - Mobile Dashboard */}
-      {theme === 'dark' && (
-        <div 
-          className='fixed inset-0 w-full h-full z-0'
-          style={{
-            backgroundImage: 'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-      )}
-      
-      <div 
-        className={`min-h-screen relative z-10 ${
-          theme === 'dark' ? 'bg-transparent' : 'bg-gradient-to-br from-background via-background/95 to-secondary/20'
-        }`}
-      >
+    <div className='min-h-screen bg-gradient-to-br from-background via-background/95 to-secondary/20'>
       {/* Minimized Header - Height 40px */}
       <header className='sticky top-0 z-50 bg-card/90 backdrop-blur-sm border-b border-border/50 h-10'>
         <div className='flex items-center justify-between px-3 h-full'>
@@ -208,9 +189,9 @@ const OptimizedMobileDashboard = () => {
       </header>
 
       {/* Main Content */}
-      <main className='p-3 space-y-4 -mt-24'>
+      <main className='p-3 space-y-4'>
         {/* Welcome Section - Compact */}
-        <div className='py-1 mt-2'>
+        <div className='py-2'>
           <h1 className='text-lg font-bold text-foreground flex items-center gap-2'>
             <span>Chào mừng,</span>
             <span className='font-[family-name:var(--font-bebas)] text-xl text-primary'>
@@ -421,7 +402,6 @@ const OptimizedMobileDashboard = () => {
         <div className='h-20' />
       </main>
     </div>
-    </>
   );
 };
 

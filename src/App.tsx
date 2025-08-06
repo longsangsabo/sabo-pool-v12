@@ -47,6 +47,11 @@ const FeedPage = lazy(() => import('@/pages/FeedPage'));
 const MarketplacePage = lazy(() => import('@/pages/EnhancedMarketplacePage'));
 const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'));
 
+// Demo pages
+// const DemoPlayerPage = lazy(() => import('@/pages/DemoPlayerPage'));
+// const DemoPage = lazy(() => import('@/pages/DemoPage'));
+const TestAvatarPage = lazy(() => import('@/pages/test-avatar'));
+
 // Admin components
 const AdminRouter = lazy(() => import('@/router/AdminRouter'));
 
@@ -86,6 +91,10 @@ const AppContent = () => {
           <Route path='/privacy' element={<PrivacyPolicyPage />} />
           <Route path='/terms' element={<TermsOfServicePage />} />
           <Route path='/news' element={<NewsPage />} />
+          
+          {/* Demo pages */}
+          {/* <Route path='/demo' element={<RainbowAvatarDemo />} /> */}
+          <Route path='/test-avatar' element={<TestAvatarPage />} />
 
           {/* Auth routes - only accessible when NOT logged in */}
           <Route

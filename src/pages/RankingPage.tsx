@@ -14,8 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Trophy, Medal, Award, Target, UserCheck, History } from 'lucide-react';
 import { Club } from '@/types/common';
 import { useAuth } from '@/hooks/useAuth';
-import { useTheme } from '@/hooks/useTheme';
-import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import RankRegistrationForm from '@/components/RankRegistrationForm';
 import { SeasonHistoryTab } from '@/components/SeasonHistoryTab';
 
@@ -30,8 +28,6 @@ interface RankingUser {
 
 const RankingPage = () => {
   const { user } = useAuth();
-  const { theme } = useTheme();
-  const { isMobile } = useOptimizedResponsive();
   const [rankings, setRankings] = useState<RankingUser[]>([]);
   const [clubs, setClubs] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -143,22 +139,7 @@ const RankingPage = () => {
   }
 
   return (
-    <>
-      {/* Full Screen Background Overlay - Mobile Ranking */}
-      {theme === 'dark' && isMobile && (
-        <div 
-          className='fixed inset-0 w-full h-full z-0'
-          style={{
-            backgroundImage: 'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-      )}
-      
-      <div className={`space-y-6 ${theme === 'dark' && isMobile ? 'relative z-10 -mt-20' : ''}`}>
+    <div className='space-y-6'>
       <div>
         <h2 className='text-2xl font-bold text-gray-900'>
           Bảng xếp hạng & Đăng ký Rank
@@ -331,7 +312,6 @@ const RankingPage = () => {
         </TabsContent>
       </Tabs>
     </div>
-    </>
   );
 };
 

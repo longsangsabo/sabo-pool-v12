@@ -1,0 +1,886 @@
+/* ================================================================
+   SABO POOL RAINBOW AVATAR LIBRARY v2.0
+   Thư viện Avatar với Hiệu ứng Cầu Vồng và Khung Tương Lai
+   Tái cấu trúc: Logic, Modularity, Scalability
+   ================================================================ */
+
+/* ================================================================
+   1. CSS CUSTOM PROPERTIES (VARIABLES)
+   ================================================================ */
+:root {
+  /* Animation Speed Variables */
+  --rainbow-speed-slow: 12s;
+  --rainbow-speed-normal: 6s;
+  --rainbow-speed-fast: 3s;
+  
+  /* Border Width Variables */
+  --rainbow-border-thin: 2px;
+  --rainbow-border-normal: 4px;
+  --rainbow-border-thick: 6px;
+  
+  /* Effect Intensity Variables */
+  --rainbow-intensity-subtle: 0.4;
+  --rainbow-intensity-normal: 0.7;
+  --rainbow-intensity-intense: 0.9;
+  
+  /* Glow Color Variables */
+  --rainbow-glow-primary: rgba(255, 255, 255, 0.5);
+  --rainbow-glow-secondary: rgba(100, 200, 255, 0.3);
+  
+  /* Tech Edge Variables */
+  --tech-edge-primary: #dbb85c;
+  --tech-edge-secondary: #f4d03f;
+  --tech-edge-accent: rgba(0, 255, 136, 0.6);
+  
+  /* Rainbow Color Palette */
+  --rainbow-red: #ff4646;
+  --rainbow-orange: #ffb446;
+  --rainbow-yellow: #fff846;
+  --rainbow-green: #64ff64;
+  --rainbow-blue: #4682ff;
+  --rainbow-purple: #b446ff;
+  --rainbow-pink: #ff46b4;
+  
+  /* Premium Effect Colors */
+  --platinum-base: rgba(255, 255, 255, 0.8);
+  --diamond-base: rgba(255, 255, 255, 0.6);
+  --chrome-base: rgba(255, 255, 255, 0.9);
+  --frost-base: rgba(200, 220, 240, 0.6);
+  --white-gold-base: rgba(255, 215, 0, 0.4);
+  --holographic-base: rgba(180, 255, 255, 0.3);
+}
+
+/* ================================================================
+   2. BASE CONTAINER STYLES
+   ================================================================ */
+
+/* Main Avatar Container */
+.rainbow-avatar-container {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  /* Ensure proper z-index stacking context */
+}
+
+/* SABO Avatar Container with Z-index Management */
+.sabo-avatar-container {
+  position: relative;
+  /* Z-index layers:
+     Background: z-0
+     Avatar: z-5
+     Frame: z-10
+     Stamp: z-30
+  */
+}
+
+.sabo-avatar-container .frame {
+  z-index: 10;
+}
+
+.sabo-avatar-container .stamp {
+  z-index: 30;
+}
+
+/* Avatar Image Positioning */
+.sabo-avatar-container img {
+  margin: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+}
+
+/* ================================================================
+   3. FRAME TYPE BASE STYLES
+   ================================================================ */
+
+/* Universal Variant Container */
+.rainbow-variant,
+.platinum-elite-variant, 
+.diamond-silver-variant, 
+.chrome-metal-variant,
+.frost-silver-variant, 
+.white-gold-variant, 
+.silver-holographic-variant,
+.glow-variant,
+.pulse-variant,
+.shimmer-variant,
+.tech-edge-variant {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ================================================================
+   4. OCTAGON FRAME STYLES (SABO ARENA)
+   ================================================================ */
+
+/* SVG Frame Border Styles */
+.rainbow-frame-border {
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+}
+
+.rainbow-frame-border-outer {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
+}
+
+/* Premium Frame Borders */
+.premium-frame-border {
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+.premium-frame-border-outer {
+  filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.4));
+}
+
+/* Octagon Shape Clip Path */
+.sabo-octagon {
+  clip-path: polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%);
+}
+
+/* Rainbow Variant Octagon SVG Styling */
+.rainbow-variant .sabo-frame-border {
+  stroke: url(#rainbowGradient);
+  stroke-width: 1;
+  stroke-dasharray: 8 4;
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
+  animation: rainbowStroke var(--rainbow-speed-normal) linear infinite, 
+             dashFlow calc(var(--rainbow-speed-normal) * 0.5) linear infinite;
+}
+
+.rainbow-variant .rainbow-border-effect {
+  filter: blur(0.5px) drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+}
+
+/* ================================================================
+   5. TECH EDGE FRAME STYLES (FUTURISTIC RECTANGULAR)
+   ================================================================ */
+
+/* Tech Edge Clip Path - Advanced Polygon Shape */
+.tech-edge-clip {
+  clip-path: polygon(
+    0% 10%, 12% 2%, 88% 2%, 100% 10%, 
+    100% 23%, 96% 28%, 100% 33%, 
+    100% 67%, 96% 72%, 100% 77%, 
+    100% 90%, 88% 98%, 12% 98%, 0% 90%, 
+    0% 77%, 4% 72%, 0% 67%, 
+    0% 33%, 4% 28%, 0% 23%
+  );
+}
+
+/* Tech Edge Background Layer */
+.tech-edge-variant .tech-edge-background {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    var(--tech-edge-primary) 0%, 
+    var(--tech-edge-secondary) 15%, 
+    #2a2a2a 25%, 
+    #1a1a1a 50%,
+    #2a2a2a 75%,
+    #111111 100%
+  );
+  clip-path: inherit;
+  z-index: 1;
+  animation: techEdgePulse var(--rainbow-speed-normal) ease-in-out infinite alternate;
+}
+
+/* Tech Edge Inner Accent Layer */
+.tech-edge-variant .tech-edge-inner-accent {
+  position: absolute;
+  inset: 8px;
+  border: 2px solid rgba(0, 255, 255, 0.4);
+  clip-path: inherit;
+  z-index: 2;
+  animation: techInnerGlow 3s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+/* Tech Edge Outer Border Layer */
+.tech-edge-variant .tech-edge-outer-border {
+  position: absolute;
+  inset: -4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  clip-path: inherit;
+  z-index: 3;
+  animation: techOuterPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Tech Edge Decorative Elements */
+.tech-edge-variant .tech-edge-corner-accents {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.tech-edge-variant .tech-edge-corner-accents::before,
+.tech-edge-variant .tech-edge-corner-accents::after {
+  content: '';
+  position: absolute;
+  background: linear-gradient(45deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+  z-index: 4;
+}
+
+.tech-edge-variant .tech-edge-corner-accents::before {
+  top: 0;
+  left: 10%;
+  width: 3px;
+  height: 12%;
+  transform: skewX(-15deg);
+  box-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+.tech-edge-variant .tech-edge-corner-accents::after {
+  top: 0;
+  right: 10%;
+  width: 3px;
+  height: 12%;
+  transform: skewX(15deg);
+  box-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+/* Tech Edge Side Accents */
+.tech-edge-variant .tech-edge-side-accents {
+  position: absolute;
+  top: 28%;
+  left: 0;
+  width: 100%;
+  height: 44%;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.tech-edge-variant .tech-edge-side-accents::before,
+.tech-edge-variant .tech-edge-side-accents::after {
+  content: '';
+  position: absolute;
+  background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+  width: 6px;
+  height: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 6px rgba(255,255,255,0.4);
+}
+
+.tech-edge-variant .tech-edge-side-accents::before {
+  left: 0;
+  clip-path: polygon(0 0, 80% 40%, 80% 60%, 0 100%);
+}
+
+.tech-edge-variant .tech-edge-side-accents::after {
+  right: 0;
+  clip-path: polygon(20% 40%, 100% 0, 100% 100%, 20% 60%);
+}
+
+/* ================================================================
+   6. PREMIUM EFFECT VARIANTS
+   ================================================================ */
+
+/* Platinum Elite Effects */
+.platinum-elite-variant .premium-frame-border {
+  filter: drop-shadow(0 0 8px var(--platinum-base));
+  animation: platinumShimmer var(--rainbow-speed-normal) ease-in-out infinite;
+}
+
+/* Diamond Silver Effects */
+.diamond-silver-variant .premium-frame-border {
+  filter: drop-shadow(0 0 6px var(--diamond-base)) 
+          drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
+  animation: diamondFacet var(--rainbow-speed-normal) linear infinite;
+}
+
+/* Chrome Metal Effects */
+.chrome-metal-variant .premium-frame-border {
+  filter: drop-shadow(0 0 10px var(--chrome-base));
+  animation: chromeReflection var(--rainbow-speed-fast) linear infinite;
+}
+
+/* Frost Silver Effects */
+.frost-silver-variant .premium-frame-border {
+  filter: drop-shadow(0 0 8px var(--frost-base));
+  animation: frostBreath var(--rainbow-speed-normal) ease-in-out infinite;
+}
+
+/* White Gold Effects */
+.white-gold-variant .premium-frame-border {
+  filter: drop-shadow(0 0 6px var(--white-gold-base));
+  animation: whiteGoldGlow var(--rainbow-speed-normal) ease-in-out infinite;
+}
+
+/* Silver Holographic Effects */
+.silver-holographic-variant .premium-frame-border {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5)) 
+          drop-shadow(0 0 16px var(--holographic-base));
+  animation: holographicShift var(--rainbow-speed-normal) linear infinite;
+}
+
+/* ================================================================
+   7. SPECIAL EFFECT VARIANTS
+   ================================================================ */
+
+/* Glow Effect Variant */
+.glow-variant .glow-effect {
+  position: absolute;
+  inset: -8px;
+  background: radial-gradient(
+    circle,
+    var(--rainbow-glow-primary) 0%,
+    var(--rainbow-glow-secondary) 50%,
+    transparent 70%
+  );
+  filter: blur(8px);
+  z-index: -1;
+  border-radius: inherit;
+  clip-path: inherit;
+  animation: glowPulse var(--rainbow-speed-slow) ease-in-out infinite alternate;
+}
+
+/* Pulse Effect Variant */
+.pulse-variant {
+  animation: avatarPulse 2s ease-in-out infinite;
+}
+
+.pulse-variant::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(
+    to right,
+    rgba(59, 130, 246, 0.6),
+    rgba(147, 51, 234, 0.6),
+    rgba(59, 130, 246, 0.6)
+  );
+  border-radius: inherit;
+  clip-path: inherit;
+  z-index: -1;
+  animation: pulseBorder 2s ease-in-out infinite;
+}
+
+/* Shimmer Effect Variant */
+.shimmer-variant::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, var(--rainbow-intensity-normal)),
+    transparent
+  );
+  border-radius: inherit;
+  clip-path: inherit;
+  animation: shimmer var(--rainbow-speed-normal) ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ================================================================
+   8. KEYFRAME ANIMATIONS
+   ================================================================ */
+
+/* Rainbow Border Animations */
+@keyframes rainbowBorder {
+  0% { stroke-dasharray: 20 280; stroke-dashoffset: 0; }
+  25% { stroke-dasharray: 80 280; stroke-dashoffset: -40; }
+  50% { stroke-dasharray: 80 280; stroke-dashoffset: -120; }
+  75% { stroke-dasharray: 80 280; stroke-dashoffset: -200; }
+  100% { stroke-dasharray: 20 280; stroke-dashoffset: -280; }
+}
+
+@keyframes rainbowStroke {
+  0% {
+    stroke: var(--rainbow-red);
+    filter: drop-shadow(0 0 8px rgba(255, 70, 70, 0.8));
+  }
+  16.66% {
+    stroke: var(--rainbow-orange);
+    filter: drop-shadow(0 0 8px rgba(255, 180, 70, 0.8));
+  }
+  33.33% {
+    stroke: var(--rainbow-green);
+    filter: drop-shadow(0 0 8px rgba(100, 255, 100, 0.8));
+  }
+  50% {
+    stroke: var(--rainbow-blue);
+    filter: drop-shadow(0 0 8px rgba(70, 130, 255, 0.8));
+  }
+  66.66% {
+    stroke: var(--rainbow-purple);
+    filter: drop-shadow(0 0 8px rgba(180, 70, 255, 0.8));
+  }
+  83.33% {
+    stroke: var(--rainbow-pink);
+    filter: drop-shadow(0 0 8px rgba(255, 70, 180, 0.8));
+  }
+  100% {
+    stroke: var(--rainbow-red);
+    filter: drop-shadow(0 0 8px rgba(255, 70, 70, 0.8));
+  }
+}
+
+@keyframes dashFlow {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -24; }
+}
+
+/* Tech Edge Animations */
+@keyframes techEdgePulse {
+  0%, 100% { 
+    background: linear-gradient(135deg, 
+      var(--tech-edge-primary) 0%, 
+      var(--tech-edge-secondary) 15%, 
+      #2a2a2a 25%, 
+      #1a1a1a 50%,
+      #2a2a2a 75%,
+      #111111 100%
+    );
+    transform: scale(1);
+  }
+  50% { 
+    background: linear-gradient(135deg, 
+      var(--tech-edge-secondary) 0%, 
+      #f7dc6f 15%, 
+      #3a3a3a 25%, 
+      #2a2a2a 50%,
+      #3a3a3a 75%,
+      #1a1a1a 100%
+    );
+    transform: scale(1.005);
+  }
+}
+
+@keyframes techInnerGlow {
+  0%, 100% { 
+    border-color: rgba(0, 255, 255, 0.4);
+    filter: drop-shadow(0 0 4px rgba(0, 255, 255, 0.3));
+  }
+  50% { 
+    border-color: rgba(255, 0, 255, 0.6);
+    filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.4));
+  }
+}
+
+@keyframes techOuterPulse {
+  0%, 100% { 
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1);
+  }
+  50% { 
+    border-color: var(--tech-edge-accent);
+    transform: scale(1.02);
+  }
+}
+
+/* Premium Effect Animations */
+@keyframes platinumShimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 8px var(--platinum-base));
+  }
+  25% {
+    background-position: 50% 0%;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8));
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 1));
+  }
+  75% {
+    background-position: 50% 100%;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8));
+  }
+}
+
+@keyframes diamondFacet {
+  0% {
+    transform: rotate(0deg);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+  }
+  25% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
+  }
+  50% {
+    transform: rotate(180deg);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  }
+  75% {
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.7));
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+  }
+}
+
+@keyframes chromeReflection {
+  0% { background-position: -100% 0%; }
+  50% { background-position: 100% 0%; }
+  100% { background-position: -100% 0%; }
+}
+
+@keyframes frostBreath {
+  0%, 100% {
+    filter: blur(1px) drop-shadow(0 0 8px var(--frost-base));
+    transform: scale(1);
+  }
+  50% {
+    filter: blur(2px) drop-shadow(0 0 12px rgba(200, 220, 240, 0.7));
+    transform: scale(1.02);
+  }
+}
+
+@keyframes whiteGoldGlow {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 6px var(--white-gold-base));
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+  }
+}
+
+@keyframes holographicShift {
+  0% {
+    transform: rotate(0deg);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+  }
+  25% {
+    filter: drop-shadow(0 0 10px rgba(255, 180, 255, 0.5));
+  }
+  50% {
+    transform: rotate(180deg);
+    filter: drop-shadow(0 0 12px rgba(180, 255, 255, 0.6));
+  }
+  75% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 180, 0.5));
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+  }
+}
+
+/* Special Effect Animations */
+@keyframes glowPulse {
+  0% { 
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes avatarPulse {
+  0%, 100% { 
+    transform: scale(1);
+  }
+  50% { 
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulseBorder {
+  0%, 100% { 
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* ================================================================
+   9. HOVER & INTERACTION EFFECTS
+   ================================================================ */
+
+/* Avatar Overlay for Interactions */
+.rainbow-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  clip-path: inherit;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Hover Effects */
+.rainbow-avatar-container:hover .rainbow-avatar-overlay {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rainbow-variant:hover .rainbow-border-effect {
+  filter: blur(calc(var(--rainbow-border-normal) * 0.5));
+  animation-duration: calc(var(--rainbow-speed-normal) * 0.5);
+}
+
+.glow-variant:hover .glow-effect {
+  filter: blur(12px);
+  transform: scale(1.1);
+}
+
+/* ================================================================
+   10. RESPONSIVE DESIGN
+   ================================================================ */
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .sabo-avatar-container img {
+    margin: 1px;
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    transform: scale(0.98);
+  }
+  
+  .rainbow-variant .sabo-frame-border {
+    stroke-width: 1.2;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+  }
+  
+  .rainbow-variant .rainbow-border-effect {
+    filter: blur(0.8px) drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --rainbow-border-width: var(--rainbow-border-thin);
+  }
+  
+  .rainbow-variant .rainbow-border-effect {
+    filter: blur(3px);
+  }
+  
+  .glow-variant .glow-effect {
+    inset: -6px;
+    filter: blur(6px);
+  }
+}
+
+/* ================================================================
+   11. THEME SUPPORT
+   ================================================================ */
+
+/* Dark Theme Support */
+.dark .rainbow-variant .rainbow-border-effect {
+  background: linear-gradient(
+    45deg,
+    rgba(255, 70, 70, calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgba(255, 180, 70, calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgba(100, 255, 100, calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgba(70, 130, 255, calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgba(180, 70, 255, calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgba(255, 70, 70, calc(var(--rainbow-intensity-normal) * 0.8))
+  );
+}
+
+/* Light Theme Support */
+.light .rainbow-variant .rainbow-border-effect {
+  background: linear-gradient(
+    45deg,
+    rgba(255, 70, 70, var(--rainbow-intensity-normal)),
+    rgba(255, 180, 70, var(--rainbow-intensity-normal)),
+    rgba(100, 255, 100, var(--rainbow-intensity-normal)),
+    rgba(70, 130, 255, var(--rainbow-intensity-normal)),
+    rgba(180, 70, 255, var(--rainbow-intensity-normal)),
+    rgba(255, 70, 70, var(--rainbow-intensity-normal))
+  );
+}
+
+/* ================================================================
+   12. UTILITY CLASSES
+   ================================================================ */
+
+/* Intensity Utilities */
+.rainbow-subtle { --rainbow-intensity: var(--rainbow-intensity-subtle); }
+.rainbow-normal { --rainbow-intensity: var(--rainbow-intensity-normal); }
+.rainbow-intense { --rainbow-intensity: var(--rainbow-intensity-intense); }
+
+/* Speed Utilities */
+.rainbow-slow { --rainbow-speed: var(--rainbow-speed-slow); }
+.rainbow-fast { --rainbow-speed: var(--rainbow-speed-fast); }
+
+/* Border Width Utilities */
+.rainbow-border-thin { --rainbow-border-width: var(--rainbow-border-thin); }
+.rainbow-border-thick { --rainbow-border-width: var(--rainbow-border-thick); }
+
+/* ================================================================
+   13. ACCESSIBILITY & PERFORMANCE
+   ================================================================ */
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .rainbow-avatar-container *,
+  .rainbow-avatar-container *::before,
+  .rainbow-avatar-container *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Performance Optimizations */
+.rainbow-avatar-container * {
+  will-change: transform, opacity, filter;
+}
+
+.rainbow-variant .rainbow-border-effect {
+  contain: layout style paint;
+}
+
+/* ================================================================
+   14. LEGACY COMPATIBILITY & DEPRECATED STYLES
+   ================================================================ */
+
+/* Legacy Support for Old Naming Conventions */
+.tech-edge-background {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    var(--tech-edge-primary) 0%, 
+    var(--tech-edge-secondary) 15%, 
+    #2a2a2a 25%, 
+    #1a1a1a 50%,
+    #2a2a2a 75%,
+    #111111 100%
+  );
+  clip-path: polygon(
+    0% 10%, 12% 2%, 88% 2%, 100% 10%, 
+    100% 23%, 96% 28%, 100% 33%, 
+    100% 67%, 96% 72%, 100% 77%, 
+    100% 90%, 88% 98%, 12% 98%, 0% 90%, 
+    0% 77%, 4% 72%, 0% 67%, 
+    0% 33%, 4% 28%, 0% 23%
+  );
+  animation: techRainbowPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Tech Edge Rainbow Frame Borders */
+.tech-rainbow-frame-border {
+  filter: drop-shadow(0 0 6px var(--tech-edge-accent)) 
+          drop-shadow(0 0 12px rgba(0, 136, 255, 0.4))
+          drop-shadow(0 0 18px rgba(136, 0, 255, 0.3));
+  animation: techRainbowPulse 4s ease-in-out infinite;
+}
+
+@keyframes techRainbowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px var(--tech-edge-accent))
+            drop-shadow(0 0 12px rgba(0, 136, 255, 0.4))
+            drop-shadow(0 0 18px rgba(136, 0, 255, 0.3));
+  }
+  16.66% {
+    filter: drop-shadow(0 0 6px rgba(0, 136, 255, 0.6)) 
+            drop-shadow(0 0 12px rgba(136, 0, 255, 0.4))
+            drop-shadow(0 0 18px rgba(255, 0, 136, 0.3));
+  }
+  33.33% {
+    filter: drop-shadow(0 0 6px rgba(136, 0, 255, 0.6)) 
+            drop-shadow(0 0 12px rgba(255, 0, 136, 0.4))
+            drop-shadow(0 0 18px rgba(255, 136, 0, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(255, 0, 136, 0.6)) 
+            drop-shadow(0 0 12px rgba(255, 136, 0, 0.4))
+            drop-shadow(0 0 18px rgba(136, 255, 0, 0.3));
+  }
+  66.66% {
+    filter: drop-shadow(0 0 6px rgba(255, 136, 0, 0.6)) 
+            drop-shadow(0 0 12px rgba(136, 255, 0, 0.4))
+            drop-shadow(0 0 18px var(--tech-edge-accent));
+  }
+  83.33% {
+    filter: drop-shadow(0 0 6px rgba(136, 255, 0, 0.6)) 
+            drop-shadow(0 0 12px var(--tech-edge-accent))
+            drop-shadow(0 0 18px rgba(0, 136, 255, 0.3));
+  }
+}
+
+/* Legacy Inner/Outer Accent Classes */
+.tech-edge-inner-accent {
+  position: absolute;
+  inset: 8px;
+  border: 2px solid rgba(0, 255, 255, 0.4);
+  clip-path: polygon(0% 10%, 12% 2%, 88% 2%, 100% 10%, 100% 23%, 96% 28%, 100% 33%, 100% 67%, 96% 72%, 100% 77%, 100% 90%, 88% 98%, 12% 98%, 0% 90%, 0% 77%, 4% 72%, 0% 67%, 0% 33%, 4% 28%, 0% 23%);
+  animation: techInnerGlow 3s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.tech-edge-outer-border {
+  position: absolute;
+  inset: -4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  clip-path: polygon(0% 10%, 12% 2%, 88% 2%, 100% 10%, 100% 23%, 96% 28%, 100% 33%, 100% 67%, 96% 72%, 100% 77%, 100% 90%, 88% 98%, 12% 98%, 0% 90%, 0% 77%, 4% 72%, 0% 67%, 0% 33%, 4% 28%, 0% 23%);
+  animation: techOuterPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ================================================================
+   15. DOCUMENTATION & API COMMENTS
+   ================================================================ */
+
+/*
+RAINBOW AVATAR LIBRARY API USAGE:
+
+Basic Usage:
+<div class="rainbow-avatar-container">
+  <div class="rainbow-variant">
+    <img src="avatar.jpg" alt="Avatar" />
+  </div>
+</div>
+
+Frame Types:
+- .rainbow-variant (Basic rainbow effect)
+- .tech-edge-variant (Futuristic rectangular frame)
+
+Premium Effects:
+- .platinum-elite-variant
+- .diamond-silver-variant  
+- .chrome-metal-variant
+- .frost-silver-variant
+- .white-gold-variant
+- .silver-holographic-variant
+
+Special Effects:
+- .glow-variant
+- .pulse-variant  
+- .shimmer-variant
+
+Customization:
+Add utility classes for customization:
+- .rainbow-slow, .rainbow-fast (speed)
+- .rainbow-subtle, .rainbow-intense (intensity)
+- .rainbow-border-thin, .rainbow-border-thick (border width)
+
+CSS Custom Properties:
+Use CSS variables for dynamic theming:
+--rainbow-speed: 6s;
+--rainbow-intensity: 0.7;
+--rainbow-border-width: 4px;
+
+Browser Support:
+- Modern browsers with CSS custom properties support
+- Graceful degradation for older browsers
+- Respects prefers-reduced-motion for accessibility
+
+Development Notes:
+- Modular structure for easy maintenance
+- CSS custom properties for theming
+- Performance optimized with will-change and contain
+- Backward compatibility with legacy classes
+- Comprehensive documentation for API usage
+*/

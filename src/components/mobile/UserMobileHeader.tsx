@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import {
+  Menu,
+  Bell,
+  Search,
+  Wallet,
+  User,
+  Settings,
+  LogOut,
+  Sun,
+  Moon,
+} from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,219 +20,250 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
-import { Bell, Search, Menu, User, Settings, LogOut, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { useTheme } from '@/hooks/useTheme';
 
-interface UserMobileHeaderProps {
+interface MobileHeaderProps {
   title?: string;
   showSearch?: boolean;
   showProfile?: boolean;
   showNotifications?: boolean;
+  showWallet?: boolean;
   onMenuClick?: () => void;
 }
 
-const UserMobileHeader: React.FC<UserMobileHeaderProps> = ({
-  title,
+export const MobileHeader: React.FC<MobileHeaderProps> = ({
+  title = 'SABO ARENA',
   showSearch = true,
   showProfile = true,
   showNotifications = true,
+  showWallet = false, // Bỏ tab ví theo yêu cầu
   onMenuClick,
 }) => {
-  const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const { theme, setTheme } = useTheme();
 
-  // Get notification count with real-time updates
+  // Get current user
+  const { data: user } = useQuery({
+    queryKey: ['current-user'],
+    queryFn: async () => {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+      if (error) throw error;
+      return user;
+    },
+  });
+
+  // Get user profile
+  const { data: profile } = useQuery({
+    queryKey: ['user-profile', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
+  // Get wallet balance
+  const { data: wallet } = useQuery({
+    queryKey: ['wallet-balance', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+
+      const { data, error } = await supabase
+        .from('wallets')
+        .select('balance, points_balance')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      return data || { balance: 0, points_balance: 0 };
+    },
+    enabled: !!user?.id,
+  });
+
+  // Get notification count
   const { data: notificationCount } = useQuery({
     queryKey: ['notification-count'],
     queryFn: async () => {
+      if (!user?.id) return 0;
+
       const { count, error } = await supabase
         .from('notifications')
         .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
         .eq('is_read', false)
         .is('deleted_at', null);
 
       if (error) throw error;
       return count || 0;
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    enabled: !!user?.id,
+    refetchInterval: 30000,
   });
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      // Navigate to search results page or handle search
-      console.log('Searching for:', searchQuery);
-      setIsSearchOpen(false);
-      setSearchQuery('');
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      toast.success('Đã đăng xuất thành công');
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast.error('Lỗi khi đăng xuất');
     }
   };
 
-  const handleNotificationClick = () => {
-    navigate('/notifications');
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    }).format(amount);
   };
 
   return (
-    <>
-      <header className='fixed top-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-b border-border px-4 py-3 z-[1000] mobile-safe-area-top px-safe'>
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-3'>
-            {onMenuClick && (
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={onMenuClick}
-                className='hover:bg-muted'
-              >
-                <Menu className='h-5 w-5' />
-              </Button>
-            )}
+    <header className='sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:hidden mobile-safe-area-top'>
+      <div className='flex h-16 items-center px-4'>
+        {/* Left section */}
+        <div className='flex items-center gap-3 flex-1'>
+          {onMenuClick && (
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={onMenuClick}
+              className='hover:bg-muted transition-colors'
+            >
+              <Menu className='w-5 h-5' />
+            </Button>
+          )}
 
-            {/* Brand Logo */}
-            <div className='flex items-center gap-2'>
-              <div className='w-8 h-8 bg-gradient-to-br from-primary to-primary/70 rounded-lg flex items-center justify-center'>
-                <span className='text-white font-bold text-sm'>S</span>
-              </div>
-              <h1 className='text-lg font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent'>
-                {title || 'SABO ARENA'}
-              </h1>
-            </div>
-          </div>
-
+          {/* Brand Logo & Title */}
           <div className='flex items-center gap-2'>
-            {showSearch && (
-              <Button 
-                variant='ghost' 
-                size='sm'
-                onClick={() => setIsSearchOpen(true)}
-                className='hover:bg-muted transition-colors'
-              >
-                <Search className='h-4 w-4' />
-              </Button>
-            )}
-
-            {showNotifications && (
-              <Button 
-                variant='ghost' 
-                size='sm'
-                onClick={handleNotificationClick}
-                className='relative hover:bg-muted transition-colors'
-              >
-                <Bell className='h-4 w-4' />
-                {notificationCount && notificationCount > 0 && (
-                  <Badge
-                    variant='destructive'
-                    className='absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center animate-pulse'
-                  >
-                    {notificationCount > 99 ? '99+' : notificationCount}
-                  </Badge>
-                )}
-              </Button>
-            )}
-
-            {showProfile && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant='ghost'
-                    className='relative h-8 w-8 rounded-full p-0 hover:bg-muted transition-colors'
-                  >
-                    <Avatar className='h-7 w-7'>
-                      <AvatarImage src={user?.user_metadata?.avatar_url} />
-                      <AvatarFallback className='text-xs'>
-                        {user?.user_metadata?.full_name?.charAt(0) ||
-                          user?.email?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className='w-56 bg-card border border-border shadow-lg z-[1001]'
-                  align='end'
-                  forceMount
-                >
-                  <div className='flex items-center justify-start gap-2 p-2'>
-                    <div className='flex flex-col space-y-1 leading-none'>
-                      <p className='font-medium text-sm text-foreground'>
-                        {user?.user_metadata?.full_name || user?.email}
-                      </p>
-                      <p className='text-xs text-muted-foreground'>
-                        {user?.email}
-                      </p>
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className='cursor-pointer hover:bg-muted'
-                    onClick={() => navigate('/profile')}
-                  >
-                    <User className='mr-2 h-4 w-4' />
-                    <span>Hồ sơ</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className='cursor-pointer hover:bg-muted'
-                    onClick={() => navigate('/settings')}
-                  >
-                    <Settings className='mr-2 h-4 w-4' />
-                    <span>Cài đặt</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className='cursor-pointer text-destructive focus:text-destructive hover:bg-destructive/10'
-                    onClick={() => signOut()}
-                  >
-                    <LogOut className='mr-2 h-4 w-4' />
-                    <span>Đăng xuất</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            {/* SABO Logo */}
+            <div className='relative'>
+              <img 
+                src="https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png"
+                alt="SABO ARENA Logo"
+                className='w-9 h-9 object-cover rounded-full'
+              />
+            </div>
+            
+            {/* Title with gradient */}
+            <div className='flex flex-col'>
+              <h1 className='font-black text-lg bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent leading-none tracking-tight'>
+                SABO
+              </h1>
+              <span className='text-xs font-bold text-muted-foreground leading-none tracking-wider'>
+                ARENA
+              </span>
+            </div>
           </div>
         </div>
-      </header>
 
-      {/* Search Modal */}
-      <Sheet open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-        <SheetContent side="top" className="h-auto">
-          <SheetHeader>
-            <SheetTitle>Tìm kiếm</SheetTitle>
-          </SheetHeader>
-          <form onSubmit={handleSearch} className="mt-4">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Tìm người chơi, giải đấu, câu lạc bộ..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus
-                className="flex-1"
-              />
-              <Button type="submit" size="sm">
-                <Search className="h-4 w-4" />
-              </Button>
-              <Button 
-                type="button" 
-                variant="ghost" 
-                size="sm"
-                onClick={() => setIsSearchOpen(false)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </form>
-        </SheetContent>
-      </Sheet>
-    </>
+        {/* Right section */}
+        <div className='flex items-center gap-1'>
+          {/* Theme Toggle */}
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            className='hover:bg-muted/50 transition-colors'
+          >
+            {theme === 'light' ? (
+              <Moon className='w-5 h-5' />
+            ) : (
+              <Sun className='w-5 h-5' />
+            )}
+          </Button>
+
+          {/* Notifications */}
+          {showNotifications && (
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={() => navigate('/notifications')}
+              className='relative hover:bg-muted/50 transition-colors'
+            >
+              <Bell className='w-5 h-5' />
+              {notificationCount && notificationCount > 0 && (
+                <Badge
+                  variant='destructive'
+                  className='absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center animate-pulse'
+                >
+                  {notificationCount > 99 ? '99+' : notificationCount}
+                </Badge>
+              )}
+            </Button>
+          )}
+
+          {/* Profile Menu */}
+          {showProfile && user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='ghost' size='sm' className='p-1 hover:bg-muted/50 transition-colors'>
+                  <Avatar className='w-8 h-8 ring-2 ring-primary/20'>
+                    <AvatarImage src={profile?.avatar_url} />
+                    <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold'>
+                      {profile?.display_name?.[0] ||
+                        profile?.full_name?.[0] ||
+                        'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align='end' className='w-56 bg-background/95 backdrop-blur-sm border shadow-lg'>
+                <div className='px-3 py-2'>
+                  <p className='text-sm font-semibold'>
+                    {profile?.display_name ||
+                      profile?.full_name ||
+                      'Người dùng'}
+                  </p>
+                  <p className='text-xs text-muted-foreground'>{user.email}</p>
+                </div>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem onClick={() => navigate('/profile')} className='hover:bg-muted/50 cursor-pointer'>
+                  <User className='w-4 h-4 mr-2' />
+                  Hồ sơ cá nhân
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={() => navigate('/wallet')} className='hover:bg-muted/50 cursor-pointer'>
+                  <Wallet className='w-4 h-4 mr-2' />
+                  Ví của tôi
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={() => navigate('/settings')} className='hover:bg-muted/50 cursor-pointer'>
+                  <Settings className='w-4 h-4 mr-2' />
+                  Cài đặt
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem onClick={handleSignOut} className='hover:bg-destructive/10 text-destructive cursor-pointer'>
+                  <LogOut className='w-4 h-4 mr-2' />
+                  Đăng xuất
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+      </div>
+    </header>
   );
 };
-
-export default UserMobileHeader;

@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useTheme } from '@/hooks/useTheme';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import PageLayout from '@/components/layout/PageLayout';
@@ -14,7 +13,6 @@ import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { TrendingUp, Building2, Users } from 'lucide-react';
 
 const LeaderboardPage = () => {
-  const { theme } = useTheme();
   const { leaderboard, loading, error } = useLeaderboard();
   const systemStats = useSystemStats();
   const { isMobile } = useOptimizedResponsive();
@@ -49,23 +47,9 @@ const LeaderboardPage = () => {
 
   return (
     <>
-      {/* Full Screen Background Overlay - Mobile Leaderboard */}
-      {theme === 'dark' && isMobile && (
-        <div 
-          className='fixed inset-0 w-full h-full z-0'
-          style={{
-            backgroundImage: 'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-      )}
-      
       <Navigation />
-      <PageLayout variant='dashboard' className={theme === 'dark' && isMobile ? 'relative z-10 bg-transparent' : ''}>
-        <div className={`${isMobile ? 'pt-0 -mt-20' : 'pt-20'}`}>
+      <PageLayout variant='dashboard'>
+        <div className='pt-20'>
           <div className='mb-8'>
             <h1 className='text-4xl font-bold text-gray-900 mb-4'>
               Bảng Xếp Hạng & Thống Kê

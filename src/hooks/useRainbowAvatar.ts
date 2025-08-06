@@ -79,8 +79,8 @@ export const useRainbowAvatar = (): UseRainbowAvatarReturn => {
       setAvatar(prev => ({
         ...prev,
         url: profile?.avatar_url || null,
-        variant: (localStorage.getItem(`avatar_variant_${user.id}`) as AvatarState['variant']) || 'rainbow',
-        frameType: (localStorage.getItem(`avatar_frameType_${user.id}`) as AvatarState['frameType']) || 'tech-edge',
+        variant: (localStorage.getItem(`avatar_variant_${user.id}`) as AvatarState['variant']) || 'default',
+        frameType: (localStorage.getItem(`avatar_frameType_${user.id}`) as AvatarState['frameType']) || 'premium-octagon',
         intensity: (localStorage.getItem(`avatar_intensity_${user.id}`) as AvatarState['intensity']) || 'normal',
         speed: (localStorage.getItem(`avatar_speed_${user.id}`) as AvatarState['speed']) || 'normal',
         isLoading: false,
@@ -264,14 +264,22 @@ export const useRainbowAvatar = (): UseRainbowAvatarReturn => {
     loadAvatar();
   }, [loadAvatar]);
 
-  // Tự động set rainbow variant cho user mới
+  // Tự động set default variant cho user mới
   useEffect(() => {
     if (user?.id && !avatar.isLoading) {
       const hasVariantSet = localStorage.getItem(`avatar_variant_${user.id}`);
+      const hasFrameTypeSet = localStorage.getItem(`avatar_frameType_${user.id}`);
+      
       if (!hasVariantSet) {
-        // User mới, tự động set rainbow variant
-        localStorage.setItem(`avatar_variant_${user.id}`, 'rainbow');
-        setAvatar(prev => ({ ...prev, variant: 'rainbow' }));
+        // User mới, tự động set default variant (no effect) with Premium Octagon
+        localStorage.setItem(`avatar_variant_${user.id}`, 'default');
+        setAvatar(prev => ({ ...prev, variant: 'default' }));
+      }
+      
+      if (!hasFrameTypeSet) {
+        // User mới, tự động set Premium Octagon frame
+        localStorage.setItem(`avatar_frameType_${user.id}`, 'premium-octagon');
+        setAvatar(prev => ({ ...prev, frameType: 'premium-octagon' }));
       }
     }
   }, [user?.id, avatar.isLoading]);

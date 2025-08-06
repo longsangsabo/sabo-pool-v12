@@ -55,6 +55,7 @@ const AdminDevelopment = lazy(() => import('@/pages/admin/AdminDevelopment'));
 const AdminAIAssistant = lazy(() => import('@/pages/admin/AdminAIAssistant'));
 const AdminSettings = lazy(() => import('@/pages/admin/AdminSettings'));
 const AdminSystemReset = lazy(() => import('@/pages/admin/AdminSystemReset'));
+const AdminDocCleanup = lazy(() => import('@/pages/admin/AdminDocCleanup'));
 const AdminTestingDashboard = lazy(
   () => import('@/pages/admin/AdminTestingDashboard')
 );
@@ -96,6 +97,7 @@ const OptimizedAdminRouter = () => {
           <Route path='ai-assistant' element={<AdminAIAssistant />} />
           <Route path='settings' element={<AdminSettings />} />
           <Route path='system-reset' element={<AdminSystemReset />} />
+          <Route path='doc-cleanup' element={<AdminDocCleanup />} />
           <Route path='testing' element={<AdminTestingDashboard />} />
           <Route path='*' element={<Navigate to='/admin' replace />} />
         </Routes>

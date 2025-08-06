@@ -28,6 +28,7 @@ import {
   MessageSquare,
   Calendar,
   Bell,
+  FolderSync,
 } from 'lucide-react';
 
 export interface AdminSidebarProps {
@@ -139,6 +140,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ collapsed = false }) => {
       icon: Zap,
       href: '/admin/automation',
       description: 'Tự động hóa',
+    },
+    {
+      title: 'Doc Cleanup',
+      icon: FolderSync,
+      href: '/admin/doc-cleanup',
+      description: 'Dọn dẹp tài liệu tự động',
     },
     {
       title: 'Development',

@@ -40,7 +40,7 @@ const EnhancedChallengesPageV2 = lazy(
   () => import('@/pages/EnhancedChallengesPageV2')
 );
 const CalendarPage = lazy(() => import('@/pages/CalendarPage'));
-const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const SettingsPage = lazy(() => import('@/pages/EnhancedSettingsPage'));
 const WalletPage = lazy(() => import('@/pages/PaymentPage'));
 const ClubRegistrationPage = lazy(() => import('@/pages/ClubRegistrationPage'));
 const FeedPage = lazy(() => import('@/pages/FeedPage'));

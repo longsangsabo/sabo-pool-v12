@@ -85,12 +85,12 @@ const ModernTournamentCard: React.FC<ModernTournamentCardProps> = ({
           glow: 'shadow-red-500/25',
           pulse: true,
         };
-      case 'upcoming':
+      case 'registration_closed':
         return {
-          status: 'upcoming',
-          text: 'Sắp diễn ra',
-          color: 'bg-gradient-to-r from-blue-500 to-cyan-500',
-          glow: 'shadow-blue-500/25',
+          status: 'registration_closed',
+          text: 'Đóng ĐK',
+          color: 'bg-gradient-to-r from-orange-500 to-yellow-500',
+          glow: 'shadow-orange-500/25',
           pulse: false,
         };
       case 'completed':
@@ -99,6 +99,14 @@ const ModernTournamentCard: React.FC<ModernTournamentCardProps> = ({
           text: 'Hoàn thành',
           color: 'bg-gradient-to-r from-gray-400 to-gray-500',
           glow: 'shadow-gray-500/25',
+          pulse: false,
+        };
+      case 'cancelled':
+        return {
+          status: 'cancelled',
+          text: 'Hủy bỏ',
+          color: 'bg-gradient-to-r from-red-400 to-red-500',
+          glow: 'shadow-red-500/25',
           pulse: false,
         };
       default:
@@ -117,7 +125,7 @@ const ModernTournamentCard: React.FC<ModernTournamentCardProps> = ({
   const registrationProgress = (currentParticipants / tournament.max_participants) * 100;
   
   // Premium tournament detection
-  const isPremium = tournament.tier_level === 'premium' || tournament.entry_fee > 100000;
+  const isPremium = tournament.tier_level === 'premium' || (tournament.entry_fee && tournament.entry_fee > 100000);
   const isHot = statusInfo.status === 'registration_open' && availableSlots <= 5;
 
   // Check registration status

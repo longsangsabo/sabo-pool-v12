@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import TestTournamentCard from '@/components/tournament/TestTournamentCard';
 import ResponsiveTournamentCard from '@/components/tournament/ResponsiveTournamentCard';
 import TournamentCardSkeleton from '@/components/tournament/TournamentCardSkeleton';
+import ModernTournamentFilters from '@/components/tournament/ModernTournamentFilters';
 import { EnhancedTournamentDetailsModal } from '@/components/tournament/EnhancedTournamentDetailsModal';
 import { SimpleRegistrationModal } from '@/components/tournament/SimpleRegistrationModal';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tournament } from '@/types/tournament';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
-import { Search, Filter, Plus, Calendar, Shield } from 'lucide-react';
+import { Plus, Calendar, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 
@@ -272,46 +266,14 @@ const TournamentsPage = () => {
         </div>
       </div>
 
-      {/* Filters and Search */}
-      <Card className={isMobile ? 'mb-3' : 'mb-6'}>
-        <CardContent className={isMobile ? 'pt-4 pb-4' : 'pt-6'}>
-          <div
-            className={`flex ${isMobile ? 'flex-col gap-3' : 'flex-col lg:flex-row gap-4'}`}
-          >
-            <div className='flex-1'>
-              <div className='relative'>
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4' />
-                <Input
-                  placeholder={
-                    isMobile ? 'Tìm kiếm...' : 'Tìm kiếm giải đấu...'
-                  }
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className='pl-10'
-                />
-              </div>
-            </div>
-            <div className={isMobile ? 'w-full' : 'lg:w-48'}>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder='Trạng thái' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>Tất cả</SelectItem>
-                  <SelectItem value='registration_open'>
-                    Đang mở đăng ký
-                  </SelectItem>
-                  <SelectItem value='registration_closed'>
-                    Đã đóng đăng ký
-                  </SelectItem>
-                  <SelectItem value='ongoing'>Đang diễn ra</SelectItem>
-                  <SelectItem value='completed'>Đã kết thúc</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Modern Filters and Search */}
+      <ModernTournamentFilters
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
+        className={isMobile ? 'mb-4' : 'mb-6'}
+      />
 
       {/* Tournament Stats - Hidden on Mobile */}
       {!isMobile && (
@@ -412,29 +374,9 @@ const TournamentsPage = () => {
             ))
           ) : (
             filteredTournaments.map((tournament, index) => (
-              <ResponsiveTournamentCard
+              <TestTournamentCard
                 key={tournament.id}
                 tournament={tournament}
-                index={index}
-                priority={index < 3 ? 'high' : index < 6 ? 'medium' : 'low'}
-                onViewDetails={() => {
-                  setSelectedTournament(tournament);
-                  setIsModalOpen(true);
-                }}
-                onRegister={() => {
-                  if (!user) {
-                    toast({
-                      title: 'Cần đăng nhập',
-                      description:
-                        'Bạn cần đăng nhập để đăng ký tham gia giải đấu',
-                      variant: 'destructive',
-                    });
-                    return;
-                  }
-
-                  setRegistrationTournament(tournament);
-                  setShowRegistrationModal(true);
-                }}
               />
             ))
           )}

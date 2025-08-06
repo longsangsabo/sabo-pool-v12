@@ -1,5 +1,5 @@
 import React from 'react';
-import { Save, Shield, Bell, Globe, Database } from 'lucide-react';
+import { Save, Shield, Bell, Globe, Database, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -21,9 +21,21 @@ import {
 } from '@/components/ui/select';
 import AdminLayout from '@/components/AdminLayout';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 const AdminSettings = () => {
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
+  const { signOut } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success('Đăng xuất thành công');
+    } catch (error) {
+      toast.error('Có lỗi xảy ra khi đăng xuất');
+    }
+  };
 
   if (adminLoading) {
     return (
@@ -57,10 +69,20 @@ const AdminSettings = () => {
             Quản lý cấu hình và thiết lập hệ thống
           </p>
         </div>
-        <Button className='gap-2'>
-          <Save className='w-4 h-4' />
-          Lưu thay đổi
-        </Button>
+        <div className='flex gap-3'>
+          <Button 
+            variant='outline'
+            onClick={handleLogout}
+            className='gap-2 text-red-600 border-red-200 hover:bg-red-50'
+          >
+            <LogOut className='w-4 h-4' />
+            Đăng xuất
+          </Button>
+          <Button className='gap-2'>
+            <Save className='w-4 h-4' />
+            Lưu thay đổi
+          </Button>
+        </div>
       </div>
 
       <div className='grid gap-6'>
@@ -213,6 +235,36 @@ const AdminSettings = () => {
               <div className='space-y-2'>
                 <Label htmlFor='maxFileSize'>Kích thước file tối đa (MB)</Label>
                 <Input id='maxFileSize' type='number' defaultValue='10' />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2'>
+              <Shield className='w-5 h-5' />
+              Quản lý tài khoản Admin
+            </CardTitle>
+            <CardDescription>Thao tác với phiên đăng nhập admin</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+              <div className='flex items-start justify-between'>
+                <div>
+                  <h3 className='font-medium text-red-800'>Đăng xuất Admin</h3>
+                  <p className='text-sm text-red-700 mt-1'>
+                    Đăng xuất khỏi hệ thống quản trị và trở về trang chính
+                  </p>
+                </div>
+                <Button
+                  variant='destructive'
+                  onClick={handleLogout}
+                  className='ml-4'
+                >
+                  <LogOut className='w-4 h-4 mr-2' />
+                  Đăng xuất
+                </Button>
               </div>
             </div>
           </CardContent>

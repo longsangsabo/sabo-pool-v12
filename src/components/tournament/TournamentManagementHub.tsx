@@ -4,6 +4,14 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+
+// UI Components
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,6 +33,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+
+// Icons
 import {
   Trophy,
   Calendar,
@@ -53,30 +63,33 @@ import {
   Wrench,
   CreditCard,
 } from 'lucide-react';
+
+// Tournament Components
 import TournamentCompletionButton from './TournamentCompletionButton';
 import ForceStartTournamentButton from './ForceStartTournamentButton';
 import RepairBracketButton from './RepairBracketButton';
 import UserAvatar from '@/components/UserAvatar';
 import TableAssignmentDisplay from './TableAssignmentDisplay';
 import TournamentPlayerAvatar from './TournamentPlayerAvatar';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
-import { useNavigate } from 'react-router-dom';
 import TournamentResults from '@/components/tournament/TournamentResults';
 import { TournamentBracket } from '@/components/tournament/TournamentBracket';
 import { TournamentDetailsModal } from '@/components/tournament/TournamentDetailsModal';
 import { EnhancedMatchCard } from '@/components/tournament/EnhancedMatchCard';
 import { EditTournamentModal } from '@/components/tournament/EditTournamentModal';
-import { TournamentAdapter } from '@/utils/tournamentAdapter';
-import { Tournament as TournamentType } from '@/types/tournament';
 import { BracketGenerator } from '@/components/tournament/BracketGenerator';
 import { TournamentBracketFlow } from '@/components/tournament/TournamentBracketFlow';
-import { useBracketGeneration } from '@/hooks/useBracketGeneration';
 
-// Import refactored types and services
+// Hooks
+import { useBracketGeneration } from '@/hooks/useBracketGeneration';
+import { useTournamentManagementHub } from '@/hooks/useTournamentManagementHub';
+import { useBracketManagement } from '@/hooks/useBracketManagement';
+import { useTournamentOptimizations } from '@/hooks/useTournamentOptimizations';
+
+// Services and Utils
+import { TournamentAdapter } from '@/utils/tournamentAdapter';
+import { TournamentManagementService } from '@/services/tournament-management.service';
+
+// Types
 import type {
   Tournament,
   Player,
@@ -85,10 +98,9 @@ import type {
   TournamentManagementView,
   TournamentFilter,
 } from '@/types/tournament-management';
-import { TournamentManagementService } from '@/services/tournament-management.service';
-import { useTournamentManagementHub } from '@/hooks/useTournamentManagementHub';
-import { useBracketManagement } from '@/hooks/useBracketManagement';
-import { useTournamentOptimizations } from '@/hooks/useTournamentOptimizations';
+import { Tournament as TournamentType } from '@/types/tournament';
+
+// Advanced Components
 import { TournamentManagementList } from '@/components/tournament/TournamentManagementList';
 import { FastTournamentCard } from '@/components/tournament/FastTournamentCard';
 import { VirtualTournamentList } from '@/components/tournament/VirtualTournamentList';
@@ -1904,15 +1916,26 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-center py-8 text-muted-foreground'>
-                    <Users className='w-12 h-12 mx-auto mb-4' />
-                    <p>
-                      Tính năng quản lý người tham gia sẽ được triển khai sớm
-                    </p>
-                    <p className='text-sm'>
-                      Hiện tại có {selectedTournament.current_participants}{' '}
-                      người đăng ký
-                    </p>
+                  <div className='space-y-4'>
+                    <div className='flex items-center justify-between'>
+                      <div className='text-sm text-muted-foreground'>
+                        Tổng số người đăng ký: {selectedTournament.current_participants}/{selectedTournament.max_participants}
+                      </div>
+                      <Button 
+                        variant='outline' 
+                        size='sm'
+                        onClick={() => handleViewParticipants(selectedTournament)}
+                      >
+                        <Eye className='w-4 h-4 mr-2' />
+                        Xem chi tiết
+                      </Button>
+                    </div>
+                    <div className='text-center py-8 text-muted-foreground'>
+                      <Users className='w-12 h-12 mx-auto mb-4' />
+                      <p>
+                        Click "Xem chi tiết" để quản lý người tham gia
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -1928,14 +1951,47 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-center py-8 text-muted-foreground'>
-                    <Calendar className='w-12 h-12 mx-auto mb-4' />
-                    <p>
-                      Tính năng quản lý trận đấu chi tiết sẽ được triển khai sớm
-                    </p>
-                    <p className='text-sm'>
-                      Hiện tại có {existingMatches.length} trận đấu trong giải
-                    </p>
+                  <div className='space-y-4'>
+                    <div className='grid grid-cols-2 md:grid-cols-4 gap-4 text-center'>
+                      <div className='bg-blue-50 border border-blue-200 rounded-lg p-3'>
+                        <div className='text-2xl font-bold text-blue-600'>
+                          {existingMatches.length}
+                        </div>
+                        <div className='text-sm text-blue-600'>Tổng số trận</div>
+                      </div>
+                      <div className='bg-green-50 border border-green-200 rounded-lg p-3'>
+                        <div className='text-2xl font-bold text-green-600'>
+                          {existingMatches.filter(m => m.status === 'completed').length}
+                        </div>
+                        <div className='text-sm text-green-600'>Đã hoàn thành</div>
+                      </div>
+                      <div className='bg-yellow-50 border border-yellow-200 rounded-lg p-3'>
+                        <div className='text-2xl font-bold text-yellow-600'>
+                          {existingMatches.filter(m => m.status === 'ongoing').length}
+                        </div>
+                        <div className='text-sm text-yellow-600'>Đang thi đấu</div>
+                      </div>
+                      <div className='bg-gray-50 border border-gray-200 rounded-lg p-3'>
+                        <div className='text-2xl font-bold text-gray-600'>
+                          {existingMatches.filter(m => m.status === 'scheduled').length}
+                        </div>
+                        <div className='text-sm text-gray-600'>Chờ thi đấu</div>
+                      </div>
+                    </div>
+                    
+                    {existingMatches.length === 0 ? (
+                      <div className='text-center py-8 text-muted-foreground'>
+                        <Calendar className='w-12 h-12 mx-auto mb-4' />
+                        <p>Chưa có trận đấu nào được tạo</p>
+                        <p className='text-sm'>Hãy tạo bảng đấu để bắt đầu</p>
+                      </div>
+                    ) : (
+                      <div className='text-center py-4'>
+                        <p className='text-sm text-muted-foreground'>
+                          Xem sơ đồ giải đấu để quản lý chi tiết các trận đấu
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

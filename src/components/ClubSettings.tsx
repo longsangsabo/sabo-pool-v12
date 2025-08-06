@@ -15,6 +15,7 @@ import {
   Shield,
   Save,
   AlertTriangle,
+  LogOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -36,7 +37,7 @@ interface NotificationSettings {
 }
 
 const ClubSettings = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [clubSettings, setClubSettings] = useState<ClubSettings | null>(null);
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettings>({
@@ -115,6 +116,15 @@ const ClubSettings = () => {
   const saveNotificationSettings = async () => {
     // Placeholder for notification settings
     toast.success('Đã lưu cài đặt thông báo');
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success('Đăng xuất thành công');
+    } catch (error) {
+      toast.error('Có lỗi xảy ra khi đăng xuất');
+    }
   };
 
   if (loading) {
@@ -350,6 +360,36 @@ const ClubSettings = () => {
                   câu lạc bộ. Hãy luôn kiểm tra kỹ trước khi xác nhận.
                 </p>
               </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Account Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className='flex items-center gap-2'>
+            <Settings className='w-5 h-5' />
+            Quản lý tài khoản
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+            <div className='flex items-start justify-between'>
+              <div>
+                <h3 className='font-medium text-red-800'>Đăng xuất tài khoản</h3>
+                <p className='text-sm text-red-700 mt-1'>
+                  Đăng xuất khỏi hệ thống quản lý câu lạc bộ
+                </p>
+              </div>
+              <Button
+                variant='destructive'
+                onClick={handleLogout}
+                className='ml-4'
+              >
+                <LogOut className='w-4 h-4 mr-2' />
+                Đăng xuất
+              </Button>
             </div>
           </div>
         </CardContent>

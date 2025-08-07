@@ -17,6 +17,11 @@ const LeaderboardPage = () => {
   const systemStats = useSystemStats();
   const { isMobile } = useOptimizedResponsive();
 
+  // For mobile, use MobileLeaderboard directly - MainLayout already provides MobilePlayerLayout
+  if (isMobile) {
+    return <MobileLeaderboard />;
+  }
+
   // Transform leaderboard data to match EnhancedLeaderboard interface
   const transformedPlayers = leaderboard.map(player => ({
     id: player.id,
@@ -76,9 +81,7 @@ const LeaderboardPage = () => {
             </TabsList>
 
             <TabsContent value='leaderboard'>
-              {isMobile ? (
-                <MobileLeaderboard />
-              ) : loading ? (
+              {loading ? (
                 <div className='flex justify-center py-8'>
                   <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
                 </div>

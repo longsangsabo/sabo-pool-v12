@@ -99,7 +99,7 @@ export const MobilePlayerLayout: React.FC<MobilePlayerLayoutProps> = ({
       >
         {/* Content Area */}
         <main 
-          className={`${customPadding} ${showHeader ? 'pt-16' : 'pt-4'} ${showNavigation ? 'pb-20' : 'pb-4'}`}
+          className={`${customPadding} ${showHeader ? 'pt-2' : 'pt-4'} ${showNavigation ? 'pb-20' : 'pb-4'}`}
         >
           {children}
         </main>

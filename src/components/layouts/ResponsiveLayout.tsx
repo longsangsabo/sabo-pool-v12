@@ -18,7 +18,7 @@ const ResponsiveLayoutBase: React.FC<ResponsiveLayoutProps> = ({
   if (isMobile) {
     return (
       <div data-testid='mobile-layout'>
-        <MobilePlayerLayout>{children}</MobilePlayerLayout>
+        <MobilePlayerLayout customPadding="px-4">{children}</MobilePlayerLayout>
       </div>
     );
   }

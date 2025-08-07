@@ -261,10 +261,30 @@ const OptimizedMobileProfile = () => {
   }
 
   const skillLevels = {
-    beginner: { label: 'Người mới', color: 'bg-green-100 text-green-800' },
-    intermediate: { label: 'Trung bình', color: 'bg-blue-100 text-blue-800' },
-    advanced: { label: 'Khá', color: 'bg-purple-100 text-purple-800' },
-    pro: { label: 'Chuyên nghiệp', color: 'bg-gold-100 text-gold-800' },
+    beginner: { 
+      label: 'Người mới', 
+      color: theme === 'dark' 
+        ? 'bg-green-900/50 text-green-200 border border-green-800/50' 
+        : 'bg-green-100 text-green-800'
+    },
+    intermediate: { 
+      label: 'Trung bình', 
+      color: theme === 'dark' 
+        ? 'bg-blue-900/50 text-blue-200 border border-blue-800/50' 
+        : 'bg-blue-100 text-blue-800'
+    },
+    advanced: { 
+      label: 'Khá', 
+      color: theme === 'dark' 
+        ? 'bg-purple-900/50 text-purple-200 border border-purple-800/50' 
+        : 'bg-purple-100 text-purple-800'
+    },
+    pro: { 
+      label: 'Chuyên nghiệp', 
+      color: theme === 'dark' 
+        ? 'bg-yellow-900/50 text-yellow-200 border border-yellow-800/50' 
+        : 'bg-yellow-100 text-yellow-800'
+    },
   };
   // Fallback nếu skill_level không hợp lệ
   const skillKey = skillLevels[profile.skill_level] ? profile.skill_level : 'beginner';
@@ -402,36 +422,58 @@ const OptimizedMobileProfile = () => {
                 {/* Recent Match Results */}
                 <div className='space-y-2'>
                   <h4 className='text-sm font-medium mb-2'>Kết quả trận đấu gần đây</h4>
-                  <div className='flex items-center gap-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-500'>
+                  <div className={`flex items-center gap-3 p-3 rounded-lg border-l-4 border-green-500 ${
+                    theme === 'dark' 
+                      ? 'bg-green-900/20 backdrop-blur-sm' 
+                      : 'bg-green-50'
+                  }`}>
                     <div className='w-8 h-8 bg-green-500 rounded-full flex items-center justify-center'>
                       <Trophy className='w-4 h-4 text-white' />
                     </div>
                     <div className='flex-1'>
-                      <div className='text-sm font-medium'>Thắng vs Nguyễn Văn A</div>
+                      <div className={`text-sm font-medium ${
+                        theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+                      }`}>Thắng vs Nguyễn Văn A</div>
                       <div className='text-xs text-muted-foreground'>10-8 • 2 giờ trước</div>
                     </div>
-                    <div className='text-xs font-bold text-green-600'>+25 ELO</div>
+                    <div className={`text-xs font-bold ${
+                      theme === 'dark' ? 'text-green-300' : 'text-green-600'
+                    }`}>+25 ELO</div>
                   </div>
 
-                  <div className='flex items-center gap-3 p-3 bg-red-50 rounded-lg border-l-4 border-red-500'>
+                  <div className={`flex items-center gap-3 p-3 rounded-lg border-l-4 border-red-500 ${
+                    theme === 'dark' 
+                      ? 'bg-red-900/20 backdrop-blur-sm' 
+                      : 'bg-red-50'
+                  }`}>
                     <div className='w-8 h-8 bg-red-500 rounded-full flex items-center justify-center'>
                       <Target className='w-4 h-4 text-white' />
                     </div>
                     <div className='flex-1'>
-                      <div className='text-sm font-medium'>Thua vs Trần Văn B</div>
+                      <div className={`text-sm font-medium ${
+                        theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+                      }`}>Thua vs Trần Văn B</div>
                       <div className='text-xs text-muted-foreground'>8-10 • 1 ngày trước</div>
                     </div>
-                    <div className='text-xs font-bold text-red-600'>-15 ELO</div>
+                    <div className={`text-xs font-bold ${
+                      theme === 'dark' ? 'text-red-300' : 'text-red-600'
+                    }`}>-15 ELO</div>
                   </div>
                 </div>
 
                 {/* Active Challenges */}
                 <div className='space-y-2'>
                   <h4 className='text-sm font-medium mb-2'>Thách đấu đang chờ</h4>
-                  <div className='flex items-center gap-3 p-3 bg-blue-50 rounded-lg'>
+                  <div className={`flex items-center gap-3 p-3 rounded-lg ${
+                    theme === 'dark' 
+                      ? 'bg-blue-900/20 backdrop-blur-sm' 
+                      : 'bg-blue-50'
+                  }`}>
                     <Zap className='w-5 h-5 text-blue-500' />
                     <div className='flex-1'>
-                      <div className='text-sm font-medium'>Thách đấu từ Lê Văn C</div>
+                      <div className={`text-sm font-medium ${
+                        theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+                      }`}>Thách đấu từ Lê Văn C</div>
                       <div className='text-xs text-muted-foreground'>Hạn: 2 ngày nữa</div>
                     </div>
                     <Button size='sm' variant='outline' className='text-xs'>
@@ -538,11 +580,19 @@ const OptimizedMobileProfile = () => {
                     Xác nhận trình độ chơi bida của bạn thông qua câu lạc bộ uy tín
                   </p>
                   {profile.verified_rank ? (
-                    <div className='bg-green-50 border border-green-200 rounded-lg p-3'>
-                      <div className='text-sm font-medium text-green-800'>
+                    <div className={`bg-green-50 border border-green-200 rounded-lg p-3 ${
+                      theme === 'dark' 
+                        ? 'bg-green-900/20 border-green-800/50 backdrop-blur-sm' 
+                        : 'bg-green-50 border-green-200'
+                    }`}>
+                      <div className={`text-sm font-medium ${
+                        theme === 'dark' ? 'text-green-200' : 'text-green-800'
+                      }`}>
                         Đã xác thực: {profile.verified_rank}
                       </div>
-                      <div className='text-xs text-green-600 mt-1'>
+                      <div className={`text-xs mt-1 ${
+                        theme === 'dark' ? 'text-green-300' : 'text-green-600'
+                      }`}>
                         Tài khoản của bạn đã được xác thực
                       </div>
                     </div>
@@ -571,11 +621,19 @@ const OptimizedMobileProfile = () => {
                   </p>
                   {profile.role === 'club_owner' || profile.role === 'both' ? (
                     <div className='space-y-2'>
-                      <div className='bg-blue-50 border border-blue-200 rounded-lg p-3'>
-                        <div className='text-sm font-medium text-blue-800'>
+                      <div className={`bg-blue-50 border border-blue-200 rounded-lg p-3 ${
+                        theme === 'dark' 
+                          ? 'bg-blue-900/20 border-blue-800/50 backdrop-blur-sm' 
+                          : 'bg-blue-50 border-blue-200'
+                      }`}>
+                        <div className={`text-sm font-medium ${
+                          theme === 'dark' ? 'text-blue-200' : 'text-blue-800'
+                        }`}>
                           Bạn đã là chủ CLB
                         </div>
-                        <div className='text-xs text-blue-600 mt-1'>
+                        <div className={`text-xs mt-1 ${
+                          theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
+                        }`}>
                           Quản lý câu lạc bộ hiện tại của bạn
                         </div>
                       </div>
@@ -611,20 +669,32 @@ const OptimizedMobileProfile = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className='p-4 pt-0 space-y-3'>
-            <div className='flex items-center gap-3 p-2 bg-blue-50 rounded-lg'>
+            <div className={`flex items-center gap-3 p-2 rounded-lg ${
+              theme === 'dark' 
+                ? 'bg-blue-900/20 backdrop-blur-sm' 
+                : 'bg-blue-50'
+            }`}>
               <div className='w-2 h-2 bg-blue-500 rounded-full flex-shrink-0'></div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate'>
+                <div className={`text-sm font-medium truncate ${
+                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+                }`}>
                   Tham gia giải đấu mới
                 </div>
                 <div className='text-xs text-muted-foreground'>2 giờ trước</div>
               </div>
             </div>
 
-            <div className='flex items-center gap-3 p-2 bg-green-50 rounded-lg'>
+            <div className={`flex items-center gap-3 p-2 rounded-lg ${
+              theme === 'dark' 
+                ? 'bg-green-900/20 backdrop-blur-sm' 
+                : 'bg-green-50'
+            }`}>
               <div className='w-2 h-2 bg-green-500 rounded-full flex-shrink-0'></div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate'>
+                <div className={`text-sm font-medium truncate ${
+                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+                }`}>
                   Nhận 50 SPA Points
                 </div>
                 <div className='text-xs text-muted-foreground'>
@@ -633,10 +703,16 @@ const OptimizedMobileProfile = () => {
               </div>
             </div>
 
-            <div className='flex items-center gap-3 p-2 bg-yellow-50 rounded-lg'>
+            <div className={`flex items-center gap-3 p-2 rounded-lg ${
+              theme === 'dark' 
+                ? 'bg-yellow-900/20 backdrop-blur-sm' 
+                : 'bg-yellow-50'
+            }`}>
               <div className='w-2 h-2 bg-yellow-500 rounded-full flex-shrink-0'></div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate'>
+                <div className={`text-sm font-medium truncate ${
+                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+                }`}>
                   Cập nhật hồ sơ
                 </div>
                 <div className='text-xs text-muted-foreground'>
@@ -658,12 +734,18 @@ const OptimizedMobileProfile = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className='p-4 pt-0 space-y-3'>
-            <div className='flex items-center gap-3 p-2 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg'>
+            <div className={`flex items-center gap-3 p-2 rounded-lg ${
+              theme === 'dark' 
+                ? 'bg-gradient-to-r from-yellow-900/30 to-orange-900/30 backdrop-blur-sm' 
+                : 'bg-gradient-to-r from-yellow-50 to-orange-50'
+            }`}>
               <div className='w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0'>
                 <Trophy className='w-4 h-4 text-white' />
               </div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate'>
+                <div className={`text-sm font-medium truncate ${
+                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+                }`}>
                   Người mới xuất sắc
                 </div>
                 <div className='text-xs text-muted-foreground'>
@@ -672,12 +754,18 @@ const OptimizedMobileProfile = () => {
               </div>
             </div>
 
-            <div className='flex items-center gap-3 p-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg'>
+            <div className={`flex items-center gap-3 p-2 rounded-lg ${
+              theme === 'dark' 
+                ? 'bg-gradient-to-r from-blue-900/30 to-purple-900/30 backdrop-blur-sm' 
+                : 'bg-gradient-to-r from-blue-50 to-purple-50'
+            }`}>
               <div className='w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0'>
                 <span className='text-sm'>🎯</span>
               </div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate'>Chính xác</div>
+                <div className={`text-sm font-medium truncate ${
+                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+                }`}>Chính xác</div>
                 <div className='text-xs text-muted-foreground'>
                   Độ chính xác &gt; 80%
                 </div>

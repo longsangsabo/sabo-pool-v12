@@ -27,32 +27,32 @@ export const MobileStoryReel: React.FC<MobileStoryReelProps> = ({
   const mockStories: StoryItem[] = [
     {
       id: '1',
-      user: { name: 'Duc', avatar: '/api/placeholder/64/64' },
+      user: { name: 'Duc', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Duc')}&background=random&size=64` },
       type: 'live_match',
       isLive: true,
       title: 'Đang đấu vs Player2',
     },
     {
       id: '2',
-      user: { name: 'Minh', avatar: '/api/placeholder/64/64' },
+      user: { name: 'Minh', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Minh')}&background=random&size=64` },
       type: 'achievement',
       title: 'Lên rank Expert',
     },
     {
       id: '3',
-      user: { name: 'Lan', avatar: '/api/placeholder/64/64' },
+      user: { name: 'Lan', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Lan')}&background=random&size=64` },
       type: 'highlight',
       title: 'Shot đẹp nhất',
     },
     {
       id: '4',
-      user: { name: 'Tuan', avatar: '/api/placeholder/64/64' },
+      user: { name: 'Tuan', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Tuan')}&background=random&size=64` },
       type: 'tournament',
       title: 'SABO Arena Open',
     },
     {
       id: '5',
-      user: { name: 'Nam', avatar: '/api/placeholder/64/64' },
+      user: { name: 'Nam', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Nam')}&background=random&size=64` },
       type: 'live_match',
       isLive: true,
       title: 'Trận chung kết',

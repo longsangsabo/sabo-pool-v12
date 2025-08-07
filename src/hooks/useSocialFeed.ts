@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { safeRelationshipQuery } from '@/utils/relationshipMapper';
 
 export interface SocialFeedPost {
   id: string;
@@ -86,7 +87,7 @@ export const useSocialFeed = () => {
       user: {
         id: winner.id,
         name: winner.name,
-        avatar: '/api/placeholder/40/40',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(winner.name)}&background=random&size=40`,
         rank: 'Expert',
       },
       content: `Vừa thắng ${loser.name} với tỷ số ${match.score_player1 || 0}-${match.score_player2 || 0}! 🎱`,
@@ -123,7 +124,7 @@ export const useSocialFeed = () => {
         id: challenge.challenger_id,
         name:
           challenger.full_name || challenger.display_name || 'Unknown Player',
-        avatar: '/api/placeholder/40/40',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(challenger.full_name || challenger.display_name || 'Player')}&background=random&size=40`,
         rank: 'Pro',
       },
       content: `Ai dám nhận thách đấu với tôi không? Đặt cược ${challenge.bet_points || 100} điểm! 🔥`,
@@ -153,7 +154,7 @@ export const useSocialFeed = () => {
       user: {
         id: 'system',
         name: 'SABO Arena',
-        avatar: '/api/placeholder/40/40',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('SABO Arena')}&background=0ea5e9&color=ffffff&size=40`,
         rank: 'System',
       },
       content: `${tournament.name} đang mở đăng ký! Phí tham gia ${tournament.entry_fee || 50000}đ. Hãy đăng ký ngay để nhận vị trí tốt nhất! 🎯`,
@@ -181,7 +182,7 @@ export const useSocialFeed = () => {
       id: `story_tournament_${tournament.id}`,
       user: {
         name: 'SABO',
-        avatar: '/api/placeholder/64/64',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('SABO')}&background=0ea5e9&color=ffffff&size=64`,
       },
       type: 'tournament',
       title: tournament.name?.substring(0, 15) + '...' || 'Tournament',
@@ -195,20 +196,42 @@ export const useSocialFeed = () => {
       setLoading(true);
       setError(null);
 
-      // Fetch recent completed matches
-      const { data: matches, error: matchError } = await supabase
+      // Fetch recent completed matches (simple query without relationships)
+      const { data: matchData, error: matchError } = await supabase
         .from('matches')
-        .select(
-          `
-          *,
-          player1:profiles!matches_player1_id_fkey(full_name, display_name, avatar_url),
-          player2:profiles!matches_player2_id_fkey(full_name, display_name, avatar_url)
-        `
-        )
+        .select('*')
         .eq('status', 'completed')
         .not('winner_id', 'is', null)
         .order('created_at', { ascending: false })
         .limit(10);
+
+      if (matchError) {
+        throw matchError;
+      }
+
+      // Fetch player profiles separately to avoid relationship issues
+      const playerIds = new Set<string>();
+      matchData?.forEach(match => {
+        if (match.player1_id) playerIds.add(match.player1_id);
+        if (match.player2_id) playerIds.add(match.player2_id);
+      });
+
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('user_id, full_name, display_name, avatar_url')
+        .in('user_id', Array.from(playerIds));
+
+      const profileMap = (profiles || []).reduce((acc, profile) => {
+        acc[profile.user_id] = profile;
+        return acc;
+      }, {} as Record<string, any>);
+
+      // Merge data manually to ensure compatibility
+      const matches = matchData?.map(match => ({
+        ...match,
+        player1: profileMap[match.player1_id] || null,
+        player2: profileMap[match.player2_id] || null,
+      })) || [];
 
       // Fetch recent challenges
       const { data: challenges, error: challengeError } = await supabase

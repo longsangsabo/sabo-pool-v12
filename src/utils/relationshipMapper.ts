@@ -11,6 +11,31 @@ export interface RelationshipMapping {
   standardName: string;
 }
 
+/**
+ * Safe relationship query helper
+ * Tries multiple possible foreign key formats to ensure compatibility
+ */
+export function safeRelationshipQuery(
+  table: string,
+  foreignKey: string,
+  referencedTable: string,
+  alias?: string
+) {
+  const relationshipAlias = alias || referencedTable;
+  
+  // Try standard format first: profiles!player1_id
+  const standardFormat = `${relationshipAlias}:${referencedTable}!${foreignKey}`;
+  
+  // Fallback format with full table prefix: profiles!matches_player1_id_fkey
+  const fallbackFormat = `${relationshipAlias}:${referencedTable}!${table}_${foreignKey}_fkey`;
+  
+  return {
+    standard: standardFormat,
+    fallback: fallbackFormat,
+    simple: `${relationshipAlias}:${referencedTable}(*)`,
+  };
+}
+
 // Mapping chuẩn cho tất cả relationships trong hệ thống
 export const RELATIONSHIP_MAPPINGS: Record<string, RelationshipMapping> = {
   // Challenges relationships

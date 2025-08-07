@@ -20,6 +20,7 @@ import {
 } from '@/utils/tournamentHelpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import { toast } from 'sonner';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 
@@ -37,6 +38,7 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
   showActions = true,
 }) => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const { isMobile } = useOptimizedResponsive();
   const [isRegistered, setIsRegistered] = useState(false);
   const [registrationLoading, setRegistrationLoading] = useState(false);
@@ -95,6 +97,8 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
     checkRegistrationAndParticipants();
   }, [user?.id, tournament.id]);
 
+  const [prizeTiers, setPrizeTiers] = useState<any[]>([]);
+
   // Get real-time prize and reward information
   useEffect(() => {
     const fetchTournamentRewards = async () => {
@@ -103,16 +107,29 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
         let totalCashPrize = tournament.prize_pool || 0;
         let totalSpaPoints = 0;
         let physicalPrizesList: string[] = [];
+        let prizeTiersList: any[] = [];
 
-        // Only fetch from database tables if prize_pool is 0
+        // Always fetch prize tiers for detailed breakdown
+        const { data: prizeTiers, error: prizeError } = await supabase
+          .from('tournament_prize_tiers')
+          .select('*')
+          .eq('tournament_id', tournament.id)
+          .eq('is_visible', true)
+          .order('position');
+
+        if (prizeTiers && !prizeError) {
+          prizeTiersList = prizeTiers;
+          // Calculate total cash prize from prize tiers if not set
+          if (totalCashPrize === 0) {
+            totalCashPrize = prizeTiers.reduce(
+              (sum, tier) => sum + (tier.cash_amount || 0),
+              0
+            );
+          }
+        }
+
+        // Only fetch from other database tables if prize_pool is 0
         if (totalCashPrize === 0) {
-          // Fetch from tournament_prize_tiers table for accurate prize info
-          const { data: prizeTiers, error: prizeError } = await supabase
-            .from('tournament_prize_tiers')
-            .select('*')
-            .eq('tournament_id', tournament.id)
-            .order('position');
-
           // Fetch from tournament_point_configs for SPA points
           const { data: pointConfig, error: pointError } = await supabase
             .from('tournament_point_configs')
@@ -125,14 +142,6 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
             .from('tournament_physical_prizes')
             .select('*')
             .eq('tournament_id', tournament.id);
-
-          // Calculate total cash prize from prize tiers
-          if (prizeTiers && !prizeError) {
-            totalCashPrize = prizeTiers.reduce(
-              (sum, tier) => sum + (tier.cash_amount || 0),
-              0
-            );
-          }
 
           // Get SPA points from point config
           if (pointConfig && !pointError) {
@@ -155,6 +164,7 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
           }
         }
 
+        setPrizeTiers(prizeTiersList);
         setRealTimePrizeInfo({
           totalPrize: totalCashPrize,
           spaPoints: totalSpaPoints,
@@ -357,16 +367,60 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
   const availableSlots = tournament.max_participants - currentParticipants;
 
   return (
-    <Card className='w-full max-w-md mx-auto hover:shadow-lg transition-shadow duration-200 overflow-hidden'>
-      <CardHeader className={isMobile ? 'pb-2 px-4 pt-4' : 'pb-3'}>
+    <Card className={`w-full hover:shadow-lg transition-shadow duration-200 overflow-hidden relative ${
+      isMobile ? '' : 'max-w-md mx-auto'
+    } ${
+      theme === 'dark' 
+        ? 'border-gray-600/80 shadow-xl shadow-gray-500/20 hover:shadow-gray-400/30' 
+        : 'border-gray-300/80 shadow-lg shadow-gray-300/30 hover:shadow-gray-400/40'
+    }`}>
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-30"
+        style={{
+          backgroundImage: `url('https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/layout-card.jpg')`
+        }}
+      />
+      
+      {/* Subtle overlay for better text readability */}
+      <div className={`absolute inset-0 ${
+        theme === 'dark' 
+          ? 'bg-black/20' 
+          : 'bg-white/30'
+      }`} />
+      
+      {/* Club Logo */}
+      <div className="absolute top-2 left-2 z-10">
+        <div className={`w-8 h-8 rounded-full overflow-hidden border-2 shadow-md ${
+          theme === 'dark' 
+            ? 'border-amber-400/60 bg-black/20 backdrop-blur-sm' 
+            : 'border-amber-500/80 bg-white/20'
+        }`}>
+          <img 
+            src={tournament.club?.logo_url || 'https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/logo-sabo-arena.png'} 
+            alt={tournament.club?.name || 'CLB'} 
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              // Fallback to default logo if club logo fails to load
+              e.currentTarget.src = 'https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/logo-sabo-arena.png';
+            }}
+          />
+        </div>
+      </div>
+
+      <CardHeader className={`${isMobile ? 'pb-2 px-4 pt-4 pl-12' : 'pb-3 pl-12'} relative z-10`}>
         <div className='flex items-start justify-between'>
           <CardTitle
-            className={`${isMobile ? 'text-base' : 'text-lg'} font-bold text-gray-900 line-clamp-2 flex-1 mr-2`}
+            className={`${isMobile ? 'text-base' : 'text-lg'} font-bold line-clamp-2 flex-1 mr-3 ${
+              theme === 'dark' ? 'text-white drop-shadow-lg' : 'text-gray-900 drop-shadow-md'
+            }`}
           >
             {tournament.name}
           </CardTitle>
           <Badge
-            className={`${statusInfo.color} text-white text-xs px-2 py-1 rounded-full whitespace-nowrap`}
+            className={`${statusInfo.color} text-white text-xs px-1.5 py-0.5 rounded-md whitespace-nowrap font-medium flex-shrink-0 ${
+              isMobile ? 'text-[10px]' : ''
+            }`}
           >
             {statusInfo.text}
           </Badge>
@@ -374,7 +428,9 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
 
         {tournament.description && (
           <p
-            className={`${isMobile ? 'text-xs' : 'text-sm'} text-gray-600 line-clamp-2 mt-1`}
+            className={`${isMobile ? 'text-xs' : 'text-sm'} line-clamp-2 mt-1 ${
+              theme === 'dark' ? 'text-gray-200 drop-shadow-md' : 'text-gray-700 drop-shadow-sm'
+            }`}
           >
             {tournament.description}
           </p>
@@ -382,7 +438,7 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
       </CardHeader>
 
       <CardContent
-        className={`pt-0 ${isMobile ? 'space-y-2 px-4 pb-4' : 'space-y-3'}`}
+        className={`pt-0 ${isMobile ? 'space-y-2 px-4 pb-4' : 'space-y-3'} relative z-10`}
       >
         {/* Tournament Format & Type */}
         <div
@@ -392,11 +448,15 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
             <Trophy
               className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-amber-500`}
             />
-            <span className='font-medium text-gray-700'>
+            <span className={`font-medium ${
+              theme === 'dark' ? 'text-white drop-shadow-md' : 'text-gray-800 drop-shadow-sm'
+            }`}>
               {getTournamentTypeText(tournament.tournament_type)}
             </span>
           </div>
-          <span className='text-gray-500'>
+          <span className={`${
+            theme === 'dark' ? 'text-gray-200 drop-shadow-md' : 'text-gray-600 drop-shadow-sm'
+          }`}>
             {tournament.game_format === '8_ball'
               ? '8-Ball'
               : tournament.game_format === '9_ball'
@@ -415,15 +475,21 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
             <Users
               className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-blue-500`}
             />
-            <span className='text-gray-700'>
+            <span className={`${
+              theme === 'dark' ? 'text-white drop-shadow-md' : 'text-gray-800 drop-shadow-sm'
+            }`}>
               {currentParticipants}/{tournament.max_participants} người
             </span>
           </div>
           <span
-            className={`text-xs px-2 py-1 rounded-full ${
+            className={`text-xs px-2 py-1 rounded-full font-medium ${
               tournament.max_participants - currentParticipants > 0
-                ? 'bg-green-100 text-green-700'
-                : 'bg-red-100 text-red-700'
+                ? theme === 'dark' 
+                  ? 'bg-green-500/20 text-green-400 border border-green-500/40'
+                  : 'bg-green-100 text-green-700'
+                : theme === 'dark'
+                  ? 'bg-red-500/20 text-red-400 border border-red-500/40'
+                  : 'bg-red-100 text-red-700'
             }`}
           >
             {tournament.max_participants - currentParticipants > 0
@@ -475,9 +541,13 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
                 <Star
                   className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-purple-500`}
                 />
-                <span className='text-gray-700'>Hạng tham gia:</span>
+                <span className={`${
+                  theme === 'dark' ? 'text-white drop-shadow-md' : 'text-gray-800 drop-shadow-sm'
+                }`}>Hạng tham gia:</span>
               </div>
-              <span className='text-purple-600 font-medium'>{rankRange}</span>
+              <span className={`font-medium ${
+                theme === 'dark' ? 'text-purple-300 drop-shadow-md' : 'text-purple-700 drop-shadow-sm'
+              }`}>{rankRange}</span>
             </div>
           );
         })()}
@@ -486,8 +556,12 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
         <div
           className={`flex items-center justify-between ${isMobile ? 'text-xs' : 'text-sm'}`}
         >
-          <span className='text-gray-700'>Lệ phí tham gia:</span>
-          <span className='font-medium text-gray-900'>
+          <span className={`${
+            theme === 'dark' ? 'text-white drop-shadow-md' : 'text-gray-800 drop-shadow-sm'
+          }`}>Lệ phí tham gia:</span>
+          <span className={`font-medium ${
+            theme === 'dark' ? 'text-white drop-shadow-md' : 'text-gray-900 drop-shadow-sm'
+          }`}>
             {tournament.entry_fee
               ? formatCurrency(tournament.entry_fee)
               : 'Miễn phí'}
@@ -496,16 +570,24 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
 
         {/* Prize Pool - Make this prominent */}
         <div
-          className={`bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg ${isMobile ? 'p-2' : 'p-3'} border border-amber-200`}
+          className={`rounded-lg ${isMobile ? 'p-2' : 'p-3'} border ${
+            theme === 'dark' 
+              ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-amber-500/40 backdrop-blur-sm'
+              : 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200'
+          }`}
         >
           <div className='text-center'>
             <div
-              className={`${isMobile ? 'text-xs' : 'text-xs'} text-amber-700 font-medium mb-1`}
+              className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium mb-1 ${
+                theme === 'dark' ? 'text-amber-300' : 'text-amber-700'
+              }`}
             >
               TỔNG GIẢI THƯỞNG
             </div>
             <div
-              className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-amber-800 ${isMobile ? 'mb-1' : 'mb-2'}`}
+              className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold ${isMobile ? 'mb-1' : 'mb-2'} ${
+                theme === 'dark' ? 'text-amber-200 drop-shadow-lg' : 'text-amber-800'
+              }`}
             >
               {realTimePrizeInfo.totalPrize > 0
                 ? formatCurrency(realTimePrizeInfo.totalPrize)
@@ -513,13 +595,17 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
             </div>
             {realTimePrizeInfo.spaPoints > 0 && (
               <div
-                className={`${isMobile ? 'text-xs' : 'text-sm'} text-amber-700`}
+                className={`${isMobile ? 'text-xs' : 'text-sm'} ${
+                  theme === 'dark' ? 'text-amber-300' : 'text-amber-700'
+                }`}
               >
                 + {realTimePrizeInfo.spaPoints.toLocaleString()} điểm SPA
               </div>
             )}
             {realTimePrizeInfo.physicalPrizes.length > 0 && (
-              <div className='text-xs text-amber-600 mt-1'>
+              <div className={`text-xs mt-1 ${
+                theme === 'dark' ? 'text-amber-400' : 'text-amber-600'
+              }`}>
                 + {realTimePrizeInfo.physicalPrizes.join(', ')}
               </div>
             )}
@@ -528,7 +614,9 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
 
         {/* Tournament Date */}
         <div
-          className={`flex items-center space-x-2 ${isMobile ? 'text-xs' : 'text-sm'} text-gray-600`}
+          className={`flex items-center space-x-2 ${isMobile ? 'text-xs' : 'text-sm'} ${
+            theme === 'dark' ? 'text-white drop-shadow-sm' : 'text-gray-600'
+          }`}
         >
           <CalendarDays className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
           <span>
@@ -541,7 +629,9 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
         {/* Location */}
         {tournament.venue_address && (
           <div
-            className={`flex items-center space-x-2 ${isMobile ? 'text-xs' : 'text-sm'} text-gray-600`}
+            className={`flex items-center space-x-2 ${isMobile ? 'text-xs' : 'text-sm'} ${
+              theme === 'dark' ? 'text-white drop-shadow-sm' : 'text-gray-600'
+            }`}
           >
             <MapPin className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
             <span className='line-clamp-1'>{tournament.venue_address}</span>
@@ -551,7 +641,9 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
         {/* Registration Deadline */}
         {tournament.registration_end && (
           <div
-            className={`flex items-center space-x-2 ${isMobile ? 'text-xs' : 'text-sm'} text-gray-600`}
+            className={`flex items-center space-x-2 ${isMobile ? 'text-xs' : 'text-sm'} ${
+              theme === 'dark' ? 'text-white drop-shadow-sm' : 'text-gray-600'
+            }`}
           >
             <Clock className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
             <span>

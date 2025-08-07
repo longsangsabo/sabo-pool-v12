@@ -217,81 +217,128 @@ const TournamentsPage = () => {
   }
 
   return (
-    <div className={`container mx-auto px-4 ${isMobile ? 'py-4' : 'py-8'}`}>
-      <div
-        className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 ${isMobile ? 'mb-4' : 'mb-8'}`}
-      >
-        <div>
-          <h1
-            className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold text-foreground mb-2`}
-          >
-            {isMobile ? 'Giải Đấu' : 'Giải Đấu Billiards'}
-          </h1>
-          {!isMobile && (
-            <p className='text-muted-foreground'>
-              Tham gia các giải đấu hấp dẫn và thử thách bản thân
-            </p>
-          )}
-        </div>
-        <div className={`flex gap-2 ${isMobile ? 'w-full' : ''}`}>
+    <div className={`container mx-auto ${isMobile ? 'px-2 py-0 -mt-6' : 'px-4 py-8'}`}>
+      {/* Mobile: Hide title, show only action buttons */}
+      {isMobile ? (
+        <div className="flex gap-2 mb-1">
           <Button
             onClick={handleCreateTournament}
-            className={`flex items-center gap-2 ${isMobile ? 'flex-1 text-sm' : ''}`}
-            size={isMobile ? 'sm' : 'default'}
+            className="flex items-center gap-2 flex-1 text-sm h-7"
+            size="sm"
           >
-            <Plus className='w-4 h-4' />
-            {isMobile ? 'Tạo' : 'Tạo giải đấu'}
+            <Plus className='w-3.5 h-3.5' />
+            Tạo
           </Button>
           <Button
             onClick={handleRegisterClub}
             variant='outline'
-            className={`flex items-center gap-2 ${isMobile ? 'flex-1 text-sm' : ''}`}
-            size={isMobile ? 'sm' : 'default'}
+            className="flex items-center gap-2 flex-1 text-sm h-7"
+            size="sm"
           >
-            <Shield className='w-4 h-4' />
-            {isMobile ? 'CLB' : 'Đăng ký CLB'}
+            <Shield className='w-3.5 h-3.5' />
+            CLB
           </Button>
         </div>
-      </div>
+      ) : (
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Giải Đấu Billiards
+            </h1>
+            <p className='text-muted-foreground'>
+              Tham gia các giải đấu hấp dẫn và thử thách bản thân
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={handleCreateTournament}
+              className="flex items-center gap-2"
+            >
+              <Plus className='w-4 h-4' />
+              Tạo giải đấu
+            </Button>
+            <Button
+              onClick={handleRegisterClub}
+              variant='outline'
+              className="flex items-center gap-2"
+            >
+              <Shield className='w-4 h-4' />
+              Đăng ký CLB
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Filters and Search */}
-      <Card className={isMobile ? 'mb-3' : 'mb-6'}>
-        <CardContent className={isMobile ? 'pt-4 pb-4' : 'pt-6'}>
-          <div
-            className={`flex ${isMobile ? 'flex-col gap-3' : 'flex-col lg:flex-row gap-4'}`}
-          >
-            <div className='flex-1'>
-              <div className='relative'>
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4' />
-                <Input
-                  placeholder={
-                    isMobile ? 'Tìm kiếm...' : 'Tìm kiếm giải đấu...'
-                  }
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className='pl-10'
-                />
+      <Card className={isMobile ? 'mb-1' : 'mb-6'}>
+        <CardContent className={isMobile ? 'p-1.5' : 'pt-6'}>
+          {isMobile ? (
+            /* Mobile: Single row with search and filter */
+            <div className="flex gap-1.5">
+              <div className='flex-1'>
+                <div className='relative'>
+                  <Search className='absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3' />
+                  <Input
+                    placeholder='Tìm kiếm...'
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className='pl-7 h-7 text-xs'
+                  />
+                </div>
+              </div>
+              <div className='w-16'>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="h-7 text-xs px-2">
+                    <SelectValue placeholder='Tất cả' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='all'>Tất cả</SelectItem>
+                    <SelectItem value='registration_open'>
+                      Đang mở đăng ký
+                    </SelectItem>
+                    <SelectItem value='registration_closed'>
+                      Đã đóng đăng ký
+                    </SelectItem>
+                    <SelectItem value='ongoing'>Đang diễn ra</SelectItem>
+                    <SelectItem value='completed'>Đã kết thúc</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-            <div className={isMobile ? 'w-full' : 'lg:w-48'}>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder='Trạng thái' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>Tất cả</SelectItem>
-                  <SelectItem value='registration_open'>
-                    Đang mở đăng ký
-                  </SelectItem>
-                  <SelectItem value='registration_closed'>
-                    Đã đóng đăng ký
-                  </SelectItem>
-                  <SelectItem value='ongoing'>Đang diễn ra</SelectItem>
-                  <SelectItem value='completed'>Đã kết thúc</SelectItem>
-                </SelectContent>
-              </Select>
+          ) : (
+            /* Desktop: Original layout */
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className='flex-1'>
+                <div className='relative'>
+                  <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4' />
+                  <Input
+                    placeholder='Tìm kiếm giải đấu...'
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className='pl-10'
+                  />
+                </div>
+              </div>
+              <div className='lg:w-48'>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Trạng thái' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='all'>Tất cả</SelectItem>
+                    <SelectItem value='registration_open'>
+                      Đang mở đăng ký
+                    </SelectItem>
+                    <SelectItem value='registration_closed'>
+                      Đã đóng đăng ký
+                    </SelectItem>
+                    <SelectItem value='ongoing'>Đang diễn ra</SelectItem>
+                    <SelectItem value='completed'>Đã kết thúc</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
 
@@ -365,13 +412,13 @@ const TournamentsPage = () => {
       {/* Tournament List */}
       {filteredTournaments.length === 0 ? (
         <Card>
-          <CardContent className='pt-6'>
-            <div className='text-center py-8'>
-              <Calendar className='w-16 h-16 text-muted-foreground mx-auto mb-4' />
-              <h3 className='text-lg font-semibold mb-2'>
+          <CardContent className={isMobile ? 'p-4' : 'pt-6'}>
+            <div className={`text-center ${isMobile ? 'py-4' : 'py-8'}`}>
+              <Calendar className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} text-muted-foreground mx-auto mb-4`} />
+              <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold mb-2`}>
                 Không có giải đấu nào
               </h3>
-              <p className='text-muted-foreground'>
+              <p className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}>
                 {searchTerm || statusFilter !== 'all'
                   ? 'Không tìm thấy giải đấu phù hợp với bộ lọc của bạn'
                   : 'Hiện tại chưa có giải đấu nào được tạo'}
@@ -381,7 +428,7 @@ const TournamentsPage = () => {
         </Card>
       ) : (
         <div
-          className={`grid grid-cols-1 ${isMobile ? 'gap-3' : 'md:grid-cols-2 lg:grid-cols-3 gap-6'}`}
+          className={`grid grid-cols-1 ${isMobile ? 'gap-2' : 'md:grid-cols-2 lg:grid-cols-3 gap-6'}`}
         >
           {filteredTournaments.map(tournament => (
             <OptimizedTournamentCard

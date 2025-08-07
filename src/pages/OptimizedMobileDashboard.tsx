@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -25,6 +24,7 @@ import {
 import { DashboardSkeleton } from '@/components/skeleton/DashboardSkeleton';
 import { EnhancedWalletBalance } from '@/components/enhanced/EnhancedWalletBalance';
 import { Link } from 'react-router-dom';
+import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
@@ -156,9 +156,7 @@ const OptimizedMobileDashboard = () => {
   return (
     <div className='min-h-screen bg-gradient-to-br from-background via-background/95 to-secondary/20'>
       {/* Minimized Header - Height 40px */}
-      <header className={`sticky top-0 z-50 backdrop-blur-sm border-b border-border/50 h-10 ${
-        theme === 'dark' ? 'bg-card/90' : 'bg-card/95'
-      }`}>
+      <header className='sticky top-0 z-50 bg-card/90 backdrop-blur-sm border-b border-border/50 h-10'>
         <div className='flex items-center justify-between px-3 h-full'>
           {/* Compact Logo */}
           <div className='flex items-center space-x-1.5'>
@@ -204,9 +202,7 @@ const OptimizedMobileDashboard = () => {
         </div>
 
         {/* Optimized SPA Wallet Card */}
-        <Card className={`bg-gradient-to-br from-primary/10 via-background to-secondary/10 border-primary/20 ${
-          theme === 'dark' ? 'bg-card/50 border-border/50' : ''
-        }`}>
+        <Card className='bg-gradient-to-br from-primary/10 via-background to-secondary/10 border-primary/20'>
           <CardHeader className='pb-2'>
             <div className='flex items-center justify-between'>
               <CardTitle className='text-sm font-medium text-muted-foreground'>
@@ -226,15 +222,11 @@ const OptimizedMobileDashboard = () => {
 
             {/* Earned & Spent in one row */}
             <div className='flex justify-between text-xs'>
-              <div className={`flex items-center gap-1 ${
-                theme === 'dark' ? 'text-green-400' : 'text-green-600'
-              }`}>
+              <div className='flex items-center gap-1 text-green-600'>
                 <ArrowUpCircle className='h-3 w-3' />
                 <span>Đã kiếm: {walletData.totalEarned.toLocaleString()}</span>
               </div>
-              <div className={`flex items-center gap-1 ${
-                theme === 'dark' ? 'text-red-400' : 'text-red-600'
-              }`}>
+              <div className='flex items-center gap-1 text-red-600'>
                 <ArrowDownCircle className='h-3 w-3' />
                 <span>Đã chi: {walletData.totalSpent.toLocaleString()}</span>
               </div>
@@ -245,19 +237,13 @@ const OptimizedMobileDashboard = () => {
               {walletData.recentTransactions.slice(0, 2).map(transaction => (
                 <div
                   key={transaction.id}
-                  className={`flex justify-between items-center text-xs rounded px-2 py-1 ${
-                    theme === 'dark' ? 'bg-background/30' : 'bg-background/50'
-                  }`}
+                  className='flex justify-between items-center text-xs bg-background/50 rounded px-2 py-1'
                 >
                   <div className='flex-1 truncate'>
                     {transaction.description}
                   </div>
                   <div
-                    className={`font-semibold ${
-                      transaction.amount > 0 
-                        ? theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                        : theme === 'dark' ? 'text-red-400' : 'text-red-600'
-                    }`}
+                    className={`font-semibold ${transaction.amount > 0 ? 'text-green-600' : 'text-red-600'}`}
                   >
                     {transaction.amount > 0 ? '+' : ''}
                     {transaction.amount}
@@ -289,7 +275,7 @@ const OptimizedMobileDashboard = () => {
             {playerStats.map(stat => {
               const Icon = stat.icon;
               return (
-                <Card key={stat.title} className={`h-16 ${theme === 'dark' ? 'bg-card/50 border-border/50' : ''}`}>
+                <Card key={stat.title} className='h-16'>
                   <CardContent className='p-3 flex items-center justify-between h-full'>
                     <div className='flex-1'>
                       <div
@@ -303,9 +289,7 @@ const OptimizedMobileDashboard = () => {
                     </div>
                     <div className='flex flex-col items-end'>
                       <Icon className={`h-4 w-4 ${stat.color}`} />
-                      <span className={`text-xs ${
-                        theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                      }`}>
+                      <span className='text-xs text-green-600'>
                         {stat.trend}
                       </span>
                     </div>
@@ -327,9 +311,7 @@ const OptimizedMobileDashboard = () => {
               return (
                 <Link key={action.label} to={action.route}>
                   <Card
-                    className={`h-20 transition-all hover:scale-105 ${action.isPrimary ? 'ring-2 ring-primary/20' : ''} ${
-                      theme === 'dark' ? 'bg-card/50 border-border/50' : ''
-                    }`}
+                    className={`h-20 transition-all hover:scale-105 ${action.isPrimary ? 'ring-2 ring-primary/20' : ''}`}
                   >
                     <CardContent className='p-3 text-center h-full flex flex-col justify-center'>
                       <div
@@ -347,7 +329,7 @@ const OptimizedMobileDashboard = () => {
         </div>
 
         {/* Recent Activities - Compact */}
-        <Card className={theme === 'dark' ? 'bg-card/50 border-border/50' : ''}>
+        <Card>
           <CardHeader className='pb-2'>
             <div className='flex items-center justify-between'>
               <CardTitle className='text-sm font-medium'>
@@ -362,16 +344,10 @@ const OptimizedMobileDashboard = () => {
             {recentActivities.slice(0, 2).map(activity => (
               <div
                 key={activity.id}
-                className={`flex items-center gap-3 p-2 rounded-lg ${
-                  theme === 'dark' ? 'bg-secondary/20' : 'bg-secondary/30'
-                }`}
+                className='flex items-center gap-3 p-2 bg-secondary/30 rounded-lg'
               >
                 <div
-                  className={`w-2 h-2 rounded-full ${
-                    activity.type === 'win' 
-                      ? theme === 'dark' ? 'bg-green-400' : 'bg-green-500'
-                      : theme === 'dark' ? 'bg-blue-400' : 'bg-blue-500'
-                  }`}
+                  className={`w-2 h-2 rounded-full ${activity.type === 'win' ? 'bg-green-500' : 'bg-blue-500'}`}
                 />
                 <div className='flex-1 min-w-0'>
                   <div className='text-xs font-medium truncate'>
@@ -387,7 +363,7 @@ const OptimizedMobileDashboard = () => {
         </Card>
 
         {/* Upcoming Events - Compact */}
-        <Card className={theme === 'dark' ? 'bg-card/50 border-border/50' : ''}>
+        <Card>
           <CardHeader className='pb-2'>
             <div className='flex items-center justify-between'>
               <CardTitle className='text-sm font-medium'>
@@ -402,9 +378,7 @@ const OptimizedMobileDashboard = () => {
             {upcomingEvents.slice(0, 2).map(event => (
               <div
                 key={event.id}
-                className={`flex items-center justify-between p-2 rounded-lg ${
-                  theme === 'dark' ? 'bg-secondary/20' : 'bg-secondary/30'
-                }`}
+                className='flex items-center justify-between p-2 bg-secondary/30 rounded-lg'
               >
                 <div className='flex-1 min-w-0'>
                   <div className='text-xs font-medium truncate'>

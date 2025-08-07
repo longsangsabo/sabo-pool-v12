@@ -332,7 +332,7 @@ const OptimizedMobileProfile = () => {
           </div>
 
         {/* Profile Content Tabs */}
-        <Card className={theme === 'dark' ? 'bg-card/50 border-border/50' : ''}>
+        <Card>
           <CardContent className='p-0'>
             {/* Tab Navigation */}
             <div className='flex border-b border-border'>
@@ -401,55 +401,37 @@ const OptimizedMobileProfile = () => {
               <div className='p-4 space-y-3'>
                 {/* Recent Match Results */}
                 <div className='space-y-2'>
-                  <h4 className='text-sm font-medium mb-2 text-foreground'>Kết quả trận đấu gần đây</h4>
-                  <div className={`flex items-center gap-3 p-3 rounded-lg border-l-4 border-green-500 ${
-                    theme === 'dark' 
-                      ? 'bg-green-500/10 border-green-400' 
-                      : 'bg-green-50 border-green-500'
-                  }`}>
+                  <h4 className='text-sm font-medium mb-2'>Kết quả trận đấu gần đây</h4>
+                  <div className='flex items-center gap-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-500'>
                     <div className='w-8 h-8 bg-green-500 rounded-full flex items-center justify-center'>
                       <Trophy className='w-4 h-4 text-white' />
                     </div>
                     <div className='flex-1'>
-                      <div className='text-sm font-medium text-foreground'>Thắng vs Nguyễn Văn A</div>
+                      <div className='text-sm font-medium'>Thắng vs Nguyễn Văn A</div>
                       <div className='text-xs text-muted-foreground'>10-8 • 2 giờ trước</div>
                     </div>
-                    <div className={`text-xs font-bold ${
-                      theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                    }`}>+25 ELO</div>
+                    <div className='text-xs font-bold text-green-600'>+25 ELO</div>
                   </div>
 
-                  <div className={`flex items-center gap-3 p-3 rounded-lg border-l-4 border-red-500 ${
-                    theme === 'dark' 
-                      ? 'bg-red-500/10 border-red-400' 
-                      : 'bg-red-50 border-red-500'
-                  }`}>
+                  <div className='flex items-center gap-3 p-3 bg-red-50 rounded-lg border-l-4 border-red-500'>
                     <div className='w-8 h-8 bg-red-500 rounded-full flex items-center justify-center'>
                       <Target className='w-4 h-4 text-white' />
                     </div>
                     <div className='flex-1'>
-                      <div className='text-sm font-medium text-foreground'>Thua vs Trần Văn B</div>
+                      <div className='text-sm font-medium'>Thua vs Trần Văn B</div>
                       <div className='text-xs text-muted-foreground'>8-10 • 1 ngày trước</div>
                     </div>
-                    <div className={`text-xs font-bold ${
-                      theme === 'dark' ? 'text-red-400' : 'text-red-600'
-                    }`}>-15 ELO</div>
+                    <div className='text-xs font-bold text-red-600'>-15 ELO</div>
                   </div>
                 </div>
 
                 {/* Active Challenges */}
                 <div className='space-y-2'>
-                  <h4 className='text-sm font-medium mb-2 text-foreground'>Thách đấu đang chờ</h4>
-                  <div className={`flex items-center gap-3 p-3 rounded-lg ${
-                    theme === 'dark' 
-                      ? 'bg-blue-500/10 border border-blue-500/20' 
-                      : 'bg-blue-50'
-                  }`}>
-                    <Zap className={`w-5 h-5 ${
-                      theme === 'dark' ? 'text-blue-400' : 'text-blue-500'
-                    }`} />
+                  <h4 className='text-sm font-medium mb-2'>Thách đấu đang chờ</h4>
+                  <div className='flex items-center gap-3 p-3 bg-blue-50 rounded-lg'>
+                    <Zap className='w-5 h-5 text-blue-500' />
                     <div className='flex-1'>
-                      <div className='text-sm font-medium text-foreground'>Thách đấu từ Lê Văn C</div>
+                      <div className='text-sm font-medium'>Thách đấu từ Lê Văn C</div>
                       <div className='text-xs text-muted-foreground'>Hạn: 2 ngày nữa</div>
                     </div>
                     <Button size='sm' variant='outline' className='text-xs'>
@@ -488,28 +470,20 @@ const OptimizedMobileProfile = () => {
             {/* Tab Content - Personal Info */}
             {activeTab === 'basic' && (
               <div className='p-4 space-y-3'>
-                <div className={`flex items-center gap-3 p-3 rounded-lg ${
-                  theme === 'dark' 
-                    ? 'bg-card/50 border border-border/50' 
-                    : 'bg-muted/50'
-                }`}>
+                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
                   <Phone className='w-4 h-4 text-muted-foreground' />
                   <div>
-                    <div className='text-sm font-medium text-foreground'>Số điện thoại</div>
+                    <div className='text-sm font-medium'>Số điện thoại</div>
                     <div className='text-xs text-muted-foreground'>
                       {profile.phone || 'Chưa cập nhật'}
                     </div>
                   </div>
                 </div>
 
-                <div className={`flex items-center gap-3 p-3 rounded-lg ${
-                  theme === 'dark' 
-                    ? 'bg-card/50 border border-border/50' 
-                    : 'bg-muted/50'
-                }`}>
+                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
                   <MapPin className='w-4 h-4 text-muted-foreground' />
                   <div>
-                    <div className='text-sm font-medium text-foreground'>Địa điểm</div>
+                    <div className='text-sm font-medium'>Địa điểm</div>
                     <div className='text-xs text-muted-foreground'>
                       {profile.city && profile.district 
                         ? `${profile.district}, ${profile.city}`
@@ -519,28 +493,20 @@ const OptimizedMobileProfile = () => {
                   </div>
                 </div>
 
-                <div className={`flex items-center gap-3 p-3 rounded-lg ${
-                  theme === 'dark' 
-                    ? 'bg-card/50 border border-border/50' 
-                    : 'bg-muted/50'
-                }`}>
+                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
                   <Star className='w-4 h-4 text-muted-foreground' />
                   <div>
-                    <div className='text-sm font-medium text-foreground'>Trình độ</div>
+                    <div className='text-sm font-medium'>Trình độ</div>
                     <div className='text-xs text-muted-foreground'>
                       {skillLevels[skillKey].label}
                     </div>
                   </div>
                 </div>
 
-                <div className={`flex items-center gap-3 p-3 rounded-lg ${
-                  theme === 'dark' 
-                    ? 'bg-card/50 border border-border/50' 
-                    : 'bg-muted/50'
-                }`}>
+                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
                   <Calendar className='w-4 h-4 text-muted-foreground' />
                   <div>
-                    <div className='text-sm font-medium text-foreground'>Thành viên từ</div>
+                    <div className='text-sm font-medium'>Thành viên từ</div>
                     <div className='text-xs text-muted-foreground'>
                       {profile.member_since
                         ? new Date(profile.member_since).toLocaleDateString('vi-VN')
@@ -567,24 +533,16 @@ const OptimizedMobileProfile = () => {
               <div className='p-4 space-y-3'>
                 <div className='text-center py-6'>
                   <Shield className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
-                  <h4 className='text-sm font-medium mb-2 text-foreground'>Đăng ký xác nhận hạng</h4>
+                  <h4 className='text-sm font-medium mb-2'>Đăng ký xác nhận hạng</h4>
                   <p className='text-xs text-muted-foreground mb-4'>
                     Xác nhận trình độ chơi bida của bạn thông qua câu lạc bộ uy tín
                   </p>
                   {profile.verified_rank ? (
-                    <div className={`border rounded-lg p-3 ${
-                      theme === 'dark' 
-                        ? 'bg-green-500/10 border-green-500/20' 
-                        : 'bg-green-50 border-green-200'
-                    }`}>
-                      <div className={`text-sm font-medium ${
-                        theme === 'dark' ? 'text-green-400' : 'text-green-800'
-                      }`}>
+                    <div className='bg-green-50 border border-green-200 rounded-lg p-3'>
+                      <div className='text-sm font-medium text-green-800'>
                         Đã xác thực: {profile.verified_rank}
                       </div>
-                      <div className={`text-xs mt-1 ${
-                        theme === 'dark' ? 'text-green-300' : 'text-green-600'
-                      }`}>
+                      <div className='text-xs text-green-600 mt-1'>
                         Tài khoản của bạn đã được xác thực
                       </div>
                     </div>
@@ -607,25 +565,17 @@ const OptimizedMobileProfile = () => {
               <div className='p-4 space-y-3'>
                 <div className='text-center py-6'>
                   <Building className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
-                  <h4 className='text-sm font-medium mb-2 text-foreground'>Đăng ký câu lạc bộ</h4>
+                  <h4 className='text-sm font-medium mb-2'>Đăng ký câu lạc bộ</h4>
                   <p className='text-xs text-muted-foreground mb-4'>
                     Tạo và đăng ký câu lạc bộ bida của riêng bạn
                   </p>
                   {profile.role === 'club_owner' || profile.role === 'both' ? (
                     <div className='space-y-2'>
-                      <div className={`border rounded-lg p-3 ${
-                        theme === 'dark' 
-                          ? 'bg-blue-500/10 border-blue-500/20' 
-                          : 'bg-blue-50 border-blue-200'
-                      }`}>
-                        <div className={`text-sm font-medium ${
-                          theme === 'dark' ? 'text-blue-400' : 'text-blue-800'
-                        }`}>
+                      <div className='bg-blue-50 border border-blue-200 rounded-lg p-3'>
+                        <div className='text-sm font-medium text-blue-800'>
                           Bạn đã là chủ CLB
                         </div>
-                        <div className={`text-xs mt-1 ${
-                          theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
-                        }`}>
+                        <div className='text-xs text-blue-600 mt-1'>
                           Quản lý câu lạc bộ hiện tại của bạn
                         </div>
                       </div>
@@ -651,9 +601,9 @@ const OptimizedMobileProfile = () => {
         </Card>
 
         {/* Recent Activities - Compact */}
-        <Card className={theme === 'dark' ? 'bg-card/50 border-border/50' : ''}>
+        <Card>
           <CardHeader className='pb-3'>
-            <CardTitle className='text-base font-epilogue flex items-center justify-between text-foreground'>
+            <CardTitle className='text-base font-epilogue flex items-center justify-between'>
               Hoạt động gần đây
               <Button variant='ghost' size='sm' className='text-xs h-6 px-2'>
                 Xem tất cả <ChevronRight className='w-3 h-3 ml-1' />
@@ -661,28 +611,20 @@ const OptimizedMobileProfile = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className='p-4 pt-0 space-y-3'>
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
-              theme === 'dark' 
-                ? 'bg-blue-500/10 border border-blue-500/20' 
-                : 'bg-blue-50'
-            }`}>
+            <div className='flex items-center gap-3 p-2 bg-blue-50 rounded-lg'>
               <div className='w-2 h-2 bg-blue-500 rounded-full flex-shrink-0'></div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate text-foreground'>
+                <div className='text-sm font-medium truncate'>
                   Tham gia giải đấu mới
                 </div>
                 <div className='text-xs text-muted-foreground'>2 giờ trước</div>
               </div>
             </div>
 
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
-              theme === 'dark' 
-                ? 'bg-green-500/10 border border-green-500/20' 
-                : 'bg-green-50'
-            }`}>
+            <div className='flex items-center gap-3 p-2 bg-green-50 rounded-lg'>
               <div className='w-2 h-2 bg-green-500 rounded-full flex-shrink-0'></div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate text-foreground'>
+                <div className='text-sm font-medium truncate'>
                   Nhận 50 SPA Points
                 </div>
                 <div className='text-xs text-muted-foreground'>
@@ -691,14 +633,10 @@ const OptimizedMobileProfile = () => {
               </div>
             </div>
 
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
-              theme === 'dark' 
-                ? 'bg-yellow-500/10 border border-yellow-500/20' 
-                : 'bg-yellow-50'
-            }`}>
+            <div className='flex items-center gap-3 p-2 bg-yellow-50 rounded-lg'>
               <div className='w-2 h-2 bg-yellow-500 rounded-full flex-shrink-0'></div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate text-foreground'>
+                <div className='text-sm font-medium truncate'>
                   Cập nhật hồ sơ
                 </div>
                 <div className='text-xs text-muted-foreground'>
@@ -710,9 +648,9 @@ const OptimizedMobileProfile = () => {
         </Card>
 
         {/* Achievements - Compact */}
-        <Card className={theme === 'dark' ? 'bg-card/50 border-border/50' : ''}>
+        <Card>
           <CardHeader className='pb-3'>
-            <CardTitle className='text-base font-epilogue flex items-center justify-between text-foreground'>
+            <CardTitle className='text-base font-epilogue flex items-center justify-between'>
               Thành tích
               <Button variant='ghost' size='sm' className='text-xs h-6 px-2'>
                 Xem tất cả <ChevronRight className='w-3 h-3 ml-1' />
@@ -720,16 +658,12 @@ const OptimizedMobileProfile = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className='p-4 pt-0 space-y-3'>
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
-              theme === 'dark' 
-                ? 'bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20' 
-                : 'bg-gradient-to-r from-yellow-50 to-orange-50'
-            }`}>
+            <div className='flex items-center gap-3 p-2 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg'>
               <div className='w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0'>
                 <Trophy className='w-4 h-4 text-white' />
               </div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate text-foreground'>
+                <div className='text-sm font-medium truncate'>
                   Người mới xuất sắc
                 </div>
                 <div className='text-xs text-muted-foreground'>
@@ -738,16 +672,12 @@ const OptimizedMobileProfile = () => {
               </div>
             </div>
 
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
-              theme === 'dark' 
-                ? 'bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20' 
-                : 'bg-gradient-to-r from-blue-50 to-purple-50'
-            }`}>
+            <div className='flex items-center gap-3 p-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg'>
               <div className='w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0'>
                 <span className='text-sm'>🎯</span>
               </div>
               <div className='flex-1 min-w-0'>
-                <div className='text-sm font-medium truncate text-foreground'>Chính xác</div>
+                <div className='text-sm font-medium truncate'>Chính xác</div>
                 <div className='text-xs text-muted-foreground'>
                   Độ chính xác &gt; 80%
                 </div>
@@ -757,17 +687,15 @@ const OptimizedMobileProfile = () => {
         </Card>
 
         {/* Profile Completion */}
-        <Card className={theme === 'dark' ? 'bg-card/50 border-border/50' : ''}>
+        <Card>
           <CardContent className='p-4'>
             <div className='flex items-center justify-between mb-3'>
-              <span className='text-sm font-medium text-foreground'>Hoàn thiện hồ sơ</span>
+              <span className='text-sm font-medium'>Hoàn thiện hồ sơ</span>
               <span className='text-sm font-racing-sans-one text-primary'>
                 {profile.completion_percentage || 0}%
               </span>
             </div>
-            <div className={`w-full rounded-full h-2 mb-2 ${
-              theme === 'dark' ? 'bg-muted/30' : 'bg-muted'
-            }`}>
+            <div className='w-full bg-muted rounded-full h-2 mb-2'>
               <div
                 className='bg-primary h-2 rounded-full transition-all duration-300'
                 style={{ width: `${profile.completion_percentage || 0}%` }}

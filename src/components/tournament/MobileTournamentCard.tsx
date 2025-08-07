@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme } from '@/hooks/useTheme';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -36,7 +35,6 @@ const MobileTournamentCard: React.FC<MobileTournamentCardProps> = ({
   isRegistered = false,
   index = 0,
 }) => {
-  const { theme } = useTheme();
   const [currentParticipants] = useState(tournament.current_participants || 0);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -97,13 +95,14 @@ const MobileTournamentCard: React.FC<MobileTournamentCardProps> = ({
   return (
     <Card 
       className={`
-        relative overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-all duration-300
+        relative overflow-hidden bg-white dark:bg-gray-800 
+        rounded-xl shadow-md hover:shadow-lg transition-all duration-300
         border-l-4 ${
           tournament.status === 'registration_open' ? 'border-l-green-500' :
           tournament.status === 'ongoing' ? 'border-l-red-500' :
           tournament.status === 'registration_closed' ? 'border-l-blue-500' :
           'border-l-gray-400'
-        } ${theme === 'dark' ? 'bg-card/50 border-border/50' : 'bg-white'}
+        }
       `}
       style={{ animationDelay: `${index * 50}ms` }}
     >
@@ -111,15 +110,11 @@ const MobileTournamentCard: React.FC<MobileTournamentCardProps> = ({
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1 mr-3">
-            <h3 className={`font-bold text-base line-clamp-2 leading-tight ${
-              theme === 'dark' ? 'text-foreground' : 'text-gray-900'
-            }`}>
+            <h3 className="font-bold text-base text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight">
               {tournament.name}
             </h3>
             {tournament.description && (
-              <p className={`text-xs line-clamp-1 mt-1 ${
-                theme === 'dark' ? 'text-muted-foreground' : 'text-gray-600'
-              }`}>
+              <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1 mt-1">
                 {tournament.description}
               </p>
             )}
@@ -163,18 +158,14 @@ const MobileTournamentCard: React.FC<MobileTournamentCardProps> = ({
 
         {/* Quick Info Grid */}
         <div className="grid grid-cols-2 gap-2 text-xs mb-3">
-          <div className={`flex items-center gap-1 ${
-            theme === 'dark' ? 'text-muted-foreground' : 'text-gray-600'
-          }`}>
+          <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
             <Calendar className="w-3 h-3 text-blue-500" />
             <span className="truncate">
               {formatTournamentDateTime(tournament.tournament_start || (tournament as any).start_date)}
             </span>
           </div>
           
-          <div className={`flex items-center gap-1 ${
-            theme === 'dark' ? 'text-muted-foreground' : 'text-gray-600'
-          }`}>
+          <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
             <Trophy className="w-3 h-3 text-amber-500" />
             <span className="truncate">
               {tournament.game_format === '8_ball' ? '8-Ball' : 
@@ -186,27 +177,19 @@ const MobileTournamentCard: React.FC<MobileTournamentCardProps> = ({
         {/* Participants Progress */}
         <div className="space-y-2 mb-3">
           <div className="flex items-center justify-between text-xs">
-            <div className={`flex items-center gap-1 ${
-              theme === 'dark' ? 'text-muted-foreground' : 'text-gray-600'
-            }`}>
+            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
               <Users className="w-3 h-3 text-blue-500" />
               <span>Người tham gia</span>
             </div>
-            <span className={`font-semibold ${
-              theme === 'dark' ? 'text-foreground' : 'text-gray-900'
-            }`}>
+            <span className="font-semibold text-gray-900 dark:text-gray-100">
               {currentParticipants}/{tournament.max_participants}
             </span>
           </div>
           
-          <Progress value={registrationProgress} className={`h-1.5 ${
-            theme === 'dark' ? 'bg-muted/30' : 'bg-gray-200'
-          }`} />
+          <Progress value={registrationProgress} className="h-1.5 bg-gray-200 dark:bg-gray-700" />
           
           {availableSlots <= 5 && availableSlots > 0 && (
-            <div className={`flex items-center gap-1 text-xs ${
-              theme === 'dark' ? 'text-orange-400' : 'text-orange-600'
-            }`}>
+            <div className="flex items-center gap-1 text-xs text-orange-600 dark:text-orange-400">
               <AlertTriangle className="w-3 h-3" />
               <span>Chỉ còn {availableSlots} chỗ!</span>
             </div>
@@ -215,46 +198,36 @@ const MobileTournamentCard: React.FC<MobileTournamentCardProps> = ({
 
         {/* Expandable Details */}
         {isExpanded && (
-          <div className={`space-y-2 text-xs border-t pt-3 mb-3 ${
-            theme === 'dark' ? 'border-border' : 'border-gray-200'
-          }`}>
+          <div className="space-y-2 text-xs border-t border-gray-200 dark:border-gray-700 pt-3 mb-3">
             {tournament.venue_address && (
-              <div className={`flex items-center gap-2 ${
-                theme === 'dark' ? 'text-muted-foreground' : 'text-gray-600'
-              }`}>
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                 <MapPin className="w-3 h-3 text-green-500" />
                 <span className="line-clamp-1">{tournament.venue_address}</span>
               </div>
             )}
             
             {tournament.entry_fee && (
-              <div className={`flex items-center justify-between p-2 rounded ${
-                theme === 'dark' ? 'bg-amber-900/20' : 'bg-amber-50'
-              }`}>
+              <div className="flex items-center justify-between p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
                 <div className="flex items-center gap-1">
                   <Trophy className="w-3 h-3 text-amber-600" />
-                  <span className={theme === 'dark' ? 'text-amber-200' : 'text-amber-800'}>
-                    Phí tham gia
-                  </span>
+                  <span className="text-amber-800 dark:text-amber-200">Phí tham gia</span>
                 </div>
-                <span className={`font-bold ${
-                  theme === 'dark' ? 'text-amber-100' : 'text-amber-900'
-                }`}>
+                <span className="font-bold text-amber-900 dark:text-amber-100">
                   {formatCurrency(tournament.entry_fee)}
                 </span>
               </div>
             )}
-
+            
             {tournament.registration_end && (
-              <div className={`flex items-center gap-2 ${
-                theme === 'dark' ? 'text-muted-foreground' : 'text-gray-500'
-              }`}>
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
                 <Clock className="w-3 h-3" />
                 <span>Hạn ĐK: {formatTournamentDateTime(tournament.registration_end)}</span>
               </div>
             )}
           </div>
-        )}        {/* Action Buttons */}
+        )}
+
+        {/* Action Buttons */}
         <div className="flex gap-2">
           <Button
             variant="outline"
@@ -270,9 +243,7 @@ const MobileTournamentCard: React.FC<MobileTournamentCardProps> = ({
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
             variant="ghost"
-            className={`px-3 h-8 text-xs hover:bg-muted/50 ${
-              theme === 'dark' ? 'text-muted-foreground hover:text-foreground' : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className="px-3 h-8 text-xs text-gray-600 hover:text-gray-900"
           >
             {isExpanded ? '▲' : '▼'}
           </Button>

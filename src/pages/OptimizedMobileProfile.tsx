@@ -314,11 +314,11 @@ const OptimizedMobileProfile = () => {
         <Helmet>
           <title>Hồ sơ cá nhân - SABO ARENA</title>
         </Helmet>
-        <div className='pb-20 -mt-20 min-h-screen relative' style={theme === 'light' ? {
+        <div className='pb-20 min-h-screen relative' style={theme === 'light' ? {
           backgroundImage: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)'
         } : undefined}>
           {/* Card Avatar Layout - New Design */}
-          <div className='relative flex flex-col items-center justify-start -mt-16 pt-4'>
+          <div className='relative flex flex-col items-center justify-start pt-2'>
             {theme === 'dark' ? (
               <DarkCardAvatar
                 userAvatar={profile.avatar_url}

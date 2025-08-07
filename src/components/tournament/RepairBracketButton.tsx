@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Wrench, Loader2 } from 'lucide-react';
-import { useSABOBracket } from '@/hooks/useDoubleEliminationBracket';
+import { useSABOBracket } from '@/hooks/useSABOBracket';
 
 interface RepairBracketButtonProps {
   tournamentId: string;

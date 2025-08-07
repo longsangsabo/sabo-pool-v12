@@ -146,7 +146,7 @@ const ClubMembersOptimized: React.FC = () => {
           phone: '',
           avatar_url: profile.avatar_url,
           verification_date: profile.updated_at,
-          verification_status: profile.verified_rank ? 'verified' : 'unverified',
+          verification_status: (profile.verified_rank ? 'verified' : 'unverified') as 'verified' | 'unverified',
           total_matches: 0,
           wins: 0,
           trust_score: 85.0,
@@ -201,7 +201,7 @@ const ClubMembersOptimized: React.FC = () => {
           phone: '',
           avatar_url: profile.avatar_url,
           verification_date: memberData?.join_date || profile.updated_at,
-          verification_status: profile.verified_rank ? 'verified' : 'unverified',
+          verification_status: (profile.verified_rank ? 'verified' : 'unverified') as 'verified' | 'unverified',
           total_matches: 0,
           wins: 0,
           trust_score: 85.0,
@@ -519,7 +519,7 @@ const ClubMembersOptimized: React.FC = () => {
                       </div>
                     </div>
                     <div className='flex items-center gap-2'>
-                      <TrustScoreBadge trustScore={member.trust_score || 0} />
+                      <TrustScoreBadge userId={member.id} />
                       <Button variant='outline' size='sm'>
                         <Eye className='w-4 h-4' />
                       </Button>

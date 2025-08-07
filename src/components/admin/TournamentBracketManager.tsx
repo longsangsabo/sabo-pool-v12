@@ -16,7 +16,7 @@ import {
   Eye,
   Users,
 } from 'lucide-react';
-import { useSABOBracket } from '@/hooks/useDoubleEliminationBracket';
+import { useSABOBracket } from '@/hooks/useSABOBracket';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 

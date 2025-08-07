@@ -13,7 +13,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { AlertTriangle, Users, Trophy, Shuffle, Settings } from 'lucide-react';
 import { useBracketGeneration } from '@/hooks/useBracketGeneration';
-import { useSABOBracket } from '@/hooks/useDoubleEliminationBracket';
+import { useSABOBracket } from '@/hooks/useSABOBracket';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 

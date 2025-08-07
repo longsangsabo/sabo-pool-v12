@@ -3818,6 +3818,7 @@ export type Database = {
       create_double_elimination_tournament: {
         Args:
           | { p_tournament_data: Json }
+          | { p_tournament_id: string }
           | {
               p_tournament_id: string
               p_participants: string[]

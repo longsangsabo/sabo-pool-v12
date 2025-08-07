@@ -28,6 +28,8 @@ const NewsPage = lazy(() => import('@/pages/BlogPage'));
 
 // Public pages that should also be accessible to logged-in users
 const ClubsPage = lazy(() => import('@/pages/ClubsPage'));
+const RankTestPage = lazy(() => import('@/pages/RankTestPage'));
+const SABOStyleTestPage = lazy(() => import('@/pages/SABOStyleTestPage'));
 const ClubDetailPage = lazy(() => import('@/pages/ClubDetailPage'));
 const LeaderboardPage = lazy(() => import('@/pages/LeaderboardPage'));
 const TournamentPage = lazy(() => import('@/pages/TournamentsPage'));
@@ -95,6 +97,8 @@ const AppContent = () => {
           {/* Demo pages */}
           {/* <Route path='/demo' element={<RainbowAvatarDemo />} /> */}
           <Route path='/test-avatar' element={<TestAvatarPage />} />
+          <Route path='/test-rank' element={<RankTestPage />} />
+          <Route path='/test-sabo-style' element={<SABOStyleTestPage />} />
 
           {/* Auth routes - only accessible when NOT logged in */}
           <Route

@@ -1,5 +1,7 @@
 /* Dark Card Avatar Component Styles - All Black Theme */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Bebas+Neue&family=Antonio:wght@300;400;500;600;700&family=Fjalla+One&family=Roboto+Condensed:wght@300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Exo+2:wght@300;400;500;700;800&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Khand:wght@400;500;600;700&display=swap');
 
 .dark-card-avatar-container {
   display: flex;
@@ -17,41 +19,99 @@
 
 .dark-card-avatar-frame:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(168, 162, 158, 0.3);
 }
 
-/* Dark Card Border - All Black */
+.dark-card-avatar-frame:hover .dark-card-border::before {
+  background: linear-gradient(135deg, 
+    rgba(168, 162, 158, 0.4) 0%,
+    rgba(107, 114, 128, 0.3) 25%,
+    rgba(75, 85, 99, 0.2) 50%,
+    rgba(107, 114, 128, 0.3) 75%,
+    rgba(168, 162, 158, 0.4) 100%
+  );
+}
+
+/* Dark Card Border - Simplified Clean Design */
 .dark-card-border {
-  background: #1a1a1a;
-  border: 8px solid #1a1a1a;
-  border-radius: 8px;
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: rgba(31, 41, 59, 0.3); /* Nền mờ thay vì solid */
+  backdrop-filter: blur(10px); /* Hiệu ứng mờ */
+  border-radius: 12px;
+  position: relative;
+  border: 2px solid rgba(75, 85, 99, 0.6); /* Tăng độ dày và opacity của viền */
   overflow: hidden;
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: relative;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Thêm shadow cho điểm nhấn */
 }
 
-/* Dark Image Area with fixed height to preserve avatar size */
+/* Gradient Border Effect */
+.dark-card-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(168, 162, 158, 0.4) 0%, /* Tăng opacity cho điểm nhấn */
+    rgba(107, 114, 128, 0.3) 25%,
+    rgba(75, 85, 99, 0.2) 50%,
+    rgba(107, 114, 128, 0.3) 75%,
+    rgba(168, 162, 158, 0.4) 100%
+  );
+  border-radius: 8px;
+  z-index: -1;
+  margin: -2px;
+}
+
+/* Dark Image Area - Clean and Simple */
 .dark-image-area {
-  height: 240px; /* Fixed height to preserve avatar size */
+  height: 240px;
   position: relative;
   overflow: hidden;
-  background: #1f1f1f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  margin: 8px 8px 0 8px;
-  border-radius: 4px;
+  background: #111827;
+  margin: 12px 12px 0 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  background-image: 
+    linear-gradient(#111827, #111827),
+    linear-gradient(135deg, 
+      rgba(96, 165, 250, 0.6) 0%,
+      rgba(59, 130, 246, 0.8) 25%,
+      rgba(147, 51, 234, 0.6) 50%,
+      rgba(59, 130, 246, 0.8) 75%,
+      rgba(96, 165, 250, 0.6) 100%
+    );
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 
 .dark-image-area:hover {
-  transform: scale(1.02);
-  border-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.01);
+  background: #0f172a;
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    0 0 20px rgba(96, 165, 250, 0.3);
+  background-image: 
+    linear-gradient(#0f172a, #0f172a),
+    linear-gradient(135deg, 
+      rgba(96, 165, 250, 0.8) 0%,
+      rgba(59, 130, 246, 1.0) 25%,
+      rgba(147, 51, 234, 0.8) 50%,
+      rgba(59, 130, 246, 1.0) 75%,
+      rgba(96, 165, 250, 0.8) 100%
+    );
 }
 
 .dark-avatar-image {
@@ -62,7 +122,7 @@
 }
 
 .dark-image-area:hover .dark-avatar-image {
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 /* Dark Avatar Placeholder */
@@ -135,12 +195,15 @@
   right: 0;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.8) 60%,
+    rgba(30, 41, 59, 0.95) 0%,
+    rgba(30, 41, 59, 0.8) 60%,
     transparent 100%
   );
-  padding: 16px 12px 12px 12px;
+  padding: 20px 12px 16px 12px; /* Tăng padding top để có không gian căn giữa */
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Advanced styling - Complex multi-color gradient without shadows */
@@ -181,6 +244,27 @@
   color: #ffffff;
 }
 
+/* Override với SABO style - sử dụng inline styles sẽ có độ ưu tiên cao hơn */
+.dark-nickname-text-overlay[style] {
+  font-family: 'Khand', 'Oswald', 'Bebas Neue', 'Antonio', 'Fjalla One', 'Roboto Condensed', condensed, sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 1.575rem !important; /* Tăng từ 1.375rem lên 1.575rem */
+  font-stretch: condensed !important;
+  line-height: 0.9 !important; /* Cao và compact */
+  background: linear-gradient(to right, #60a5fa, #ffffff, #3b82f6) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  letter-spacing: 0.05em !important; /* Spacing cho condensed */
+  filter: brightness(1.5) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3)) !important; /* Tăng độ sáng lên 50% */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 255, 255, 0.1) !important; /* Viền chữ cực nhẹ */
+  font-variant: small-caps !important; /* Cứng cáp hơn */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
 /* Gradient animation keyframes */
 @keyframes gradientShift {
   0% {
@@ -210,22 +294,51 @@
   letter-spacing: 0.02em !important;
 }
 
-/* Dark Rank Section */
+/* Dark Rank Section - Enhanced Dark Style */
 .dark-rank-section {
-  background: #1a1a1a;
-  padding: 12px 16px;
-  margin: 0 8px 8px 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 16px;
+  margin: 0 8px 2px 8px; /* Giảm margin-bottom từ 4px xuống 2px */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .dark-rank-text {
-  color: #f1f1f1;
-  font-size: 1.3125rem; /* Tăng từ 0.875rem lên 1.3125rem (x1.5) */
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: 900;
   text-align: center;
-  letter-spacing: 3px; /* Tăng từ 2px lên 3px (x1.5) */
-  font-family: 'Courier New', 'Monaco', monospace; /* DECO font style */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.05em;
+  font-family: 'Oswald', 'Bebas Neue', 'Antonio', 'Fjalla One', 'Roboto Condensed', condensed, sans-serif;
+  margin: 0;
+  line-height: 0.9;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-stretch: condensed;
+  font-variant: small-caps;
+  text-transform: uppercase;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #f0f9ff 10%,
+    #e0f2fe 20%,
+    #bae6fd 30%,
+    #7dd3fc 40%,
+    #38bdf8 50%,
+    #0ea5e9 60%,
+    #0284c7 70%,
+    #0369a1 80%,
+    #075985 90%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* Dark Size variants - Complex multi-color without shadows */
@@ -300,7 +413,7 @@
   height: 28px;
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.9);
+  border: none; /* Bỏ viền */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -308,14 +421,11 @@
   cursor: pointer;
   z-index: 10;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .dark-camera-button:hover {
   background: rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 1);
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .dark-camera-button .camera-icon {
@@ -354,9 +464,6 @@
   justify-content: space-around;
   padding: 12px 8px;
   border-radius: 0 0 12px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .dark-stat-item {
@@ -365,9 +472,9 @@
   flex: 1;
 }
 
-.dark-stat-icon {
+.dark-stats-row .dark-stat-icon {
   margin: 0 auto 4px;
-  color: #f59e0b;
+  color: #f1f1f1 !important;
   width: 16px; /* Keep same size as light mode */
   height: 16px; /* Keep same size as light mode */
 }

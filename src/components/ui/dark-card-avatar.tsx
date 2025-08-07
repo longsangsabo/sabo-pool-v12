@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Upload, Check, X, Crop, Trophy, Star, TrendingUp, Target } from 'lucide-react';
+import { Camera, Upload, Check, X, Crop, Crown, Diamond, BarChart3, Swords } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { getRankDisplay } from '@/utils/rank-colors';
 import './dark-card-avatar.css';
 
 interface DarkCardAvatarProps {
@@ -94,7 +95,24 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
             {/* Nickname Overlay */}
             {currentAvatar && (
               <div className="dark-nickname-overlay">
-                <div className="dark-nickname-text-overlay">
+                <div 
+                  className="dark-nickname-text-overlay"
+                  style={{
+                    fontFamily: "'Khand', 'Oswald', 'Bebas Neue', 'Antonio', 'Fjalla One', 'Roboto Condensed', condensed, sans-serif",
+                    fontWeight: 900, // font-black equivalent
+                    fontSize: '1.125rem', // 1.5x từ 0.75rem
+                    fontStretch: 'condensed', // Nén font
+                    lineHeight: 0.9, // Cao hơn, compact hơn
+                    background: 'linear-gradient(to right, #60a5fa, #c084fc, #3b82f6, #ffffff, #fbbf24)', // Bright colors cho dark mode
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    letterSpacing: '0.05em', // Spacing nhỏ cho condensed look
+                    textTransform: 'uppercase',
+                    filter: 'brightness(1.1)', // Giảm xuống +10%
+                    fontVariant: 'small-caps' // Thêm small-caps cho cứng cáp
+                  }}
+                >
                   {nickname}
                 </div>
               </div>
@@ -121,30 +139,102 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
 
           {/* Rank Section */}
           <div className="dark-rank-section">
-            <div className="dark-rank-text">
-              RANK : {rank.toUpperCase()}
+            <div 
+              className="dark-rank-text"
+              style={{
+                background: getRankDisplay(rank).gradient,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textShadow: getRankDisplay(rank).textShadow,
+                fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', monospace",
+                fontWeight: 700,
+                letterSpacing: '4px',
+                border: `2px solid ${getRankDisplay(rank).borderColor}`,
+                borderRadius: '8px',
+                padding: '8px 16px',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              {(() => {
+                const RankIcon = getRankDisplay(rank).icon;
+                return (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <RankIcon 
+                      style={{ 
+                        color: getRankDisplay(rank).color,
+                        width: '20px', 
+                        height: '20px',
+                        filter: `drop-shadow(${getRankDisplay(rank).textShadow})`
+                      }} 
+                    />
+                    RANK : {rank.toUpperCase()}
+                  </div>
+                );
+              })()}
             </div>
           </div>
 
           {/* Stats Row */}
           <div className="dark-stats-row">
             <div className="dark-stat-item">
-              <Trophy className="dark-stat-icon" />
+              <Crown 
+                className="dark-stat-icon" 
+                style={{ 
+                  color: '#f1f1f1', 
+                  stroke: '#f1f1f1',
+                  fill: '#f1f1f1',
+                  width: '16px', 
+                  height: '16px', 
+                  margin: '0 auto 4px' 
+                }}
+              />
               <div className="dark-stat-label">ELO</div>
               <div className="dark-stat-value">{elo}</div>
             </div>
             <div className="dark-stat-item">
-              <Star className="dark-stat-icon" />
+              <Diamond 
+                className="dark-stat-icon" 
+                style={{ 
+                  color: '#f1f1f1', 
+                  stroke: '#f1f1f1',
+                  fill: '#f1f1f1',
+                  width: '16px', 
+                  height: '16px', 
+                  margin: '0 auto 4px' 
+                }}
+              />
               <div className="dark-stat-label">SPA</div>
               <div className="dark-stat-value">{spa}</div>
             </div>
             <div className="dark-stat-item">
-              <TrendingUp className="dark-stat-icon" />
+              <BarChart3 
+                className="dark-stat-icon" 
+                style={{ 
+                  color: '#f1f1f1', 
+                  stroke: '#f1f1f1',
+                  fill: '#f1f1f1',
+                  width: '16px', 
+                  height: '16px', 
+                  margin: '0 auto 4px' 
+                }}
+              />
               <div className="dark-stat-label">XH</div>
               <div className="dark-stat-value">#{ranking}</div>
             </div>
             <div className="dark-stat-item">
-              <Target className="dark-stat-icon" />
+              <Swords 
+                className="dark-stat-icon" 
+                style={{ 
+                  color: '#f1f1f1', 
+                  stroke: '#f1f1f1',
+                  fill: '#f1f1f1',
+                  width: '16px', 
+                  height: '16px', 
+                  margin: '0 auto 4px' 
+                }}
+              />
               <div className="dark-stat-label">TRẬN</div>
               <div className="dark-stat-value">{matches}</div>
             </div>

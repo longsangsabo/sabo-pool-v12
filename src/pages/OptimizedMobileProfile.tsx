@@ -19,6 +19,7 @@ import {
   Camera,
   MapPin,
   User,
+  UserCircle,
   Phone,
   Calendar,
   Trophy,
@@ -352,146 +353,359 @@ const OptimizedMobileProfile = () => {
           </div>
 
         {/* Profile Content Tabs */}
-        <Card>
+        <Card className={`overflow-hidden ${
+          theme === 'dark' 
+            ? 'bg-slate-900/50 border-slate-700/60 backdrop-blur-sm' 
+            : 'bg-white border-slate-200'
+        }`}>
           <CardContent className='p-0'>
-            {/* Tab Navigation */}
-            <div className='flex border-b border-border'>
+            {/* Tab Navigation - Gradient Icons with Shadow */}
+            <div className={`flex ${
+              theme === 'dark' 
+                ? 'border-b border-slate-700/50' 
+                : 'border-b border-slate-200'
+            }`}>
               <button 
-                className={`flex-1 px-3 py-3 text-sm font-medium ${
+                className={`flex-1 px-2 py-3 text-sm font-medium transition-all duration-200 ${
                   activeTab === 'activities' 
-                    ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? theme === 'dark'
+                      ? 'text-white border-b-2 border-blue-400'
+                      : 'text-slate-900 border-b-2 border-blue-500'
+                    : theme === 'dark'
+                      ? 'text-slate-300 hover:text-white'
+                      : 'text-slate-600 hover:text-slate-900'
                 }`}
                 onClick={() => setActiveTab('activities')}
               >
-                <Trophy className='w-4 h-4 mx-auto mb-1' />
-                <div className='text-xs'>Hoạt động</div>
+                <div className={`relative mx-auto mb-1 w-4 h-4 flex items-center justify-center ${
+                  activeTab === 'activities' 
+                    ? 'drop-shadow-lg' 
+                    : 'drop-shadow-sm'
+                }`}>
+                  <Activity className={`w-4 h-4 transition-all duration-200 ${
+                    activeTab === 'activities'
+                      ? theme === 'dark'
+                        ? 'text-blue-300 drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]'
+                        : 'text-blue-600 drop-shadow-[0_2px_4px_rgba(37,99,235,0.4)]'
+                      : theme === 'dark'
+                        ? 'text-slate-400'
+                        : 'text-slate-500'
+                  }`} />
+                </div>
+                <div className='text-xs font-semibold'>Hoạt động</div>
               </button>
-              {/* Avatar tab temporarily hidden - Premium Octagon is now default */}
-              {false && (
-                <button 
-                  className={`flex-1 px-3 py-3 text-sm font-medium ${
-                    activeTab === 'avatar' 
-                      ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                  onClick={() => setActiveTab('avatar')}
-                >
-                  <Palette className='w-4 h-4 mx-auto mb-1' />
-                  <div className='text-xs'>Avatar</div>
-                </button>
-              )}
+              
               <button 
-                className={`flex-1 px-3 py-3 text-sm font-medium ${
+                className={`flex-1 px-2 py-3 text-sm font-medium transition-all duration-200 ${
                   activeTab === 'basic' 
-                    ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? theme === 'dark'
+                      ? 'text-white border-b-2 border-emerald-400'
+                      : 'text-slate-900 border-b-2 border-emerald-500'
+                    : theme === 'dark'
+                      ? 'text-slate-300 hover:text-white'
+                      : 'text-slate-600 hover:text-slate-900'
                 }`}
                 onClick={() => setActiveTab('basic')}
               >
-                <User className='w-4 h-4 mx-auto mb-1' />
-                <div className='text-xs'>Cá nhân</div>
+                <div className={`relative mx-auto mb-1 w-4 h-4 flex items-center justify-center ${
+                  activeTab === 'basic' 
+                    ? 'drop-shadow-lg' 
+                    : 'drop-shadow-sm'
+                }`}>
+                  <UserCircle className={`w-4 h-4 transition-all duration-200 ${
+                    activeTab === 'basic'
+                      ? theme === 'dark'
+                        ? 'text-emerald-300 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]'
+                        : 'text-emerald-600 drop-shadow-[0_2px_4px_rgba(5,150,105,0.4)]'
+                      : theme === 'dark'
+                        ? 'text-slate-400'
+                        : 'text-slate-500'
+                  }`} />
+                </div>
+                <div className='text-xs font-semibold'>Cá nhân</div>
               </button>
+              
               <button 
-                className={`flex-1 px-3 py-3 text-sm font-medium ${
+                className={`flex-1 px-2 py-3 text-sm font-medium transition-all duration-200 ${
                   activeTab === 'rank' 
-                    ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? theme === 'dark'
+                      ? 'text-white border-b-2 border-purple-400'
+                      : 'text-slate-900 border-b-2 border-purple-500'
+                    : theme === 'dark'
+                      ? 'text-slate-300 hover:text-white'
+                      : 'text-slate-600 hover:text-slate-900'
                 }`}
                 onClick={() => setActiveTab('rank')}
               >
-                <Shield className='w-4 h-4 mx-auto mb-1' />
-                <div className='text-xs'>Đăng ký hạng</div>
+                <div className={`relative mx-auto mb-1 w-4 h-4 flex items-center justify-center ${
+                  activeTab === 'rank' 
+                    ? 'drop-shadow-lg' 
+                    : 'drop-shadow-sm'
+                }`}>
+                  <Award className={`w-4 h-4 transition-all duration-200 ${
+                    activeTab === 'rank'
+                      ? theme === 'dark'
+                        ? 'text-purple-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]'
+                        : 'text-purple-600 drop-shadow-[0_2px_4px_rgba(147,51,234,0.4)]'
+                      : theme === 'dark'
+                        ? 'text-slate-400'
+                        : 'text-slate-500'
+                  }`} />
+                </div>
+                <div className='text-xs font-semibold'>Đăng ký hạng</div>
               </button>
+              
               <button 
-                className={`flex-1 px-3 py-3 text-sm font-medium ${
+                className={`flex-1 px-2 py-3 text-sm font-medium transition-all duration-200 ${
                   activeTab === 'club' 
-                    ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? theme === 'dark'
+                      ? 'text-white border-b-2 border-cyan-400'
+                      : 'text-slate-900 border-b-2 border-cyan-500'
+                    : theme === 'dark'
+                      ? 'text-slate-300 hover:text-white'
+                      : 'text-slate-600 hover:text-slate-900'
                 }`}
                 onClick={() => setActiveTab('club')}
               >
-                <Building className='w-4 h-4 mx-auto mb-1' />
-                <div className='text-xs'>Đăng ký CLB</div>
+                <div className={`relative mx-auto mb-1 w-4 h-4 flex items-center justify-center ${
+                  activeTab === 'club' 
+                    ? 'drop-shadow-lg' 
+                    : 'drop-shadow-sm'
+                }`}>
+                  <Star className={`w-4 h-4 transition-all duration-200 ${
+                    activeTab === 'club'
+                      ? theme === 'dark'
+                        ? 'text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]'
+                        : 'text-cyan-600 drop-shadow-[0_2px_4px_rgba(8,145,178,0.4)]'
+                      : theme === 'dark'
+                        ? 'text-slate-400'
+                        : 'text-slate-500'
+                  }`} />
+                </div>
+                <div className='text-xs font-semibold'>Đăng ký CLB</div>
               </button>
             </div>
 
             {/* Tab Content - Activities */}
             {activeTab === 'activities' && (
-              <div className='p-4 space-y-3'>
+              <div className='p-5 space-y-6'>
                 {/* Recent Match Results */}
-                <div className='space-y-2'>
-                  <h4 className='text-sm font-medium mb-2'>Kết quả trận đấu gần đây</h4>
-                  <div className={`flex items-center gap-3 p-3 rounded-lg border-l-4 border-green-500 ${
+                <div className='space-y-4'>
+                  <div className='flex items-center gap-2 mb-4'>
+                    <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                      theme === 'dark' 
+                        ? 'bg-slate-700/50 border border-slate-600/30' 
+                        : 'bg-slate-100 border border-slate-200'
+                    }`}>
+                      <Trophy className='w-3.5 h-3.5 text-slate-400' />
+                    </div>
+                    <h4 className={`text-sm font-semibold tracking-wide ${
+                      theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
+                    }`}>Kết quả trận đấu gần đây</h4>
+                  </div>
+                  
+                  {/* Win Match Card */}
+                  <div className={`group relative overflow-hidden rounded-xl border ${
                     theme === 'dark' 
-                      ? 'bg-green-900/20 backdrop-blur-sm' 
-                      : 'bg-green-50'
+                      ? 'bg-gradient-to-r from-emerald-950/30 to-emerald-900/20 border-emerald-800/30 backdrop-blur-sm' 
+                      : 'bg-gradient-to-r from-emerald-50 to-green-50/50 border-emerald-100'
                   }`}>
-                    <div className='w-8 h-8 bg-green-500 rounded-full flex items-center justify-center'>
-                      <Trophy className='w-4 h-4 text-white' />
+                    <div className={`absolute left-0 top-0 bottom-0 w-1 ${
+                      theme === 'dark' ? 'bg-emerald-400' : 'bg-emerald-500'
+                    }`}></div>
+                    <div className='flex items-center gap-4 p-4'>
+                      <div className={`relative w-10 h-10 rounded-xl flex items-center justify-center ${
+                        theme === 'dark' 
+                          ? 'bg-emerald-500/20 ring-1 ring-emerald-400/30' 
+                          : 'bg-emerald-100 ring-1 ring-emerald-200'
+                      }`}>
+                        <Trophy className={`w-5 h-5 ${
+                          theme === 'dark' ? 'text-emerald-300' : 'text-emerald-600'
+                        }`} />
+                        <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${
+                          theme === 'dark' ? 'bg-emerald-400' : 'bg-emerald-500'
+                        }`}></div>
+                      </div>
+                      <div className='flex-1 min-w-0'>
+                        <div className={`text-sm font-medium mb-1 ${
+                          theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+                        }`}>Thắng vs Nguyễn Văn A</div>
+                        <div className={`text-xs flex items-center gap-2 ${
+                          theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                        }`}>
+                          <span className='font-medium'>10-8</span>
+                          <span className='w-1 h-1 rounded-full bg-current opacity-50'></span>
+                          <span>2 giờ trước</span>
+                        </div>
+                      </div>
+                      <div className={`text-right ${
+                        theme === 'dark' ? 'text-emerald-300' : 'text-emerald-600'
+                      }`}>
+                        <div className='text-sm font-bold'>+25</div>
+                        <div className='text-xs font-medium opacity-80'>ELO</div>
+                      </div>
                     </div>
-                    <div className='flex-1'>
-                      <div className={`text-sm font-medium ${
-                        theme === 'dark' ? 'text-white drop-shadow-sm' : ''
-                      }`}>Thắng vs Nguyễn Văn A</div>
-                      <div className='text-xs text-muted-foreground'>10-8 • 2 giờ trước</div>
-                    </div>
-                    <div className={`text-xs font-bold ${
-                      theme === 'dark' ? 'text-green-300' : 'text-green-600'
-                    }`}>+25 ELO</div>
                   </div>
 
-                  <div className={`flex items-center gap-3 p-3 rounded-lg border-l-4 border-red-500 ${
+                  {/* Loss Match Card */}
+                  <div className={`group relative overflow-hidden rounded-xl border ${
                     theme === 'dark' 
-                      ? 'bg-red-900/20 backdrop-blur-sm' 
-                      : 'bg-red-50'
+                      ? 'bg-gradient-to-r from-rose-950/30 to-red-900/20 border-rose-800/30 backdrop-blur-sm' 
+                      : 'bg-gradient-to-r from-rose-50 to-red-50/50 border-rose-100'
                   }`}>
-                    <div className='w-8 h-8 bg-red-500 rounded-full flex items-center justify-center'>
-                      <Target className='w-4 h-4 text-white' />
+                    <div className={`absolute left-0 top-0 bottom-0 w-1 ${
+                      theme === 'dark' ? 'bg-rose-400' : 'bg-rose-500'
+                    }`}></div>
+                    <div className='flex items-center gap-4 p-4'>
+                      <div className={`relative w-10 h-10 rounded-xl flex items-center justify-center ${
+                        theme === 'dark' 
+                          ? 'bg-rose-500/20 ring-1 ring-rose-400/30' 
+                          : 'bg-rose-100 ring-1 ring-rose-200'
+                      }`}>
+                        <Target className={`w-5 h-5 ${
+                          theme === 'dark' ? 'text-rose-300' : 'text-rose-600'
+                        }`} />
+                        <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${
+                          theme === 'dark' ? 'bg-rose-400' : 'bg-rose-500'
+                        }`}></div>
+                      </div>
+                      <div className='flex-1 min-w-0'>
+                        <div className={`text-sm font-medium mb-1 ${
+                          theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+                        }`}>Thua vs Trần Văn B</div>
+                        <div className={`text-xs flex items-center gap-2 ${
+                          theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                        }`}>
+                          <span className='font-medium'>8-10</span>
+                          <span className='w-1 h-1 rounded-full bg-current opacity-50'></span>
+                          <span>1 ngày trước</span>
+                        </div>
+                      </div>
+                      <div className={`text-right ${
+                        theme === 'dark' ? 'text-rose-300' : 'text-rose-600'
+                      }`}>
+                        <div className='text-sm font-bold'>-15</div>
+                        <div className='text-xs font-medium opacity-80'>ELO</div>
+                      </div>
                     </div>
-                    <div className='flex-1'>
-                      <div className={`text-sm font-medium ${
-                        theme === 'dark' ? 'text-white drop-shadow-sm' : ''
-                      }`}>Thua vs Trần Văn B</div>
-                      <div className='text-xs text-muted-foreground'>8-10 • 1 ngày trước</div>
-                    </div>
-                    <div className={`text-xs font-bold ${
-                      theme === 'dark' ? 'text-red-300' : 'text-red-600'
-                    }`}>-15 ELO</div>
                   </div>
                 </div>
 
                 {/* Active Challenges */}
-                <div className='space-y-2'>
-                  <h4 className='text-sm font-medium mb-2'>Thách đấu đang chờ</h4>
-                  <div className={`flex items-center gap-3 p-3 rounded-lg ${
-                    theme === 'dark' 
-                      ? 'bg-blue-900/20 backdrop-blur-sm' 
-                      : 'bg-blue-50'
-                  }`}>
-                    <Zap className='w-5 h-5 text-blue-500' />
-                    <div className='flex-1'>
-                      <div className={`text-sm font-medium ${
-                        theme === 'dark' ? 'text-white drop-shadow-sm' : ''
-                      }`}>Thách đấu từ Lê Văn C</div>
-                      <div className='text-xs text-muted-foreground'>Hạn: 2 ngày nữa</div>
+                <div className='space-y-4'>
+                  <div className='flex items-center gap-2 mb-4'>
+                    <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                      theme === 'dark' 
+                        ? 'bg-slate-700/50 border border-slate-600/30' 
+                        : 'bg-slate-100 border border-slate-200'
+                    }`}>
+                      <Zap className='w-3.5 h-3.5 text-slate-400' />
                     </div>
-                    <Button size='sm' variant='outline' className='text-xs'>
-                      Xem chi tiết
-                    </Button>
+                    <h4 className={`text-sm font-semibold tracking-wide ${
+                      theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
+                    }`}>Thách đấu đang chờ</h4>
+                  </div>
+                  
+                  <div className={`group relative overflow-hidden rounded-xl border ${
+                    theme === 'dark' 
+                      ? 'bg-gradient-to-r from-blue-950/30 to-indigo-900/20 border-blue-800/30 backdrop-blur-sm' 
+                      : 'bg-gradient-to-r from-blue-50 to-indigo-50/50 border-blue-100'
+                  }`}>
+                    <div className='flex items-center gap-4 p-4'>
+                      <div className={`relative w-10 h-10 rounded-xl flex items-center justify-center ${
+                        theme === 'dark' 
+                          ? 'bg-blue-500/20 ring-1 ring-blue-400/30' 
+                          : 'bg-blue-100 ring-1 ring-blue-200'
+                      }`}>
+                        <Zap className={`w-5 h-5 ${
+                          theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
+                        }`} />
+                        <div className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full animate-pulse ${
+                          theme === 'dark' ? 'bg-amber-400' : 'bg-amber-500'
+                        }`}></div>
+                      </div>
+                      <div className='flex-1 min-w-0'>
+                        <div className={`text-sm font-medium mb-1 ${
+                          theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+                        }`}>Thách đấu từ Lê Văn C</div>
+                        <div className={`text-xs flex items-center gap-2 ${
+                          theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                        }`}>
+                          <span>Hạn:</span>
+                          <span className='font-medium'>2 ngày nữa</span>
+                        </div>
+                      </div>
+                      <Button 
+                        size='sm' 
+                        variant='outline' 
+                        className={`text-xs font-medium px-3 py-1.5 h-auto ${
+                          theme === 'dark' 
+                            ? 'bg-slate-800/50 border-slate-600/50 text-slate-300 hover:bg-slate-700/50 hover:border-slate-500/50' 
+                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        Xem chi tiết
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
                 {/* Quick Actions */}
-                <div className='grid grid-cols-2 gap-3 mt-4'>
-                  <Button variant='outline' size='sm' className='h-12 flex-col gap-1'>
-                    <Target className='w-4 h-4' />
-                    <span className='text-xs'>Tạo thách đấu</span>
-                  </Button>
-                  <Button variant='outline' size='sm' className='h-12 flex-col gap-1'>
-                    <Trophy className='w-4 h-4' />
-                    <span className='text-xs'>Xem bảng xếp hạng</span>
-                  </Button>
+                <div className='space-y-4'>
+                  <div className='flex items-center gap-2 mb-4'>
+                    <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                      theme === 'dark' 
+                        ? 'bg-slate-700/50 border border-slate-600/30' 
+                        : 'bg-slate-100 border border-slate-200'
+                    }`}>
+                      <Activity className='w-3.5 h-3.5 text-slate-400' />
+                    </div>
+                    <h4 className={`text-sm font-semibold tracking-wide ${
+                      theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
+                    }`}>Hành động nhanh</h4>
+                  </div>
+                  
+                  <div className='grid grid-cols-2 gap-3'>
+                    <Button 
+                      variant='outline' 
+                      className={`h-16 flex-col gap-2 border-dashed transition-all duration-200 ${
+                        theme === 'dark' 
+                          ? 'bg-slate-800/30 border-slate-600/50 text-slate-300 hover:bg-slate-700/40 hover:border-slate-500/60' 
+                          : 'bg-slate-50/50 border-slate-200 text-slate-600 hover:bg-slate-100/70'
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                        theme === 'dark' 
+                          ? 'bg-rose-500/20 ring-1 ring-rose-400/30' 
+                          : 'bg-rose-100 ring-1 ring-rose-200'
+                      }`}>
+                        <Target className={`w-4 h-4 ${
+                          theme === 'dark' ? 'text-rose-300' : 'text-rose-600'
+                        }`} />
+                      </div>
+                      <span className='text-xs font-medium'>Tạo thách đấu</span>
+                    </Button>
+                    
+                    <Button 
+                      variant='outline' 
+                      className={`h-16 flex-col gap-2 border-dashed transition-all duration-200 ${
+                        theme === 'dark' 
+                          ? 'bg-slate-800/30 border-slate-600/50 text-slate-300 hover:bg-slate-700/40 hover:border-slate-500/60' 
+                          : 'bg-slate-50/50 border-slate-200 text-slate-600 hover:bg-slate-100/70'
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                        theme === 'dark' 
+                          ? 'bg-indigo-500/20 ring-1 ring-indigo-400/30' 
+                          : 'bg-indigo-100 ring-1 ring-indigo-200'
+                      }`}>
+                        <Trophy className={`w-4 h-4 ${
+                          theme === 'dark' ? 'text-indigo-300' : 'text-indigo-600'
+                        }`} />
+                      </div>
+                      <span className='text-xs font-medium'>Xem bảng xếp hạng</span>
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}
@@ -658,116 +872,230 @@ const OptimizedMobileProfile = () => {
           </CardContent>
         </Card>
 
-        {/* Recent Activities - Compact */}
-        <Card>
-          <CardHeader className='pb-3'>
-            <CardTitle className='text-base font-epilogue flex items-center justify-between'>
-              Hoạt động gần đây
-              <Button variant='ghost' size='sm' className='text-xs h-6 px-2'>
+        {/* Recent Activities - Elegant Design */}
+        <Card className={`overflow-hidden ${
+          theme === 'dark' 
+            ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm' 
+            : 'bg-white border-slate-200'
+        }`}>
+          <CardHeader className='pb-4 border-b border-slate-200/10'>
+            <CardTitle className={`text-base font-semibold flex items-center justify-between ${
+              theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+            }`}>
+              <div className='flex items-center gap-2'>
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-slate-700/50 border border-slate-600/30' 
+                    : 'bg-slate-100 border border-slate-200'
+                }`}>
+                  <Activity className='w-3.5 h-3.5 text-slate-400' />
+                </div>
+                Hoạt động gần đây
+              </div>
+              <Button 
+                variant='ghost' 
+                size='sm' 
+                className={`text-xs h-7 px-2 ${
+                  theme === 'dark' 
+                    ? 'text-slate-400 hover:text-slate-300 hover:bg-slate-700/50' 
+                    : 'text-slate-500 hover:text-slate-600 hover:bg-slate-100'
+                }`}
+              >
                 Xem tất cả <ChevronRight className='w-3 h-3 ml-1' />
               </Button>
             </CardTitle>
           </CardHeader>
-          <CardContent className='p-4 pt-0 space-y-3'>
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
+          <CardContent className='p-5 space-y-4'>
+            {/* Tournament Activity */}
+            <div className={`group relative overflow-hidden rounded-xl border ${
               theme === 'dark' 
-                ? 'bg-blue-900/20 backdrop-blur-sm' 
-                : 'bg-blue-50'
+                ? 'bg-gradient-to-r from-blue-950/30 to-indigo-900/20 border-blue-800/30 backdrop-blur-sm' 
+                : 'bg-gradient-to-r from-blue-50 to-indigo-50/50 border-blue-100'
             }`}>
-              <div className='w-2 h-2 bg-blue-500 rounded-full flex-shrink-0'></div>
-              <div className='flex-1 min-w-0'>
-                <div className={`text-sm font-medium truncate ${
-                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+              <div className='flex items-center gap-4 p-3'>
+                <div className={`relative w-9 h-9 rounded-lg flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-blue-500/20 ring-1 ring-blue-400/30' 
+                    : 'bg-blue-100 ring-1 ring-blue-200'
                 }`}>
-                  Tham gia giải đấu mới
+                  <Trophy className={`w-4 h-4 ${
+                    theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
+                  }`} />
+                  <div className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${
+                    theme === 'dark' ? 'bg-blue-400' : 'bg-blue-500'
+                  }`}></div>
                 </div>
-                <div className='text-xs text-muted-foreground'>2 giờ trước</div>
-              </div>
-            </div>
-
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
-              theme === 'dark' 
-                ? 'bg-green-900/20 backdrop-blur-sm' 
-                : 'bg-green-50'
-            }`}>
-              <div className='w-2 h-2 bg-green-500 rounded-full flex-shrink-0'></div>
-              <div className='flex-1 min-w-0'>
-                <div className={`text-sm font-medium truncate ${
-                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
-                }`}>
-                  Nhận 50 SPA Points
-                </div>
-                <div className='text-xs text-muted-foreground'>
-                  1 ngày trước
+                <div className='flex-1 min-w-0'>
+                  <div className={`text-sm font-medium mb-0.5 ${
+                    theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+                  }`}>Tham gia giải đấu mới</div>
+                  <div className={`text-xs ${
+                    theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                  }`}>2 giờ trước</div>
                 </div>
               </div>
             </div>
 
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
+            {/* SPA Points Activity */}
+            <div className={`group relative overflow-hidden rounded-xl border ${
               theme === 'dark' 
-                ? 'bg-yellow-900/20 backdrop-blur-sm' 
-                : 'bg-yellow-50'
+                ? 'bg-gradient-to-r from-emerald-950/30 to-green-900/20 border-emerald-800/30 backdrop-blur-sm' 
+                : 'bg-gradient-to-r from-emerald-50 to-green-50/50 border-emerald-100'
             }`}>
-              <div className='w-2 h-2 bg-yellow-500 rounded-full flex-shrink-0'></div>
-              <div className='flex-1 min-w-0'>
-                <div className={`text-sm font-medium truncate ${
-                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+              <div className='flex items-center gap-4 p-3'>
+                <div className={`relative w-9 h-9 rounded-lg flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-emerald-500/20 ring-1 ring-emerald-400/30' 
+                    : 'bg-emerald-100 ring-1 ring-emerald-200'
                 }`}>
-                  Cập nhật hồ sơ
+                  <Star className={`w-4 h-4 ${
+                    theme === 'dark' ? 'text-emerald-300' : 'text-emerald-600'
+                  }`} />
+                  <div className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${
+                    theme === 'dark' ? 'bg-emerald-400' : 'bg-emerald-500'
+                  }`}></div>
                 </div>
-                <div className='text-xs text-muted-foreground'>
-                  3 ngày trước
+                <div className='flex-1 min-w-0'>
+                  <div className={`text-sm font-medium mb-0.5 ${
+                    theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+                  }`}>Nhận 50 SPA Points</div>
+                  <div className={`text-xs ${
+                    theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                  }`}>1 ngày trước</div>
+                </div>
+                <div className={`text-right ${
+                  theme === 'dark' ? 'text-emerald-300' : 'text-emerald-600'
+                }`}>
+                  <div className='text-sm font-bold'>+50</div>
+                  <div className='text-xs font-medium opacity-80'>SPA</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Update Profile Activity */}
+            <div className={`group relative overflow-hidden rounded-xl border ${
+              theme === 'dark' 
+                ? 'bg-gradient-to-r from-amber-950/30 to-yellow-900/20 border-amber-800/30 backdrop-blur-sm' 
+                : 'bg-gradient-to-r from-amber-50 to-yellow-50/50 border-amber-100'
+            }`}>
+              <div className='flex items-center gap-4 p-3'>
+                <div className={`relative w-9 h-9 rounded-lg flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-amber-500/20 ring-1 ring-amber-400/30' 
+                    : 'bg-amber-100 ring-1 ring-amber-200'
+                }`}>
+                  <User className={`w-4 h-4 ${
+                    theme === 'dark' ? 'text-amber-300' : 'text-amber-600'
+                  }`} />
+                </div>
+                <div className='flex-1 min-w-0'>
+                  <div className={`text-sm font-medium mb-0.5 ${
+                    theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+                  }`}>Cập nhật hồ sơ</div>
+                  <div className={`text-xs ${
+                    theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                  }`}>3 ngày trước</div>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Achievements - Compact */}
-        <Card>
-          <CardHeader className='pb-3'>
-            <CardTitle className='text-base font-epilogue flex items-center justify-between'>
-              Thành tích
-              <Button variant='ghost' size='sm' className='text-xs h-6 px-2'>
+        {/* Achievements - Modern Design */}
+        <Card className={`overflow-hidden ${
+          theme === 'dark' 
+            ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm' 
+            : 'bg-white border-slate-200'
+        }`}>
+          <CardHeader className='pb-4 border-b border-slate-200/10'>
+            <CardTitle className={`text-base font-semibold flex items-center justify-between ${
+              theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+            }`}>
+              <div className='flex items-center gap-2'>
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-slate-700/50 border border-slate-600/30' 
+                    : 'bg-slate-100 border border-slate-200'
+                }`}>
+                  <Award className='w-3.5 h-3.5 text-slate-400' />
+                </div>
+                Thành tích
+              </div>
+              <Button 
+                variant='ghost' 
+                size='sm' 
+                className={`text-xs h-7 px-2 ${
+                  theme === 'dark' 
+                    ? 'text-slate-400 hover:text-slate-300 hover:bg-slate-700/50' 
+                    : 'text-slate-500 hover:text-slate-600 hover:bg-slate-100'
+                }`}
+              >
                 Xem tất cả <ChevronRight className='w-3 h-3 ml-1' />
               </Button>
             </CardTitle>
           </CardHeader>
-          <CardContent className='p-4 pt-0 space-y-3'>
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
+          <CardContent className='p-5 space-y-4'>
+            <div className={`group relative overflow-hidden rounded-xl border ${
               theme === 'dark' 
-                ? 'bg-gradient-to-r from-yellow-900/30 to-orange-900/30 backdrop-blur-sm' 
-                : 'bg-gradient-to-r from-yellow-50 to-orange-50'
+                ? 'bg-gradient-to-r from-violet-950/30 to-purple-900/20 border-violet-800/30 backdrop-blur-sm' 
+                : 'bg-gradient-to-r from-violet-50 to-purple-50/50 border-violet-100'
             }`}>
-              <div className='w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0'>
-                <Trophy className='w-4 h-4 text-white' />
-              </div>
-              <div className='flex-1 min-w-0'>
-                <div className={`text-sm font-medium truncate ${
-                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
+              <div className='flex items-center gap-4 p-4'>
+                <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-gradient-to-br from-violet-500/30 to-purple-500/20 ring-2 ring-violet-400/30' 
+                    : 'bg-gradient-to-br from-violet-200 to-purple-200 ring-2 ring-violet-300'
                 }`}>
-                  Người mới xuất sắc
+                  <Trophy className={`w-6 h-6 ${
+                    theme === 'dark' ? 'text-violet-300' : 'text-violet-700'
+                  }`} />
+                  <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold ${
+                    theme === 'dark' ? 'bg-violet-400 text-violet-900' : 'bg-violet-500 text-white'
+                  }`}>✨</div>
                 </div>
-                <div className='text-xs text-muted-foreground'>
-                  Thắng 5 trận đầu tiên
+                <div className='flex-1 min-w-0'>
+                  <div className={`text-sm font-semibold mb-1 ${
+                    theme === 'dark' ? 'text-white' : 'text-slate-800'
+                  }`}>Người mới xuất sắc</div>
+                  <div className={`text-xs ${
+                    theme === 'dark' ? 'text-slate-300' : 'text-slate-500'
+                  }`}>Hoàn thành 5 trận đấu đầu tiên</div>
+                </div>
+                <div className={`text-right ${
+                  theme === 'dark' ? 'text-violet-300' : 'text-violet-600'
+                }`}>
+                  <div className='text-sm font-bold'>+100</div>
+                  <div className='text-xs opacity-80'>EXP</div>
                 </div>
               </div>
             </div>
 
-            <div className={`flex items-center gap-3 p-2 rounded-lg ${
+            {/* Second Achievement */}
+            <div className={`group relative overflow-hidden rounded-xl border ${
               theme === 'dark' 
-                ? 'bg-gradient-to-r from-blue-900/30 to-purple-900/30 backdrop-blur-sm' 
-                : 'bg-gradient-to-r from-blue-50 to-purple-50'
+                ? 'bg-gradient-to-r from-blue-950/30 to-indigo-900/20 border-blue-800/30 backdrop-blur-sm' 
+                : 'bg-gradient-to-r from-blue-50 to-indigo-50/50 border-blue-100'
             }`}>
-              <div className='w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0'>
-                <span className='text-sm'>🎯</span>
-              </div>
-              <div className='flex-1 min-w-0'>
-                <div className={`text-sm font-medium truncate ${
-                  theme === 'dark' ? 'text-white drop-shadow-sm' : ''
-                }`}>Chính xác</div>
-                <div className='text-xs text-muted-foreground'>
-                  Độ chính xác &gt; 80%
+              <div className='flex items-center gap-4 p-4'>
+                <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-gradient-to-br from-blue-500/30 to-indigo-500/20 ring-2 ring-blue-400/30' 
+                    : 'bg-gradient-to-br from-blue-200 to-indigo-200 ring-2 ring-blue-300'
+                }`}>
+                  <Target className={`w-6 h-6 ${
+                    theme === 'dark' ? 'text-blue-300' : 'text-blue-700'
+                  }`} />
+                  <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold ${
+                    theme === 'dark' ? 'bg-blue-400 text-blue-900' : 'bg-blue-500 text-white'
+                  }`}>🎯</div>
+                </div>
+                <div className='flex-1 min-w-0'>
+                  <div className={`text-sm font-semibold mb-1 ${
+                    theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+                  }`}>Chính xác</div>
+                  <div className={`text-xs ${
+                    theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                  }`}>Độ chính xác &gt; 80%</div>
                 </div>
               </div>
             </div>
@@ -775,21 +1103,46 @@ const OptimizedMobileProfile = () => {
         </Card>
 
         {/* Profile Completion */}
-        <Card>
-          <CardContent className='p-4'>
-            <div className='flex items-center justify-between mb-3'>
-              <span className='text-sm font-medium'>Hoàn thiện hồ sơ</span>
-              <span className='text-sm font-racing-sans-one text-primary'>
-                {profile.completion_percentage || 0}%
+        <Card className={`overflow-hidden ${
+          theme === 'dark' 
+            ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm' 
+            : 'bg-white border-slate-200'
+        }`}>
+          <CardContent className='p-5'>
+            <div className='flex items-center justify-between mb-4'>
+              <div className='flex items-center gap-2'>
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-slate-700/50 border border-slate-600/30' 
+                    : 'bg-slate-100 border border-slate-200'
+                }`}>
+                  <Settings className='w-3.5 h-3.5 text-slate-400' />
+                </div>
+                <span className={`text-sm font-semibold ${
+                  theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+                }`}>Hoàn thiện hồ sơ</span>
+              </div>
+              <span className={`text-sm font-bold ${
+                theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
+              }`}>
+                {profile.completion_percentage || 75}%
               </span>
             </div>
-            <div className='w-full bg-muted rounded-full h-2 mb-2'>
+            <div className={`w-full rounded-full h-3 mb-3 ${
+              theme === 'dark' ? 'bg-slate-700/50' : 'bg-slate-200'
+            }`}>
               <div
-                className='bg-primary h-2 rounded-full transition-all duration-300'
-                style={{ width: `${profile.completion_percentage || 0}%` }}
+                className={`h-3 rounded-full transition-all duration-500 ${
+                  theme === 'dark' 
+                    ? 'bg-gradient-to-r from-blue-500 to-cyan-500' 
+                    : 'bg-gradient-to-r from-blue-500 to-blue-600'
+                }`}
+                style={{ width: `${profile.completion_percentage || 75}%` }}
               />
             </div>
-            <p className='text-xs text-muted-foreground'>
+            <p className={`text-xs ${
+              theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+            }`}>
               Hoàn thiện hồ sơ để tăng uy tín và cơ hội tham gia giải đấu
             </p>
           </CardContent>
@@ -800,7 +1153,11 @@ const OptimizedMobileProfile = () => {
       {showScrollTop && (
         <Button
           onClick={scrollToTop}
-          className='fixed bottom-20 right-4 w-12 h-12 rounded-full shadow-lg z-50'
+          className={`fixed bottom-20 right-4 w-12 h-12 rounded-full shadow-lg z-50 ${
+            theme === 'dark' 
+              ? 'bg-slate-800 border-slate-600 text-slate-200 hover:bg-slate-700' 
+              : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+          }`}
           size='sm'
         >
           <ArrowUp className='w-4 h-4' />

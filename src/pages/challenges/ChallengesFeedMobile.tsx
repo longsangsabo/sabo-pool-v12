@@ -27,6 +27,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { Challenge as StandardChallenge } from '@/types/challenge';
+
+// Import 4 card components chuẩn
+import UnifiedChallengeCard from '@/components/challenges/UnifiedChallengeCard';
+import { OpenChallengeCard } from '@/components/challenges/OpenChallengeCard';
+import { CompletedChallengeCard } from '@/components/challenges/CompletedChallengeCard';
+import LiveMatchCard from '@/components/challenges/LiveMatchCard';
 
 interface Challenge {
   id: string;
@@ -481,307 +488,172 @@ const ChallengesFeedMobile: React.FC = () => {
     </motion.div>
   );
 
-  const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
-    const isReceived = challenge.type === 'received';
-    const isAccepted = challenge.type === 'accepted';
-    const isNewChallenge =
-      new Date(challenge.createdAt) > new Date(Date.now() - 5 * 60 * 1000); // New if created within 5 minutes
-    const myElo = userStats.eloRating;
-    const winChance = getWinProbability(myElo, challenge.opponent.elo);
-    const isHighStakes = challenge.details.spaBet >= 300;
+  // Converter function to transform Challenge to standard format
+  const convertChallengeToStandardFormat = (challenge: Challenge) => {
+    const isLive = challenge.status === 'accepted' && challenge.details.scheduledTime && new Date(challenge.details.scheduledTime) <= new Date();
+    const isCompleted = challenge.status === 'rejected' || (challenge.status === 'accepted' && challenge.details.scheduledTime && new Date(challenge.details.scheduledTime) < new Date(Date.now() - 2 * 60 * 60 * 1000)); // Assume completed if 2+ hours past scheduled time
+    
+    let status: 'pending' | 'accepted' | 'completed' | 'ongoing' | 'declined' | 'expired' | 'cancelled';
+    if (challenge.status === 'pending') {
+      status = 'pending';
+    } else if (challenge.status === 'accepted') {
+      status = 'accepted';
+    } else if (challenge.status === 'rejected') {
+      status = 'declined';
+    } else if (challenge.status === 'expired') {
+      status = 'expired';
+    } else {
+      status = 'completed';
+    }
+    
+    return {
+      id: challenge.id,
+      challenger_id: user?.id || '',
+      opponent_id: challenge.opponent.id,
+      bet_points: challenge.details.spaBet,
+      race_to: challenge.details.raceTO,
+      status: status,
+      message: '',
+      created_at: challenge.createdAt,
+      expires_at: challenge.expiresAt,
+      challenger_profile: {
+        id: user?.id || '',
+        user_id: user?.id || '',
+        full_name: user?.user_metadata?.full_name || 'You',
+        avatar_url: user?.user_metadata?.avatar_url,
+        current_rank: 'A',
+        spa_points: userStats.eloRating,
+        verified_rank: 'A'
+      },
+      opponent_profile: {
+        id: challenge.opponent.id,
+        user_id: challenge.opponent.id,
+        full_name: challenge.opponent.name,
+        avatar_url: challenge.opponent.avatar,
+        current_rank: challenge.opponent.rank,
+        spa_points: challenge.opponent.elo,
+        verified_rank: challenge.opponent.rank
+      },
+      challenger_score: isCompleted ? Math.floor(Math.random() * challenge.details.raceTO) : undefined,
+      opponent_score: isCompleted ? Math.floor(Math.random() * challenge.details.raceTO) : undefined,
+      club: null
+    };
+  };
 
+  const convertToLiveMatch = (challenge: Challenge) => {
+    return {
+      id: challenge.id,
+      player1: {
+        id: user?.id || '',
+        name: user?.user_metadata?.full_name || 'You',
+        avatar: user?.user_metadata?.avatar_url,
+        rank: 'A'
+      },
+      player2: {
+        id: challenge.opponent.id,
+        name: challenge.opponent.name,
+        avatar: challenge.opponent.avatar,
+        rank: challenge.opponent.rank
+      },
+      score: {
+        player1: Math.floor(Math.random() * challenge.details.raceTO),
+        player2: Math.floor(Math.random() * challenge.details.raceTO)
+      },
+      raceToTarget: challenge.details.raceTO,
+      betPoints: challenge.details.spaBet,
+      startTime: challenge.details.scheduledTime || challenge.createdAt,
+      location: challenge.details.location
+    };
+  };
+
+  const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
+    const isLive = challenge.status === 'accepted' && challenge.details.scheduledTime && new Date(challenge.details.scheduledTime) <= new Date();
+    const isCompleted = challenge.status === 'rejected' || (challenge.status === 'accepted' && challenge.details.scheduledTime && new Date(challenge.details.scheduledTime) < new Date(Date.now() - 2 * 60 * 60 * 1000));
+    const isOpen = challenge.status === 'pending';
+
+    const standardChallenge = convertChallengeToStandardFormat(challenge);
+
+    // Handle different card types based on challenge status
+    if (isLive) {
+      const liveMatch = convertToLiveMatch(challenge);
+      return (
+        <motion.div
+          layout
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, x: -100 }}
+          className='mb-4'
+        >
+          <LiveMatchCard 
+            match={liveMatch}
+            onWatch={(matchId) => {
+              toast.success('Đang mở trận đấu trực tiếp...');
+            }}
+          />
+        </motion.div>
+      );
+    }
+
+    if (isCompleted) {
+      return (
+        <motion.div
+          layout
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, x: -100 }}
+          className='mb-4'
+        >
+          <CompletedChallengeCard 
+            challenge={standardChallenge}
+            onView={() => {
+              toast.info('Xem chi tiết kết quả...');
+            }}
+          />
+        </motion.div>
+      );
+    }
+
+    if (isOpen) {
+      return (
+        <motion.div
+          layout
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, x: -100 }}
+          className='mb-4'
+        >
+          <OpenChallengeCard 
+            challenge={standardChallenge}
+            onJoin={(challengeId) => {
+              toast.success('Tham gia thách đấu thành công!');
+            }}
+            currentUser={user}
+            isJoining={false}
+          />
+        </motion.div>
+      );
+    }
+
+    // Default case - use UnifiedChallengeCard
     return (
       <motion.div
         layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, x: -100 }}
-        whileHover={{ scale: 1.02 }}
         className='mb-4'
       >
-        <Card
-          className={`p-4 bg-card/80 backdrop-blur-sm border-border/50 shadow-lg relative overflow-hidden ${
-            isNewChallenge ? 'ring-2 ring-primary/50' : ''
-          } ${isHighStakes ? 'bg-gradient-to-br from-card/90 to-accent/10' : ''}`}
-        >
-          {/* New challenge indicator */}
-          {isNewChallenge && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className='absolute top-2 right-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-bold'
-            >
-              🔥 MỚI
-            </motion.div>
-          )}
-
-          {/* High stakes indicator */}
-          {isHighStakes && (
-            <motion.div
-              animate={{ rotate: [0, -5, 5, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className='absolute top-2 left-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold'
-            >
-              💰 KÈO KHỦNG
-            </motion.div>
-          )}
-          {/* Header */}
-          <div className='flex items-center justify-between mb-4'>
-            <div className='flex items-center gap-3'>
-              <div className='relative'>
-                <Avatar
-                  className={`w-12 h-12 ${challenge.opponent.elo >= 1800 ? 'ring-2 ring-amber-400' : challenge.opponent.elo >= 1400 ? 'ring-2 ring-blue-400' : ''}`}
-                >
-                  <AvatarImage src={challenge.opponent.avatar} />
-                  <AvatarFallback className='bg-primary/10 text-primary font-bold'>
-                    {challenge.opponent.name.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                {challenge.opponent.streak && challenge.opponent.streak > 0 && (
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                    className='absolute -top-1 -right-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold'
-                  >
-                    {challenge.opponent.streak}🔥
-                  </motion.div>
-                )}
-                {challenge.opponent.elo >= 1800 && (
-                  <div className='absolute -bottom-1 -right-1 w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center'>
-                    <Crown className='w-3 h-3 text-amber-900' />
-                  </div>
-                )}
-              </div>
-
-              <div className='flex-1'>
-                <h3 className='font-bold text-foreground'>
-                  {challenge.opponent.name}
-                </h3>
-                <div className='flex items-center gap-2 flex-wrap'>
-                  <Badge variant='outline' className='text-xs font-medium'>
-                    {getFunNickname(challenge.opponent.elo)}
-                  </Badge>
-                  <span className='text-sm text-muted-foreground'>
-                    ELO {challenge.opponent.elo}
-                  </span>
-                </div>
-
-                {/* Win probability indicator */}
-                <div className='flex items-center gap-2 mt-1'>
-                  <TrendingUp className='w-3 h-3 text-muted-foreground' />
-                  <span className='text-xs text-muted-foreground'>
-                    Cơ hội thắng:{' '}
-                    <span
-                      className={`font-bold ${winChance >= 60 ? 'text-green-500' : winChance >= 40 ? 'text-yellow-500' : 'text-red-500'}`}
-                    >
-                      {winChance}%
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className='text-right'>
-              <Badge
-                variant={
-                  isReceived
-                    ? 'destructive'
-                    : isAccepted
-                      ? 'default'
-                      : 'secondary'
-                }
-                className='text-xs font-bold mb-2'
-              >
-                {isReceived
-                  ? 'CHỜ ĐỐI THỦ DŨNG CẢM ⚔️'
-                  : isAccepted
-                    ? 'TRẬN ĐẤU THÀNH ✨'
-                    : 'CHỜ PHẢN HỒI 💭'}
-              </Badge>
-              {isReceived && (
-                <div className='flex items-center gap-1 text-xs text-muted-foreground'>
-                  <Eye className='w-3 h-3' />
-                  <span>
-                    {Math.floor(Math.random() * 5) + 1} người theo dõi
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Match Details */}
-          <div className='space-y-3 mb-4'>
-            <div className='flex items-center gap-2 text-sm'>
-              <MapPin className='w-4 h-4 text-muted-foreground' />
-              <span className='text-foreground font-medium'>
-                {challenge.details.location}
-              </span>
-            </div>
-
-            {challenge.details.scheduledTime && (
-              <div className='flex items-center gap-2 text-sm'>
-                <Clock className='w-4 h-4 text-muted-foreground' />
-                <span className='text-foreground font-medium'>
-                  {isAccepted
-                    ? getTimeUntilMatch(challenge.details.scheduledTime)
-                    : new Date(challenge.details.scheduledTime).toLocaleString(
-                        'vi-VN'
-                      )}
-                </span>
-              </div>
-            )}
-
-            <div className='grid grid-cols-3 gap-3 p-3 bg-gradient-to-r from-muted/30 to-muted/20 rounded-lg border border-border/30'>
-              <div className='text-center'>
-                <p className='text-xs text-muted-foreground flex items-center justify-center gap-1'>
-                  <Target className='w-3 h-3' />
-                  Đấu tới
-                </p>
-                <p className='font-bold text-foreground'>
-                  {challenge.details.raceTO} chiến thắng 🏁
-                </p>
-              </div>
-              <div className='text-center'>
-                <p className='text-xs text-muted-foreground flex items-center justify-center gap-1'>
-                  <Gift className='w-3 h-3' />
-                  Cược SPA
-                </p>
-                <p className='font-bold text-primary'>
-                  {challenge.details.spaBet.toLocaleString()}đ 💰
-                </p>
-              </div>
-              <div className='text-center'>
-                <p className='text-xs text-muted-foreground'>Handicap</p>
-                <p className='font-bold text-foreground'>
-                  {challenge.details.handicap || 'Chơi ngang tài ngang sức ⚖️'}
-                </p>
-              </div>
-            </div>
-
-            {/* Match compatibility */}
-            <div className='mt-3 p-2 bg-accent/10 rounded-lg'>
-              <div className='flex items-center justify-between text-xs'>
-                <span className='text-muted-foreground'>Độ tương thích:</span>
-                <span className='font-bold text-accent'>
-                  {Math.abs(challenge.opponent.elo - myElo) < 100
-                    ? '95%'
-                    : Math.abs(challenge.opponent.elo - myElo) < 200
-                      ? '80%'
-                      : '65%'}
-                  {Math.abs(challenge.opponent.elo - myElo) < 100
-                    ? ' 🔥'
-                    : ' ⭐'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Actions */}
-          {isReceived && challenge.status === 'pending' && (
-            <div className='flex gap-3'>
-              <motion.div
-                className='flex-1'
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  onClick={() => handleRejectChallenge(challenge.id)}
-                  variant='outline'
-                  size='sm'
-                  className='w-full rounded-full hover:bg-destructive/10 hover:border-destructive/50'
-                >
-                  <X className='w-4 h-4 mr-2' />
-                  RÚT LUI 🏳️
-                </Button>
-              </motion.div>
-              <motion.div
-                className='flex-1'
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                animate={{
-                  boxShadow: [
-                    '0 0 0 0 rgba(var(--primary), 0.7)',
-                    '0 0 0 10px rgba(var(--primary), 0)',
-                    '0 0 0 0 rgba(var(--primary), 0)',
-                  ],
-                }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <Button
-                  onClick={() => handleAcceptChallenge(challenge.id)}
-                  size='sm'
-                  className='w-full rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90'
-                >
-                  <Check className='w-4 h-4 mr-2' />
-                  CHẤP KÈO 🎯
-                </Button>
-              </motion.div>
-            </div>
-          )}
-
-          {isAccepted && (
-            <div className='flex gap-3'>
-              <motion.div
-                className='flex-1'
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='w-full rounded-full'
-                >
-                  <MessageCircle className='w-4 h-4 mr-2' />
-                  CHAT 💬
-                </Button>
-              </motion.div>
-              <motion.div
-                className='flex-1'
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  size='sm'
-                  className='w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-500'
-                >
-                  <Trophy className='w-4 h-4 mr-2' />
-                  THƯỢNG BÀN 🎱
-                </Button>
-              </motion.div>
-            </div>
-          )}
-
-          {challenge.type === 'sent' && (
-            <div className='flex gap-3'>
-              <motion.div
-                className='flex-1'
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='w-full rounded-full'
-                >
-                  NÂNG CẤP KÈO 💪
-                </Button>
-              </motion.div>
-              <motion.div
-                className='flex-1'
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  variant='destructive'
-                  size='sm'
-                  className='w-full rounded-full'
-                >
-                  RÚT LUI 🏳️
-                </Button>
-              </motion.div>
-            </div>
-          )}
-        </Card>
+        <UnifiedChallengeCard 
+          challenge={standardChallenge}
+          variant='default'
+          currentUserId={user?.id}
+          onJoin={async (challengeId) => {
+            toast.success('Tham gia thách đấu thành công!');
+          }}
+          onAction={(challengeId, action) => {
+            toast.info(`Thực hiện hành động: ${action}`);
+          }}
+        />
       </motion.div>
     );
   };

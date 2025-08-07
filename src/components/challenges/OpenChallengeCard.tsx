@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Clock, MapPin, Trophy, DollarSign, Users } from 'lucide-react';
+import { Clock, MapPin, Trophy, Star, Users } from 'lucide-react';
 import { Challenge } from '@/types/challenge';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -32,21 +32,21 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
   };
 
   return (
-    <Card className='border border-border/50 hover:border-primary/30 transition-colors'>
+    <Card className='bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10'>
       <CardContent className='p-4'>
         <div className='flex items-start justify-between mb-3'>
           <div className='flex items-center gap-3'>
             <Avatar className='w-10 h-10'>
               <AvatarImage src={challenge.challenger_profile?.avatar_url} />
-              <AvatarFallback>
+              <AvatarFallback className='bg-slate-700/50 text-slate-300 dark:bg-slate-600/50 dark:text-slate-200'>
                 {challenge.challenger_profile?.full_name?.charAt(0) || '?'}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h3 className='font-semibold text-sm'>
+              <h3 className='font-semibold text-sm text-slate-800 dark:text-slate-200'>
                 {challenge.challenger_profile?.full_name || 'Unknown Player'}
               </h3>
-              <div className='flex items-center gap-2 text-xs text-muted-foreground'>
+              <div className='flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400'>
                 <span>
                   Rank: {challenge.challenger_profile?.current_rank || 'K'}
                 </span>
@@ -69,23 +69,23 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
         {/* Challenge Details */}
         <div className='space-y-2 mb-4'>
           <div className='flex items-center justify-between text-sm'>
-            <div className='flex items-center gap-1 text-primary'>
-              <DollarSign className='w-4 h-4' />
-              <span className='font-semibold'>{challenge.bet_points} điểm</span>
+            <div className='flex items-center gap-1 text-slate-600 dark:text-slate-300'>
+              <Star className='w-4 h-4' />
+              <span className='font-semibold'>{challenge.bet_points} SPA</span>
             </div>
-            <div className='flex items-center gap-1 text-orange-600'>
+            <div className='flex items-center gap-1 text-slate-500 dark:text-slate-400'>
               <Trophy className='w-4 h-4' />
               <span>Race to {challenge.race_to}</span>
             </div>
           </div>
 
           {challenge.message && (
-            <p className='text-sm text-muted-foreground bg-muted/50 p-2 rounded text-center italic'>
+            <p className='text-sm text-slate-600 dark:text-slate-300 bg-slate-100/50 dark:bg-slate-800/50 p-2 rounded text-center italic'>
               "{challenge.message}"
             </p>
           )}
 
-          <div className='flex items-center justify-between text-xs text-muted-foreground'>
+          <div className='flex items-center justify-between text-xs text-slate-500 dark:text-slate-400'>
             <div className='flex items-center gap-1'>
               <Clock className='w-3 h-3' />
               <span>
@@ -96,7 +96,7 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
               </span>
             </div>
             {challenge.expires_at && (
-              <span className={isExpired ? 'text-destructive' : ''}>
+              <span className={isExpired ? 'text-slate-400 dark:text-slate-500' : ''}>
                 Hết hạn{' '}
                 {formatDistanceToNow(new Date(challenge.expires_at), {
                   addSuffix: true,

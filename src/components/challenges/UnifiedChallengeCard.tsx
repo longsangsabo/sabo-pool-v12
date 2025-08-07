@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Clock, Trophy, DollarSign, MapPin, Zap, Target } from 'lucide-react';
+import { Clock, Trophy, Star, MapPin, Zap, Target } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { useAuth } from '@/hooks/useAuth';
@@ -102,70 +102,70 @@ const UnifiedChallengeCard: React.FC<UnifiedChallengeCardProps> = ({
     if (isMatch) {
       const matchStatus = getMatchStatus();
       const colorMap = {
-        Thắng: 'bg-green-500',
-        Thua: 'bg-red-500',
-        'Đang diễn ra': 'bg-blue-500',
-        'Sắp diễn ra': 'bg-amber-500',
-        'Chờ xử lý': 'bg-purple-500',
+        Thắng: 'bg-slate-600',
+        Thua: 'bg-slate-500',
+        'Đang diễn ra': 'bg-slate-700',
+        'Sắp diễn ra': 'bg-slate-600',
+        'Chờ xử lý': 'bg-slate-500',
       };
 
       return {
         color:
-          colorMap[matchStatus.badge as keyof typeof colorMap] || 'bg-gray-500',
+          colorMap[matchStatus.badge as keyof typeof colorMap] || 'bg-slate-500',
         label: matchStatus.badge,
         variant: matchStatus.variant,
-        className: 'hover:shadow-md transition-shadow',
+        className: 'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
       };
     }
 
     switch (status) {
       case 'pending':
         return {
-          color: 'bg-emerald-500',
+          color: 'bg-slate-600',
           label: 'Mở',
           variant: 'default' as const,
           className:
-            'from-emerald-50/50 to-green-50/50 border-emerald-200/50 hover:border-emerald-300/70',
+            'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
         };
       case 'ongoing':
       case 'accepted':
         return {
-          color: 'bg-blue-500',
+          color: 'bg-slate-700',
           label: 'Đang diễn ra',
           variant: 'default' as const,
           className:
-            'from-blue-50/50 to-indigo-50/50 border-blue-200/50 hover:border-blue-300/70',
+            'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
         };
       case 'upcoming':
         return {
-          color: 'bg-amber-500',
+          color: 'bg-slate-600',
           label: 'Sắp diễn ra',
           variant: 'secondary' as const,
           className:
-            'from-amber-50/50 to-orange-50/50 border-amber-200/50 hover:border-amber-300/70',
+            'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
         };
       case 'completed':
         return {
-          color: 'bg-gray-500',
+          color: 'bg-slate-500',
           label: 'Hoàn thành',
           variant: 'secondary' as const,
           className:
-            'from-gray-50/50 to-slate-50/50 border-gray-200/50 hover:border-gray-300/70',
+            'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
         };
       case 'open':
         return {
-          color: 'bg-purple-500',
+          color: 'bg-slate-600',
           label: 'Chờ phản hồi',
           variant: 'outline' as const,
           className:
-            'from-purple-50/50 to-violet-50/50 border-purple-200/50 hover:border-purple-300/70',
+            'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
         };
       default:
         return {
-          color: 'bg-gray-500',
+          color: 'bg-slate-500',
           label: 'Không xác định',
           variant: 'outline' as const,
-          className: 'from-gray-50/50 to-slate-50/50 border-gray-200/50',
+          className: 'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
         };
     }
   };
@@ -252,7 +252,7 @@ const UnifiedChallengeCard: React.FC<UnifiedChallengeCardProps> = ({
           </p>
           <div className='flex items-center gap-2 text-xs text-muted-foreground'>
             <span>{profile?.verified_rank || 'Chưa xác định'}</span>
-            <span className='text-orange-600 font-semibold'>
+            <span className='text-slate-400 dark:text-slate-300 font-semibold'>
               {profile?.spa_points || 0} SPA
             </span>
           </div>
@@ -272,11 +272,11 @@ const UnifiedChallengeCard: React.FC<UnifiedChallengeCardProps> = ({
       const isWinner = challengerScore > opponentScore;
       return (
         <div className='flex items-center gap-2 text-lg font-bold'>
-          <span className={isWinner ? 'text-green-600' : 'text-red-600'}>
+          <span className={isWinner ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500'}>
             {challenge.challenger_score}
           </span>
           <span className='text-muted-foreground'>-</span>
-          <span className={!isWinner ? 'text-green-600' : 'text-red-600'}>
+          <span className={!isWinner ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500'}>
             {challenge.opponent_score}
           </span>
         </div>
@@ -511,7 +511,7 @@ const UnifiedChallengeCard: React.FC<UnifiedChallengeCardProps> = ({
 
   return (
     <Card
-      className={`group relative h-full bg-gradient-to-br ${statusConfig.className} backdrop-blur-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}
+      className={`group relative h-full ${statusConfig.className} hover:shadow-md transition-all duration-200`}
     >
       {/* Status indicator */}
       <div
@@ -570,9 +570,9 @@ const UnifiedChallengeCard: React.FC<UnifiedChallengeCardProps> = ({
         {/* Challenge Details */}
         <div className='grid grid-cols-2 gap-4 p-3 bg-white/50 rounded-lg border border-white/20'>
           <div className='flex items-center gap-2'>
-            <DollarSign className='w-4 h-4 text-yellow-600' />
+            <Star className='w-4 h-4 text-yellow-600' />
             <span className={`font-semibold ${isCompact ? 'text-sm' : ''}`}>
-              {challenge.bet_points} điểm
+              {challenge.bet_points} SPA
             </span>
           </div>
           <div className='flex items-center gap-2'>

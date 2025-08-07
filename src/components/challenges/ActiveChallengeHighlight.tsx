@@ -80,20 +80,22 @@ export const ActiveChallengeHighlight: React.FC<
       <Card
         className={`${
           hasActiveChallenges
-            ? 'bg-gradient-to-br from-green-50 to-emerald-100 border border-green-200'
-            : 'bg-gradient-to-br from-gray-50 to-slate-100 border border-gray-200'
-        } shadow-lg`}
+            ? 'bg-gradient-to-br from-green-50/80 via-emerald-50/70 to-green-100/60 dark:from-green-950/20 dark:via-emerald-950/15 dark:to-green-900/25 border border-green-200/50 dark:border-green-700/30 backdrop-blur-sm'
+            : 'bg-gradient-to-br from-slate-50/80 via-slate-100/70 to-slate-200/60 dark:from-slate-900/20 dark:via-slate-800/15 dark:to-slate-700/25 border border-slate-200/50 dark:border-slate-700/30 backdrop-blur-sm'
+        } shadow-lg hover:shadow-xl transition-all duration-300`}
       >
         <CardHeader className='pb-4'>
           <CardTitle
-            className={`flex items-center gap-3 ${hasActiveChallenges ? 'text-green-800' : 'text-gray-700'}`}
+            className={`flex items-center gap-3 ${hasActiveChallenges ? 'text-green-800 dark:text-green-200' : 'text-slate-800 dark:text-slate-200'}`}
           >
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                hasActiveChallenges ? 'bg-green-600' : 'bg-gray-400'
+              className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md ${
+                hasActiveChallenges 
+                  ? 'bg-gradient-to-br from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-700' 
+                  : 'bg-gradient-to-br from-slate-500 to-slate-600 dark:from-slate-600 dark:to-slate-700'
               }`}
             >
-              <Zap className='w-5 h-5 text-white' />
+              <Zap className='w-5 h-5 text-white drop-shadow-sm' />
             </div>
             <div>
               <h3 className='text-xl font-bold'>
@@ -103,7 +105,9 @@ export const ActiveChallengeHighlight: React.FC<
               </h3>
               <p
                 className={`text-sm font-normal ${
-                  hasActiveChallenges ? 'text-green-600' : 'text-gray-500'
+                  hasActiveChallenges 
+                    ? 'text-green-700/80 dark:text-green-300/80' 
+                    : 'text-slate-600/80 dark:text-slate-400/80'
                 }`}
               >
                 {hasActiveChallenges
@@ -130,7 +134,7 @@ export const ActiveChallengeHighlight: React.FC<
                 return (
                   <Card
                     key={challenge.id}
-                    className='bg-white border border-green-200 hover:shadow-md transition-all duration-300 hover:border-green-300'
+                    className='bg-white/90 dark:bg-slate-800/90 border border-green-200/60 dark:border-green-700/40 hover:shadow-lg hover:bg-white/95 dark:hover:bg-slate-800/95 transition-all duration-300 hover:border-green-300/80 dark:hover:border-green-600/60 backdrop-blur-sm'
                   >
                     <CardContent className='p-4'>
                       {/* Challenge Header */}
@@ -138,20 +142,20 @@ export const ActiveChallengeHighlight: React.FC<
                         <div className='flex items-center gap-2'>
                           <Badge
                             variant='default'
-                            className='bg-green-600 text-white'
+                            className='bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-sm border-0'
                           >
                             <Target className='w-3 h-3 mr-1' />
                             Race to {challenge.race_to}
                           </Badge>
                           <Badge
                             variant='outline'
-                            className='border-orange-300 text-orange-700'
+                            className='border-orange-300/60 bg-orange-50/80 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 dark:border-orange-600/40'
                           >
                             <DollarSign className='w-3 h-3 mr-1' />
                             {challenge.bet_points} SPA
                           </Badge>
                         </div>
-                        <div className='text-xs text-gray-500 flex items-center gap-1'>
+                        <div className='text-xs text-slate-600/80 dark:text-slate-400/80 flex items-center gap-1'>
                           <Clock className='w-3 h-3' />
                           {timeAgo}
                         </div>
@@ -160,41 +164,41 @@ export const ActiveChallengeHighlight: React.FC<
                       {/* Players */}
                       <div className='flex items-center justify-between mb-4'>
                         <div className='flex items-center gap-3'>
-                          <Avatar className='w-10 h-10 border-2 border-blue-200'>
+                          <Avatar className='w-10 h-10 border-2 border-blue-200/60 dark:border-blue-600/40 shadow-sm'>
                             <AvatarImage src={challenger.avatar} />
-                            <AvatarFallback className='bg-blue-100 text-blue-700'>
+                            <AvatarFallback className='bg-blue-100/80 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300'>
                               {challenger.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className='font-semibold text-gray-800'>
+                            <div className='font-semibold text-slate-800 dark:text-slate-200'>
                               {challenger.name}
                             </div>
-                            <div className='text-xs text-gray-500'>
+                            <div className='text-xs text-slate-600/80 dark:text-slate-400/80'>
                               {challenger.spa} SPA
                             </div>
                           </div>
                         </div>
 
                         <div className='flex flex-col items-center'>
-                          <ArrowRight className='w-5 h-5 text-gray-400' />
-                          <span className='text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded'>
+                          <ArrowRight className='w-5 h-5 text-slate-500/80 dark:text-slate-400/80' />
+                          <span className='text-xs font-bold text-green-700 dark:text-green-300 bg-green-100/80 dark:bg-green-900/30 px-2 py-1 rounded shadow-sm'>
                             VS
                           </span>
                         </div>
 
                         <div className='flex items-center gap-3'>
                           <div className='text-right'>
-                            <div className='font-semibold text-gray-800'>
+                            <div className='font-semibold text-slate-800 dark:text-slate-200'>
                               {opponent.name}
                             </div>
-                            <div className='text-xs text-gray-500'>
+                            <div className='text-xs text-slate-600/80 dark:text-slate-400/80'>
                               {opponent.spa} SPA
                             </div>
                           </div>
-                          <Avatar className='w-10 h-10 border-2 border-red-200'>
+                          <Avatar className='w-10 h-10 border-2 border-red-200/60 dark:border-red-600/40 shadow-sm'>
                             <AvatarImage src={opponent.avatar} />
-                            <AvatarFallback className='bg-red-100 text-red-700'>
+                            <AvatarFallback className='bg-red-100/80 dark:bg-red-900/40 text-red-700 dark:text-red-300'>
                               {opponent.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
@@ -205,14 +209,14 @@ export const ActiveChallengeHighlight: React.FC<
                       <div className='flex gap-2'>
                         <Button
                           onClick={() => handleScoreEntry(challenge)}
-                          className='flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold'
+                          className='flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200'
                         >
                           📊 Nhập Tỷ Số
                         </Button>
                         <Button
                           variant='outline'
                           onClick={() => onChallengeClick?.(challenge)}
-                          className='px-4 border-green-300 text-green-700 hover:bg-green-50'
+                          className='px-4 border-green-300/60 dark:border-green-600/40 text-green-700 dark:text-green-300 hover:bg-green-50/80 dark:hover:bg-green-900/20 backdrop-blur-sm'
                         >
                           Chi tiết
                         </Button>
@@ -220,7 +224,7 @@ export const ActiveChallengeHighlight: React.FC<
 
                       {/* Challenge Message */}
                       {challenge.message && (
-                        <div className='mt-3 p-2 bg-gray-50 rounded text-xs text-gray-600 border-l-2 border-green-300'>
+                        <div className='mt-3 p-2 bg-slate-100/60 dark:bg-slate-700/40 rounded text-xs text-slate-700/80 dark:text-slate-300/80 border-l-2 border-green-300/80 dark:border-green-600/60 backdrop-blur-sm'>
                           💬 {challenge.message}
                         </div>
                       )}
@@ -232,12 +236,12 @@ export const ActiveChallengeHighlight: React.FC<
           ) : (
             <div className='flex flex-col items-center justify-center py-8 text-center'>
               <div className='w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-3'>
-                <Trophy className='w-6 h-6 text-gray-400' />
+                                <Trophy className='w-6 h-6 text-muted-foreground' />
               </div>
-              <p className='text-gray-500 text-sm mb-2'>
-                Khi có thách đấu được chấp nhận, bạn có thể nhập tỷ số tại đây
+              <p className='text-muted-foreground text-sm mb-2'>
+                Chưa có thách đấu đang diễn ra
               </p>
-              <div className='text-xs text-gray-400'>
+              <div className='text-xs text-muted-foreground'>
                 Khu vực này luôn hiển thị để theo dõi trận đấu
               </div>
             </div>

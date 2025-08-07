@@ -9,7 +9,7 @@ import { useProgressiveLoading } from '../hooks/useProgressiveLoading';
 import { useSocialFeed } from '../hooks/useSocialFeed';
 import { RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
-import { DatabaseRelationshipTest } from '../components/debug/DatabaseRelationshipTest';
+import { ChallengeDataChecker } from '../components/debug/ChallengeDataChecker';
 
 // Dashboard now uses real data from useSocialFeed hook
 
@@ -133,9 +133,9 @@ const Dashboard = () => {
         {/* Story Reel with real data */}
         <MobileStoryReel stories={stories} />
 
-        {/* Debug: Database Relationship Test - Remove in production */}
+        {/* Debug: Challenge Data Checker */}
         <div className='px-4 mb-4'>
-          <DatabaseRelationshipTest />
+          <ChallengeDataChecker />
         </div>
 
         {/* Social Feed */}

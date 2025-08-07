@@ -24,6 +24,9 @@ import CreateChallengeButton from '@/components/CreateChallengeButton';
 
 import TrustScoreBadge from '@/components/TrustScoreBadge';
 import CompactStatCard from '@/components/challenges/CompactStatCard';
+import { CompletedChallengeCard } from '@/components/challenges/CompletedChallengeCard';
+import { OpenChallengeCard } from '@/components/challenges/OpenChallengeCard';
+import LiveMatchCard from '@/components/challenges/LiveMatchCard';
 import LiveActivityFeed from '@/components/challenges/LiveActivityFeed';
 
 import MobileChallengeManager from '@/components/challenges/MobileChallengeManager';
@@ -42,7 +45,6 @@ import {
   Zap,
   Clock,
   MapPin,
-  DollarSign,
   Calendar,
   Bell,
   MessageSquare,
@@ -82,7 +84,7 @@ const EnhancedChallengesPageV2: React.FC = () => {
   // Hook để lấy matches từ challenges đã được accept
   const [matchesData, setMatchesData] = useStateForMatches<any[]>([]);
   const [loadingMatches, setLoadingMatches] = useState(false);
-  const [activeTab, setActiveTab] = useState('my-challenges');
+  const [activeTab, setActiveTab] = useState('all-cards');
   const [challengeTypeFilter, setChallengeTypeFilter] = useState<
     'all' | 'standard' | 'sabo'
   >('all');
@@ -92,7 +94,7 @@ const EnhancedChallengesPageV2: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // Modals
-  const [showCreateModal, setShowCreateModal] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [showAdminCreateModal, setShowAdminCreateModal] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -113,6 +115,15 @@ const EnhancedChallengesPageV2: React.FC = () => {
       c.challenger_id === user?.id || c.opponent_id === user?.id;
     return isMyChallenge;
   });
+  
+  // Completed challenges filter
+  const completedChallenges = challenges.filter(c => {
+    if (c.status !== 'completed') return false;
+    const isMyChallenge =
+      c.challenger_id === user?.id || c.opponent_id === user?.id;
+    return isMyChallenge;
+  });
+  
   const myMatches = myChallenges.filter(
     c => c.status === 'accepted' || c.status === 'completed'
   );
@@ -161,10 +172,11 @@ const EnhancedChallengesPageV2: React.FC = () => {
     total: myChallenges.length,
     pending: myChallenges.filter(c => c.status === 'pending').length,
     accepted: myChallenges.filter(c => c.status === 'accepted').length,
-    completed: myChallenges.filter(c => c.status === 'completed').length,
-    won: 0, // This would come from match results
-    lost: 0,
-    winRate: 0,
+    completed: completedChallenges.length,
+    won: completedChallenges.filter(c => c.winner_id === user?.id).length,
+    lost: completedChallenges.filter(c => c.winner_id && c.winner_id !== user?.id).length,
+    winRate: completedChallenges.length > 0 ? 
+      Math.round((completedChallenges.filter(c => c.winner_id === user?.id).length / completedChallenges.length) * 100) : 0,
   };
 
   const checkAdminStatus = async () => {
@@ -526,7 +538,7 @@ const EnhancedChallengesPageV2: React.FC = () => {
         </div>
 
         {/* Compact Statistics Row - Professional Design */}
-        <div className='grid grid-cols-4 gap-6 mb-8'>
+        <div className='grid grid-cols-6 gap-4 mb-8'>
           <CompactStatCard
             icon={Trophy}
             value={stats.total}
@@ -550,6 +562,18 @@ const EnhancedChallengesPageV2: React.FC = () => {
             value={stats.completed}
             label='Hoàn thành'
             color='info'
+          />
+          <CompactStatCard
+            icon={Trophy}
+            value={stats.won}
+            label='Thắng'
+            color='success'
+          />
+          <CompactStatCard
+            icon={Target}
+            value={`${stats.winRate}%`}
+            label='Tỷ lệ thắng'
+            color='primary'
           />
         </div>
 
@@ -673,33 +697,44 @@ const EnhancedChallengesPageV2: React.FC = () => {
               onValueChange={setActiveTab}
               className='space-y-6'
             >
-              <TabsList className='grid w-full grid-cols-4 bg-card/50 backdrop-blur-sm border border-border/50 p-1 rounded-lg shadow-sm h-12'>
+              <TabsList className='grid w-full grid-cols-6 bg-card/50 backdrop-blur-sm border border-border/50 p-1 rounded-lg shadow-sm h-12'>
                 <TabsTrigger
                   value='my-challenges'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-sm'
+                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
                 >
                   Thách đấu của tôi (
                   {getFilteredChallenges(myChallenges).length})
                 </TabsTrigger>
                 <TabsTrigger
                   value='my-matches'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-sm'
+                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
                 >
-                  📊 Trận đấu của tôi ({getFilteredChallenges(myMatches).length}
-                  )
+                  📊 Trận đấu ({getFilteredChallenges(myMatches).length})
                 </TabsTrigger>
                 <TabsTrigger
                   value='active-challenges'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-sm'
+                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
                 >
                   Đang diễn ra (
                   {getFilteredChallenges(activeChallenges, true).length})
                 </TabsTrigger>
                 <TabsTrigger
-                  value='open-challenges'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-sm'
+                  value='completed-challenges'
+                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
                 >
-                  Thách đấu mở ({getFilteredChallenges(openChallenges).length})
+                  🏆 Hoàn thành ({getFilteredChallenges(completedChallenges).length})
+                </TabsTrigger>
+                <TabsTrigger
+                  value='open-challenges'
+                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
+                >
+                  Mở ({getFilteredChallenges(openChallenges).length})
+                </TabsTrigger>
+                <TabsTrigger
+                  value='all-cards'
+                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
+                >
+                  🎯 Tất cả Cards
                 </TabsTrigger>
               </TabsList>
 
@@ -816,6 +851,242 @@ const EnhancedChallengesPageV2: React.FC = () => {
                     </CardContent>
                   </Card>
                 )}
+              </TabsContent>
+
+              <TabsContent value='completed-challenges' className='space-y-6'>
+                {getFilteredChallenges(completedChallenges).length > 0 ? (
+                  <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
+                    {getFilteredChallenges(completedChallenges).map(challenge => (
+                      <CompletedChallengeCard
+                        key={challenge.id}
+                        challenge={challenge}
+                        onView={() => handleChallengeClick(challenge)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <Card className='bg-gradient-to-br from-purple-50/50 to-violet-50/50 border border-purple-200/30'>
+                    <CardContent className='p-16 text-center'>
+                      <div className='p-4 rounded-full bg-gradient-to-br from-purple-100 to-violet-100 w-fit mx-auto mb-6'>
+                        <Trophy className='w-16 h-16 text-purple-600 mx-auto' />
+                      </div>
+                      <h3 className='text-xl font-semibold text-foreground mb-3'>
+                        Chưa có thách đấu nào hoàn thành
+                      </h3>
+                      <p className='text-muted-foreground max-w-md mx-auto'>
+                        Các thách đấu đã hoàn thành sẽ hiển thị ở đây để bạn có thể xem lại kết quả và thống kê.
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+
+              <TabsContent value='all-cards' className='space-y-8'>
+                <div className='space-y-8'>
+                  {/* Section 1: UnifiedChallengeCard (Match Variant) */}
+                  <div className='space-y-4'>
+                    <h3 className='text-lg font-semibold text-foreground flex items-center gap-2'>
+                      <Trophy className='w-5 h-5' />
+                      UnifiedChallengeCard (Match Variant)
+                    </h3>
+                    <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
+                      {challenges.slice(0, 3).map(challenge => (
+                        <div key={`unified-match-${challenge.id}`} className='space-y-2'>
+                          <Badge variant='outline' className='text-xs'>UnifiedChallengeCard (Match)</Badge>
+                          <UnifiedChallengeCard
+                            challenge={challenge}
+                            variant='match'
+                            currentUserId={user?.id || ''}
+                            onSubmitScore={handleSubmitScore}
+                            isSubmittingScore={isSubmittingScore}
+                            onAction={(id, action) => handleChallengeAction(id, action)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Section 2: OpenChallengeCard */}
+                  <div className='space-y-4'>
+                    <h3 className='text-lg font-semibold text-foreground flex items-center gap-2'>
+                      <Users className='w-5 h-5' />
+                      OpenChallengeCard
+                    </h3>
+                    <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
+                      {openChallenges.slice(0, 3).map(challenge => (
+                        <div key={`open-${challenge.id}`} className='space-y-2'>
+                          <Badge variant='outline' className='text-xs'>OpenChallengeCard</Badge>
+                          <OpenChallengeCard
+                            challenge={challenge}
+                            onJoin={handleJoinOpenChallenge}
+                            currentUser={user}
+                          />
+                        </div>
+                      ))}
+                      {/* Demo card if no open challenges */}
+                      {openChallenges.length === 0 && (
+                        <div className='space-y-2'>
+                          <Badge variant='outline' className='text-xs'>OpenChallengeCard (Demo)</Badge>
+                          <Card className='p-6 border-dashed border-2 border-muted-foreground/20'>
+                            <div className='text-center'>
+                              <Users className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
+                              <p className='text-muted-foreground text-sm'>
+                                No open challenges available.
+                                <br />Create an open challenge to see this card in action!
+                              </p>
+                            </div>
+                          </Card>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Section 3: CompletedChallengeCard */}
+                  <div className='space-y-4'>
+                    <h3 className='text-lg font-semibold text-foreground flex items-center gap-2'>
+                      <Star className='w-5 h-5' />
+                      CompletedChallengeCard
+                    </h3>
+                    <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
+                      {completedChallenges.slice(0, 3).map(challenge => (
+                        <div key={`completed-${challenge.id}`} className='space-y-2'>
+                          <Badge variant='outline' className='text-xs'>CompletedChallengeCard</Badge>
+                          <CompletedChallengeCard
+                            challenge={challenge}
+                            onView={() => handleChallengeClick(challenge)}
+                          />
+                        </div>
+                      ))}
+                      {/* Demo card if no completed challenges */}
+                      {completedChallenges.length === 0 && (
+                        <div className='space-y-2'>
+                          <Badge variant='outline' className='text-xs'>CompletedChallengeCard (Demo)</Badge>
+                          <Card className='p-6 border-dashed border-2 border-muted-foreground/20'>
+                            <div className='text-center'>
+                              <Star className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
+                              <p className='text-muted-foreground text-sm'>
+                                No completed challenges yet.
+                                <br />Complete some challenges to see this card!
+                              </p>
+                            </div>
+                          </Card>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Section 4: LiveMatchCard */}
+                  <div className='space-y-4'>
+                    <h3 className='text-lg font-semibold text-foreground flex items-center gap-2'>
+                      <Zap className='w-5 h-5' />
+                      LiveMatchCard (Demo Data)
+                    </h3>
+                    <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
+                      {/* LiveMatchCard Demo 1 */}
+                      <div className='space-y-2'>
+                        <Badge variant='outline' className='text-xs'>LiveMatchCard</Badge>
+                        <LiveMatchCard
+                          match={{
+                            id: 'demo-live-1',
+                            player1: {
+                              name: 'Nguyễn Văn A',
+                              avatar: '',
+                              rank: 'Pro'
+                            },
+                            player2: {
+                              name: 'Trần Văn B',
+                              avatar: '',
+                              rank: 'Expert'
+                            },
+                            score: {
+                              player1: 3,
+                              player2: 2
+                            },
+                            raceToTarget: 5,
+                            location: 'Club Billiards VIP',
+                            startTime: new Date().toISOString(),
+                            betPoints: 100
+                          }}
+                          onWatch={(id) => console.log('Watch match:', id)}
+                        />
+                      </div>
+
+                      {/* LiveMatchCard Demo 2 */}
+                      <div className='space-y-2'>
+                        <Badge variant='outline' className='text-xs'>LiveMatchCard</Badge>
+                        <LiveMatchCard
+                          match={{
+                            id: 'demo-live-2',
+                            player1: {
+                              name: 'Lê Thị C',
+                              avatar: '',
+                              rank: 'Master'
+                            },
+                            player2: {
+                              name: 'Phạm Văn D',
+                              avatar: '',
+                              rank: 'Pro'
+                            },
+                            score: {
+                              player1: 1,
+                              player2: 4
+                            },
+                            raceToTarget: 7,
+                            location: 'Arena Premium',
+                            startTime: new Date(Date.now() - 1800000).toISOString(),
+                            betPoints: 250
+                          }}
+                          onWatch={(id) => console.log('Watch match:', id)}
+                        />
+                      </div>
+
+                      {/* LiveMatchCard Demo 3 */}
+                      <div className='space-y-2'>
+                        <Badge variant='outline' className='text-xs'>LiveMatchCard</Badge>
+                        <LiveMatchCard
+                          match={{
+                            id: 'demo-live-3',
+                            player1: {
+                              name: 'Hoàng Văn E',
+                              avatar: '',
+                              rank: 'Expert'
+                            },
+                            player2: {
+                              name: 'Vũ Thị F',
+                              avatar: '',
+                              rank: 'Advanced'
+                            },
+                            score: {
+                              player1: 6,
+                              player2: 6
+                            },
+                            raceToTarget: 9,
+                            location: 'Elite Club',
+                            startTime: new Date(Date.now() - 3600000).toISOString(),
+                            betPoints: 500
+                          }}
+                          onWatch={(id) => console.log('Watch match:', id)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Instructions */}
+                  <Card className='bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200'>
+                    <CardContent className='p-6'>
+                      <h4 className='font-semibold text-blue-900 mb-3 flex items-center gap-2'>
+                        <Shield className='w-5 h-5' />
+                        Selected Card Components Overview
+                      </h4>
+                      <div className='text-sm text-blue-800 space-y-2'>
+                        <p><strong>UnifiedChallengeCard (Match):</strong> Main card for match display with score submission</p>
+                        <p><strong>OpenChallengeCard:</strong> For open challenges that players can join</p>
+                        <p><strong>CompletedChallengeCard:</strong> Shows completed challenge results and winners</p>
+                        <p><strong>LiveMatchCard:</strong> Real-time ongoing matches with live scores</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </TabsContent>
 
               <TabsContent value='open-challenges' className='space-y-6'>

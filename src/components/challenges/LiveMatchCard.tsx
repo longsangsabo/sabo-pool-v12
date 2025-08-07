@@ -36,15 +36,15 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
   const progress2 = (match.score.player2 / match.raceToTarget) * 100;
 
   return (
-    <Card className='bg-gradient-to-br from-red-50/70 to-orange-50/70 border-red-200/50 hover:border-red-300/70 transition-all duration-200 hover:shadow-lg hover:shadow-red-500/10'>
+    <Card className='bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10'>
       <CardContent className='p-4'>
         <div className='flex items-center justify-between mb-4'>
           <div className='flex items-center gap-2'>
             <div className='relative'>
-              <div className='w-3 h-3 bg-red-500 rounded-full animate-pulse'></div>
-              <div className='absolute inset-0 w-3 h-3 bg-red-500 rounded-full animate-ping'></div>
+              <div className='w-3 h-3 bg-slate-500 rounded-full animate-pulse'></div>
+              <div className='absolute inset-0 w-3 h-3 bg-slate-400 rounded-full animate-ping'></div>
             </div>
-            <Badge variant='destructive' className='animate-pulse'>
+            <Badge variant='destructive' className='bg-slate-600 dark:bg-slate-700 text-slate-100 animate-pulse border-slate-400 dark:border-slate-600'>
               LIVE
             </Badge>
           </div>
@@ -53,7 +53,7 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
             {match.betPoints && (
               <Badge
                 variant='outline'
-                className='text-amber-700 border-amber-300'
+                className='text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
               >
                 {match.betPoints} SPA
               </Badge>
@@ -62,7 +62,7 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
               size='sm'
               variant='outline'
               onClick={() => onWatch?.(match.id)}
-              className='gap-1'
+              className='gap-1 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             >
               <Eye className='w-4 h-4' />
               WATCH
@@ -76,22 +76,22 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
           <div className='col-span-2 text-center'>
             <Avatar className='w-12 h-12 mx-auto mb-2'>
               <AvatarImage src={match.player1.avatar} />
-              <AvatarFallback>{match.player1.name[0]}</AvatarFallback>
+              <AvatarFallback className='bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>{match.player1.name[0]}</AvatarFallback>
             </Avatar>
-            <div className='text-sm font-semibold truncate'>
+            <div className='text-sm font-semibold truncate text-slate-700 dark:text-slate-300'>
               {match.player1.name}
             </div>
-            <div className='text-xs text-muted-foreground'>
+            <div className='text-xs text-slate-500 dark:text-slate-400'>
               {match.player1.rank}
             </div>
           </div>
 
           {/* Score */}
           <div className='text-center'>
-            <div className='text-2xl font-bold text-red-600'>
+            <div className='text-2xl font-bold text-slate-600 dark:text-slate-300'>
               {match.score.player1} - {match.score.player2}
             </div>
-            <div className='text-xs text-muted-foreground'>
+            <div className='text-xs text-slate-500 dark:text-slate-400'>
               Race to {match.raceToTarget}
             </div>
           </div>
@@ -100,12 +100,12 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
           <div className='col-span-2 text-center'>
             <Avatar className='w-12 h-12 mx-auto mb-2'>
               <AvatarImage src={match.player2.avatar} />
-              <AvatarFallback>{match.player2.name[0]}</AvatarFallback>
+              <AvatarFallback className='bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>{match.player2.name[0]}</AvatarFallback>
             </Avatar>
-            <div className='text-sm font-semibold truncate'>
+            <div className='text-sm font-semibold truncate text-slate-700 dark:text-slate-300'>
               {match.player2.name}
             </div>
-            <div className='text-xs text-muted-foreground'>
+            <div className='text-xs text-slate-500 dark:text-slate-400'>
               {match.player2.rank}
             </div>
           </div>
@@ -114,34 +114,34 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
         {/* Progress bars */}
         <div className='space-y-2 mb-4'>
           <div className='flex items-center gap-2'>
-            <div className='text-xs font-medium w-20 truncate'>
+            <div className='text-xs font-medium w-20 truncate text-slate-700 dark:text-slate-300'>
               {match.player1.name}
             </div>
-            <div className='flex-1 bg-gray-200 rounded-full h-2'>
+            <div className='flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-2'>
               <div
-                className='bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300'
+                className='bg-gradient-to-r from-slate-500 to-slate-600 dark:from-slate-400 dark:to-slate-500 h-2 rounded-full transition-all duration-300'
                 style={{ width: `${progress1}%` }}
               />
             </div>
-            <div className='text-xs font-bold w-6'>{match.score.player1}</div>
+            <div className='text-xs font-bold w-6 text-slate-700 dark:text-slate-300'>{match.score.player1}</div>
           </div>
 
           <div className='flex items-center gap-2'>
-            <div className='text-xs font-medium w-20 truncate'>
+            <div className='text-xs font-medium w-20 truncate text-slate-700 dark:text-slate-300'>
               {match.player2.name}
             </div>
-            <div className='flex-1 bg-gray-200 rounded-full h-2'>
+            <div className='flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-2'>
               <div
-                className='bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-300'
+                className='bg-gradient-to-r from-slate-600 to-slate-700 dark:from-slate-300 dark:to-slate-400 h-2 rounded-full transition-all duration-300'
                 style={{ width: `${progress2}%` }}
               />
             </div>
-            <div className='text-xs font-bold w-6'>{match.score.player2}</div>
+            <div className='text-xs font-bold w-6 text-slate-700 dark:text-slate-300'>{match.score.player2}</div>
           </div>
         </div>
 
         {/* Match info */}
-        <div className='flex items-center justify-between text-xs text-muted-foreground'>
+        <div className='flex items-center justify-between text-xs text-slate-500 dark:text-slate-400'>
           <div className='flex items-center gap-1'>
             <Clock className='w-3 h-3' />
             <span>

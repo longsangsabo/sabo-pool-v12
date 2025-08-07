@@ -3618,6 +3618,10 @@ export type Database = {
         Args: { p_request_id: string }
         Returns: Json
       }
+      assign_club_owner_role: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
       assign_loser_to_branch: {
         Args: { p_loser_id: string; p_branch: string; p_tournament_id: string }
         Returns: undefined
@@ -3810,6 +3814,10 @@ export type Database = {
           p_message?: string
         }
         Returns: string
+      }
+      create_club_profile_from_registration: {
+        Args: { p_registration_id: string; p_admin_id?: string }
+        Returns: Json
       }
       create_club_zero_data: {
         Args: { p_club_id: string; p_user_id: string }
@@ -4459,6 +4467,10 @@ export type Database = {
         Returns: Json
       }
       sync_all_completed_tournament_rewards: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      sync_approved_club_registrations: {
         Args: Record<PropertyKey, never>
         Returns: Json
       }

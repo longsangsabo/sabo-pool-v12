@@ -31,20 +31,24 @@ import {
   Phone,
   Users,
   Calendar,
-  ExternalLink,
+  AlertTriangle,
+  RotateCcw,
 } from 'lucide-react';
 
 interface ClubRegistration {
   id: string;
-  owner_id: string;
-  name: string;
-  address?: string;
-  contact_info?: string;
+  user_id: string;
+  club_name: string;
+  address: string;
+  phone: string;
+  email?: string;
   description?: string;
-  status: 'pending' | 'active' | 'rejected';
+  status: 'draft' | 'pending' | 'approved' | 'rejected';
   rejection_reason?: string;
   created_at: string;
   updated_at: string;
+  basic_hourly_rate: number;
+  table_count: number;
   profiles?: {
     display_name: string;
     full_name: string;
@@ -58,9 +62,10 @@ const AdminClubRegistrations = () => {
   const [loading, setLoading] = useState(true);
   const [selectedRegistration, setSelectedRegistration] =
     useState<ClubRegistration | null>(null);
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('pending');
   const [rejectionReason, setRejectionReason] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [syncingData, setSyncingData] = useState(false);
 
   useEffect(() => {
     fetchRegistrations();
@@ -74,40 +79,11 @@ const AdminClubRegistrations = () => {
         {
           event: '*',
           schema: 'public',
-          table: 'clubs',
+          table: 'club_registrations',
         },
         payload => {
           console.log('Real-time club registration update:', payload);
-
-          if (payload.eventType === 'INSERT') {
-            // Add new registration to the list
-            const newRegistration = payload.new as ClubRegistration;
-            setRegistrations(prev => [newRegistration, ...prev]);
-            toast.info(`Đăng ký CLB mới: ${newRegistration.name}`);
-          } else if (payload.eventType === 'UPDATE') {
-            // Update existing registration
-            const updatedRegistration = payload.new as ClubRegistration;
-            setRegistrations(prev =>
-              prev.map(reg =>
-                reg.id === updatedRegistration.id ? updatedRegistration : reg
-              )
-            );
-
-            // Show status change notification
-            if (payload.old?.status !== payload.new?.status) {
-              const statusText =
-                payload.new?.status === 'active'
-                  ? 'đã duyệt'
-                  : payload.new?.status === 'rejected'
-                    ? 'bị từ chối'
-                    : payload.new?.status;
-              toast.success(`CLB "${updatedRegistration.name}" ${statusText}`);
-            }
-          } else if (payload.eventType === 'DELETE') {
-            // Remove registration from list
-            const deletedId = payload.old?.id;
-            setRegistrations(prev => prev.filter(reg => reg.id !== deletedId));
-          }
+          fetchRegistrations(); // Refresh data
         }
       )
       .subscribe();
@@ -118,92 +94,44 @@ const AdminClubRegistrations = () => {
     };
   }, [statusFilter]);
 
-  // Debug effect to check registrations table
-  useEffect(() => {
-    const debugCheck = async () => {
-      console.log('🔍 Checking clubs table...');
-
-      const { data, error, count } = await supabase
-        .from('clubs')
-        .select('*', { count: 'exact' });
-
-      console.log('Total clubs:', count);
-      console.log('Data:', data);
-      console.log('Error:', error);
-    };
-
-    debugCheck();
-  }, []);
-
   const fetchRegistrations = async () => {
-    console.log('🔍 Admin accessing club panel, filtering by:', statusFilter);
+    console.log('🔍 Admin accessing club registrations, filtering by:', statusFilter);
     setLoading(true);
 
     try {
-      // Simple query without joins first
       let query = supabase
-        .from('clubs')
-        .select('*')
+        .from('club_registrations')
+        .select(`
+          *,
+          profiles!club_registrations_user_id_fkey (
+            display_name,
+            full_name,
+            phone
+          )
+        `)
         .order('created_at', { ascending: false });
 
-      // Apply status filter - only filter if not 'all'
+      // Apply status filter
       if (statusFilter !== 'all') {
-        // Map filter values to match clubs table schema
-        const mappedFilter =
-          statusFilter === 'approved' ? 'active' : statusFilter;
-        query = query.eq('status', mappedFilter);
+        query = query.eq('status', statusFilter);
       }
 
-      const { data: clubs, error } = await query;
+      const { data: registrations, error } = await query;
 
       if (error) {
-        console.error('Club query error:', error);
-        toast.error('Không thể tải danh sách CLB: ' + error.message);
+        console.error('Club registrations query error:', error);
+        toast.error('Không thể tải danh sách đăng ký CLB: ' + error.message);
         return;
       }
 
       console.log(
-        '📋 Found clubs with filter:',
+        '📋 Found registrations with filter:',
         statusFilter,
         'Count:',
-        clubs?.length || 0
-      );
-      console.log(
-        'Club statuses:',
-        clubs?.map(c => c.status)
+        registrations?.length || 0
       );
 
-      // If we have clubs, get user info separately
-      let clubsWithUsers = clubs || [];
-      if (clubs && clubs.length > 0) {
-        const userIds = [
-          ...new Set(clubs.map(c => c.owner_id).filter(Boolean)),
-        ];
-
-        if (userIds.length > 0) {
-          const { data: users, error: usersError } = await supabase
-            .from('profiles')
-            .select('user_id, display_name, full_name, phone')
-            .in('user_id', userIds);
-
-          if (usersError) {
-            console.error('Users query error:', usersError);
-          } else {
-            // Merge user data with clubs
-            clubsWithUsers = clubs.map(club => ({
-              ...club,
-              profiles: users?.find(u => u.user_id === club.owner_id) || null,
-            }));
-          }
-        }
-      }
-
-      setRegistrations(
-        clubsWithUsers.map(item => ({
-          ...item,
-          status: item.status as 'pending' | 'active' | 'rejected',
-        }))
-      );
+      setRegistrations((registrations || []) as any);
     } catch (error: any) {
       console.error('Error fetching registrations:', error);
       toast.error('Lỗi khi tải danh sách đăng ký: ' + error.message);
@@ -213,46 +141,51 @@ const AdminClubRegistrations = () => {
   };
 
   const approveRegistration = async (registration: ClubRegistration) => {
-    console.log('✅ Starting approval for club:', registration.name);
+    console.log('✅ Starting approval for club:', registration.club_name);
     setProcessing(true);
 
     try {
-      // First, update the club status to active
-      const { error: clubUpdateError } = await supabase
-        .from('clubs')
-        .update({ status: 'active' })
+      // First, update the registration status to approved
+      const { error: updateError } = await supabase
+        .from('club_registrations')
+        .update({ 
+          status: 'approved',
+          approval_date: new Date().toISOString(),
+          reviewed_by: user?.id
+        })
         .eq('id', registration.id);
 
-      if (clubUpdateError) {
-        console.error('❌ Club approval error:', clubUpdateError);
-        throw new Error(`Lỗi duyệt câu lạc bộ: ${clubUpdateError.message}`);
+      if (updateError) {
+        console.error('❌ Registration approval error:', updateError);
+        throw new Error(`Lỗi duyệt đăng ký: ${updateError.message}`);
       }
 
-      // Create complete club data using the new zero-based function
-      const { data: clubCreationResult, error: clubCreationError } =
-        await supabase.rpc('create_club_zero_data', {
-          p_club_id: registration.id,
-          p_user_id: registration.owner_id,
-        });
+      // Create club profile and assign role using our new function
+      const { data: profileResult, error: profileError } = await supabase.rpc(
+        'create_club_profile_from_registration',
+        {
+          p_registration_id: registration.id,
+          p_admin_id: user?.id
+        }
+      );
 
-      if (clubCreationError) {
-        console.error('❌ Club creation error:', clubCreationError);
-        throw new Error(
-          `Lỗi tạo dữ liệu câu lạc bộ: ${clubCreationError.message}`
-        );
+      if (profileError) {
+        console.error('❌ Club profile creation error:', profileError);
+        throw new Error(`Lỗi tạo hồ sơ câu lạc bộ: ${profileError.message}`);
       }
 
-      console.log('✅ Club data created:', clubCreationResult);
+      console.log('✅ Club profile created:', profileResult);
 
       // Send notification to club owner
       const { error: notificationError } = await supabase
         .from('notifications')
         .insert({
-          user_id: registration.owner_id,
+          user_id: registration.user_id,
           type: 'club_approved',
           title: 'Câu lạc bộ đã được duyệt!',
-          message: `Câu lạc bộ "${registration.name}" của bạn đã được admin duyệt và có thể hoạt động. Chúc mừng!`,
-          action_url: `/clubs/${registration.id}`,
+          message: `Câu lạc bộ "${registration.club_name}" của bạn đã được admin duyệt và có thể hoạt động. Chúc mừng!`,
+          action_url: `/club-dashboard`,
+          auto_popup: true,
         });
 
       if (notificationError) {
@@ -261,7 +194,7 @@ const AdminClubRegistrations = () => {
 
       console.log('🎉 Club approval completed successfully!');
       toast.success(
-        `Đã duyệt thành công câu lạc bộ "${registration.name}"! Chủ CLB đã được thông báo.`
+        `Đã duyệt thành công câu lạc bộ "${registration.club_name}"! Chủ CLB đã được thông báo và cấp quyền.`
       );
 
       // Refresh the list to show updated status
@@ -283,7 +216,7 @@ const AdminClubRegistrations = () => {
 
     console.log(
       '❌ Rejecting club:',
-      registration.name,
+      registration.club_name,
       'Reason:',
       rejectionReason
     );
@@ -292,10 +225,12 @@ const AdminClubRegistrations = () => {
     try {
       // Update status with rejection reason
       const { error } = await supabase
-        .from('clubs')
+        .from('club_registrations')
         .update({
           status: 'rejected',
           rejection_reason: rejectionReason,
+          review_date: new Date().toISOString(),
+          reviewed_by: user?.id
         })
         .eq('id', registration.id);
 
@@ -308,11 +243,12 @@ const AdminClubRegistrations = () => {
       const { error: notificationError } = await supabase
         .from('notifications')
         .insert({
-          user_id: registration.owner_id,
+          user_id: registration.user_id,
           type: 'club_rejected',
           title: 'Đăng ký câu lạc bộ bị từ chối',
-          message: `Đăng ký câu lạc bộ "${registration.name}" đã bị từ chối. Lý do: ${rejectionReason}`,
+          message: `Đăng ký câu lạc bộ "${registration.club_name}" đã bị từ chối. Lý do: ${rejectionReason}`,
           action_url: `/clubs/register`,
+          auto_popup: true,
         });
 
       if (notificationError) {
@@ -322,9 +258,9 @@ const AdminClubRegistrations = () => {
         );
       }
 
-      console.log('❌ Club rejected successfully:', registration.name);
+      console.log('❌ Club rejected successfully:', registration.club_name);
       toast.success(
-        `Đã từ chối đăng ký câu lạc bộ "${registration.name}" và gửi thông báo cho chủ CLB`
+        `Đã từ chối đăng ký câu lạc bộ "${registration.club_name}" và gửi thông báo cho chủ CLB`
       );
       setRejectionReason('');
       await fetchRegistrations();
@@ -337,15 +273,42 @@ const AdminClubRegistrations = () => {
     }
   };
 
+  const syncApprovedRegistrations = async () => {
+    setSyncingData(true);
+    try {
+      const { data: syncResult, error } = await supabase.rpc('sync_approved_club_registrations');
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      const synced = (syncResult as any)?.synced_count || 0;
+      toast.success(`Đã đồng bộ ${synced} câu lạc bộ đã duyệt`);
+      
+      if (synced > 0) {
+        await fetchRegistrations();
+      }
+    } catch (error: any) {
+      console.error('Sync error:', error);
+      toast.error('Lỗi đồng bộ dữ liệu: ' + error.message);
+    } finally {
+      setSyncingData(false);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active':
+      case 'approved':
         return <Badge className='bg-green-100 text-green-800'>Đã duyệt</Badge>;
       case 'rejected':
         return <Badge className='bg-red-100 text-red-800'>Bị từ chối</Badge>;
       case 'pending':
         return (
           <Badge className='bg-yellow-100 text-yellow-800'>Chờ duyệt</Badge>
+        );
+      case 'draft':
+        return (
+          <Badge className='bg-gray-100 text-gray-800'>Bản nháp</Badge>
         );
       default:
         return (
@@ -362,28 +325,10 @@ const AdminClubRegistrations = () => {
     }).format(price);
   };
 
-  const getAmenityLabels = (amenities: Record<string, boolean>) => {
-    const labels: Record<string, string> = {
-      wifi: 'WiFi miễn phí',
-      car_parking: 'Chỗ đậu xe ô tô',
-      bike_parking: 'Chỗ đậu xe máy',
-      canteen: 'Căn tin/Đồ ăn',
-      air_conditioning: 'Máy lạnh',
-      vip_room: 'Phòng VIP riêng',
-      equipment_rental: 'Cho thuê dụng cụ',
-      coach: 'Có HLV/Coach',
-    };
-
-    return Object.entries(amenities)
-      .filter(([_, value]) => value)
-      .map(([key, _]) => labels[key])
-      .filter(Boolean);
-  };
-
   if (loading) {
     return (
       <div className='flex items-center justify-center p-8'>
-        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
+        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
       </div>
     );
   }
@@ -394,12 +339,12 @@ const AdminClubRegistrations = () => {
       <div className='flex justify-between items-center'>
         <div>
           <h1 className='text-2xl font-bold'>Quản lý đăng ký câu lạc bộ</h1>
-          <p className='text-gray-600'>
+          <p className='text-muted-foreground'>
             Xét duyệt các yêu cầu đăng ký câu lạc bộ ({registrations.length}{' '}
             đăng ký)
           </p>
           {statusFilter !== 'all' && (
-            <p className='text-sm text-blue-600'>
+            <p className='text-sm text-primary'>
               Đang lọc:{' '}
               {statusFilter === 'pending'
                 ? 'Chờ duyệt'
@@ -413,11 +358,20 @@ const AdminClubRegistrations = () => {
         </div>
         <div className='flex gap-3 items-center'>
           <Button
+            onClick={syncApprovedRegistrations}
+            variant='outline'
+            disabled={syncingData}
+            className='flex items-center gap-2'
+          >
+            <RotateCcw className={`w-4 h-4 ${syncingData ? 'animate-spin' : ''}`} />
+            {syncingData ? 'Đang đồng bộ...' : 'Đồng bộ dữ liệu'}
+          </Button>
+          <Button
             onClick={fetchRegistrations}
             variant='outline'
             disabled={loading}
           >
-            🔄 Refresh danh sách
+            🔄 Refresh
           </Button>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className='w-48'>
@@ -433,11 +387,15 @@ const AdminClubRegistrations = () => {
               </SelectItem>
               <SelectItem value='approved'>
                 Đã duyệt (
-                {registrations.filter(r => r.status === 'active').length})
+                {registrations.filter(r => r.status === 'approved').length})
               </SelectItem>
               <SelectItem value='rejected'>
                 Bị từ chối (
                 {registrations.filter(r => r.status === 'rejected').length})
+              </SelectItem>
+              <SelectItem value='draft'>
+                Bản nháp (
+                {registrations.filter(r => r.status === 'draft').length})
               </SelectItem>
             </SelectContent>
           </Select>
@@ -449,8 +407,8 @@ const AdminClubRegistrations = () => {
         {registrations.length === 0 ? (
           <Card>
             <CardContent className='pt-6 text-center'>
-              <Building className='w-12 h-12 mx-auto mb-4 text-gray-400' />
-              <p className='text-gray-500'>Không có đăng ký nào</p>
+              <Building className='w-12 h-12 mx-auto mb-4 text-muted-foreground' />
+              <p className='text-muted-foreground'>Không có đăng ký nào</p>
             </CardContent>
           </Card>
         ) : (
@@ -460,9 +418,9 @@ const AdminClubRegistrations = () => {
                 <div className='flex justify-between items-start'>
                   <div className='flex-1'>
                     <div className='flex items-center gap-2 mb-2'>
-                      <Building className='w-5 h-5 text-blue-600' />
+                      <Building className='w-5 h-5 text-primary' />
                       <h3 className='text-lg font-semibold'>
-                        {registration.name}
+                        {registration.club_name}
                       </h3>
                       {getStatusBadge(registration.status)}
                     </div>
@@ -470,33 +428,24 @@ const AdminClubRegistrations = () => {
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
                       <div className='space-y-2'>
                         <div className='flex items-center gap-2 text-sm'>
-                          <MapPin className='w-4 h-4 text-gray-500' />
-                          <span>
-                            {registration.address || 'Chưa có địa chỉ'}
-                          </span>
+                          <MapPin className='w-4 h-4 text-muted-foreground' />
+                          <span>{registration.address || 'Chưa có địa chỉ'}</span>
                         </div>
                         <div className='flex items-center gap-2 text-sm'>
-                          <Phone className='w-4 h-4 text-gray-500' />
-                          <span>
-                            {registration.contact_info ||
-                              'Chưa có số điện thoại'}
-                          </span>
+                          <Phone className='w-4 h-4 text-muted-foreground' />
+                          <span>{registration.phone || 'Chưa có số điện thoại'}</span>
                         </div>
-                        {registration.description && (
-                          <div className='flex items-center gap-2 text-sm'>
-                            <span className='text-gray-500'>Mô tả:</span>
-                            <span>{registration.description}</span>
-                          </div>
-                        )}
+                        <div className='flex items-center gap-2 text-sm'>
+                          <Users className='w-4 h-4 text-muted-foreground' />
+                          <span>{registration.table_count} bàn</span>
+                        </div>
                       </div>
 
                       <div className='space-y-2'>
                         <div className='flex items-center gap-2 text-sm'>
-                          <Calendar className='w-4 h-4 text-gray-500' />
+                          <Calendar className='w-4 h-4 text-muted-foreground' />
                           <span>
-                            {new Date(
-                              registration.created_at
-                            ).toLocaleDateString('vi-VN')}
+                            {new Date(registration.created_at).toLocaleDateString('vi-VN')}
                           </span>
                         </div>
                         <div className='text-sm'>
@@ -505,12 +454,10 @@ const AdminClubRegistrations = () => {
                             registration.profiles?.full_name ||
                             'Chưa có thông tin'}
                         </div>
-                        {registration.profiles?.phone && (
-                          <div className='text-sm'>
-                            <span className='font-medium'>SĐT:</span>{' '}
-                            {registration.profiles.phone}
-                          </div>
-                        )}
+                        <div className='text-sm'>
+                          <span className='font-medium'>Giá cơ bản:</span>{' '}
+                          {formatPrice(registration.basic_hourly_rate)}
+                        </div>
                       </div>
                     </div>
 
@@ -520,9 +467,7 @@ const AdminClubRegistrations = () => {
                           <Button
                             variant='outline'
                             size='sm'
-                            onClick={() =>
-                              setSelectedRegistration(registration)
-                            }
+                            onClick={() => setSelectedRegistration(registration)}
                           >
                             <Eye className='w-4 h-4 mr-2' />
                             Xem chi tiết
@@ -532,7 +477,7 @@ const AdminClubRegistrations = () => {
                           <DialogHeader>
                             <DialogTitle className='flex items-center gap-2'>
                               <Building className='w-5 h-5' />
-                              {registration.name}
+                              {registration.club_name}
                               {getStatusBadge(registration.status)}
                             </DialogTitle>
                           </DialogHeader>
@@ -541,44 +486,46 @@ const AdminClubRegistrations = () => {
                             <div className='space-y-6'>
                               {/* Basic Info */}
                               <div>
-                                <h4 className='font-semibold mb-3'>
-                                  Thông tin cơ bản
-                                </h4>
+                                <h4 className='font-semibold mb-3'>Thông tin cơ bản</h4>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                                   <div>
-                                    <label className='text-sm font-medium text-gray-700'>
+                                    <label className='text-sm font-medium text-muted-foreground'>
                                       Tên câu lạc bộ
                                     </label>
+                                    <p className='text-sm'>{selectedRegistration.club_name}</p>
+                                  </div>
+                                  <div>
+                                    <label className='text-sm font-medium text-muted-foreground'>
+                                      Số điện thoại
+                                    </label>
+                                    <p className='text-sm'>{selectedRegistration.phone}</p>
+                                  </div>
+                                  <div>
+                                    <label className='text-sm font-medium text-muted-foreground'>
+                                      Email
+                                    </label>
                                     <p className='text-sm'>
-                                      {selectedRegistration.name}
+                                      {selectedRegistration.email || 'Chưa có'}
                                     </p>
                                   </div>
                                   <div>
-                                    <label className='text-sm font-medium text-gray-700'>
-                                      Số điện thoại
+                                    <label className='text-sm font-medium text-muted-foreground'>
+                                      Số bàn
                                     </label>
-                                    <p className='text-sm'>
-                                      {selectedRegistration.contact_info ||
-                                        'Chưa có'}
-                                    </p>
+                                    <p className='text-sm'>{selectedRegistration.table_count}</p>
                                   </div>
                                   <div className='md:col-span-2'>
-                                    <label className='text-sm font-medium text-gray-700'>
+                                    <label className='text-sm font-medium text-muted-foreground'>
                                       Địa chỉ
                                     </label>
-                                    <p className='text-sm'>
-                                      {selectedRegistration.address ||
-                                        'Chưa có'}
-                                    </p>
+                                    <p className='text-sm'>{selectedRegistration.address}</p>
                                   </div>
                                   {selectedRegistration.description && (
                                     <div className='md:col-span-2'>
-                                      <label className='text-sm font-medium text-gray-700'>
+                                      <label className='text-sm font-medium text-muted-foreground'>
                                         Mô tả
                                       </label>
-                                      <p className='text-sm'>
-                                        {selectedRegistration.description}
-                                      </p>
+                                      <p className='text-sm'>{selectedRegistration.description}</p>
                                     </div>
                                   )}
                                 </div>
@@ -589,43 +536,29 @@ const AdminClubRegistrations = () => {
                                 <div className='space-y-4 pt-4 border-t'>
                                   <div className='flex gap-4'>
                                     <Button
-                                      onClick={() =>
-                                        approveRegistration(
-                                          selectedRegistration
-                                        )
-                                      }
+                                      onClick={() => approveRegistration(selectedRegistration)}
                                       disabled={processing}
                                       className='bg-green-600 hover:bg-green-700'
                                     >
                                       <Check className='w-4 h-4 mr-2' />
-                                      {processing
-                                        ? 'Đang duyệt...'
-                                        : 'Duyệt đăng ký'}
+                                      {processing ? 'Đang duyệt...' : 'Duyệt đăng ký'}
                                     </Button>
                                     <Button
                                       variant='destructive'
-                                      onClick={() =>
-                                        rejectRegistration(selectedRegistration)
-                                      }
-                                      disabled={
-                                        processing || !rejectionReason.trim()
-                                      }
+                                      onClick={() => rejectRegistration(selectedRegistration)}
+                                      disabled={processing || !rejectionReason.trim()}
                                     >
                                       <X className='w-4 h-4 mr-2' />
-                                      {processing
-                                        ? 'Đang từ chối...'
-                                        : 'Từ chối'}
+                                      {processing ? 'Đang từ chối...' : 'Từ chối'}
                                     </Button>
                                   </div>
                                   <div>
-                                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                    <label className='block text-sm font-medium text-muted-foreground mb-2'>
                                       Lý do từ chối (bắt buộc nếu từ chối)
                                     </label>
                                     <Textarea
                                       value={rejectionReason}
-                                      onChange={e =>
-                                        setRejectionReason(e.target.value)
-                                      }
+                                      onChange={e => setRejectionReason(e.target.value)}
                                       placeholder='Nhập lý do từ chối...'
                                       className='min-h-[80px]'
                                     />
@@ -636,11 +569,11 @@ const AdminClubRegistrations = () => {
                               {/* Rejection Reason */}
                               {selectedRegistration.status === 'rejected' &&
                                 selectedRegistration.rejection_reason && (
-                                  <div className='p-4 bg-red-50 rounded-lg'>
-                                    <h4 className='font-semibold text-red-900 mb-2'>
+                                  <div className='p-4 bg-destructive/10 rounded-lg'>
+                                    <h4 className='font-semibold text-destructive mb-2'>
                                       Lý do từ chối:
                                     </h4>
-                                    <p className='text-red-800 text-sm'>
+                                    <p className='text-destructive text-sm'>
                                       {selectedRegistration.rejection_reason}
                                     </p>
                                   </div>
@@ -675,18 +608,15 @@ const AdminClubRegistrations = () => {
                               </DialogHeader>
                               <div className='space-y-4'>
                                 <p>
-                                  Bạn có chắc chắn muốn từ chối đăng ký câu lạc
-                                  bộ "{registration.name}"?
+                                  Bạn có chắc chắn muốn từ chối đăng ký câu lạc bộ "{registration.club_name}"?
                                 </p>
                                 <div>
-                                  <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                  <label className='block text-sm font-medium text-muted-foreground mb-2'>
                                     Lý do từ chối *
                                   </label>
                                   <Textarea
                                     value={rejectionReason}
-                                    onChange={e =>
-                                      setRejectionReason(e.target.value)
-                                    }
+                                    onChange={e => setRejectionReason(e.target.value)}
                                     placeholder='Nhập lý do từ chối...'
                                     className='min-h-[80px]'
                                   />
@@ -694,12 +624,8 @@ const AdminClubRegistrations = () => {
                                 <div className='flex gap-2 justify-end'>
                                   <Button
                                     variant='destructive'
-                                    onClick={() =>
-                                      rejectRegistration(registration)
-                                    }
-                                    disabled={
-                                      processing || !rejectionReason.trim()
-                                    }
+                                    onClick={() => rejectRegistration(registration)}
+                                    disabled={processing || !rejectionReason.trim()}
                                   >
                                     {processing ? 'Đang từ chối...' : 'Từ chối'}
                                   </Button>

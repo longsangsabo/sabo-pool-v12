@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AdminLayout from '@/components/AdminLayout';
 import AdminClubRegistrations from '@/pages/admin/AdminClubRegistrations';
+import AdminApprovedClubs from '@/pages/admin/AdminApprovedClubs';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -61,19 +62,7 @@ const AdminClubs = () => {
         </TabsContent>
 
         <TabsContent value='approved' className='space-y-4'>
-          <Card>
-            <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <CheckCircle className='w-5 h-5 text-green-600' />
-                {t('admin.approved_clubs')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className='text-muted-foreground'>
-                Approved clubs management functionality will be implemented here.
-              </p>
-            </CardContent>
-          </Card>
+          <AdminApprovedClubs />
         </TabsContent>
       </Tabs>
     </div>

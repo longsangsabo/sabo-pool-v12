@@ -1,11 +1,10 @@
-// SABO Tournament System - Centralized Exports (Wrapper)
-// This provides a new import path while maintaining backward compatibility
-// Part of the double elimination cleanup process
+// SABO Tournament System - Centralized Exports
+// Unified location for all SABO double elimination components
 
-// Main component
+// Main component (actual implementation)
 export { SABODoubleEliminationViewer } from './SABODoubleEliminationViewer';
 
-// Core exports from original location
+// Core exports - direct from tournaments/sabo
 export { SABOLogicCore } from '@/tournaments/sabo/SABOLogicCore';
 
 // Hooks

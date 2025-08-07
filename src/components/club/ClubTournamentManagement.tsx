@@ -17,9 +17,8 @@ import {
 } from 'lucide-react';
 
 // Import components
-import TournamentManagementHub, {
-  TournamentManagementHubRef,
-} from '@/components/tournament/TournamentManagementHub';
+import TournamentManagementHub from '@/components/tournament/TournamentManagementHub';
+import { TournamentManagementHubRef } from '@/types/tournament-management';
 import { EnhancedTournamentForm } from '@/components/tournament/EnhancedTournamentForm';
 import EnhancedTableManager from '@/components/tournament/EnhancedTableManager';
 import TournamentPaymentManager from '@/components/TournamentPaymentManager';

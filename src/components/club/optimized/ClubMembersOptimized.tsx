@@ -154,7 +154,7 @@ const ClubMembersOptimized: React.FC = () => {
           pending_request_rank: undefined
         })) || [];
 
-        setMembers(sampleMembers);
+        setMembers(sampleMembers as ClubMember[]);
         return;
       }
 
@@ -519,7 +519,7 @@ const ClubMembersOptimized: React.FC = () => {
                       </div>
                     </div>
                     <div className='flex items-center gap-2'>
-                      <TrustScoreBadge score={member.trust_score || 0} />
+                      <TrustScoreBadge trustScore={member.trust_score || 0} />
                       <Button variant='outline' size='sm'>
                         <Eye className='w-4 h-4' />
                       </Button>

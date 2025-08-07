@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Crown, Medal, Trophy } from 'lucide-react';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
+import { useTheme } from '@/hooks/useTheme';
 
 interface MobileLeaderboardProps {
   className?: string;
@@ -13,6 +14,7 @@ interface MobileLeaderboardProps {
 const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({ className }) => {
   const [activeTab, setActiveTab] = useState<'elo' | 'spa'>('elo');
   const { leaderboard, loading, error, updateFilters } = useLeaderboard();
+  const { theme } = useTheme();
 
   // Sort data based on active tab
   const sortedData = React.useMemo(() => {
@@ -65,16 +67,16 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({ className }) => {
     return (
       <div className='space-y-3'>
         {[...Array(10)].map((_, i) => (
-          <Card key={i} className='animate-pulse'>
+          <Card key={i} className={`animate-pulse ${theme === 'dark' ? 'bg-card/50 border-border/50' : ''}`}>
             <CardContent className='p-4'>
               <div className='flex items-center space-x-3'>
-                <div className='w-8 h-8 bg-muted rounded'></div>
-                <div className='w-10 h-10 bg-muted rounded-full'></div>
+                <div className={`w-8 h-8 rounded ${theme === 'dark' ? 'bg-muted/30' : 'bg-muted'}`}></div>
+                <div className={`w-10 h-10 rounded-full ${theme === 'dark' ? 'bg-muted/30' : 'bg-muted'}`}></div>
                 <div className='flex-1 space-y-2'>
-                  <div className='h-4 bg-muted rounded w-3/4'></div>
-                  <div className='h-3 bg-muted rounded w-1/2'></div>
+                  <div className={`h-4 rounded w-3/4 ${theme === 'dark' ? 'bg-muted/30' : 'bg-muted'}`}></div>
+                  <div className={`h-3 rounded w-1/2 ${theme === 'dark' ? 'bg-muted/30' : 'bg-muted'}`}></div>
                 </div>
-                <div className='h-6 w-16 bg-muted rounded'></div>
+                <div className={`h-6 w-16 rounded ${theme === 'dark' ? 'bg-muted/30' : 'bg-muted'}`}></div>
               </div>
             </CardContent>
           </Card>
@@ -85,7 +87,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({ className }) => {
 
   if (error) {
     return (
-      <Card>
+      <Card className={theme === 'dark' ? 'bg-card/50 border-border/50' : ''}>
         <CardContent className='p-8 text-center'>
           <p className='text-destructive'>{error}</p>
         </CardContent>
@@ -114,11 +116,13 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({ className }) => {
         <TabsContent value='elo'>
           <div className='space-y-3'>
             {sortedData.map((player, index) => (
-              <Card key={player.id} className='overflow-hidden'>
+              <Card key={player.id} className={`overflow-hidden ${theme === 'dark' ? 'bg-card/50 border-border/50' : ''}`}>
                 <CardContent className='p-4'>
                   <div className='flex items-center space-x-3'>
                     {/* Top Position */}
-                    <div className='flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-bold'>
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${
+                      theme === 'dark' ? 'bg-muted/30 text-foreground' : 'bg-muted text-foreground'
+                    }`}>
                       {getRankIcon(index + 1) || index + 1}
                     </div>
 
@@ -147,7 +151,9 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({ className }) => {
 
                     {/* ELO Points */}
                     <div className='text-right'>
-                      <p className='text-lg font-bold text-primary'>
+                      <p className={`text-lg font-bold ${
+                        theme === 'dark' ? 'text-primary' : 'text-primary'
+                      }`}>
                         {player.elo.toLocaleString()}
                       </p>
                       <p className='text-xs text-muted-foreground'>ELO</p>
@@ -162,11 +168,13 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({ className }) => {
         <TabsContent value='spa'>
           <div className='space-y-3'>
             {sortedData.map((player, index) => (
-              <Card key={player.id} className='overflow-hidden'>
+              <Card key={player.id} className={`overflow-hidden ${theme === 'dark' ? 'bg-card/50 border-border/50' : ''}`}>
                 <CardContent className='p-4'>
                   <div className='flex items-center space-x-3'>
                     {/* Top Position */}
-                    <div className='flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-bold'>
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${
+                      theme === 'dark' ? 'bg-muted/30 text-foreground' : 'bg-muted text-foreground'
+                    }`}>
                       {getRankIcon(index + 1) || index + 1}
                     </div>
 
@@ -195,7 +203,9 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({ className }) => {
 
                     {/* SPA Points */}
                     <div className='text-right'>
-                      <p className='text-lg font-bold text-secondary'>
+                      <p className={`text-lg font-bold ${
+                        theme === 'dark' ? 'text-secondary' : 'text-secondary'
+                      }`}>
                         {player.ranking_points.toLocaleString()}
                       </p>
                       <p className='text-xs text-muted-foreground'>SPA</p>

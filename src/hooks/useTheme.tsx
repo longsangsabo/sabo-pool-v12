@@ -15,22 +15,36 @@ type ThemeProviderState = {
 };
 
 const initialState: ThemeProviderState = {
-  theme: 'system',
+  theme: 'dark',
   setTheme: () => null,
-  isDark: false,
+  isDark: true,
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
+  defaultTheme = 'dark',
   storageKey = 'sabo-ui-theme',
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  // Migration logic: Force dark mode for all users initially
+  const migrateToDefaultDark = () => {
+    const currentTheme = localStorage.getItem(storageKey) as Theme;
+    const migrationKey = `${storageKey}-migrated-to-dark`;
+    const hasMigrated = localStorage.getItem(migrationKey);
+    
+    // If hasn't migrated yet, set to dark and mark as migrated
+    if (!hasMigrated) {
+      localStorage.setItem(storageKey, 'dark');
+      localStorage.setItem(migrationKey, 'true');
+      return 'dark';
+    }
+    
+    return currentTheme || defaultTheme;
+  };
+
+  const [theme, setTheme] = useState<Theme>(migrateToDefaultDark);
 
   const [isDark, setIsDark] = useState(false);
 

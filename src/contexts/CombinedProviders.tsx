@@ -18,7 +18,7 @@ const CombinedProvidersComponent: React.FC<CombinedProvidersProps> = ({
 }) => {
   return (
     <AuthErrorBoundary>
-      <ThemeProvider defaultTheme='system' storageKey='sabo-ui-theme'>
+      <ThemeProvider defaultTheme='dark' storageKey='sabo-ui-theme'>
         <AuthProvider>
           <AvatarProvider>
             <LanguageProvider>

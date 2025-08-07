@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Card Debug</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, sans-serif;
+            background: #f0f0f0;
+        }
+        .debug-container {
+            max-width: 400px;
+            margin: 0 auto;
+            border: 2px dashed #007bff;
+            padding: 20px;
+            background: white;
+        }
+        .test-card {
+            background: white;
+            border: 8px solid white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 280px;
+            height: 400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .test-image {
+            height: 240px;
+            background: #f8f9fa;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            margin: 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        .test-nickname {
+            position: absolute;
+            bottom: 80px;
+            left: 16px;
+            right: 16px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+            padding: 16px 12px 12px;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        .test-rank {
+            background: white;
+            padding: 12px 16px;
+            margin: 0 8px 8px;
+            text-align: center;
+            color: #1f2937;
+            font-weight: 600;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        .test-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 8px;
+            background: rgba(0, 0, 0, 0.05);
+            margin: 0 8px 8px;
+            border-radius: 0 0 4px 4px;
+        }
+        .test-stat {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #1f2937;
+        }
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-container">
+        <h2>Mobile Card Avatar Debug</h2>
+        
+        <div class="test-card">
+            <div class="test-image">
+                Avatar Image Area
+            </div>
+            <div class="test-nickname">
+                ANH LONG MAGIC
+            </div>
+            <div class="test-rank">
+                RANK : G
+            </div>
+            <div class="test-stats">
+                <div class="test-stat">
+                    <div>ELO</div>
+                    <div>1485</div>
+                </div>
+                <div class="test-stat">
+                    <div>SPA</div>
+                    <div>320</div>
+                </div>
+                <div class="test-stat">
+                    <div>XH</div>
+                    <div>#89</div>
+                </div>
+                <div class="test-stat">
+                    <div>TRẬN</div>
+                    <div>37</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="debug-info">
+            <h3>Debug Information:</h3>
+            <ul>
+                <li><strong>Card Size:</strong> 280x400px</li>
+                <li><strong>Image Area:</strong> 240px height</li>
+                <li><strong>Background:</strong> White</li>
+                <li><strong>Border:</strong> 8px white</li>
+                <li><strong>Shadow:</strong> Light shadow</li>
+            </ul>
+            
+            <h4>Expected Structure:</h4>
+            <pre>
+.card-avatar-container
+  └── .card-avatar-frame
+      └── .card-border
+          ├── .image-area
+          │   ├── .avatar-image
+          │   └── .nickname-overlay
+          │       └── .nickname-text-overlay
+          ├── .rank-section
+          │   └── .rank-text
+          └── .stats-row
+              └── .stat-item (x4)
+            </pre>
+        </div>
+    </div>
+</body>
+</html>

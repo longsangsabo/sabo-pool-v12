@@ -1,0 +1,386 @@
+/* Dark Card Avatar Component Styles - All Black Theme */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+.dark-card-avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 24px 0;
+}
+
+.dark-card-avatar-frame {
+  position: relative;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dark-card-avatar-frame:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* Dark Card Border - All Black */
+.dark-card-border {
+  background: #1a1a1a;
+  border: 8px solid #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Dark Image Area with fixed height to preserve avatar size */
+.dark-image-area {
+  height: 240px; /* Fixed height to preserve avatar size */
+  position: relative;
+  overflow: hidden;
+  background: #1f1f1f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 8px 8px 0 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dark-image-area:hover {
+  transform: scale(1.02);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.dark-image-area:hover .dark-avatar-image {
+  transform: scale(1.02);
+}
+
+/* Dark Avatar Placeholder */
+.dark-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #404040;
+  border-radius: 4px;
+}
+
+.dark-placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #a3a3a3;
+}
+
+/* Dark Upload overlay */
+.dark-upload-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+/* Dark Hover overlay */
+.dark-hover-overlay {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark-image-area:hover .dark-hover-overlay {
+  opacity: 1;
+}
+
+.dark-hover-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* Dark Nickname Overlay on Image */
+.dark-nickname-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.8) 60%,
+    transparent 100%
+  );
+  padding: 16px 12px 12px 12px;
+  z-index: 2;
+}
+
+/* Advanced styling - Complex multi-color gradient without shadows */
+.dark-nickname-text-overlay {
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 700; /* font-bold */
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #f0f9ff 10%,
+    #e0f2fe 20%,
+    #bae6fd 30%,
+    #7dd3fc 40%,
+    #38bdf8 50%,
+    #0ea5e9 60%,
+    #0284c7 70%,
+    #0369a1 80%,
+    #075985 90%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1; /* leading-none */
+  letter-spacing: 0.05em; /* tracking-wider */
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  max-width: 95%;
+  overflow: hidden;
+  display: block;
+  transition: font-size 0.2s ease, letter-spacing 0.2s ease;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  /* Fallback color without shadow */
+  color: #ffffff;
+}
+
+/* Gradient animation keyframes */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* CSS Fallback scaling - keeping minimal for text-xs base */
+.dark-nickname-text-overlay[data-length="medium"] {
+  font-size: 0.7rem !important;
+  letter-spacing: 0.04em !important;
+}
+
+.dark-nickname-text-overlay[data-length="long"] {
+  font-size: 0.65rem !important;
+  letter-spacing: 0.03em !important;
+}
+
+.dark-nickname-text-overlay[data-length="very-long"] {
+  font-size: 0.6rem !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Dark Rank Section */
+.dark-rank-section {
+  background: #1a1a1a;
+  padding: 12px 16px;
+  margin: 0 8px 8px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dark-rank-text {
+  color: #f1f1f1;
+  font-size: 1.3125rem; /* Tăng từ 0.875rem lên 1.3125rem (x1.5) */
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 3px; /* Tăng từ 2px lên 3px (x1.5) */
+  font-family: 'Courier New', 'Monaco', monospace; /* DECO font style */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Dark Size variants - Complex multi-color without shadows */
+.dark-card-avatar-frame.w-\[200px\] .dark-nickname-text-overlay {
+  font-size: 0.65rem !important; /* Smaller for small cards */
+  letter-spacing: 0.04em !important;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 10%, #e0f2fe 20%, #bae6fd 30%, #7dd3fc 40%, #38bdf8 50%, #0ea5e9 60%, #0284c7 70%, #0369a1 80%, #075985 90%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #ffffff;
+}
+
+.dark-card-avatar-frame.w-\[200px\] .dark-rank-text {
+  font-size: 1rem !important;
+}
+
+.dark-card-avatar-frame.w-\[320px\] .dark-nickname-text-overlay {
+  font-size: 0.85rem !important; /* Slightly larger for large cards */
+  letter-spacing: 0.06em !important;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 10%, #e0f2fe 20%, #bae6fd 30%, #7dd3fc 40%, #38bdf8 50%, #0ea5e9 60%, #0284c7 70%, #0369a1 80%, #075985 90%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #ffffff;
+}
+
+.dark-card-avatar-frame.w-\[320px\] .dark-rank-text {
+  font-size: 1rem !important;
+}
+
+/* Dark Responsive adjustments */
+@media (max-width: 640px) {
+  .dark-card-avatar-container {
+    margin: 16px 0;
+  }
+
+  .dark-card-avatar-frame {
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .dark-card-avatar-container {
+    margin: 5px 0;
+  }
+
+  .dark-nickname-text-overlay {
+    font-size: 0.85rem !important;
+    letter-spacing: 1px !important;
+  }
+
+  .dark-rank-text {
+    font-size: 0.75rem !important;
+  }
+
+  .dark-card-border {
+    border-width: 6px;
+  }
+}
+
+/* Dark Camera Button - Top right corner outside card */
+.dark-camera-button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark-camera-button:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark-camera-button .camera-icon {
+  color: white;
+  width: 14px;
+  height: 14px;
+}
+
+/* Dark hover effects */
+.dark-card-avatar-frame:hover {
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced focus states for accessibility */
+.dark-card-avatar-container input[type="file"]:focus + .dark-card-avatar-frame {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Animation for upload state */
+@keyframes dark-pulse-upload {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.dark-card-avatar-container .uploading {
+  animation: dark-pulse-upload 1.5s ease-in-out infinite;
+}
+
+/* Dark Stats Row - 4 columns below rank */
+.dark-stats-row {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 8px;
+  border-radius: 0 0 12px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.dark-stat-item {
+  text-align: center;
+  color: #f1f1f1;
+  flex: 1;
+}
+
+.dark-stat-icon {
+  margin: 0 auto 4px;
+  color: #f59e0b;
+  width: 16px; /* Keep same size as light mode */
+  height: 16px; /* Keep same size as light mode */
+}
+
+.dark-stat-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+  font-family: 'Courier New', 'Monaco', monospace; /* DECO font style */
+}
+
+.dark-stat-label {
+  font-size: 0.75rem;
+  color: #d1d5db;
+  font-family: 'Courier New', 'Monaco', monospace; /* DECO font style */
+}

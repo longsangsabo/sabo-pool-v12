@@ -10,6 +10,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { SaboAvatar } from '@/components/ui/sabo-avatar';
 import { AvatarCustomizer } from '@/components/ui/avatar-customizer';
+import PolaroidFrame from '@/components/ui/polaroid-frame';
+import CardAvatar from '@/components/ui/card-avatar';
+import DarkCardAvatar from '@/components/ui/dark-card-avatar';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import {
@@ -196,21 +199,15 @@ const OptimizedMobileProfile = () => {
     });
   };
 
-  const handleAvatarUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
+  const handleAvatarUpload = async (file: File, croppedDataUrl?: string) => {
     if (!file || !user) return;
-
-    if (!file.type.startsWith('image/')) {
-      toast.error('Vui lòng chọn file hình ảnh');
-      return;
-    }
 
     setUploading(true);
 
     try {
       let uploadFile = file;
+      
+      // Compress if needed
       if (file.size > 500 * 1024) {
         toast.info('Đang nén ảnh để tối ưu...');
         uploadFile = await compressImage(file);
@@ -278,6 +275,7 @@ const OptimizedMobileProfile = () => {
   const frameStroke = theme === 'light' ? 'black' : 'white';
 
   return (
+
     <>
       {/* Full Screen Background Overlay - Outside PageLayout */}
       {theme === 'dark' && (
@@ -292,116 +290,46 @@ const OptimizedMobileProfile = () => {
           }}
         />
       )}
-      
       <PageLayout variant='dashboard' className={theme === 'dark' ? 'relative z-10 bg-transparent' : ''}>
         <Helmet>
           <title>Hồ sơ cá nhân - SABO ARENA</title>
         </Helmet>
-
-        <div 
-          className='pb-20 -mt-20 min-h-screen relative'
-          style={theme === 'light' ? {
-            backgroundImage: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)'
-          } : undefined}
-        >
-        {/* SABO ARENA Avatar Container với Rainbow Effects */}
-        <div className='flex flex-col items-center justify-start -mt-24'>
-          <div className='avatar-container relative w-[80vw] max-w-[300px] h-[100vw] max-h-[400px] flex items-center justify-center'>
-            <SaboAvatar 
-              size="custom"
-              className="w-[90%] h-[90%]"
-              showUpload={true}
-              onAvatarUpload={handleAvatarUpload}
-              fallbackName={profile.display_name || 'User'}
-              isUploading={uploading}
-              profile={profile}
-            />
+        <div className='pb-20 -mt-20 min-h-screen relative' style={theme === 'light' ? {
+          backgroundImage: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)'
+        } : undefined}>
+          {/* Card Avatar Layout - New Design */}
+          <div className='relative flex flex-col items-center justify-start -mt-16 pt-4'>
+            {theme === 'dark' ? (
+              <DarkCardAvatar
+                userAvatar={profile.avatar_url}
+                onAvatarChange={handleAvatarUpload}
+                uploading={uploading}
+                nickname={profile.display_name || 'Chưa đặt tên'}
+                rank={profile.verified_rank || 'K'}
+                elo={1485}
+                spa={320}
+                ranking={89}
+                matches={37}
+                size="md"
+                className="mb-8"
+              />
+            ) : (
+              <CardAvatar
+                userAvatar={profile.avatar_url}
+                onAvatarChange={handleAvatarUpload}
+                uploading={uploading}
+                nickname={profile.display_name || 'Chưa đặt tên'}
+                rank={profile.verified_rank || 'K'}
+                elo={1485}
+                spa={320}
+                ranking={89}
+                matches={37}
+                size="md"
+                className="mb-8"
+              />
+            )}
+            
           </div>
-
-          {/* User Info */}
-          <div className='user-info mt-4 flex items-center justify-center gap-0'>
-            <div 
-              className={`username-box px-5 py-1 text-base font-bold flex items-center h-9 rounded-l-lg ${
-                theme === 'light' 
-                  ? 'bg-white text-black border-2 border-black' 
-                  : 'bg-black text-white border-2 border-white'
-              }`}
-              style={{ boxShadow: `0 0 6px ${shadowColor}` }}
-            >
-              {profile.display_name || 'Chưa đặt tên'}
-            </div>
-            <div 
-              className={`rank-box text-base font-bold w-11 h-9 flex items-center justify-center rounded-r-lg ${
-                theme === 'light'
-                  ? 'bg-black text-white'
-                  : 'bg-white text-black'
-              }`}
-              style={{ boxShadow: `0 0 6px ${shadowColor}` }}
-            >
-              {profile.verified_rank ? profile.verified_rank[0]?.toUpperCase() : 'K'}
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className='stats mt-5 flex justify-center gap-1.5 w-[90vw] max-w-[360px]'>
-            <div 
-              className={`stat-box flex-1 flex flex-col items-center text-xs rounded-md p-1 ${
-                theme === 'light' 
-                  ? 'bg-black/5 border border-black' 
-                  : 'bg-white/5 border border-white'
-              }`}
-              style={{ boxShadow: `0 0 4px ${theme === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'}` }}
-            >
-              <div className='stat-icon text-base mb-0.5'>
-                <Trophy className='w-4 h-4 text-yellow-400' />
-              </div>
-              <div>ELO</div>
-              <strong>1000</strong>
-            </div>
-            <div 
-              className={`stat-box flex-1 flex flex-col items-center text-xs rounded-md p-1 ${
-                theme === 'light' 
-                  ? 'bg-black/5 border border-black' 
-                  : 'bg-white/5 border border-white'
-              }`}
-              style={{ boxShadow: `0 0 4px ${theme === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'}` }}
-            >
-              <div className='stat-icon text-base mb-0.5'>
-                <Zap className='w-4 h-4 text-blue-400' />
-              </div>
-              <div>SPA</div>
-              <strong>2225</strong>
-            </div>
-            <div 
-              className={`stat-box flex-1 flex flex-col items-center text-xs rounded-md p-1 ${
-                theme === 'light' 
-                  ? 'bg-black/5 border border-black' 
-                  : 'bg-white/5 border border-white'
-              }`}
-              style={{ boxShadow: `0 0 4px ${theme === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'}` }}
-            >
-              <div className='stat-icon text-base mb-0.5'>
-                <Award className='w-4 h-4 text-orange-400' />
-              </div>
-              <div>Xếp hạng</div>
-              <strong>Top 5%</strong>
-            </div>
-            <div 
-              className={`stat-box flex-1 flex flex-col items-center text-xs rounded-md p-1 ${
-                theme === 'light' 
-                  ? 'bg-black/5 border border-black' 
-                  : 'bg-white/5 border border-white'
-              }`}
-              style={{ boxShadow: `0 0 4px ${theme === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'}` }}
-            >
-              <div className='stat-icon text-base mb-0.5'>
-                <Target className='w-4 h-4 text-green-400' />
-              </div>
-              <div>Số trận</div>
-              <strong>6</strong>
-            </div>
-          </div>
-        </div>
 
         {/* Profile Content Tabs */}
         <Card>

@@ -89,7 +89,7 @@
     "dotenv": "^17.0.0",
     "embla-carousel-react": "^8.3.0",
     "express": "^5.1.0",
-    "framer-motion": "^12.19.2",
+    "framer-motion": "^12.23.12",
     "helmet": "^8.1.0",
     "input-otp": "^1.2.4",
     "lighthouse": "^12.7.1",

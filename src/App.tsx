@@ -158,6 +158,9 @@ const AppContent = () => {
               </PublicRoute>
             }
           />
+          {/* Friendly redirects for legacy paths */}
+          <Route path='/login' element={<Navigate to='/auth/login' replace />} />
+          <Route path='/register' element={<Navigate to='/auth/register' replace />} />
           <Route
             path='/auth/forgot-password'
             element={

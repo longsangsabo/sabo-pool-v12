@@ -3539,6 +3539,33 @@ export type Database = {
         }
         Relationships: []
       }
+      mv_leaderboard_stats: {
+        Row: {
+          avatar_url: string | null
+          current_rank: string | null
+          display_name: string | null
+          elo_points: number | null
+          id: string | null
+          last_updated: string | null
+          losses: number | null
+          ranking_position: number | null
+          spa_points: number | null
+          total_matches: number | null
+          user_id: string | null
+          win_percentage: number | null
+          win_streak: number | null
+          wins: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_rankings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Functions: {
       accept_challenge: {
@@ -4364,6 +4391,10 @@ export type Database = {
       refresh_leaderboard_stats: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      refresh_mv_leaderboard_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       repair_all_incomplete_tournaments: {
         Args: Record<PropertyKey, never>

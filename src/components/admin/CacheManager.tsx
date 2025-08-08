@@ -85,21 +85,17 @@ export const CacheManager: React.FC = () => {
     setLoading(prev => ({ ...prev, 'mv-refresh': true }));
 
     try {
-      await measureDbOperation('refresh-materialized-view', async () => {
-        const query = queryClient.getQueryCache().find({
-          queryKey: ['leaderboard-stats'],
-        });
-
-        if (query) {
-          await queryClient.invalidateQueries({
-            queryKey: ['leaderboard-stats'],
-          });
-        }
+      const response = await fetch('/api/refresh-analytics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'refresh_all' }),
       });
+
+      if (!response.ok) throw new Error('Refresh failed');
 
       toast({
         title: 'Materialized View Refreshed',
-        description: 'Leaderboard statistics have been updated.',
+        description: 'All analytics data has been updated.',
       });
     } catch (error) {
       toast({

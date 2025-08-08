@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, Zap } from 'lucide-react';
-import { useTournamentAutomation } from '@/hooks/useTournamentAutomation';
+import { useUnifiedTournamentAutomation } from '@/hooks/useUnifiedTournamentAutomation';
 import { cn } from '@/lib/utils';
 
 interface TournamentAutomationDashboardProps {
@@ -16,7 +16,7 @@ export const TournamentAutomationDashboard: React.FC<
   TournamentAutomationDashboardProps
 > = ({ tournamentId, isAdmin = false, className }) => {
   const { automationStatus, fixTournamentProgression, isFixing } =
-    useTournamentAutomation(tournamentId);
+    useUnifiedTournamentAutomation(tournamentId);
 
   const getStatusColor = () => {
     switch (automationStatus.currentStatus) {

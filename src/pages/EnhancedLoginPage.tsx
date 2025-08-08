@@ -41,6 +41,7 @@ const EnhancedLoginPage = () => {
       if (user && !authLoading) {
         try {
           const sb: any = supabase;
+          // Single query for owner membership
           const ownerResult = await sb
             .from('club_members')
             .select('club_id')
@@ -104,13 +105,12 @@ const EnhancedLoginPage = () => {
           try {
             // Use any to avoid deep generic instantiation issues
             const sb: any = supabase;
-            const ownerQuery = sb.from('club_members')
+            const ownerResult = await sb.from('club_members')
               .select('club_id')
               .eq('user_id', uid)
               .eq('role', 'owner')
               .eq('status', 'active')
               .limit(1);
-            const ownerResult = await ownerQuery;
             const ownerMembership = ownerResult?.data as any[] | null;
             if (ownerMembership && ownerMembership.length > 0) {
               navigate('/club-management', { replace: true });

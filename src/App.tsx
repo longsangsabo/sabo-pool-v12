@@ -8,6 +8,7 @@ import { AppErrorBoundary } from '@/components/error/AppErrorBoundary';
 import { AppLoadingFallback } from '@/components/loading/AppLoadingFallback';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useIsClubOwner } from '@/hooks/club/useClubRole';
+import { useAuth } from '@/hooks/useAuth';
 import { PublicRoute } from '@/components/auth/PublicRoute';
 import { AdminRoute } from '@/components/auth/AdminRoute';
 import MainLayout from '@/components/MainLayout';
@@ -87,9 +88,8 @@ const AppContent = () => {
 
   // Inline component to protect club management routes by owner role
   const ClubOwnerRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    // reuse auth provider inside ProtectedRoute
-    const { user } = require('@/hooks/useAuth');
-    const { data: isOwner, isLoading } = useIsClubOwner(user?.user?.id, !!user?.user?.id);
+    const { user } = useAuth();
+    const { data: isOwner, isLoading } = useIsClubOwner(user?.id, !!user?.id);
     if (isLoading) return <div className='p-8 text-center'>Đang kiểm tra quyền...</div>;
     if (!isOwner) return <div className='p-8 text-center text-red-500'>Bạn không có quyền truy cập khu vực quản lý CLB.</div>;
     return <>{children}</>;

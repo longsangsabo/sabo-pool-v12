@@ -168,24 +168,32 @@ const EnhancedChallengesPageV2: React.FC = () => {
   };
 
   // Calculate stats from derived data
-  const stats: ChallengeStats = {
-    total: myChallenges.length,
-    pending: myChallenges.filter(c => c.status === 'pending').length,
-    accepted: myChallenges.filter(c => c.status === 'accepted').length,
-    completed: completedChallenges.length,
-    won: completedChallenges.filter(c => c.winner_id === user?.id).length,
-    lost: completedChallenges.filter(
-      c => c.winner_id && c.winner_id !== user?.id
-    ).length,
-    winRate:
-      completedChallenges.length > 0
-        ? Math.round(
-            (completedChallenges.filter(c => c.winner_id === user?.id).length /
-              completedChallenges.length) *
-              100
-          )
-        : 0,
-  };
+  const stats: ChallengeStats = (() => {
+    let won = 0;
+    let lost = 0;
+    completedChallenges.forEach(c => {
+      const challengerFinal = c.challenger_final_score ?? c.challenger_score ?? 0;
+      const opponentFinal = c.opponent_final_score ?? c.opponent_score ?? 0;
+      let winnerId: string | null = null;
+      if (challengerFinal !== opponentFinal) {
+        winnerId = challengerFinal > opponentFinal ? c.challenger_id : c.opponent_id;
+      }
+      if (winnerId) {
+        if (winnerId === user?.id) won += 1;
+        else if (c.challenger_id === user?.id || c.opponent_id === user?.id) lost += 1;
+      }
+    });
+    const totalCompleted = completedChallenges.length;
+    return {
+      total: myChallenges.length,
+      pending: myChallenges.filter(c => c.status === 'pending').length,
+      accepted: myChallenges.filter(c => c.status === 'accepted').length,
+      completed: totalCompleted,
+      won,
+      lost,
+      winRate: totalCompleted > 0 ? Math.round((won / totalCompleted) * 100) : 0,
+    };
+  })();
 
   const checkAdminStatus = async () => {
     if (!user) return;
@@ -490,12 +498,37 @@ const EnhancedChallengesPageV2: React.FC = () => {
     );
   };
 
-  if (loading) {
+  const isInitialLoading = loading && challenges.length === 0;
+
+  // Skeleton components (lightweight inline - can be extracted later)
+  const SkeletonCard = () => (
+    <div className='h-44 rounded-xl bg-gradient-to-br from-slate-200/60 to-slate-300/40 dark:from-slate-800/60 dark:to-slate-700/40 animate-pulse border border-slate-300/40 dark:border-slate-600/40' />
+  );
+  const SkeletonStat = () => (
+    <div className='h-20 rounded-lg bg-slate-200/60 dark:bg-slate-800/60 animate-pulse' />
+  );
+  const SkeletonHeader = () => (
+    <div className='space-y-4'>
+      <div className='h-10 w-64 bg-slate-200/60 dark:bg-slate-800/60 rounded animate-pulse'></div>
+      <div className='h-4 w-96 max-w-full bg-slate-200/60 dark:bg-slate-800/60 rounded animate-pulse'></div>
+    </div>
+  );
+
+  if (isInitialLoading) {
     return (
-      <div className='min-h-screen bg-background flex items-center justify-center'>
-        <div className='text-center space-y-4'>
-          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto'></div>
-          <p className='text-muted-foreground'>Đang tải thách đấu...</p>
+      <div className='min-h-screen bg-background'>
+        <div className='max-w-[1400px] mx-auto px-8 py-8 space-y-10'>
+          <SkeletonHeader />
+          <div className='grid grid-cols-6 gap-4'>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonStat key={i} />
+            ))}
+          </div>
+          <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
+            {Array.from({ length: 9 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -813,21 +846,6 @@ const EnhancedChallengesPageV2: React.FC = () => {
               </TabsContent>
 
               <TabsContent value='active-challenges' className='space-y-6'>
-                <div className='text-xs text-muted-foreground mb-2 bg-muted/30 p-2 rounded'>
-                  Debug: activeChallenges count={activeChallenges.length},
-                  filtered=
-                  {getFilteredChallenges(activeChallenges, true).length}
-                  <br />
-                  Active challenges:{' '}
-                  {JSON.stringify(
-                    activeChallenges.map(c => ({
-                      id: c.id,
-                      status: c.status,
-                      challenger: c.challenger_id,
-                      opponent: c.opponent_id,
-                    }))
-                  )}
-                </div>
                 {getFilteredChallenges(activeChallenges, true).length > 0 ? (
                   <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
                     {getFilteredChallenges(activeChallenges, true).map(

@@ -13,6 +13,7 @@ interface OpenChallengeCardProps {
   onJoin: (challengeId: string) => void;
   currentUser?: any;
   isJoining?: boolean;
+  winRateInfo?: { winRate: number; wins: number; losses: number; total: number } | null;
 }
 
 export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
@@ -20,6 +21,7 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
   onJoin,
   currentUser,
   isJoining = false,
+  winRateInfo,
 }) => {
   const canJoin = currentUser && challenge.challenger_id !== currentUser.id;
   const isExpired =
@@ -46,14 +48,21 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
               <h3 className='font-semibold text-sm text-slate-800 dark:text-slate-200'>
                 {challenge.challenger_profile?.full_name || 'Unknown Player'}
               </h3>
-              <div className='flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400'>
-                <span>
-                  Rank: {challenge.challenger_profile?.current_rank || 'K'}
-                </span>
-                <span>•</span>
-                <span>
-                  {(challenge.challenger_profile as any)?.spa_points || 0} SPA
-                </span>
+              <div className='flex flex-col gap-1'>
+                <div className='flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400'>
+                  <span>
+                    Rank: {challenge.challenger_profile?.current_rank || 'K'}
+                  </span>
+                  <span>•</span>
+                  <span>
+                    {(challenge.challenger_profile as any)?.spa_points || 0} SPA
+                  </span>
+                </div>
+                {winRateInfo && winRateInfo.total >= 5 && (
+                  <div className='text-[10px] text-emerald-600 dark:text-emerald-400 font-medium'>
+                    Win rate: {(winRateInfo.winRate * 100).toFixed(0)}% ({winRateInfo.wins}-{winRateInfo.losses})
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -115,12 +124,15 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
         <Button
           onClick={handleJoin}
           disabled={!canJoin || isExpired || isJoining}
-          className='w-full'
+          className={`w-full relative ${isJoining ? 'opacity-90 cursor-wait' : ''}`}
           variant={canJoin && !isExpired ? 'default' : 'secondary'}
           size='sm'
         >
           {isJoining ? (
-            'Đang tham gia...'
+            <span className='flex items-center gap-2'>
+              <span className='w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin'></span>
+              <span>Đang tham gia...</span>
+            </span>
           ) : !canJoin ? (
             challenge.challenger_id === currentUser?.id ? (
               'Thách đấu của bạn'

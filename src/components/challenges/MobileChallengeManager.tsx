@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { useOptimizedChallenges } from '@/hooks/useOptimizedChallenges';
 import { toast } from 'sonner';
-import { Calendar, Search, Trophy, Users, Zap, RefreshCw } from 'lucide-react';
+import { Calendar, Search, Trophy, Users, Zap, RefreshCw, Clock, AlertCircle } from 'lucide-react';
+// Extracted modular mobile components
+import { CountdownChip } from './mobile/CountdownChip';
+import { MobileSkeletonList, MobileSkeletonStats } from './mobile/MobileChallengeSkeletons';
+import { PullToRefreshIndicator } from './mobile/PullToRefresh';
+import { VirtualizedChallengeList } from './mobile/VirtualizedChallengeList';
 import UnifiedChallengeCard from './UnifiedChallengeCard';
 import { OpenChallengeCard } from './OpenChallengeCard';
 import { CompletedChallengeCard } from './CompletedChallengeCard';
@@ -13,6 +18,8 @@ import UnifiedCreateChallengeModal from '@/components/modals/UnifiedCreateChalle
 import { ActiveChallengeHighlight } from './ActiveChallengeHighlight';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ChallengeProfile } from '@/types/challenge';
+import { formatDistanceToNow, isAfter, isBefore, addHours } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 interface MobileChallengeManagerProps {
   className?: string;
@@ -22,6 +29,9 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
   className,
 }) => {
   const { user } = useAuth();
+  const [processingChallengeId, setProcessingChallengeId] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [optimisticChallenges, setOptimisticChallenges] = useState<any[]>([]);
   const {
     challenges,
     loading,
@@ -29,7 +39,135 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
     acceptChallenge,
     declineChallenge,
     fetchChallenges,
+    hasMore,
+    loadMoreChallenges,
+    page,
+    pageSize,
   } = useOptimizedChallenges();
+
+  // Merge optimistic updates with real challenges
+  const displayChallenges = React.useMemo(() => {
+    const realChallenges = challenges || [];
+    const merged = [...realChallenges];
+    
+    // Apply optimistic updates
+    optimisticChallenges.forEach(optimistic => {
+      const existingIndex = merged.findIndex(c => c.id === optimistic.id);
+      if (existingIndex >= 0) {
+        // Update existing challenge
+        merged[existingIndex] = { ...merged[existingIndex], ...optimistic };
+      } else {
+        // Add new challenge (if created optimistically)
+        merged.push(optimistic);
+      }
+    });
+    
+    return merged;
+  }, [challenges, optimisticChallenges]);
+
+  // Win rate caching for challenger profiles in open challenges
+  const [winRates, setWinRates] = useState<Record<string, { winRate: number; wins: number; losses: number; total: number }>>({});
+  const { getWinRate } = useOptimizedChallenges(); // safe reuse; internal cache prevents redundant fetches
+  useEffect(() => {
+    const fetchNeeded = async () => {
+      const challengerIds = Array.from(new Set(displayChallenges.filter(c => !c.opponent_id).map(c => c.challenger_id))).slice(0, 50);
+      for (const id of challengerIds) {
+        if (!id || winRates[id]) continue;
+        const info = await getWinRate(id);
+        if (info) {
+          setWinRates(prev => ({ ...prev, [id]: info }));
+        }
+      }
+    };
+    fetchNeeded();
+  }, [displayChallenges, getWinRate, winRates]);
+
+  // URL State Management for tab persistence
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tabFromUrl = params.get('tab');
+    
+    if (tabFromUrl && ['live', 'upcoming', 'find', 'completed'].includes(tabFromUrl)) {
+      setActiveTab(tabFromUrl);
+    }
+  }, []);
+
+  // (Removed inline VirtualizedChallengeList – now imported)
+
+  // Update current time every minute for countdown accuracy
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // URL State Management for tab persistence
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tabFromUrl = params.get('tab');
+    
+    if (tabFromUrl && ['live', 'upcoming', 'find', 'completed'].includes(tabFromUrl)) {
+      setActiveTab(tabFromUrl);
+    }
+  }, []);
+
+  // Update URL when tab changes
+  const handleTabChange = useCallback((tab: string) => {
+    setActiveTab(tab);
+    
+    // Update URL without triggering page reload
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    window.history.replaceState({}, '', url.toString());
+  }, []);
+
+  // (Accessibility hooks moved below after modal state declarations)
+
+  // Helper function to get countdown info for challenges
+  const getCountdownInfo = useCallback((challenge: any) => {
+    const now = currentTime;
+    const expiresAt = challenge.expires_at ? new Date(challenge.expires_at) : addHours(new Date(challenge.created_at), 24); // Default 24h expiry
+    const timeLeft = expiresAt.getTime() - now.getTime();
+    
+    if (timeLeft <= 0) {
+      return { expired: true, urgent: false, text: 'Đã hết hạn', color: 'text-red-600 dark:text-red-400' };
+    }
+
+    const hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
+    const minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hoursLeft < 1) {
+      return { 
+        expired: false, 
+        urgent: true, 
+        text: `${minutesLeft}p`, 
+        color: 'text-red-500 dark:text-red-400',
+        bgColor: 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700'
+      };
+    } else if (hoursLeft < 6) {
+      return { 
+        expired: false, 
+        urgent: true, 
+        text: `${hoursLeft}h ${minutesLeft}p`, 
+        color: 'text-orange-500 dark:text-orange-400',
+        bgColor: 'bg-orange-100 dark:bg-orange-900/30 border-orange-300 dark:border-orange-700'
+      };
+    } else {
+      return { 
+        expired: false, 
+        urgent: false, 
+        text: formatDistanceToNow(expiresAt, { locale: vi, addSuffix: true }), 
+        color: 'text-slate-500 dark:text-slate-400',
+        bgColor: 'bg-slate-100 dark:bg-slate-800/50 border-slate-300 dark:border-slate-600'
+      };
+    }
+  }, [currentTime]);
+
+  // (Removed inline CountdownChip – now imported)
+
+  // (Removed inline skeleton components – now imported)
 
   // Convert challenge data to local format
   const convertToLocalChallenge = (c: any) => ({
@@ -51,30 +189,30 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
 
   // Enhanced debug: Check what challenges we have with profile details
   console.log('🔍 [MobileChallengeManager] Detailed analysis:', {
-    totalChallenges: challenges.length,
+    totalChallenges: displayChallenges.length,
     currentUser: user?.id?.slice(-8),
     challengeBreakdown: {
-      pending: challenges.filter(c => c.status === 'pending').length,
-      accepted: challenges.filter(c => c.status === 'accepted').length,
-      completed: challenges.filter(c => c.status === 'completed').length,
-      withOpponent: challenges.filter(c => c.opponent_id).length,
-      openChallenges: challenges.filter(
+      pending: displayChallenges.filter(c => c.status === 'pending').length,
+      accepted: displayChallenges.filter(c => c.status === 'accepted').length,
+      completed: displayChallenges.filter(c => c.status === 'completed').length,
+      withOpponent: displayChallenges.filter(c => c.opponent_id).length,
+      openChallenges: displayChallenges.filter(
         c => !c.opponent_id && c.status === 'pending'
       ).length,
-      myOpenChallenges: challenges.filter(
+      myOpenChallenges: displayChallenges.filter(
         c =>
           !c.opponent_id &&
           c.status === 'pending' &&
           c.challenger_id === user?.id
       ).length,
-      otherUserOpenChallenges: challenges.filter(
+      otherUserOpenChallenges: displayChallenges.filter(
         c =>
           !c.opponent_id &&
           c.status === 'pending' &&
           c.challenger_id !== user?.id
       ).length,
     },
-    sampleChallenges: challenges.slice(0, 5).map(c => ({
+    sampleChallenges: displayChallenges.slice(0, 5).map(c => ({
       id: c.id?.slice(-8) || 'NO_ID',
       challenger_name:
         c.challenger_profile?.display_name ||
@@ -102,7 +240,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
   });
 
   // Filter open challenges from other users with enhanced logging
-  const openChallenges = challenges
+  const openChallenges = displayChallenges
     .filter(c => {
       const isOpen = !c.opponent_id && c.status === 'pending';
       const isNotMyChallenge = c.challenger_id !== user?.id;
@@ -126,16 +264,16 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
     '✅ [MobileChallengeManager] Open challenges processing result:',
     {
       totalFiltered: openChallenges.length,
-      allOpenChallenges: challenges.filter(
+      allOpenChallenges: displayChallenges.filter(
         c => !c.opponent_id && c.status === 'pending'
       ).length,
-      myOpenChallenges: challenges.filter(
+      myOpenChallenges: displayChallenges.filter(
         c =>
           !c.opponent_id &&
           c.status === 'pending' &&
           c.challenger_id === user?.id
       ).length,
-      othersOpenChallenges: challenges.filter(
+      othersOpenChallenges: displayChallenges.filter(
         c =>
           !c.opponent_id &&
           c.status === 'pending' &&
@@ -167,7 +305,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
   );
 
   // Get user's own open challenges
-  const myOpenChallenges = challenges
+  const myOpenChallenges = displayChallenges
     .filter(
       c =>
         !c.opponent_id && c.status === 'pending' && c.challenger_id === user?.id
@@ -175,7 +313,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
     .map(convertToLocalChallenge);
 
   // Get ongoing challenges (accepted status)
-  const ongoingChallenges = challenges
+  const ongoingChallenges = displayChallenges
     .filter(
       c =>
         c.status === 'accepted' &&
@@ -184,7 +322,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
     .map(convertToLocalChallenge);
 
   // Get upcoming challenges (pending with specific opponent)
-  const upcomingChallenges = challenges
+  const upcomingChallenges = displayChallenges
     .filter(
       c =>
         c.status === 'pending' &&
@@ -194,7 +332,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
     .map(convertToLocalChallenge);
 
   // Get completed challenges (recent)
-  const completedChallenges = challenges
+  const completedChallenges = displayChallenges
     .filter(
       c =>
         c.status === 'completed' &&
@@ -204,14 +342,14 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
 
   // Get community stats (ALL challenges, not just user's)
   const communityStats = {
-    allOpenChallenges: challenges.filter(
+    allOpenChallenges: displayChallenges.filter(
       c => !c.opponent_id && c.status === 'pending'
     ).length,
-    allLiveChallenges: challenges.filter(c => c.status === 'accepted').length,
-    allUpcomingChallenges: challenges.filter(
+    allLiveChallenges: displayChallenges.filter(c => c.status === 'accepted').length,
+    allUpcomingChallenges: displayChallenges.filter(
       c => c.status === 'pending' && c.opponent_id
     ).length,
-    allCompletedToday: challenges.filter(
+    allCompletedToday: displayChallenges.filter(
       c =>
         c.status === 'completed' &&
         new Date(c.updated_at || c.created_at).toDateString() ===
@@ -219,11 +357,11 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
     ).length,
     totalActivePlayers: new Set(
       [
-        ...challenges.map(c => c.challenger_id),
-        ...challenges.filter(c => c.opponent_id).map(c => c.opponent_id),
+        ...displayChallenges.map(c => c.challenger_id),
+        ...displayChallenges.filter(c => c.opponent_id).map(c => c.opponent_id),
       ].filter(Boolean)
     ).size,
-    totalSpaInPlay: challenges
+    totalSpaInPlay: displayChallenges
       .filter(c => c.status === 'pending' || c.status === 'accepted')
       .reduce((sum, c) => sum + (c.bet_points || 0), 0),
   };
@@ -231,16 +369,16 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
   // Community Overview Component - Enhanced with actual challenges display
   const CommunityOverview = () => {
     // Get actual challenges for each category
-    const allOpenChallengesData = challenges
+    const allOpenChallengesData = displayChallenges
       .filter(c => !c.opponent_id && c.status === 'pending')
       .slice(0, 3);
-    const allLiveChallengesData = challenges
+    const allLiveChallengesData = displayChallenges
       .filter(c => c.status === 'accepted')
       .slice(0, 3);
-    const allUpcomingChallengesData = challenges
+    const allUpcomingChallengesData = displayChallenges
       .filter(c => c.status === 'pending' && c.opponent_id)
       .slice(0, 3);
-    const allCompletedTodayData = challenges
+    const allCompletedTodayData = displayChallenges
       .filter(
         c =>
           c.status === 'completed' &&
@@ -366,12 +504,15 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
                           </div>
                         </div>
                       </div>
-                      <div className='text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1'>
-                        {new Date(challenge.created_at).toLocaleTimeString(
-                          'vi-VN',
-                          { hour: '2-digit', minute: '2-digit' }
-                        )}
-                        <span className='ml-1 text-emerald-500'>→</span>
+                      <div className='flex flex-col items-end gap-1'>
+                        <CountdownChip info={getCountdownInfo(challenge)} size="sm" />
+                        <div className='text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1'>
+                          {new Date(challenge.created_at).toLocaleTimeString(
+                            'vi-VN',
+                            { hour: '2-digit', minute: '2-digit' }
+                          )}
+                          <span className='ml-1 text-emerald-500'>→</span>
+                        </div>
                       </div>
                     </button>
                   ))}
@@ -561,11 +702,107 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState<any>(null);
   const [isChallengeDetailOpen, setIsChallengeDetailOpen] = useState(false);
+  const [pullToRefreshState, setPullToRefreshState] = useState({
+    startY: 0,
+    currentY: 0,
+    isPulling: false,
+    isRefreshing: false,
+  });
+
+  // Accessibility: Focus management for modal (moved here after state defined)
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (isChallengeDetailOpen) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
+      setTimeout(() => {
+        const firstButton = modalRef.current?.querySelector('button');
+        if (firstButton) firstButton.focus();
+      }, 80);
+    } else if (previousFocusRef.current) {
+      previousFocusRef.current.focus();
+      previousFocusRef.current = null;
+    }
+  }, [isChallengeDetailOpen]);
+
+  const handleModalKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setIsChallengeDetailOpen(false);
+    }
+    if (e.key === 'Tab' && modalRef.current) {
+      const focusable = modalRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable.length) return;
+      const first = focusable[0] as HTMLElement;
+      const last = focusable[focusable.length - 1] as HTMLElement;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }, [isChallengeDetailOpen]);
+
+  // Pull-to-refresh handlers
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (window.scrollY > 0) return; // Only trigger at top of page
+    
+    setPullToRefreshState(prev => ({
+      ...prev,
+      startY: e.touches[0].clientY,
+      isPulling: true,
+    }));
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!pullToRefreshState.isPulling || window.scrollY > 0) return;
+    
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - pullToRefreshState.startY;
+    
+    if (diff > 0 && diff < 120) { // Max pull distance
+      setPullToRefreshState(prev => ({
+        ...prev,
+        currentY: diff,
+      }));
+      
+      // Add visual feedback
+      if (diff > 60) {
+        e.preventDefault(); // Prevent default scroll
+      }
+    }
+  }, [pullToRefreshState.isPulling, pullToRefreshState.startY]);
+
+  const handleTouchEnd = useCallback(async () => {
+    if (!pullToRefreshState.isPulling) return;
+    
+    const shouldRefresh = pullToRefreshState.currentY > 60;
+    
+    if (shouldRefresh && !isRefreshing) {
+      setPullToRefreshState(prev => ({ ...prev, isRefreshing: true }));
+      await handleRefresh();
+      setPullToRefreshState(prev => ({ ...prev, isRefreshing: false }));
+    }
+    
+    setPullToRefreshState({
+      startY: 0,
+      currentY: 0,
+      isPulling: false,
+      isRefreshing: false,
+    });
+  }, [pullToRefreshState.isPulling, pullToRefreshState.currentY, isRefreshing]);
+
+  // Pull-to-refresh indicator
+  // (Removed inline PullToRefreshIndicator – now imported)
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-      await fetchChallenges();
+  await fetchChallenges(true);
       toast.success('Đã làm mới dữ liệu thách đấu');
     } catch (error) {
       toast.error('Lỗi khi làm mới dữ liệu');
@@ -575,12 +812,49 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
   };
 
   const joinOpenChallenge = async (challengeId: string) => {
+    if (processingChallengeId) return;
+    setProcessingChallengeId(challengeId);
+
+    // Optimistic update: immediately move challenge to "accepted" and add user as opponent
+    const challengeToUpdate = displayChallenges.find(c => c.id === challengeId);
+    if (challengeToUpdate && user) {
+      setOptimisticChallenges(prev => [
+        ...prev,
+        {
+          id: challengeId,
+          status: 'accepted',
+          opponent_id: user.id,
+          opponent_profile: {
+            id: user.id,
+            full_name: user.user_metadata?.full_name || user.email,
+            display_name: user.user_metadata?.display_name,
+            avatar_url: user.user_metadata?.avatar_url,
+            verified_rank: user.user_metadata?.verified_rank || 'A',
+            current_rank: user.user_metadata?.current_rank || 'A',
+          }
+        }
+      ]);
+      
+      // Show optimistic success immediately
+      toast.success('Đã tham gia thách đấu! Đang xác nhận...', {
+        duration: 2000,
+      });
+    }
+
     try {
       await acceptChallenge(challengeId);
-      toast.success('Đã tham gia thách đấu thành công!');
+      toast.success('Thách đấu đã được xác nhận thành công!');
     } catch (error) {
       console.error('Error joining challenge:', error);
-      toast.error('Lỗi khi tham gia thách đấu');
+      
+      // Revert optimistic update on error
+      setOptimisticChallenges(prev => 
+        prev.filter(opt => opt.id !== challengeId)
+      );
+      
+      toast.error('Lỗi khi tham gia thách đấu. Đã hoàn tác.');
+    } finally {
+      setProcessingChallengeId(null);
     }
   };
 
@@ -595,14 +869,50 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
   };
 
   const handleJoinChallenge = async (challengeId: string) => {
+    if (processingChallengeId) return;
+    setProcessingChallengeId(challengeId);
+
+    // Optimistic update for modal join
+    const challengeToUpdate = displayChallenges.find(c => c.id === challengeId);
+    if (challengeToUpdate && user) {
+      setOptimisticChallenges(prev => [
+        ...prev,
+        {
+          id: challengeId,
+          status: 'accepted',
+          opponent_id: user.id,
+          opponent_profile: {
+            id: user.id,
+            full_name: user.user_metadata?.full_name || user.email,
+            display_name: user.user_metadata?.display_name,
+            avatar_url: user.user_metadata?.avatar_url,
+            verified_rank: user.user_metadata?.verified_rank || 'A',
+            current_rank: user.user_metadata?.current_rank || 'A',
+          }
+        }
+      ]);
+      
+      setIsChallengeDetailOpen(false);
+      toast.success('Đã tham gia thách đấu! Đang xác nhận...', {
+        duration: 2000,
+      });
+    }
+
     try {
       await acceptChallenge(challengeId);
-      setIsChallengeDetailOpen(false);
-      toast.success('Đã tham gia thách đấu thành công!');
-      fetchChallenges(); // Refresh challenges list
+      fetchChallenges();
+      toast.success('Thách đấu đã được xác nhận thành công!');
     } catch (error) {
       console.error('Error joining challenge:', error);
-      toast.error('Lỗi khi tham gia thách đấu');
+      
+      // Revert optimistic update on error
+      setOptimisticChallenges(prev => 
+        prev.filter(opt => opt.id !== challengeId)
+      );
+      
+      toast.error('Lỗi khi tham gia thách đấu. Đã hoàn tác.');
+    } finally {
+      setProcessingChallengeId(null);
     }
   };
 
@@ -614,7 +924,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
     setIsChallengeDetailOpen(true);
   };
 
-  // Challenge Detail Modal Component - Enhanced with flexible positioning and proper action buttons
+  // Challenge Detail Modal Component - Enhanced with accessibility
   const ChallengeDetailModal = () => {
     if (!selectedChallenge) return null;
 
@@ -632,26 +942,35 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
     return (
       <div
         className={`fixed inset-0 z-50 ${isChallengeDetailOpen ? 'block' : 'hidden'}`}
+        role='dialog'
+        aria-modal='true'
+        aria-labelledby='challenge-modal-title'
+        onKeyDown={handleModalKeyDown}
       >
         {/* Background overlay with scroll lock */}
         <div
           className='fixed inset-0 bg-black/60 backdrop-blur-md transition-opacity overflow-hidden'
           onClick={() => setIsChallengeDetailOpen(false)}
-          style={{ touchAction: 'none' }} // Prevent scroll on background
+          style={{ touchAction: 'none' }}
+          aria-hidden='true'
         />
 
         {/* Centered Modal Container - Compact and optimized */}
         <div className='fixed inset-0 flex items-center justify-center p-3 pointer-events-none'>
-          <div className='bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm max-h-[75vh] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 transform transition-all pointer-events-auto'>
+          <div
+            ref={modalRef}
+            className='bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm max-h-[75vh] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 transform transition-all pointer-events-auto'
+          >
             <div className='flex flex-col h-full'>
               {/* Compact Header */}
               <div className='flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50'>
-                <h2 className='text-base font-bold text-slate-800 dark:text-slate-200'>
+                <h2 id='challenge-modal-title' className='text-base font-bold text-slate-800 dark:text-slate-200'>
                   Chi tiết thách đấu
                 </h2>
                 <button
                   onClick={() => setIsChallengeDetailOpen(false)}
                   className='w-7 h-7 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors'
+                  aria-label='Đóng modal'
                 >
                   ✕
                 </button>
@@ -779,7 +1098,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
                         Win Rate
                       </p>
                       <p className='text-sm font-bold text-green-600 dark:text-green-400'>
-                        {Math.floor(Math.random() * 30 + 60)}%
+                        --
                       </p>
                     </div>
                   </div>
@@ -871,6 +1190,11 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
   };
 
   const renderTabContent = () => {
+    // Show skeleton loading for initial load
+    if (loading) {
+      return <MobileSkeletonList />;
+    }
+
     switch (activeTab) {
       case 'live':
         return (
@@ -901,8 +1225,8 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
                     rank: challenge.opponent_profile?.verified_rank || 'A',
                   },
                   score: {
-                    player1: Math.floor(Math.random() * challenge.race_to),
-                    player2: Math.floor(Math.random() * challenge.race_to),
+                    player1: 0,
+                    player2: 0,
                   },
                   raceToTarget: challenge.race_to,
                   betPoints: challenge.bet_points,
@@ -911,13 +1235,21 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
                 };
 
                 return (
-                  <LiveMatchCard
-                    key={challenge.id}
-                    match={liveMatch}
-                    onWatch={matchId => {
-                      toast.success('Đang mở trận đấu trực tiếp...');
-                    }}
-                  />
+                  <div key={challenge.id} className="relative">
+                    <LiveMatchCard
+                      match={liveMatch}
+                      onWatch={matchId => {
+                        toast.success('Đang mở trận đấu trực tiếp...');
+                      }}
+                    />
+                    {/* Add countdown if needed for live matches */}
+                    <div className="absolute top-3 right-3">
+                      <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 text-xs animate-pulse">
+                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                        <span className="font-medium text-red-600 dark:text-red-400">LIVE</span>
+                      </div>
+                    </div>
+                  </div>
                 );
               })
             ) : (
@@ -942,14 +1274,19 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
             </div>
             {upcomingChallenges.length > 0 ? (
               upcomingChallenges.map(challenge => (
-                <UnifiedChallengeCard
-                  key={challenge.id}
-                  challenge={{
-                    ...challenge,
-                    status: 'accepted' as const,
-                  }}
-                  variant='compact'
-                />
+                <div key={challenge.id} className="relative">
+                  <UnifiedChallengeCard
+                    challenge={{
+                      ...challenge,
+                      status: 'accepted' as const,
+                    }}
+                    variant='compact'
+                  />
+                  {/* Add countdown chip for upcoming challenges */}
+                  <div className="absolute top-3 right-3">
+                    <CountdownChip info={getCountdownInfo(challenge)} size="md" />
+                  </div>
+                </div>
               ))
             ) : (
               <div className='text-center py-8 text-slate-500 dark:text-slate-400'>
@@ -972,27 +1309,58 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
               </p>
             </div>
             {openChallenges.length > 0 ? (
-              openChallenges.map(challenge => {
-                console.log('🎯 Rendering open challenge:', {
-                  id: challenge.id?.slice(-8),
-                  challenger:
-                    challenge.challenger_profile?.display_name ||
-                    challenge.challenger_profile?.full_name,
-                  hasProfile: !!challenge.challenger_profile,
-                });
-                return (
-                  <OpenChallengeCard
-                    key={challenge.id}
-                    challenge={{
-                      ...challenge,
-                      status: 'pending' as const,
-                    }}
-                    onJoin={joinOpenChallenge}
-                    currentUser={user}
-                    isJoining={false}
-                  />
-                );
-              })
+              <>
+              <VirtualizedChallengeList 
+                challenges={openChallenges}
+                maxVisible={10}
+                renderItem={(challenge) => {
+                  console.log('🎯 Rendering open challenge:', {
+                    id: challenge.id?.slice(-8),
+                    challenger:
+                      challenge.challenger_profile?.display_name ||
+                      challenge.challenger_profile?.full_name,
+                    hasProfile: !!challenge.challenger_profile,
+                  });
+
+                  const countdown = getCountdownInfo(challenge);
+                  
+                  return (
+                    <div className="relative">
+                      <OpenChallengeCard
+                        challenge={{
+                          ...challenge,
+                          status: 'pending' as const,
+                        }}
+                        onJoin={joinOpenChallenge}
+                        currentUser={user}
+                        isJoining={processingChallengeId === challenge.id}
+                        winRateInfo={winRates[challenge.challenger_id]}
+                      />
+                      {/* Overlay countdown chip with urgency styling */}
+                      <div className={`absolute top-3 right-3 z-10 ${countdown.urgent ? 'animate-bounce' : ''}`}>
+                        <CountdownChip info={getCountdownInfo(challenge)} size="sm" />
+                      </div>
+                      {/* Add urgency glow effect for soon-to-expire challenges */}
+                      {countdown.urgent && (
+                        <div className="absolute inset-0 rounded-xl border-2 border-orange-300 dark:border-orange-600 animate-pulse pointer-events-none"></div>
+                      )}
+                    </div>
+                  );
+                }}
+              />
+              {hasMore && (
+                <div className="mt-4">
+                  <button
+                    onClick={loadMoreChallenges}
+                    className="w-full py-3 text-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-600 rounded-lg hover:border-slate-400 dark:hover:border-slate-500 transition-colors text-sm font-medium"
+                    disabled={loading}
+                  >
+                    {loading ? 'Đang tải...' : 'Tải thêm'}
+                  </button>
+                  <p className="mt-2 text-center text-xs text-slate-400 dark:text-slate-500">Trang {page + 1}</p>
+                </div>
+              )}
+              </>
             ) : (
               <div className='text-center py-12 text-slate-500 dark:text-slate-400'>
                 <div className='w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4'>
@@ -1025,17 +1393,10 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
                   challenge={{
                     ...challenge,
                     status: 'completed' as const,
-                    challenger_score: Math.floor(
-                      Math.random() * challenge.race_to
-                    ),
-                    opponent_score: Math.floor(
-                      Math.random() * challenge.race_to
-                    ),
-                    winner_id:
-                      Math.random() > 0.5
-                        ? challenge.challenger_id
-                        : challenge.opponent_id,
-                    completed_at: new Date().toISOString(),
+                    // Keep original challenge scores if present, else 0 fallback (type allows deprecated fields)
+                    challenger_score: (challenge as any).challenger_score || 0,
+                    opponent_score: (challenge as any).opponent_score || 0,
+                    completed_at: challenge.completed_at || challenge.created_at,
                   }}
                   onView={() => {
                     toast.info('Xem chi tiết kết quả...');
@@ -1058,12 +1419,31 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
 
   if (loading) {
     return (
-      <div className='flex items-center justify-center py-12'>
-        <div className='text-center'>
-          <div className='w-8 h-8 border-4 border-slate-200 dark:border-slate-700 border-t-slate-600 dark:border-t-slate-400 rounded-full animate-spin mx-auto mb-4'></div>
-          <p className='text-slate-500 dark:text-slate-400'>
-            Đang tải thách đấu...
-          </p>
+      <div className={`w-full ${className}`}>
+        <div className='p-4'>
+          {/* Header skeleton */}
+          <div className='flex items-center justify-between mb-4'>
+            <div className='h-6 bg-slate-200 dark:bg-slate-700 rounded w-32 animate-pulse'></div>
+            <div className='flex items-center gap-2'>
+              <div className='h-9 bg-slate-200 dark:bg-slate-700 rounded-xl w-20 animate-pulse'></div>
+              <div className='h-9 bg-slate-200 dark:bg-slate-700 rounded-xl w-28 animate-pulse'></div>
+            </div>
+          </div>
+
+          {/* Community overview skeleton */}
+          <MobileSkeletonStats />
+
+          {/* Tabs skeleton */}
+          <div className='grid grid-cols-4 gap-0.5 mb-4 h-auto p-0.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl'>
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className='p-2 rounded-lg animate-pulse'>
+                <div className='h-8 bg-slate-200 dark:bg-slate-700 rounded'></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Content skeleton */}
+          <MobileSkeletonList />
         </div>
       </div>
     );
@@ -1078,7 +1458,13 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
   }
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full ${className}`} 
+         onTouchStart={handleTouchStart}
+         onTouchMove={handleTouchMove}
+         onTouchEnd={handleTouchEnd}>
+      {/* Pull-to-refresh indicator */}
+  <PullToRefreshIndicator state={pullToRefreshState} />
+      
       <div className='p-4'>
         {/* Header with refresh button and create challenge button */}
         <div className='flex items-center justify-between mb-4'>
@@ -1118,7 +1504,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
               }
             >
               <ActiveChallengeHighlight
-                challenges={challenges || []}
+                challenges={displayChallenges || []}
                 user={user}
                 onChallengeClick={challenge => {
                   console.log('Mobile challenge clicked:', challenge);
@@ -1129,8 +1515,8 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = ({
           </div>
         )}
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
-          <TabsList className='grid w-full grid-cols-4 mb-4 h-auto p-0.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm'>
+        <Tabs value={activeTab} onValueChange={handleTabChange} className='w-full'>
+          <TabsList className='grid w-full grid-cols-4 mb-4 h-auto p-0.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm sticky top-0 z-40'>
             <TabsTrigger
               value='live'
               className='flex flex-col gap-0.5 p-2 rounded-lg text-slate-600 dark:text-slate-400 data-[state=active]:bg-red-100 data-[state=active]:dark:bg-red-900/30 data-[state=active]:text-red-700 data-[state=active]:dark:text-red-300 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-red-200 data-[state=active]:dark:border-red-700 transition-all hover:bg-red-50 dark:hover:bg-red-900/20'

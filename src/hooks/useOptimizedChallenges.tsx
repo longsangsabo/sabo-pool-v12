@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -12,7 +12,11 @@ interface UseOptimizedChallengesReturn {
   openChallenges: Challenge[];
   loading: boolean;
   error: string | null;
-  fetchChallenges: () => Promise<void>;
+  fetchChallenges: (reset?: boolean) => Promise<void>;
+  loadMoreChallenges: () => Promise<void>;
+  hasMore: boolean;
+  page: number;
+  pageSize: number;
   createChallenge: (data: CreateChallengeData) => Promise<any>;
   acceptChallenge: (challengeId: string) => Promise<any>;
   declineChallenge: (challengeId: string) => Promise<any>;
@@ -25,6 +29,10 @@ interface UseOptimizedChallengesReturn {
     opponentScore: number
   ) => Promise<any>;
   isSubmittingScore: boolean;
+  getWinRate: (userId: string) => Promise<{ winRate: number; wins: number; losses: number; total: number } | null>;
+  isWinRateLoading: (userId: string) => boolean;
+  /** Optimistic local update helper */
+  applyLocalPatch: (patch: Partial<Challenge> & { id: string }) => void;
 }
 
 // Cache for profiles to avoid re-fetching
@@ -33,13 +41,111 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [page, setPage] = useState(0);
+  const pageSize = 30;
+  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Debounced fetch to prevent multiple calls
-  const fetchChallenges = useCallback(async () => {
+  // Win rate cache
+  const winRateCache = useMemo(() => new Map<string, { wins: number; losses: number; total: number; winRate: number; timestamp: number }>(), []);
+  const winRateLoading = useRef(new Set<string>());
+
+  // Helper: fetch & cache profiles for user ids (used in diff insert/update)
+  const fetchProfilesForUserIds = useCallback(async (userIds: string[]) => {
+    const unique = Array.from(new Set(userIds.filter(Boolean)));
+    if (!unique.length) return {} as Record<string, any>;
+    const now = Date.now();
+    const results: Record<string, any> = {};
+    const toFetch: string[] = [];
+    unique.forEach(uid => {
+      const cached = profileCache.get(uid);
+      if (cached && now - cached.timestamp < CACHE_DURATION) {
+        results[uid] = cached.data;
+      } else {
+        toFetch.push(uid);
+      }
+    });
+    if (toFetch.length) {
+      const { data: profilesRes } = await supabase
+        .from('profiles')
+        .select('user_id, full_name, display_name, verified_rank, elo, avatar_url')
+        .in('user_id', toFetch);
+      const { data: rankingsRes } = await supabase
+        .from('player_rankings')
+        .select('user_id, spa_points, elo_points')
+        .in('user_id', toFetch);
+      (profilesRes || []).forEach(p => {
+        const ranking = (rankingsRes || []).find(r => r.user_id === p.user_id);
+        const merged = {
+          ...p,
+          spa_points: ranking?.spa_points || 0,
+          elo_points: ranking?.elo_points || 1000,
+        };
+        profileCache.set(p.user_id, { data: merged, timestamp: now });
+        results[p.user_id] = merged;
+      });
+    }
+    return results;
+  }, []);
+
+  // Differential apply for realtime changes
+  const applyRealtimeDiff = useCallback(async (payload: any) => {
+    setChallenges(prev => {
+      const list = [...prev];
+      const idx = list.findIndex(c => c.id === payload.new?.id || payload.old?.id);
+      if (payload.eventType === 'INSERT' && payload.new) {
+        if (idx === -1) {
+          // Enrich later asynchronously
+          list.unshift(payload.new as Challenge);
+        }
+      } else if (payload.eventType === 'UPDATE' && payload.new) {
+        if (idx !== -1) {
+          list[idx] = { ...list[idx], ...(payload.new as any) };
+        } else {
+          list.unshift(payload.new as Challenge);
+        }
+      } else if (payload.eventType === 'DELETE' && payload.old) {
+        if (idx !== -1) list.splice(idx, 1);
+      }
+      return list.sort((a, b) => (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+    });
+
+    // Enrich profiles for inserted/updated rows if needed
+    const target = payload.new || payload.old;
+    if (target) {
+      await fetchProfilesForUserIds([target.challenger_id, target.opponent_id].filter(Boolean));
+      // Rebuild enriched objects for affected ids only
+      setChallenges(prev => prev.map(ch => {
+        if (ch.id !== target.id) return ch;
+        const enrich = (uid?: string | null) => {
+          if (!uid) return null;
+            const p = profileCache.get(uid)?.data;
+            return p ? {
+              user_id: uid,
+              full_name: p.full_name || '',
+              display_name: p.display_name,
+              verified_rank: p.verified_rank,
+              current_rank: p.verified_rank,
+              spa_points: p.spa_points || 0,
+              elo_points: p.elo_points || 1000,
+              avatar_url: p.avatar_url,
+              elo: p.elo || 1000,
+            } : null;
+        };
+        return {
+          ...ch,
+          challenger_profile: enrich(ch.challenger_id),
+          opponent_profile: enrich(ch.opponent_id),
+        } as Challenge;
+      }));
+    }
+  }, [fetchProfilesForUserIds]);
+
+  // Debounced fetch with pagination
+  const fetchChallenges = useCallback(async (reset: boolean = false) => {
     if (!user) {
       setLoading(false);
       return;
@@ -48,12 +154,19 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     try {
       setLoading(true);
       setError(null);
+      let currentPage = reset ? 0 : page;
+      if (reset) {
+        setPage(0);
+        setHasMore(true);
+      }
+      const from = currentPage * pageSize;
+      const to = from + pageSize - 1;
 
-      // Fetch challenges with minimal data first
-      const { data: challengesData, error: fetchError } = await supabase
+      const { data: challengesData, error: fetchError, count } = await supabase
         .from('challenges')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(from, to);
 
       if (fetchError) throw fetchError;
 
@@ -172,7 +285,22 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
             : null,
         })) || [];
 
-      setChallenges(enrichedChallenges as Challenge[]);
+      setChallenges(prev => {
+        if (reset || currentPage === 0) return enrichedChallenges as Challenge[];
+        // merge unique
+        const existingIds = new Set(prev.map(c => c.id));
+        const merged = [...prev];
+        enrichedChallenges.forEach(c => { if (!existingIds.has(c.id)) merged.push(c as Challenge); });
+        return merged.sort((a,b)=> (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+      });
+      // hasMore determination
+      if (count !== null && count !== undefined) {
+        const loaded = (currentPage + 1) * pageSize;
+        setHasMore(loaded < count);
+      } else if (challengesData && challengesData.length < pageSize) {
+        setHasMore(false);
+      }
+      if (!reset) setPage(p => (p === currentPage ? p : currentPage));
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Unknown error occurred';
@@ -181,7 +309,52 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, page, pageSize]);
+
+  const loadMoreChallenges = useCallback(async () => {
+    if (loading || !hasMore) return;
+    setPage(p => p + 1);
+    await fetchChallenges(false);
+  }, [loading, hasMore, fetchChallenges]);
+
+  // Win rate retrieval
+  const getWinRate = useCallback(async (userId: string) => {
+    if (!userId) return null;
+    const cached = winRateCache.get(userId);
+    const now = Date.now();
+    if (cached && now - cached.timestamp < 5 * 60_000) {
+      return { winRate: cached.winRate, wins: cached.wins, losses: cached.losses, total: cached.total };
+    }
+    if (winRateLoading.current.has(userId)) return null;
+    winRateLoading.current.add(userId);
+    try {
+      const { data, error } = await supabase
+        .from('matches')
+        .select('player1_id, player2_id, winner_id, status')
+        .or(`player1_id.eq.${userId},player2_id.eq.${userId}`)
+        .eq('status', 'completed')
+        .limit(100);
+      if (error) throw error;
+      const wins = (data || []).filter(m => m.winner_id === userId).length;
+      const total = data?.length || 0;
+      const losses = total - wins;
+      const winRate = total ? wins / total : 0;
+      winRateCache.set(userId, { wins, losses, total, winRate, timestamp: now });
+      return { winRate, wins, losses, total };
+    } catch (e) {
+      console.warn('Win rate fetch failed', e);
+      return null;
+    } finally {
+      winRateLoading.current.delete(userId);
+    }
+  }, [winRateCache]);
+
+  const isWinRateLoading = useCallback((userId: string) => winRateLoading.current.has(userId), []);
+
+  // Optimistic local patch
+  const applyLocalPatch = useCallback((patch: Partial<Challenge> & { id: string }) => {
+    setChallenges(prev => prev.map(c => (c.id === patch.id ? { ...c, ...patch } as Challenge : c)));
+  }, []);
 
   // Memoized derived data
   const { receivedChallenges, sentChallenges, openChallenges } = useMemo(() => {
@@ -595,30 +768,17 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
   // Optimized real-time subscription - single channel
   useEffect(() => {
     if (!user) return;
-
-    fetchChallenges();
-
+    fetchChallenges(true);
     const subscription = supabase
-      .channel('optimized_challenges')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'challenges',
-        },
-        payload => {
-          console.log('🔄 Challenge change detected, refreshing...');
-          // Debounced refresh
-          setTimeout(() => fetchChallenges(), 200);
-        }
-      )
+      .channel('optimized_challenges_diff')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'challenges' }, (payload: any) => {
+        const changedId = (payload?.new && (payload.new as any).id) || (payload?.old && (payload.old as any).id);
+        console.log('🔄 Diff event:', payload?.eventType, changedId);
+        applyRealtimeDiff(payload);
+      })
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  }, [user, fetchChallenges]);
+    return () => { supabase.removeChannel(subscription); };
+  }, [user, fetchChallenges, applyRealtimeDiff]);
 
   const submitScore = useCallback(
     async (
@@ -642,7 +802,11 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     openChallenges,
     loading,
     error,
-    fetchChallenges,
+  fetchChallenges,
+  loadMoreChallenges,
+  hasMore,
+  page,
+  pageSize,
     createChallenge,
     acceptChallenge,
     declineChallenge,
@@ -651,5 +815,8 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     getAcceptedChallenges,
     submitScore,
     isSubmittingScore: submitScoreMutation.isPending,
+  getWinRate,
+  isWinRateLoading,
+  applyLocalPatch,
   };
 };

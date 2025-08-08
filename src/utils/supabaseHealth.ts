@@ -3,12 +3,12 @@ import { supabase } from '@/integrations/supabase/client';
 interface HealthCheckResult {
   success: boolean;
   error?: string;
-  data?: any;
+  data?: unknown;
 }
 
 export const checkSupabaseConnection = async (): Promise<HealthCheckResult> => {
   try {
-    console.log('Testing Supabase connection...');
+  // console.log('Testing Supabase connection...');
     const { data, error } = await supabase
       .from('profiles')
       .select('count')
@@ -19,10 +19,10 @@ export const checkSupabaseConnection = async (): Promise<HealthCheckResult> => {
       return { success: false, error: error.message };
     }
 
-    console.log('Supabase connection successful!', data);
+  // console.log('Supabase connection successful!', data);
     return { success: true, data };
-  } catch (error: any) {
-    console.error('Network connectivity error:', error);
+  } catch (error: unknown) {
+    // console.error('Network connectivity error:', error);
     return { success: false, error: 'Network connectivity failed' };
   }
 };
@@ -63,8 +63,8 @@ export const checkDatabasePermissions =
       }
 
       return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message };
+    } catch (error: unknown) {
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
   };
 

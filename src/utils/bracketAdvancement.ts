@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface AdvancementResult {
   success: boolean;
   error?: string;
-  data?: any;
+  data?: unknown;
 }
 
 export const advanceWinner = async (
@@ -49,16 +49,16 @@ export const advanceWinner = async (
       };
     }
 
-    console.log('✅ Successfully advanced winner:', data);
+  // console.log('✅ Successfully advanced winner:', data);
     return {
       success: true,
       data: data,
     };
-  } catch (err) {
-    console.error('❌ Exception in advanceWinner:', err);
+  } catch (_err) {
+    // console.error('❌ Exception in advanceWinner:', err);
     return {
       success: false,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: _err instanceof Error ? _err.message : 'Unknown error',
     };
   }
 };
@@ -92,16 +92,16 @@ export const fixAllTournamentProgression = async (
       };
     }
 
-    console.log('✅ Tournament progression fixed:', data);
+  // console.log('✅ Tournament progression fixed:', data);
     return {
       success: true,
       data: data,
     };
-  } catch (err) {
-    console.error('❌ Exception in fixAllTournamentProgression:', err);
+  } catch (_err) {
+    // console.error('❌ Exception in fixAllTournamentProgression:', err);
     return {
       success: false,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: _err instanceof Error ? _err.message : 'Unknown error',
     };
   }
 };
@@ -163,7 +163,7 @@ export const autoFixTournamentProgression = async (
     } else {
       console.log('✅ Tournament progression is consistent');
     }
-  } catch (err) {
-    console.error('❌ Error in auto-fix tournament progression:', err);
+  } catch (_err) {
+    // console.error('❌ Error in auto-fix tournament progression:', err);
   }
 };

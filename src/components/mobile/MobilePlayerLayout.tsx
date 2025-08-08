@@ -27,6 +27,12 @@ export const MOBILE_PAGE_TITLES = {
   CLUBS: 'Câu Lạc Bộ',
   CLUB_DETAIL: 'Chi Tiết CLB',
   CLUB_REGISTRATION: 'Đăng Ký CLB',
+  // Extended Club Owner Pages (mới thêm cho UI quản trị CLB mobile)
+  CLUB_OWNER_DASHBOARD: 'Quản Trị CLB',
+  CLUB_MEMBERS: 'Thành Viên CLB',
+  CLUB_PENDING: 'Duyệt Thành Viên',
+  CLUB_ACTIVITIES: 'Hoạt Động CLB',
+  CLUB_SETTINGS: 'Cài Đặt CLB',
   
   // Public Pages
   ABOUT: 'Giới Thiệu',
@@ -47,6 +53,7 @@ interface MobilePlayerLayoutProps {
   showHeader?: boolean;
   showNavigation?: boolean;
   pageTitle?: MobilePageTitle;
+  onMenuClick?: () => void; // added
 }
 
 export const MobilePlayerLayout: React.FC<MobilePlayerLayoutProps> = ({
@@ -57,6 +64,7 @@ export const MobilePlayerLayout: React.FC<MobilePlayerLayoutProps> = ({
   showHeader = true,
   showNavigation = true,
   pageTitle: customPageTitle,
+  onMenuClick, // added
 }) => {
   const { theme } = useTheme();
   const { isMobile } = useOptimizedResponsive();
@@ -88,7 +96,7 @@ export const MobilePlayerLayout: React.FC<MobilePlayerLayoutProps> = ({
       
       {/* Mobile Header */}
       {showHeader && (
-        <MobileHeader title={finalPageTitle} />
+        <MobileHeader title={finalPageTitle} onMenuClick={onMenuClick} />
       )}
       
       {/* Main Content Container */}

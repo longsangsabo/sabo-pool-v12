@@ -16,6 +16,10 @@ import {
   Zap,
 } from 'lucide-react';
 
+// Import shared components
+import { MobileSectionHeader } from '@/components/ui/mobile-section-header';
+import { MobileCard } from '@/components/ui/mobile-card';
+
 // Import components
 import TournamentManagementHub from '@/components/tournament/TournamentManagementHub';
 import { TournamentManagementHubRef } from '@/types/tournament-management';
@@ -69,49 +73,63 @@ const ClubTournamentManagementInternal: React.FC = () => {
   };
 
   return (
-    <div className='space-y-6'>
-      <div>
-        <h2 className='text-2xl font-bold text-foreground'>Quản lý Giải đấu</h2>
-        <p className='text-muted-foreground'>
-          Tạo mới và quản lý các giải đấu của câu lạc bộ
-        </p>
-      </div>
+    <div className='space-y-4'>
+      {/* Mobile-optimized header using shared component */}
+      <MobileSectionHeader 
+        title='Quản lý Giải đấu'
+        subtitle='Tạo mới và quản lý các giải đấu CLB'
+        icon={Trophy}
+        iconColor='text-amber-500'
+      />
 
-      {/* Tournament Management Section */}
-      <div className='space-y-6'>
-        <Tabs
-          value={managementActiveTab}
-          onValueChange={setManagementActiveTab}
-          className='space-y-4'
-        >
-          <TabsList className='grid w-full grid-cols-3 lg:grid-cols-5'>
-            <TabsTrigger
-              value='tournaments'
-              className='flex items-center gap-2'
-            >
-              <Trophy className='w-4 h-4' />
-              Quản lý Giải đấu
-            </TabsTrigger>
-            <TabsTrigger value='create' className='flex items-center gap-2'>
-              <Plus className='w-4 h-4' />
-              Tạo & Sửa
-            </TabsTrigger>
-            <TabsTrigger value='automation' className='flex items-center gap-2'>
-              <Zap className='w-4 h-4' />
-              Automation
-            </TabsTrigger>
-            <TabsTrigger
-              value='bracket-view'
-              className='flex items-center gap-2'
-            >
-              <Workflow className='w-4 h-4' />
-              Sơ đồ giải đấu
-            </TabsTrigger>
-            <TabsTrigger value='results' className='flex items-center gap-2'>
-              <Award className='w-4 h-4' />
-              Kết quả giải đấu
-            </TabsTrigger>
-          </TabsList>
+      {/* Mobile-optimized tabs */}
+      <Tabs
+        value={managementActiveTab}
+        onValueChange={setManagementActiveTab}
+        className='space-y-4'
+      >
+        {/* Main tabs - improved mobile spacing */}
+        <TabsList className='grid w-full grid-cols-2 h-10 bg-muted/50'>
+          <TabsTrigger value='tournaments' className='text-sm h-8 px-3 font-medium'>
+            <Trophy className='w-4 h-4 mr-1.5' />
+            Danh sách
+          </TabsTrigger>
+          <TabsTrigger value='create' className='text-sm h-8 px-3 font-medium'>
+            <Plus className='w-4 h-4 mr-1.5' />
+            Tạo mới
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Secondary action buttons - improved mobile layout */}
+        <div className='flex flex-wrap gap-2'>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => setManagementActiveTab('automation')}
+            className={`text-sm h-8 px-3 ${managementActiveTab === 'automation' ? 'bg-primary/10 text-primary border-primary/30' : ''}`}
+          >
+            <Zap className='w-4 h-4 mr-1.5' />
+            Tự động hóa
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => setManagementActiveTab('bracket-view')}
+            className={`text-sm h-8 px-3 ${managementActiveTab === 'bracket-view' ? 'bg-primary/10 text-primary border-primary/30' : ''}`}
+          >
+            <Workflow className='w-4 h-4 mr-1.5' />
+            Bảng đấu
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => setManagementActiveTab('results')}
+            className={`text-sm h-8 px-3 ${managementActiveTab === 'results' ? 'bg-primary/10 text-primary border-primary/30' : ''}`}
+          >
+            <Award className='w-4 h-4 mr-1.5' />
+            Kết quả
+          </Button>
+        </div>
 
           <TabsContent value='create'>
             <ProfileProvider>
@@ -159,15 +177,19 @@ const ClubTournamentManagementInternal: React.FC = () => {
               )}
 
               {!selectedTournamentId && (
-                <div className='text-center py-12'>
-                  <Zap className='w-16 h-16 text-muted-foreground mx-auto mb-4' />
-                  <h3 className='text-lg font-semibold text-foreground mb-2'>
-                    Chọn giải đấu
-                  </h3>
-                  <p className='text-muted-foreground'>
-                    Vui lòng chọn một giải đấu để quản lý automation
-                  </p>
-                </div>
+                <MobileCard 
+                  title='Chọn giải đấu để quản lý'
+                  icon={Zap}
+                  iconColor='text-amber-500'
+                  variant='outlined'
+                  className='border-dashed'
+                >
+                  <div className='flex flex-col items-center justify-center py-6 text-center'>
+                    <p className='text-sm text-muted-foreground max-w-sm'>
+                      Vui lòng chọn một giải đấu từ danh sách để sử dụng các tính năng tự động hóa
+                    </p>
+                  </div>
+                </MobileCard>
               )}
             </div>
           </TabsContent>
@@ -219,15 +241,19 @@ const ClubTournamentManagementInternal: React.FC = () => {
                   adminMode={true}
                 />
               ) : (
-                <div className='text-center py-12'>
-                  <Workflow className='w-16 h-16 text-muted-foreground mx-auto mb-4' />
-                  <h3 className='text-lg font-semibold text-foreground mb-2'>
-                    Chọn giải đấu
-                  </h3>
-                  <p className='text-muted-foreground'>
-                    Vui lòng chọn một giải đấu để xem sơ đồ giải đấu
-                  </p>
-                </div>
+                <MobileCard 
+                  title='Chọn giải đấu để xem bảng đấu'
+                  icon={Workflow}
+                  iconColor='text-blue-500'
+                  variant='outlined'
+                  className='border-dashed'
+                >
+                  <div className='flex flex-col items-center justify-center py-6 text-center'>
+                    <p className='text-sm text-muted-foreground max-w-sm'>
+                      Vui lòng chọn một giải đấu từ danh sách để xem và quản lý bảng đấu
+                    </p>
+                  </div>
+                </MobileCard>
               )}
             </div>
           </TabsContent>
@@ -251,8 +277,7 @@ const ClubTournamentManagementInternal: React.FC = () => {
               <TournamentResults tournamentId={selectedTournamentId} />
             </div>
           </TabsContent>
-        </Tabs>
-      </div>
+      </Tabs>
     </div>
   );
 };

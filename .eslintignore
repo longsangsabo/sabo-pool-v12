@@ -99,3 +99,6 @@ temp/
 vite.config.ts
 tailwind.config.ts
 postcss.config.js 
+supabase/functions/**
+test-database-fix.js
+test-vnpay.js

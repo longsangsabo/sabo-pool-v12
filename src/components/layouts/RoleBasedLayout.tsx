@@ -1,11 +1,12 @@
 import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
-import { useClubRole } from '@/hooks/useClubRole';
+import { useIsClubOwner } from '@/hooks/club/useClubRole';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { AdminResponsiveLayout } from './AdminResponsiveLayout';
 import { ClubResponsiveLayout } from './ClubResponsiveLayout';
 import { ResponsiveLayout } from './ResponsiveLayout';
+import { useLocation } from 'react-router-dom';
 
 interface RoleBasedLayoutProps {
   children: React.ReactNode;
@@ -16,8 +17,19 @@ export const RoleBasedLayout: React.FC<RoleBasedLayoutProps> = ({
 }) => {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
-  const { isClubOwner, isLoading: clubLoading } = useClubRole();
+  const { data: isClubOwner, isLoading: clubLoading } = useIsClubOwner(user?.id, !!user?.id);
   const { isDesktop } = useOptimizedResponsive();
+  const location = useLocation();
+  const path = location.pathname;
+  const isOwnerManagementRoute = path.startsWith('/club-management') || /\/clubs\/.+\/owner$/.test(path);
+
+  console.log('[RoleBasedLayout] Debug:', {
+    user: user?.id,
+    isClubOwner,
+    isOwnerManagementRoute,
+    path,
+    loading: { authLoading, adminLoading, clubLoading }
+  });
 
   // Show loading while checking roles
   if (authLoading || adminLoading || clubLoading) {
@@ -33,11 +45,13 @@ export const RoleBasedLayout: React.FC<RoleBasedLayoutProps> = ({
     return <AdminResponsiveLayout>{children}</AdminResponsiveLayout>;
   }
 
-  // Club owners get club-specific layout
-  if (user && isClubOwner) {
+  // Club owners get club-specific layout ONLY for management routes
+  if (user && isClubOwner && isOwnerManagementRoute) {
+    console.log('[RoleBasedLayout] Using ClubResponsiveLayout for owner management');
     return <ClubResponsiveLayout>{children}</ClubResponsiveLayout>;
   }
 
-  // Regular users get standard responsive layout
+  // Regular users get standard responsive layout (including club owners viewing public pages)
+  console.log('[RoleBasedLayout] Using ResponsiveLayout (player/public)');
   return <ResponsiveLayout>{children}</ResponsiveLayout>;
 };

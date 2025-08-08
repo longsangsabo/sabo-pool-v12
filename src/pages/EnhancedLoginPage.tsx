@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,50 +34,54 @@ const EnhancedLoginPage = () => {
     user,
     loading: authLoading,
   } = useAuth();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const redirectParam = searchParams.get('redirect');
+  const [effectiveRedirect, setEffectiveRedirect] = useState<string | null>(null);
 
-  // Redirect if already logged in (enhanced: check club owner role)
   useEffect(() => {
-    const checkAndRedirect = async () => {
-      if (user && !authLoading) {
-        try {
-          const sb: any = supabase;
-          // Single query for owner membership
-          const ownerResult = await sb
-            .from('club_members')
-            .select('club_id')
-            .eq('user_id', user.id)
-            .eq('role', 'owner')
-            .eq('status', 'active')
-            .limit(1);
-          const ownerMembership = ownerResult?.data as any[] | null;
-          if (ownerMembership && ownerMembership.length > 0) {
-            navigate('/club-management', { replace: true });
-            return;
-          }
+    if (!effectiveRedirect) {
+      if (redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//') && !redirectParam.startsWith('/auth')) {
+        setEffectiveRedirect(redirectParam);
+      }
+    }
+  }, [redirectParam, effectiveRedirect]);
 
-          const clubResult = await sb
-            .from('club_profiles')
-            .select('id')
-            .eq('user_id', user.id)
-            .maybeSingle();
-          const clubProfile = clubResult?.data as any | null;
-          if (clubProfile) {
-            navigate('/club-management', { replace: true });
-            return;
-          }
-
-          navigate('/dashboard', { replace: true });
-        } catch (e) {
-          console.warn(
-            'Post-login redirect logic failed, fallback to dashboard:',
-            e
-          );
-          navigate('/dashboard', { replace: true });
+  useEffect(() => {
+    const performRoleRedirect = async () => {
+      if (!user || authLoading) return;
+      try {
+        if (effectiveRedirect) {
+          navigate(effectiveRedirect, { replace: true });
+          return;
         }
+        const sb: any = supabase;
+        const ownerResult = await sb
+          .from('club_members')
+          .select('club_id')
+          .eq('user_id', user.id)
+            .eq('role', 'owner')
+          .eq('status', 'active')
+          .limit(1);
+        const ownerMembership = ownerResult?.data as any[] | null;
+        if (ownerMembership && ownerMembership.length > 0) {
+          navigate('/club-management', { replace: true });
+          return;
+        }
+        const clubResult = await sb
+          .from('club_profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        const clubProfile = clubResult?.data as any | null;
+        navigate(clubProfile ? '/club-management' : '/dashboard', { replace: true });
+      } catch (e) {
+        console.warn('Post-login redirect logic failed, fallback to dashboard:', e);
+        navigate('/dashboard', { replace: true });
       }
     };
-    checkAndRedirect();
-  }, [user, authLoading, navigate]);
+    performRoleRedirect();
+  }, [user, authLoading, navigate, effectiveRedirect]);
 
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +120,9 @@ const EnhancedLoginPage = () => {
               .eq('status', 'active')
               .limit(1);
             const ownerMembership = ownerResult?.data as any[] | null;
-            if (ownerMembership && ownerMembership.length > 0) {
+            if (effectiveRedirect) {
+              navigate(effectiveRedirect, { replace: true });
+            } else if (ownerMembership && ownerMembership.length > 0) {
               navigate('/club-management', { replace: true });
             } else {
               const clubResult = await sb
@@ -125,9 +131,7 @@ const EnhancedLoginPage = () => {
                 .eq('user_id', uid)
                 .maybeSingle();
               const clubProfile = clubResult?.data as any | null;
-              navigate(clubProfile ? '/club-management' : '/dashboard', {
-                replace: true,
-              });
+              navigate(clubProfile ? '/club-management' : '/dashboard', { replace: true });
             }
           } catch {
             navigate('/dashboard', { replace: true });
@@ -179,7 +183,9 @@ const EnhancedLoginPage = () => {
               .eq('status', 'active')
               .limit(1);
             const ownerMembership = ownerResult?.data as any[] | null;
-            if (ownerMembership && ownerMembership.length > 0) {
+            if (effectiveRedirect) {
+              navigate(effectiveRedirect, { replace: true });
+            } else if (ownerMembership && ownerMembership.length > 0) {
               navigate('/club-management', { replace: true });
             } else {
               const clubResult = await sb
@@ -188,9 +194,7 @@ const EnhancedLoginPage = () => {
                 .eq('user_id', uid)
                 .maybeSingle();
               const clubProfile = clubResult?.data as any | null;
-              navigate(clubProfile ? '/club-management' : '/dashboard', {
-                replace: true,
-              });
+              navigate(clubProfile ? '/club-management' : '/dashboard', { replace: true });
             }
           } catch {
             navigate('/dashboard', { replace: true });

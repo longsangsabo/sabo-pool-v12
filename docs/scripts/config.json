@@ -1,6 +1,6 @@
 {
-  "scanPaths": ["/workspaces/sabo-pool-v11", "/workspaces/sabo-pool-v11/docs"],
-  "watchPaths": ["/workspaces/sabo-pool-v11/docs"],
+  "scanPaths": ["/workspaces/sabo-pool-v12", "/workspaces/sabo-pool-v12/docs"],
+  "watchPaths": ["/workspaces/sabo-pool-v12/docs"],
   "fileExtensions": [".md", ".txt", ".rst", ".doc"],
   "duplicateThreshold": 0.85,
   "archiveAfterDays": 90,

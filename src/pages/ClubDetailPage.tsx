@@ -27,6 +27,10 @@ import {
 } from 'lucide-react';
 import TableBookingForm from '@/components/TableBookingForm';
 import { Club } from '@/types/common';
+import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
+import ClubProfileMobile from '@/components/club/mobile/ClubProfileMobile';
+import MobileDebugInfo from '@/components/debug/MobileDebugInfo';
+import MobilePlayerLayout from '@/components/mobile/MobilePlayerLayout';
 
 interface Member {
   user_id: string;
@@ -57,6 +61,7 @@ const ClubDetailPage = () => {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [loading, setLoading] = useState(true);
   const [memberCount, setMemberCount] = useState(0);
+  const { isMobile } = useOptimizedResponsive();
 
   useEffect(() => {
     if (id) {
@@ -217,8 +222,70 @@ const ClubDetailPage = () => {
     );
   }
 
+  // Mobile view
+  if (isMobile) {
+    console.log('[ClubDetailPage] Rendering mobile club detail (public/player layout)');
+    return (
+      <ClubProfileMobile
+        clubId={id}
+        club={{
+          id: club.id,
+          name: club.name,
+          logo_url: club.logo_url,
+          address: club.address,
+          member_count: memberCount,
+          trust_score: (club as any).trust_score || 0,
+          verified: (club as any).status === 'active',
+          description: club.description,
+          phone: (club as any).contact_info || club.phone,
+          created_at: club.created_at,
+          total_matches: (club as any).total_matches || 0,
+          total_tournaments: (club as any).total_tournaments || tournaments.length,
+        }}
+        members={members.map(m => ({
+          id: m.user_id,
+          name: m.full_name,
+          avatar_url: m.avatar_url,
+          rank: m.current_rank,
+          status: 'member',
+        }))}
+        activities={tournaments.map(t => ({
+          id: t.id,
+          type: 'tournament',
+          content: `Giải đấu: ${t.name}`,
+          created_at: t.start_date,
+        }))}
+        onEditClub={() => {
+          toast({
+            title: 'Thông báo',
+            description: 'Tính năng chỉnh sửa đang được phát triển',
+          });
+        }}
+        onInviteMember={() => {
+          toast({
+            title: 'Thông báo',
+            description: 'Tính năng mời thành viên đang được phát triển',
+          });
+        }}
+        onViewAchievements={() => {
+          toast({
+            title: 'Thông báo',
+            description: 'Tính năng xem thành tích đang được phát triển',
+          });
+        }}
+        onMemberClick={(memberId) => {
+          navigate(`/players/${memberId}`);
+        }}
+      />
+    );
+  }
+
+  // Desktop view (original code)
   return (
     <div className='min-h-screen bg-gray-50 pt-16'>
+      {/* Debug info for mobile testing - remove in production */}
+      <MobileDebugInfo />
+      
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {/* Club Header */}
         <Card className='mb-6 overflow-hidden'>

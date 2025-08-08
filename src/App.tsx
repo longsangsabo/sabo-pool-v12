@@ -59,6 +59,7 @@ const AdminRouter = lazy(() => import('@/router/AdminRouter'));
 
 // Club components
 const ClubManagementPage = lazy(() => import('@/pages/ClubManagementPage'));
+const ClubOwnerDashboardPage = lazy(() => import('@/pages/ClubOwnerDashboardPage'));
 
 // Auth pages
 const AuthPage = lazy(() => import('@/pages/AuthPage'));
@@ -164,6 +165,7 @@ const AppContent = () => {
             <Route path='leaderboard' element={<LeaderboardPage />} />
             <Route path='clubs' element={<ClubsPage />} />
             <Route path='clubs/:id' element={<ClubDetailPage />} />
+            <Route path='clubs/:id/owner' element={<ClubOwnerDashboardPage />} />
           </Route>
 
           {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}

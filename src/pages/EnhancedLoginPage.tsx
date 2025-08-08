@@ -15,6 +15,7 @@ import { GoogleLoginButton } from '@/components/auth/GoogleLoginButton';
 import { AuthDivider } from '@/components/auth/AuthDivider';
 import { OAuthSetupGuide } from '@/components/auth/OAuthSetupGuide';
 import { handleAuthError } from '@/utils/authHelpers';
+import { supabase } from '@/integrations/supabase/client';
 
 const EnhancedLoginPage = () => {
   // Phone login state
@@ -34,11 +35,44 @@ const EnhancedLoginPage = () => {
     loading: authLoading,
   } = useAuth();
 
-  // Redirect if already logged in
+  // Redirect if already logged in (enhanced: check club owner role)
   useEffect(() => {
-    if (user && !authLoading) {
-      navigate('/dashboard');
-    }
+    const checkAndRedirect = async () => {
+      if (user && !authLoading) {
+        try {
+          const sb: any = supabase;
+          const ownerResult = await sb
+            .from('club_members')
+            .select('club_id')
+            .eq('user_id', user.id)
+            .eq('role', 'owner')
+            .eq('status', 'active')
+            .limit(1);
+          const ownerMembership = ownerResult?.data as any[] | null;
+          if (ownerMembership && ownerMembership.length > 0) {
+            navigate('/club-management', { replace: true });
+            return;
+          }
+
+          const clubResult = await sb
+            .from('club_profiles')
+            .select('id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          const clubProfile = clubResult?.data as any | null;
+          if (clubProfile) {
+            navigate('/club-management', { replace: true });
+            return;
+          }
+
+          navigate('/dashboard', { replace: true });
+        } catch (e) {
+          console.warn('Post-login redirect logic failed, fallback to dashboard:', e);
+          navigate('/dashboard', { replace: true });
+        }
+      }
+    };
+    checkAndRedirect();
   }, [user, authLoading, navigate]);
 
   const handlePhoneSubmit = async (e: React.FormEvent) => {
@@ -58,13 +92,43 @@ const EnhancedLoginPage = () => {
     setLoading(true);
 
     try {
-      const { error } = await signInWithPhone(phone, phonePassword);
+      const { error, data } = await signInWithPhone(phone, phonePassword);
 
       if (error) {
         handleAuthError(error);
       } else {
         toast.success('Đăng nhập thành công!');
-        navigate('/dashboard');
+        // Immediate redirect based on freshly returned user if available
+        const uid = data?.user?.id;
+        if (uid) {
+          try {
+            // Use any to avoid deep generic instantiation issues
+            const sb: any = supabase;
+            const ownerQuery = sb.from('club_members')
+              .select('club_id')
+              .eq('user_id', uid)
+              .eq('role', 'owner')
+              .eq('status', 'active')
+              .limit(1);
+            const ownerResult = await ownerQuery;
+            const ownerMembership = ownerResult?.data as any[] | null;
+            if (ownerMembership && ownerMembership.length > 0) {
+              navigate('/club-management', { replace: true });
+            } else {
+              const clubResult = await sb
+                .from('club_profiles')
+                .select('id')
+                .eq('user_id', uid)
+                .maybeSingle();
+              const clubProfile = clubResult?.data as any | null;
+              navigate(clubProfile ? '/club-management' : '/dashboard', { replace: true });
+            }
+          } catch {
+            navigate('/dashboard', { replace: true });
+          }
+        } else {
+          // Fallback – effect will handle once context updates
+        }
       }
     } catch (error) {
       console.error('Phone login error:', error);
@@ -91,13 +155,39 @@ const EnhancedLoginPage = () => {
     setLoading(true);
 
     try {
-      const { error } = await signInWithEmail(email, emailPassword);
+      const { error, data } = await signInWithEmail(email, emailPassword);
 
       if (error) {
         handleAuthError(error);
       } else {
         toast.success('Đăng nhập thành công!');
-        navigate('/dashboard');
+        const uid = data?.user?.id;
+        if (uid) {
+          try {
+            const sb: any = supabase;
+            const ownerResult = await sb
+              .from('club_members')
+              .select('club_id')
+              .eq('user_id', uid)
+              .eq('role', 'owner')
+              .eq('status', 'active')
+              .limit(1);
+            const ownerMembership = ownerResult?.data as any[] | null;
+            if (ownerMembership && ownerMembership.length > 0) {
+              navigate('/club-management', { replace: true });
+            } else {
+              const clubResult = await sb
+                .from('club_profiles')
+                .select('id')
+                .eq('user_id', uid)
+                .maybeSingle();
+              const clubProfile = clubResult?.data as any | null;
+              navigate(clubProfile ? '/club-management' : '/dashboard', { replace: true });
+            }
+          } catch {
+            navigate('/dashboard', { replace: true });
+          }
+        }
       }
     } catch (error) {
       console.error('Email login error:', error);

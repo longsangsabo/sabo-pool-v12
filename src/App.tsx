@@ -7,6 +7,7 @@ import { CombinedProviders } from '@/contexts/CombinedProviders';
 import { AppErrorBoundary } from '@/components/error/AppErrorBoundary';
 import { AppLoadingFallback } from '@/components/loading/AppLoadingFallback';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { useIsClubOwner } from '@/hooks/club/useClubRole';
 import { PublicRoute } from '@/components/auth/PublicRoute';
 import { AdminRoute } from '@/components/auth/AdminRoute';
 import MainLayout from '@/components/MainLayout';
@@ -17,7 +18,8 @@ import '@/utils/debugTournamentRefresh';
 
 // Lazy load components - Public pages
 const HomePage = lazy(() => import('@/pages/Home'));
-const LoginPage = lazy(() => import('@/pages/Login'));
+// Use enhanced login page with role-based redirect logic
+const EnhancedLoginPage = lazy(() => import('@/pages/EnhancedLoginPage'));
 const RegisterPage = lazy(() => import('@/pages/Register'));
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/SimpleClubContactPage'));
@@ -83,6 +85,16 @@ const AppContent = () => {
   // ✅ Initialize realtime notifications (now inside AuthProvider)
   const { PopupComponent } = useRealtimeNotifications();
 
+  // Inline component to protect club management routes by owner role
+  const ClubOwnerRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    // reuse auth provider inside ProtectedRoute
+    const { user } = require('@/hooks/useAuth');
+    const { data: isOwner, isLoading } = useIsClubOwner(user?.user?.id, !!user?.user?.id);
+    if (isLoading) return <div className='p-8 text-center'>Đang kiểm tra quyền...</div>;
+    if (!isOwner) return <div className='p-8 text-center text-red-500'>Bạn không có quyền truy cập khu vực quản lý CLB.</div>;
+    return <>{children}</>;
+  };
+
   return (
     <div className='min-h-screen bg-background'>
       <Suspense fallback={<AppLoadingFallback />}>
@@ -114,7 +126,7 @@ const AppContent = () => {
             path='/auth/login'
             element={
               <PublicRoute>
-                <LoginPage />
+                <EnhancedLoginPage />
               </PublicRoute>
             }
           />
@@ -179,16 +191,16 @@ const AppContent = () => {
           />
 
           {/* Club management routes - protected and require club owner privileges */}
-          {/* Club management routes - protected and require club owner privileges */}
-          <Route path='/club-management' element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-          <Route path='/club-management/tournaments' element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-          <Route path='/club-management/challenges' element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-          <Route path='/club-management/verification' element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-          <Route path='/club-management/members' element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-          <Route path='/club-management/notifications' element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-          <Route path='/club-management/schedule' element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-          <Route path='/club-management/payments' element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
-          <Route path='/club-management/settings' element={<ProtectedRoute><ClubManagementPage /></ProtectedRoute>} />
+          <Route
+            path='/club-management/*'
+            element={
+              <ProtectedRoute>
+                <ClubOwnerRoute>
+                  <ClubManagementPage />
+                </ClubOwnerRoute>
+              </ProtectedRoute>
+            }
+          />
 
           {/* Fallback route */}
           <Route path='*' element={<NotFoundPage />} />

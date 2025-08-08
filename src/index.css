@@ -1,12 +1,14 @@
+/* NOTE: @import must precede all other statements (PostCSS rule). */
+@import url('./styles/tablet-enhancements.css');
+@import url('./styles/mobile-enhancements.css');
+@import url('./styles/mobile-ui-standards.css');
+@import url('./styles/rainbow-avatar.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Ensure all @import are placed AFTER tailwind directives */
-@import './styles/tablet-enhancements.css';
-@import './styles/mobile-enhancements.css';
-@import './styles/mobile-ui-standards.css';
-@import './styles/rainbow-avatar.css';
+/* (Moved imports to top to satisfy build) */
 
 /* NOTE: Earlier edits may have duplicated safe area + profile styles.
    Keeping first occurrence; any duplicates later should be cleaned in future refactor. */
@@ -37,11 +39,11 @@
     --tournament-silver: 0 0% 70%;
     --tournament-bronze: 28 85% 53%;
     --tournament-accent: 142 71% 45%;
-    --gradient-tournament-gold: linear-gradient(135deg, hsl(43, 96%, 56%), hsl(45, 100%, 51%));
-    --gradient-tournament-silver: linear-gradient(135deg, hsl(0, 0%, 75%), hsl(0, 0%, 60%));
-    --gradient-tournament-bronze: linear-gradient(135deg, hsl(28, 85%, 53%), hsl(30, 90%, 48%));
-    --shadow-tournament-glow: 0 0 30px hsl(43, 96%, 56% / 0.4);
-    --shadow-tournament-subtle: 0 4px 20px hsl(0, 0%, 0% / 0.15);
+    --gradient-tournament-gold: linear-gradient(135deg, hsl(43deg 96% 56%), hsl(45deg 100% 51%));
+    --gradient-tournament-silver: linear-gradient(135deg, hsl(0deg 0% 75%), hsl(0deg 0% 60%));
+    --gradient-tournament-bronze: linear-gradient(135deg, hsl(28deg 85% 53%), hsl(30deg 90% 48%));
+    --shadow-tournament-glow: 0 0 30px hsl(43deg, 96%, 56% / 40%);
+    --shadow-tournament-subtle: 0 4px 20px hsl(0deg, 0%, 0% / 15%);
     --muted: 220 12% 22%;
     --muted-foreground: 220 8% 75%;
     --border: 220 10% 30%;
@@ -51,6 +53,7 @@
     --destructive-foreground: 210 40% 98%;
     --radius: 0.75rem;
   }
+
   .light {
     --background: 210 40% 98%;
     --foreground: 220 23% 7%;
@@ -77,8 +80,10 @@
 
 /* Global base (outside of @layer base) */
 * { @apply border-border; }
+
 body {
   @apply bg-background text-foreground font-outfit;
+
   font-feature-settings: "rlig" 1, "calt" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -116,7 +121,7 @@ html { scroll-behavior: smooth; }
 :root {
   --sabo-primary: #00E5FF;
   --sabo-secondary: #FF6A00;
-  --sabo-accent: #999999;
+  --sabo-accent: #999;
   --sabo-gold: #FFD700;
   --sabo-dark: #0f172a;
   --sabo-darker: #020617;
@@ -131,16 +136,13 @@ html { scroll-behavior: smooth; }
 .sabo-tech-card {
   position: relative;
   margin: 16px;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgb(15 23 42 / 90%);
   backdrop-filter: blur(10px);
 }
 
 .tech-card-border {
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
+  inset: -2px;
   background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent-blue)), hsl(var(--primary)));
   clip-path: polygon(
     var(--tech-corner-size) 0%, 
@@ -150,7 +152,7 @@ html { scroll-behavior: smooth; }
     0% 100%, 
     0% var(--tech-corner-size)
   );
-  filter: drop-shadow(0 0 var(--tech-glow-blur) hsl(var(--primary) / 0.5));
+  filter: drop-shadow(0 0 var(--tech-glow-blur) hsl(var(--primary) / 50%));
   animation: tech-pulse 3s ease-in-out infinite alternate;
 }
 
@@ -170,10 +172,7 @@ html { scroll-behavior: smooth; }
 
 .tech-card-corners {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   pointer-events: none;
 }
 
@@ -234,16 +233,13 @@ html { scroll-behavior: smooth; }
     border: none;
     cursor: pointer;
     min-height: 44px;
-    font-family: 'Outfit', monospace;
+    font-family: Outfit, monospace;
     transition: all 0.3s ease;
   }
 
   .tech-btn-border {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent-blue)));
     clip-path: polygon(8px 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0% 100%, 0% 8px);
     transition: all 0.3s ease;
@@ -260,10 +256,7 @@ html { scroll-behavior: smooth; }
 
   .tech-btn-glow {
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
+    inset: -2px;
     background: inherit;
     filter: blur(4px);
     opacity: 0;
@@ -340,7 +333,7 @@ html { scroll-behavior: smooth; }
   .tech-input-label {
     display: block;
     margin-bottom: 8px;
-    font-family: 'Outfit', monospace;
+    font-family: Outfit, monospace;
     font-weight: 600;
     color: hsl(var(--primary));
     text-transform: uppercase;
@@ -354,10 +347,7 @@ html { scroll-behavior: smooth; }
 
   .tech-input-border {
     position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
+    inset: -1px;
     background: linear-gradient(45deg, hsl(var(--border)), hsl(var(--primary)));
     clip-path: polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px);
     transition: all 0.3s ease;
@@ -370,7 +360,7 @@ html { scroll-behavior: smooth; }
     background: hsl(var(--card));
     border: none;
     color: hsl(var(--foreground));
-    font-family: 'Outfit', monospace;
+    font-family: Outfit, monospace;
     clip-path: polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px);
     transition: all 0.3s ease;
   }
@@ -382,15 +372,12 @@ html { scroll-behavior: smooth; }
 
   .tech-input-field:focus ~ .tech-input-border {
     background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    filter: drop-shadow(0 0 12px hsl(var(--primary) / 0.5));
+    filter: drop-shadow(0 0 12px hsl(var(--primary) / 50%));
   }
 
   .tech-input-corners {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     pointer-events: none;
   }
 
@@ -403,7 +390,7 @@ html { scroll-behavior: smooth; }
     left: 0;
     right: 0;
     background: hsl(var(--card));
-    padding: calc(12px + env(safe-area-inset-bottom)) 0 env(safe-area-inset-bottom) 0;
+    padding: calc(12px + env(safe-area-inset-bottom)) 0 env(safe-area-inset-bottom);
     z-index: 1000;
     border-top: 1px solid hsl(var(--border));
   }
@@ -453,11 +440,8 @@ html { scroll-behavior: smooth; }
 
   .tech-nav-item.active .nav-item-glow {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle, hsl(var(--primary) / 0.2) 0%, transparent 70%);
+    inset: 0;
+    background: radial-gradient(circle, hsl(var(--primary) / 20%) 0%, transparent 70%);
     border-radius: 8px;
     animation: nav-glow 2s ease-in-out infinite alternate;
   }
@@ -505,20 +489,20 @@ html { scroll-behavior: smooth; }
   }
 
   .tech-header-title {
-    font-family: 'Outfit', monospace;
+    font-family: Outfit, monospace;
     font-size: 24px;
     font-weight: 700;
     color: hsl(var(--foreground));
     text-transform: uppercase;
     letter-spacing: 2px;
-    text-shadow: 0 0 10px hsl(var(--primary) / 0.5);
+    text-shadow: 0 0 10px hsl(var(--primary) / 50%);
     margin: 0;
   }
 
   .tech-header-subtitle {
     font-size: 14px;
     color: hsl(var(--muted-foreground));
-    margin: 4px 0 0 0;
+    margin: 4px 0 0;
   }
 
   .tech-header-actions {
@@ -532,7 +516,7 @@ html { scroll-behavior: smooth; }
     right: 0;
     width: 100px;
     height: 100%;
-    background: radial-gradient(circle at center, hsl(var(--primary) / 0.1) 0%, transparent 50%);
+    background: radial-gradient(circle at center, hsl(var(--primary) / 10%) 0%, transparent 50%);
     pointer-events: none;
   }
 
@@ -550,10 +534,7 @@ html { scroll-behavior: smooth; }
 
   .tech-stat-border {
     position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
+    inset: -1px;
     background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent-blue)));
     border-radius: 8px;
     z-index: -1;
@@ -588,10 +569,7 @@ html { scroll-behavior: smooth; }
 
   .tech-stat-glow {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: inherit;
     filter: blur(8px);
     opacity: 0.3;
@@ -624,10 +602,7 @@ html { scroll-behavior: smooth; }
 
   .tech-list-border {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
     border-radius: 8px;
   }
@@ -670,11 +645,11 @@ html { scroll-behavior: smooth; }
   }
 
   .tech-list-item-clickable:hover .tech-list-border {
-    background: linear-gradient(90deg, hsl(var(--primary) / 0.3), hsl(var(--primary)), hsl(var(--primary) / 0.3));
+    background: linear-gradient(90deg, hsl(var(--primary) / 30%), hsl(var(--primary)), hsl(var(--primary) / 30%));
   }
 
   .tech-list-item-active .tech-list-border {
-    background: linear-gradient(90deg, hsl(var(--primary) / 0.5), hsl(var(--primary)), hsl(var(--primary) / 0.5));
+    background: linear-gradient(90deg, hsl(var(--primary) / 50%), hsl(var(--primary)), hsl(var(--primary) / 50%));
   }
 
   /* ===========================
@@ -682,11 +657,8 @@ html { scroll-behavior: smooth; }
      =========================== */
   .tech-modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    inset: 0;
+    background: rgb(0 0 0 / 80%);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
@@ -706,10 +678,7 @@ html { scroll-behavior: smooth; }
 
   .tech-modal-border {
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
+    inset: -2px;
     background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent-blue)), hsl(var(--primary)));
     border-radius: 12px;
     z-index: -1;
@@ -731,7 +700,7 @@ html { scroll-behavior: smooth; }
   }
 
   .tech-modal-title {
-    font-family: 'Outfit', monospace;
+    font-family: Outfit, monospace;
     font-size: 20px;
     font-weight: 700;
     color: hsl(var(--foreground));
@@ -753,7 +722,7 @@ html { scroll-behavior: smooth; }
 
   .tech-modal-close:hover {
     color: hsl(var(--accent-red));
-    background: hsl(var(--accent-red) / 0.1);
+    background: hsl(var(--accent-red) / 10%);
   }
 
   .tech-modal-body {
@@ -789,8 +758,8 @@ html { scroll-behavior: smooth; }
   }
 
   @keyframes modal-glow {
-    0% { filter: brightness(1) drop-shadow(0 0 20px hsl(var(--primary) / 0.3)); }
-    100% { filter: brightness(1.1) drop-shadow(0 0 30px hsl(var(--primary) / 0.5)); }
+    0% { filter: brightness(1) drop-shadow(0 0 20px hsl(var(--primary) / 30%)); }
+    100% { filter: brightness(1.1) drop-shadow(0 0 30px hsl(var(--primary) / 50%)); }
   }
 
   /* ===========================
@@ -799,13 +768,13 @@ html { scroll-behavior: smooth; }
   body.tech-theme {
     background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
     color: hsl(var(--foreground));
-    font-family: 'Outfit', 'Orbitron', monospace;
+    font-family: Outfit, Orbitron, monospace;
   }
 
   /* ===========================
      RESPONSIVE TECH STYLES
      =========================== */
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     :root {
       --tech-corner-size: 8px;
       --tech-glow-blur: 6px;
@@ -854,7 +823,7 @@ html { scroll-behavior: smooth; }
   }
 
   .mobile-nav-item.active {
-    background: hsl(var(--primary) / 0.1);
+    background: hsl(var(--primary) / 10%);
     color: hsl(var(--primary));
     transform: scale(1.05);
   }
@@ -929,7 +898,7 @@ html { scroll-behavior: smooth; }
 
   .reaction-btn.liked {
     color: hsl(var(--destructive));
-    background: hsl(var(--destructive) / 0.1);
+    background: hsl(var(--destructive) / 10%);
   }
 
   .heart-animation {
@@ -976,7 +945,7 @@ html { scroll-behavior: smooth; }
     border-radius: 50%;
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-foreground)));
     color: white;
-    box-shadow: 0 4px 12px hsl(var(--primary) / 0.4);
+    box-shadow: 0 4px 12px hsl(var(--primary) / 40%);
     transition: all 0.3s ease;
     border: none;
     display: flex;
@@ -985,7 +954,7 @@ html { scroll-behavior: smooth; }
   }
 
   .mobile-fab-primary:hover {
-    box-shadow: 0 6px 16px hsl(var(--primary) / 0.5);
+    box-shadow: 0 6px 16px hsl(var(--primary) / 50%);
     transform: translateY(-2px);
   }
 
@@ -1011,6 +980,7 @@ html { scroll-behavior: smooth; }
       opacity: 0;
       transform: translateY(20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -1029,7 +999,7 @@ html { scroll-behavior: smooth; }
 /* SABO ARENA Logo */
 .sabo-arena-header {
   text-align: center;
-  padding: 20px 0 40px 0;
+  padding: 20px 0 40px;
 }
 
 .sabo-logo-container {
@@ -1043,9 +1013,9 @@ html { scroll-behavior: smooth; }
   font-weight: 900;
   color: #e2e8f0;
   text-shadow: 
-    0 0 10px rgba(251, 146, 60, 0.5),
-    0 0 20px rgba(251, 146, 60, 0.3),
-    0 0 30px rgba(251, 146, 60, 0.2);
+    0 0 10px rgb(251 146 60 / 50%),
+    0 0 20px rgb(251 146 60 / 30%),
+    0 0 30px rgb(251 146 60 / 20%);
   letter-spacing: 2px;
   display: block;
 }
@@ -1060,7 +1030,7 @@ html { scroll-behavior: smooth; }
   border-left: 15px solid transparent;
   border-right: 15px solid transparent;
   border-bottom: 25px solid #fb923c;
-  filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.8));
+  filter: drop-shadow(0 0 10px rgb(251 146 60 / 80%));
 }
 
 /* Mirror Avatar Effect */
@@ -1097,7 +1067,7 @@ html { scroll-behavior: smooth; }
   height: 120px;
   border-radius: 12px;
   object-fit: cover;
-  border: 2px solid rgba(59, 130, 246, 0.3);
+  border: 2px solid rgb(59 130 246 / 30%);
 }
 
 /* Left side fading (moving away from center) */
@@ -1143,9 +1113,9 @@ html { scroll-behavior: smooth; }
   height: 160px;
   border: 3px solid #3b82f6;
   box-shadow: 
-    0 0 20px rgba(59, 130, 246, 0.6),
-    0 0 40px rgba(59, 130, 246, 0.4),
-    0 0 60px rgba(59, 130, 246, 0.2);
+    0 0 20px rgb(59 130 246 / 60%),
+    0 0 40px rgb(59 130 246 / 40%),
+    0 0 60px rgb(59 130 246 / 20%);
   position: relative;
   z-index: 10;
   transition: transform 0.3s ease;
@@ -1157,10 +1127,7 @@ html { scroll-behavior: smooth; }
 
 .avatar-glow-border {
   position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
+  inset: -5px;
   border-radius: 16px;
   background: linear-gradient(45deg, #3b82f6, #06b6d4, #3b82f6);
   z-index: -1;
@@ -1235,9 +1202,9 @@ html { scroll-behavior: smooth; }
   flex-direction: column;
   align-items: center;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(255 255 255 / 10%);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgb(255 255 255 / 20%);
   backdrop-filter: blur(10px);
   min-width: 80px;
 }
@@ -1246,12 +1213,12 @@ html { scroll-behavior: smooth; }
   font-size: 18px;
   font-weight: 700;
   color: #3b82f6;
-  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  text-shadow: 0 0 10px rgb(59 130 246 / 50%);
 }
 
 .stat-circle .stat-label {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgb(255 255 255 / 70%);
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-top: 4px;
@@ -1266,9 +1233,9 @@ html { scroll-behavior: smooth; }
   display: flex;
   justify-content: space-around;
   padding: 16px;
-  background: rgba(15, 23, 42, 0.95);
+  background: rgb(15 23 42 / 95%);
   backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(59, 130, 246, 0.3);
+  border-top: 1px solid rgb(59 130 246 / 30%);
 }
 
 .nav-item {
@@ -1282,11 +1249,11 @@ html { scroll-behavior: smooth; }
 }
 
 .nav-item:hover {
-  background: rgba(59, 130, 246, 0.1);
+  background: rgb(59 130 246 / 10%);
 }
 
 .nav-item.active {
-  background: rgba(59, 130, 246, 0.2);
+  background: rgb(59 130 246 / 20%);
 }
 
 .nav-item.active .nav-icon {
@@ -1296,13 +1263,13 @@ html { scroll-behavior: smooth; }
 .nav-icon {
   width: 24px;
   height: 24px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgb(255 255 255 / 70%);
   margin-bottom: 4px;
 }
 
 .nav-label {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgb(255 255 255 / 70%);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }

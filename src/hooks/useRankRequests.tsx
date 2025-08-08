@@ -143,55 +143,79 @@ export const useRankRequests = (clubId?: string) => {
 
   const createRankRequest = async (data: CreateRankRequestData) => {
     try {
-      // Ensure user_id is provided
+      console.log('[createRankRequest] payload', data);
       const userId = data.user_id;
-      if (!userId) {
-        throw new Error('User ID is required');
-      }
+      if (!userId) throw new Error('User ID is required');
 
-      // Check for existing pending request first
-      const existingRequest = await checkExistingPendingRequest(
-        userId,
-        data.club_id
-      );
+      const existingRequest = await checkExistingPendingRequest(userId, data.club_id);
       if (existingRequest) {
-        throw new Error(
-          'Bạn đã có yêu cầu rank đang chờ xét duyệt tại CLB này. Vui lòng chờ CLB xét duyệt trước khi gửi yêu cầu mới.'
-        );
+        throw new Error('Bạn đã có yêu cầu rank đang chờ xét duyệt tại CLB này. Vui lòng chờ CLB xét duyệt trước khi gửi yêu cầu mới.');
       }
 
-      const { data: newRequest, error } = await supabase
-        .from('rank_requests')
-        .insert({
-          user_id: userId,
-          club_id: data.club_id,
-          requested_rank: data.requested_rank,
-          evidence_files: data.evidence_files || [],
-          status: 'pending',
-        })
-        .select()
-        .single();
+      // Base payload with only guaranteed columns
+      const basePayload: any = {
+        user_id: userId,
+        club_id: data.club_id,
+        requested_rank: parseInt(data.requested_rank, 10), // ensure integer for DB
+        status: 'pending',
+      };
 
-      if (error) {
-        // Handle specific constraint violation errors
-        if (
-          error.code === '23P01' &&
-          error.message.includes('unique_pending_rank_request')
-        ) {
-          throw new Error(
-            'Bạn đã có yêu cầu rank đang chờ xét duyệt tại CLB này.'
-          );
+      // Try first insert WITH evidence_files if provided
+      let firstError: any = null;
+      let newRequest: any = null;
+      if (data.evidence_files && data.evidence_files.length) {
+        const insertPayload = { ...basePayload, evidence_files: data.evidence_files };
+        console.log('[createRankRequest] trying insert with evidence_files');
+        const { data: insData, error } = await supabase
+          .from('rank_requests')
+          .insert(insertPayload)
+          .select()
+          .single();
+        if (error) {
+          firstError = error;
+          console.warn('[createRankRequest] first insert failed', error);
+        } else {
+          newRequest = insData;
         }
-        throw error;
       }
 
-      // Refresh the requests list
+      // If first failed due to missing column, retry WITHOUT evidence_files
+      if (!newRequest) {
+        if (firstError && firstError.message?.includes("'evidence_files'")) {
+          console.log('[createRankRequest] retry without evidence_files');
+          const { data: insData2, error: retryErr } = await supabase
+            .from('rank_requests')
+            .insert(basePayload)
+            .select()
+            .single();
+          if (retryErr) {
+            console.error('[createRankRequest] retry insert error', retryErr);
+            throw retryErr;
+          }
+          newRequest = insData2;
+        } else if (!data.evidence_files?.length) {
+          // No evidence provided originally; perform single insert
+          const { data: insData3, error: err3 } = await supabase
+            .from('rank_requests')
+            .insert(basePayload)
+            .select()
+            .single();
+          if (err3) {
+            console.error('[createRankRequest] insert (no evidence) error', err3);
+            throw err3;
+          }
+          newRequest = insData3;
+        } else if (firstError) {
+          // Some other error
+          throw firstError;
+        }
+      }
+
       await fetchRankRequests();
+      return newRequest;
     } catch (err) {
       console.error('Error creating rank request:', err);
-      if (err instanceof Error) {
-        throw err; // Re-throw with original message
-      }
+      if (err instanceof Error) throw err;
       throw new Error('Lỗi khi gửi yêu cầu rank');
     }
   };

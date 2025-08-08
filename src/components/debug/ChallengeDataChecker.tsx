@@ -32,6 +32,7 @@ export const ChallengeDataChecker: React.FC = () => {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<any>({});
+  // Removed internal role fetching / gating per request.
 
   const fetchChallenges = async () => {
     setLoading(true);

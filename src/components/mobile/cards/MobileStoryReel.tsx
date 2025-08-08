@@ -101,14 +101,17 @@ export const MobileStoryReel: React.FC<MobileStoryReelProps> = ({
   };
 
   return (
-    <div className='bg-card py-4'>
+    <div className='relative py-3 border-b border-border/40 transition-colors overflow-hidden
+      before:content-[""] before:absolute before:inset-0 
+      before:bg-background/55 before:dark:bg-slate-900/55 
+      before:backdrop-blur-md before:saturate-150'>
       <div className='px-4 mb-3'>
         <h3 className='text-sm font-semibold text-foreground'>
           Hoạt động gần đây
         </h3>
       </div>
 
-      <div className='mobile-story-reel'>
+  <div className='mobile-story-reel relative z-10'>
         {displayStories.map(story => (
           <div
             key={story.id}

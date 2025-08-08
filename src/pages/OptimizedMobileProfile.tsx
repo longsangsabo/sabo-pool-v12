@@ -38,6 +38,11 @@ import {
   Palette,
 } from 'lucide-react';
 import { isAdminUser } from '@/utils/adminHelpers';
+import { useMobileProfile } from './mobile/profile/hooks/useMobileProfile';
+import { TabEditProfile } from './mobile/profile/components/TabEditProfile';
+import RankRegistrationForm from '@/components/RankRegistrationForm';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useRankRequests } from '@/hooks/useRankRequests';
 
 interface ProfileData {
   user_id: string;
@@ -57,27 +62,41 @@ interface ProfileData {
 
 const OptimizedMobileProfile = () => {
   const { user } = useAuth();
-  const { avatarUrl, updateAvatar } = useAvatar();
   const { theme } = useTheme();
-  const [profile, setProfile] = useState<ProfileData>({
-    user_id: '',
-    display_name: '',
-    phone: '',
-    bio: '',
-    skill_level: 'beginner',
-    city: '',
-    district: '',
-    avatar_url: '',
-    member_since: '',
-    role: 'player',
-    active_role: 'player',
-    verified_rank: null,
-    completion_percentage: 0,
-  });
-  const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
+  const {
+    profile,
+    editingProfile,
+    loading,
+    saving,
+    uploading,
+    handleEditField,
+    handleSaveProfile,
+    handleCancelEdit,
+    handleAvatarUpload,
+  } = useMobileProfile();
+  const { createRankRequest, checkExistingPendingRequest } = useRankRequests();
   const [activeTab, setActiveTab] = useState('activities');
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [showRankRequestModal, setShowRankRequestModal] = useState(false);
+  const [rankChangeType, setRankChangeType] = useState<'up' | 'down'>('up');
+  const [requestedRank, setRequestedRank] = useState<string>('');
+  const [rankReason, setRankReason] = useState('');
+  const [clubsForRank, setClubsForRank] = useState<{id:string; name:string; address?:string;}[]>([]);
+  const [selectedClubId, setSelectedClubId] = useState('');
+  const rankOptions = [
+    { value: '1000', label: '1000 - K' },
+    { value: '1100', label: '1100 - K+' },
+    { value: '1200', label: '1200 - I' },
+    { value: '1300', label: '1300 - I+' },
+    { value: '1400', label: '1400 - H' },
+    { value: '1500', label: '1500 - H+' },
+    { value: '1600', label: '1600 - G' },
+    { value: '1700', label: '1700 - G+' },
+    { value: '1800', label: '1800 - F' },
+    { value: '1900', label: '1900 - F+' },
+    { value: '2000', label: '2000 - E' },
+    { value: '2100', label: '2100 - E+' }
+  ];
 
   // Handle scroll for back-to-top button
   useEffect(() => {
@@ -92,165 +111,52 @@ const OptimizedMobileProfile = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    fetchProfile();
-  }, [user]);
+  useEffect(()=>{
+    const loadClubs = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('clubs')
+          .select('id, name, address, status')
+          .eq('status','active')
+          .limit(50);
+        if (error) throw error;
+        setClubsForRank((data as any[])?.map(c=>({id:c.id, name:c.name||c.club_name||'CLB', address:c.address}))||[]);
+      } catch(e){
+        console.error(e);
+      }
+    };
+    loadClubs();
+  },[]);
 
-  const fetchProfile = async () => {
-    if (!user) return;
-
+  const submitRankChange = async () => {
+    console.log('[submitRankChange] start', { selectedClubId, requestedRank, rankReason, user: user?.id });
+    if (!user?.id) { toast.error('Vui lòng đăng nhập'); return; }
+    if (!selectedClubId || !requestedRank || !rankReason) { toast.error('Thiếu dữ liệu'); return; }
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching profile:', error);
-        return;
-      }
-
-      if (data) {
-        const profileData = {
-          user_id: data.user_id || user.id,
-          display_name: data.display_name || data.full_name || '',
-          phone: data.phone || user.phone || '',
-          bio: data.bio || '',
-          skill_level: (data.skill_level || 'beginner') as
-            | 'beginner'
-            | 'intermediate'
-            | 'advanced'
-            | 'pro',
-          city: data.city || '',
-          district: data.district || '',
-          avatar_url: data.avatar_url || '',
-          member_since: data.member_since || data.created_at || '',
-          role: (data.role || 'player') as 'player' | 'club_owner' | 'both',
-          active_role: (data.active_role || 'player') as
-            | 'player'
-            | 'club_owner',
-          verified_rank: data.verified_rank || null,
-          completion_percentage: data.completion_percentage || 0,
-        };
-        setProfile(profileData);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const compressImage = (
-    file: File,
-    maxSizeKB: number = 500
-  ): Promise<File> => {
-    return new Promise(resolve => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d')!;
-      const img = new Image();
-
-      img.onload = () => {
-        const targetSize = 400;
-        canvas.width = targetSize;
-        canvas.height = targetSize;
-
-        const { width, height } = img;
-        const size = Math.min(width, height);
-        const offsetX = (width - size) / 2;
-        const offsetY = (height - size) / 2;
-
-        ctx.drawImage(
-          img,
-          offsetX,
-          offsetY,
-          size,
-          size,
-          0,
-          0,
-          targetSize,
-          targetSize
-        );
-
-        let quality = 0.8;
-        const tryCompress = () => {
-          canvas.toBlob(
-            blob => {
-              if (blob && (blob.size <= maxSizeKB * 1024 || quality <= 0.1)) {
-                const compressedFile = new File([blob], file.name, {
-                  type: 'image/jpeg',
-                  lastModified: Date.now(),
-                });
-                resolve(compressedFile);
-              } else {
-                quality -= 0.1;
-                tryCompress();
-              }
-            },
-            'image/jpeg',
-            quality
-          );
-        };
-
-        tryCompress();
-      };
-
-      img.src = URL.createObjectURL(file);
-    });
-  };
-
-  const handleAvatarUpload = async (file: File, croppedDataUrl?: string) => {
-    if (!file || !user) return;
-
-    setUploading(true);
-
-    try {
-      let uploadFile = file;
-      
-      // Compress if needed
-      if (file.size > 500 * 1024) {
-        toast.info('Đang nén ảnh để tối ưu...');
-        uploadFile = await compressImage(file);
-      }
-
-      const fileExt = 'jpg';
-      const fileName = `${user.id}/avatar.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(fileName, uploadFile, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(fileName);
-
-      const avatarUrl = urlData.publicUrl + '?t=' + new Date().getTime();
-
-      await supabase
-        .from('profiles')
-        .update({ avatar_url: avatarUrl })
-        .eq('user_id', user.id);
-
-      await supabase.auth.updateUser({
-        data: { avatar_url: avatarUrl },
+      const existing = await checkExistingPendingRequest(user.id, selectedClubId);
+      console.log('[submitRankChange] existing check', existing);
+      if (existing) { toast.error('Bạn đã có yêu cầu đang chờ tại CLB này'); return; }
+      const newReq = await createRankRequest({
+        requested_rank: requestedRank,
+        club_id: selectedClubId,
+        user_id: user.id,
+        evidence_files: [
+          { id: 'reason', name: 'reason.txt', url: '', size: rankReason.length, type: 'text/plain' }
+        ]
       });
-
-      setProfile(prev => ({ ...prev, avatar_url: avatarUrl }));
-      updateAvatar(avatarUrl);
-
-      toast.success('Đã cập nhật ảnh đại diện!');
-    } catch (error: any) {
-      console.error('Error uploading avatar:', error);
-      toast.error('Lỗi khi tải ảnh: ' + error.message);
-    } finally {
-      setUploading(false);
+      console.log('[submitRankChange] created', newReq);
+      toast.success('Đã gửi yêu cầu thay đổi hạng');
+      setShowRankRequestModal(false);
+      setRequestedRank('');
+      setRankReason('');
+      setSelectedClubId('');
+    } catch(e:any){
+      console.error('[submitRankChange] error', e);
+      toast.error(e.message || 'Lỗi gửi yêu cầu');
     }
   };
 
-  if (loading) {
+  if (loading || !profile) {
     return (
       <div className='min-h-screen flex items-center justify-center px-4'>
         <div className='text-center'>
@@ -397,7 +303,7 @@ const OptimizedMobileProfile = () => {
               
               <button 
                 className={`flex-1 px-2 py-3 text-sm font-medium transition-all duration-200 ${
-                  activeTab === 'basic' 
+                  activeTab === 'edit' 
                     ? theme === 'dark'
                       ? 'text-white border-b-2 border-emerald-400'
                       : 'text-slate-900 border-b-2 border-emerald-500'
@@ -405,15 +311,15 @@ const OptimizedMobileProfile = () => {
                       ? 'text-slate-300 hover:text-white'
                       : 'text-slate-600 hover:text-slate-900'
                 }`}
-                onClick={() => setActiveTab('basic')}
+                onClick={() => setActiveTab('edit')}
               >
                 <div className={`relative mx-auto mb-1 w-4 h-4 flex items-center justify-center ${
-                  activeTab === 'basic' 
+                  activeTab === 'edit' 
                     ? 'drop-shadow-lg' 
                     : 'drop-shadow-sm'
                 }`}>
                   <UserCircle className={`w-4 h-4 transition-all duration-200 ${
-                    activeTab === 'basic'
+                    activeTab === 'edit'
                       ? theme === 'dark'
                         ? 'text-emerald-300 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]'
                         : 'text-emerald-600 drop-shadow-[0_2px_4px_rgba(5,150,105,0.4)]'
@@ -424,7 +330,6 @@ const OptimizedMobileProfile = () => {
                 </div>
                 <div className='text-xs font-semibold'>Cá nhân</div>
               </button>
-              
               <button 
                 className={`flex-1 px-2 py-3 text-sm font-medium transition-all duration-200 ${
                   activeTab === 'rank' 
@@ -723,65 +628,16 @@ const OptimizedMobileProfile = () => {
               </div>
             )}
 
-            {/* Tab Content - Personal Info */}
-            {activeTab === 'basic' && (
-              <div className='p-4 space-y-3'>
-                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
-                  <Phone className='w-4 h-4 text-muted-foreground' />
-                  <div>
-                    <div className='text-sm font-medium'>Số điện thoại</div>
-                    <div className='text-xs text-muted-foreground'>
-                      {profile.phone || 'Chưa cập nhật'}
-                    </div>
-                  </div>
-                </div>
-
-                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
-                  <MapPin className='w-4 h-4 text-muted-foreground' />
-                  <div>
-                    <div className='text-sm font-medium'>Địa điểm</div>
-                    <div className='text-xs text-muted-foreground'>
-                      {profile.city && profile.district 
-                        ? `${profile.district}, ${profile.city}`
-                        : 'Chưa cập nhật'
-                      }
-                    </div>
-                  </div>
-                </div>
-
-                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
-                  <Star className='w-4 h-4 text-muted-foreground' />
-                  <div>
-                    <div className='text-sm font-medium'>Trình độ</div>
-                    <div className='text-xs text-muted-foreground'>
-                      {skillLevels[skillKey].label}
-                    </div>
-                  </div>
-                </div>
-
-                <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
-                  <Calendar className='w-4 h-4 text-muted-foreground' />
-                  <div>
-                    <div className='text-sm font-medium'>Thành viên từ</div>
-                    <div className='text-xs text-muted-foreground'>
-                      {profile.member_since
-                        ? new Date(profile.member_since).toLocaleDateString('vi-VN')
-                        : 'Không rõ'
-                      }
-                    </div>
-                  </div>
-                </div>
-
-                <Button 
-                  variant='outline' 
-                  size='sm' 
-                  className='w-full mt-4'
-                  onClick={() => (window.location.href = '/settings')}
-                >
-                  <Edit3 className='w-4 h-4 mr-2' />
-                  Chỉnh sửa thông tin
-                </Button>
-              </div>
+            {/* Tab Content - Profile Edit */}
+            {activeTab === 'edit' && (
+              <TabEditProfile
+                editingProfile={editingProfile}
+                saving={saving}
+                onChange={handleEditField}
+                onSave={async () => { await handleSaveProfile(); /* stay on same tab */ }}
+                onCancel={() => { handleCancelEdit(); /* stay on same tab */ }}
+                theme={theme}
+              />
             )}
 
             {/* Tab Content - Rank Verification */}
@@ -791,13 +647,13 @@ const OptimizedMobileProfile = () => {
                   <Shield className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
                   <h4 className='text-sm font-medium mb-2'>Đăng ký xác nhận hạng</h4>
                   <p className='text-xs text-muted-foreground mb-4'>
-                    Xác nhận trình độ chơi bida của bạn thông qua câu lạc bộ uy tín
+                    Xác nhận hoặc cập nhật trình độ chơi bida của bạn thông qua câu lạc bộ uy tín
                   </p>
-                  {profile.verified_rank ? (
-                    <div className={`bg-green-50 border border-green-200 rounded-lg p-3 ${
+                  {profile.verified_rank && (
+                    <div className={`mb-4 rounded-lg p-3 ${
                       theme === 'dark' 
-                        ? 'bg-green-900/20 border-green-800/50 backdrop-blur-sm' 
-                        : 'bg-green-50 border-green-200'
+                        ? 'bg-green-900/20 border border-green-800/50 backdrop-blur-sm' 
+                        : 'bg-green-50 border border-green-200'
                     }`}>
                       <div className={`text-sm font-medium ${
                         theme === 'dark' ? 'text-green-200' : 'text-green-800'
@@ -807,19 +663,21 @@ const OptimizedMobileProfile = () => {
                       <div className={`text-xs mt-1 ${
                         theme === 'dark' ? 'text-green-300' : 'text-green-600'
                       }`}>
-                        Tài khoản của bạn đã được xác thực
+                        Bạn có thể gửi yêu cầu cập nhật / xác thực lại nếu hạng của bạn thay đổi
                       </div>
                     </div>
-                  ) : (
+                  )}
+                  <div className='flex flex-col gap-2 items-center'>
                     <Button 
-                      variant='outline' 
+                      variant='outline'
                       size='sm'
-                      onClick={() => (window.location.href = '/rank-registration')}
+                      onClick={() => setShowRankRequestModal(true)}
+                      className='w-full max-w-xs'
                     >
                       <Award className='w-4 h-4 mr-2' />
-                      Đăng ký xác nhận hạng
+                      Gửi yêu cầu thay đổi hạng
                     </Button>
-                  )}
+                  </div>
                 </div>
               </div>
             )}
@@ -1163,6 +1021,70 @@ const OptimizedMobileProfile = () => {
           <ArrowUp className='w-4 h-4' />
         </Button>
       )}
+
+      {/* Rank Request Modal */}
+      <Dialog open={showRankRequestModal} onOpenChange={setShowRankRequestModal}>
+        <DialogContent className='max-w-sm'>
+          <DialogHeader>
+            <DialogTitle>Yêu cầu thay đổi hạng</DialogTitle>
+          </DialogHeader>
+          <div className='space-y-4'>
+            <div className='flex gap-2'>
+              <Button size='sm' variant={rankChangeType==='up'? 'default':'outline'} className='flex-1' onClick={()=>setRankChangeType('up')}>Tăng hạng</Button>
+              <Button size='sm' variant={rankChangeType==='down'? 'default':'outline'} className='flex-1' onClick={()=>setRankChangeType('down')}>Giảm hạng</Button>
+            </div>
+            <div>
+              <label className='text-xs font-medium mb-1 block'>Chọn CLB</label>
+              <select
+                className={`w-full px-3 py-2 text-sm rounded-md border outline-none transition ${
+                  theme === 'dark'
+                    ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-emerald-400'
+                    : 'bg-white border-slate-300 text-slate-800 focus:border-emerald-500'
+                }`}
+                value={selectedClubId}
+                onChange={e=>setSelectedClubId(e.target.value)}
+              >
+                <option value=''>-- Chọn CLB --</option>
+                {clubsForRank.map(c=> <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className='text-xs font-medium mb-1 block'>Chọn hạng mới</label>
+              <select
+                className={`w-full px-3 py-2 text-sm rounded-md border outline-none transition ${
+                  theme === 'dark'
+                    ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-emerald-400'
+                    : 'bg-white border-slate-300 text-slate-800 focus:border-emerald-500'
+                }`}
+                value={requestedRank}
+                onChange={e=>setRequestedRank(e.target.value)}
+              >
+                <option value=''>-- Chọn --</option>
+                {rankOptions.map(o=> <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className='text-xs font-medium mb-1 block'>Lý do</label>
+              <textarea
+                rows={3}
+                className={`w-full px-3 py-2 text-sm rounded-md border outline-none resize-none transition ${
+                  theme === 'dark'
+                    ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-emerald-400'
+                    : 'bg-white border-slate-300 text-slate-800 focus:border-emerald-500'
+                }`}
+                value={rankReason}
+                onChange={e=>setRankReason(e.target.value)}
+                placeholder='Mô tả vì sao bạn muốn thay đổi hạng...'
+              />
+            </div>
+            <div className='flex justify-end gap-2 pt-2'>
+              <Button variant='outline' size='sm' onClick={()=>setShowRankRequestModal(false)}>Hủy</Button>
+              <Button size='sm' disabled={!requestedRank || !rankReason || !selectedClubId} onClick={submitRankChange}>Gửi yêu cầu</Button>
+            </div>
+            <p className='text-[10px] text-muted-foreground'>Sau khi CLB phê duyệt, hạng của bạn sẽ được cập nhật và đồng bộ đến các khu vực liên quan.</p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </PageLayout>
     </>
   );

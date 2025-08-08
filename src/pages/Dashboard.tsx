@@ -5,11 +5,10 @@ import MobileFeedCard from '../components/mobile/cards/MobileFeedCard';
 import MobileFloatingActionButton from '../components/mobile/common/MobileFloatingActionButton';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
-import { useProgressiveLoading } from '../hooks/useProgressiveLoading';
 import { useSocialFeed } from '../hooks/useSocialFeed';
 import { RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
-import { ChallengeDataChecker } from '../components/debug/ChallengeDataChecker';
+// Removed ChallengeDataChecker debug component
 
 // Dashboard now uses real data from useSocialFeed hook
 
@@ -25,11 +24,9 @@ const Dashboard = () => {
     isConnected,
   } = useSocialFeed();
 
-  // Progressive loading for smooth UX
-  const { visibleItems, hasMore, loadMore } = useProgressiveLoading(feedPosts, {
-    increment: 5,
-    maxItems: feedPosts.length,
-  });
+  // Hiển thị toàn bộ feed mặc định (bỏ cơ chế "Xem thêm")
+  const visibleItems = feedPosts;
+  const hasMore = false;
 
   // Pull to refresh functionality
   const handleRefresh = useCallback(async () => {
@@ -52,20 +49,13 @@ const Dashboard = () => {
   });
 
   // Infinite scroll for loading more content
-  const loadMoreContent = useCallback(async () => {
-    if (!hasMore) return;
+  const loadMoreContent = useCallback(async () => {}, []); // no-op
 
-    // For now, just refresh the feed to get more content
-    // In a real app, this would implement pagination
-    refreshFeed();
-  }, [hasMore, refreshFeed]);
-
-  const { containerRef: infiniteScrollRef, isLoading: isLoadingMore } =
-    useInfiniteScroll({
-      loadMore: loadMoreContent,
-      hasMore,
-      threshold: 300,
-    });
+  const { containerRef: infiniteScrollRef } = useInfiniteScroll({
+    loadMore: loadMoreContent,
+    hasMore: false,
+    threshold: 300,
+  });
 
   // Combine refs
   const combinedRef = useCallback((node: HTMLDivElement) => {
@@ -100,6 +90,7 @@ const Dashboard = () => {
     toast.info('Tính năng tạo nội dung đang phát triển');
   }, []);
 
+
   return (
     <>
       <Helmet>
@@ -120,7 +111,9 @@ const Dashboard = () => {
       >
         {/* Pull to refresh indicator */}
         <div
-          className='flex justify-center items-center py-4'
+          className={`flex justify-center items-center transition-all duration-200 ${
+            isPullRefreshing || loading || pullDistance > 0 ? 'py-2' : 'h-0 py-0 overflow-hidden'
+          }`}
           style={getRefreshIndicatorStyle()}
         >
           <RefreshCw
@@ -133,10 +126,7 @@ const Dashboard = () => {
         {/* Story Reel with real data */}
         <MobileStoryReel stories={stories} />
 
-        {/* Debug: Challenge Data Checker */}
-        <div className='px-4 mb-4'>
-          <ChallengeDataChecker />
-        </div>
+  {/* Debug component removed */}
 
         {/* Social Feed */}
         <div className='px-4 space-y-4 pb-4'>
@@ -177,20 +167,8 @@ const Dashboard = () => {
               />
             ))}
 
-          {/* Load more indicator */}
-          {hasMore && !loading && (
-            <div className='text-center py-4'>
-              <button
-                onClick={loadMore}
-                className='text-sm text-muted-foreground hover:text-foreground transition-colors'
-              >
-                {isLoadingMore ? 'Đang tải...' : 'Xem thêm'}
-              </button>
-            </div>
-          )}
-
           {/* End of feed indicator */}
-          {!hasMore && feedPosts.length > 0 && !loading && (
+          {feedPosts.length > 0 && !loading && (
             <div className='text-center py-8 text-muted-foreground'>
               <div className='text-sm'>🎱</div>
               <div className='text-xs mt-2'>Bạn đã xem hết feed rồi!</div>

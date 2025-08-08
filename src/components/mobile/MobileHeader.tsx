@@ -25,6 +25,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTheme } from '@/hooks/useTheme';
+import { useAvatar } from '@/contexts/AvatarContext';
 
 interface MobileHeaderProps {
   title?: string;
@@ -45,6 +46,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 }) => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { avatarUrl: contextAvatar } = useAvatar();
 
   // Get current user
   const { data: user } = useQuery({
@@ -216,7 +218,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
               <DropdownMenuTrigger asChild>
                 <Button variant='ghost' size='sm' className='p-1 hover:bg-muted/50 transition-colors'>
                   <Avatar className='w-8 h-8 ring-2 ring-primary/20'>
-                    <AvatarImage src={profile?.avatar_url} />
+                    <AvatarImage src={(contextAvatar || profile?.avatar_url) ? `${(contextAvatar || profile?.avatar_url)}${(contextAvatar || profile?.avatar_url)?.includes('?') ? '' : '?'}v=${Date.now()}` : undefined} />
                     <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold'>
                       {profile?.display_name?.[0] ||
                         profile?.full_name?.[0] ||

@@ -139,42 +139,24 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
 
           {/* Rank Section */}
           <div className="rank-section">
-            <div 
-              className="rank-text"
-              style={{
-                background: getRankDisplay(rank).gradient,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                textShadow: getRankDisplay(rank).textShadow,
-                fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', monospace",
-                fontWeight: 700,
-                letterSpacing: '4px',
-                // border: `2px solid ${getRankDisplay(rank).borderColor}`,
-                border: 'none',
-                borderRadius: '8px',
-                padding: '8px 16px',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-            >
-              {(() => {
-                const RankIcon = getRankDisplay(rank).icon;
-                return (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                    <RankIcon 
-                      style={{ 
-                        color: getRankDisplay(rank).color,
-                        width: '20px', 
-                        height: '20px',
-                        filter: `drop-shadow(${getRankDisplay(rank).textShadow})`
-                      }} 
-                    />
-                    RANK : {rank.toUpperCase()}
-                  </div>
-                );
-              })()}
-            </div>
+            {(() => {
+              const rankDisplay = getRankDisplay(rank);
+              return (
+                <div
+                  className="rank-badge"
+                  data-rank={rank.toUpperCase()}
+                  style={{
+                    background: rankDisplay.gradient,
+                    color: '#ffffff',
+                    border: `1px solid ${rankDisplay.borderColor}`,
+                    textShadow: rankDisplay.textShadow
+                  }}
+                  aria-label={`Hạng ${rankDisplay.displayText}`}
+                >
+                  <span className="rank-label-text">RANK : {rank.toUpperCase()}</span>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Stats Row */}

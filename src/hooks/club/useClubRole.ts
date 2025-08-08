@@ -44,33 +44,32 @@ export const useIsClubOwner = (userId?: string, enabled: boolean = true) => {
     queryKey: ['is-club-owner', userId],
     queryFn: async () => {
       if (!userId) return false;
-      // Check membership table first
-      const sb: any = supabase;
-      const { data: memberData, error: memberError } = await sb
-        .from('club_members')
-        .select('role, status')
+      
+      // Check if user has club_owner role in profiles
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
         .eq('user_id', userId)
-        .eq('role', 'owner')
-        .eq('status', 'active')
-        .limit(1);
-      if (memberError) {
-        console.warn('[useIsClubOwner] club_members query error', memberError);
+        .single();
+        
+      if (profileError || !profileData?.role?.includes('club_owner')) {
+        return false;
       }
-      if (memberData && memberData.length > 0) return true;
 
-      // Fallback: some schemas may store ownership via club_profiles.user_id
-      const { data: profileData, error: profileError } = await sb
+      // Verify they have an approved club profile
+      const { data: clubData, error: clubError } = await supabase
         .from('club_profiles')
         .select('id')
         .eq('user_id', userId)
+        .eq('verification_status', 'approved')
         .limit(1);
-      if (profileError) {
-        console.warn(
-          '[useIsClubOwner] club_profiles query error',
-          profileError
-        );
+        
+      if (clubError) {
+        console.warn('[useIsClubOwner] club_profiles query error', clubError);
+        return false;
       }
-      return Boolean(profileData && profileData.length > 0);
+      
+      return Boolean(clubData && clubData.length > 0);
     },
     enabled: enabled && !!userId,
     staleTime: 60 * 1000,

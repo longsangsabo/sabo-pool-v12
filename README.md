@@ -136,6 +136,30 @@ PORT=3000
 
 ## 📁 Project Structure
 
+### Profile Architecture (Refactored)
+
+Active profile implementation has been simplified:
+
+- `src/pages/Profile.tsx` – runtime switch (mobile vs desktop)
+- `src/pages/OptimizedMobileProfile.tsx` – mobile orchestration
+- `src/components/profile/DesktopProfilePage.tsx` – desktop orchestration
+- Supporting responsive atoms still under `src/components/profile/responsive/`
+- Branding primitives: `ArenaLogo`, `MirrorAvatar` re-namespaced at `src/components/profile/branding/`
+
+Archived (pending final removal after verification period):
+
+- `archive/legacy-profile/` – all deprecated legacy / arena / timeline / tabs components (.bak copies)
+
+Dead code detection scripts added:
+
+```bash
+npm run deadcode:ts-prune   # Static tree-shake style detection (TypeScript symbols)
+npm run deadcode:knip       # Broader dependency & unused file analysis
+```
+
+After 1–2 sprints without rollback, remove `archive/legacy-profile/` entirely.
+
+
 ```
 src/
 ├── components/          # Reusable UI components

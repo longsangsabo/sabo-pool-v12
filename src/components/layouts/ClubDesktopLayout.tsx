@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useClubRole } from '@/hooks/useClubRole';
+import { useClubOwnership } from '@/hooks/useClubOwnership';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ClubSidebar from '@/components/ClubSidebar';
 import { ClubDesktopHeader } from '@/components/club/ClubDesktopHeader';
@@ -16,7 +16,7 @@ export const ClubDesktopLayout: React.FC<ClubDesktopLayoutProps> = ({
   children,
 }) => {
   const { user } = useAuth();
-  const { isClubOwner, clubProfile, isLoading } = useClubRole();
+  const { isClubOwner, clubProfile, isLoading } = useClubOwnership();
   const { t } = useLanguage();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 

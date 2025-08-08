@@ -1,6 +1,5 @@
 import React from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
-import ResponsiveProfilePage from '@/components/profile/ResponsiveProfilePage';
 import DesktopProfilePage from '@/components/profile/DesktopProfilePage';
 import OptimizedMobileProfile from './OptimizedMobileProfile';
 

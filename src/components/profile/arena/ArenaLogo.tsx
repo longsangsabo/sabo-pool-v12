@@ -1,27 +1,38 @@
 import React from 'react';
+import { cn } from '@/lib/utils';
 
-export const ArenaLogo: React.FC = () => {
+/**
+ * ArenaLogo (restored)
+ * Lightweight decorative logo component kept after profile cleanup.
+ * If later you revive the arena profile variant, you can extend this with
+ * animated gradients or dynamic data.
+ */
+export interface ArenaLogoProps {
+  className?: string;
+  size?: number; // pixel size (width/height square)
+  subtitle?: string;
+}
+
+export const ArenaLogo: React.FC<ArenaLogoProps> = ({
+  className,
+  size = 72,
+  subtitle = 'Sabo Pool Arena',
+}) => {
   return (
-    <div className='sabo-arena-header-fixed'>
-      <img
-        src='/lovable-uploads/5edec650-8645-4f77-a54a-e6d9bfc42ee6.png'
-        alt='SABO ARENA'
-        className='h-12 w-auto object-contain'
-        onError={e => {
-          console.error('Logo image failed to load');
-          e.currentTarget.style.display = 'none';
-          e.currentTarget.nextElementSibling?.classList.remove('hidden');
-        }}
-      />
-      <div className='hidden flex items-center gap-3'>
-        <span className='logo-text'>SABO</span>
-        <img
-          src='/lovable-uploads/5edec650-8645-4f77-a54a-e6d9bfc42ee6.png'
-          alt='Logo'
-          className='h-6 w-auto object-contain'
-        />
-        <span className='logo-text'>ARENA</span>
+    <div className={cn('flex flex-col items-center select-none', className)}>
+      <div
+        className={cn(
+          'relative rounded-2xl overflow-hidden shadow-md ring-1 ring-primary/30 bg-gradient-to-br from-primary/80 via-primary/60 to-accent-blue/70 text-primary-foreground flex items-center justify-center font-bold tracking-wide',
+          'after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.35),transparent_60%)]'
+        )}
+        style={{ width: size, height: size }}
+        aria-label='Arena Logo'
+      >
+        <span className='text-xl drop-shadow-sm'>AR</span>
       </div>
+      <div className='mt-2 text-xs font-medium text-muted-foreground'>{subtitle}</div>
     </div>
   );
 };
+
+export default ArenaLogo;

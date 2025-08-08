@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
 import { Moon, Sun, LogIn, UserPlus } from 'lucide-react';
+import SEOHead from '@/components/seo/SEOHead';
 
 const features = [
   {
@@ -46,6 +47,7 @@ const Home: React.FC = () => {
 
   return (
     <main className='min-h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800'>
+      <SEOHead />
       {/* Top Header (Desktop & Mobile variant) */}
       <header className='sticky top-0 z-30 w-full border-b border-slate-800/60 backdrop-blur bg-slate-900/70 supports-[backdrop-filter]:bg-slate-900/50 px-4 md:px-8'>
         <div className='h-16 flex items-center justify-between gap-4 max-w-7xl mx-auto'>
@@ -113,7 +115,7 @@ const Home: React.FC = () => {
         </div>
         <div className='max-w-7xl mx-auto px-6 md:px-10 pt-20 md:pt-28 pb-20 text-center'>
           <h1 className='text-3xl md:text-5xl font-black tracking-tight leading-tight bg-gradient-to-r from-sky-300 via-indigo-300 to-fuchsia-300 bg-clip-text text-transparent drop-shadow'>
-            SABO ARENA - Nền tảng Billiards đầu tiên tại Việt Nam
+            SABO ARENA - <span>Nền tảng Billiards đầu tiên tại Việt Nam</span>
           </h1>
           <p className='mt-5 max-w-2xl mx-auto text-base md:text-lg text-slate-300'>
             Theo dõi phong độ – Tham gia giải đấu realtime – Thách đấu bạn bè – Xây dựng cộng đồng cơ thủ chuyên nghiệp.

@@ -33,6 +33,8 @@ export default {
 				'outfit': ['Outfit', 'sans-serif'],
 				'racing': ['Racing Sans One', 'cursive'],
 				'sans': ['Outfit', 'sans-serif'], // Default sans font
+				'roboto': ['Roboto', 'sans-serif'],
+				'inter': ['Inter', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

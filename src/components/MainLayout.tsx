@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { RoleBasedLayout } from './layouts/RoleBasedLayout';
+import { ClubOwnerAutoRedirect } from './navigation/ClubOwnerAutoRedirect';
 
 const MainLayout = () => {
   const location = useLocation();
@@ -20,9 +21,11 @@ const MainLayout = () => {
   }
 
   return (
-    <RoleBasedLayout>
-      <Outlet />
-    </RoleBasedLayout>
+    <ClubOwnerAutoRedirect>
+      <RoleBasedLayout>
+        <Outlet />
+      </RoleBasedLayout>
+    </ClubOwnerAutoRedirect>
   );
 };
 

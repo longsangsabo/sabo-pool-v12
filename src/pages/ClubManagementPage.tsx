@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useClubRole } from '@/hooks/useClubRole';
+import { useClubOwnership } from '@/hooks/useClubOwnership';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   BarChart3,
@@ -26,7 +26,7 @@ import { AppProviders } from '@/contexts/AppProviders';
 
 const ClubManagementPage = () => {
   const { user, loading: authLoading } = useAuth();
-  const { isClubOwner, clubProfile, isLoading: clubLoading } = useClubRole();
+  const { isClubOwner, clubProfile, loading: clubLoading } = useClubOwnership();
   const location = useLocation();
 
   // Enable rank update notifications

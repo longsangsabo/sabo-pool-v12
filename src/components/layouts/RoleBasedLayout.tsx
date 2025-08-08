@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
-import { useIsClubOwner } from '@/hooks/club/useClubRole';
+import { useClubOwnership } from '@/hooks/useClubOwnership';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { AdminResponsiveLayout } from './AdminResponsiveLayout';
 import { ClubResponsiveLayout } from './ClubResponsiveLayout';
@@ -17,10 +17,7 @@ export const RoleBasedLayout: React.FC<RoleBasedLayoutProps> = ({
 }) => {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
-  const { data: isClubOwner, isLoading: clubLoading } = useIsClubOwner(
-    user?.id,
-    !!user?.id
-  );
+  const { isClubOwner, loading: clubLoading } = useClubOwnership();
   const { isDesktop } = useOptimizedResponsive();
   const location = useLocation();
   const path = location.pathname;

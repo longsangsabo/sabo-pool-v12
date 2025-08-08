@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Building, Shield, ArrowRight } from 'lucide-react';
-import { useClubRole } from '@/hooks/useClubRole';
+import { useClubOwnership } from '@/hooks/useClubOwnership';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export const AdminRoleSwitch: React.FC = () => {
   const navigate = useNavigate();
-  const { isClubOwner, clubProfile } = useClubRole();
+  const { isClubOwner, clubProfile } = useClubOwnership();
   const { t } = useLanguage();
 
   const handleSwitchToClub = () => {

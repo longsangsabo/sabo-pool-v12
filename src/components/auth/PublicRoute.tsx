@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useIsClubOwner } from '@/hooks/club/useClubRole';
 import { Loader2 } from 'lucide-react';
 
 interface PublicRouteProps {
@@ -9,6 +10,7 @@ interface PublicRouteProps {
 
 export const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
   const { user, loading, session } = useAuth();
+  const { data: isOwner } = useIsClubOwner(user?.id, !!user?.id);
 
   if (loading) {
     return (
@@ -22,11 +24,9 @@ export const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
   }
 
   if (user && session) {
-    console.log(
-      '🔧 PublicRoute: User already authenticated, redirecting to dashboard'
-    );
-    // If user is already authenticated, redirect to dashboard
-    return <Navigate to='/dashboard' replace />;
+    const target = isOwner ? '/club-management' : '/dashboard';
+    console.log('🔧 PublicRoute: Authenticated, redirecting to', target);
+    return <Navigate to={target} replace />;
   }
 
   return <>{children}</>;

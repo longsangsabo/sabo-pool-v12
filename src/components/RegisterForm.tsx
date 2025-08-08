@@ -27,6 +27,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import SocialLoginButtons from './SocialLoginButtons';
 import { ApiError } from '@/types/common';
+import { PhoneOtpDialog } from '@/components/auth/PhoneOtpDialog';
 
 const registerSchema = z
   .object({
@@ -73,9 +74,11 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [clubs, setClubs] = useState<Club[]>([]);
-  const { signUp } = useAuth();
+  const { signUpWithPhone, verifyPhoneOtp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [otpOpen, setOtpOpen] = useState(false);
+  const [otpPhone, setOtpPhone] = useState('');
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -171,12 +174,12 @@ const RegisterForm = () => {
       // Check existing users first
       await checkExistingUser(data.email, data.phone);
 
-      const { error } = await signUp(data.phone, data.password, data.fullName);
+      const { error } = await signUpWithPhone(data.phone);
 
       if (error) {
         console.error('Registration error:', error);
         const errorMessage =
-          error instanceof Error ? error.message : 'Unknown error occurred';
+          (error as any)?.message || 'Unknown error occurred';
         toast({
           title: 'Lỗi đăng ký',
           description: errorMessage,
@@ -184,18 +187,11 @@ const RegisterForm = () => {
         });
       } else {
         toast({
-          title: 'Đăng ký thành công!',
-          description:
-            'Vui lòng kiểm tra email để xác thực tài khoản. Kiểm tra cả thư mục spam nếu không thấy email.',
+          title: 'Đã gửi mã OTP',
+          description: 'Nhập mã OTP được gửi qua SMS để hoàn tất đăng ký.',
         });
-
-        // Clear form
-        form.reset();
-
-        // Navigate to login page
-        setTimeout(() => {
-          navigate('/login');
-        }, 2000);
+        setOtpPhone(data.phone);
+        setOtpOpen(true);
       }
     } catch (error) {
       console.error('Registration error:', error);
@@ -462,6 +458,27 @@ const RegisterForm = () => {
           </Button>
         </form>
       </Form>
+
+      <PhoneOtpDialog
+        isOpen={otpOpen}
+        phone={otpPhone}
+        onClose={() => setOtpOpen(false)}
+        onVerify={async code => {
+          const { error } = await verifyPhoneOtp(otpPhone, code);
+          if (error) {
+            toast({
+              title: 'Xác minh thất bại',
+              description: (error as any)?.message || 'Sai mã OTP',
+              variant: 'destructive',
+            });
+          } else {
+            toast({ title: 'Đăng ký thành công!' });
+            setOtpOpen(false);
+            form.reset();
+            navigate('/');
+          }
+        }}
+      />
 
       <div className='text-center text-sm'>
         <span className='text-gray-600'>Đã có tài khoản? </span>

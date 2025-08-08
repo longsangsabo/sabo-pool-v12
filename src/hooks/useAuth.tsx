@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { setupAuthMonitoring } from '@/utils/authRecovery';
 import { useTokenRefresh } from '@/hooks/useTokenRefresh';
+import { formatPhoneToE164 } from '@/utils/phone';
 
 interface AuthState {
   user: User | null;
@@ -26,19 +27,28 @@ interface AuthContextType extends AuthState {
   ) => Promise<{ data?: any; error?: any }>;
   signInWithGoogle: () => Promise<{ data?: any; error?: any }>;
   signInWithFacebook: () => Promise<{ data?: any; error?: any }>;
+  // Phone auth (OTP)
   signInWithPhone: (
     phone: string,
-    password: string
-  ) => Promise<{ data?: any; error?: any }>;
-  signInWithEmail: (
-    email: string,
-    password: string
+    password?: string
   ) => Promise<{ data?: any; error?: any }>;
   signUpWithPhone: (
     phone: string,
-    password: string,
+    password?: string,
     fullName?: string,
     referralCode?: string
+  ) => Promise<{ data?: any; error?: any }>;
+  requestPhoneOtp: (
+    phone: string
+  ) => Promise<{ data?: any; error?: any }>;
+  verifyPhoneOtp: (
+    phone: string,
+    token: string
+  ) => Promise<{ data?: any; error?: any }>;
+  // Email aliases
+  signInWithEmail: (
+    email: string,
+    password: string
   ) => Promise<{ data?: any; error?: any }>;
   signUpWithEmail: (
     email: string,
@@ -287,33 +297,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  // Extended signup functions for backward compatibility
-  const signInWithPhone = signIn;
-  const signInWithEmail = signIn;
-
-  const signUpWithPhone = async (
-    phone: string,
-    password: string,
-    fullName?: string,
-    referralCode?: string
-  ) => {
-    return signUp(phone, password, {
-      full_name: fullName,
-      referral_code: referralCode,
+// Phone OTP helpers
+const requestPhoneOtp = async (phone: string) => {
+  try {
+    const e164 = formatPhoneToE164(phone);
+    const { data, error } = await supabase.auth.signInWithOtp({
+      phone: e164,
+      options: { channel: 'sms' },
     });
-  };
+    return { data, error };
+  } catch (error) {
+    return { error } as any;
+  }
+};
 
-  const signUpWithEmail = async (
-    email: string,
-    password: string,
-    fullName?: string,
-    referralCode?: string
-  ) => {
-    return signUp(email, password, {
-      full_name: fullName,
-      referral_code: referralCode,
+const verifyPhoneOtp = async (phone: string, token: string) => {
+  try {
+    const e164 = formatPhoneToE164(phone);
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone: e164,
+      token,
+      type: 'sms',
     });
-  };
+    return { data, error };
+  } catch (error) {
+    return { error } as any;
+  }
+};
+
+// Backward-compatible aliases
+const signInWithPhone = async (phone: string) => requestPhoneOtp(phone);
+const signInWithEmail = signIn;
+
+const signUpWithPhone = async (
+  phone: string,
+  _password?: string,
+  _fullName?: string,
+  _referralCode?: string
+) => {
+  // We use OTP for phone sign-up; metadata can be handled post-verification
+  return requestPhoneOtp(phone);
+};
+
+const signUpWithEmail = async (
+  email: string,
+  password: string,
+  fullName?: string,
+  referralCode?: string
+) => {
+  return signUp(email, password, {
+    full_name: fullName,
+    referral_code: referralCode,
+  });
+};
 
   const value: AuthContextType = {
     ...authState,
@@ -326,6 +362,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     signInWithEmail,
     signUpWithPhone,
     signUpWithEmail,
+    requestPhoneOtp,
+    verifyPhoneOtp,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

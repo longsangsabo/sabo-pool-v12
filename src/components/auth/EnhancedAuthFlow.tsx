@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUserLocation } from '@/hooks/useUserLocation';
 import { useEmailNotifications } from '@/hooks/useEmailNotifications';
 import { toast } from 'sonner';
+import { PhoneOtpDialog } from '@/components/auth/PhoneOtpDialog';
 
 interface EnhancedAuthFlowProps {
   onSuccess?: () => void;
@@ -21,7 +22,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
   onSuccess,
   onClose,
 }) => {
-  const { signIn, signUp, loading } = useAuth();
+  const { signIn, signUpWithPhone, verifyPhoneOtp, loading } = useAuth();
   const { requestLocationPermission } = useUserLocation();
   const { sendTournamentConfirmation } = useEmailNotifications();
   const [showPassword, setShowPassword] = useState(false);
@@ -32,8 +33,9 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
     confirmPassword: '',
     fullName: '',
     phone: '',
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+});
+const [errors, setErrors] = useState<Record<string, string>>({});
+const [otpOpen, setOtpOpen] = useState(false);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -104,23 +106,12 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
     if (!validateForm(true)) return;
 
     try {
-      const { error } = await signUp(
-        authData.phone || authData.email,
-        authData.password,
-        authData.fullName
-      );
+      const { error } = await signUpWithPhone(authData.phone);
       if (error) {
         toast.error(error.message || 'Đăng ký thất bại');
       } else {
-        setStep('location');
-        toast.success(
-          '🎉 Đăng ký thành công! Email xác thực đã được gửi đến hộp thư của bạn.'
-        );
-
-        // Auto-trigger welcome email (handled by useEmailNotifications hook)
-        console.log(
-          'New user registered, welcome email will be sent automatically'
-        );
+        setOtpOpen(true);
+        toast.success('Đã gửi mã OTP qua SMS. Vui lòng nhập để xác minh.');
       }
     } catch (error: any) {
       toast.error(error.message || 'Đăng ký thất bại');
@@ -470,19 +461,38 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
               )}
             </AnimatePresence>
 
-            {step === 'auth' && onClose && (
+            {step === 'auth' && (
               <div className='mt-4 text-center'>
-                <button
-                  onClick={onClose}
-                  className='text-sm text-gray-500 hover:text-gray-700'
-                >
-                  Đóng
-                </button>
+                {onClose && (
+                  <button
+                    onClick={onClose}
+                    className='text-sm text-gray-500 hover:text-gray-700'
+                  >
+                    Đóng
+                  </button>
+                )}
               </div>
             )}
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* OTP Dialog */}
+      <PhoneOtpDialog
+        isOpen={otpOpen}
+        phone={authData.phone}
+        onClose={() => setOtpOpen(false)}
+        onVerify={async code => {
+          const { error } = await verifyPhoneOtp(authData.phone, code);
+          if (error) {
+            toast.error(error.message || 'Sai mã OTP');
+          } else {
+            toast.success('Xác minh thành công!');
+            setOtpOpen(false);
+            setStep('location');
+          }
+        }}
+      />
     </div>
   );
 };

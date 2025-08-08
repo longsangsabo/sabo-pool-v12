@@ -3,6 +3,7 @@ import { RankEloCard } from '@/components/ranking/RankEloCard';
 import { SPAPointsCard } from '@/components/ranking/SPAPointsCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import { Gamepad2, History, Calendar } from 'lucide-react';
 import MyChallengesTab from '@/components/MyChallengesTab';
 import { useAuth } from '@/hooks/useAuth';
@@ -132,6 +133,7 @@ const PerformanceTab = () => {
     monthly_spa_rank: Math.floor(Math.random() * 100) + 1, // Mock data
   };
 
+  const navigate = useNavigate();
   return (
     <div className='space-y-8'>
       <div>
@@ -314,9 +316,7 @@ const PerformanceTab = () => {
               <Button
                 className='w-full'
                 size='lg'
-                onClick={() =>
-                  (window.location.href = '/ranking?tab=registration')
-                }
+                onClick={() => navigate('/ranking?tab=registration')}
               >
                 <History className='h-4 w-4 mr-2' />
                 Đăng ký Rank
@@ -325,7 +325,7 @@ const PerformanceTab = () => {
                 variant='outline'
                 className='w-full'
                 size='lg'
-                onClick={() => (window.location.href = '/ranking')}
+                onClick={() => navigate('/ranking')}
               >
                 Xem bảng xếp hạng
               </Button>

@@ -44,7 +44,12 @@ export const PaymentButton = ({
       if (error) throw error;
 
       if (data?.paymentUrl) {
-        window.location.href = data.paymentUrl;
+        // Mở tab mới để user có thể quay lại không mất form/context
+        const win = window.open(data.paymentUrl, '_blank', 'noopener');
+        if (!win) {
+          // Fallback nếu popup bị chặn
+          window.location.assign(data.paymentUrl);
+        }
       } else {
         toast.error('Không thể tạo link thanh toán');
       }

@@ -13,6 +13,9 @@ import { toast } from 'sonner';
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  onRecover?: () => void; // callback khi user muốn quay lại trạng thái an toàn
+  recoverLabel?: string;
+  enableBackNavigation?: boolean; // hiện nút quay lại trang trước
 }
 
 interface State {
@@ -67,6 +70,22 @@ class ProfileErrorBoundary extends Component<Props, State> {
     window.location.reload();
   };
 
+  handleRecover = () => {
+    if (this.props.onRecover) {
+      try { this.props.onRecover(); } catch (e) { console.warn('onRecover error', e); }
+    }
+    this.setState({ hasError: false, error: null, retryCount: 0 });
+  };
+
+  handleGoBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      // fallback: quay về dashboard
+      window.location.assign('/dashboard');
+    }
+  };
+
   render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
@@ -110,6 +129,26 @@ class ProfileErrorBoundary extends Component<Props, State> {
                 >
                   Tải lại trang
                 </Button>
+
+                {this.props.onRecover && (
+                  <Button
+                    variant='secondary'
+                    onClick={this.handleRecover}
+                    className='w-full'
+                  >
+                    {this.props.recoverLabel || 'Về tab an toàn'}
+                  </Button>
+                )}
+
+                {this.props.enableBackNavigation !== false && (
+                  <Button
+                    variant='ghost'
+                    onClick={this.handleGoBack}
+                    className='w-full text-muted-foreground'
+                  >
+                    Quay lại trang trước
+                  </Button>
+                )}
               </div>
 
               {this.state.retryCount >= 3 && (

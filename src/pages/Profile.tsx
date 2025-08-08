@@ -1,6 +1,7 @@
 import React from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import ResponsiveProfilePage from '@/components/profile/ResponsiveProfilePage';
+import DesktopProfilePage from '@/components/profile/DesktopProfilePage';
 import OptimizedMobileProfile from './OptimizedMobileProfile';
 
 const Profile: React.FC = () => {
@@ -18,8 +19,8 @@ const Profile: React.FC = () => {
     return <OptimizedMobileProfile />;
   }
 
-  console.log('🎯 [Profile] Rendering ResponsiveProfilePage for desktop');
-  return <ResponsiveProfilePage />;
+  console.log('🎯 [Profile] Rendering DesktopProfilePage for desktop redesign');
+  return <DesktopProfilePage />;
 };
 
 export default Profile;

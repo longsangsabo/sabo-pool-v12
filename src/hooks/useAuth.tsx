@@ -63,6 +63,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Setup auth monitoring on mount
   useEffect(() => {
     setupAuthMonitoring();
+    const handler = () => {
+      toast.warning('Phiên đăng nhập gặp lỗi – đã làm sạch và cần đăng nhập lại.', {
+        description: 'Vui lòng đăng nhập lại. Trang không bị chuyển hướng để tránh mất ngữ cảnh.'
+      });
+    };
+    const signedOutHandler = () => {
+      toast.success('Đã đăng xuất. Bạn có thể đăng nhập lại bất cứ lúc nào.');
+    };
+    const signedInHandler = (e: any) => {
+      toast.success('Đăng nhập thành công');
+    };
+    window.addEventListener('auth-recovery', handler as any);
+    window.addEventListener('auth-signed-out', signedOutHandler as any);
+    window.addEventListener('auth-signed-in', signedInHandler as any);
+    return () => {
+      window.removeEventListener('auth-recovery', handler as any);
+      window.removeEventListener('auth-signed-out', signedOutHandler as any);
+      window.removeEventListener('auth-signed-in', signedInHandler as any);
+    };
   }, []);
 
   useEffect(() => {

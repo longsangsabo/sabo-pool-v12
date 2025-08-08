@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
 import { useAvatar } from '@/contexts/AvatarContext';
@@ -66,6 +67,7 @@ interface ProfileData {
 }
 
 const OptimizedMobileProfile = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { theme } = useTheme();
   const {
@@ -1324,9 +1326,137 @@ const OptimizedMobileProfile = () => {
                   style={{ width: `${profile.completion_percentage || 75}%` }}
                 />
               </div>
-              <p
-                className={`text-xs ${
-                  theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+            )}
+
+            {/* Tab Content - Profile Edit */}
+            {activeTab === 'edit' && (
+              <TabEditProfile
+                editingProfile={editingProfile}
+                saving={saving}
+                onChange={handleEditField}
+                onSave={async () => { await handleSaveProfile(); /* stay on same tab */ }}
+                onCancel={() => { handleCancelEdit(); /* stay on same tab */ }}
+                theme={theme}
+              />
+            )}
+
+            {/* Tab Content - Rank Verification */}
+            {activeTab === 'rank' && (
+              <div className='p-4 space-y-3'>
+                <div className='text-center py-6'>
+                  <Shield className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
+                  <h4 className='text-sm font-medium mb-2'>Đăng ký xác nhận hạng</h4>
+                  <p className='text-xs text-muted-foreground mb-4'>
+                    Xác nhận hoặc cập nhật trình độ chơi bida của bạn thông qua câu lạc bộ uy tín
+                  </p>
+                  {profile.verified_rank && (
+                    <div className={`mb-4 rounded-lg p-3 ${
+                      theme === 'dark' 
+                        ? 'bg-green-900/20 border border-green-800/50 backdrop-blur-sm' 
+                        : 'bg-green-50 border border-green-200'
+                    }`}>
+                      <div className={`text-sm font-medium ${
+                        theme === 'dark' ? 'text-green-200' : 'text-green-800'
+                      }`}>
+                        Đã xác thực: {profile.verified_rank}
+                      </div>
+                      <div className={`text-xs mt-1 ${
+                        theme === 'dark' ? 'text-green-300' : 'text-green-600'
+                      }`}>
+                        Bạn có thể gửi yêu cầu cập nhật / xác thực lại nếu hạng của bạn thay đổi
+                      </div>
+                    </div>
+                  )}
+                  <div className='flex flex-col gap-2 items-center'>
+                    <Button 
+                      variant='outline'
+                      size='sm'
+                      onClick={() => setShowRankRequestModal(true)}
+                      className='w-full max-w-xs'
+                    >
+                      <Award className='w-4 h-4 mr-2' />
+                      Gửi yêu cầu thay đổi hạng
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Tab Content - Club Registration */}
+            {activeTab === 'club' && (
+              <div className='p-4 space-y-3'>
+                <div className='text-center py-6'>
+                  <Building className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
+                  <h4 className='text-sm font-medium mb-2'>Đăng ký câu lạc bộ</h4>
+                  <p className='text-xs text-muted-foreground mb-4'>
+                    Tạo và đăng ký câu lạc bộ bida của riêng bạn
+                  </p>
+                  {profile.role === 'club_owner' || profile.role === 'both' ? (
+                    <div className='space-y-2'>
+                      <div className={`bg-blue-50 border border-blue-200 rounded-lg p-3 ${
+                        theme === 'dark' 
+                          ? 'bg-blue-900/20 border-blue-800/50 backdrop-blur-sm' 
+                          : 'bg-blue-50 border-blue-200'
+                      }`}>
+                        <div className={`text-sm font-medium ${
+                          theme === 'dark' ? 'text-blue-200' : 'text-blue-800'
+                        }`}>
+                          Bạn đã là chủ CLB
+                        </div>
+                        <div className={`text-xs mt-1 ${
+                          theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
+                        }`}>
+                          Quản lý câu lạc bộ hiện tại của bạn
+                        </div>
+                      </div>
+                      <Button variant='outline' size='sm' className='w-full'>
+                        <Building className='w-4 h-4 mr-2' />
+                        Quản lý CLB hiện tại
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      variant='outline' 
+                      size='sm'
+                      onClick={() => navigate('/club-registration')}
+                    >
+                      <Building className='w-4 h-4 mr-2' />
+                      Đăng ký CLB mới
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Recent Activities - Elegant Design */}
+        <Card className={`overflow-hidden ${
+          theme === 'dark' 
+            ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm' 
+            : 'bg-white border-slate-200'
+        }`}>
+          <CardHeader className='pb-4 border-b border-slate-200/10'>
+            <CardTitle className={`text-base font-semibold flex items-center justify-between ${
+              theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
+            }`}>
+              <div className='flex items-center gap-2'>
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-slate-700/50 border border-slate-600/30' 
+                    : 'bg-slate-100 border border-slate-200'
+                }`}>
+                  <Activity className='w-3.5 h-3.5 text-slate-400' />
+                </div>
+                Hoạt động gần đây
+              </div>
+              <Button 
+                variant='ghost' 
+                size='sm' 
+                className={`text-xs h-7 px-2 ${
+                  theme === 'dark' 
+                    ? 'text-slate-400 hover:text-slate-300 hover:bg-slate-700/50' 
+                    : 'text-slate-500 hover:text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 Hoàn thiện hồ sơ để tăng uy tín và cơ hội tham gia giải đấu

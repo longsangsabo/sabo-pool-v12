@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,6 +34,7 @@ interface Player {
 
 const CommunityPage = () => {
   const { isMobile } = useOptimizedResponsive();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('players');
 
@@ -170,8 +172,13 @@ const CommunityPage = () => {
   return (
     <div className='container mx-auto p-4 max-w-6xl'>
       {/* Header */}
-      <div className='mb-6'>
-        <h1 className='text-3xl font-bold text-foreground mb-2'>Cộng đồng</h1>
+      <div className='mb-6 flex flex-col gap-2'>
+        <div className='flex items-center justify-between gap-4'>
+          <h1 className='text-3xl font-bold text-foreground'>Cộng đồng</h1>
+          <Button variant='outline' size='sm' onClick={() => navigate(-1)}>
+            Quay lại
+          </Button>
+        </div>
         <p className='text-muted-foreground'>
           Kết nối với các billiard thủ khác, tìm kiếm đối thủ và mở rộng mạng
           lưới bạn bè

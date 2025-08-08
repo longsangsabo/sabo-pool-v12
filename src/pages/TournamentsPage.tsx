@@ -217,14 +217,16 @@ const TournamentsPage = () => {
   }
 
   return (
-    <div className={`container mx-auto ${isMobile ? 'px-2 py-0 -mt-6' : 'px-4 py-8'}`}>
+    <div
+      className={`container mx-auto ${isMobile ? 'px-2 py-0 -mt-6' : 'px-4 py-8'}`}
+    >
       {/* Mobile: Hide title, show only action buttons */}
       {isMobile ? (
-        <div className="flex gap-2 mb-1">
+        <div className='flex gap-2 mb-1'>
           <Button
             onClick={handleCreateTournament}
-            className="flex items-center gap-2 flex-1 text-sm h-7"
-            size="sm"
+            className='flex items-center gap-2 flex-1 text-sm h-7'
+            size='sm'
           >
             <Plus className='w-3.5 h-3.5' />
             Tạo
@@ -232,27 +234,27 @@ const TournamentsPage = () => {
           <Button
             onClick={handleRegisterClub}
             variant='outline'
-            className="flex items-center gap-2 flex-1 text-sm h-7"
-            size="sm"
+            className='flex items-center gap-2 flex-1 text-sm h-7'
+            size='sm'
           >
             <Shield className='w-3.5 h-3.5' />
             CLB
           </Button>
         </div>
       ) : (
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+        <div className='flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8'>
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">
+            <h1 className='text-3xl font-bold text-foreground mb-2'>
               Giải Đấu Billiards
             </h1>
             <p className='text-muted-foreground'>
               Tham gia các giải đấu hấp dẫn và thử thách bản thân
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             <Button
               onClick={handleCreateTournament}
-              className="flex items-center gap-2"
+              className='flex items-center gap-2'
             >
               <Plus className='w-4 h-4' />
               Tạo giải đấu
@@ -260,7 +262,7 @@ const TournamentsPage = () => {
             <Button
               onClick={handleRegisterClub}
               variant='outline'
-              className="flex items-center gap-2"
+              className='flex items-center gap-2'
             >
               <Shield className='w-4 h-4' />
               Đăng ký CLB
@@ -274,7 +276,7 @@ const TournamentsPage = () => {
         <CardContent className={isMobile ? 'p-1.5' : 'pt-6'}>
           {isMobile ? (
             /* Mobile: Single row with search and filter */
-            <div className="flex gap-1.5">
+            <div className='flex gap-1.5'>
               <div className='flex-1'>
                 <div className='relative'>
                   <Search className='absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3' />
@@ -288,7 +290,7 @@ const TournamentsPage = () => {
               </div>
               <div className='w-16'>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="h-7 text-xs px-2">
+                  <SelectTrigger className='h-7 text-xs px-2'>
                     <SelectValue placeholder='Tất cả' />
                   </SelectTrigger>
                   <SelectContent>
@@ -307,7 +309,7 @@ const TournamentsPage = () => {
             </div>
           ) : (
             /* Desktop: Original layout */
-            <div className="flex flex-col lg:flex-row gap-4">
+            <div className='flex flex-col lg:flex-row gap-4'>
               <div className='flex-1'>
                 <div className='relative'>
                   <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4' />
@@ -414,11 +416,17 @@ const TournamentsPage = () => {
         <Card>
           <CardContent className={isMobile ? 'p-4' : 'pt-6'}>
             <div className={`text-center ${isMobile ? 'py-4' : 'py-8'}`}>
-              <Calendar className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} text-muted-foreground mx-auto mb-4`} />
-              <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold mb-2`}>
+              <Calendar
+                className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} text-muted-foreground mx-auto mb-4`}
+              />
+              <h3
+                className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold mb-2`}
+              >
                 Không có giải đấu nào
               </h3>
-              <p className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}>
+              <p
+                className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}
+              >
                 {searchTerm || statusFilter !== 'all'
                   ? 'Không tìm thấy giải đấu phù hợp với bộ lọc của bạn'
                   : 'Hiện tại chưa có giải đấu nào được tạo'}

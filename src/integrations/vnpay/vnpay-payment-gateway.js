@@ -9,15 +9,15 @@ const router = express.Router();
 
 /**
  * VNPAY Payment Gateway Integration
- * 
+ *
  * This module provides a complete integration with VNPAY payment gateway
  * including payment creation, return URL handling, and IPN (Instant Payment Notification).
- * 
+ *
  * Updated Configuration:
  * - TMN Code: T53WMA78
  * - Hash Secret: M1TOK8Z2U7KIPX67FDFBSXTPHGSEFHZ9
  * - Payment URL: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
- * 
+ *
  * Test Card Details (VCB Bank):
  * - Card Number: 4524 0418 7644 5035
  * - Name: VÕ LONG SANG
@@ -49,7 +49,7 @@ function createVNPAYHash(params, secretKey) {
     // Create HMAC SHA512 hash
     const hmac = crypto.createHmac('sha512', secretKey);
     hmac.update(queryString);
-    
+
     return hmac.digest('hex');
   } catch (error) {
     console.error('Error creating VNPAY hash:', error);
@@ -72,7 +72,7 @@ function verifyVNPAYHash(params, receivedHash, secretKey) {
 
     // Create hash from received parameters
     const calculatedHash = createVNPAYHash(paramsForVerification, secretKey);
-    
+
     // Compare hashes (case-insensitive)
     return calculatedHash.toLowerCase() === receivedHash.toLowerCase();
   } catch (error) {
@@ -87,17 +87,19 @@ function verifyVNPAYHash(params, receivedHash, secretKey) {
  * @returns {string} Client IP address
  */
 function getClientIP(req) {
-  return req.headers['x-forwarded-for'] || 
-         req.connection.remoteAddress || 
-         req.socket.remoteAddress || 
-         req.connection.socket?.remoteAddress || 
-         '127.0.0.1';
+  return (
+    req.headers['x-forwarded-for'] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    req.connection.socket?.remoteAddress ||
+    '127.0.0.1'
+  );
 }
 
 /**
  * POST /api/payments/create-vnpay
  * Creates a new VNPAY payment request
- * 
+ *
  * Request Body:
  * {
  *   "orderId": "ORDER_123456",
@@ -114,7 +116,8 @@ router.post('/create-vnpay', async (req, res) => {
     if (!orderId || !amount || !orderInfo || !orderType) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required parameters: orderId, amount, orderInfo, orderType'
+        message:
+          'Missing required parameters: orderId, amount, orderInfo, orderType',
       });
     }
 
@@ -122,17 +125,21 @@ router.post('/create-vnpay', async (req, res) => {
     if (amount <= 0) {
       return res.status(400).json({
         success: false,
-        message: 'Amount must be greater than 0'
+        message: 'Amount must be greater than 0',
       });
     }
 
     // Validate environment variables
-    if (!process.env.VNP_TMN_CODE || !process.env.VNP_HASH_SECRET || 
-        !process.env.VNP_RETURN_URL || !process.env.VNP_PAYMENT_URL) {
+    if (
+      !process.env.VNP_TMN_CODE ||
+      !process.env.VNP_HASH_SECRET ||
+      !process.env.VNP_RETURN_URL ||
+      !process.env.VNP_PAYMENT_URL
+    ) {
       console.error('Missing VNPAY environment variables');
       return res.status(500).json({
         success: false,
-        message: 'Payment gateway configuration error'
+        message: 'Payment gateway configuration error',
       });
     }
 
@@ -149,7 +156,7 @@ router.post('/create-vnpay', async (req, res) => {
       vnp_ReturnUrl: process.env.VNP_RETURN_URL,
       vnp_IpAddr: getClientIP(req),
       vnp_CreateDate: moment().format('YYYYMMDDHHmmss'),
-      vnp_Locale: 'vn' // Vietnamese locale
+      vnp_Locale: 'vn', // Vietnamese locale
     };
 
     // Create secure hash
@@ -160,7 +167,9 @@ router.post('/create-vnpay', async (req, res) => {
     const paymentUrl = `${process.env.VNP_PAYMENT_URL}?${querystring.stringify(params)}`;
 
     // Log payment creation
-    console.log(`VNPAY Payment created for order: ${orderId}, amount: ${amount} VND`);
+    console.log(
+      `VNPAY Payment created for order: ${orderId}, amount: ${amount} VND`
+    );
 
     // Return payment URL
     res.json({
@@ -168,14 +177,13 @@ router.post('/create-vnpay', async (req, res) => {
       paymentUrl: paymentUrl,
       orderId: orderId,
       amount: amount,
-      message: 'Payment URL generated successfully'
+      message: 'Payment URL generated successfully',
     });
-
   } catch (error) {
     console.error('Error creating VNPAY payment:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to create payment request'
+      message: 'Failed to create payment request',
     });
   }
 });
@@ -183,7 +191,7 @@ router.post('/create-vnpay', async (req, res) => {
 /**
  * GET /api/webhooks/vnpay-return
  * Handles VNPAY payment return (user redirect)
- * 
+ *
  * Query Parameters:
  * - vnp_ResponseCode: Payment response code
  * - vnp_TxnRef: Order reference
@@ -201,18 +209,25 @@ router.get('/webhooks/vnpay-return', async (req, res) => {
       console.error('VNPAY Return: Missing secure hash');
       return res.status(400).json({
         success: false,
-        message: 'Invalid payment response'
+        message: 'Invalid payment response',
       });
     }
 
     // Verify hash
-    const isValidHash = verifyVNPAYHash(queryParams, receivedHash, process.env.VNP_HASH_SECRET);
-    
+    const isValidHash = verifyVNPAYHash(
+      queryParams,
+      receivedHash,
+      process.env.VNP_HASH_SECRET
+    );
+
     if (!isValidHash) {
-      console.error('VNPAY Return: Invalid hash for order:', queryParams.vnp_TxnRef);
+      console.error(
+        'VNPAY Return: Invalid hash for order:',
+        queryParams.vnp_TxnRef
+      );
       return res.status(400).json({
         success: false,
-        message: 'Invalid payment signature'
+        message: 'Invalid payment signature',
       });
     }
 
@@ -222,7 +237,9 @@ router.get('/webhooks/vnpay-return', async (req, res) => {
     const transactionId = queryParams.vnp_TransactionNo;
 
     // Log payment return
-    console.log(`VNPAY Return: Order ${orderId}, Response Code: ${responseCode}, Amount: ${amount} VND`);
+    console.log(
+      `VNPAY Return: Order ${orderId}, Response Code: ${responseCode}, Amount: ${amount} VND`
+    );
 
     // Check payment status
     if (responseCode === '00') {
@@ -245,15 +262,14 @@ router.get('/webhooks/vnpay-return', async (req, res) => {
           orderId: orderId,
           amount: amount,
           transactionId: transactionId,
-          message: 'Payment completed successfully'
+          message: 'Payment completed successfully',
         });
-
       } catch (dbError) {
         console.error('Error updating order status:', dbError);
         res.json({
           success: false,
           code: responseCode,
-          message: 'Payment received but order update failed'
+          message: 'Payment received but order update failed',
         });
       }
     } else {
@@ -261,18 +277,20 @@ router.get('/webhooks/vnpay-return', async (req, res) => {
       const errorMessages = {
         '07': 'Transaction failed - Invalid amount',
         '09': 'Transaction failed - Invalid order information',
-        '13': 'Transaction failed - Invalid order type',
-        '24': 'Transaction failed - Customer cancelled',
-        '51': 'Transaction failed - Insufficient balance',
-        '65': 'Transaction failed - Exceeded daily limit',
-        '75': 'Transaction failed - Bank maintenance',
-        '79': 'Transaction failed - Invalid payment information',
-        '99': 'Transaction failed - Unknown error'
+        13: 'Transaction failed - Invalid order type',
+        24: 'Transaction failed - Customer cancelled',
+        51: 'Transaction failed - Insufficient balance',
+        65: 'Transaction failed - Exceeded daily limit',
+        75: 'Transaction failed - Bank maintenance',
+        79: 'Transaction failed - Invalid payment information',
+        99: 'Transaction failed - Unknown error',
       };
 
       const errorMessage = errorMessages[responseCode] || 'Payment failed';
 
-      console.log(`Payment failed for order: ${orderId}, Code: ${responseCode}`);
+      console.log(
+        `Payment failed for order: ${orderId}, Code: ${responseCode}`
+      );
 
       // TODO: Update order status in database
       // await updateOrderStatus(orderId, 'failed', {
@@ -285,15 +303,14 @@ router.get('/webhooks/vnpay-return', async (req, res) => {
         success: false,
         code: responseCode,
         orderId: orderId,
-        message: errorMessage
+        message: errorMessage,
       });
     }
-
   } catch (error) {
     console.error('Error processing VNPAY return:', error);
     res.status(500).json({
       success: false,
-      message: 'Error processing payment return'
+      message: 'Error processing payment return',
     });
   }
 });
@@ -301,7 +318,7 @@ router.get('/webhooks/vnpay-return', async (req, res) => {
 /**
  * GET /api/webhooks/vnpay-ipn
  * Handles VNPAY Instant Payment Notification (IPN)
- * 
+ *
  * Query Parameters:
  * - vnp_ResponseCode: Payment response code
  * - vnp_TxnRef: Order reference
@@ -321,10 +338,17 @@ router.get('/webhooks/vnpay-ipn', async (req, res) => {
     }
 
     // Verify hash
-    const isValidHash = verifyVNPAYHash(queryParams, receivedHash, process.env.VNP_HASH_SECRET);
-    
+    const isValidHash = verifyVNPAYHash(
+      queryParams,
+      receivedHash,
+      process.env.VNP_HASH_SECRET
+    );
+
     if (!isValidHash) {
-      console.error('VNPAY IPN: Invalid hash for order:', queryParams.vnp_TxnRef);
+      console.error(
+        'VNPAY IPN: Invalid hash for order:',
+        queryParams.vnp_TxnRef
+      );
       return res.status(400).send('Invalid signature');
     }
 
@@ -334,7 +358,9 @@ router.get('/webhooks/vnpay-ipn', async (req, res) => {
     const transactionId = queryParams.vnp_TransactionNo;
 
     // Log IPN
-    console.log(`VNPAY IPN: Order ${orderId}, Response Code: ${responseCode}, Amount: ${amount} VND`);
+    console.log(
+      `VNPAY IPN: Order ${orderId}, Response Code: ${responseCode}, Amount: ${amount} VND`
+    );
 
     // Verify payment status
     if (responseCode === '00') {
@@ -359,14 +385,15 @@ router.get('/webhooks/vnpay-ipn', async (req, res) => {
 
         // Return success response to stop IPN retries
         res.send('{"RspCode":"00","Message":"OK"}');
-
       } catch (dbError) {
         console.error('VNPAY IPN: Error updating order:', dbError);
         res.status(500).send('{"RspCode":"99","Message":"Internal Error"}');
       }
     } else {
       // Payment failed
-      console.log(`VNPAY IPN: Payment failed for order: ${orderId}, Code: ${responseCode}`);
+      console.log(
+        `VNPAY IPN: Payment failed for order: ${orderId}, Code: ${responseCode}`
+      );
 
       // TODO: Update order status in database
       // await updateOrderStatus(orderId, 'failed', {
@@ -378,7 +405,6 @@ router.get('/webhooks/vnpay-ipn', async (req, res) => {
       // Return success response to stop IPN retries
       res.send('{"RspCode":"00","Message":"OK"}');
     }
-
   } catch (error) {
     console.error('Error processing VNPAY IPN:', error);
     res.status(500).send('{"RspCode":"99","Message":"Internal Error"}');
@@ -407,14 +433,13 @@ router.get('/vnpay-status/:orderId', async (req, res) => {
       success: true,
       orderId: orderId,
       status: 'pending', // pending, paid, failed
-      message: 'Order status retrieved successfully'
+      message: 'Order status retrieved successfully',
     });
-
   } catch (error) {
     console.error('Error getting payment status:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to get payment status'
+      message: 'Failed to get payment status',
     });
   }
 });
@@ -431,28 +456,29 @@ router.post('/vnpay-refund', async (req, res) => {
     if (!orderId || !amount || !reason) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required parameters: orderId, amount, reason'
+        message: 'Missing required parameters: orderId, amount, reason',
       });
     }
 
     // TODO: Implement refund logic
     // This would typically involve calling VNPAY's refund API
-    console.log(`Refund requested for order: ${orderId}, amount: ${amount} VND, reason: ${reason}`);
+    console.log(
+      `Refund requested for order: ${orderId}, amount: ${amount} VND, reason: ${reason}`
+    );
 
     res.json({
       success: true,
       orderId: orderId,
       amount: amount,
-      message: 'Refund request submitted successfully'
+      message: 'Refund request submitted successfully',
     });
-
   } catch (error) {
     console.error('Error processing refund:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to process refund'
+      message: 'Failed to process refund',
     });
   }
 });
 
-module.exports = router; 
+module.exports = router;

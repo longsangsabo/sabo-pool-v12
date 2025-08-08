@@ -115,7 +115,7 @@ const EnhancedChallengesPageV2: React.FC = () => {
       c.challenger_id === user?.id || c.opponent_id === user?.id;
     return isMyChallenge;
   });
-  
+
   // Completed challenges filter
   const completedChallenges = challenges.filter(c => {
     if (c.status !== 'completed') return false;
@@ -123,7 +123,7 @@ const EnhancedChallengesPageV2: React.FC = () => {
       c.challenger_id === user?.id || c.opponent_id === user?.id;
     return isMyChallenge;
   });
-  
+
   const myMatches = myChallenges.filter(
     c => c.status === 'accepted' || c.status === 'completed'
   );
@@ -174,9 +174,17 @@ const EnhancedChallengesPageV2: React.FC = () => {
     accepted: myChallenges.filter(c => c.status === 'accepted').length,
     completed: completedChallenges.length,
     won: completedChallenges.filter(c => c.winner_id === user?.id).length,
-    lost: completedChallenges.filter(c => c.winner_id && c.winner_id !== user?.id).length,
-    winRate: completedChallenges.length > 0 ? 
-      Math.round((completedChallenges.filter(c => c.winner_id === user?.id).length / completedChallenges.length) * 100) : 0,
+    lost: completedChallenges.filter(
+      c => c.winner_id && c.winner_id !== user?.id
+    ).length,
+    winRate:
+      completedChallenges.length > 0
+        ? Math.round(
+            (completedChallenges.filter(c => c.winner_id === user?.id).length /
+              completedChallenges.length) *
+              100
+          )
+        : 0,
   };
 
   const checkAdminStatus = async () => {
@@ -722,7 +730,8 @@ const EnhancedChallengesPageV2: React.FC = () => {
                   value='completed-challenges'
                   className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
                 >
-                  🏆 Hoàn thành ({getFilteredChallenges(completedChallenges).length})
+                  🏆 Hoàn thành (
+                  {getFilteredChallenges(completedChallenges).length})
                 </TabsTrigger>
                 <TabsTrigger
                   value='open-challenges'
@@ -856,13 +865,15 @@ const EnhancedChallengesPageV2: React.FC = () => {
               <TabsContent value='completed-challenges' className='space-y-6'>
                 {getFilteredChallenges(completedChallenges).length > 0 ? (
                   <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                    {getFilteredChallenges(completedChallenges).map(challenge => (
-                      <CompletedChallengeCard
-                        key={challenge.id}
-                        challenge={challenge}
-                        onView={() => handleChallengeClick(challenge)}
-                      />
-                    ))}
+                    {getFilteredChallenges(completedChallenges).map(
+                      challenge => (
+                        <CompletedChallengeCard
+                          key={challenge.id}
+                          challenge={challenge}
+                          onView={() => handleChallengeClick(challenge)}
+                        />
+                      )
+                    )}
                   </div>
                 ) : (
                   <Card className='bg-gradient-to-br from-purple-50/50 to-violet-50/50 border border-purple-200/30'>
@@ -874,7 +885,8 @@ const EnhancedChallengesPageV2: React.FC = () => {
                         Chưa có thách đấu nào hoàn thành
                       </h3>
                       <p className='text-muted-foreground max-w-md mx-auto'>
-                        Các thách đấu đã hoàn thành sẽ hiển thị ở đây để bạn có thể xem lại kết quả và thống kê.
+                        Các thách đấu đã hoàn thành sẽ hiển thị ở đây để bạn có
+                        thể xem lại kết quả và thống kê.
                       </p>
                     </CardContent>
                   </Card>
@@ -891,15 +903,22 @@ const EnhancedChallengesPageV2: React.FC = () => {
                     </h3>
                     <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
                       {challenges.slice(0, 3).map(challenge => (
-                        <div key={`unified-match-${challenge.id}`} className='space-y-2'>
-                          <Badge variant='outline' className='text-xs'>UnifiedChallengeCard (Match)</Badge>
+                        <div
+                          key={`unified-match-${challenge.id}`}
+                          className='space-y-2'
+                        >
+                          <Badge variant='outline' className='text-xs'>
+                            UnifiedChallengeCard (Match)
+                          </Badge>
                           <UnifiedChallengeCard
                             challenge={challenge}
                             variant='match'
                             currentUserId={user?.id || ''}
                             onSubmitScore={handleSubmitScore}
                             isSubmittingScore={isSubmittingScore}
-                            onAction={(id, action) => handleChallengeAction(id, action)}
+                            onAction={(id, action) =>
+                              handleChallengeAction(id, action)
+                            }
                           />
                         </div>
                       ))}
@@ -915,7 +934,9 @@ const EnhancedChallengesPageV2: React.FC = () => {
                     <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
                       {openChallenges.slice(0, 3).map(challenge => (
                         <div key={`open-${challenge.id}`} className='space-y-2'>
-                          <Badge variant='outline' className='text-xs'>OpenChallengeCard</Badge>
+                          <Badge variant='outline' className='text-xs'>
+                            OpenChallengeCard
+                          </Badge>
                           <OpenChallengeCard
                             challenge={challenge}
                             onJoin={handleJoinOpenChallenge}
@@ -926,13 +947,17 @@ const EnhancedChallengesPageV2: React.FC = () => {
                       {/* Demo card if no open challenges */}
                       {openChallenges.length === 0 && (
                         <div className='space-y-2'>
-                          <Badge variant='outline' className='text-xs'>OpenChallengeCard (Demo)</Badge>
+                          <Badge variant='outline' className='text-xs'>
+                            OpenChallengeCard (Demo)
+                          </Badge>
                           <Card className='p-6 border-dashed border-2 border-muted-foreground/20'>
                             <div className='text-center'>
                               <Users className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
                               <p className='text-muted-foreground text-sm'>
                                 No open challenges available.
-                                <br />Create an open challenge to see this card in action!
+                                <br />
+                                Create an open challenge to see this card in
+                                action!
                               </p>
                             </div>
                           </Card>
@@ -949,8 +974,13 @@ const EnhancedChallengesPageV2: React.FC = () => {
                     </h3>
                     <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
                       {completedChallenges.slice(0, 3).map(challenge => (
-                        <div key={`completed-${challenge.id}`} className='space-y-2'>
-                          <Badge variant='outline' className='text-xs'>CompletedChallengeCard</Badge>
+                        <div
+                          key={`completed-${challenge.id}`}
+                          className='space-y-2'
+                        >
+                          <Badge variant='outline' className='text-xs'>
+                            CompletedChallengeCard
+                          </Badge>
                           <CompletedChallengeCard
                             challenge={challenge}
                             onView={() => handleChallengeClick(challenge)}
@@ -960,13 +990,16 @@ const EnhancedChallengesPageV2: React.FC = () => {
                       {/* Demo card if no completed challenges */}
                       {completedChallenges.length === 0 && (
                         <div className='space-y-2'>
-                          <Badge variant='outline' className='text-xs'>CompletedChallengeCard (Demo)</Badge>
+                          <Badge variant='outline' className='text-xs'>
+                            CompletedChallengeCard (Demo)
+                          </Badge>
                           <Card className='p-6 border-dashed border-2 border-muted-foreground/20'>
                             <div className='text-center'>
                               <Star className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
                               <p className='text-muted-foreground text-sm'>
                                 No completed challenges yet.
-                                <br />Complete some challenges to see this card!
+                                <br />
+                                Complete some challenges to see this card!
                               </p>
                             </div>
                           </Card>
@@ -984,88 +1017,98 @@ const EnhancedChallengesPageV2: React.FC = () => {
                     <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
                       {/* LiveMatchCard Demo 1 */}
                       <div className='space-y-2'>
-                        <Badge variant='outline' className='text-xs'>LiveMatchCard</Badge>
+                        <Badge variant='outline' className='text-xs'>
+                          LiveMatchCard
+                        </Badge>
                         <LiveMatchCard
                           match={{
                             id: 'demo-live-1',
                             player1: {
                               name: 'Nguyễn Văn A',
                               avatar: '',
-                              rank: 'Pro'
+                              rank: 'Pro',
                             },
                             player2: {
                               name: 'Trần Văn B',
                               avatar: '',
-                              rank: 'Expert'
+                              rank: 'Expert',
                             },
                             score: {
                               player1: 3,
-                              player2: 2
+                              player2: 2,
                             },
                             raceToTarget: 5,
                             location: 'Club Billiards VIP',
                             startTime: new Date().toISOString(),
-                            betPoints: 100
+                            betPoints: 100,
                           }}
-                          onWatch={(id) => console.log('Watch match:', id)}
+                          onWatch={id => console.log('Watch match:', id)}
                         />
                       </div>
 
                       {/* LiveMatchCard Demo 2 */}
                       <div className='space-y-2'>
-                        <Badge variant='outline' className='text-xs'>LiveMatchCard</Badge>
+                        <Badge variant='outline' className='text-xs'>
+                          LiveMatchCard
+                        </Badge>
                         <LiveMatchCard
                           match={{
                             id: 'demo-live-2',
                             player1: {
                               name: 'Lê Thị C',
                               avatar: '',
-                              rank: 'Master'
+                              rank: 'Master',
                             },
                             player2: {
                               name: 'Phạm Văn D',
                               avatar: '',
-                              rank: 'Pro'
+                              rank: 'Pro',
                             },
                             score: {
                               player1: 1,
-                              player2: 4
+                              player2: 4,
                             },
                             raceToTarget: 7,
                             location: 'Arena Premium',
-                            startTime: new Date(Date.now() - 1800000).toISOString(),
-                            betPoints: 250
+                            startTime: new Date(
+                              Date.now() - 1800000
+                            ).toISOString(),
+                            betPoints: 250,
                           }}
-                          onWatch={(id) => console.log('Watch match:', id)}
+                          onWatch={id => console.log('Watch match:', id)}
                         />
                       </div>
 
                       {/* LiveMatchCard Demo 3 */}
                       <div className='space-y-2'>
-                        <Badge variant='outline' className='text-xs'>LiveMatchCard</Badge>
+                        <Badge variant='outline' className='text-xs'>
+                          LiveMatchCard
+                        </Badge>
                         <LiveMatchCard
                           match={{
                             id: 'demo-live-3',
                             player1: {
                               name: 'Hoàng Văn E',
                               avatar: '',
-                              rank: 'Expert'
+                              rank: 'Expert',
                             },
                             player2: {
                               name: 'Vũ Thị F',
                               avatar: '',
-                              rank: 'Advanced'
+                              rank: 'Advanced',
                             },
                             score: {
                               player1: 6,
-                              player2: 6
+                              player2: 6,
                             },
                             raceToTarget: 9,
                             location: 'Elite Club',
-                            startTime: new Date(Date.now() - 3600000).toISOString(),
-                            betPoints: 500
+                            startTime: new Date(
+                              Date.now() - 3600000
+                            ).toISOString(),
+                            betPoints: 500,
                           }}
-                          onWatch={(id) => console.log('Watch match:', id)}
+                          onWatch={id => console.log('Watch match:', id)}
                         />
                       </div>
                     </div>
@@ -1079,10 +1122,22 @@ const EnhancedChallengesPageV2: React.FC = () => {
                         Selected Card Components Overview
                       </h4>
                       <div className='text-sm text-blue-800 space-y-2'>
-                        <p><strong>UnifiedChallengeCard (Match):</strong> Main card for match display with score submission</p>
-                        <p><strong>OpenChallengeCard:</strong> For open challenges that players can join</p>
-                        <p><strong>CompletedChallengeCard:</strong> Shows completed challenge results and winners</p>
-                        <p><strong>LiveMatchCard:</strong> Real-time ongoing matches with live scores</p>
+                        <p>
+                          <strong>UnifiedChallengeCard (Match):</strong> Main
+                          card for match display with score submission
+                        </p>
+                        <p>
+                          <strong>OpenChallengeCard:</strong> For open
+                          challenges that players can join
+                        </p>
+                        <p>
+                          <strong>CompletedChallengeCard:</strong> Shows
+                          completed challenge results and winners
+                        </p>
+                        <p>
+                          <strong>LiveMatchCard:</strong> Real-time ongoing
+                          matches with live scores
+                        </p>
                       </div>
                     </CardContent>
                   </Card>

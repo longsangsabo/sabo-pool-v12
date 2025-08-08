@@ -119,9 +119,11 @@ export const MobileNavigation = () => {
               }`}
             >
               <div className='relative'>
-                <Icon className={`w-5 h-5 transition-all duration-200 ${
-                  active ? 'fill-current scale-110' : 'hover:scale-105'
-                }`} />
+                <Icon
+                  className={`w-5 h-5 transition-all duration-200 ${
+                    active ? 'fill-current scale-110' : 'hover:scale-105'
+                  }`}
+                />
                 {item.badge && Number(item.badge) > 0 && (
                   <Badge
                     variant='destructive'
@@ -133,7 +135,9 @@ export const MobileNavigation = () => {
               </div>
               <span
                 className={`text-xs mt-1 font-medium truncate w-full text-center transition-all duration-200 ${
-                  active ? 'text-primary font-semibold' : 'text-muted-foreground'
+                  active
+                    ? 'text-primary font-semibold'
+                    : 'text-muted-foreground'
                 }`}
               >
                 {item.label}

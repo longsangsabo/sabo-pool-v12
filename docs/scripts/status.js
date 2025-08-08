@@ -18,24 +18,26 @@ class StatusDashboard {
 
   async getDaemonStatus() {
     try {
-      const output = execSync('pgrep -f "node.*doc-cleanup"', { encoding: 'utf8' });
+      const output = execSync('pgrep -f "node.*doc-cleanup"', {
+        encoding: 'utf8',
+      });
       const pids = output.trim().split('\n').filter(Boolean);
-      
+
       if (pids.length > 0) {
         return {
           status: '🟢 RUNNING',
           pids: pids,
-          uptime: await this.getUptime(pids[0])
+          uptime: await this.getUptime(pids[0]),
         };
       }
     } catch (error) {
       // No process found
     }
-    
+
     return {
       status: '🔴 STOPPED',
       pids: [],
-      uptime: null
+      uptime: null,
     };
   }
 
@@ -53,13 +55,13 @@ class StatusDashboard {
       return {
         status: '📋 No logs yet',
         files: [],
-        size: '0 B'
+        size: '0 B',
       };
     }
 
     const files = fs.readdirSync(this.logsDir);
     let totalSize = 0;
-    
+
     files.forEach(file => {
       const stat = fs.statSync(path.join(this.logsDir, file));
       totalSize += stat.size;
@@ -68,7 +70,7 @@ class StatusDashboard {
     return {
       status: `📋 ${files.length} log files`,
       files: files,
-      size: this.formatBytes(totalSize)
+      size: this.formatBytes(totalSize),
     };
   }
 
@@ -77,13 +79,13 @@ class StatusDashboard {
       return {
         status: '💾 No backups yet',
         count: 0,
-        size: '0 B'
+        size: '0 B',
       };
     }
 
     const files = fs.readdirSync(this.backupsDir);
     let totalSize = 0;
-    
+
     files.forEach(file => {
       const stat = fs.statSync(path.join(this.backupsDir, file));
       totalSize += stat.size;
@@ -92,33 +94,35 @@ class StatusDashboard {
     return {
       status: `💾 ${files.length} backup files`,
       count: files.length,
-      size: this.formatBytes(totalSize)
+      size: this.formatBytes(totalSize),
     };
   }
 
   async getScheduleStatus() {
     // Check if cron job is configured
     const configPath = path.join(this.scriptsDir, 'config.json');
-    
+
     if (!fs.existsSync(configPath)) {
       return '⏰ No schedule configured';
     }
 
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     const cronExp = config.schedule?.cronExpression || '0 2 * * *';
-    
+
     return `⏰ Scheduled: ${cronExp} (Daily 2AM)`;
   }
 
   async getSystemHealth() {
     const configPath = path.join(this.scriptsDir, 'config.json');
     const packagePath = path.join(this.scriptsDir, 'package.json');
-    
+
     const health = {
       config: fs.existsSync(configPath) ? '✅' : '❌',
       dependencies: fs.existsSync(packagePath) ? '✅' : '❌',
-      nodeModules: fs.existsSync(path.join(this.scriptsDir, 'node_modules')) ? '✅' : '❌',
-      permissions: this.checkPermissions() ? '✅' : '❌'
+      nodeModules: fs.existsSync(path.join(this.scriptsDir, 'node_modules'))
+        ? '✅'
+        : '❌',
+      permissions: this.checkPermissions() ? '✅' : '❌',
     };
 
     return health;
@@ -174,7 +178,9 @@ class StatusDashboard {
     console.log(`Log Status: ${logs.status}`);
     if (logs.files.length > 0) {
       console.log(`  Total Size: ${logs.size}`);
-      console.log(`  Files: ${logs.files.slice(0, 3).join(', ')}${logs.files.length > 3 ? '...' : ''}`);
+      console.log(
+        `  Files: ${logs.files.slice(0, 3).join(', ')}${logs.files.length > 3 ? '...' : ''}`
+      );
     }
     console.log();
 
@@ -196,11 +202,14 @@ class StatusDashboard {
     console.log();
 
     // Overall Status
-    const isHealthy = daemon.status.includes('RUNNING') && 
-                     health.config === '✅' && 
-                     health.dependencies === '✅';
-    
-    console.log(`Overall Status: ${isHealthy ? '🟢 HEALTHY' : '🟡 NEEDS ATTENTION'}`);
+    const isHealthy =
+      daemon.status.includes('RUNNING') &&
+      health.config === '✅' &&
+      health.dependencies === '✅';
+
+    console.log(
+      `Overall Status: ${isHealthy ? '🟢 HEALTHY' : '🟡 NEEDS ATTENTION'}`
+    );
     console.log();
   }
 }

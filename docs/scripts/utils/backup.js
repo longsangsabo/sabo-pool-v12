@@ -30,19 +30,19 @@ class BackupManager {
   async createBackup(files, backupName = null) {
     try {
       await this.init();
-      
+
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backupId = backupName || `cleanup-backup-${timestamp}`;
       const backupPath = path.join(this.backupDir, backupId);
-      
+
       await fs.mkdir(backupPath, { recursive: true });
-      
+
       const manifest = {
         id: backupId,
         timestamp: new Date().toISOString(),
         files: [],
         totalSize: 0,
-        compressionEnabled: this.compressionEnabled
+        compressionEnabled: this.compressionEnabled,
       };
 
       let totalFiles = 0;
@@ -51,36 +51,41 @@ class BackupManager {
       // Copy files to backup directory
       for (const file of files) {
         try {
-          const relativePath = path.relative('/workspaces/sabo-pool-v11', file.path);
+          const relativePath = path.relative(
+            '/workspaces/sabo-pool-v11',
+            file.path
+          );
           const backupFilePath = path.join(backupPath, relativePath);
-          
+
           // Create directory structure
           await fs.mkdir(path.dirname(backupFilePath), { recursive: true });
-          
+
           // Copy file
           await fs.copyFile(file.path, backupFilePath);
-          
+
           const stats = await fs.stat(backupFilePath);
-          
+
           manifest.files.push({
             originalPath: file.path,
             relativePath,
             backupPath: backupFilePath,
             size: stats.size,
-            checksumMd5: file.contentHash
+            checksumMd5: file.contentHash,
           });
-          
+
           totalFiles++;
           totalSize += stats.size;
-          
         } catch (error) {
-          await this.logger.warn(`⚠️ Failed to backup file ${file.path}:`, error);
+          await this.logger.warn(
+            `⚠️ Failed to backup file ${file.path}:`,
+            error
+          );
         }
       }
 
       manifest.totalFiles = totalFiles;
       manifest.totalSize = totalSize;
-      
+
       // Save manifest
       const manifestPath = path.join(backupPath, 'manifest.json');
       await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
@@ -90,18 +95,19 @@ class BackupManager {
         await this.compressBackup(backupPath);
       }
 
-      await this.logger.info(`💾 Backup created: ${backupId} (${totalFiles} files, ${this.formatSize(totalSize)})`);
-      
+      await this.logger.info(
+        `💾 Backup created: ${backupId} (${totalFiles} files, ${this.formatSize(totalSize)})`
+      );
+
       // Cleanup old backups
       await this.cleanupOldBackups();
-      
+
       return {
         id: backupId,
         path: backupPath,
         files: totalFiles,
-        size: totalSize
+        size: totalSize,
       };
-      
     } catch (error) {
       await this.logger.error('❌ Backup creation failed:', error);
       throw error;
@@ -113,16 +119,18 @@ class BackupManager {
     try {
       const tarFile = `${backupPath}.tar.gz`;
       const backupName = path.basename(backupPath);
-      
-      execSync(`tar -czf "${tarFile}" -C "${path.dirname(backupPath)}" "${backupName}"`, {
-        cwd: this.backupDir
-      });
-      
+
+      execSync(
+        `tar -czf "${tarFile}" -C "${path.dirname(backupPath)}" "${backupName}"`,
+        {
+          cwd: this.backupDir,
+        }
+      );
+
       // Remove uncompressed directory
       await this.removeDirectory(backupPath);
-      
+
       await this.logger.info(`🗜️ Backup compressed: ${path.basename(tarFile)}`);
-      
     } catch (error) {
       await this.logger.warn('⚠️ Failed to compress backup:', error);
     }
@@ -151,7 +159,7 @@ class BackupManager {
       const manifest = JSON.parse(manifestContent);
 
       let restoredCount = 0;
-      
+
       for (const fileInfo of manifest.files) {
         // Skip if specific files requested and this isn't one of them
         if (targetFiles && !targetFiles.includes(fileInfo.originalPath)) {
@@ -160,25 +168,30 @@ class BackupManager {
 
         try {
           // Create directory structure
-          await fs.mkdir(path.dirname(fileInfo.originalPath), { recursive: true });
-          
+          await fs.mkdir(path.dirname(fileInfo.originalPath), {
+            recursive: true,
+          });
+
           // Restore file
           await fs.copyFile(fileInfo.backupPath, fileInfo.originalPath);
           restoredCount++;
-          
         } catch (error) {
-          await this.logger.warn(`⚠️ Failed to restore ${fileInfo.originalPath}:`, error);
+          await this.logger.warn(
+            `⚠️ Failed to restore ${fileInfo.originalPath}:`,
+            error
+          );
         }
       }
 
-      await this.logger.info(`♻️ Restored ${restoredCount} files from backup ${backupId}`);
-      
+      await this.logger.info(
+        `♻️ Restored ${restoredCount} files from backup ${backupId}`
+      );
+
       return {
         backupId,
         restoredFiles: restoredCount,
-        totalFiles: manifest.files.length
+        totalFiles: manifest.files.length,
       };
-      
     } catch (error) {
       await this.logger.error('❌ Backup restoration failed:', error);
       throw error;
@@ -201,25 +214,24 @@ class BackupManager {
     try {
       const files = await fs.readdir(this.backupDir);
       const backups = [];
-      
+
       for (const file of files) {
         const filePath = path.join(this.backupDir, file);
         const stats = await fs.stat(filePath);
-        
+
         if (stats.isDirectory() || file.endsWith('.tar.gz')) {
           backups.push({
             id: file.replace('.tar.gz', ''),
             path: filePath,
             created: stats.birthtime,
             size: stats.size,
-            compressed: file.endsWith('.tar.gz')
+            compressed: file.endsWith('.tar.gz'),
           });
         }
       }
-      
+
       // Sort by creation date (newest first)
       return backups.sort((a, b) => b.created - a.created);
-      
     } catch (error) {
       await this.logger.error('❌ Failed to list backups:', error);
       return [];
@@ -229,11 +241,13 @@ class BackupManager {
   // Cleanup old backups based on retention policy
   async cleanupOldBackups() {
     try {
-      const cutoffDate = new Date(Date.now() - (this.retentionDays * 24 * 60 * 60 * 1000));
+      const cutoffDate = new Date(
+        Date.now() - this.retentionDays * 24 * 60 * 60 * 1000
+      );
       const backups = await this.listBackups();
-      
+
       let deletedCount = 0;
-      
+
       for (const backup of backups) {
         if (backup.created < cutoffDate) {
           try {
@@ -245,15 +259,17 @@ class BackupManager {
             deletedCount++;
             await this.logger.debug(`🗑️ Deleted old backup: ${backup.id}`);
           } catch (error) {
-            await this.logger.warn(`⚠️ Failed to delete backup ${backup.id}:`, error);
+            await this.logger.warn(
+              `⚠️ Failed to delete backup ${backup.id}:`,
+              error
+            );
           }
         }
       }
-      
+
       if (deletedCount > 0) {
         await this.logger.info(`🗑️ Cleaned up ${deletedCount} old backups`);
       }
-      
     } catch (error) {
       await this.logger.error('❌ Backup cleanup failed:', error);
     }
@@ -263,18 +279,18 @@ class BackupManager {
   async removeDirectory(dirPath) {
     try {
       const files = await fs.readdir(dirPath);
-      
+
       for (const file of files) {
         const filePath = path.join(dirPath, file);
         const stats = await fs.stat(filePath);
-        
+
         if (stats.isDirectory()) {
           await this.removeDirectory(filePath);
         } else {
           await fs.unlink(filePath);
         }
       }
-      
+
       await fs.rmdir(dirPath);
     } catch (error) {
       throw error;
@@ -286,7 +302,7 @@ class BackupManager {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 Bytes';
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return `${Math.round(bytes / Math.pow(1024, i) * 100) / 100} ${sizes[i]}`;
+    return `${Math.round((bytes / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
   }
 
   // Get backup statistics
@@ -294,12 +310,13 @@ class BackupManager {
     try {
       const backups = await this.listBackups();
       const totalSize = backups.reduce((sum, backup) => sum + backup.size, 0);
-      
+
       return {
         totalBackups: backups.length,
         totalSize: this.formatSize(totalSize),
-        oldestBackup: backups.length > 0 ? backups[backups.length - 1].created : null,
-        newestBackup: backups.length > 0 ? backups[0].created : null
+        oldestBackup:
+          backups.length > 0 ? backups[backups.length - 1].created : null,
+        newestBackup: backups.length > 0 ? backups[0].created : null,
       };
     } catch (error) {
       return { error: error.message };

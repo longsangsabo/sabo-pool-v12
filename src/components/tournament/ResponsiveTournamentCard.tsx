@@ -32,16 +32,25 @@ const ResponsiveTournamentCard: React.FC<ResponsiveTournamentCardProps> = ({
   loading = false,
 }) => {
   const { isMobile, isTablet } = useOptimizedResponsive();
-  
+
   // Debug logging
-  console.log('ResponsiveTournamentCard - isMobile:', isMobile, 'isTablet:', isTablet, 'windowWidth:', window.innerWidth, 'tournament:', tournament?.name);
+  console.log(
+    'ResponsiveTournamentCard - isMobile:',
+    isMobile,
+    'isTablet:',
+    isTablet,
+    'windowWidth:',
+    window.innerWidth,
+    'tournament:',
+    tournament?.name
+  );
 
   // Show skeleton if loading or no tournament data
   if (loading || !tournament) {
     return (
-      <TournamentCardSkeleton 
-        isMobile={isMobile} 
-        variant={isMobile ? 'mobile' : 'card'} 
+      <TournamentCardSkeleton
+        isMobile={isMobile}
+        variant={isMobile ? 'mobile' : 'card'}
       />
     );
   }

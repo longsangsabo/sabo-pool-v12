@@ -29,8 +29,7 @@ const RepairBracketButton: React.FC<RepairBracketButtonProps> = ({
   tournamentType,
   onRepaired,
 }) => {
-  const { createBracket, isCreatingBracket } =
-    useSABOBracket(tournamentId);
+  const { createBracket, isCreatingBracket } = useSABOBracket(tournamentId);
 
   // Only show for double elimination tournaments that might need repairs
   const shouldShowButton =

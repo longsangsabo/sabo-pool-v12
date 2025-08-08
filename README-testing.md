@@ -7,7 +7,7 @@ Tài liệu hướng dẫn đầy đủ về hệ thống testing cho dự án T
 Hệ thống testing được thiết kế với 5 phase hoàn chỉnh:
 
 - **Phase 1**: Unit Testing & Mocking Setup ✅
-- **Phase 2**: Advanced Testing Infrastructure ✅  
+- **Phase 2**: Advanced Testing Infrastructure ✅
 - **Phase 3**: Test Automation & CI/CD Integration ✅
 - **Phase 4**: Advanced Testing Features & Monitoring ✅
 - **Phase 5**: Documentation & Best Practices ✅
@@ -31,6 +31,7 @@ testing-architecture/
 ## 🧪 Các loại Test
 
 ### 1. Unit Tests (Vitest)
+
 ```bash
 # Chạy tất cả unit tests
 npm run test
@@ -43,24 +44,28 @@ npm run test:coverage
 ```
 
 **Coverage areas:**
+
 - Services (TournamentService, RankingService)
 - Hooks (useTournamentService, useAuth)
 - Utilities & helpers
 - Components (isolated testing)
 
 ### 2. Integration Tests
+
 ```bash
 # Chạy integration tests
 npm run test:run -- src/test/integration
 ```
 
 **Test scenarios:**
+
 - Tournament flow integration
 - Database operations
 - API endpoint testing
 - Service layer integration
 
 ### 3. End-to-End Tests (Playwright)
+
 ```bash
 # Chạy E2E tests
 npm run test:e2e
@@ -73,30 +78,35 @@ npm run test:e2e:report
 ```
 
 **Test coverage:**
+
 - Complete user journeys
 - Cross-browser testing (Chrome, Firefox, Safari)
 - Mobile responsive testing
 - Accessibility compliance
 
 ### 4. Visual Regression Tests
+
 ```bash
 # Chạy visual tests
 npm run test:visual
 ```
 
 **Features:**
+
 - Screenshot comparison
 - Cross-browser visual consistency
 - Responsive design verification
 - Theme switching tests
 
 ### 5. Performance Tests
+
 ```bash
 # Chạy performance tests
 npm run test:performance
 ```
 
 **Metrics tracked:**
+
 - Core Web Vitals
 - Bundle size analysis
 - Memory usage
@@ -104,12 +114,14 @@ npm run test:performance
 - Lighthouse audits
 
 ### 6. Database Integration Tests
+
 ```bash
 # Chạy database tests
 npm run test:e2e -- src/test/e2e/database-integration.spec.ts
 ```
 
 **Test scenarios:**
+
 - CRUD operations
 - Real-time updates
 - Data consistency
@@ -120,6 +132,7 @@ npm run test:e2e -- src/test/e2e/database-integration.spec.ts
 ### GitHub Actions Workflows
 
 #### 1. Main CI Pipeline (`.github/workflows/ci.yml`)
+
 - Linting & code quality
 - Multi-node version testing
 - Build verification
@@ -129,17 +142,20 @@ npm run test:e2e -- src/test/e2e/database-integration.spec.ts
 - Security scanning
 
 #### 2. Automated Testing (`.github/workflows/test-automation.yml`)
+
 - Scheduled testing (daily 2 AM UTC)
 - Manual test triggers
 - Cross-browser matrix testing
 - Environment-specific testing
 
 #### 3. Dependabot Auto-merge (`.github/workflows/dependabot-auto-merge.yml`)
+
 - Automated dependency updates
 - Auto-merge for minor/patch updates
 - Manual review for major updates
 
 ### CI Features
+
 - **Multi-environment testing**: staging, production
 - **Parallel test execution**: Multiple browsers & test suites
 - **Artifact management**: Reports, screenshots, videos
@@ -149,12 +165,14 @@ npm run test:e2e -- src/test/e2e/database-integration.spec.ts
 ## 📊 Test Reporting
 
 ### Generated Reports
+
 - **JSON Report**: Machine-readable test results
 - **HTML Report**: Human-friendly visual report
 - **JUnit XML**: CI/CD system integration
 - **Coverage Report**: Code coverage metrics
 
 ### Notification Channels
+
 - **Slack Integration**: Real-time test status
 - **GitHub Status Checks**: PR integration
 - **Email Alerts**: Critical failure notifications
@@ -162,6 +180,7 @@ npm run test:e2e -- src/test/e2e/database-integration.spec.ts
 ## 🔧 Configuration Files
 
 ### Testing Configuration
+
 ```typescript
 // vitest.config.ts - Unit test configuration
 // playwright.config.ts - E2E test configuration
@@ -169,6 +188,7 @@ npm run test:e2e -- src/test/e2e/database-integration.spec.ts
 ```
 
 ### CI Configuration
+
 ```yaml
 # .github/workflows/ci.yml - Main CI pipeline
 # .github/workflows/test-automation.yml - Automated testing
@@ -178,6 +198,7 @@ npm run test:e2e -- src/test/e2e/database-integration.spec.ts
 ## 🚀 Getting Started
 
 ### 1. Setup Development Environment
+
 ```bash
 # Install dependencies
 npm install
@@ -187,6 +208,7 @@ npx playwright install
 ```
 
 ### 2. Run Local Tests
+
 ```bash
 # Unit tests
 npm run test
@@ -199,6 +221,7 @@ npm run test:all
 ```
 
 ### 3. Generate Reports
+
 ```bash
 # Generate test reports
 npm run test:report
@@ -210,17 +233,20 @@ npm run test:notify
 ## 📈 Test Metrics & KPIs
 
 ### Coverage Targets
+
 - **Unit Test Coverage**: > 80%
 - **Integration Coverage**: > 70%
 - **E2E Scenario Coverage**: > 90%
 
 ### Performance Targets
+
 - **First Contentful Paint**: < 1.8s
 - **Largest Contentful Paint**: < 2.5s
 - **Cumulative Layout Shift**: < 0.1
 - **Performance Score**: > 90
 
 ### Quality Gates
+
 - **Build Success Rate**: > 95%
 - **Test Pass Rate**: > 98%
 - **Visual Regression**: 0 unintended changes
@@ -228,6 +254,7 @@ npm run test:notify
 ## 🔍 Debugging Tests
 
 ### Local Debugging
+
 ```bash
 # Debug specific test
 npm run test -- --reporter=verbose tournament
@@ -240,6 +267,7 @@ npx playwright test --headed
 ```
 
 ### CI Debugging
+
 - **Artifacts**: Download test results, screenshots, videos
 - **Logs**: Check GitHub Actions logs
 - **Reports**: Review HTML test reports
@@ -247,6 +275,7 @@ npx playwright test --headed
 ## 📝 Best Practices
 
 ### Writing Tests
+
 1. **Follow AAA Pattern**: Arrange, Act, Assert
 2. **Isolation**: Each test should be independent
 3. **Descriptive Names**: Clear test descriptions
@@ -254,15 +283,17 @@ npx playwright test --headed
 5. **Mocking**: Mock external dependencies
 
 ### Test Data
+
 ```typescript
 // Use test data factories
 const mockTournament = createMockTournament({
   name: 'Test Tournament',
-  status: 'upcoming'
+  status: 'upcoming',
 });
 ```
 
 ### Page Objects (E2E)
+
 ```typescript
 // Use page object pattern
 class TournamentPage {
@@ -275,6 +306,7 @@ class TournamentPage {
 ## 🔐 Security Testing
 
 ### Automated Security Checks
+
 - **Dependency Scanning**: npm audit
 - **Vulnerability Detection**: Trivy scanner
 - **Code Analysis**: SARIF reports
@@ -283,11 +315,13 @@ class TournamentPage {
 ## 📱 Mobile & Accessibility
 
 ### Mobile Testing
+
 - **Responsive Design**: Multiple viewport testing
 - **Touch Interactions**: Mobile-specific testing
 - **Performance**: Mobile performance metrics
 
 ### Accessibility Testing
+
 - **ARIA Compliance**: Screen reader compatibility
 - **Keyboard Navigation**: Full keyboard accessibility
 - **Color Contrast**: WCAG compliance
@@ -296,6 +330,7 @@ class TournamentPage {
 ## 🏷️ Environment Variables
 
 ### Required for CI
+
 ```env
 SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_anon_key
@@ -306,12 +341,14 @@ GITHUB_TOKEN=your_github_token
 ## 🚨 Troubleshooting
 
 ### Common Issues
+
 1. **Flaky Tests**: Add wait conditions, increase timeouts
 2. **Browser Issues**: Update Playwright browsers
 3. **Network Timeouts**: Check network stability
 4. **Memory Issues**: Optimize test data size
 
 ### Debug Commands
+
 ```bash
 # Show debug info
 DEBUG=pw:api npm run test:e2e
@@ -326,23 +363,26 @@ npx playwright test --update-snapshots
 ## 📊 Phase 4: Advanced Testing Features & Monitoring ✅
 
 ### Test Data Factories
+
 - **Complete factory system** - Mock data generation with faker.js
 - **Scenario-specific factories** - Tournament with participants, clubs with members
 - **Performance data** - Large datasets for stress testing
 - **Edge case generators** - Boundary condition testing
 
 ### Advanced Monitoring
+
 - **Test metrics collection** - Duration, success rate, flaky test detection
 - **Performance monitoring** - Memory usage, execution time tracking
 - **Automated alerting** - Slack/webhook notifications for test failures
 - **Dashboard generation** - Visual test trends and insights
 
 ### Features Implemented
+
 ```typescript
 // Test factories with faker.js
 const tournament = createMockTournament({
   maxParticipants: 16,
-  entryFee: 100000
+  entryFee: 100000,
 });
 
 // Performance monitoring
@@ -351,18 +391,20 @@ const metrics = metricsCollector.getMetricsSummary();
 // Automated alerting
 const monitor = new TestMonitor({
   type: 'slack',
-  threshold: { failureRate: 10 }
+  threshold: { failureRate: 10 },
 });
 ```
 
 ## 📚 Phase 5: Documentation & Best Practices ✅
 
 ### Complete Documentation Suite
+
 - **📖 Best Practices Guide** - `/src/test/docs/testing-best-practices.md`
 - **🔧 Troubleshooting Guide** - `/src/test/docs/troubleshooting-guide.md`
 - **💡 Complete Examples** - `/src/test/examples/complete-test-examples.ts`
 
 ### Coverage Areas
+
 - **Unit Testing** - Component & service testing patterns
 - **Integration Testing** - Database & API integration
 - **E2E Testing** - Page Object Model, user journeys
@@ -371,6 +413,7 @@ const monitor = new TestMonitor({
 - **Error Handling** - Network failures, edge cases
 
 ### Advanced Patterns
+
 - **Test Independence** - No shared state between tests
 - **Mock Strategies** - Service, API, and database mocking
 - **CI/CD Integration** - Parallel execution, environment handling
@@ -379,13 +422,15 @@ const monitor = new TestMonitor({
 ## 🎯 Final Testing System Status
 
 **✅ COMPLETED PHASES:**
+
 - Phase 1: Unit Testing & Mocking Setup
-- Phase 2: Advanced Testing Infrastructure  
+- Phase 2: Advanced Testing Infrastructure
 - Phase 3: Test Automation & CI/CD Integration
 - Phase 4: Advanced Testing Features & Monitoring
 - Phase 5: Documentation & Best Practices
 
 **🚀 READY FOR PRODUCTION:**
+
 - Complete test coverage (Unit, Integration, E2E)
 - Automated CI/CD pipeline with multi-browser testing
 - Performance monitoring and alerting
@@ -405,12 +450,14 @@ const monitor = new TestMonitor({
 ## 🤝 Contributing
 
 ### Adding New Tests
+
 1. Create test files in appropriate directory
 2. Follow naming convention: `*.test.ts` or `*.spec.ts`
 3. Add test data factories if needed
 4. Update documentation
 
 ### Modifying CI
+
 1. Test workflow changes locally
 2. Update documentation
 3. Monitor CI run results

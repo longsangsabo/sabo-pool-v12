@@ -6,8 +6,11 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://exlqvlbawytbglioqfbc.supabase.co';
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2ODQzNzksImV4cCI6MjA1MDI2MDM3OX0.sLMN24d_aSVhqQ1fWHp8kq1YWixJQoRgz9-dO9_gT8k';
+const supabaseUrl =
+  process.env.VITE_SUPABASE_URL || 'https://exlqvlbawytbglioqfbc.supabase.co';
+const supabaseKey =
+  process.env.VITE_SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2ODQzNzksImV4cCI6MjA1MDI2MDM3OX0.sLMN24d_aSVhqQ1fWHp8kq1YWixJQoRgz9-dO9_gT8k';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -17,11 +20,8 @@ async function testDatabaseConnections() {
   // Test 1: Basic matches table query
   console.log('1. Testing basic matches table query...');
   try {
-    const { data, error } = await supabase
-      .from('matches')
-      .select('*')
-      .limit(5);
-    
+    const { data, error } = await supabase.from('matches').select('*').limit(5);
+
     if (error) {
       console.error('❌ Matches table error:', error);
     } else {
@@ -38,11 +38,15 @@ async function testDatabaseConnections() {
       .from('profiles')
       .select('user_id, full_name, display_name')
       .limit(5);
-    
+
     if (error) {
       console.error('❌ Profiles table error:', error);
     } else {
-      console.log('✅ Profiles table accessible:', data?.length || 0, 'records');
+      console.log(
+        '✅ Profiles table accessible:',
+        data?.length || 0,
+        'records'
+      );
     }
   } catch (err) {
     console.error('❌ Profiles table exception:', err);
@@ -55,11 +59,15 @@ async function testDatabaseConnections() {
       .from('club_profiles')
       .select('*')
       .limit(5);
-    
+
     if (error) {
       console.error('❌ Club profiles table error:', error);
     } else {
-      console.log('✅ Club profiles table accessible:', data?.length || 0, 'records');
+      console.log(
+        '✅ Club profiles table accessible:',
+        data?.length || 0,
+        'records'
+      );
     }
   } catch (err) {
     console.error('❌ Club profiles table exception:', err);
@@ -72,11 +80,15 @@ async function testDatabaseConnections() {
       .from('tournament_matches')
       .select('*')
       .limit(5);
-    
+
     if (error) {
       console.error('❌ Tournament matches table error:', error);
     } else {
-      console.log('✅ Tournament matches table accessible:', data?.length || 0, 'records');
+      console.log(
+        '✅ Tournament matches table accessible:',
+        data?.length || 0,
+        'records'
+      );
     }
   } catch (err) {
     console.error('❌ Tournament matches table exception:', err);

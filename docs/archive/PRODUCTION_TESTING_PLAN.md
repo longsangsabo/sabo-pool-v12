@@ -5,13 +5,14 @@
 ### Phase 1: Pre-Production Testing (7 days)
 
 #### A. Test Environment Setup
+
 ```sql
 -- Create test dataset with production-like size
 -- Estimated 100K users, 500K matches, 10K tournaments
 
 -- 1. Populate test data
-INSERT INTO profiles (user_id, full_name, elo, city, district) 
-SELECT 
+INSERT INTO profiles (user_id, full_name, elo, city, district)
+SELECT
   gen_random_uuid(),
   'Test User ' || generate_series,
   1000 + random() * 1000,
@@ -21,14 +22,14 @@ FROM generate_series(1, 100000);
 
 -- 2. Generate match results
 INSERT INTO match_results (player1_id, player2_id, winner_id, match_date, player1_elo_before, player2_elo_before)
-SELECT 
-  p1.user_id, 
+SELECT
+  p1.user_id,
   p2.user_id,
   (CASE WHEN random() > 0.5 THEN p1.user_id ELSE p2.user_id END),
   now() - (random() * interval '365 days'),
   p1.elo,
   p2.elo
-FROM 
+FROM
   (SELECT user_id, elo FROM profiles ORDER BY random() LIMIT 250000) p1,
   (SELECT user_id, elo FROM profiles ORDER BY random() LIMIT 250000) p2
 WHERE p1.user_id != p2.user_id
@@ -36,14 +37,15 @@ LIMIT 500000;
 ```
 
 #### B. Benchmark Queries (Before Indexes)
+
 ```sql
 -- Query 1: Leaderboard with pagination
-EXPLAIN (ANALYZE, BUFFERS) 
-SELECT pr.*, p.full_name, p.avatar_url 
-FROM player_rankings pr 
-JOIN profiles p ON pr.player_id = p.user_id 
-WHERE p.city = 'Hồ Chí Minh' 
-ORDER BY pr.elo_points DESC 
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT pr.*, p.full_name, p.avatar_url
+FROM player_rankings pr
+JOIN profiles p ON pr.player_id = p.user_id
+WHERE p.city = 'Hồ Chí Minh'
+ORDER BY pr.elo_points DESC
 LIMIT 20 OFFSET 100;
 
 -- Query 2: Match history for user
@@ -58,20 +60,21 @@ LIMIT 50;
 
 -- Query 3: Tournament registrations
 EXPLAIN (ANALYZE, BUFFERS)
-SELECT COUNT(*) 
+SELECT COUNT(*)
 FROM tournament_registrations tr
 JOIN tournaments t ON tr.tournament_id = t.id
 WHERE t.status = 'active' AND tr.registration_status = 'confirmed';
 ```
 
 #### C. Create Indexes Incrementally
+
 ```sql
 -- Day 1: Critical indexes
 CREATE INDEX CONCURRENTLY idx_player_rankings_elo_city ON player_rankings (elo_points DESC) WHERE city IS NOT NULL;
 CREATE INDEX CONCURRENTLY idx_match_results_player_date ON match_results (player1_id, match_date DESC);
 CREATE INDEX CONCURRENTLY idx_match_results_player2_date ON match_results (player2_id, match_date DESC);
 
--- Day 2: Tournament indexes  
+-- Day 2: Tournament indexes
 CREATE INDEX CONCURRENTLY idx_tournament_registrations_status ON tournament_registrations (registration_status, tournament_id);
 CREATE INDEX CONCURRENTLY idx_tournaments_status_date ON tournaments (status, tournament_start DESC);
 
@@ -83,6 +86,7 @@ CREATE INDEX CONCURRENTLY idx_profiles_verification ON profiles (verification_st
 ```
 
 #### D. Performance Benchmarks (After Each Index)
+
 ```sql
 -- Track performance improvements
 CREATE TABLE index_performance_log (
@@ -96,13 +100,14 @@ CREATE TABLE index_performance_log (
 );
 
 -- Example benchmark result
-INSERT INTO index_performance_log VALUES 
+INSERT INTO index_performance_log VALUES
 ('idx_player_rankings_elo_city', 'Leaderboard query with city filter', 2500, 45, 98.2);
 ```
 
 ### Phase 2: Production Deployment (3 days)
 
 #### A. Deployment Schedule
+
 ```bash
 # Day 1: Critical indexes (during low traffic - 2-4 AM)
 psql -c "CREATE INDEX CONCURRENTLY idx_player_rankings_elo_city ON player_rankings (elo_points DESC);"
@@ -115,29 +120,31 @@ psql -c "CREATE INDEX CONCURRENTLY idx_match_results_composite ON match_results 
 ```
 
 #### B. Monitoring Points
+
 ```sql
 -- Monitor index usage
-SELECT 
+SELECT
   indexname,
   idx_tup_read,
   idx_tup_fetch,
   idx_scan
-FROM pg_stat_user_indexes 
+FROM pg_stat_user_indexes
 WHERE schemaname = 'public'
 ORDER BY idx_scan DESC;
 
 -- Monitor query performance
-SELECT 
+SELECT
   query,
   mean_time,
   calls,
   total_time
-FROM pg_stat_statements 
+FROM pg_stat_statements
 WHERE query LIKE '%player_rankings%'
 ORDER BY mean_time DESC;
 ```
 
 #### C. Rollback Procedures
+
 ```sql
 -- If performance degrades, rollback specific indexes
 DROP INDEX CONCURRENTLY IF EXISTS idx_problematic_index;
@@ -153,6 +160,7 @@ SELECT * FROM pg_stat_activity WHERE state = 'active';
 ### Phase 1: Safety Measures Implementation
 
 #### A. Extended Dry-Run Mode (7 days)
+
 ```sql
 -- Create safe cleanup configuration
 INSERT INTO file_cleanup_config (bucket_name, enabled, auto_cleanup_enabled, retention_days) VALUES
@@ -174,11 +182,12 @@ CREATE TABLE file_cleanup_dry_run_log (
 ```
 
 #### B. Incremental Deployment Strategy
+
 ```typescript
 // src/utils/fileCleanupSafe.ts
 export const safeFileCleanup = async (bucketName: string) => {
   const config = await getCleanupConfig(bucketName);
-  
+
   if (!config.enabled) {
     console.log(`Cleanup disabled for bucket: ${bucketName}`);
     return;
@@ -202,6 +211,7 @@ export const safeFileCleanup = async (bucketName: string) => {
 ```
 
 #### C. Extensive Logging & Notifications
+
 ```sql
 -- Enhanced logging table
 CREATE TABLE file_cleanup_detailed_log (
@@ -221,7 +231,7 @@ CREATE OR REPLACE FUNCTION notify_cleanup_completion()
 RETURNS TRIGGER AS $$
 BEGIN
   -- Send notification when cleanup completes
-  PERFORM pg_notify('file_cleanup_complete', 
+  PERFORM pg_notify('file_cleanup_complete',
     json_build_object(
       'bucket', NEW.bucket_name,
       'files_deleted', NEW.files_deleted,
@@ -241,6 +251,7 @@ CREATE TRIGGER file_cleanup_notification
 ### Phase 2: Deployment Steps
 
 #### Day 1: Dry Run Analysis
+
 ```bash
 # Enable dry run mode for all buckets
 npm run file-cleanup:dry-run
@@ -250,6 +261,7 @@ psql -c "SELECT bucket_name, COUNT(*), SUM(file_size) FROM file_cleanup_dry_run_
 ```
 
 #### Day 2-3: Incremental Cleanup (1 bucket at a time)
+
 ```bash
 # Start with least critical bucket
 npm run file-cleanup:safe --bucket=temporary-uploads --max-files=10
@@ -262,6 +274,7 @@ npm run file-cleanup:safe --bucket=temp-tournament-data --max-files=50
 ```
 
 #### Day 4-7: Full Deployment
+
 ```bash
 # Enable auto cleanup for validated buckets
 psql -c "UPDATE file_cleanup_config SET auto_cleanup_enabled = true WHERE bucket_name IN ('temporary-uploads', 'temp-tournament-data');"
@@ -273,39 +286,41 @@ echo "0 2 * * 0 /usr/local/bin/npm run file-cleanup:weekly" >> /etc/crontab
 ### Phase 3: Post-Deployment Validation
 
 #### A. Success Criteria
+
 ```sql
 -- Storage space reclaimed
-SELECT 
+SELECT
   bucket_name,
   SUM(total_size) as space_reclaimed_bytes,
   COUNT(*) as cleanup_operations,
   AVG(execution_time_ms) as avg_execution_time
-FROM file_cleanup_logs 
+FROM file_cleanup_logs
 WHERE created_at >= NOW() - INTERVAL '7 days'
 GROUP BY bucket_name;
 
 -- Error rate monitoring
-SELECT 
+SELECT
   bucket_name,
   COUNT(*) FILTER (WHERE errors IS NOT NULL) as error_count,
   COUNT(*) as total_operations,
   ROUND(
-    COUNT(*) FILTER (WHERE errors IS NOT NULL) * 100.0 / COUNT(*), 
+    COUNT(*) FILTER (WHERE errors IS NOT NULL) * 100.0 / COUNT(*),
     2
   ) as error_percentage
-FROM file_cleanup_logs 
+FROM file_cleanup_logs
 WHERE created_at >= NOW() - INTERVAL '7 days'
 GROUP BY bucket_name;
 ```
 
 #### B. Emergency Stop Procedures
+
 ```sql
 -- Immediate disable all auto cleanup
 UPDATE file_cleanup_config SET auto_cleanup_enabled = false;
 
 -- Stop all running cleanup jobs
-SELECT pg_cancel_backend(pid) 
-FROM pg_stat_activity 
+SELECT pg_cancel_backend(pid)
+FROM pg_stat_activity
 WHERE query LIKE '%file_cleanup%';
 
 -- Restore from backup if needed
@@ -317,11 +332,13 @@ WHERE query LIKE '%file_cleanup%';
 ## 3. CONSOLE CLEANUP FINALIZATION
 
 ### Current Status Analysis
+
 - **Trước:** 866 console statements
 - **Sau cleanup:** 283 console statements còn lại
 - **Cần phân tích:** Justify 283 statements còn lại
 
 #### A. Categorize Remaining Console Statements
+
 ```bash
 # Analyze remaining console statements
 grep -r "console\." src/ | wc -l  # Count total
@@ -331,6 +348,7 @@ grep -r "console\.log" src/ | wc -l    # Count debug logs
 ```
 
 #### B. Production-Safe Logging Implementation
+
 ```typescript
 // src/utils/logger.ts
 export class ProductionLogger {
@@ -347,7 +365,7 @@ export class ProductionLogger {
   error(message: string, error?: Error, context?: any) {
     // Always log errors (keep console.error for production)
     console.error(`[ERROR] ${message}`, error, context);
-    
+
     // Send to external monitoring in production
     if (!this.isDevelopment) {
       this.sendToMonitoring('error', message, error, context);
@@ -358,7 +376,7 @@ export class ProductionLogger {
     if (this.isDevelopment) {
       console.warn(`[WARN] ${message}`, context);
     }
-    
+
     // Log warnings to monitoring service in production
     if (!this.isDevelopment) {
       this.sendToMonitoring('warn', message, null, context);
@@ -378,7 +396,12 @@ export class ProductionLogger {
     }
   }
 
-  private sendToMonitoring(level: string, message: string, error?: Error, context?: any) {
+  private sendToMonitoring(
+    level: string,
+    message: string,
+    error?: Error,
+    context?: any
+  ) {
     // Implementation for external monitoring service
     // Could integrate with Sentry, LogRocket, etc.
     try {
@@ -390,18 +413,20 @@ export class ProductionLogger {
         context,
         timestamp: new Date().toISOString(),
         url: window.location.href,
-        userAgent: navigator.userAgent
+        userAgent: navigator.userAgent,
       };
-      
+
       // Store in localStorage as fallback
-      const existingLogs = JSON.parse(localStorage.getItem('production_logs') || '[]');
+      const existingLogs = JSON.parse(
+        localStorage.getItem('production_logs') || '[]'
+      );
       existingLogs.push(logData);
-      
+
       // Keep only last 50 logs
       if (existingLogs.length > 50) {
         existingLogs.splice(0, existingLogs.length - 50);
       }
-      
+
       localStorage.setItem('production_logs', JSON.stringify(existingLogs));
     } catch (monitoringError) {
       // Fallback to console.error if monitoring fails
@@ -414,6 +439,7 @@ export const logger = ProductionLogger.getInstance();
 ```
 
 #### C. Replace Remaining Console Statements
+
 ```bash
 #!/bin/bash
 # scripts/replace-console-with-logger.sh
@@ -421,7 +447,7 @@ export const logger = ProductionLogger.getInstance();
 # Replace console.log with logger.debug
 find src/ -name "*.tsx" -o -name "*.ts" | xargs sed -i 's/console\.log(/logger.debug(/g'
 
-# Replace console.warn with logger.warn  
+# Replace console.warn with logger.warn
 find src/ -name "*.tsx" -o -name "*.ts" | xargs sed -i 's/console\.warn(/logger.warn(/g'
 
 # Replace console.info with logger.info
@@ -436,6 +462,7 @@ xargs sed -i '1i import { logger } from "@/utils/logger";'
 ```
 
 ### Final Validation
+
 ```bash
 # After replacement, count remaining console statements
 grep -r "console\." src/ --include="*.ts" --include="*.tsx" | \
@@ -455,24 +482,28 @@ wc -l
 ## SUMMARY METRICS
 
 ### Error Boundaries Implementation
+
 - ✅ **4 major sections** wrapped with error boundaries
-- ✅ **Comprehensive fallback UI** with retry mechanisms  
+- ✅ **Comprehensive fallback UI** with retry mechanisms
 - ✅ **Error telemetry** and monitoring dashboard
 - ✅ **Production-ready** error handling
 
 ### Database Indexes Testing
+
 - 📋 **24 indexes** ready for production testing
 - 📋 **7-day testing phase** with incremental deployment
 - 📋 **Performance benchmarks** and rollback procedures
 - 📋 **Monitoring setup** for production validation
 
 ### File Cleanup Deployment
+
 - 📋 **Safety-first approach** with 7-day dry run
 - 📋 **Incremental deployment** (1 bucket at a time)
 - 📋 **Extensive logging** and error handling
 - 📋 **Emergency stop procedures** ready
 
-### Console Cleanup Finalization  
+### Console Cleanup Finalization
+
 - 📋 **Production logger** implementation ready
 - 📋 **Automated replacement** scripts prepared
 - 📋 **Justified error logging** preservation

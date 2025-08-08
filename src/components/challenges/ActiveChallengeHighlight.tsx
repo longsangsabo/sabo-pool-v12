@@ -90,8 +90,8 @@ export const ActiveChallengeHighlight: React.FC<
           >
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md ${
-                hasActiveChallenges 
-                  ? 'bg-gradient-to-br from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-700' 
+                hasActiveChallenges
+                  ? 'bg-gradient-to-br from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-700'
                   : 'bg-gradient-to-br from-slate-500 to-slate-600 dark:from-slate-600 dark:to-slate-700'
               }`}
             >
@@ -105,8 +105,8 @@ export const ActiveChallengeHighlight: React.FC<
               </h3>
               <p
                 className={`text-sm font-normal ${
-                  hasActiveChallenges 
-                    ? 'text-green-700/80 dark:text-green-300/80' 
+                  hasActiveChallenges
+                    ? 'text-green-700/80 dark:text-green-300/80'
                     : 'text-slate-600/80 dark:text-slate-400/80'
                 }`}
               >
@@ -236,7 +236,7 @@ export const ActiveChallengeHighlight: React.FC<
           ) : (
             <div className='flex flex-col items-center justify-center py-8 text-center'>
               <div className='w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-3'>
-                                <Trophy className='w-6 h-6 text-muted-foreground' />
+                <Trophy className='w-6 h-6 text-muted-foreground' />
               </div>
               <p className='text-muted-foreground text-sm mb-2'>
                 Chưa có thách đấu đang diễn ra

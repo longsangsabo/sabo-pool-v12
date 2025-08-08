@@ -1,5 +1,15 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Upload, Check, X, Crop, Crown, Diamond, BarChart3, Swords } from 'lucide-react';
+import {
+  Camera,
+  Upload,
+  Check,
+  X,
+  Crop,
+  Crown,
+  Diamond,
+  BarChart3,
+  Swords,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { getRankDisplay } from '@/utils/rank-colors';
@@ -30,7 +40,7 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
   ranking = 156,
   matches = 24,
   className = '',
-  size = 'md'
+  size = 'md',
 }) => {
   const [showCropper, setShowCropper] = useState(false);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -43,7 +53,7 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
   const sizeConfig = {
     sm: { width: 'w-[200px]', height: 'h-[320px]' },
     md: { width: 'w-[280px]', height: 'h-[400px]' },
-    lg: { width: 'w-[320px]', height: 'h-[460px]' }
+    lg: { width: 'w-[320px]', height: 'h-[460px]' },
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +65,8 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+    if (file.size > 5 * 1024 * 1024) {
+      // 5MB limit
       toast.error('File quá lớn. Vui lòng chọn file nhỏ hơn 5MB');
       return;
     }
@@ -69,12 +80,14 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
 
   return (
     <div className={`dark-card-avatar-container ${className}`}>
-      <div className={`dark-card-avatar-frame ${sizeConfig[size].width} ${sizeConfig[size].height}`}>
+      <div
+        className={`dark-card-avatar-frame ${sizeConfig[size].width} ${sizeConfig[size].height}`}
+      >
         {/* Dark Card Border */}
-        <div className="dark-card-border">
+        <div className='dark-card-border'>
           {/* Main Image Area with Nickname Overlay */}
-          <div 
-            className="dark-image-area"
+          <div
+            className='dark-image-area'
             onClick={() => fileInputRef.current?.click()}
           >
             {currentAvatar ? (
@@ -85,8 +98,8 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
               />
             ) : (
               <div className='dark-avatar-placeholder'>
-                <div className="dark-placeholder-content">
-                  <Camera className="w-8 h-8 text-gray-400 mb-2" />
+                <div className='dark-placeholder-content'>
+                  <Camera className='w-8 h-8 text-gray-400 mb-2' />
                   <p className='text-sm text-gray-400 font-medium'>Đổi ảnh</p>
                 </div>
               </div>
@@ -94,23 +107,25 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
 
             {/* Nickname Overlay */}
             {currentAvatar && (
-              <div className="dark-nickname-overlay">
-                <div 
-                  className="dark-nickname-text-overlay"
+              <div className='dark-nickname-overlay'>
+                <div
+                  className='dark-nickname-text-overlay'
                   style={{
-                    fontFamily: "'Khand', 'Oswald', 'Bebas Neue', 'Antonio', 'Fjalla One', 'Roboto Condensed', condensed, sans-serif",
+                    fontFamily:
+                      "'Khand', 'Oswald', 'Bebas Neue', 'Antonio', 'Fjalla One', 'Roboto Condensed', condensed, sans-serif",
                     fontWeight: 900, // font-black equivalent
                     fontSize: '1.125rem', // 1.5x từ 0.75rem
                     fontStretch: 'condensed', // Nén font
                     lineHeight: 0.9, // Cao hơn, compact hơn
-                    background: 'linear-gradient(to right, #60a5fa, #c084fc, #3b82f6, #ffffff, #fbbf24)', // Bright colors cho dark mode
+                    background:
+                      'linear-gradient(to right, #60a5fa, #c084fc, #3b82f6, #ffffff, #fbbf24)', // Bright colors cho dark mode
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
                     letterSpacing: '0.05em', // Spacing nhỏ cho condensed look
                     textTransform: 'uppercase',
                     filter: 'brightness(1.1)', // Giảm xuống +10%
-                    fontVariant: 'small-caps' // Thêm small-caps cho cứng cáp
+                    fontVariant: 'small-caps', // Thêm small-caps cho cứng cáp
                   }}
                 >
                   {nickname}
@@ -118,29 +133,31 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
               </div>
             )}
 
-                        {/* Upload Overlay */}
+            {/* Upload Overlay */}
             {uploading && (
-              <div className="dark-upload-overlay">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                <span className='text-sm text-white font-medium'>Đang tải...</span>
+              <div className='dark-upload-overlay'>
+                <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-white'></div>
+                <span className='text-sm text-white font-medium'>
+                  Đang tải...
+                </span>
               </div>
             )}
           </div>
 
           {/* Camera Button - Outside card corner */}
           {!uploading && (
-            <div 
-              className="dark-camera-button"
+            <div
+              className='dark-camera-button'
               onClick={() => fileInputRef.current?.click()}
             >
-              <Camera className="camera-icon" />
+              <Camera className='camera-icon' />
             </div>
           )}
 
           {/* Rank Section */}
-          <div className="dark-rank-section">
-            <div 
-              className="dark-rank-text"
+          <div className='dark-rank-section'>
+            <div
+              className='dark-rank-text'
               style={{
                 background: getRankDisplay(rank).gradient,
                 WebkitBackgroundClip: 'text',
@@ -154,20 +171,27 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
                 borderRadius: '8px',
                 padding: '8px 16px',
                 position: 'relative',
-                overflow: 'hidden'
+                overflow: 'hidden',
               }}
             >
               {(() => {
                 const RankIcon = getRankDisplay(rank).icon;
                 return (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                    <RankIcon 
-                      style={{ 
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <RankIcon
+                      style={{
                         color: getRankDisplay(rank).color,
-                        width: '20px', 
+                        width: '20px',
                         height: '20px',
-                        filter: `drop-shadow(${getRankDisplay(rank).textShadow})`
-                      }} 
+                        filter: `drop-shadow(${getRankDisplay(rank).textShadow})`,
+                      }}
                     />
                     RANK : {rank.toUpperCase()}
                   </div>
@@ -177,70 +201,70 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
           </div>
 
           {/* Stats Row */}
-          <div className="dark-stats-row">
-            <div className="dark-stat-item">
-              <Crown 
-                className="dark-stat-icon" 
-                style={{ 
-                  color: '#f1f1f1', 
+          <div className='dark-stats-row'>
+            <div className='dark-stat-item'>
+              <Crown
+                className='dark-stat-icon'
+                style={{
+                  color: '#f1f1f1',
                   stroke: '#f1f1f1',
                   fill: '#f1f1f1',
-                  width: '16px', 
-                  height: '16px', 
-                  margin: '0 auto 4px' 
+                  width: '16px',
+                  height: '16px',
+                  margin: '0 auto 4px',
                 }}
               />
-              <div className="dark-stat-label">ELO</div>
-              <div className="dark-stat-value">{elo}</div>
+              <div className='dark-stat-label'>ELO</div>
+              <div className='dark-stat-value'>{elo}</div>
             </div>
-            <div className="dark-stat-item">
-              <Diamond 
-                className="dark-stat-icon" 
-                style={{ 
-                  color: '#f1f1f1', 
+            <div className='dark-stat-item'>
+              <Diamond
+                className='dark-stat-icon'
+                style={{
+                  color: '#f1f1f1',
                   stroke: '#f1f1f1',
                   fill: '#f1f1f1',
-                  width: '16px', 
-                  height: '16px', 
-                  margin: '0 auto 4px' 
+                  width: '16px',
+                  height: '16px',
+                  margin: '0 auto 4px',
                 }}
               />
-              <div className="dark-stat-label">SPA</div>
-              <div className="dark-stat-value">{spa}</div>
+              <div className='dark-stat-label'>SPA</div>
+              <div className='dark-stat-value'>{spa}</div>
             </div>
-            <div className="dark-stat-item">
-              <BarChart3 
-                className="dark-stat-icon" 
-                style={{ 
-                  color: '#f1f1f1', 
+            <div className='dark-stat-item'>
+              <BarChart3
+                className='dark-stat-icon'
+                style={{
+                  color: '#f1f1f1',
                   stroke: '#f1f1f1',
                   fill: '#f1f1f1',
-                  width: '16px', 
-                  height: '16px', 
-                  margin: '0 auto 4px' 
+                  width: '16px',
+                  height: '16px',
+                  margin: '0 auto 4px',
                 }}
               />
-              <div className="dark-stat-label">XH</div>
-              <div className="dark-stat-value">#{ranking}</div>
+              <div className='dark-stat-label'>XH</div>
+              <div className='dark-stat-value'>#{ranking}</div>
             </div>
-            <div className="dark-stat-item">
-              <Swords 
-                className="dark-stat-icon" 
-                style={{ 
-                  color: '#f1f1f1', 
+            <div className='dark-stat-item'>
+              <Swords
+                className='dark-stat-icon'
+                style={{
+                  color: '#f1f1f1',
                   stroke: '#f1f1f1',
                   fill: '#f1f1f1',
-                  width: '16px', 
-                  height: '16px', 
-                  margin: '0 auto 4px' 
+                  width: '16px',
+                  height: '16px',
+                  margin: '0 auto 4px',
                 }}
               />
-              <div className="dark-stat-label">TRẬN</div>
-              <div className="dark-stat-value">{matches}</div>
+              <div className='dark-stat-label'>TRẬN</div>
+              <div className='dark-stat-value'>{matches}</div>
             </div>
           </div>
         </div>
-        
+
         <input
           ref={fileInputRef}
           type='file'

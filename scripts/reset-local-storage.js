@@ -1,1 +1,2 @@
-localStorage.clear(); location.reload();
+localStorage.clear();
+location.reload();

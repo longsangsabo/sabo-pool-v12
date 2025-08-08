@@ -95,20 +95,25 @@ const AdminClubRegistrations = () => {
   }, [statusFilter]);
 
   const fetchRegistrations = async () => {
-    console.log('🔍 Admin accessing club registrations, filtering by:', statusFilter);
+    console.log(
+      '🔍 Admin accessing club registrations, filtering by:',
+      statusFilter
+    );
     setLoading(true);
 
     try {
       let query = supabase
         .from('club_registrations')
-        .select(`
+        .select(
+          `
           *,
           profiles!club_registrations_user_id_fkey (
             display_name,
             full_name,
             phone
           )
-        `)
+        `
+        )
         .order('created_at', { ascending: false });
 
       // Apply status filter
@@ -148,10 +153,10 @@ const AdminClubRegistrations = () => {
       // First, update the registration status to approved
       const { error: updateError } = await supabase
         .from('club_registrations')
-        .update({ 
+        .update({
           status: 'approved',
           approval_date: new Date().toISOString(),
-          reviewed_by: user?.id
+          reviewed_by: user?.id,
         })
         .eq('id', registration.id);
 
@@ -165,7 +170,7 @@ const AdminClubRegistrations = () => {
         'create_club_profile_from_registration',
         {
           p_registration_id: registration.id,
-          p_admin_id: user?.id
+          p_admin_id: user?.id,
         }
       );
 
@@ -230,7 +235,7 @@ const AdminClubRegistrations = () => {
           status: 'rejected',
           rejection_reason: rejectionReason,
           review_date: new Date().toISOString(),
-          reviewed_by: user?.id
+          reviewed_by: user?.id,
         })
         .eq('id', registration.id);
 
@@ -276,15 +281,17 @@ const AdminClubRegistrations = () => {
   const syncApprovedRegistrations = async () => {
     setSyncingData(true);
     try {
-      const { data: syncResult, error } = await supabase.rpc('sync_approved_club_registrations');
-      
+      const { data: syncResult, error } = await supabase.rpc(
+        'sync_approved_club_registrations'
+      );
+
       if (error) {
         throw new Error(error.message);
       }
 
       const synced = (syncResult as any)?.synced_count || 0;
       toast.success(`Đã đồng bộ ${synced} câu lạc bộ đã duyệt`);
-      
+
       if (synced > 0) {
         await fetchRegistrations();
       }
@@ -307,9 +314,7 @@ const AdminClubRegistrations = () => {
           <Badge className='bg-yellow-100 text-yellow-800'>Chờ duyệt</Badge>
         );
       case 'draft':
-        return (
-          <Badge className='bg-gray-100 text-gray-800'>Bản nháp</Badge>
-        );
+        return <Badge className='bg-gray-100 text-gray-800'>Bản nháp</Badge>;
       default:
         return (
           <Badge className='bg-gray-100 text-gray-800'>Không xác định</Badge>
@@ -363,7 +368,9 @@ const AdminClubRegistrations = () => {
             disabled={syncingData}
             className='flex items-center gap-2'
           >
-            <RotateCcw className={`w-4 h-4 ${syncingData ? 'animate-spin' : ''}`} />
+            <RotateCcw
+              className={`w-4 h-4 ${syncingData ? 'animate-spin' : ''}`}
+            />
             {syncingData ? 'Đang đồng bộ...' : 'Đồng bộ dữ liệu'}
           </Button>
           <Button
@@ -429,11 +436,15 @@ const AdminClubRegistrations = () => {
                       <div className='space-y-2'>
                         <div className='flex items-center gap-2 text-sm'>
                           <MapPin className='w-4 h-4 text-muted-foreground' />
-                          <span>{registration.address || 'Chưa có địa chỉ'}</span>
+                          <span>
+                            {registration.address || 'Chưa có địa chỉ'}
+                          </span>
                         </div>
                         <div className='flex items-center gap-2 text-sm'>
                           <Phone className='w-4 h-4 text-muted-foreground' />
-                          <span>{registration.phone || 'Chưa có số điện thoại'}</span>
+                          <span>
+                            {registration.phone || 'Chưa có số điện thoại'}
+                          </span>
                         </div>
                         <div className='flex items-center gap-2 text-sm'>
                           <Users className='w-4 h-4 text-muted-foreground' />
@@ -445,7 +456,9 @@ const AdminClubRegistrations = () => {
                         <div className='flex items-center gap-2 text-sm'>
                           <Calendar className='w-4 h-4 text-muted-foreground' />
                           <span>
-                            {new Date(registration.created_at).toLocaleDateString('vi-VN')}
+                            {new Date(
+                              registration.created_at
+                            ).toLocaleDateString('vi-VN')}
                           </span>
                         </div>
                         <div className='text-sm'>
@@ -467,7 +480,9 @@ const AdminClubRegistrations = () => {
                           <Button
                             variant='outline'
                             size='sm'
-                            onClick={() => setSelectedRegistration(registration)}
+                            onClick={() =>
+                              setSelectedRegistration(registration)
+                            }
                           >
                             <Eye className='w-4 h-4 mr-2' />
                             Xem chi tiết
@@ -486,19 +501,25 @@ const AdminClubRegistrations = () => {
                             <div className='space-y-6'>
                               {/* Basic Info */}
                               <div>
-                                <h4 className='font-semibold mb-3'>Thông tin cơ bản</h4>
+                                <h4 className='font-semibold mb-3'>
+                                  Thông tin cơ bản
+                                </h4>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                                   <div>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Tên câu lạc bộ
                                     </label>
-                                    <p className='text-sm'>{selectedRegistration.club_name}</p>
+                                    <p className='text-sm'>
+                                      {selectedRegistration.club_name}
+                                    </p>
                                   </div>
                                   <div>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Số điện thoại
                                     </label>
-                                    <p className='text-sm'>{selectedRegistration.phone}</p>
+                                    <p className='text-sm'>
+                                      {selectedRegistration.phone}
+                                    </p>
                                   </div>
                                   <div>
                                     <label className='text-sm font-medium text-muted-foreground'>
@@ -512,20 +533,26 @@ const AdminClubRegistrations = () => {
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Số bàn
                                     </label>
-                                    <p className='text-sm'>{selectedRegistration.table_count}</p>
+                                    <p className='text-sm'>
+                                      {selectedRegistration.table_count}
+                                    </p>
                                   </div>
                                   <div className='md:col-span-2'>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Địa chỉ
                                     </label>
-                                    <p className='text-sm'>{selectedRegistration.address}</p>
+                                    <p className='text-sm'>
+                                      {selectedRegistration.address}
+                                    </p>
                                   </div>
                                   {selectedRegistration.description && (
                                     <div className='md:col-span-2'>
                                       <label className='text-sm font-medium text-muted-foreground'>
                                         Mô tả
                                       </label>
-                                      <p className='text-sm'>{selectedRegistration.description}</p>
+                                      <p className='text-sm'>
+                                        {selectedRegistration.description}
+                                      </p>
                                     </div>
                                   )}
                                 </div>
@@ -536,20 +563,32 @@ const AdminClubRegistrations = () => {
                                 <div className='space-y-4 pt-4 border-t'>
                                   <div className='flex gap-4'>
                                     <Button
-                                      onClick={() => approveRegistration(selectedRegistration)}
+                                      onClick={() =>
+                                        approveRegistration(
+                                          selectedRegistration
+                                        )
+                                      }
                                       disabled={processing}
                                       className='bg-green-600 hover:bg-green-700'
                                     >
                                       <Check className='w-4 h-4 mr-2' />
-                                      {processing ? 'Đang duyệt...' : 'Duyệt đăng ký'}
+                                      {processing
+                                        ? 'Đang duyệt...'
+                                        : 'Duyệt đăng ký'}
                                     </Button>
                                     <Button
                                       variant='destructive'
-                                      onClick={() => rejectRegistration(selectedRegistration)}
-                                      disabled={processing || !rejectionReason.trim()}
+                                      onClick={() =>
+                                        rejectRegistration(selectedRegistration)
+                                      }
+                                      disabled={
+                                        processing || !rejectionReason.trim()
+                                      }
                                     >
                                       <X className='w-4 h-4 mr-2' />
-                                      {processing ? 'Đang từ chối...' : 'Từ chối'}
+                                      {processing
+                                        ? 'Đang từ chối...'
+                                        : 'Từ chối'}
                                     </Button>
                                   </div>
                                   <div>
@@ -558,7 +597,9 @@ const AdminClubRegistrations = () => {
                                     </label>
                                     <Textarea
                                       value={rejectionReason}
-                                      onChange={e => setRejectionReason(e.target.value)}
+                                      onChange={e =>
+                                        setRejectionReason(e.target.value)
+                                      }
                                       placeholder='Nhập lý do từ chối...'
                                       className='min-h-[80px]'
                                     />
@@ -608,7 +649,8 @@ const AdminClubRegistrations = () => {
                               </DialogHeader>
                               <div className='space-y-4'>
                                 <p>
-                                  Bạn có chắc chắn muốn từ chối đăng ký câu lạc bộ "{registration.club_name}"?
+                                  Bạn có chắc chắn muốn từ chối đăng ký câu lạc
+                                  bộ "{registration.club_name}"?
                                 </p>
                                 <div>
                                   <label className='block text-sm font-medium text-muted-foreground mb-2'>
@@ -616,7 +658,9 @@ const AdminClubRegistrations = () => {
                                   </label>
                                   <Textarea
                                     value={rejectionReason}
-                                    onChange={e => setRejectionReason(e.target.value)}
+                                    onChange={e =>
+                                      setRejectionReason(e.target.value)
+                                    }
                                     placeholder='Nhập lý do từ chối...'
                                     className='min-h-[80px]'
                                   />
@@ -624,8 +668,12 @@ const AdminClubRegistrations = () => {
                                 <div className='flex gap-2 justify-end'>
                                   <Button
                                     variant='destructive'
-                                    onClick={() => rejectRegistration(registration)}
-                                    disabled={processing || !rejectionReason.trim()}
+                                    onClick={() =>
+                                      rejectRegistration(registration)
+                                    }
+                                    disabled={
+                                      processing || !rejectionReason.trim()
+                                    }
                                   >
                                     {processing ? 'Đang từ chối...' : 'Từ chối'}
                                   </Button>

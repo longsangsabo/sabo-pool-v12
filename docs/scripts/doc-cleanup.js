@@ -7,7 +7,12 @@
 
 const fs = require('fs').promises;
 const path = require('path');
-const { analyzeFiles, classifyFiles, performCleanup, initializeConfig } = require('./file-analyzer');
+const {
+  analyzeFiles,
+  classifyFiles,
+  performCleanup,
+  initializeConfig,
+} = require('./file-analyzer');
 const { scheduleCleanup, setupFileWatcher } = require('./scheduler');
 const { Logger } = require('./utils/logger');
 const { BackupManager } = require('./utils/backup');
@@ -40,7 +45,7 @@ class DocCleanupSystem {
       filesArchived: 0,
       filesQuarantined: 0,
       filesDeleted: 0,
-      errors: []
+      errors: [],
     };
 
     try {
@@ -65,7 +70,7 @@ class DocCleanupSystem {
       // Step 4: Perform cleanup actions
       await this.logger.info('🧹 Performing cleanup...');
       const cleanupResult = await performCleanup(classified, this.config);
-      
+
       summary.filesArchived = cleanupResult.archived.length;
       summary.filesQuarantined = cleanupResult.quarantined.length;
       summary.filesDeleted = cleanupResult.deleted.length;
@@ -73,16 +78,15 @@ class DocCleanupSystem {
       // Step 5: Generate and send report
       const duration = Date.now() - startTime;
       summary.duration = duration;
-      
+
       await this.generateReport(summary);
-      
+
       if (this.config.email.enabled) {
         await this.emailReporter.sendWeeklySummary(summary);
       }
 
       await this.logger.info(`✅ Cleanup completed in ${duration}ms`);
       return summary;
-
     } catch (error) {
       summary.errors.push(error.message);
       await this.logger.error('❌ Cleanup failed:', error);
@@ -95,16 +99,16 @@ class DocCleanupSystem {
     const report = {
       timestamp: new Date().toISOString(),
       summary,
-      details: summary
+      details: summary,
     };
-    
+
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
     await this.logger.info(`📋 Report saved to ${reportPath}`);
   }
 
   async startDaemon() {
     await this.logger.info('👹 Starting cleanup daemon...');
-    
+
     // Schedule daily cleanup at 2AM
     scheduleCleanup(async () => {
       await this.runCleanup({ automated: true });
@@ -123,13 +127,13 @@ class DocCleanupSystem {
 // Main execution function
 async function main(args = []) {
   const system = new DocCleanupSystem();
-  
+
   if (!(await system.initialize())) {
     process.exit(1);
   }
 
   const command = args[0] || 'run';
-  
+
   switch (command) {
     case 'run':
       await system.runCleanup();
@@ -141,7 +145,7 @@ async function main(args = []) {
         console.log('\n👋 Cleanup daemon shutting down...');
         process.exit(0);
       });
-      
+
       // Keep process alive indefinitely
       await new Promise(() => {}); // Never resolves
       break;

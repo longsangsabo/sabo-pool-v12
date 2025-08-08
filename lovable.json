@@ -15,13 +15,11 @@
     "NODE_ENV": "production",
     "PORT": "3000"
   },
-  "domains": [
-    "sabo-pool-arena-hub.lovable.dev"
-  ],
+  "domains": ["sabo-pool-arena-hub.lovable.dev"],
   "features": {
     "autoDeploy": true,
     "previewDeployments": true,
     "customDomains": true,
     "ssl": true
   }
-} 
+}

@@ -10,7 +10,9 @@ export function useMobileProfile() {
   const { user } = useAuth();
   const { updateAvatar } = useAvatar();
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [editingProfile, setEditingProfile] = useState<ProfileData | null>(null);
+  const [editingProfile, setEditingProfile] = useState<ProfileData | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -35,13 +37,15 @@ export function useMobileProfile() {
         display_name: data?.display_name || data?.full_name || '',
         phone: data?.phone || user.phone || '',
         bio: data?.bio || '',
-        skill_level: (data?.skill_level || 'beginner') as ProfileData['skill_level'],
+        skill_level: (data?.skill_level ||
+          'beginner') as ProfileData['skill_level'],
         city: data?.city || '',
         district: data?.district || '',
         avatar_url: data?.avatar_url || '',
         member_since: data?.member_since || data?.created_at || '',
         role: (data?.role || 'player') as ProfileData['role'],
-        active_role: (data?.active_role || 'player') as ProfileData['active_role'],
+        active_role: (data?.active_role ||
+          'player') as ProfileData['active_role'],
         verified_rank: data?.verified_rank || null,
         completion_percentage: data?.completion_percentage || 0,
       };
@@ -54,9 +58,14 @@ export function useMobileProfile() {
     }
   }, [user]);
 
-  useEffect(() => { fetchProfile(); }, [fetchProfile]);
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
-  const handleEditField = <K extends keyof ProfileData>(field: K, value: ProfileData[K]) => {
+  const handleEditField = <K extends keyof ProfileData>(
+    field: K,
+    value: ProfileData[K]
+  ) => {
     setEditingProfile(prev => (prev ? { ...prev, [field]: value } : prev));
   };
 
@@ -93,9 +102,7 @@ export function useMobileProfile() {
           .eq('user_id', user.id);
         mutationError = error || undefined;
       } else {
-        const { error } = await supabase
-          .from('profiles')
-          .insert(payload);
+        const { error } = await supabase.from('profiles').insert(payload);
         mutationError = error || undefined;
       }
 
@@ -139,9 +146,14 @@ export function useMobileProfile() {
         .from('avatars')
         .upload(fileName, file, { upsert: true });
       if (uploadError) throw uploadError;
-      const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
       const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
-      await supabase.from('profiles').update({ avatar_url: avatarUrl }).eq('user_id', user.id);
+      await supabase
+        .from('profiles')
+        .update({ avatar_url: avatarUrl })
+        .eq('user_id', user.id);
       updateAvatar(avatarUrl);
       setProfile(p => (p ? { ...p, avatar_url: avatarUrl } : p));
       setEditingProfile(p => (p ? { ...p, avatar_url: avatarUrl } : p));

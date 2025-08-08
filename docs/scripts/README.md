@@ -5,6 +5,7 @@ Hệ thống tự động phân loại, dọn dẹp và quản lý tài liệu t
 ## ✨ TÍNH NĂNG CHÍNH
 
 ### 🔍 Content Analysis Engine
+
 - Quét tự động tất cả file `.md`, `.txt`, `.rst`, `.doc` trong project
 - Phát hiện duplicate files với độ chính xác >85% (sử dụng cosine similarity)
 - Phân tích patterns trong tên file (v1, v2, final, copy, backup)
@@ -12,14 +13,16 @@ Hệ thống tự động phân loại, dọn dẹp và quản lý tài liệu t
 - Extract key topics và categorize theo nội dung
 
 ### 🏷️ Automated Classification
+
 - **Archive**: Files >90 ngày không update
-- **Duplicate**: Nội dung giống nhau, tên khác nhau  
+- **Duplicate**: Nội dung giống nhau, tên khác nhau
 - **Outdated**: References đến versions/features đã deprecated
 - **Active**: Files được modified gần đây, có references trong code
 - **Orphaned**: Không có links hoặc references đến file khác
-- **Temp Files**: Files tạm (.tmp, .backup, untitled-*)
+- **Temp Files**: Files tạm (.tmp, .backup, untitled-\*)
 
 ### 🧹 Smart Cleanup Actions
+
 - Move files cũ → `docs/archive/YYYY-MM/`
 - Merge duplicate content → single authoritative version
 - Delete obvious temp files
@@ -27,6 +30,7 @@ Hệ thống tự động phân loại, dọn dẹp và quản lý tài liệu t
 - Generate comprehensive cleanup reports
 
 ### ⏰ Background Automation
+
 - Chạy hàng ngày lúc 2AM (cron job)
 - Monitor file changes với file system watcher
 - Silent operation - không làm gián đoạn user
@@ -34,6 +38,7 @@ Hệ thống tự động phân loại, dọn dẹp và quản lý tài liệu t
 - Email weekly summary reports
 
 ### 🛡️ Safety Mechanisms
+
 - Backup tất cả files trước khi delete
 - Quarantine files nghi ngờ trong 7 ngày trước khi xóa vĩnh viễn
 - Whitelist protection cho critical docs
@@ -67,12 +72,14 @@ backups/                # File backups with retention
 ## 🚀 CÁCH SỬ DỤNG
 
 ### Installation
+
 ```bash
 cd /workspaces/sabo-pool-v11/docs/scripts
 npm install
 ```
 
 ### Basic Usage
+
 ```bash
 # Chạy cleanup một lần
 npm start
@@ -96,11 +103,11 @@ Edit `config.json` để customize:
 
 ```json
 {
-  "duplicateThreshold": 0.85,     // Threshold for duplicate detection
-  "archiveAfterDays": 90,         // Archive files older than X days
-  "quarantineDays": 7,            // Quarantine period before deletion
+  "duplicateThreshold": 0.85, // Threshold for duplicate detection
+  "archiveAfterDays": 90, // Archive files older than X days
+  "quarantineDays": 7, // Quarantine period before deletion
   "email": {
-    "enabled": true,              // Enable email reports
+    "enabled": true, // Enable email reports
     "recipients": ["admin@sabopool.com"]
   }
 }
@@ -109,16 +116,19 @@ Edit `config.json` để customize:
 ## 📊 MONITORING & REPORTS
 
 ### Log Files
+
 - `logs/cleanup.log` - Main system log với rotation
 - `logs/cleanup-summary.json` - Detailed cleanup reports
 - `backups/` - Automated backups với compression
 
 ### Email Reports
+
 - **Daily**: Cleanup completion notifications
 - **Weekly**: Comprehensive summary reports
 - **Alerts**: Error notifications và system issues
 
 ### Metrics Dashboard
+
 ```bash
 # View recent logs
 tail -f logs/cleanup.log
@@ -133,38 +143,32 @@ ls -la docs/quarantine/
 ## 🔧 ADVANCED FEATURES
 
 ### Custom File Patterns
+
 Thêm patterns vào `config.json`:
 
 ```json
 {
   "tempFilePatterns": [
     "\\.tmp$",
-    "\\.backup$", 
+    "\\.backup$",
     "untitled-.*$",
     "copy of ",
     "~$"
   ],
-  "versionPatterns": [
-    "_v\\d+",
-    "_final", 
-    "_old"
-  ]
+  "versionPatterns": ["_v\\d+", "_final", "_old"]
 }
 ```
 
 ### Whitelist Protection
+
 ```json
 {
-  "whitelist": [
-    "README.md",
-    "LICENSE", 
-    "SETUP_GUIDE.md",
-    "TROUBLESHOOTING.md"
-  ]
+  "whitelist": ["README.md", "LICENSE", "SETUP_GUIDE.md", "TROUBLESHOOTING.md"]
 }
 ```
 
 ### Backup Management
+
 ```javascript
 const { BackupManager } = require('./utils/backup');
 const backup = new BackupManager();
@@ -192,16 +196,19 @@ const backups = await backup.listBackups();
 ### Common Issues
 
 **Permission Errors:**
+
 ```bash
 sudo chown -R $USER:$USER /workspaces/sabo-pool-v11/docs
 ```
 
 **Missing Dependencies:**
+
 ```bash
 npm install --force
 ```
 
 **Daemon Not Starting:**
+
 ```bash
 # Check if port is available
 lsof -i :3000
@@ -211,11 +218,13 @@ tail -f logs/cleanup.log
 ```
 
 **Email Not Working:**
+
 - Check SMTP settings trong `config.json`
 - Verify Gmail app passwords nếu dùng Gmail
 - Test email connection: `node test/email-test.js`
 
 ### Emergency Recovery
+
 ```bash
 # Stop all processes
 pkill -f doc-cleanup

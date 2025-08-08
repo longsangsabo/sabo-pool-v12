@@ -68,7 +68,10 @@ const EnhancedLoginPage = () => {
 
           navigate('/dashboard', { replace: true });
         } catch (e) {
-          console.warn('Post-login redirect logic failed, fallback to dashboard:', e);
+          console.warn(
+            'Post-login redirect logic failed, fallback to dashboard:',
+            e
+          );
           navigate('/dashboard', { replace: true });
         }
       }
@@ -105,7 +108,8 @@ const EnhancedLoginPage = () => {
           try {
             // Use any to avoid deep generic instantiation issues
             const sb: any = supabase;
-            const ownerResult = await sb.from('club_members')
+            const ownerResult = await sb
+              .from('club_members')
               .select('club_id')
               .eq('user_id', uid)
               .eq('role', 'owner')
@@ -121,7 +125,9 @@ const EnhancedLoginPage = () => {
                 .eq('user_id', uid)
                 .maybeSingle();
               const clubProfile = clubResult?.data as any | null;
-              navigate(clubProfile ? '/club-management' : '/dashboard', { replace: true });
+              navigate(clubProfile ? '/club-management' : '/dashboard', {
+                replace: true,
+              });
             }
           } catch {
             navigate('/dashboard', { replace: true });
@@ -182,7 +188,9 @@ const EnhancedLoginPage = () => {
                 .eq('user_id', uid)
                 .maybeSingle();
               const clubProfile = clubResult?.data as any | null;
-              navigate(clubProfile ? '/club-management' : '/dashboard', { replace: true });
+              navigate(clubProfile ? '/club-management' : '/dashboard', {
+                replace: true,
+              });
             }
           } catch {
             navigate('/dashboard', { replace: true });

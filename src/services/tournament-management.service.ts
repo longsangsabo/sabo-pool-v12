@@ -41,10 +41,7 @@ export class TournamentManagementService {
     clubId: string,
     filter: TournamentFilter
   ): Promise<Tournament[]> {
-    let query = supabase
-      .from('tournaments')
-      .select('*')
-      .eq('club_id', clubId);
+    let query = supabase.from('tournaments').select('*').eq('club_id', clubId);
 
     // Apply filters
     switch (filter) {
@@ -63,7 +60,9 @@ export class TournamentManagementService {
         break;
     }
 
-    const { data, error } = await query.order('created_at', { ascending: false });
+    const { data, error } = await query.order('created_at', {
+      ascending: false,
+    });
 
     if (error) {
       console.error('Error fetching filtered tournaments:', error);
@@ -76,10 +75,13 @@ export class TournamentManagementService {
   /**
    * Fetch tournament participants/registrations
    */
-  static async fetchTournamentParticipants(tournamentId: string): Promise<Player[]> {
+  static async fetchTournamentParticipants(
+    tournamentId: string
+  ): Promise<Player[]> {
     const { data: registrations, error } = await supabase
       .from('tournament_registrations')
-      .select(`
+      .select(
+        `
         user_id,
         registration_status,
         payment_status,
@@ -89,7 +91,8 @@ export class TournamentManagementService {
           avatar_url,
           elo
         )
-      `)
+      `
+      )
       .eq('tournament_id', tournamentId)
       .eq('registration_status', 'confirmed');
 
@@ -99,13 +102,15 @@ export class TournamentManagementService {
     }
 
     // Transform registrations to Player format
-    return (registrations as PlayerRegistration[])?.map((reg, index) => ({
-      id: reg.user_id,
-      full_name: reg.profiles?.full_name || 'Unknown Player',
-      display_name: reg.profiles?.display_name,
-      avatar_url: reg.profiles?.avatar_url,
-      elo: reg.profiles?.elo || 1000,
-    })) || [];
+    return (
+      (registrations as PlayerRegistration[])?.map((reg, index) => ({
+        id: reg.user_id,
+        full_name: reg.profiles?.full_name || 'Unknown Player',
+        display_name: reg.profiles?.display_name,
+        avatar_url: reg.profiles?.avatar_url,
+        elo: reg.profiles?.elo || 1000,
+      })) || []
+    );
   }
 
   /**
@@ -123,13 +128,15 @@ export class TournamentManagementService {
       throw new Error(`Failed to fetch players: ${error.message}`);
     }
 
-    return data?.map(profile => ({
-      id: profile.user_id,
-      full_name: profile.full_name || 'Unknown',
-      display_name: profile.display_name,
-      avatar_url: profile.avatar_url,
-      elo: profile.elo || 1000,
-    })) || [];
+    return (
+      data?.map(profile => ({
+        id: profile.user_id,
+        full_name: profile.full_name || 'Unknown',
+        display_name: profile.display_name,
+        avatar_url: profile.avatar_url,
+        elo: profile.elo || 1000,
+      })) || []
+    );
   }
 
   /**
@@ -142,7 +149,7 @@ export class TournamentManagementService {
 
     // Shuffle players randomly
     const shuffledPlayers = [...players].sort(() => Math.random() - 0.5);
-    
+
     // Ensure even number of players by adding bye if necessary
     if (shuffledPlayers.length % 2 !== 0) {
       shuffledPlayers.push({
@@ -176,10 +183,13 @@ export class TournamentManagementService {
 
     // Sort players by ELO (highest first)
     const sortedPlayers = [...players].sort((a, b) => b.elo - a.elo);
-    
+
     // Calculate bracket size (next power of 2)
-    const totalPlayers = Math.pow(2, Math.ceil(Math.log2(sortedPlayers.length)));
-    
+    const totalPlayers = Math.pow(
+      2,
+      Math.ceil(Math.log2(sortedPlayers.length))
+    );
+
     // Apply tournament seeding (1 vs 8, 2 vs 7, 3 vs 6, 4 vs 5 pattern)
     const seededPlayers: (Player | null)[] = [];
     for (let i = 0; i < totalPlayers / 2; i++) {
@@ -228,7 +238,9 @@ export class TournamentManagementService {
         .eq('tournament_id', tournamentId);
 
       if (deleteError) {
-        throw new Error(`Failed to clear existing matches: ${deleteError.message}`);
+        throw new Error(
+          `Failed to clear existing matches: ${deleteError.message}`
+        );
       }
 
       // Then insert new matches
@@ -277,10 +289,13 @@ export class TournamentManagementService {
   /**
    * Fetch existing tournament matches
    */
-  static async fetchTournamentMatches(tournamentId: string): Promise<BracketMatch[]> {
+  static async fetchTournamentMatches(
+    tournamentId: string
+  ): Promise<BracketMatch[]> {
     const { data, error } = await supabase
       .from('tournament_matches')
-      .select(`
+      .select(
+        `
         round_number,
         match_number,
         status,
@@ -301,7 +316,8 @@ export class TournamentManagementService {
           avatar_url,
           elo
         )
-      `)
+      `
+      )
       .eq('tournament_id', tournamentId)
       .order('round_number', { ascending: true })
       .order('match_number', { ascending: true });
@@ -311,32 +327,40 @@ export class TournamentManagementService {
       throw new Error(`Failed to fetch matches: ${error.message}`);
     }
 
-    return data?.map(match => ({
-      round: match.round_number,
-      match_number: match.match_number,
-      status: match.status as any,
-      player1: match.player1 ? {
-        id: match.player1.user_id,
-        full_name: match.player1.full_name || 'Unknown',
-        display_name: match.player1.display_name,
-        avatar_url: match.player1.avatar_url,
-        elo: match.player1.elo || 1000,
-      } : null,
-      player2: match.player2 ? {
-        id: match.player2.user_id,
-        full_name: match.player2.full_name || 'Unknown',
-        display_name: match.player2.display_name,
-        avatar_url: match.player2.avatar_url,
-        elo: match.player2.elo || 1000,
-      } : null,
-      tournament_id: tournamentId,
-    })) || [];
+    return (
+      data?.map(match => ({
+        round: match.round_number,
+        match_number: match.match_number,
+        status: match.status as any,
+        player1: match.player1
+          ? {
+              id: match.player1.user_id,
+              full_name: match.player1.full_name || 'Unknown',
+              display_name: match.player1.display_name,
+              avatar_url: match.player1.avatar_url,
+              elo: match.player1.elo || 1000,
+            }
+          : null,
+        player2: match.player2
+          ? {
+              id: match.player2.user_id,
+              full_name: match.player2.full_name || 'Unknown',
+              display_name: match.player2.display_name,
+              avatar_url: match.player2.avatar_url,
+              elo: match.player2.elo || 1000,
+            }
+          : null,
+        tournament_id: tournamentId,
+      })) || []
+    );
   }
 
   /**
    * Delete tournament
    */
-  static async deleteTournament(tournamentId: string): Promise<TournamentServiceResponse> {
+  static async deleteTournament(
+    tournamentId: string
+  ): Promise<TournamentServiceResponse> {
     try {
       const { error } = await supabase
         .from('tournaments')

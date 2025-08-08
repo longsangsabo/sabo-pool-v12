@@ -22,12 +22,12 @@ export const MobileCard: React.FC<MobileCardProps> = ({
   className,
   children,
   compact = false,
-  variant = 'default'
+  variant = 'default',
 }) => {
   const cardVariants = {
     default: 'border bg-card',
     outlined: 'border-2 bg-card/50',
-    elevated: 'border bg-card shadow-md'
+    elevated: 'border bg-card shadow-md',
   };
 
   const headerPadding = compact ? 'pb-2' : 'pb-3';
@@ -46,9 +46,7 @@ export const MobileCard: React.FC<MobileCardProps> = ({
           </div>
         </CardHeader>
       )}
-      <CardContent className={contentPadding}>
-        {children}
-      </CardContent>
+      <CardContent className={contentPadding}>{children}</CardContent>
     </Card>
   );
 };

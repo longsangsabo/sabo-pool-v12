@@ -1,11 +1,6 @@
 {
-  "scanPaths": [
-    "/workspaces/sabo-pool-v11",
-    "/workspaces/sabo-pool-v11/docs"
-  ],
-  "watchPaths": [
-    "/workspaces/sabo-pool-v11/docs"
-  ],
+  "scanPaths": ["/workspaces/sabo-pool-v11", "/workspaces/sabo-pool-v11/docs"],
+  "watchPaths": ["/workspaces/sabo-pool-v11/docs"],
   "fileExtensions": [".md", ".txt", ".rst", ".doc"],
   "duplicateThreshold": 0.85,
   "archiveAfterDays": 90,
@@ -28,18 +23,10 @@
     "\\(copy\\)",
     "~$"
   ],
-  "versionPatterns": [
-    "_v\\d+",
-    "_final",
-    "_old",
-    "_backup",
-    "_archive"
-  ],
+  "versionPatterns": ["_v\\d+", "_final", "_old", "_backup", "_archive"],
   "email": {
     "enabled": false,
-    "recipients": [
-      "admin@sabopool.com"
-    ],
+    "recipients": ["admin@sabopool.com"],
     "smtpConfig": {
       "host": "smtp.gmail.com",
       "port": 587,

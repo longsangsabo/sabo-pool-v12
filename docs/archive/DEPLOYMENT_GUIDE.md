@@ -7,6 +7,7 @@ The application is designed for deployment on **Loveable** platform with **Supab
 ## 🏗️ Architecture
 
 ### Production Stack
+
 - **Frontend**: React App on Loveable CDN
 - **Backend**: Supabase (Database + Edge Functions)
 - **Payments**: VNPAY Production Gateway
@@ -14,6 +15,7 @@ The application is designed for deployment on **Loveable** platform with **Supab
 - **Authentication**: Supabase Auth
 
 ### Environment Separation
+
 - **Development**: Local + Supabase Development
 - **Staging**: Loveable Preview + Supabase Staging
 - **Production**: Loveable Production + Supabase Production
@@ -23,6 +25,7 @@ The application is designed for deployment on **Loveable** platform with **Supab
 ### 1. Supabase Production Configuration
 
 #### Database Setup
+
 1. **Create Production Project**
    - Go to [Supabase Dashboard](https://app.supabase.com/)
    - Create new project for production
@@ -34,6 +37,7 @@ The application is designed for deployment on **Loveable** platform with **Supab
    - Verify all tables and functions created
 
 3. **Enable Extensions**
+
    ```sql
    -- Required extensions
    CREATE EXTENSION IF NOT EXISTS "pg_cron";
@@ -42,6 +46,7 @@ The application is designed for deployment on **Loveable** platform with **Supab
    ```
 
 4. **Setup Automation Jobs**
+
    ```sql
    -- Daily challenge reset
    SELECT cron.schedule(
@@ -82,6 +87,7 @@ The application is designed for deployment on **Loveable** platform with **Supab
 ### 2. VNPAY Production Setup
 
 #### Account Configuration
+
 1. **Production Credentials**
    - Terminal ID (TMN_CODE): Production merchant code
    - Hash Secret: Production secret key
@@ -95,6 +101,7 @@ The application is designed for deployment on **Loveable** platform with **Supab
 ### 3. Environment Variables
 
 #### Production Environment
+
 ```env
 # Supabase Production
 VITE_SUPABASE_URL=https://your-prod-project.supabase.co
@@ -116,6 +123,7 @@ VITE_APP_ENV=production
 ### 1. Pre-Deployment Checklist
 
 #### Code Quality
+
 - [ ] All tests passing
 - [ ] TypeScript compilation successful
 - [ ] ESLint warnings resolved
@@ -123,6 +131,7 @@ VITE_APP_ENV=production
 - [ ] Performance optimizations applied
 
 #### Database
+
 - [ ] Production database configured
 - [ ] All migrations applied
 - [ ] RLS policies verified
@@ -130,6 +139,7 @@ VITE_APP_ENV=production
 - [ ] Backup procedures in place
 
 #### Third-Party Services
+
 - [ ] VNPAY production credentials configured
 - [ ] Email service configured (if used)
 - [ ] Monitoring tools setup
@@ -138,6 +148,7 @@ VITE_APP_ENV=production
 ### 2. Loveable Deployment
 
 #### Initial Setup
+
 1. **Connect Repository**
    - Link GitHub repository to Loveable
    - Configure automatic deployments
@@ -157,7 +168,9 @@ VITE_APP_ENV=production
    ```
 
 #### Deployment Steps
+
 1. **Push to Production Branch**
+
    ```bash
    git checkout main
    git pull origin main
@@ -172,6 +185,7 @@ VITE_APP_ENV=production
 ### 3. Post-Deployment Verification
 
 #### Functional Testing
+
 - [ ] User registration/login works
 - [ ] Database connections established
 - [ ] Payment integration functional
@@ -179,12 +193,14 @@ VITE_APP_ENV=production
 - [ ] Automation jobs running
 
 #### Performance Testing
+
 - [ ] Page load times acceptable
 - [ ] API response times good
 - [ ] Database query performance
 - [ ] CDN caching working
 
 #### Security Testing
+
 - [ ] HTTPS enforced
 - [ ] Authentication working
 - [ ] RLS policies active
@@ -193,6 +209,7 @@ VITE_APP_ENV=production
 ## 🔄 CI/CD Pipeline
 
 ### Automated Deployment
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy to Production
@@ -209,22 +226,23 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run tests
         run: npm test
-      
+
       - name: Build application
         run: npm run build
-      
+
       - name: Deploy to Loveable
         # Loveable handles deployment automatically
         run: echo "Deployment triggered"
 ```
 
 ### Staging Environment
+
 1. **Setup Staging Branch**
    - Create `staging` branch
    - Configure separate Loveable app
@@ -238,6 +256,7 @@ jobs:
 ## 📊 Monitoring & Alerts
 
 ### Application Monitoring
+
 1. **Health Checks**
    - Automated health monitoring
    - Database connection checks
@@ -251,6 +270,7 @@ jobs:
    - System error notifications
 
 ### Database Monitoring
+
 1. **Performance Metrics**
    - Query execution times
    - Connection pool usage
@@ -266,6 +286,7 @@ jobs:
 ## 🔒 Security Considerations
 
 ### Production Security
+
 1. **Environment Variables**
    - Store secrets securely
    - Use production credentials only
@@ -287,6 +308,7 @@ jobs:
 ## 💾 Backup & Recovery
 
 ### Database Backups
+
 1. **Automated Backups**
    - Daily database snapshots
    - Weekly full backups
@@ -300,6 +322,7 @@ jobs:
    - Team training completed
 
 ### Application Backups
+
 1. **Code Repository**
    - Git version control
    - Tagged releases
@@ -315,12 +338,14 @@ jobs:
 ## 🚨 Rollback Procedures
 
 ### Emergency Rollback
+
 1. **Immediate Actions**
+
    ```bash
    # Revert to previous deployment
    git revert HEAD
    git push origin main
-   
+
    # Or rollback in Loveable dashboard
    # Select previous successful deployment
    ```
@@ -332,6 +357,7 @@ jobs:
    - Verify data integrity
 
 ### Communication Plan
+
 1. **Incident Response**
    - Notify stakeholders immediately
    - Post status updates
@@ -341,6 +367,7 @@ jobs:
 ## 📈 Performance Optimization
 
 ### Production Optimizations
+
 1. **Frontend**
    - Code splitting implemented
    - Images optimized
@@ -362,6 +389,7 @@ jobs:
 ## 🔧 Maintenance Procedures
 
 ### Regular Maintenance
+
 1. **Weekly Tasks**
    - Monitor system health
    - Review error logs
@@ -383,11 +411,13 @@ jobs:
 ## 📞 Support & Escalation
 
 ### Support Tiers
+
 1. **Level 1**: Basic issues, user support
 2. **Level 2**: Technical issues, system errors
 3. **Level 3**: Critical issues, architecture problems
 
 ### Escalation Contacts
+
 - **Technical Lead**: [Contact Info]
 - **Database Admin**: [Contact Info]
 - **System Admin**: longsangsabo@gmail.com
@@ -398,6 +428,7 @@ jobs:
 ## 🎯 Go-Live Checklist
 
 ### Final Verification
+
 - [ ] All systems operational
 - [ ] Performance benchmarks met
 - [ ] Security scans completed
@@ -408,6 +439,7 @@ jobs:
 - [ ] Rollback procedures tested
 
 ### Launch Communication
+
 - [ ] Stakeholders notified
 - [ ] User communication sent
 - [ ] Support team briefed

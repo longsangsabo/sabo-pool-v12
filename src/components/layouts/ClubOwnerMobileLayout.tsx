@@ -11,7 +11,9 @@ import { ClubMobileDrawer } from '@/components/club/ClubMobileDrawer';
  * Mobile layout chuyên dụng cho khu vực QUẢN TRỊ CLB (owner/moderator)
  * Không dùng cho trang public chi tiết CLB (/clubs/:id)
  */
-export const ClubOwnerMobileLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const ClubOwnerMobileLayout: React.FC<{
+  children?: React.ReactNode;
+}> = ({ children }) => {
   const { user } = useAuth();
   const { isClubOwner, clubProfile, isLoading } = useClubRole();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -30,10 +32,17 @@ export const ClubOwnerMobileLayout: React.FC<{ children?: React.ReactNode }> = (
 
   return (
     <div className='min-h-screen bg-background'>
-      <ClubMobileHeader onMenuClick={() => setIsDrawerOpen(true)} clubProfile={clubProfile} />
+      <ClubMobileHeader
+        onMenuClick={() => setIsDrawerOpen(true)}
+        clubProfile={clubProfile}
+      />
       <main className='pb-16 pt-2 px-4'>{children || <Outlet />}</main>
       <ClubMobileNavigation />
-      <ClubMobileDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} clubProfile={clubProfile} />
+      <ClubMobileDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        clubProfile={clubProfile}
+      />
     </div>
   );
 };

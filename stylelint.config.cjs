@@ -1,9 +1,6 @@
 /* Stylelint config focusing on Tailwind support */
 module.exports = {
-  extends: [
-    'stylelint-config-standard',
-    'stylelint-config-tailwindcss'
-  ],
+  extends: ['stylelint-config-standard', 'stylelint-config-tailwindcss'],
   rules: {
     'at-rule-no-unknown': [
       true,
@@ -14,9 +11,9 @@ module.exports = {
           'variants',
           'responsive',
           'screen',
-          'layer'
-        ]
-      }
+          'layer',
+        ],
+      },
     ],
-  }
+  },
 };

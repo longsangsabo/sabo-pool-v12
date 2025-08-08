@@ -26,11 +26,13 @@ A comprehensive pool arena management system with VNPAY payment integration, bui
 ## 📦 Installation
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm 8+
 - Git
 
 ### Setup
+
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/sabo-pool-arena-hub.git
@@ -49,6 +51,7 @@ npm run dev
 ## 🔧 Development
 
 ### Available Scripts
+
 ```bash
 # Development
 npm run dev              # Start development server
@@ -72,13 +75,16 @@ npm run db:reset        # Reset database
 ```
 
 ### Code Quality Tools
+
 - **ESLint** - Code linting with TypeScript support
 - **Prettier** - Code formatting
 - **Husky** - Git hooks for pre-commit checks
 - **lint-staged** - Run linters on staged files
 
 ### Pre-commit Hooks
+
 The project uses Husky to run automatic checks before commits:
+
 - ESLint fixes
 - Prettier formatting
 - Type checking
@@ -86,12 +92,14 @@ The project uses Husky to run automatic checks before commits:
 ## 🌐 Deployment
 
 ### Loveable Deployment
+
 1. Push code to GitHub
 2. Connect repository to Loveable
 3. Configure environment variables
 4. Deploy
 
 ### Environment Variables
+
 ```env
 # VNPAY Configuration
 VNP_TMN_CODE=your_terminal_id
@@ -128,6 +136,7 @@ src/
 ## 🤝 Contributing
 
 ### Development Workflow
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
@@ -137,6 +146,7 @@ src/
 7. Open a Pull Request
 
 ### Code Standards
+
 - Follow TypeScript best practices
 - Use ESLint and Prettier for code formatting
 - Write meaningful commit messages
@@ -148,6 +158,7 @@ src/
 The project uses GitHub Actions for continuous integration:
 
 ### Automated Checks
+
 - **Linting** - ESLint with TypeScript support
 - **Formatting** - Prettier code formatting
 - **Type Checking** - TypeScript compilation
@@ -156,6 +167,7 @@ The project uses GitHub Actions for continuous integration:
 - **Security** - Dependency vulnerability scanning
 
 ### Deployment
+
 - **Preview** - Automatic deployment for pull requests
 - **Production** - Automatic deployment for main branch
 
@@ -204,4 +216,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Made with ❤️ by the SABO Pool Arena Team**
+
 # Environment variables configured on Netlify Dashboard ✅

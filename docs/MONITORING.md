@@ -1,42 +1,45 @@
 # 📊 Monitoring & Analytics Guide
 
 ## Overview
+
 Comprehensive monitoring setup for SABO Pool Arena application performance, health, and user analytics.
 
 ## Application Monitoring
 
 ### Performance Monitoring
+
 ```javascript
 // Performance tracking setup
 const performanceMonitor = {
   // Core Web Vitals
   trackCoreWebVitals: true,
-  
+
   // Custom metrics
   trackCustomMetrics: {
     tournamentCreationTime: true,
     challengeResponseTime: true,
     paymentProcessingTime: true,
-    adminDashboardLoad: true
+    adminDashboardLoad: true,
   },
-  
+
   // Alert thresholds
   thresholds: {
     pageLoadTime: 3000, // ms
     apiResponseTime: 1000, // ms
     errorRate: 0.01, // 1%
-    availability: 0.995 // 99.5%
-  }
-}
+    availability: 0.995, // 99.5%
+  },
+};
 ```
 
 ### Health Check Endpoints
+
 ```bash
 # Application health
 GET /api/health
 # Expected: { status: "healthy", timestamp: "..." }
 
-# Database health  
+# Database health
 GET /api/health/database
 # Expected: { status: "connected", latency: "..." }
 
@@ -48,26 +51,28 @@ GET /api/health/external
 ## Error Tracking & Logging
 
 ### Error Monitoring Setup
+
 ```javascript
 // Error tracking configuration
 const errorTracking = {
   // Automatic error capture
   captureUnhandledRejections: true,
   captureUnhandledExceptions: true,
-  
+
   // User context
   includeUserContext: true,
   includeBreadcrumbs: true,
-  
+
   // Filter sensitive data
-  beforeSend: (event) => {
+  beforeSend: event => {
     // Remove sensitive information
     return sanitizeEvent(event);
-  }
-}
+  },
+};
 ```
 
 ### Log Levels
+
 - **ERROR**: Critical issues requiring immediate attention
 - **WARN**: Potential issues that should be monitored
 - **INFO**: General application flow information
@@ -76,6 +81,7 @@ const errorTracking = {
 ## Analytics & User Behavior
 
 ### User Analytics
+
 ```javascript
 // Analytics tracking
 const analytics = {
@@ -83,19 +89,20 @@ const analytics = {
   trackPageViews: true,
   trackUserSessions: true,
   trackFeatureUsage: true,
-  
+
   // Business metrics
   trackTournamentCreation: true,
   trackChallengeCompletion: true,
   trackPaymentSuccess: true,
-  trackUserRetention: true
-}
+  trackUserRetention: true,
+};
 ```
 
 ### Key Metrics to Track
+
 - **Daily Active Users (DAU)**
 - **Tournament Creation Rate**
-- **Challenge Completion Rate** 
+- **Challenge Completion Rate**
 - **Payment Success Rate**
 - **User Retention (1d, 7d, 30d)**
 - **Feature Adoption Rate**
@@ -104,6 +111,7 @@ const analytics = {
 ## Performance Dashboards
 
 ### Application Performance Dashboard
+
 ```yaml
 Dashboard: Application Health
 Metrics:
@@ -123,6 +131,7 @@ Alerts:
 ```
 
 ### Business Metrics Dashboard
+
 ```yaml
 Dashboard: Business Intelligence
 Metrics:
@@ -142,6 +151,7 @@ Reports:
 ## Alerting & Notifications
 
 ### Critical Alerts (Immediate)
+
 - Application down (< 99% availability)
 - Database connection failures
 - Payment system errors
@@ -149,6 +159,7 @@ Reports:
 - Security incidents
 
 ### Warning Alerts (Monitor)
+
 - Slow response times (> 2s)
 - High memory usage (> 70%)
 - Unusual traffic patterns
@@ -156,6 +167,7 @@ Reports:
 - External service degradation
 
 ### Alert Channels
+
 ```yaml
 Critical:
   - SMS to on-call engineer
@@ -174,16 +186,18 @@ Info:
 ## Infrastructure Monitoring
 
 ### Server Metrics
+
 - **CPU Usage**: Target < 70% average
-- **Memory Usage**: Target < 80% average  
+- **Memory Usage**: Target < 80% average
 - **Disk Usage**: Target < 85% capacity
 - **Network I/O**: Monitor for spikes
 - **Load Average**: Target < 2.0
 
 ### Database Monitoring
+
 ```sql
 -- Key database metrics to monitor
-SELECT 
+SELECT
   schemaname,
   tablename,
   n_tup_ins as inserts,
@@ -195,7 +209,7 @@ FROM pg_stat_user_tables
 ORDER BY n_live_tup DESC;
 
 -- Query performance
-SELECT 
+SELECT
   query,
   calls,
   total_time,
@@ -209,6 +223,7 @@ LIMIT 10;
 ## Security Monitoring
 
 ### Security Events to Track
+
 - Failed login attempts
 - Suspicious API usage patterns
 - Unauthorized access attempts
@@ -217,6 +232,7 @@ LIMIT 10;
 - Payment fraud indicators
 
 ### Security Alerts
+
 ```yaml
 High Priority:
   - Multiple failed login attempts
@@ -233,6 +249,7 @@ Medium Priority:
 ## Monitoring Tools Setup
 
 ### Application Monitoring
+
 ```bash
 # Setup application monitoring
 npm install @sentry/react @sentry/node
@@ -245,6 +262,7 @@ npm install web-vitals lighthouse
 ```
 
 ### Infrastructure Monitoring
+
 ```yaml
 # Docker monitoring setup
 version: '3.8'
@@ -252,22 +270,23 @@ services:
   prometheus:
     image: prom/prometheus
     ports:
-      - "9090:9090"
-  
+      - '9090:9090'
+
   grafana:
     image: grafana/grafana
     ports:
-      - "3001:3000"
-    
+      - '3001:3000'
+
   node-exporter:
     image: prom/node-exporter
     ports:
-      - "9100:9100"
+      - '9100:9100'
 ```
 
 ## Response Procedures
 
 ### Incident Response
+
 1. **Detection**: Monitor alerts and dashboards
 2. **Assessment**: Determine severity and impact
 3. **Response**: Follow escalation procedures
@@ -275,6 +294,7 @@ services:
 5. **Post-mortem**: Document and prevent recurrence
 
 ### On-call Procedures
+
 ```markdown
 **Level 1**: Development team (business hours)
 **Level 2**: Senior engineers (24/7)
@@ -282,6 +302,7 @@ services:
 **Level 4**: External vendor support
 
 **Response Times**:
+
 - Critical: 15 minutes
 - High: 1 hour
 - Medium: 4 hours
@@ -289,4 +310,5 @@ services:
 ```
 
 ---
-*Last Updated: August 5, 2025*
+
+_Last Updated: August 5, 2025_

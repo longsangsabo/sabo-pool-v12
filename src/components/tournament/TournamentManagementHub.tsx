@@ -146,12 +146,17 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
     } = useBracketManagement();
 
     // Performance optimizations
-    const { tournamentsByStatus, tournamentStats } = useTournamentOptimizations(tournaments);
+    const { tournamentsByStatus, tournamentStats } =
+      useTournamentOptimizations(tournaments);
 
     // Legacy state that still needs migration
-    const [editingTournament, setEditingTournament] = useState<Tournament | null>(null);
+    const [editingTournament, setEditingTournament] =
+      useState<Tournament | null>(null);
     const [existingMatches, setExistingMatches] = useState<any[]>([]);
-    const [selectedTournamentIds, setSelectedTournamentIds] = useState<string[]>([]);('list');
+    const [selectedTournamentIds, setSelectedTournamentIds] = useState<
+      string[]
+    >([]);
+    ('list');
 
     // Detail Tab State - for tabbed interface within tournament details
     const [detailActiveTab, setDetailActiveTab] = useState('overview');
@@ -211,7 +216,8 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
 
     const handleDeleteTournament = async (tournamentId: string) => {
       try {
-        const result = await TournamentManagementService.deleteTournament(tournamentId);
+        const result =
+          await TournamentManagementService.deleteTournament(tournamentId);
         if (result.success) {
           toast.success('Tournament deleted successfully');
           refreshTournaments();
@@ -267,8 +273,6 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
     const handleCreateTournament = () => {
       navigate('/tournaments');
     };
-
-
 
     const handleViewBracket = async (tournament: Tournament) => {
       setSelectedTournament(tournament);
@@ -725,8 +729,6 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
       }
       return newArray;
     };
-
-
 
     // Helper functions for player data
     const getPlayerName = (playerId: string | null) => {
@@ -1255,7 +1257,10 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
                   <div className='flex items-center justify-between'>
                     <Label>Bảng đấu đã tạo (Vòng 1)</Label>
                     <Button
-                      onClick={() => selectedTournament && saveBracketToTournament(selectedTournament.id)}
+                      onClick={() =>
+                        selectedTournament &&
+                        saveBracketToTournament(selectedTournament.id)
+                      }
                       disabled={bracketLoading}
                     >
                       <Save className='w-4 h-4 mr-2' />
@@ -1919,12 +1924,16 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
                   <div className='space-y-4'>
                     <div className='flex items-center justify-between'>
                       <div className='text-sm text-muted-foreground'>
-                        Tổng số người đăng ký: {selectedTournament.current_participants}/{selectedTournament.max_participants}
+                        Tổng số người đăng ký:{' '}
+                        {selectedTournament.current_participants}/
+                        {selectedTournament.max_participants}
                       </div>
-                      <Button 
-                        variant='outline' 
+                      <Button
+                        variant='outline'
                         size='sm'
-                        onClick={() => handleViewParticipants(selectedTournament)}
+                        onClick={() =>
+                          handleViewParticipants(selectedTournament)
+                        }
                       >
                         <Eye className='w-4 h-4 mr-2' />
                         Xem chi tiết
@@ -1932,9 +1941,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
                     </div>
                     <div className='text-center py-8 text-muted-foreground'>
                       <Users className='w-12 h-12 mx-auto mb-4' />
-                      <p>
-                        Click "Xem chi tiết" để quản lý người tham gia
-                      </p>
+                      <p>Click "Xem chi tiết" để quản lý người tham gia</p>
                     </div>
                   </div>
                 </CardContent>
@@ -1957,28 +1964,45 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>(
                         <div className='text-2xl font-bold text-blue-600'>
                           {existingMatches.length}
                         </div>
-                        <div className='text-sm text-blue-600'>Tổng số trận</div>
+                        <div className='text-sm text-blue-600'>
+                          Tổng số trận
+                        </div>
                       </div>
                       <div className='bg-green-50 border border-green-200 rounded-lg p-3'>
                         <div className='text-2xl font-bold text-green-600'>
-                          {existingMatches.filter(m => m.status === 'completed').length}
+                          {
+                            existingMatches.filter(
+                              m => m.status === 'completed'
+                            ).length
+                          }
                         </div>
-                        <div className='text-sm text-green-600'>Đã hoàn thành</div>
+                        <div className='text-sm text-green-600'>
+                          Đã hoàn thành
+                        </div>
                       </div>
                       <div className='bg-yellow-50 border border-yellow-200 rounded-lg p-3'>
                         <div className='text-2xl font-bold text-yellow-600'>
-                          {existingMatches.filter(m => m.status === 'ongoing').length}
+                          {
+                            existingMatches.filter(m => m.status === 'ongoing')
+                              .length
+                          }
                         </div>
-                        <div className='text-sm text-yellow-600'>Đang thi đấu</div>
+                        <div className='text-sm text-yellow-600'>
+                          Đang thi đấu
+                        </div>
                       </div>
                       <div className='bg-gray-50 border border-gray-200 rounded-lg p-3'>
                         <div className='text-2xl font-bold text-gray-600'>
-                          {existingMatches.filter(m => m.status === 'scheduled').length}
+                          {
+                            existingMatches.filter(
+                              m => m.status === 'scheduled'
+                            ).length
+                          }
                         </div>
                         <div className='text-sm text-gray-600'>Chờ thi đấu</div>
                       </div>
                     </div>
-                    
+
                     {existingMatches.length === 0 ? (
                       <div className='text-center py-8 text-muted-foreground'>
                         <Calendar className='w-12 h-12 mx-auto mb-4' />

@@ -2,7 +2,8 @@ import React, { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-export interface RainbowAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface RainbowAvatarProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   src?: string;
   alt?: string;
   fallback?: string;
@@ -31,29 +32,32 @@ const sizeClasses = {
 const shapeClipPaths = {
   circle: 'circle(50%)',
   square: 'none',
-  octagon: 'polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%)',
+  octagon:
+    'polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%)',
   custom: '', // Clip path tùy chỉnh
 };
 
 const RainbowAvatar = forwardRef<HTMLDivElement, RainbowAvatarProps>(
-  ({
-    src,
-    alt = 'Avatar',
-    fallback,
-    size = 'lg',
-    variant = 'default',
-    intensity = 'normal',
-    speed = 'normal',
-    shape = 'circle',
-    customClipPath,
-    showBorder = true,
-    borderWidth = 4,
-    glowColor,
-    className,
-    children,
-    ...props
-  }, ref) => {
-    
+  (
+    {
+      src,
+      alt = 'Avatar',
+      fallback,
+      size = 'lg',
+      variant = 'default',
+      intensity = 'normal',
+      speed = 'normal',
+      shape = 'circle',
+      customClipPath,
+      showBorder = true,
+      borderWidth = 4,
+      glowColor,
+      className,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const containerClasses = cn(
       'rainbow-avatar-container relative inline-block',
       sizeClasses[size],
@@ -78,8 +82,14 @@ const RainbowAvatar = forwardRef<HTMLDivElement, RainbowAvatarProps>(
 
       return {
         ...baseStyle,
-        '--rainbow-intensity': intensity === 'subtle' ? '0.4' : intensity === 'intense' ? '0.9' : '0.7',
-        '--rainbow-speed': speed === 'slow' ? '12s' : speed === 'fast' ? '4s' : '8s',
+        '--rainbow-intensity':
+          intensity === 'subtle'
+            ? '0.4'
+            : intensity === 'intense'
+              ? '0.9'
+              : '0.7',
+        '--rainbow-speed':
+          speed === 'slow' ? '12s' : speed === 'fast' ? '4s' : '8s',
         '--rainbow-border-width': `${borderWidth}px`,
         '--rainbow-glow-color': glowColor || 'rgba(255, 255, 255, 0.5)',
       } as React.CSSProperties;
@@ -101,38 +111,40 @@ const RainbowAvatar = forwardRef<HTMLDivElement, RainbowAvatarProps>(
     };
 
     return (
-      <div 
+      <div
         ref={ref}
         className={cn(containerClasses, getVariantClassName())}
         style={getVariantStyles()}
         {...props}
       >
         {/* Hiệu ứng viền rainbow cho variant rainbow */}
-        {variant === 'rainbow' && (
-          <div className="rainbow-border-effect" />
-        )}
+        {variant === 'rainbow' && <div className='rainbow-border-effect' />}
 
         {/* Hiệu ứng glow cho variant glow */}
-        {variant === 'glow' && (
-          <div className="glow-effect" />
-        )}
+        {variant === 'glow' && <div className='glow-effect' />}
 
         {/* Avatar chính */}
         {children ? (
-          <div className={avatarClasses} style={{ clipPath: clipPath !== 'none' ? clipPath : undefined }}>
+          <div
+            className={avatarClasses}
+            style={{ clipPath: clipPath !== 'none' ? clipPath : undefined }}
+          >
             {children}
           </div>
         ) : (
-          <Avatar className={avatarClasses} style={{ clipPath: clipPath !== 'none' ? clipPath : undefined }}>
+          <Avatar
+            className={avatarClasses}
+            style={{ clipPath: clipPath !== 'none' ? clipPath : undefined }}
+          >
             <AvatarImage src={src} alt={alt} />
-            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+            <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold'>
               {fallback}
             </AvatarFallback>
           </Avatar>
         )}
 
         {/* Lớp overlay cho các hiệu ứng tương tác */}
-        <div className="rainbow-avatar-overlay" />
+        <div className='rainbow-avatar-overlay' />
       </div>
     );
   }

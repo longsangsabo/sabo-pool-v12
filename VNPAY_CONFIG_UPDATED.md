@@ -6,9 +6,9 @@ The VNPAY payment gateway integration has been updated with your new configurati
 
 ### 📋 Updated Configuration
 
-| Parameter | Old Value | New Value |
-|-----------|-----------|-----------|
-| **Terminal ID (vnp_TmnCode)** | `T53WMA78` | `T53WMA78` ✅ |
+| Parameter                       | Old Value                          | New Value                             |
+| ------------------------------- | ---------------------------------- | ------------------------------------- |
+| **Terminal ID (vnp_TmnCode)**   | `T53WMA78`                         | `T53WMA78` ✅                         |
 | **Secret Key (vnp_HashSecret)** | `2TNWAPY5F1REXUB1XTMDUYBKFGI2DZP6` | `M1TOK8Z2U7KIPX67FDFBSXTPHGSEFHZ9` ✅ |
 
 ### 🔧 Environment Variables
@@ -35,6 +35,7 @@ The following files have been updated with the new configuration:
 ## 🧪 Testing
 
 ### Quick Test
+
 ```bash
 # Run the test suite
 node test-vnpay.js
@@ -46,6 +47,7 @@ node demo-server.js
 ```
 
 ### Test Card Details (VCB Bank)
+
 - **Card Number**: `4524 0418 7644 5035`
 - **Name**: `VÕ LONG SANG`
 - **Expiry**: `10/27`
@@ -81,6 +83,7 @@ If you encounter any issues with the updated configuration:
 ## 🔒 Security Note
 
 The new secret key (`M1TOK8Z2U7KIPX67FDFBSXTPHGSEFHZ9`) is now being used for:
+
 - Creating secure payment URLs
 - Verifying incoming payment responses
 - Validating IPN notifications
@@ -91,4 +94,4 @@ Make sure to keep this secret key secure and never expose it in client-side code
 
 **Configuration Update Complete!** 🎉
 
-Your VNPAY integration is now ready to use with the updated credentials. 
+Your VNPAY integration is now ready to use with the updated credentials.

@@ -33,14 +33,14 @@ export function ThemeProvider({
     const currentTheme = localStorage.getItem(storageKey) as Theme;
     const migrationKey = `${storageKey}-migrated-to-dark`;
     const hasMigrated = localStorage.getItem(migrationKey);
-    
+
     // If hasn't migrated yet, set to dark and mark as migrated
     if (!hasMigrated) {
       localStorage.setItem(storageKey, 'dark');
       localStorage.setItem(migrationKey, 'true');
       return 'dark';
     }
-    
+
     return currentTheme || defaultTheme;
   };
 

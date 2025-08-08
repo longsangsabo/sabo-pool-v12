@@ -147,9 +147,14 @@ export const useRankRequests = (clubId?: string) => {
       const userId = data.user_id;
       if (!userId) throw new Error('User ID is required');
 
-      const existingRequest = await checkExistingPendingRequest(userId, data.club_id);
+      const existingRequest = await checkExistingPendingRequest(
+        userId,
+        data.club_id
+      );
       if (existingRequest) {
-        throw new Error('Bạn đã có yêu cầu rank đang chờ xét duyệt tại CLB này. Vui lòng chờ CLB xét duyệt trước khi gửi yêu cầu mới.');
+        throw new Error(
+          'Bạn đã có yêu cầu rank đang chờ xét duyệt tại CLB này. Vui lòng chờ CLB xét duyệt trước khi gửi yêu cầu mới.'
+        );
       }
 
       // Base payload with only guaranteed columns
@@ -164,7 +169,10 @@ export const useRankRequests = (clubId?: string) => {
       let firstError: any = null;
       let newRequest: any = null;
       if (data.evidence_files && data.evidence_files.length) {
-        const insertPayload = { ...basePayload, evidence_files: data.evidence_files };
+        const insertPayload = {
+          ...basePayload,
+          evidence_files: data.evidence_files,
+        };
         console.log('[createRankRequest] trying insert with evidence_files');
         const { data: insData, error } = await supabase
           .from('rank_requests')
@@ -201,7 +209,10 @@ export const useRankRequests = (clubId?: string) => {
             .select()
             .single();
           if (err3) {
-            console.error('[createRankRequest] insert (no evidence) error', err3);
+            console.error(
+              '[createRankRequest] insert (no evidence) error',
+              err3
+            );
             throw err3;
           }
           newRequest = insData3;

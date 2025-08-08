@@ -11,26 +11,26 @@
   --rainbow-speed-slow: 12s;
   --rainbow-speed-normal: 6s;
   --rainbow-speed-fast: 3s;
-  
+
   /* Border Width Variables */
   --rainbow-border-thin: 2px;
   --rainbow-border-normal: 4px;
   --rainbow-border-thick: 6px;
-  
+
   /* Effect Intensity Variables */
   --rainbow-intensity-subtle: 0.4;
   --rainbow-intensity-normal: 0.7;
   --rainbow-intensity-intense: 0.9;
-  
+
   /* Glow Color Variables */
-  --rainbow-glow-primary: rgba(255, 255, 255, 0.5);
-  --rainbow-glow-secondary: rgba(100, 200, 255, 0.3);
-  
+  --rainbow-glow-primary: rgb(255 255 255 / 50%);
+  --rainbow-glow-secondary: rgb(100 200 255 / 30%);
+
   /* Tech Edge Variables */
   --tech-edge-primary: #dbb85c;
   --tech-edge-secondary: #f4d03f;
-  --tech-edge-accent: rgba(0, 255, 136, 0.6);
-  
+  --tech-edge-accent: rgb(0 255 136 / 60%);
+
   /* Rainbow Color Palette */
   --rainbow-red: #ff4646;
   --rainbow-orange: #ffb446;
@@ -39,14 +39,14 @@
   --rainbow-blue: #4682ff;
   --rainbow-purple: #b446ff;
   --rainbow-pink: #ff46b4;
-  
+
   /* Premium Effect Colors */
-  --platinum-base: rgba(255, 255, 255, 0.8);
-  --diamond-base: rgba(255, 255, 255, 0.6);
-  --chrome-base: rgba(255, 255, 255, 0.9);
-  --frost-base: rgba(200, 220, 240, 0.6);
-  --white-gold-base: rgba(255, 215, 0, 0.4);
-  --holographic-base: rgba(180, 255, 255, 0.3);
+  --platinum-base: rgb(255 255 255 / 80%);
+  --diamond-base: rgb(255 255 255 / 60%);
+  --chrome-base: rgb(255 255 255 / 90%);
+  --frost-base: rgb(200 220 240 / 60%);
+  --white-gold-base: rgb(255 215 0 / 40%);
+  --holographic-base: rgb(180 255 255 / 30%);
 }
 
 /* ================================================================
@@ -58,12 +58,14 @@
   position: relative;
   display: inline-block;
   isolation: isolate;
+
   /* Ensure proper z-index stacking context */
 }
 
 /* SABO Avatar Container with Z-index Management */
 .sabo-avatar-container {
   position: relative;
+
   /* Z-index layers:
      Background: z-0
      Avatar: z-5
@@ -93,11 +95,11 @@
 
 /* Universal Variant Container */
 .rainbow-variant,
-.platinum-elite-variant, 
-.diamond-silver-variant, 
+.platinum-elite-variant,
+.diamond-silver-variant,
 .chrome-metal-variant,
-.frost-silver-variant, 
-.white-gold-variant, 
+.frost-silver-variant,
+.white-gold-variant,
 .silver-holographic-variant,
 .glow-variant,
 .pulse-variant,
@@ -114,40 +116,50 @@
 
 /* SVG Frame Border Styles */
 .rainbow-frame-border {
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+  filter: drop-shadow(0 0 4px rgb(255 255 255 / 40%));
 }
 
 .rainbow-frame-border-outer {
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
+  filter: drop-shadow(0 0 6px rgb(255 255 255 / 30%));
 }
 
 /* Premium Frame Borders */
 .premium-frame-border {
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+  filter: drop-shadow(0 0 5px rgb(255 255 255 / 50%));
 }
 
 .premium-frame-border-outer {
-  filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.4));
+  filter: drop-shadow(0 0 7px rgb(255 255 255 / 40%));
 }
 
 /* Octagon Shape Clip Path */
 .sabo-octagon {
-  clip-path: polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%);
+  clip-path: polygon(
+    0% 10%,
+    10% 0%,
+    90% 0%,
+    100% 10%,
+    100% 90%,
+    90% 100%,
+    10% 100%,
+    0% 90%
+  );
 }
 
 /* Rainbow Variant Octagon SVG Styling */
 .rainbow-variant .sabo-frame-border {
-  stroke: url(#rainbowGradient);
+  stroke: url('#rainbowGradient');
   stroke-width: 1;
   stroke-dasharray: 8 4;
   stroke-dashoffset: 0;
-  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
-  animation: rainbowStroke var(--rainbow-speed-normal) linear infinite, 
-             dashFlow calc(var(--rainbow-speed-normal) * 0.5) linear infinite;
+  filter: drop-shadow(0 0 3px rgb(255 255 255 / 20%));
+  animation:
+    rainbowStroke var(--rainbow-speed-normal) linear infinite,
+    dashFlow calc(var(--rainbow-speed-normal) * 0.5) linear infinite;
 }
 
 .rainbow-variant .rainbow-border-effect {
-  filter: blur(0.5px) drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+  filter: blur(0.5px) drop-shadow(0 0 2px rgb(255 255 255 / 30%));
 }
 
 /* ================================================================
@@ -157,12 +169,26 @@
 /* Tech Edge Clip Path - Advanced Polygon Shape */
 .tech-edge-clip {
   clip-path: polygon(
-    0% 10%, 12% 2%, 88% 2%, 100% 10%, 
-    100% 23%, 96% 28%, 100% 33%, 
-    100% 67%, 96% 72%, 100% 77%, 
-    100% 90%, 88% 98%, 12% 98%, 0% 90%, 
-    0% 77%, 4% 72%, 0% 67%, 
-    0% 33%, 4% 28%, 0% 23%
+    0% 10%,
+    12% 2%,
+    88% 2%,
+    100% 10%,
+    100% 23%,
+    96% 28%,
+    100% 33%,
+    100% 67%,
+    96% 72%,
+    100% 77%,
+    100% 90%,
+    88% 98%,
+    12% 98%,
+    0% 90%,
+    0% 77%,
+    4% 72%,
+    0% 67%,
+    0% 33%,
+    4% 28%,
+    0% 23%
   );
 }
 
@@ -170,24 +196,26 @@
 .tech-edge-variant .tech-edge-background {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, 
-    var(--tech-edge-primary) 0%, 
-    var(--tech-edge-secondary) 15%, 
-    #2a2a2a 25%, 
+  background: linear-gradient(
+    135deg,
+    var(--tech-edge-primary) 0%,
+    var(--tech-edge-secondary) 15%,
+    #2a2a2a 25%,
     #1a1a1a 50%,
     #2a2a2a 75%,
-    #111111 100%
+    #111 100%
   );
   clip-path: inherit;
   z-index: 1;
-  animation: techEdgePulse var(--rainbow-speed-normal) ease-in-out infinite alternate;
+  animation: techEdgePulse var(--rainbow-speed-normal) ease-in-out infinite
+    alternate;
 }
 
 /* Tech Edge Inner Accent Layer */
 .tech-edge-variant .tech-edge-inner-accent {
   position: absolute;
   inset: 8px;
-  border: 2px solid rgba(0, 255, 255, 0.4);
+  border: 2px solid rgb(0 255 255 / 40%);
   clip-path: inherit;
   z-index: 2;
   animation: techInnerGlow 3s ease-in-out infinite alternate;
@@ -198,7 +226,7 @@
 .tech-edge-variant .tech-edge-outer-border {
   position: absolute;
   inset: -4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgb(255 255 255 / 20%);
   clip-path: inherit;
   z-index: 3;
   animation: techOuterPulse 4s ease-in-out infinite;
@@ -217,7 +245,11 @@
 .tech-edge-variant .tech-edge-corner-accents::after {
   content: '';
   position: absolute;
-  background: linear-gradient(45deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+  background: linear-gradient(
+    45deg,
+    rgb(255 255 255 / 90%),
+    rgb(255 255 255 / 60%)
+  );
   z-index: 4;
 }
 
@@ -227,7 +259,7 @@
   width: 3px;
   height: 12%;
   transform: skewX(-15deg);
-  box-shadow: 0 0 8px rgba(255,255,255,0.5);
+  box-shadow: 0 0 8px rgb(255 255 255 / 50%);
 }
 
 .tech-edge-variant .tech-edge-corner-accents::after {
@@ -236,7 +268,7 @@
   width: 3px;
   height: 12%;
   transform: skewX(15deg);
-  box-shadow: 0 0 8px rgba(255,255,255,0.5);
+  box-shadow: 0 0 8px rgb(255 255 255 / 50%);
 }
 
 /* Tech Edge Side Accents */
@@ -254,12 +286,12 @@
 .tech-edge-variant .tech-edge-side-accents::after {
   content: '';
   position: absolute;
-  background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+  background: linear-gradient(90deg, rgb(255 255 255 / 80%), transparent);
   width: 6px;
   height: 8px;
   top: 50%;
   transform: translateY(-50%);
-  box-shadow: 0 0 6px rgba(255,255,255,0.4);
+  box-shadow: 0 0 6px rgb(255 255 255 / 40%);
 }
 
 .tech-edge-variant .tech-edge-side-accents::before {
@@ -284,8 +316,8 @@
 
 /* Diamond Silver Effects */
 .diamond-silver-variant .premium-frame-border {
-  filter: drop-shadow(0 0 6px var(--diamond-base)) 
-          drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
+  filter: drop-shadow(0 0 6px var(--diamond-base))
+    drop-shadow(0 0 12px rgb(255 255 255 / 30%));
   animation: diamondFacet var(--rainbow-speed-normal) linear infinite;
 }
 
@@ -309,8 +341,8 @@
 
 /* Silver Holographic Effects */
 .silver-holographic-variant .premium-frame-border {
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5)) 
-          drop-shadow(0 0 16px var(--holographic-base));
+  filter: drop-shadow(0 0 8px rgb(255 255 255 / 50%))
+    drop-shadow(0 0 16px var(--holographic-base));
   animation: holographicShift var(--rainbow-speed-normal) linear infinite;
 }
 
@@ -346,9 +378,9 @@
   inset: -4px;
   background: linear-gradient(
     to right,
-    rgba(59, 130, 246, 0.6),
-    rgba(147, 51, 234, 0.6),
-    rgba(59, 130, 246, 0.6)
+    rgb(59 130 246 / 60%),
+    rgb(147 51 234 / 60%),
+    rgb(59 130 246 / 60%)
   );
   border-radius: inherit;
   clip-path: inherit;
@@ -367,7 +399,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, var(--rainbow-intensity-normal)),
+    rgb(255 255 255 / var(--rainbow-intensity-normal)),
     transparent
   );
   border-radius: inherit;
@@ -383,67 +415,96 @@
 
 /* Rainbow Border Animations */
 @keyframes rainbowBorder {
-  0% { stroke-dasharray: 20 280; stroke-dashoffset: 0; }
-  25% { stroke-dasharray: 80 280; stroke-dashoffset: -40; }
-  50% { stroke-dasharray: 80 280; stroke-dashoffset: -120; }
-  75% { stroke-dasharray: 80 280; stroke-dashoffset: -200; }
-  100% { stroke-dasharray: 20 280; stroke-dashoffset: -280; }
+  0% {
+    stroke-dasharray: 20 280;
+    stroke-dashoffset: 0;
+  }
+  25% {
+    stroke-dasharray: 80 280;
+    stroke-dashoffset: -40;
+  }
+  50% {
+    stroke-dasharray: 80 280;
+    stroke-dashoffset: -120;
+  }
+  75% {
+    stroke-dasharray: 80 280;
+    stroke-dashoffset: -200;
+  }
+  100% {
+    stroke-dasharray: 20 280;
+    stroke-dashoffset: -280;
+  }
 }
 
 @keyframes rainbowStroke {
   0% {
     stroke: var(--rainbow-red);
-    filter: drop-shadow(0 0 8px rgba(255, 70, 70, 0.8));
+    filter: drop-shadow(0 0 8px rgb(255 70 70 / 80%));
   }
+
   16.66% {
     stroke: var(--rainbow-orange);
-    filter: drop-shadow(0 0 8px rgba(255, 180, 70, 0.8));
+    filter: drop-shadow(0 0 8px rgb(255 180 70 / 80%));
   }
+
   33.33% {
     stroke: var(--rainbow-green);
-    filter: drop-shadow(0 0 8px rgba(100, 255, 100, 0.8));
+    filter: drop-shadow(0 0 8px rgb(100 255 100 / 80%));
   }
+
   50% {
     stroke: var(--rainbow-blue);
-    filter: drop-shadow(0 0 8px rgba(70, 130, 255, 0.8));
+    filter: drop-shadow(0 0 8px rgb(70 130 255 / 80%));
   }
+
   66.66% {
     stroke: var(--rainbow-purple);
-    filter: drop-shadow(0 0 8px rgba(180, 70, 255, 0.8));
+    filter: drop-shadow(0 0 8px rgb(180 70 255 / 80%));
   }
+
   83.33% {
     stroke: var(--rainbow-pink);
-    filter: drop-shadow(0 0 8px rgba(255, 70, 180, 0.8));
+    filter: drop-shadow(0 0 8px rgb(255 70 180 / 80%));
   }
+
   100% {
     stroke: var(--rainbow-red);
-    filter: drop-shadow(0 0 8px rgba(255, 70, 70, 0.8));
+    filter: drop-shadow(0 0 8px rgb(255 70 70 / 80%));
   }
 }
 
 @keyframes dashFlow {
-  0% { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: -24; }
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -24;
+  }
 }
 
 /* Tech Edge Animations */
 @keyframes techEdgePulse {
-  0%, 100% { 
-    background: linear-gradient(135deg, 
-      var(--tech-edge-primary) 0%, 
-      var(--tech-edge-secondary) 15%, 
-      #2a2a2a 25%, 
+  0%,
+  100% {
+    background: linear-gradient(
+      135deg,
+      var(--tech-edge-primary) 0%,
+      var(--tech-edge-secondary) 15%,
+      #2a2a2a 25%,
       #1a1a1a 50%,
       #2a2a2a 75%,
-      #111111 100%
+      #111 100%
     );
     transform: scale(1);
   }
-  50% { 
-    background: linear-gradient(135deg, 
-      var(--tech-edge-secondary) 0%, 
-      #f7dc6f 15%, 
-      #3a3a3a 25%, 
+
+  50% {
+    background: linear-gradient(
+      135deg,
+      var(--tech-edge-secondary) 0%,
+      #f7dc6f 15%,
+      #3a3a3a 25%,
       #2a2a2a 50%,
       #3a3a3a 75%,
       #1a1a1a 100%
@@ -453,22 +514,26 @@
 }
 
 @keyframes techInnerGlow {
-  0%, 100% { 
-    border-color: rgba(0, 255, 255, 0.4);
-    filter: drop-shadow(0 0 4px rgba(0, 255, 255, 0.3));
+  0%,
+  100% {
+    border-color: rgb(0 255 255 / 40%);
+    filter: drop-shadow(0 0 4px rgb(0 255 255 / 30%));
   }
-  50% { 
-    border-color: rgba(255, 0, 255, 0.6);
-    filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.4));
+
+  50% {
+    border-color: rgb(255 0 255 / 60%);
+    filter: drop-shadow(0 0 8px rgb(255 0 255 / 40%));
   }
 }
 
 @keyframes techOuterPulse {
-  0%, 100% { 
-    border-color: rgba(255, 255, 255, 0.2);
+  0%,
+  100% {
+    border-color: rgb(255 255 255 / 20%);
     transform: scale(1);
   }
-  50% { 
+
+  50% {
     border-color: var(--tech-edge-accent);
     transform: scale(1.02);
   }
@@ -476,129 +541,160 @@
 
 /* Premium Effect Animations */
 @keyframes platinumShimmer {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
     filter: drop-shadow(0 0 8px var(--platinum-base));
   }
+
   25% {
     background-position: 50% 0%;
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8));
+    filter: drop-shadow(0 0 12px rgb(255 255 255 / 80%));
   }
+
   50% {
     background-position: 100% 50%;
-    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 1));
+    filter: drop-shadow(0 0 16px rgb(255 255 255 / 100%));
   }
+
   75% {
     background-position: 50% 100%;
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8));
+    filter: drop-shadow(0 0 12px rgb(255 255 255 / 80%));
   }
 }
 
 @keyframes diamondFacet {
   0% {
     transform: rotate(0deg);
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+    filter: drop-shadow(0 0 6px rgb(255 255 255 / 40%));
   }
+
   25% {
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
+    filter: drop-shadow(0 0 10px rgb(255 255 255 / 60%));
   }
+
   50% {
     transform: rotate(180deg);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+    filter: drop-shadow(0 0 8px rgb(255 255 255 / 50%));
   }
+
   75% {
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.7));
+    filter: drop-shadow(0 0 12px rgb(255 255 255 / 70%));
   }
+
   100% {
     transform: rotate(360deg);
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+    filter: drop-shadow(0 0 6px rgb(255 255 255 / 40%));
   }
 }
 
 @keyframes chromeReflection {
-  0% { background-position: -100% 0%; }
-  50% { background-position: 100% 0%; }
-  100% { background-position: -100% 0%; }
+  0% {
+    background-position: -100% 0%;
+  }
+  50% {
+    background-position: 100% 0%;
+  }
+  100% {
+    background-position: -100% 0%;
+  }
 }
 
 @keyframes frostBreath {
-  0%, 100% {
+  0%,
+  100% {
     filter: blur(1px) drop-shadow(0 0 8px var(--frost-base));
     transform: scale(1);
   }
+
   50% {
-    filter: blur(2px) drop-shadow(0 0 12px rgba(200, 220, 240, 0.7));
+    filter: blur(2px) drop-shadow(0 0 12px rgb(200 220 240 / 70%));
     transform: scale(1.02);
   }
 }
 
 @keyframes whiteGoldGlow {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
     filter: drop-shadow(0 0 6px var(--white-gold-base));
   }
+
   50% {
     background-position: 100% 50%;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+    filter: drop-shadow(0 0 10px rgb(255 215 0 / 50%));
   }
 }
 
 @keyframes holographicShift {
   0% {
     transform: rotate(0deg);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+    filter: drop-shadow(0 0 8px rgb(255 255 255 / 40%));
   }
+
   25% {
-    filter: drop-shadow(0 0 10px rgba(255, 180, 255, 0.5));
+    filter: drop-shadow(0 0 10px rgb(255 180 255 / 50%));
   }
+
   50% {
     transform: rotate(180deg);
-    filter: drop-shadow(0 0 12px rgba(180, 255, 255, 0.6));
+    filter: drop-shadow(0 0 12px rgb(180 255 255 / 60%));
   }
+
   75% {
-    filter: drop-shadow(0 0 10px rgba(255, 255, 180, 0.5));
+    filter: drop-shadow(0 0 10px rgb(255 255 180 / 50%));
   }
+
   100% {
     transform: rotate(360deg);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+    filter: drop-shadow(0 0 8px rgb(255 255 255 / 40%));
   }
 }
 
 /* Special Effect Animations */
 @keyframes glowPulse {
-  0% { 
+  0% {
     opacity: 0.5;
     transform: scale(0.95);
   }
-  100% { 
+
+  100% {
     opacity: 1;
     transform: scale(1.05);
   }
 }
 
 @keyframes avatarPulse {
-  0%, 100% { 
+  0%,
+  100% {
     transform: scale(1);
   }
-  50% { 
+
+  50% {
     transform: scale(1.05);
   }
 }
 
 @keyframes pulseBorder {
-  0%, 100% { 
+  0%,
+  100% {
     opacity: 0.6;
     transform: scale(1);
   }
-  50% { 
+
+  50% {
     opacity: 1;
     transform: scale(1.1);
   }
 }
 
 @keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 /* ================================================================
@@ -618,7 +714,7 @@
 
 /* Hover Effects */
 .rainbow-avatar-container:hover .rainbow-avatar-overlay {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(255 255 255 / 10%);
 }
 
 .rainbow-variant:hover .rainbow-border-effect {
@@ -636,33 +732,33 @@
    ================================================================ */
 
 /* Mobile Optimizations */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .sabo-avatar-container img {
     margin: 1px;
     width: calc(100% - 2px);
     height: calc(100% - 2px);
     transform: scale(0.98);
   }
-  
+
   .rainbow-variant .sabo-frame-border {
     stroke-width: 1.2;
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+    filter: drop-shadow(0 0 4px rgb(255 255 255 / 30%));
   }
-  
+
   .rainbow-variant .rainbow-border-effect {
-    filter: blur(0.8px) drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+    filter: blur(0.8px) drop-shadow(0 0 3px rgb(255 255 255 / 40%));
   }
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .rainbow-avatar-container {
     --rainbow-border-width: var(--rainbow-border-thin);
   }
-  
+
   .rainbow-variant .rainbow-border-effect {
     filter: blur(3px);
   }
-  
+
   .glow-variant .glow-effect {
     inset: -6px;
     filter: blur(6px);
@@ -677,12 +773,12 @@
 .dark .rainbow-variant .rainbow-border-effect {
   background: linear-gradient(
     45deg,
-    rgba(255, 70, 70, calc(var(--rainbow-intensity-normal) * 0.8)),
-    rgba(255, 180, 70, calc(var(--rainbow-intensity-normal) * 0.8)),
-    rgba(100, 255, 100, calc(var(--rainbow-intensity-normal) * 0.8)),
-    rgba(70, 130, 255, calc(var(--rainbow-intensity-normal) * 0.8)),
-    rgba(180, 70, 255, calc(var(--rainbow-intensity-normal) * 0.8)),
-    rgba(255, 70, 70, calc(var(--rainbow-intensity-normal) * 0.8))
+    rgb(255 70 70 / calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgb(255 180 70 / calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgb(100 255 100 / calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgb(70 130 255 / calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgb(180 70 255 / calc(var(--rainbow-intensity-normal) * 0.8)),
+    rgb(255 70 70 / calc(var(--rainbow-intensity-normal) * 0.8))
   );
 }
 
@@ -690,12 +786,12 @@
 .light .rainbow-variant .rainbow-border-effect {
   background: linear-gradient(
     45deg,
-    rgba(255, 70, 70, var(--rainbow-intensity-normal)),
-    rgba(255, 180, 70, var(--rainbow-intensity-normal)),
-    rgba(100, 255, 100, var(--rainbow-intensity-normal)),
-    rgba(70, 130, 255, var(--rainbow-intensity-normal)),
-    rgba(180, 70, 255, var(--rainbow-intensity-normal)),
-    rgba(255, 70, 70, var(--rainbow-intensity-normal))
+    rgb(255 70 70 / var(--rainbow-intensity-normal)),
+    rgb(255 180 70 / var(--rainbow-intensity-normal)),
+    rgb(100 255 100 / var(--rainbow-intensity-normal)),
+    rgb(70 130 255 / var(--rainbow-intensity-normal)),
+    rgb(180 70 255 / var(--rainbow-intensity-normal)),
+    rgb(255 70 70 / var(--rainbow-intensity-normal))
   );
 }
 
@@ -704,17 +800,31 @@
    ================================================================ */
 
 /* Intensity Utilities */
-.rainbow-subtle { --rainbow-intensity: var(--rainbow-intensity-subtle); }
-.rainbow-normal { --rainbow-intensity: var(--rainbow-intensity-normal); }
-.rainbow-intense { --rainbow-intensity: var(--rainbow-intensity-intense); }
+.rainbow-subtle {
+  --rainbow-intensity: var(--rainbow-intensity-subtle);
+}
+.rainbow-normal {
+  --rainbow-intensity: var(--rainbow-intensity-normal);
+}
+.rainbow-intense {
+  --rainbow-intensity: var(--rainbow-intensity-intense);
+}
 
 /* Speed Utilities */
-.rainbow-slow { --rainbow-speed: var(--rainbow-speed-slow); }
-.rainbow-fast { --rainbow-speed: var(--rainbow-speed-fast); }
+.rainbow-slow {
+  --rainbow-speed: var(--rainbow-speed-slow);
+}
+.rainbow-fast {
+  --rainbow-speed: var(--rainbow-speed-fast);
+}
 
 /* Border Width Utilities */
-.rainbow-border-thin { --rainbow-border-width: var(--rainbow-border-thin); }
-.rainbow-border-thick { --rainbow-border-width: var(--rainbow-border-thick); }
+.rainbow-border-thin {
+  --rainbow-border-width: var(--rainbow-border-thin);
+}
+.rainbow-border-thick {
+  --rainbow-border-width: var(--rainbow-border-thick);
+}
 
 /* ================================================================
    13. ACCESSIBILITY & PERFORMANCE
@@ -741,65 +851,73 @@
 }
 
 /* ======================================================= */
+
 /* TECH EDGE FRAME STYLES - Khung Tương Lai */
+
 /* ======================================================= */
 
 /* Tech Edge Rainbow Frame Borders */
 .tech-rainbow-frame-border {
-  filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.6)) 
-          drop-shadow(0 0 12px rgba(0, 136, 255, 0.4))
-          drop-shadow(0 0 18px rgba(136, 0, 255, 0.3));
+  filter: drop-shadow(0 0 6px rgb(0 255 136 / 60%))
+    drop-shadow(0 0 12px rgb(0 136 255 / 40%))
+    drop-shadow(0 0 18px rgb(136 0 255 / 30%));
   animation: techRainbowPulse 4s ease-in-out infinite;
 }
 
 .tech-rainbow-frame-inner {
-  filter: drop-shadow(0 0 4px rgba(255, 0, 136, 0.5))
-          drop-shadow(0 0 8px rgba(255, 136, 0, 0.3));
+  filter: drop-shadow(0 0 4px rgb(255 0 136 / 50%))
+    drop-shadow(0 0 8px rgb(255 136 0 / 30%));
 }
 
 /* Tech Edge Premium Frame Borders */
 .tech-premium-frame-border {
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7))
-          drop-shadow(0 0 16px rgba(200, 200, 255, 0.4))
-          drop-shadow(0 0 24px rgba(255, 255, 255, 0.2));
+  filter: drop-shadow(0 0 8px rgb(255 255 255 / 70%))
+    drop-shadow(0 0 16px rgb(200 200 255 / 40%))
+    drop-shadow(0 0 24px rgb(255 255 255 / 20%));
 }
 
 .tech-premium-frame-inner {
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6))
-          drop-shadow(0 0 8px rgba(200, 200, 255, 0.3));
+  filter: drop-shadow(0 0 4px rgb(255 255 255 / 60%))
+    drop-shadow(0 0 8px rgb(200 200 255 / 30%));
 }
 
 /* Tech Edge specific animations */
 @keyframes techRainbowPulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.6)) 
-            drop-shadow(0 0 12px rgba(0, 136, 255, 0.4))
-            drop-shadow(0 0 18px rgba(136, 0, 255, 0.3));
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px rgb(0 255 136 / 60%))
+      drop-shadow(0 0 12px rgb(0 136 255 / 40%))
+      drop-shadow(0 0 18px rgb(136 0 255 / 30%));
   }
+
   16.66% {
-    filter: drop-shadow(0 0 6px rgba(0, 136, 255, 0.6)) 
-            drop-shadow(0 0 12px rgba(136, 0, 255, 0.4))
-            drop-shadow(0 0 18px rgba(255, 0, 136, 0.3));
+    filter: drop-shadow(0 0 6px rgb(0 136 255 / 60%))
+      drop-shadow(0 0 12px rgb(136 0 255 / 40%))
+      drop-shadow(0 0 18px rgb(255 0 136 / 30%));
   }
+
   33.33% {
-    filter: drop-shadow(0 0 6px rgba(136, 0, 255, 0.6)) 
-            drop-shadow(0 0 12px rgba(255, 0, 136, 0.4))
-            drop-shadow(0 0 18px rgba(255, 136, 0, 0.3));
+    filter: drop-shadow(0 0 6px rgb(136 0 255 / 60%))
+      drop-shadow(0 0 12px rgb(255 0 136 / 40%))
+      drop-shadow(0 0 18px rgb(255 136 0 / 30%));
   }
+
   50% {
-    filter: drop-shadow(0 0 6px rgba(255, 0, 136, 0.6)) 
-            drop-shadow(0 0 12px rgba(255, 136, 0, 0.4))
-            drop-shadow(0 0 18px rgba(136, 255, 0, 0.3));
+    filter: drop-shadow(0 0 6px rgb(255 0 136 / 60%))
+      drop-shadow(0 0 12px rgb(255 136 0 / 40%))
+      drop-shadow(0 0 18px rgb(136 255 0 / 30%));
   }
+
   66.66% {
-    filter: drop-shadow(0 0 6px rgba(255, 136, 0, 0.6)) 
-            drop-shadow(0 0 12px rgba(136, 255, 0, 0.4))
-            drop-shadow(0 0 18px rgba(0, 255, 136, 0.3));
+    filter: drop-shadow(0 0 6px rgb(255 136 0 / 60%))
+      drop-shadow(0 0 12px rgb(136 255 0 / 40%))
+      drop-shadow(0 0 18px rgb(0 255 136 / 30%));
   }
+
   83.33% {
-    filter: drop-shadow(0 0 6px rgba(136, 255, 0, 0.6)) 
-            drop-shadow(0 0 12px rgba(0, 255, 136, 0.4))
-            drop-shadow(0 0 18px rgba(0, 136, 255, 0.3));
+    filter: drop-shadow(0 0 6px rgb(136 255 0 / 60%))
+      drop-shadow(0 0 12px rgb(0 255 136 / 40%))
+      drop-shadow(0 0 18px rgb(0 136 255 / 30%));
   }
 }
 
@@ -807,44 +925,98 @@
 .tech-edge-background {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, 
-    rgba(0, 255, 136, 0.1) 0%,
-    rgba(0, 136, 255, 0.1) 25%,
-    rgba(136, 0, 255, 0.1) 50%,
-    rgba(255, 0, 136, 0.1) 75%,
-    rgba(255, 136, 0, 0.1) 100%
+  background: linear-gradient(
+    135deg,
+    rgb(0 255 136 / 10%) 0%,
+    rgb(0 136 255 / 10%) 25%,
+    rgb(136 0 255 / 10%) 50%,
+    rgb(255 0 136 / 10%) 75%,
+    rgb(255 136 0 / 10%) 100%
   );
-  clip-path: polygon(0% 10%, 12% 2%, 88% 2%, 100% 10%, 100% 23%, 96% 28%, 100% 33%, 100% 67%, 96% 72%, 100% 77%, 100% 90%, 88% 98%, 12% 98%, 0% 90%, 0% 77%, 4% 72%, 0% 67%, 0% 33%, 4% 28%, 0% 23%);
+  clip-path: polygon(
+    0% 10%,
+    12% 2%,
+    88% 2%,
+    100% 10%,
+    100% 23%,
+    96% 28%,
+    100% 33%,
+    100% 67%,
+    96% 72%,
+    100% 77%,
+    100% 90%,
+    88% 98%,
+    12% 98%,
+    0% 90%,
+    0% 77%,
+    4% 72%,
+    0% 67%,
+    0% 33%,
+    4% 28%,
+    0% 23%
+  );
   animation: techBackgroundShift 6s linear infinite;
   pointer-events: none;
 }
 
 @keyframes techBackgroundShift {
-  0% { background-position: 0% 0%; }
-  25% { background-position: 100% 0%; }
-  50% { background-position: 100% 100%; }
-  75% { background-position: 0% 100%; }
-  100% { background-position: 0% 0%; }
+  0% {
+    background-position: 0% 0%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
 }
 
 /* Tech Edge Inner Accents */
 .tech-edge-inner-accent {
   position: absolute;
   inset: 8px;
-  border: 2px solid rgba(0, 255, 255, 0.4);
-  clip-path: polygon(0% 10%, 12% 2%, 88% 2%, 100% 10%, 100% 23%, 96% 28%, 100% 33%, 100% 67%, 96% 72%, 100% 77%, 100% 90%, 88% 98%, 12% 98%, 0% 90%, 0% 77%, 4% 72%, 0% 67%, 0% 33%, 4% 28%, 0% 23%);
+  border: 2px solid rgb(0 255 255 / 40%);
+  clip-path: polygon(
+    0% 10%,
+    12% 2%,
+    88% 2%,
+    100% 10%,
+    100% 23%,
+    96% 28%,
+    100% 33%,
+    100% 67%,
+    96% 72%,
+    100% 77%,
+    100% 90%,
+    88% 98%,
+    12% 98%,
+    0% 90%,
+    0% 77%,
+    4% 72%,
+    0% 67%,
+    0% 33%,
+    4% 28%,
+    0% 23%
+  );
   animation: techInnerGlow 3s ease-in-out infinite alternate;
   pointer-events: none;
 }
 
 @keyframes techInnerGlow {
-  0% { 
-    border-color: rgba(0, 255, 255, 0.4);
-    filter: drop-shadow(0 0 4px rgba(0, 255, 255, 0.3));
+  0% {
+    border-color: rgb(0 255 255 / 40%);
+    filter: drop-shadow(0 0 4px rgb(0 255 255 / 30%));
   }
-  100% { 
-    border-color: rgba(255, 0, 255, 0.6);
-    filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.4));
+
+  100% {
+    border-color: rgb(255 0 255 / 60%);
+    filter: drop-shadow(0 0 8px rgb(255 0 255 / 40%));
   }
 }
 
@@ -852,19 +1024,42 @@
 .tech-edge-outer-border {
   position: absolute;
   inset: -4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  clip-path: polygon(0% 10%, 12% 2%, 88% 2%, 100% 10%, 100% 23%, 96% 28%, 100% 33%, 100% 67%, 96% 72%, 100% 77%, 100% 90%, 88% 98%, 12% 98%, 0% 90%, 0% 77%, 4% 72%, 0% 67%, 0% 33%, 4% 28%, 0% 23%);
+  border: 1px solid rgb(255 255 255 / 20%);
+  clip-path: polygon(
+    0% 10%,
+    12% 2%,
+    88% 2%,
+    100% 10%,
+    100% 23%,
+    96% 28%,
+    100% 33%,
+    100% 67%,
+    96% 72%,
+    100% 77%,
+    100% 90%,
+    88% 98%,
+    12% 98%,
+    0% 90%,
+    0% 77%,
+    4% 72%,
+    0% 67%,
+    0% 33%,
+    4% 28%,
+    0% 23%
+  );
   animation: techOuterPulse 4s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes techOuterPulse {
-  0%, 100% { 
-    border-color: rgba(255, 255, 255, 0.2);
+  0%,
+  100% {
+    border-color: rgb(255 255 255 / 20%);
     transform: scale(1);
   }
-  50% { 
-    border-color: rgba(0, 255, 136, 0.4);
+
+  50% {
+    border-color: rgb(0 255 136 / 40%);
     transform: scale(1.02);
   }
 }
@@ -882,7 +1077,7 @@
   position: absolute;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(0, 255, 136, 0.6);
+  border: 2px solid rgb(0 255 136 / 60%);
 }
 
 .tech-edge-corner-accents::before {
@@ -898,7 +1093,15 @@
   right: 0;
   border-left: none;
   border-top: none;
-  clip-path: polygon(40% 40%, 100% 40%, 100% 100%, 40% 100%, 40% 70%, 70% 70%, 70% 40%);
+  clip-path: polygon(
+    40% 40%,
+    100% 40%,
+    100% 100%,
+    40% 100%,
+    40% 70%,
+    70% 70%,
+    70% 40%
+  );
 }
 
 /* Tech Edge Side Accents */
@@ -912,11 +1115,12 @@
 .tech-edge-side-accents::after {
   content: '';
   position: absolute;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(0, 255, 136, 0.4) 20%, 
-    rgba(0, 136, 255, 0.4) 50%, 
-    rgba(136, 0, 255, 0.4) 80%, 
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(0 255 136 / 40%) 20%,
+    rgb(0 136 255 / 40%) 50%,
+    rgb(136 0 255 / 40%) 80%,
     transparent 100%
   );
   animation: techSideFlow 2s linear infinite;
@@ -938,13 +1142,38 @@
 }
 
 @keyframes techSideFlow {
-  0% { background-position: -100% 0; }
-  100% { background-position: 100% 0; }
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
 }
 
 /* Tech Edge Clip Path */
 .tech-edge-clip {
-  clip-path: polygon(0% 10%, 12% 2%, 88% 2%, 100% 10%, 100% 23%, 96% 28%, 100% 33%, 100% 67%, 96% 72%, 100% 77%, 100% 90%, 88% 98%, 12% 98%, 0% 90%, 0% 77%, 4% 72%, 0% 67%, 0% 33%, 4% 28%, 0% 23%);
+  clip-path: polygon(
+    0% 10%,
+    12% 2%,
+    88% 2%,
+    100% 10%,
+    100% 23%,
+    96% 28%,
+    100% 33%,
+    100% 67%,
+    96% 72%,
+    100% 77%,
+    100% 90%,
+    88% 98%,
+    12% 98%,
+    0% 90%,
+    0% 77%,
+    4% 72%,
+    0% 67%,
+    0% 33%,
+    4% 28%,
+    0% 23%
+  );
 }
 
 /* Reduce animations for users who prefer reduced motion */

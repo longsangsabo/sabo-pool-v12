@@ -24,7 +24,10 @@ import type {
   TournamentListProps,
   TournamentFilter,
 } from '@/types/tournament-management';
-import { TOURNAMENT_STATUSES, TOURNAMENT_TYPES } from '@/types/tournament-management';
+import {
+  TOURNAMENT_STATUSES,
+  TOURNAMENT_TYPES,
+} from '@/types/tournament-management';
 
 export const TournamentManagementList: React.FC<TournamentListProps> = ({
   tournaments,
@@ -53,8 +56,15 @@ export const TournamentManagementList: React.FC<TournamentListProps> = ({
 
   // Get tournament status info
   const getTournamentStatus = (status: string) => {
-    const statusInfo = TOURNAMENT_STATUSES[status as keyof typeof TOURNAMENT_STATUSES];
-    return statusInfo || { label: status, variant: 'outline' as const, color: 'gray' };
+    const statusInfo =
+      TOURNAMENT_STATUSES[status as keyof typeof TOURNAMENT_STATUSES];
+    return (
+      statusInfo || {
+        label: status,
+        variant: 'outline' as const,
+        color: 'gray',
+      }
+    );
   };
 
   // Get tournament type label
@@ -86,8 +96,12 @@ export const TournamentManagementList: React.FC<TournamentListProps> = ({
       <div className='space-y-6'>
         <div className='flex items-center justify-between'>
           <div>
-            <h2 className='text-2xl font-bold text-foreground'>Quản lý Giải đấu</h2>
-            <p className='text-muted-foreground'>Tạo và quản lý các giải đấu do CLB tổ chức</p>
+            <h2 className='text-2xl font-bold text-foreground'>
+              Quản lý Giải đấu
+            </h2>
+            <p className='text-muted-foreground'>
+              Tạo và quản lý các giải đấu do CLB tổ chức
+            </p>
           </div>
         </div>
 
@@ -104,7 +118,9 @@ export const TournamentManagementList: React.FC<TournamentListProps> = ({
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div>
-          <h2 className='text-2xl font-bold text-foreground'>Quản lý Giải đấu</h2>
+          <h2 className='text-2xl font-bold text-foreground'>
+            Quản lý Giải đấu
+          </h2>
           <p className='text-muted-foreground'>
             Tạo và quản lý các giải đấu do CLB tổ chức
           </p>
@@ -116,7 +132,10 @@ export const TournamentManagementList: React.FC<TournamentListProps> = ({
       </div>
 
       {/* Filter Tabs */}
-      <Tabs value={activeFilter} onValueChange={(value) => onFilterChange(value as TournamentFilter)}>
+      <Tabs
+        value={activeFilter}
+        onValueChange={value => onFilterChange(value as TournamentFilter)}
+      >
         <TabsList className='grid w-full grid-cols-4'>
           <TabsTrigger value='active'>Đang hoạt động</TabsTrigger>
           <TabsTrigger value='upcoming'>Sắp diễn ra</TabsTrigger>
@@ -132,9 +151,12 @@ export const TournamentManagementList: React.FC<TournamentListProps> = ({
                 <Trophy className='h-12 w-12 text-muted-foreground mb-4' />
                 <h3 className='text-lg font-semibold mb-2'>Chưa có giải đấu</h3>
                 <p className='text-muted-foreground text-center mb-4'>
-                  {activeFilter === 'active' && 'Không có giải đấu nào đang hoạt động'}
-                  {activeFilter === 'upcoming' && 'Không có giải đấu nào sắp diễn ra'}
-                  {activeFilter === 'completed' && 'Không có giải đấu nào đã kết thúc'}
+                  {activeFilter === 'active' &&
+                    'Không có giải đấu nào đang hoạt động'}
+                  {activeFilter === 'upcoming' &&
+                    'Không có giải đấu nào sắp diễn ra'}
+                  {activeFilter === 'completed' &&
+                    'Không có giải đấu nào đã kết thúc'}
                   {activeFilter === 'all' && 'Chưa có giải đấu nào được tạo'}
                 </p>
                 <Button onClick={() => window.open('/tournaments', '_blank')}>
@@ -145,7 +167,7 @@ export const TournamentManagementList: React.FC<TournamentListProps> = ({
             </Card>
           ) : (
             <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-              {filteredTournaments.map((tournament) => (
+              {filteredTournaments.map(tournament => (
                 <TournamentManagementCard
                   key={tournament.id}
                   tournament={tournament}
@@ -192,7 +214,8 @@ const TournamentManagementCard: React.FC<TournamentCardProps> = ({
   formatCurrency,
 }) => {
   const statusInfo = getTournamentStatus(tournament.status);
-  const canGenerateBracket = tournament.current_participants >= 3 && 
+  const canGenerateBracket =
+    tournament.current_participants >= 3 &&
     ['registration_open', 'registration_closed'].includes(tournament.status);
 
   return (
@@ -204,9 +227,7 @@ const TournamentManagementCard: React.FC<TournamentCardProps> = ({
               {tournament.name}
             </CardTitle>
             <div className='flex items-center gap-2 flex-wrap'>
-              <Badge variant={statusInfo.variant}>
-                {statusInfo.label}
-              </Badge>
+              <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
               <Badge variant='outline'>
                 {getTournamentTypeLabel(tournament.tournament_type)}
               </Badge>
@@ -221,10 +242,11 @@ const TournamentManagementCard: React.FC<TournamentCardProps> = ({
           <div className='flex items-center gap-2'>
             <Users className='w-4 h-4 text-muted-foreground' />
             <span>
-              {tournament.current_participants}/{tournament.max_participants} người tham gia
+              {tournament.current_participants}/{tournament.max_participants}{' '}
+              người tham gia
             </span>
           </div>
-          
+
           <div className='flex items-center gap-2'>
             <Calendar className='w-4 h-4 text-muted-foreground' />
             <span>{formatDate(tournament.tournament_start)}</span>
@@ -269,11 +291,7 @@ const TournamentManagementCard: React.FC<TournamentCardProps> = ({
             </Button>
           )}
 
-          <Button
-            size='sm'
-            variant='outline'
-            onClick={onEdit}
-          >
+          <Button size='sm' variant='outline' onClick={onEdit}>
             <Settings className='w-4 h-4' />
           </Button>
         </div>

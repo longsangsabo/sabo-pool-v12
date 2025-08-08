@@ -34,7 +34,10 @@ export const CompletedChallengeCard: React.FC<CompletedChallengeCardProps> = ({
         {/* Header */}
         <div className='flex items-center justify-between mb-3'>
           <div className='flex items-center gap-2'>
-            <Badge variant='default' className='bg-slate-600 dark:bg-slate-700 text-slate-100'>
+            <Badge
+              variant='default'
+              className='bg-slate-600 dark:bg-slate-700 text-slate-100'
+            >
               <Trophy className='w-3 h-3 mr-1' />
               Hoàn thành
             </Badge>
@@ -77,7 +80,9 @@ export const CompletedChallengeCard: React.FC<CompletedChallengeCardProps> = ({
                 {challenge.challenger_profile?.full_name || 'Challenger'}
                 {challengerWon && ' 🏆'}
               </div>
-              <div className='text-xs text-slate-500 dark:text-slate-400'>Challenger</div>
+              <div className='text-xs text-slate-500 dark:text-slate-400'>
+                Challenger
+              </div>
             </div>
           </div>
 
@@ -100,7 +105,9 @@ export const CompletedChallengeCard: React.FC<CompletedChallengeCardProps> = ({
                 {opponentWon && '🏆 '}
                 {challenge.opponent_profile?.full_name || 'Opponent'}
               </div>
-              <div className='text-xs text-slate-500 dark:text-slate-400'>Opponent</div>
+              <div className='text-xs text-slate-500 dark:text-slate-400'>
+                Opponent
+              </div>
             </div>
             <Avatar
               className={`w-10 h-10 border-2 ${opponentWon ? 'border-slate-400 dark:border-slate-500' : 'border-slate-200 dark:border-slate-600'}`}
@@ -108,7 +115,9 @@ export const CompletedChallengeCard: React.FC<CompletedChallengeCardProps> = ({
               <AvatarImage src={challenge.opponent_profile?.avatar_url} />
               <AvatarFallback
                 className={
-                  opponentWon ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                  opponentWon
+                    ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                 }
               >
                 {challenge.opponent_profile?.full_name?.charAt(0) || 'O'}

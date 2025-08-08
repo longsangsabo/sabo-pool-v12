@@ -82,7 +82,8 @@ const AdminApprovedClubs = () => {
     try {
       const { data: clubs, error } = await supabase
         .from('club_profiles')
-        .select(`
+        .select(
+          `
           *,
           profiles!club_profiles_user_id_fkey (
             display_name,
@@ -90,7 +91,8 @@ const AdminApprovedClubs = () => {
             phone,
             role
           )
-        `)
+        `
+        )
         .eq('verification_status', 'approved')
         .order('created_at', { ascending: false });
 
@@ -130,11 +132,16 @@ const AdminApprovedClubs = () => {
     }
   };
 
-  const filteredClubs = clubs.filter(club =>
-    club.club_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    club.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    club.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    club.profiles?.display_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredClubs = clubs.filter(
+    club =>
+      club.club_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      club.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      club.profiles?.full_name
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      club.profiles?.display_name
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -162,7 +169,11 @@ const AdminApprovedClubs = () => {
             onChange={e => setSearchTerm(e.target.value)}
             className='w-64'
           />
-          <Button onClick={fetchApprovedClubs} variant='outline' disabled={loading}>
+          <Button
+            onClick={fetchApprovedClubs}
+            variant='outline'
+            disabled={loading}
+          >
             🔄 Refresh
           </Button>
         </div>
@@ -175,7 +186,9 @@ const AdminApprovedClubs = () => {
             <CardContent className='pt-6 text-center'>
               <Building className='w-12 h-12 mx-auto mb-4 text-muted-foreground' />
               <p className='text-muted-foreground'>
-                {searchTerm ? 'Không tìm thấy câu lạc bộ nào' : 'Chưa có câu lạc bộ nào được duyệt'}
+                {searchTerm
+                  ? 'Không tìm thấy câu lạc bộ nào'
+                  : 'Chưa có câu lạc bộ nào được duyệt'}
               </p>
             </CardContent>
           </Card>
@@ -187,8 +200,12 @@ const AdminApprovedClubs = () => {
                   <div className='flex-1'>
                     <div className='flex items-center gap-2 mb-2'>
                       <Building className='w-5 h-5 text-primary' />
-                      <h3 className='text-lg font-semibold'>{club.club_name}</h3>
-                      <Badge className='bg-green-100 text-green-800'>Đã duyệt</Badge>
+                      <h3 className='text-lg font-semibold'>
+                        {club.club_name}
+                      </h3>
+                      <Badge className='bg-green-100 text-green-800'>
+                        Đã duyệt
+                      </Badge>
                       {getOwnerRoleBadge(club.profiles?.role)}
                     </div>
 
@@ -216,7 +233,10 @@ const AdminApprovedClubs = () => {
                         <div className='flex items-center gap-2 text-sm'>
                           <Calendar className='w-4 h-4 text-muted-foreground' />
                           <span>
-                            Tạo: {new Date(club.created_at).toLocaleDateString('vi-VN')}
+                            Tạo:{' '}
+                            {new Date(club.created_at).toLocaleDateString(
+                              'vi-VN'
+                            )}
                           </span>
                         </div>
                         <div className='text-sm'>
@@ -259,7 +279,9 @@ const AdminApprovedClubs = () => {
                             <DialogTitle className='flex items-center gap-2'>
                               <Building className='w-5 h-5' />
                               {club.club_name}
-                              <Badge className='bg-green-100 text-green-800'>Đã duyệt</Badge>
+                              <Badge className='bg-green-100 text-green-800'>
+                                Đã duyệt
+                              </Badge>
                             </DialogTitle>
                           </DialogHeader>
 
@@ -267,44 +289,58 @@ const AdminApprovedClubs = () => {
                             <div className='space-y-6'>
                               {/* Club Info */}
                               <div>
-                                <h4 className='font-semibold mb-3'>Thông tin câu lạc bộ</h4>
+                                <h4 className='font-semibold mb-3'>
+                                  Thông tin câu lạc bộ
+                                </h4>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                                   <div>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Tên câu lạc bộ
                                     </label>
-                                    <p className='text-sm'>{selectedClub.club_name}</p>
+                                    <p className='text-sm'>
+                                      {selectedClub.club_name}
+                                    </p>
                                   </div>
                                   <div>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Số điện thoại
                                     </label>
-                                    <p className='text-sm'>{selectedClub.phone}</p>
+                                    <p className='text-sm'>
+                                      {selectedClub.phone}
+                                    </p>
                                   </div>
                                   <div>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Số bàn có sẵn
                                     </label>
-                                    <p className='text-sm'>{selectedClub.available_tables}</p>
+                                    <p className='text-sm'>
+                                      {selectedClub.available_tables}
+                                    </p>
                                   </div>
                                   <div>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Giá theo giờ
                                     </label>
-                                    <p className='text-sm'>{formatPrice(selectedClub.hourly_rate)}</p>
+                                    <p className='text-sm'>
+                                      {formatPrice(selectedClub.hourly_rate)}
+                                    </p>
                                   </div>
                                   <div className='md:col-span-2'>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Địa chỉ
                                     </label>
-                                    <p className='text-sm'>{selectedClub.address}</p>
+                                    <p className='text-sm'>
+                                      {selectedClub.address}
+                                    </p>
                                   </div>
                                   {selectedClub.description && (
                                     <div className='md:col-span-2'>
                                       <label className='text-sm font-medium text-muted-foreground'>
                                         Mô tả
                                       </label>
-                                      <p className='text-sm'>{selectedClub.description}</p>
+                                      <p className='text-sm'>
+                                        {selectedClub.description}
+                                      </p>
                                     </div>
                                   )}
                                 </div>
@@ -312,14 +348,17 @@ const AdminApprovedClubs = () => {
 
                               {/* Owner Info */}
                               <div>
-                                <h4 className='font-semibold mb-3'>Thông tin chủ sở hữu</h4>
+                                <h4 className='font-semibold mb-3'>
+                                  Thông tin chủ sở hữu
+                                </h4>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                                   <div>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Tên hiển thị
                                     </label>
                                     <p className='text-sm'>
-                                      {selectedClub.profiles?.display_name || 'Chưa có'}
+                                      {selectedClub.profiles?.display_name ||
+                                        'Chưa có'}
                                     </p>
                                   </div>
                                   <div>
@@ -327,7 +366,8 @@ const AdminApprovedClubs = () => {
                                       Họ tên đầy đủ
                                     </label>
                                     <p className='text-sm'>
-                                      {selectedClub.profiles?.full_name || 'Chưa có'}
+                                      {selectedClub.profiles?.full_name ||
+                                        'Chưa có'}
                                     </p>
                                   </div>
                                   <div>
@@ -335,7 +375,8 @@ const AdminApprovedClubs = () => {
                                       Số điện thoại cá nhân
                                     </label>
                                     <p className='text-sm'>
-                                      {selectedClub.profiles?.phone || 'Chưa có'}
+                                      {selectedClub.profiles?.phone ||
+                                        'Chưa có'}
                                     </p>
                                   </div>
                                   <div>
@@ -343,7 +384,9 @@ const AdminApprovedClubs = () => {
                                       Vai trò hệ thống
                                     </label>
                                     <div className='mt-1'>
-                                      {getOwnerRoleBadge(selectedClub.profiles?.role)}
+                                      {getOwnerRoleBadge(
+                                        selectedClub.profiles?.role
+                                      )}
                                     </div>
                                   </div>
                                 </div>
@@ -351,14 +394,18 @@ const AdminApprovedClubs = () => {
 
                               {/* Timestamps */}
                               <div>
-                                <h4 className='font-semibold mb-3'>Thông tin hệ thống</h4>
+                                <h4 className='font-semibold mb-3'>
+                                  Thông tin hệ thống
+                                </h4>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                                   <div>
                                     <label className='text-sm font-medium text-muted-foreground'>
                                       Ngày tạo
                                     </label>
                                     <p className='text-sm'>
-                                      {new Date(selectedClub.created_at).toLocaleString('vi-VN')}
+                                      {new Date(
+                                        selectedClub.created_at
+                                      ).toLocaleString('vi-VN')}
                                     </p>
                                   </div>
                                   <div>
@@ -366,7 +413,9 @@ const AdminApprovedClubs = () => {
                                       Cập nhật lần cuối
                                     </label>
                                     <p className='text-sm'>
-                                      {new Date(selectedClub.updated_at).toLocaleString('vi-VN')}
+                                      {new Date(
+                                        selectedClub.updated_at
+                                      ).toLocaleString('vi-VN')}
                                     </p>
                                   </div>
                                 </div>

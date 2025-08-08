@@ -62,7 +62,9 @@ const AdminRouter = lazy(() => import('@/router/AdminRouter'));
 
 // Club components
 const ClubManagementPage = lazy(() => import('@/pages/ClubManagementPage'));
-const ClubOwnerDashboardPage = lazy(() => import('@/pages/ClubOwnerDashboardPage'));
+const ClubOwnerDashboardPage = lazy(
+  () => import('@/pages/ClubOwnerDashboardPage')
+);
 
 // Auth pages
 const AuthPage = lazy(() => import('@/pages/AuthPage'));
@@ -87,11 +89,19 @@ const AppContent = () => {
   const { PopupComponent } = useRealtimeNotifications();
 
   // Inline component to protect club management routes by owner role
-  const ClubOwnerRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const ClubOwnerRoute: React.FC<{ children: React.ReactNode }> = ({
+    children,
+  }) => {
     const { user } = useAuth();
     const { data: isOwner, isLoading } = useIsClubOwner(user?.id, !!user?.id);
-    if (isLoading) return <div className='p-8 text-center'>Đang kiểm tra quyền...</div>;
-    if (!isOwner) return <div className='p-8 text-center text-red-500'>Bạn không có quyền truy cập khu vực quản lý CLB.</div>;
+    if (isLoading)
+      return <div className='p-8 text-center'>Đang kiểm tra quyền...</div>;
+    if (!isOwner)
+      return (
+        <div className='p-8 text-center text-red-500'>
+          Bạn không có quyền truy cập khu vực quản lý CLB.
+        </div>
+      );
     return <>{children}</>;
   };
 
@@ -106,7 +116,7 @@ const AppContent = () => {
           <Route path='/privacy' element={<PrivacyPolicyPage />} />
           <Route path='/terms' element={<TermsOfServicePage />} />
           <Route path='/news' element={<NewsPage />} />
-          
+
           {/* Demo pages */}
           {/* <Route path='/demo' element={<RainbowAvatarDemo />} /> */}
           <Route path='/test-avatar' element={<TestAvatarPage />} />
@@ -177,7 +187,10 @@ const AppContent = () => {
             <Route path='leaderboard' element={<LeaderboardPage />} />
             <Route path='clubs' element={<ClubsPage />} />
             <Route path='clubs/:id' element={<ClubDetailPage />} />
-            <Route path='clubs/:id/owner' element={<ClubOwnerDashboardPage />} />
+            <Route
+              path='clubs/:id/owner'
+              element={<ClubOwnerDashboardPage />}
+            />
           </Route>
 
           {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}

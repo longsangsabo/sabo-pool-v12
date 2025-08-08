@@ -221,17 +221,21 @@ export const useSocialFeed = () => {
         .select('user_id, full_name, display_name, avatar_url')
         .in('user_id', Array.from(playerIds));
 
-      const profileMap = (profiles || []).reduce((acc, profile) => {
-        acc[profile.user_id] = profile;
-        return acc;
-      }, {} as Record<string, any>);
+      const profileMap = (profiles || []).reduce(
+        (acc, profile) => {
+          acc[profile.user_id] = profile;
+          return acc;
+        },
+        {} as Record<string, any>
+      );
 
       // Merge data manually to ensure compatibility
-      const matches = matchData?.map(match => ({
-        ...match,
-        player1: profileMap[match.player1_id] || null,
-        player2: profileMap[match.player2_id] || null,
-      })) || [];
+      const matches =
+        matchData?.map(match => ({
+          ...match,
+          player1: profileMap[match.player1_id] || null,
+          player2: profileMap[match.player2_id] || null,
+        })) || [];
 
       // Fetch recent challenges
       const { data: challenges, error: challengeError } = await supabase

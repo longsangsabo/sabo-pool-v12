@@ -19,24 +19,31 @@ export const useBracketManagement = (): UseBracketManagementReturn => {
   const [availablePlayers, setAvailablePlayers] = useState<Player[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
   const [tournamentSize, setTournamentSize] = useState<number>(8);
-  const [bracketType, setBracketType] = useState<BracketType>('single_elimination');
+  const [bracketType, setBracketType] =
+    useState<BracketType>('single_elimination');
   const [generatedBracket, setGeneratedBracket] = useState<BracketMatch[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Load tournament participants for bracket generation
-  const loadTournamentParticipants = useCallback(async (tournamentId: string) => {
-    try {
-      setLoading(true);
-      const participants = await TournamentManagementService.fetchTournamentParticipants(tournamentId);
-      setAvailablePlayers(participants);
-      setSelectedPlayers(participants); // Auto-select all participants
-    } catch (error) {
-      console.error('Error loading tournament participants:', error);
-      toast.error('Failed to load tournament participants');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const loadTournamentParticipants = useCallback(
+    async (tournamentId: string) => {
+      try {
+        setLoading(true);
+        const participants =
+          await TournamentManagementService.fetchTournamentParticipants(
+            tournamentId
+          );
+        setAvailablePlayers(participants);
+        setSelectedPlayers(participants); // Auto-select all participants
+      } catch (error) {
+        console.error('Error loading tournament participants:', error);
+        toast.error('Failed to load tournament participants');
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   // Generate random bracket
   const generateRandomBracket = useCallback(async () => {
@@ -47,7 +54,8 @@ export const useBracketManagement = (): UseBracketManagementReturn => {
 
     try {
       setLoading(true);
-      const matches = TournamentManagementService.generateRandomBracket(selectedPlayers);
+      const matches =
+        TournamentManagementService.generateRandomBracket(selectedPlayers);
       setGeneratedBracket(matches);
       toast.success('Đã tạo bảng đấu ngẫu nhiên thành công!');
     } catch (error) {
@@ -67,7 +75,8 @@ export const useBracketManagement = (): UseBracketManagementReturn => {
 
     try {
       setLoading(true);
-      const matches = TournamentManagementService.generateSeededBracket(selectedPlayers);
+      const matches =
+        TournamentManagementService.generateSeededBracket(selectedPlayers);
       setGeneratedBracket(matches);
       toast.success('Đã tạo bảng đấu theo seeding thành công!');
     } catch (error) {
@@ -79,35 +88,39 @@ export const useBracketManagement = (): UseBracketManagementReturn => {
   }, [selectedPlayers]);
 
   // Save bracket to tournament
-  const saveBracketToTournament = useCallback(async (tournamentId: string): Promise<boolean> => {
-    if (generatedBracket.length === 0) {
-      toast.error('Vui lòng tạo bảng đấu trước khi lưu');
-      return false;
-    }
-
-    try {
-      setLoading(true);
-      const result = await TournamentManagementService.saveBracketToTournament(
-        tournamentId,
-        generatedBracket
-      );
-
-      if (result.success) {
-        toast.success('Đã lưu bảng đấu thành công!');
-        setGeneratedBracket([]); // Clear generated bracket after saving
-        return true;
-      } else {
-        toast.error(result.error || 'Lỗi khi lưu bảng đấu');
+  const saveBracketToTournament = useCallback(
+    async (tournamentId: string): Promise<boolean> => {
+      if (generatedBracket.length === 0) {
+        toast.error('Vui lòng tạo bảng đấu trước khi lưu');
         return false;
       }
-    } catch (error) {
-      console.error('Error saving bracket:', error);
-      toast.error('Lỗi khi lưu bảng đấu');
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [generatedBracket]);
+
+      try {
+        setLoading(true);
+        const result =
+          await TournamentManagementService.saveBracketToTournament(
+            tournamentId,
+            generatedBracket
+          );
+
+        if (result.success) {
+          toast.success('Đã lưu bảng đấu thành công!');
+          setGeneratedBracket([]); // Clear generated bracket after saving
+          return true;
+        } else {
+          toast.error(result.error || 'Lỗi khi lưu bảng đấu');
+          return false;
+        }
+      } catch (error) {
+        console.error('Error saving bracket:', error);
+        toast.error('Lỗi khi lưu bảng đấu');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [generatedBracket]
+  );
 
   // Load all available players
   const loadAvailablePlayers = useCallback(async () => {

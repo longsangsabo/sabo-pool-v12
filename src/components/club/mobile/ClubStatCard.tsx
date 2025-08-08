@@ -27,7 +27,9 @@ export const ClubStatCard: React.FC<ClubStatCardProps> = ({
         {Icon && <Icon className={`w-5 h-5 ${accentClass}`} />}
       </div>
       <div className='flex-1 min-w-0'>
-        <p className='text-[11px] font-medium text-muted-foreground uppercase tracking-wide'>{label}</p>
+        <p className='text-[11px] font-medium text-muted-foreground uppercase tracking-wide'>
+          {label}
+        </p>
         <p className='text-lg font-semibold'>{value}</p>
       </div>
     </div>

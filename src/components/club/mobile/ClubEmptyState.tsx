@@ -20,16 +20,28 @@ export const ClubEmptyState: React.FC<ClubEmptyStateProps> = ({
   className = '',
 }) => {
   return (
-    <div className={cn('flex flex-col items-center text-center py-10 px-4 rounded-lg border border-dashed bg-muted/30 dark:bg-slate-800/40', className)}>
+    <div
+      className={cn(
+        'flex flex-col items-center text-center py-10 px-4 rounded-lg border border-dashed bg-muted/30 dark:bg-slate-800/40',
+        className
+      )}
+    >
       {Icon && (
         <div className='w-12 h-12 rounded-full flex items-center justify-center mb-4 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600'>
           <Icon className='w-6 h-6 text-blue-500' />
         </div>
       )}
       <h3 className='text-sm font-semibold mb-1'>{title}</h3>
-      <p className='text-xs text-muted-foreground mb-4 max-w-xs leading-relaxed'>{description}</p>
+      <p className='text-xs text-muted-foreground mb-4 max-w-xs leading-relaxed'>
+        {description}
+      </p>
       {actionLabel && onAction && (
-        <Button size='sm' variant='outline' onClick={onAction} className='text-xs'>
+        <Button
+          size='sm'
+          variant='outline'
+          onClick={onAction}
+          className='text-xs'
+        >
           {actionLabel}
         </Button>
       )}

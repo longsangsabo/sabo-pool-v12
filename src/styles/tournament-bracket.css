@@ -2,21 +2,22 @@
 
 /* Root Variables for Design System */
 :root {
-  --bracket-bg-light: #F8FAFC;
+  --bracket-bg-light: #f8fafc;
   --bracket-bg-dark: #111827;
-  --bracket-card-light: #FFFFFF;
-  --bracket-card-dark: rgba(255, 255, 255, 0.05);
-  --bracket-border-light: #E2E8F0;
-  --bracket-border-dark: rgba(255, 255, 255, 0.1);
-  --bracket-winner-bg: #DCFCE7;
-  --bracket-winner-border: #16A34A;
-  --bracket-loser-bg: #FEF2F2;
-  --bracket-loser-border: #DC2626;
-  --bracket-live-color: #F59E0B;
-  --bracket-upcoming-color: #6B7280;
+  --bracket-card-light: #fff;
+  --bracket-card-dark: rgb(255 255 255 / 5%);
+  --bracket-border-light: #e2e8f0;
+  --bracket-border-dark: rgb(255 255 255 / 10%);
+  --bracket-winner-bg: #dcfce7;
+  --bracket-winner-border: #16a34a;
+  --bracket-loser-bg: #fef2f2;
+  --bracket-loser-border: #dc2626;
+  --bracket-live-color: #f59e0b;
+  --bracket-upcoming-color: #6b7280;
   --bracket-connector-color: hsl(var(--muted));
-  --bracket-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --bracket-shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --bracket-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
+  --bracket-shadow-hover:
+    0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);
 }
 
 /* Main Bracket Container */
@@ -24,7 +25,12 @@
   background: var(--bracket-bg-light);
   min-height: 100vh;
   padding: 1.5rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
 }
 
 .dark .tournament-bracket {
@@ -33,7 +39,11 @@
 
 /* Tournament Header */
 .bracket-header {
-  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-foreground)) 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary-foreground)) 100%
+  );
   border-radius: 16px;
   padding: 2rem;
   text-align: center;
@@ -46,10 +56,7 @@
 .bracket-header::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
   pointer-events: none;
 }
@@ -64,7 +71,7 @@
 }
 
 .bracket-subtitle {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgb(255 255 255 / 90%);
   font-size: 1.1rem;
   position: relative;
   z-index: 1;
@@ -80,13 +87,13 @@
 }
 
 .bracket-stat {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(255 255 255 / 10%);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 0.75rem 1.5rem;
   color: white;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgb(255 255 255 / 20%);
 }
 
 /* Controls Section */
@@ -157,7 +164,7 @@
 .view-toggle button.active {
   background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
 }
 
 /* Bracket Layout */
@@ -178,8 +185,7 @@
 
 /* Horizontal Scroll with Custom Scrollbar */
 .bracket-scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto hidden;
   padding-bottom: 1rem;
   scroll-behavior: smooth;
 }
@@ -279,12 +285,20 @@
 /* Match Status Indicators */
 .match-card.completed {
   border-color: var(--bracket-winner-border);
-  background: linear-gradient(135deg, var(--bracket-card-light) 0%, var(--bracket-winner-bg) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--bracket-card-light) 0%,
+    var(--bracket-winner-bg) 100%
+  );
 }
 
 .match-card.live {
   border-color: var(--bracket-live-color);
-  background: linear-gradient(135deg, var(--bracket-card-light) 0%, #FEF3C7 100%);
+  background: linear-gradient(
+    135deg,
+    var(--bracket-card-light) 0%,
+    #fef3c7 100%
+  );
   animation: pulse-border 2s infinite;
 }
 
@@ -294,8 +308,13 @@
 }
 
 @keyframes pulse-border {
-  0%, 100% { border-color: var(--bracket-live-color); }
-  50% { border-color: rgba(245, 158, 11, 0.5); }
+  0%,
+  100% {
+    border-color: var(--bracket-live-color);
+  }
+  50% {
+    border-color: rgb(245 158 11 / 50%);
+  }
 }
 
 /* Match Header */
@@ -330,16 +349,26 @@
   animation: none;
 }
 
-.status-dot.completed { background: var(--bracket-winner-border); }
-.status-dot.live { 
+.status-dot.completed {
+  background: var(--bracket-winner-border);
+}
+
+.status-dot.live {
   background: var(--bracket-live-color);
   animation: pulse 2s infinite;
 }
-.status-dot.upcoming { background: var(--bracket-upcoming-color); }
+.status-dot.upcoming {
+  background: var(--bracket-upcoming-color);
+}
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .status-text {
@@ -460,7 +489,12 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--bracket-border-light) 50%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--bracket-border-light) 50%,
+    transparent 100%
+  );
 }
 
 .vs-text {
@@ -507,16 +541,13 @@
 
 .match-action-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
 /* Connector Lines */
 .bracket-connectors {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   pointer-events: none;
   z-index: 1;
 }
@@ -543,7 +574,7 @@
   right: 2rem;
   width: 200px;
   height: 120px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgb(255 255 255 / 95%);
   border: 1px solid var(--bracket-border-light);
   border-radius: 8px;
   padding: 0.5rem;
@@ -597,73 +628,73 @@
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .bracket-rounds {
     gap: 2rem;
   }
-  
+
   .bracket-round {
     min-width: 280px;
   }
-  
+
   .bracket-minimap {
     display: none;
   }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .tournament-bracket {
     padding: 1rem;
   }
-  
+
   .bracket-header {
     padding: 1.5rem;
   }
-  
+
   .bracket-title {
     font-size: 1.5rem;
   }
-  
+
   .bracket-controls {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .bracket-search input {
     width: 100%;
   }
-  
+
   .bracket-rounds {
     gap: 1.5rem;
   }
-  
+
   .bracket-round {
     min-width: 240px;
   }
-  
+
   .match-card {
     margin-bottom: 1rem;
   }
-  
+
   .zoom-controls {
     bottom: 1rem;
     left: 1rem;
   }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .bracket-round {
     min-width: 200px;
   }
-  
+
   .player-name {
     font-size: 0.8rem;
   }
-  
+
   .player-score {
     font-size: 1rem;
   }
-  
+
   .round-title {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
@@ -672,26 +703,26 @@
 
 /* Special Tournament Types */
 .double-elimination .winner-bracket {
-  border: 2px solid #F59E0B;
+  border: 2px solid #f59e0b;
   border-radius: 16px;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #FEF3C7 0%, transparent 100%);
+  background: linear-gradient(135deg, #fef3c7 0%, transparent 100%);
   margin-bottom: 2rem;
 }
 
 .double-elimination .loser-bracket {
-  border: 2px solid #DC2626;
+  border: 2px solid #dc2626;
   border-radius: 16px;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #FEE2E2 0%, transparent 100%);
+  background: linear-gradient(135deg, #fee2e2 0%, transparent 100%);
   margin-bottom: 2rem;
 }
 
 .double-elimination .grand-final {
-  border: 2px solid #16A34A;
+  border: 2px solid #16a34a;
   border-radius: 16px;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #DCFCE7 0%, transparent 100%);
+  background: linear-gradient(135deg, #dcfce7 0%, transparent 100%);
 }
 
 /* Animations */
@@ -700,6 +731,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -710,10 +742,18 @@
   animation: fadeInUp 0.5s ease-out;
 }
 
-.match-card:nth-child(1) { animation-delay: 0.1s; }
-.match-card:nth-child(2) { animation-delay: 0.2s; }
-.match-card:nth-child(3) { animation-delay: 0.3s; }
-.match-card:nth-child(4) { animation-delay: 0.4s; }
+.match-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.match-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.match-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.match-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
 
 /* Loading States */
 .match-loading {
@@ -728,7 +768,12 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 30%),
+    transparent
+  );
   animation: shimmer 1.5s infinite;
 }
 
@@ -759,19 +804,19 @@
     background: white;
     padding: 0;
   }
-  
+
   .bracket-controls,
   .zoom-controls,
   .bracket-minimap,
   .match-actions {
     display: none !important;
   }
-  
+
   .bracket-container {
     box-shadow: none;
     border: 1px solid #000;
   }
-  
+
   .match-card {
     break-inside: avoid;
     box-shadow: none;

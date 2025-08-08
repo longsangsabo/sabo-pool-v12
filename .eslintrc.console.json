@@ -1,8 +1,11 @@
 {
   "rules": {
-    "no-console": ["error", {
-      "allow": ["error"]
-    }],
+    "no-console": [
+      "error",
+      {
+        "allow": ["error"]
+      }
+    ],
     "no-debugger": "error"
   },
   "extends": ["eslint:recommended"]

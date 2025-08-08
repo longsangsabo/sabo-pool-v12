@@ -22,13 +22,13 @@ export function safeRelationshipQuery(
   alias?: string
 ) {
   const relationshipAlias = alias || referencedTable;
-  
+
   // Try standard format first: profiles!player1_id
   const standardFormat = `${relationshipAlias}:${referencedTable}!${foreignKey}`;
-  
+
   // Fallback format with full table prefix: profiles!matches_player1_id_fkey
   const fallbackFormat = `${relationshipAlias}:${referencedTable}!${table}_${foreignKey}_fkey`;
-  
+
   return {
     standard: standardFormat,
     fallback: fallbackFormat,

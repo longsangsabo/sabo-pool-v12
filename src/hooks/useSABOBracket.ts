@@ -165,7 +165,7 @@ export const useSABOBracket = (tournamentId: string) => {
   // Check progression and automation
   const checkProgression = async (): Promise<AutomationResult | null> => {
     try {
-      // Since get_double_elimination_status was removed in cleanup, 
+      // Since get_double_elimination_status was removed in cleanup,
       // we'll use the tournament matches directly to assess status
       const { data: tournament, error } = await supabase
         .from('tournaments')

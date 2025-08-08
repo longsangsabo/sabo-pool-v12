@@ -1,52 +1,59 @@
 # 📱 Mobile Page Titles - Chuẩn Hóa Tên Trang
 
 ## 🎯 Mục đích
+
 Chuẩn hóa tên các trang trong mobile interface để đảm bảo:
+
 - **Consistency** - Tất cả trang đều có tên tiếng Việt chuẩn
-- **Maintainability** - Dễ dàng thay đổi tên trang ở một nơi duy nhất  
+- **Maintainability** - Dễ dàng thay đổi tên trang ở một nơi duy nhất
 - **Type Safety** - TypeScript hỗ trợ auto-complete và type checking
 
 ## 📋 Danh Sách Tên Trang Chuẩn
 
 ### 🏠 Core Player Pages (Main Navigation)
+
 ```typescript
-DASHBOARD: 'Trang Chủ'           // / , /dashboard
-PROFILE: 'Hồ Sơ'                 // /profile  
-TOURNAMENTS: 'Giải Đấu'          // /tournaments
-CHALLENGES: 'Thách Đấu'          // /challenges
-LEADERBOARD: 'Xếp Hạng'          // /leaderboard
+DASHBOARD: 'Trang Chủ'; // / , /dashboard
+PROFILE: 'Hồ Sơ'; // /profile
+TOURNAMENTS: 'Giải Đấu'; // /tournaments
+CHALLENGES: 'Thách Đấu'; // /challenges
+LEADERBOARD: 'Xếp Hạng'; // /leaderboard
 ```
 
-### 🔗 Secondary Pages  
+### 🔗 Secondary Pages
+
 ```typescript
-CALENDAR: 'Lịch Thi Đấu'         // /calendar
-COMMUNITY: 'Cộng Đồng'           // /community
-FEED: 'Bảng Tin'                 // /feed
-MARKETPLACE: 'Cửa Hàng'          // /marketplace
-NOTIFICATIONS: 'Thông Báo'       // /notifications
-SETTINGS: 'Cài Đặt'              // /settings
-WALLET: 'Ví Điện Tử'             // /wallet
+CALENDAR: 'Lịch Thi Đấu'; // /calendar
+COMMUNITY: 'Cộng Đồng'; // /community
+FEED: 'Bảng Tin'; // /feed
+MARKETPLACE: 'Cửa Hàng'; // /marketplace
+NOTIFICATIONS: 'Thông Báo'; // /notifications
+SETTINGS: 'Cài Đặt'; // /settings
+WALLET: 'Ví Điện Tử'; // /wallet
 ```
 
 ### 🏢 Club Pages
+
 ```typescript
-CLUBS: 'Câu Lạc Bộ'              // /clubs
-CLUB_DETAIL: 'Chi Tiết CLB'      // /clubs/:id
-CLUB_REGISTRATION: 'Đăng Ký CLB' // /club-registration
+CLUBS: 'Câu Lạc Bộ'; // /clubs
+CLUB_DETAIL: 'Chi Tiết CLB'; // /clubs/:id
+CLUB_REGISTRATION: 'Đăng Ký CLB'; // /club-registration
 ```
 
 ### 📄 Public Pages
+
 ```typescript
-ABOUT: 'Giới Thiệu'              // /about
-CONTACT: 'Liên Hệ'               // /contact
-NEWS: 'Tin Tức'                  // /news
-PRIVACY: 'Chính Sách'            // /privacy
-TERMS: 'Điều Khoản'              // /terms
+ABOUT: 'Giới Thiệu'; // /about
+CONTACT: 'Liên Hệ'; // /contact
+NEWS: 'Tin Tức'; // /news
+PRIVACY: 'Chính Sách'; // /privacy
+TERMS: 'Điều Khoản'; // /terms
 ```
 
 ## 🔧 Cách Sử Dụng
 
 ### 1. Auto-Detection (Khuyến nghị)
+
 ```typescript
 // MobilePlayerLayout tự động detect title từ route
 <MobilePlayerLayout>
@@ -55,6 +62,7 @@ TERMS: 'Điều Khoản'              // /terms
 ```
 
 ### 2. Manual Override
+
 ```typescript
 // Custom title cho trường hợp đặc biệt
 <MobilePlayerLayout pageTitle={MOBILE_PAGE_TITLES.PROFILE}>
@@ -63,8 +71,13 @@ TERMS: 'Điều Khoản'              // /terms
 ```
 
 ### 3. Programmatic Access
+
 ```typescript
-import { MOBILE_PAGE_TITLES, getPageTitle, useMobilePageTitle } from '@/utils/mobilePageUtils';
+import {
+  MOBILE_PAGE_TITLES,
+  getPageTitle,
+  useMobilePageTitle,
+} from '@/utils/mobilePageUtils';
 
 // Get title by constant
 const title = MOBILE_PAGE_TITLES.DASHBOARD;
@@ -79,6 +92,7 @@ const currentTitle = useMobilePageTitle();
 ## 🏗️ Architecture
 
 ### Layout Hierarchy
+
 ```
 ResponsiveLayout
 └── MobilePlayerLayout (if mobile)
@@ -88,6 +102,7 @@ ResponsiveLayout
 ```
 
 ### Files Structure
+
 ```
 src/
 ├── components/mobile/
@@ -102,11 +117,13 @@ src/
 ## 📱 Mobile Experience
 
 ### Header Behavior
+
 - **Có title**: Hiển thị SABO logo + page title
 - **Không title**: Chỉ hiển thị SABO logo (home page style)
 - **Auth pages**: Ẩn header hoàn toàn
 
-### Navigation Behavior  
+### Navigation Behavior
+
 - **Main pages**: Hiển thị bottom navigation
 - **Auth pages**: Ẩn navigation
 - **Admin pages**: Ẩn navigation
@@ -114,6 +131,7 @@ src/
 ## 🔄 Dynamic Routes
 
 Các route động được handle tự động:
+
 ```typescript
 /clubs/123    → "Chi Tiết CLB"
 /clubs/456    → "Chi Tiết CLB"
@@ -130,11 +148,13 @@ Các route động được handle tự động:
 ## 🎨 Customization
 
 ### Thêm Page Mới
+
 1. Thêm vào `MOBILE_PAGE_TITLES` constant
 2. Thêm mapping vào `useMobilePageTitle` hook
 3. Thêm vào `mobilePageUtils` nếu cần
 
 ### Thay Đổi Tên Trang
+
 Chỉ cần sửa trong `MOBILE_PAGE_TITLES` - tất cả sẽ update tự động!
 
 ---

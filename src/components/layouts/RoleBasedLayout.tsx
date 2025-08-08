@@ -17,18 +17,22 @@ export const RoleBasedLayout: React.FC<RoleBasedLayoutProps> = ({
 }) => {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
-  const { data: isClubOwner, isLoading: clubLoading } = useIsClubOwner(user?.id, !!user?.id);
+  const { data: isClubOwner, isLoading: clubLoading } = useIsClubOwner(
+    user?.id,
+    !!user?.id
+  );
   const { isDesktop } = useOptimizedResponsive();
   const location = useLocation();
   const path = location.pathname;
-  const isOwnerManagementRoute = path.startsWith('/club-management') || /\/clubs\/.+\/owner$/.test(path);
+  const isOwnerManagementRoute =
+    path.startsWith('/club-management') || /\/clubs\/.+\/owner$/.test(path);
 
   console.log('[RoleBasedLayout] Debug:', {
     user: user?.id,
     isClubOwner,
     isOwnerManagementRoute,
     path,
-    loading: { authLoading, adminLoading, clubLoading }
+    loading: { authLoading, adminLoading, clubLoading },
   });
 
   // Show loading while checking roles
@@ -47,7 +51,9 @@ export const RoleBasedLayout: React.FC<RoleBasedLayoutProps> = ({
 
   // Club owners get club-specific layout ONLY for management routes
   if (user && isClubOwner && isOwnerManagementRoute) {
-    console.log('[RoleBasedLayout] Using ClubResponsiveLayout for owner management');
+    console.log(
+      '[RoleBasedLayout] Using ClubResponsiveLayout for owner management'
+    );
     return <ClubResponsiveLayout>{children}</ClubResponsiveLayout>;
   }
 

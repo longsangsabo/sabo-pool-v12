@@ -13,4 +13,7 @@ export { useSABOScoreSubmission } from '@/tournaments/sabo/hooks/useSABOScoreSub
 export { useSABOTournamentProgress } from '@/tournaments/sabo/hooks/useSABOTournamentProgress';
 
 // Types
-export type { SABOMatch, SABOOrganizedMatches } from '@/tournaments/sabo/SABOLogicCore';
+export type {
+  SABOMatch,
+  SABOOrganizedMatches,
+} from '@/tournaments/sabo/SABOLogicCore';

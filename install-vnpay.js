@@ -2,7 +2,7 @@
 
 /**
  * VNPAY Integration Installation Script
- * 
+ *
  * This script helps set up the VNPAY payment gateway integration
  * by creating necessary files and configurations.
  */
@@ -17,7 +17,7 @@ console.log('==========================================\n');
 const requiredFiles = [
   'src/integrations/vnpay/vnpay-payment-gateway.js',
   'demo-server.js',
-  'test-vnpay.js'
+  'test-vnpay.js',
 ];
 
 console.log('📋 Checking required files...');
@@ -44,7 +44,7 @@ VNP_IPN_URL=http://localhost:3001/api/webhooks/vnpay-ipn
 PORT=3001
 NODE_ENV=development
 `;
-  
+
   fs.writeFileSync(envFile, envContent);
   console.log('   ✅ .env file created');
 } else {
@@ -56,12 +56,21 @@ console.log('\n📦 Checking dependencies...');
 const packageJsonPath = 'package.json';
 if (fs.existsSync(packageJsonPath)) {
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-  const requiredDeps = ['express', 'crypto', 'moment', 'dotenv', 'querystring', 'axios'];
-  
+  const requiredDeps = [
+    'express',
+    'crypto',
+    'moment',
+    'dotenv',
+    'querystring',
+    'axios',
+  ];
+
   const missingDeps = requiredDeps.filter(dep => {
-    return !packageJson.dependencies?.[dep] && !packageJson.devDependencies?.[dep];
+    return (
+      !packageJson.dependencies?.[dep] && !packageJson.devDependencies?.[dep]
+    );
   });
-  
+
   if (missingDeps.length > 0) {
     console.log(`   ⚠️  Missing dependencies: ${missingDeps.join(', ')}`);
     console.log('   Run: npm install ' + missingDeps.join(' '));
@@ -75,7 +84,9 @@ if (fs.existsSync(packageJsonPath)) {
 // Create installation instructions
 console.log('\n📖 Installation Instructions:');
 console.log('1. Install dependencies:');
-console.log('   npm install express crypto moment dotenv querystring axios cors helmet morgan');
+console.log(
+  '   npm install express crypto moment dotenv querystring axios cors helmet morgan'
+);
 console.log('');
 console.log('2. Start the demo server:');
 console.log('   node demo-server.js');
@@ -107,10 +118,14 @@ console.log('   Run: node quick-test.js');
 
 console.log('\n🎉 Setup complete!');
 console.log('\n📚 Next steps:');
-console.log('1. Review the VNPAY_INTEGRATION_README.md for detailed documentation');
+console.log(
+  '1. Review the VNPAY_INTEGRATION_README.md for detailed documentation'
+);
 console.log('2. Test the integration with the demo server');
 console.log('3. Integrate into your main application');
 console.log('4. Configure production environment variables');
 console.log('\n🔗 Useful links:');
 console.log('- VNPAY Sandbox: https://sandbox.vnpayment.vn/');
-console.log('- VNPAY Documentation: https://sandbox.vnpayment.vn/apis/docs/huong-dan-tich-hop'); 
+console.log(
+  '- VNPAY Documentation: https://sandbox.vnpayment.vn/apis/docs/huong-dan-tich-hop'
+);

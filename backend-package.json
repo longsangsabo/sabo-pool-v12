@@ -43,13 +43,7 @@
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
   },
-  "keywords": [
-    "vnpay",
-    "payment-gateway",
-    "express",
-    "nodejs",
-    "pool-arena"
-  ],
+  "keywords": ["vnpay", "payment-gateway", "express", "nodejs", "pool-arena"],
   "author": "Sabo Pool Arena Team",
   "license": "MIT"
-} 
+}

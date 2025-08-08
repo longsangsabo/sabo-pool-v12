@@ -17,42 +17,60 @@ const ClubOwnerDashboardPage: React.FC = () => {
   const clubId = params.id as string | undefined;
   const { session } = useSession();
   const userId = session?.user?.id;
-  const { data: roleData, isLoading: roleLoading } = useClubRole(clubId, userId, !!clubId && !!userId);
-  const { data: club, isLoading: clubLoading } = useClubProfile(clubId, !!clubId);
+  const { data: roleData, isLoading: roleLoading } = useClubRole(
+    clubId,
+    userId,
+    !!clubId && !!userId
+  );
+  const { data: club, isLoading: clubLoading } = useClubProfile(
+    clubId,
+    !!clubId
+  );
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
     if (clubId && userId) {
       queryClient.prefetchQuery({
-        queryKey: ['club-members', clubId, { status: undefined, role: undefined, limit: 40 }],
-        queryFn: () => fetchClubMembers(clubId, { limit: 40 })
+        queryKey: [
+          'club-members',
+          clubId,
+          { status: undefined, role: undefined, limit: 40 },
+        ],
+        queryFn: () => fetchClubMembers(clubId, { limit: 40 }),
       });
       queryClient.prefetchQuery({
         queryKey: ['club-activities', clubId, { limit: 30 }],
-        queryFn: () => fetchClubActivities(clubId, { limit: 30 })
+        queryFn: () => fetchClubActivities(clubId, { limit: 30 }),
       });
     }
   }, [clubId, userId, queryClient]);
 
   const loading = roleLoading || clubLoading;
-  const notAllowed = !loading && (!roleData || (roleData.role !== 'owner' && roleData.role !== 'moderator'));
+  const notAllowed =
+    !loading &&
+    (!roleData || (roleData.role !== 'owner' && roleData.role !== 'moderator'));
 
   return (
     <MobilePlayerLayout pageTitle='Quản Trị CLB'>
       {loading && (
         <div className='flex flex-col items-center justify-center py-20 gap-3 text-sm text-muted-foreground'>
-          <Loader2 className='w-6 h-6 animate-spin' /> Đang tải quyền truy cập...
+          <Loader2 className='w-6 h-6 animate-spin' /> Đang tải quyền truy
+          cập...
         </div>
       )}
       {!loading && notAllowed && (
-        <div className='py-20 text-center text-sm text-muted-foreground'>Bạn không có quyền truy cập trang quản trị CLB này.</div>
+        <div className='py-20 text-center text-sm text-muted-foreground'>
+          Bạn không có quyền truy cập trang quản trị CLB này.
+        </div>
       )}
       {!loading && !notAllowed && clubId && (
         <ClubOwnerDashboardMobile
           clubId={clubId}
           onInvite={() => navigate(`/clubs/${clubId}?tab=members&invite=1`)}
           onNavigateMembers={() => navigate(`/clubs/${clubId}?tab=members`)}
-          onNavigateActivities={() => navigate(`/clubs/${clubId}?tab=activities`)}
+          onNavigateActivities={() =>
+            navigate(`/clubs/${clubId}?tab=activities`)
+          }
           onSettings={() => navigate(`/clubs/${clubId}?tab=settings`)}
         />
       )}

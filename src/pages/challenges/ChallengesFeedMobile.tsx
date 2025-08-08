@@ -490,10 +490,25 @@ const ChallengesFeedMobile: React.FC = () => {
 
   // Converter function to transform Challenge to standard format
   const convertChallengeToStandardFormat = (challenge: Challenge) => {
-    const isLive = challenge.status === 'accepted' && challenge.details.scheduledTime && new Date(challenge.details.scheduledTime) <= new Date();
-    const isCompleted = challenge.status === 'rejected' || (challenge.status === 'accepted' && challenge.details.scheduledTime && new Date(challenge.details.scheduledTime) < new Date(Date.now() - 2 * 60 * 60 * 1000)); // Assume completed if 2+ hours past scheduled time
-    
-    let status: 'pending' | 'accepted' | 'completed' | 'ongoing' | 'declined' | 'expired' | 'cancelled';
+    const isLive =
+      challenge.status === 'accepted' &&
+      challenge.details.scheduledTime &&
+      new Date(challenge.details.scheduledTime) <= new Date();
+    const isCompleted =
+      challenge.status === 'rejected' ||
+      (challenge.status === 'accepted' &&
+        challenge.details.scheduledTime &&
+        new Date(challenge.details.scheduledTime) <
+          new Date(Date.now() - 2 * 60 * 60 * 1000)); // Assume completed if 2+ hours past scheduled time
+
+    let status:
+      | 'pending'
+      | 'accepted'
+      | 'completed'
+      | 'ongoing'
+      | 'declined'
+      | 'expired'
+      | 'cancelled';
     if (challenge.status === 'pending') {
       status = 'pending';
     } else if (challenge.status === 'accepted') {
@@ -505,7 +520,7 @@ const ChallengesFeedMobile: React.FC = () => {
     } else {
       status = 'completed';
     }
-    
+
     return {
       id: challenge.id,
       challenger_id: user?.id || '',
@@ -523,7 +538,7 @@ const ChallengesFeedMobile: React.FC = () => {
         avatar_url: user?.user_metadata?.avatar_url,
         current_rank: 'A',
         spa_points: userStats.eloRating,
-        verified_rank: 'A'
+        verified_rank: 'A',
       },
       opponent_profile: {
         id: challenge.opponent.id,
@@ -532,11 +547,15 @@ const ChallengesFeedMobile: React.FC = () => {
         avatar_url: challenge.opponent.avatar,
         current_rank: challenge.opponent.rank,
         spa_points: challenge.opponent.elo,
-        verified_rank: challenge.opponent.rank
+        verified_rank: challenge.opponent.rank,
       },
-      challenger_score: isCompleted ? Math.floor(Math.random() * challenge.details.raceTO) : undefined,
-      opponent_score: isCompleted ? Math.floor(Math.random() * challenge.details.raceTO) : undefined,
-      club: null
+      challenger_score: isCompleted
+        ? Math.floor(Math.random() * challenge.details.raceTO)
+        : undefined,
+      opponent_score: isCompleted
+        ? Math.floor(Math.random() * challenge.details.raceTO)
+        : undefined,
+      club: null,
     };
   };
 
@@ -547,28 +566,36 @@ const ChallengesFeedMobile: React.FC = () => {
         id: user?.id || '',
         name: user?.user_metadata?.full_name || 'You',
         avatar: user?.user_metadata?.avatar_url,
-        rank: 'A'
+        rank: 'A',
       },
       player2: {
         id: challenge.opponent.id,
         name: challenge.opponent.name,
         avatar: challenge.opponent.avatar,
-        rank: challenge.opponent.rank
+        rank: challenge.opponent.rank,
       },
       score: {
         player1: Math.floor(Math.random() * challenge.details.raceTO),
-        player2: Math.floor(Math.random() * challenge.details.raceTO)
+        player2: Math.floor(Math.random() * challenge.details.raceTO),
       },
       raceToTarget: challenge.details.raceTO,
       betPoints: challenge.details.spaBet,
       startTime: challenge.details.scheduledTime || challenge.createdAt,
-      location: challenge.details.location
+      location: challenge.details.location,
     };
   };
 
   const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
-    const isLive = challenge.status === 'accepted' && challenge.details.scheduledTime && new Date(challenge.details.scheduledTime) <= new Date();
-    const isCompleted = challenge.status === 'rejected' || (challenge.status === 'accepted' && challenge.details.scheduledTime && new Date(challenge.details.scheduledTime) < new Date(Date.now() - 2 * 60 * 60 * 1000));
+    const isLive =
+      challenge.status === 'accepted' &&
+      challenge.details.scheduledTime &&
+      new Date(challenge.details.scheduledTime) <= new Date();
+    const isCompleted =
+      challenge.status === 'rejected' ||
+      (challenge.status === 'accepted' &&
+        challenge.details.scheduledTime &&
+        new Date(challenge.details.scheduledTime) <
+          new Date(Date.now() - 2 * 60 * 60 * 1000));
     const isOpen = challenge.status === 'pending';
 
     const standardChallenge = convertChallengeToStandardFormat(challenge);
@@ -584,9 +611,9 @@ const ChallengesFeedMobile: React.FC = () => {
           exit={{ opacity: 0, x: -100 }}
           className='mb-4'
         >
-          <LiveMatchCard 
+          <LiveMatchCard
             match={liveMatch}
-            onWatch={(matchId) => {
+            onWatch={matchId => {
               toast.success('Đang mở trận đấu trực tiếp...');
             }}
           />
@@ -603,7 +630,7 @@ const ChallengesFeedMobile: React.FC = () => {
           exit={{ opacity: 0, x: -100 }}
           className='mb-4'
         >
-          <CompletedChallengeCard 
+          <CompletedChallengeCard
             challenge={standardChallenge}
             onView={() => {
               toast.info('Xem chi tiết kết quả...');
@@ -622,9 +649,9 @@ const ChallengesFeedMobile: React.FC = () => {
           exit={{ opacity: 0, x: -100 }}
           className='mb-4'
         >
-          <OpenChallengeCard 
+          <OpenChallengeCard
             challenge={standardChallenge}
-            onJoin={(challengeId) => {
+            onJoin={challengeId => {
               toast.success('Tham gia thách đấu thành công!');
             }}
             currentUser={user}
@@ -643,11 +670,11 @@ const ChallengesFeedMobile: React.FC = () => {
         exit={{ opacity: 0, x: -100 }}
         className='mb-4'
       >
-        <UnifiedChallengeCard 
+        <UnifiedChallengeCard
           challenge={standardChallenge}
           variant='default'
           currentUserId={user?.id}
-          onJoin={async (challengeId) => {
+          onJoin={async challengeId => {
             toast.success('Tham gia thách đấu thành công!');
           }}
           onAction={(challengeId, action) => {

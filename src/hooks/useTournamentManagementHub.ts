@@ -18,13 +18,15 @@ import type {
 
 export const useTournamentManagementHub = (): UseTournamentManagementReturn => {
   const { user } = useAuth();
-  
+
   // State
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
-  const [currentView, setCurrentView] = useState<TournamentManagementView>('list');
+  const [selectedTournament, setSelectedTournament] =
+    useState<Tournament | null>(null);
+  const [currentView, setCurrentView] =
+    useState<TournamentManagementView>('list');
   const [activeFilter, setActiveFilter] = useState<TournamentFilter>('active');
   const [clubId, setClubId] = useState<string | null>(null);
 
@@ -65,15 +67,17 @@ export const useTournamentManagementHub = (): UseTournamentManagementReturn => {
     try {
       setLoading(true);
       setError(null);
-      
-      const tournamentsData = await TournamentManagementService.fetchFilteredTournaments(
-        clubId,
-        activeFilter
-      );
-      
+
+      const tournamentsData =
+        await TournamentManagementService.fetchFilteredTournaments(
+          clubId,
+          activeFilter
+        );
+
       setTournaments(tournamentsData);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch tournaments';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to fetch tournaments';
       setError(errorMessage);
       toast.error(errorMessage);
       console.error('Error fetching tournaments:', error);
@@ -112,7 +116,7 @@ export const useTournamentManagementHub = (): UseTournamentManagementReturn => {
           table: 'tournaments',
           filter: `club_id=eq.${clubId}`,
         },
-        (payload) => {
+        payload => {
           console.log('🔄 Tournament updated:', payload);
           // Refresh tournament list when any tournament changes
           fetchTournaments();

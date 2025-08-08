@@ -27,32 +27,47 @@ export const MobileStoryReel: React.FC<MobileStoryReelProps> = ({
   const mockStories: StoryItem[] = [
     {
       id: '1',
-      user: { name: 'Duc', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Duc')}&background=random&size=64` },
+      user: {
+        name: 'Duc',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Duc')}&background=random&size=64`,
+      },
       type: 'live_match',
       isLive: true,
       title: 'Đang đấu vs Player2',
     },
     {
       id: '2',
-      user: { name: 'Minh', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Minh')}&background=random&size=64` },
+      user: {
+        name: 'Minh',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Minh')}&background=random&size=64`,
+      },
       type: 'achievement',
       title: 'Lên rank Expert',
     },
     {
       id: '3',
-      user: { name: 'Lan', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Lan')}&background=random&size=64` },
+      user: {
+        name: 'Lan',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Lan')}&background=random&size=64`,
+      },
       type: 'highlight',
       title: 'Shot đẹp nhất',
     },
     {
       id: '4',
-      user: { name: 'Tuan', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Tuan')}&background=random&size=64` },
+      user: {
+        name: 'Tuan',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Tuan')}&background=random&size=64`,
+      },
       type: 'tournament',
       title: 'SABO Arena Open',
     },
     {
       id: '5',
-      user: { name: 'Nam', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Nam')}&background=random&size=64` },
+      user: {
+        name: 'Nam',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent('Nam')}&background=random&size=64`,
+      },
       type: 'live_match',
       isLive: true,
       title: 'Trận chung kết',
@@ -101,17 +116,19 @@ export const MobileStoryReel: React.FC<MobileStoryReelProps> = ({
   };
 
   return (
-    <div className='relative py-3 border-b border-border/40 transition-colors overflow-hidden
+    <div
+      className='relative py-3 border-b border-border/40 transition-colors overflow-hidden
       before:content-[""] before:absolute before:inset-0 
       before:bg-background/55 before:dark:bg-slate-900/55 
-      before:backdrop-blur-md before:saturate-150'>
+      before:backdrop-blur-md before:saturate-150'
+    >
       <div className='px-4 mb-3'>
         <h3 className='text-sm font-semibold text-foreground'>
           Hoạt động gần đây
         </h3>
       </div>
 
-  <div className='mobile-story-reel relative z-10'>
+      <div className='mobile-story-reel relative z-10'>
         {displayStories.map(story => (
           <div
             key={story.id}

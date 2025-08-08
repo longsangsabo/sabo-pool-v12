@@ -58,37 +58,31 @@ export interface BracketMatch {
 }
 
 // Tournament Status Types
-export type TournamentStatus = 
-  | 'draft' 
-  | 'registration_open' 
-  | 'registration_closed' 
-  | 'ongoing' 
-  | 'completed' 
+export type TournamentStatus =
+  | 'draft'
+  | 'registration_open'
+  | 'registration_closed'
+  | 'ongoing'
+  | 'completed'
   | 'cancelled';
 
-export type TournamentType = 
-  | 'single_elimination' 
-  | 'double_elimination' 
-  | 'round_robin' 
+export type TournamentType =
+  | 'single_elimination'
+  | 'double_elimination'
+  | 'round_robin'
   | 'swiss';
 
-export type BracketType = 
-  | 'single_elimination' 
-  | 'double_elimination';
+export type BracketType = 'single_elimination' | 'double_elimination';
 
 // View State Types
-export type TournamentManagementView = 
-  | 'list' 
-  | 'bracket-generator' 
-  | 'bracket-viewer' 
+export type TournamentManagementView =
+  | 'list'
+  | 'bracket-generator'
+  | 'bracket-viewer'
   | 'bracket-manager';
 
 // Filter Types
-export type TournamentFilter = 
-  | 'active' 
-  | 'upcoming' 
-  | 'completed' 
-  | 'all';
+export type TournamentFilter = 'active' | 'upcoming' | 'completed' | 'all';
 
 // Tournament Management Hub Ref Interface
 export interface TournamentManagementHubRef {
@@ -205,10 +199,21 @@ export interface PlayerRegistration {
 }
 
 // Constants
-export const TOURNAMENT_STATUSES: Record<TournamentStatus, TournamentStatusInfo> = {
+export const TOURNAMENT_STATUSES: Record<
+  TournamentStatus,
+  TournamentStatusInfo
+> = {
   draft: { label: 'Nháp', variant: 'outline', color: 'gray' },
-  registration_open: { label: 'Đang mở đăng ký', variant: 'default', color: 'blue' },
-  registration_closed: { label: 'Đã đóng đăng ký', variant: 'secondary', color: 'orange' },
+  registration_open: {
+    label: 'Đang mở đăng ký',
+    variant: 'default',
+    color: 'blue',
+  },
+  registration_closed: {
+    label: 'Đã đóng đăng ký',
+    variant: 'secondary',
+    color: 'orange',
+  },
   ongoing: { label: 'Đang diễn ra', variant: 'default', color: 'green' },
   completed: { label: 'Đã kết thúc', variant: 'secondary', color: 'gray' },
   cancelled: { label: 'Đã hủy', variant: 'destructive', color: 'red' },
@@ -222,4 +227,4 @@ export const TOURNAMENT_TYPES: Record<TournamentType, string> = {
 };
 
 export const BRACKET_SIZES = [4, 8, 16, 32] as const;
-export type BracketSize = typeof BRACKET_SIZES[number];
+export type BracketSize = (typeof BRACKET_SIZES)[number];

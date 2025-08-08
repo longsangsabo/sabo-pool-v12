@@ -21,7 +21,7 @@ class EmailReporter {
 
     try {
       this.transporter = nodemailer.createTransporter(this.config.smtpConfig);
-      
+
       // Test connection
       await this.transporter.verify();
       await this.logger.info('📧 Email reporter initialized');
@@ -40,17 +40,16 @@ class EmailReporter {
     try {
       const subject = `📊 Doc Cleanup Weekly Report - ${new Date().toLocaleDateString()}`;
       const htmlContent = this.generateWeeklyReportHTML(summary);
-      
+
       const mailOptions = {
         from: this.config.smtpConfig.auth.user,
         to: this.config.recipients.join(', '),
         subject,
-        html: htmlContent
+        html: htmlContent,
       };
 
       await this.transporter.sendMail(mailOptions);
       await this.logger.info('📧 Weekly report sent successfully');
-      
     } catch (error) {
       await this.logger.error('❌ Failed to send weekly report:', error);
     }
@@ -64,17 +63,16 @@ class EmailReporter {
     try {
       const subject = `🧹 Doc Cleanup Completed - ${summary.filesScanned} files processed`;
       const htmlContent = this.generateCleanupNotificationHTML(summary);
-      
+
       const mailOptions = {
         from: this.config.smtpConfig.auth.user,
         to: this.config.recipients.join(', '),
         subject,
-        html: htmlContent
+        html: htmlContent,
       };
 
       await this.transporter.sendMail(mailOptions);
       await this.logger.info('📧 Cleanup notification sent');
-      
     } catch (error) {
       await this.logger.error('❌ Failed to send cleanup notification:', error);
     }
@@ -88,18 +86,17 @@ class EmailReporter {
     try {
       const subject = `🚨 Doc Cleanup Error Alert`;
       const htmlContent = this.generateErrorAlertHTML(error, context);
-      
+
       const mailOptions = {
         from: this.config.smtpConfig.auth.user,
         to: this.config.recipients.join(', '),
         subject,
         html: htmlContent,
-        priority: 'high'
+        priority: 'high',
       };
 
       await this.transporter.sendMail(mailOptions);
       await this.logger.info('📧 Error alert sent');
-      
     } catch (mailError) {
       await this.logger.error('❌ Failed to send error alert:', mailError);
     }
@@ -207,19 +204,25 @@ class EmailReporter {
     </ul>
   </div>
 
-  ${summary.errors && summary.errors.length > 0 ? `
+  ${
+    summary.errors && summary.errors.length > 0
+      ? `
   <div class="section">
     <h2 class="danger">⚠️ Errors Encountered</h2>
     <ul>
       ${summary.errors.map(error => `<li class="danger">${error}</li>`).join('')}
     </ul>
   </div>
-  ` : ''}
+  `
+      : ''
+  }
 
   <div class="section">
     <h2>🎯 Recommendations</h2>
     <ul>
-      ${this.generateRecommendations(summary).map(rec => `<li>${rec}</li>`).join('')}
+      ${this.generateRecommendations(summary)
+        .map(rec => `<li>${rec}</li>`)
+        .join('')}
     </ul>
   </div>
 
@@ -309,12 +312,16 @@ class EmailReporter {
     <pre style="font-size: 0.8em; overflow-x: auto;">${error.stack}</pre>
   </div>
 
-  ${Object.keys(context).length > 0 ? `
+  ${
+    Object.keys(context).length > 0
+      ? `
   <div class="context">
     <h3>📋 Context Information</h3>
     <pre>${JSON.stringify(context, null, 2)}</pre>
   </div>
-  ` : ''}
+  `
+      : ''
+  }
 
   <p><strong>🔧 Recommended Actions:</strong></p>
   <ul>
@@ -338,11 +345,13 @@ class EmailReporter {
   estimateSpaceFreed(summary) {
     // Rough estimate based on archived and deleted files
     const avgFileSize = 50; // KB
-    const totalFiles = (summary.filesArchived || 0) + (summary.filesDeleted || 0);
+    const totalFiles =
+      (summary.filesArchived || 0) + (summary.filesDeleted || 0);
     const estimatedKB = totalFiles * avgFileSize;
-    
+
     if (estimatedKB < 1024) return `${estimatedKB}KB`;
-    if (estimatedKB < 1024 * 1024) return `${(estimatedKB / 1024).toFixed(1)}MB`;
+    if (estimatedKB < 1024 * 1024)
+      return `${(estimatedKB / 1024).toFixed(1)}MB`;
     return `${(estimatedKB / (1024 * 1024)).toFixed(1)}GB`;
   }
 
@@ -354,23 +363,29 @@ class EmailReporter {
 
   generateRecommendations(summary) {
     const recommendations = [];
-    
+
     if ((summary.duplicatesFound || 0) > 10) {
-      recommendations.push('🔄 Consider implementing stricter file naming conventions to reduce duplicates');
+      recommendations.push(
+        '🔄 Consider implementing stricter file naming conventions to reduce duplicates'
+      );
     }
-    
+
     if ((summary.filesArchived || 0) > 50) {
-      recommendations.push('📅 Review document retention policies - many old files were archived');
+      recommendations.push(
+        '📅 Review document retention policies - many old files were archived'
+      );
     }
-    
+
     if ((summary.errors || []).length > 0) {
-      recommendations.push('🔧 Address system errors to improve cleanup efficiency');
+      recommendations.push(
+        '🔧 Address system errors to improve cleanup efficiency'
+      );
     }
-    
+
     if (recommendations.length === 0) {
       recommendations.push('✅ Document management is running smoothly');
     }
-    
+
     return recommendations;
   }
 }

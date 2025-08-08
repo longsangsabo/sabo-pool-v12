@@ -96,7 +96,11 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
               </span>
             </div>
             {challenge.expires_at && (
-              <span className={isExpired ? 'text-slate-400 dark:text-slate-500' : ''}>
+              <span
+                className={
+                  isExpired ? 'text-slate-400 dark:text-slate-500' : ''
+                }
+              >
                 Hết hạn{' '}
                 {formatDistanceToNow(new Date(challenge.expires_at), {
                   addSuffix: true,

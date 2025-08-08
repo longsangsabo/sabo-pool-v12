@@ -24,13 +24,13 @@ class MetricsCollector {
 
   async collectCurrentMetrics() {
     const timestamp = new Date().toISOString();
-    
+
     const metrics = {
       timestamp,
       fileMetrics: await this.getFileMetrics(),
       storageMetrics: await this.getStorageMetrics(),
       qualityMetrics: await this.getQualityMetrics(),
-      systemMetrics: await this.getSystemMetrics()
+      systemMetrics: await this.getSystemMetrics(),
     };
 
     // Save daily snapshot
@@ -51,21 +51,21 @@ class MetricsCollector {
         active: 0,
         archive: 0,
         quarantine: 0,
-        scripts: 0
+        scripts: 0,
       },
       ageDistribution: {
         today: 0,
         thisWeek: 0,
         thisMonth: 0,
-        older: 0
-      }
+        older: 0,
+      },
     };
 
     if (!fs.existsSync(docsDir)) return stats;
 
     const walkDir = (dir, relativePath = '') => {
       const files = fs.readdirSync(dir);
-      
+
       files.forEach(file => {
         const fullPath = path.join(dir, file);
         const relPath = path.join(relativePath, file);
@@ -75,9 +75,10 @@ class MetricsCollector {
           // Count directory files
           if (relPath.includes('active')) stats.directories.active++;
           else if (relPath.includes('archive')) stats.directories.archive++;
-          else if (relPath.includes('quarantine')) stats.directories.quarantine++;
+          else if (relPath.includes('quarantine'))
+            stats.directories.quarantine++;
           else if (relPath.includes('scripts')) stats.directories.scripts++;
-          
+
           walkDir(fullPath, relPath);
         } else {
           stats.totalFiles++;
@@ -88,7 +89,8 @@ class MetricsCollector {
           stats.fileTypes[ext] = (stats.fileTypes[ext] || 0) + 1;
 
           // Age analysis
-          const ageInDays = (Date.now() - stat.mtime.getTime()) / (1000 * 60 * 60 * 24);
+          const ageInDays =
+            (Date.now() - stat.mtime.getTime()) / (1000 * 60 * 60 * 24);
           if (ageInDays < 1) stats.ageDistribution.today++;
           else if (ageInDays < 7) stats.ageDistribution.thisWeek++;
           else if (ageInDays < 30) stats.ageDistribution.thisMonth++;
@@ -104,12 +106,12 @@ class MetricsCollector {
   async getStorageMetrics() {
     const docsDir = path.join(this.projectRoot, 'docs');
     const backupsDir = path.join(this.projectRoot, 'backups');
-    
+
     const metrics = {
       docsSize: 0,
       backupsSize: 0,
       spaceSaved: 0,
-      compressionRatio: 0
+      compressionRatio: 0,
     };
 
     // Calculate docs directory size
@@ -133,13 +135,13 @@ class MetricsCollector {
 
   calculateDirSize(dirPath) {
     let totalSize = 0;
-    
-    const walkDir = (dir) => {
+
+    const walkDir = dir => {
       const files = fs.readdirSync(dir);
       files.forEach(file => {
         const fullPath = path.join(dir, file);
         const stat = fs.statSync(fullPath);
-        
+
         if (stat.isDirectory()) {
           walkDir(fullPath);
         } else {
@@ -163,7 +165,7 @@ class MetricsCollector {
       orphanedFiles: 0,
       tempFiles: 0,
       outdatedFiles: 0,
-      qualityScore: 0
+      qualityScore: 0,
     };
 
     // Analyze file quality using our analyzer
@@ -172,17 +174,28 @@ class MetricsCollector {
       if (fs.existsSync(analyzerPath)) {
         const { analyzeFiles } = require(analyzerPath);
         const analysis = await analyzeFiles();
-        
+
         metrics.duplicateFiles = analysis.duplicateGroups?.length || 0;
-        metrics.tempFiles = analysis.files?.filter(f => f.isTempFile).length || 0;
-        metrics.orphanedFiles = analysis.files?.filter(f => f.classification === 'orphaned').length || 0;
-        metrics.outdatedFiles = analysis.files?.filter(f => f.classification === 'outdated').length || 0;
+        metrics.tempFiles =
+          analysis.files?.filter(f => f.isTempFile).length || 0;
+        metrics.orphanedFiles =
+          analysis.files?.filter(f => f.classification === 'orphaned').length ||
+          0;
+        metrics.outdatedFiles =
+          analysis.files?.filter(f => f.classification === 'outdated').length ||
+          0;
 
         // Calculate quality score (0-100)
         const totalFiles = analysis.totalFiles || 1;
-        const problemFiles = metrics.duplicateFiles + metrics.tempFiles + 
-                            metrics.orphanedFiles + metrics.outdatedFiles;
-        metrics.qualityScore = Math.max(0, Math.round((1 - problemFiles / totalFiles) * 100));
+        const problemFiles =
+          metrics.duplicateFiles +
+          metrics.tempFiles +
+          metrics.orphanedFiles +
+          metrics.outdatedFiles;
+        metrics.qualityScore = Math.max(
+          0,
+          Math.round((1 - problemFiles / totalFiles) * 100)
+        );
       }
     } catch (error) {
       console.warn('Could not analyze file quality:', error.message);
@@ -194,22 +207,26 @@ class MetricsCollector {
   async getSystemMetrics() {
     const logsDir = path.join(__dirname, 'logs');
     const configPath = path.join(__dirname, 'config.json');
-    
+
     const metrics = {
       daemonUptime: 0,
       lastCleanupTime: null,
       cleanupFrequency: 0,
       errorRate: 0,
-      configurationHealth: 100
+      configurationHealth: 100,
     };
 
     // Check daemon uptime
     try {
-      const output = execSync('pgrep -f "node.*doc-cleanup"', { encoding: 'utf8' });
+      const output = execSync('pgrep -f "node.*doc-cleanup"', {
+        encoding: 'utf8',
+      });
       const pids = output.trim().split('\n').filter(Boolean);
-      
+
       if (pids.length > 0) {
-        const uptimeOutput = execSync(`ps -o etime= -p ${pids[0]}`, { encoding: 'utf8' });
+        const uptimeOutput = execSync(`ps -o etime= -p ${pids[0]}`, {
+          encoding: 'utf8',
+        });
         metrics.daemonUptime = uptimeOutput.trim();
       }
     } catch (error) {
@@ -228,9 +245,15 @@ class MetricsCollector {
       try {
         const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
         // Validate config completeness
-        const requiredFields = ['duplicateThreshold', 'archiveAfterDays', 'email'];
+        const requiredFields = [
+          'duplicateThreshold',
+          'archiveAfterDays',
+          'email',
+        ];
         const missingFields = requiredFields.filter(field => !config[field]);
-        metrics.configurationHealth = Math.round((1 - missingFields.length / requiredFields.length) * 100);
+        metrics.configurationHealth = Math.round(
+          (1 - missingFields.length / requiredFields.length) * 100
+        );
       } catch (error) {
         metrics.configurationHealth = 0;
       }
@@ -241,17 +264,21 @@ class MetricsCollector {
 
   async generateReport() {
     const metrics = await this.collectCurrentMetrics();
-    
+
     console.log('\n📊 CLEANUP SYSTEM EFFECTIVENESS REPORT');
     console.log('==========================================\n');
 
     // File Organization
     console.log('📁 File Organization:');
     console.log(`   Total Files: ${metrics.fileMetrics.totalFiles}`);
-    console.log(`   Total Size: ${this.formatBytes(metrics.fileMetrics.totalSize)}`);
+    console.log(
+      `   Total Size: ${this.formatBytes(metrics.fileMetrics.totalSize)}`
+    );
     console.log(`   Active Docs: ${metrics.fileMetrics.directories.active}`);
     console.log(`   Archived: ${metrics.fileMetrics.directories.archive}`);
-    console.log(`   In Quarantine: ${metrics.fileMetrics.directories.quarantine}\n`);
+    console.log(
+      `   In Quarantine: ${metrics.fileMetrics.directories.quarantine}\n`
+    );
 
     // Quality Metrics
     console.log('🎯 Quality Metrics:');
@@ -263,15 +290,23 @@ class MetricsCollector {
 
     // System Health
     console.log('🏥 System Health:');
-    console.log(`   Daemon Status: ${metrics.systemMetrics.daemonUptime ? '🟢 Running' : '🔴 Stopped'}`);
+    console.log(
+      `   Daemon Status: ${metrics.systemMetrics.daemonUptime ? '🟢 Running' : '🔴 Stopped'}`
+    );
     console.log(`   Uptime: ${metrics.systemMetrics.daemonUptime || 'N/A'}`);
-    console.log(`   Configuration: ${metrics.systemMetrics.configurationHealth}%\n`);
+    console.log(
+      `   Configuration: ${metrics.systemMetrics.configurationHealth}%\n`
+    );
 
     // Storage Efficiency
     console.log('💾 Storage Metrics:');
-    console.log(`   Docs Size: ${this.formatBytes(metrics.storageMetrics.docsSize)}`);
-    console.log(`   Backups Size: ${this.formatBytes(metrics.storageMetrics.backupsSize)}`);
-    
+    console.log(
+      `   Docs Size: ${this.formatBytes(metrics.storageMetrics.docsSize)}`
+    );
+    console.log(
+      `   Backups Size: ${this.formatBytes(metrics.storageMetrics.backupsSize)}`
+    );
+
     return metrics;
   }
 
@@ -284,35 +319,39 @@ class MetricsCollector {
   }
 
   async getHistoricalTrends() {
-    const metricsFiles = fs.readdirSync(this.metricsDir)
+    const metricsFiles = fs
+      .readdirSync(this.metricsDir)
       .filter(f => f.startsWith('metrics-') && f.endsWith('.json'))
       .sort();
 
     const trends = {
       fileCountTrend: [],
       storageTrend: [],
-      qualityTrend: []
+      qualityTrend: [],
     };
 
-    metricsFiles.slice(-30).forEach(file => { // Last 30 days
+    metricsFiles.slice(-30).forEach(file => {
+      // Last 30 days
       try {
-        const data = JSON.parse(fs.readFileSync(path.join(this.metricsDir, file), 'utf8'));
+        const data = JSON.parse(
+          fs.readFileSync(path.join(this.metricsDir, file), 'utf8')
+        );
         const date = file.replace('metrics-', '').replace('.json', '');
-        
+
         trends.fileCountTrend.push({
           date,
           totalFiles: data.fileMetrics.totalFiles,
-          archived: data.fileMetrics.directories.archive
+          archived: data.fileMetrics.directories.archive,
         });
 
         trends.storageTrend.push({
           date,
-          size: data.storageMetrics.docsSize
+          size: data.storageMetrics.docsSize,
         });
 
         trends.qualityTrend.push({
           date,
-          score: data.qualityMetrics.qualityScore
+          score: data.qualityMetrics.qualityScore,
         });
       } catch (error) {
         console.warn(`Could not parse ${file}:`, error.message);
@@ -326,9 +365,9 @@ class MetricsCollector {
 // CLI Interface
 if (require.main === module) {
   const collector = new MetricsCollector();
-  
+
   const command = process.argv[2] || 'report';
-  
+
   switch (command) {
     case 'collect':
       collector.collectCurrentMetrics().then(metrics => {
@@ -336,21 +375,21 @@ if (require.main === module) {
         console.log(JSON.stringify(metrics, null, 2));
       });
       break;
-      
+
     case 'report':
       collector.generateReport().catch(error => {
         console.error('❌ Error generating report:', error);
         process.exit(1);
       });
       break;
-      
+
     case 'trends':
       collector.getHistoricalTrends().then(trends => {
         console.log('📈 Historical Trends:');
         console.log(JSON.stringify(trends, null, 2));
       });
       break;
-      
+
     default:
       console.log('Usage: node metrics-collector.js [collect|report|trends]');
   }

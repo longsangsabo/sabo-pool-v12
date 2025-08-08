@@ -5,19 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
-import { 
-  Users, 
-  UserCheck, 
-  Bell, 
-  Search, 
-  Clock, 
-  CheckCircle, 
+import {
+  Users,
+  UserCheck,
+  Bell,
+  Search,
+  Clock,
+  CheckCircle,
   XCircle,
   AlertTriangle,
   Trophy,
   Eye,
   MessageSquare,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useClubRole } from '@/hooks/useClubRole';
@@ -77,7 +77,7 @@ const ClubMembersOptimized: React.FC = () => {
   const [activeTab, setActiveTab] = useState('members');
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // States
   const [members, setMembers] = useState<ClubMember[]>([]);
   const [rankRequests, setRankRequests] = useState<RankRequest[]>([]);
@@ -85,7 +85,9 @@ const ClubMembersOptimized: React.FC = () => {
   const [processing, setProcessing] = useState<string | null>(null);
 
   // Counts for badges
-  const pendingRequestsCount = rankRequests.filter(r => r.status === 'pending').length;
+  const pendingRequestsCount = rankRequests.filter(
+    r => r.status === 'pending'
+  ).length;
   const unreadNotificationsCount = notifications.filter(n => !n.is_read).length;
 
   useEffect(() => {
@@ -96,11 +98,7 @@ const ClubMembersOptimized: React.FC = () => {
 
   const loadAllData = async () => {
     setLoading(true);
-    await Promise.all([
-      loadMembers(),
-      loadRankRequests(),
-      loadNotifications()
-    ]);
+    await Promise.all([loadMembers(), loadRankRequests(), loadNotifications()]);
     setLoading(false);
   };
 
@@ -124,7 +122,8 @@ const ClubMembersOptimized: React.FC = () => {
         // Fallback: load some sample profiles for demo
         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
-          .select(`
+          .select(
+            `
             user_id,
             full_name,
             display_name,
@@ -132,27 +131,32 @@ const ClubMembersOptimized: React.FC = () => {
             elo,
             avatar_url,
             updated_at
-          `)
+          `
+          )
           .limit(10);
 
         if (profilesError) throw profilesError;
 
-        const sampleMembers = profilesData?.map(profile => ({
-          id: profile.user_id,
-          username: profile.display_name || profile.full_name || 'Unknown',
-          display_name: profile.full_name || profile.display_name || 'Unknown',
-          verified_rank: profile.verified_rank,
-          current_elo: profile.elo || 1000,
-          phone: '',
-          avatar_url: profile.avatar_url,
-          verification_date: profile.updated_at,
-          verification_status: (profile.verified_rank ? 'verified' : 'unverified') as 'verified' | 'unverified',
-          total_matches: 0,
-          wins: 0,
-          trust_score: 85.0,
-          has_pending_request: false,
-          pending_request_rank: undefined
-        })) || [];
+        const sampleMembers =
+          profilesData?.map(profile => ({
+            id: profile.user_id,
+            username: profile.display_name || profile.full_name || 'Unknown',
+            display_name:
+              profile.full_name || profile.display_name || 'Unknown',
+            verified_rank: profile.verified_rank,
+            current_elo: profile.elo || 1000,
+            phone: '',
+            avatar_url: profile.avatar_url,
+            verification_date: profile.updated_at,
+            verification_status: (profile.verified_rank
+              ? 'verified'
+              : 'unverified') as 'verified' | 'unverified',
+            total_matches: 0,
+            wins: 0,
+            trust_score: 85.0,
+            has_pending_request: false,
+            pending_request_rank: undefined,
+          })) || [];
 
         setMembers(sampleMembers as ClubMember[]);
         return;
@@ -167,7 +171,8 @@ const ClubMembersOptimized: React.FC = () => {
 
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
-        .select(`
+        .select(
+          `
           user_id,
           full_name,
           display_name,
@@ -175,7 +180,8 @@ const ClubMembersOptimized: React.FC = () => {
           elo,
           avatar_url,
           updated_at
-        `)
+        `
+        )
         .in('user_id', userIds);
 
       if (profilesError) throw profilesError;
@@ -188,27 +194,35 @@ const ClubMembersOptimized: React.FC = () => {
         .eq('status', 'pending')
         .eq('club_id', clubProfile?.id || '');
 
-      const membersWithRequests = profilesData?.map(profile => {
-        const pendingRequest = pendingRequests?.find(r => r.user_id === profile.user_id);
-        const memberData = clubMembersData?.find(m => m.user_id === profile.user_id);
-        
-        return {
-          id: profile.user_id,
-          username: profile.display_name || profile.full_name || 'Unknown',
-          display_name: profile.full_name || profile.display_name || 'Unknown',
-          verified_rank: profile.verified_rank,
-          current_elo: profile.elo || 1000,
-          phone: '',
-          avatar_url: profile.avatar_url,
-          verification_date: memberData?.join_date || profile.updated_at,
-          verification_status: (profile.verified_rank ? 'verified' : 'unverified') as 'verified' | 'unverified',
-          total_matches: 0,
-          wins: 0,
-          trust_score: 85.0,
-          has_pending_request: !!pendingRequest,
-          pending_request_rank: pendingRequest?.requested_rank
-        } as ClubMember;
-      }) || [];
+      const membersWithRequests =
+        profilesData?.map(profile => {
+          const pendingRequest = pendingRequests?.find(
+            r => r.user_id === profile.user_id
+          );
+          const memberData = clubMembersData?.find(
+            m => m.user_id === profile.user_id
+          );
+
+          return {
+            id: profile.user_id,
+            username: profile.display_name || profile.full_name || 'Unknown',
+            display_name:
+              profile.full_name || profile.display_name || 'Unknown',
+            verified_rank: profile.verified_rank,
+            current_elo: profile.elo || 1000,
+            phone: '',
+            avatar_url: profile.avatar_url,
+            verification_date: memberData?.join_date || profile.updated_at,
+            verification_status: (profile.verified_rank
+              ? 'verified'
+              : 'unverified') as 'verified' | 'unverified',
+            total_matches: 0,
+            wins: 0,
+            trust_score: 85.0,
+            has_pending_request: !!pendingRequest,
+            pending_request_rank: pendingRequest?.requested_rank,
+          } as ClubMember;
+        }) || [];
 
       setMembers(membersWithRequests);
     } catch (error) {
@@ -236,11 +250,12 @@ const ClubMembersOptimized: React.FC = () => {
         .select('user_id, full_name, display_name, avatar_url')
         .in('user_id', userIds);
 
-      const requestsWithProfiles = requestsData?.map(request => ({
-        ...request,
-        status: request.status as 'pending' | 'approved' | 'rejected',
-        profile: profilesData?.find(p => p.user_id === request.user_id)
-      })) || [];
+      const requestsWithProfiles =
+        requestsData?.map(request => ({
+          ...request,
+          status: request.status as 'pending' | 'approved' | 'rejected',
+          profile: profilesData?.find(p => p.user_id === request.user_id),
+        })) || [];
 
       setRankRequests(requestsWithProfiles);
     } catch (error) {
@@ -284,19 +299,28 @@ const ClubMembersOptimized: React.FC = () => {
     }
   };
 
-  const handleApproveRequest = async (requestId: string, requestedRank: string, userId: string) => {
+  const handleApproveRequest = async (
+    requestId: string,
+    requestedRank: string,
+    userId: string
+  ) => {
     setProcessing(requestId);
     try {
-      console.log('Starting approval process for user:', userId, 'club:', clubProfile?.id);
-      
+      console.log(
+        'Starting approval process for user:',
+        userId,
+        'club:',
+        clubProfile?.id
+      );
+
       // Update rank request status
       const { error: requestError } = await supabase
         .from('rank_requests')
-        .update({ 
+        .update({
           status: 'approved',
           updated_at: new Date().toISOString(),
           approved_by: user?.id,
-          approved_at: new Date().toISOString()
+          approved_at: new Date().toISOString(),
         })
         .eq('id', requestId);
 
@@ -341,7 +365,7 @@ const ClubMembersOptimized: React.FC = () => {
             user_id: userId,
             status: 'approved',
             join_date: new Date().toISOString(),
-            membership_type: 'verified_member'
+            membership_type: 'verified_member',
           })
           .select()
           .single();
@@ -357,9 +381,9 @@ const ClubMembersOptimized: React.FC = () => {
         // Update existing member status to approved if it wasn't
         const { error: updateMemberError, data: updatedMember } = await supabase
           .from('club_members')
-          .update({ 
+          .update({
             status: 'approved',
-            membership_type: 'verified_member'
+            membership_type: 'verified_member',
           })
           .eq('id', existingMember.id)
           .select()
@@ -372,7 +396,9 @@ const ClubMembersOptimized: React.FC = () => {
         }
       }
 
-      toast.success('Đã duyệt yêu cầu xác thực hạng và thêm vào danh sách thành viên');
+      toast.success(
+        'Đã duyệt yêu cầu xác thực hạng và thêm vào danh sách thành viên'
+      );
       await loadAllData(); // Reload all data
     } catch (error) {
       console.error('Error approving request:', error);
@@ -387,9 +413,9 @@ const ClubMembersOptimized: React.FC = () => {
     try {
       const { error } = await supabase
         .from('rank_requests')
-        .update({ 
+        .update({
           status: 'rejected',
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', requestId);
 
@@ -422,10 +448,12 @@ const ClubMembersOptimized: React.FC = () => {
     }
   };
 
-  const filteredMembers = members.filter(member =>
-    member.display_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (member.verified_rank && member.verified_rank.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredMembers = members.filter(
+    member =>
+      member.display_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (member.verified_rank &&
+        member.verified_rank.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const pendingRequests = rankRequests.filter(r => r.status === 'pending');
@@ -441,14 +469,17 @@ const ClubMembersOptimized: React.FC = () => {
           </TabsTrigger>
           <TabsTrigger value='verification' className='flex items-center gap-2'>
             <UserCheck className='w-4 h-4' />
-            Xác thực hạng 
+            Xác thực hạng
             {pendingRequestsCount > 0 && (
               <Badge variant='destructive' className='ml-1 text-xs'>
                 {pendingRequestsCount}
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value='notifications' className='flex items-center gap-2'>
+          <TabsTrigger
+            value='notifications'
+            className='flex items-center gap-2'
+          >
             <Bell className='w-4 h-4' />
             Thông báo
             {unreadNotificationsCount > 0 && (
@@ -474,20 +505,30 @@ const ClubMembersOptimized: React.FC = () => {
                     <Input
                       placeholder='Tìm kiếm thành viên...'
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={e => setSearchTerm(e.target.value)}
                       className='pl-10 w-64'
                     />
                   </div>
-                  <Button variant='outline' size='sm' onClick={loadAllData} disabled={loading}>
-                    <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={loadAllData}
+                    disabled={loading}
+                  >
+                    <RefreshCw
+                      className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
+                    />
                   </Button>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className='grid gap-4'>
-                {filteredMembers.map((member) => (
-                  <div key={member.id} className='flex items-center justify-between p-4 border rounded-lg'>
+                {filteredMembers.map(member => (
+                  <div
+                    key={member.id}
+                    className='flex items-center justify-between p-4 border rounded-lg'
+                  >
                     <div className='flex items-center gap-3'>
                       <Avatar className='h-10 w-10'>
                         <AvatarImage src={member.avatar_url} />
@@ -548,25 +589,35 @@ const ClubMembersOptimized: React.FC = () => {
                     <p>Không có yêu cầu xác thực hạng nào</p>
                   </div>
                 ) : (
-                  pendingRequests.map((request) => (
+                  pendingRequests.map(request => (
                     <div key={request.id} className='p-4 border rounded-lg'>
                       <div className='flex items-center justify-between'>
                         <div className='flex items-center gap-3'>
                           <Avatar className='h-10 w-10'>
                             <AvatarImage src={request.profile?.avatar_url} />
                             <AvatarFallback>
-                              {request.profile?.display_name?.charAt(0).toUpperCase() || 'U'}
+                              {request.profile?.display_name
+                                ?.charAt(0)
+                                .toUpperCase() || 'U'}
                             </AvatarFallback>
                           </Avatar>
                           <div>
                             <h4 className='font-medium'>
-                              {request.profile?.full_name || request.profile?.display_name || 'Unknown'}
+                              {request.profile?.full_name ||
+                                request.profile?.display_name ||
+                                'Unknown'}
                             </h4>
                             <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-                              <span>Yêu cầu: {request.current_rank || 'Chưa xác định'} → {request.requested_rank}</span>
+                              <span>
+                                Yêu cầu:{' '}
+                                {request.current_rank || 'Chưa xác định'} →{' '}
+                                {request.requested_rank}
+                              </span>
                               <Badge variant='outline' className='text-xs'>
                                 <Clock className='w-3 h-3 mr-1' />
-                                {new Date(request.created_at).toLocaleDateString('vi-VN')}
+                                {new Date(
+                                  request.created_at
+                                ).toLocaleDateString('vi-VN')}
                               </Badge>
                             </div>
                           </div>
@@ -584,7 +635,13 @@ const ClubMembersOptimized: React.FC = () => {
                           </Button>
                           <Button
                             size='sm'
-                            onClick={() => handleApproveRequest(request.id, request.requested_rank, request.user_id)}
+                            onClick={() =>
+                              handleApproveRequest(
+                                request.id,
+                                request.requested_rank,
+                                request.user_id
+                              )
+                            }
                             disabled={processing === request.id}
                           >
                             <CheckCircle className='w-4 h-4' />
@@ -624,31 +681,43 @@ const ClubMembersOptimized: React.FC = () => {
                     <p>Không có thông báo nào</p>
                   </div>
                 ) : (
-                  recentNotifications.map((notification) => (
-                    <div 
+                  recentNotifications.map(notification => (
+                    <div
                       key={notification.id}
                       className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                        !notification.is_read ? 'bg-blue-50 border-blue-200' : 'hover:bg-muted/50'
+                        !notification.is_read
+                          ? 'bg-blue-50 border-blue-200'
+                          : 'hover:bg-muted/50'
                       }`}
-                      onClick={() => !notification.is_read && markNotificationAsRead(notification.id)}
+                      onClick={() =>
+                        !notification.is_read &&
+                        markNotificationAsRead(notification.id)
+                      }
                     >
                       <div className='flex items-start justify-between'>
                         <div className='flex-1'>
                           <div className='flex items-center gap-2'>
-                            <h4 className='font-medium'>{notification.title}</h4>
+                            <h4 className='font-medium'>
+                              {notification.title}
+                            </h4>
                             {!notification.is_read && (
-                              <Badge variant='secondary' className='text-xs'>Mới</Badge>
+                              <Badge variant='secondary' className='text-xs'>
+                                Mới
+                              </Badge>
                             )}
                           </div>
                           <p className='text-sm text-muted-foreground mt-1'>
                             {notification.message}
                           </p>
                           <p className='text-xs text-muted-foreground mt-2'>
-                            {new Date(notification.created_at).toLocaleString('vi-VN')}
+                            {new Date(notification.created_at).toLocaleString(
+                              'vi-VN'
+                            )}
                           </p>
                         </div>
                         <div className='ml-4'>
-                          {notification.type === 'rank_verification_request' && (
+                          {notification.type ===
+                            'rank_verification_request' && (
                             <UserCheck className='w-5 h-5 text-blue-500' />
                           )}
                           {notification.type === 'new_match' && (

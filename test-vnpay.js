@@ -1,6 +1,6 @@
 /**
  * VNPAY Payment Gateway Test Script
- * 
+ *
  * This script demonstrates how to test the VNPAY payment integration
  * without running the full server.
  */
@@ -14,7 +14,7 @@ const TEST_CONFIG = {
   VNP_TMN_CODE: 'T53WMA78',
   VNP_HASH_SECRET: 'M1TOK8Z2U7KIPX67FDFBSXTPHGSEFHZ9',
   VNP_PAYMENT_URL: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
-  VNP_RETURN_URL: 'https://your-domain.com/api/webhooks/vnpay-return'
+  VNP_RETURN_URL: 'https://your-domain.com/api/webhooks/vnpay-return',
 };
 
 /**
@@ -37,7 +37,7 @@ function createVNPAYHash(params, secretKey) {
   // Create HMAC SHA512 hash
   const hmac = crypto.createHmac('sha512', secretKey);
   hmac.update(queryString);
-  
+
   return hmac.digest('hex');
 }
 
@@ -65,7 +65,7 @@ function testCreatePayment() {
     vnp_ReturnUrl: TEST_CONFIG.VNP_RETURN_URL,
     vnp_IpAddr: '127.0.0.1',
     vnp_CreateDate: moment().format('YYYYMMDDHHmmss'),
-    vnp_Locale: 'vn'
+    vnp_Locale: 'vn',
   };
 
   // Create secure hash
@@ -102,7 +102,10 @@ function testHashVerification(originalParams) {
   delete receivedParams.vnp_SecureHash;
 
   // Recalculate hash
-  const calculatedHash = createVNPAYHash(receivedParams, TEST_CONFIG.VNP_HASH_SECRET);
+  const calculatedHash = createVNPAYHash(
+    receivedParams,
+    TEST_CONFIG.VNP_HASH_SECRET
+  );
 
   // Verify hash
   const isValid = calculatedHash.toLowerCase() === receivedHash.toLowerCase();
@@ -125,13 +128,13 @@ function testResponseCodes() {
     '00': 'Success',
     '07': 'Invalid amount',
     '09': 'Invalid order information',
-    '13': 'Invalid order type',
-    '24': 'Customer cancelled',
-    '51': 'Insufficient balance',
-    '65': 'Exceeded daily limit',
-    '75': 'Bank maintenance',
-    '79': 'Invalid payment information',
-    '99': 'Unknown error'
+    13: 'Invalid order type',
+    24: 'Customer cancelled',
+    51: 'Insufficient balance',
+    65: 'Exceeded daily limit',
+    75: 'Bank maintenance',
+    79: 'Invalid payment information',
+    99: 'Unknown error',
   };
 
   console.log('📊 VNPAY Response Codes:');
@@ -150,25 +153,25 @@ function testPaymentScenarios() {
     {
       name: 'Small Payment',
       amount: 50000,
-      orderInfo: 'Small test payment'
+      orderInfo: 'Small test payment',
     },
     {
       name: 'Large Payment',
       amount: 1000000,
-      orderInfo: 'Large test payment'
+      orderInfo: 'Large test payment',
     },
     {
       name: 'Membership Payment',
       amount: 500000,
-      orderInfo: 'Premium membership upgrade'
-    }
+      orderInfo: 'Premium membership upgrade',
+    },
   ];
 
   scenarios.forEach((scenario, index) => {
     console.log(`${index + 1}. ${scenario.name}:`);
     console.log(`   Amount: ${scenario.amount.toLocaleString()} VND`);
     console.log(`   Description: ${scenario.orderInfo}`);
-    
+
     const orderId = `TEST_${scenario.name.toUpperCase()}_${Date.now()}`;
     const params = {
       vnp_Version: '2.1.0',
@@ -182,7 +185,7 @@ function testPaymentScenarios() {
       vnp_ReturnUrl: TEST_CONFIG.VNP_RETURN_URL,
       vnp_IpAddr: '127.0.0.1',
       vnp_CreateDate: moment().format('YYYYMMDDHHmmss'),
-      vnp_Locale: 'vn'
+      vnp_Locale: 'vn',
     };
 
     const secureHash = createVNPAYHash(params, TEST_CONFIG.VNP_HASH_SECRET);
@@ -232,5 +235,5 @@ module.exports = {
   testHashVerification,
   testResponseCodes,
   testPaymentScenarios,
-  createVNPAYHash
-}; 
+  createVNPAYHash,
+};

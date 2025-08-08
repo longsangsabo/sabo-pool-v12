@@ -1,6 +1,7 @@
 # SABO ARENA Typography Guide
 
 ## Tổng quan
+
 Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo nên bộ nhận diện thương hiệu mạnh mẽ và hiện đại:
 
 1. **Bebas Neue** - Brand Typography (Logo, tiêu đề chính)
@@ -11,11 +12,13 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ## 1. Brand Typography - Bebas Neue
 
 ### Đặc điểm
+
 - Font chữ in hoa, mạnh mẽ, thể thao
 - Sử dụng cho logo, tên giải đấu, banner chính
 - Tạo cảm giác năng động và chuyên nghiệp
 
 ### Classes có sẵn
+
 ```css
 .brand-logo        /* Logo chính - 3xl/4xl/5xl */
 .brand-title       /* Tiêu đề brand - 2xl/3xl/4xl */
@@ -23,6 +26,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ```
 
 ### Ví dụ sử dụng
+
 ```jsx
 <h1 className="brand-logo">SABO POOL ARENA</h1>
 <h2 className="brand-title">GIẢI ĐẤU THẾ GIỚI</h2>
@@ -32,11 +36,13 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ## 2. Heading Typography - Epilogue
 
 ### Đặc điểm
+
 - Font hiện đại, rõ ràng, độ đọc cao
 - Sử dụng cho tiêu đề section, nút bấm, thông tin quan trọng
 - Có nhiều weight: 300, 400, 500, 600, 700, 800
 
 ### Classes có sẵn
+
 ```css
 .heading-primary    /* Tiêu đề chính - xl/2xl/3xl, font-bold */
 .heading-secondary  /* Tiêu đề phụ - lg/xl/2xl, font-semibold */
@@ -51,6 +57,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ```
 
 ### Ví dụ sử dụng
+
 ```jsx
 <h2 className="heading-primary">Quản lý giải đấu</h2>
 <h3 className="section-title">Danh sách người chơi</h3>
@@ -66,11 +73,13 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ## 3. Body Typography - Outfit
 
 ### Đặc điểm
+
 - Font dễ đọc, hiện đại, trẻ trung
 - Sử dụng cho nội dung chính, mô tả, thông tin chi tiết
 - Weight: 300, 400, 500, 600, 700
 
 ### Classes có sẵn
+
 ```css
 .body-large         /* Nội dung lớn - base/lg, font-400 */
 .body-medium        /* Nội dung trung bình - sm/base, font-400 */
@@ -81,6 +90,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ```
 
 ### Ví dụ sử dụng
+
 ```jsx
 <p className="body-large">
   Đây là nội dung chính của bài viết với font size lớn hơn.
@@ -97,11 +107,13 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ## 4. Stats Typography - Racing Sans One
 
 ### Đặc điểm
+
 - Font gaming/tech, tạo cảm giác tốc độ và cạnh tranh
 - Sử dụng cho ELO, tỷ lệ thắng, điểm số, thống kê
 - Letter-spacing: 0.05em để tăng tính đọc
 
 ### Classes có sẵn
+
 ```css
 .stats-large        /* Số liệu lớn - 2xl/3xl/4xl */
 .stats-medium       /* Số liệu trung bình - xl/2xl/3xl */
@@ -112,6 +124,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ```
 
 ### Ví dụ sử dụng
+
 ```jsx
 <div className="text-center">
   <div className="elo-score text-blue-600">2450</div>
@@ -127,6 +140,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ## 5. Responsive Typography
 
 ### Classes responsive có sẵn
+
 ```css
 .text-responsive-xs  /* xs/sm/base */
 .text-responsive-sm  /* sm/base/lg */
@@ -136,8 +150,9 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ```
 
 ### Ví dụ sử dụng
+
 ```jsx
-<h2 className="text-responsive-lg font-heading font-bold">
+<h2 className='text-responsive-lg font-heading font-bold'>
   Tiêu đề responsive
 </h2>
 ```
@@ -145,6 +160,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ## 6. Best Practices
 
 ### 1. Hierarchy rõ ràng
+
 ```jsx
 {/* Trang chính */}
 <h1 className="brand-logo">SABO POOL ARENA</h1>
@@ -154,6 +170,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ```
 
 ### 2. Kết hợp màu sắc
+
 ```jsx
 {/* Stats với màu semantic */}
 <div className="stats-large text-green-600">2450</div>  {/* ELO cao */}
@@ -162,6 +179,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ```
 
 ### 3. Responsive design
+
 ```jsx
 {/* Mobile first approach */}
 <h1 className="brand-title md:brand-logo">
@@ -173,6 +191,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ```
 
 ### 4. Semantic meaning
+
 ```jsx
 {/* Sử dụng đúng class cho đúng mục đích */}
 <span className="username">@player_name</span>           {/* Tên user */}
@@ -184,54 +203,52 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ## 7. Component Examples
 
 ### Tournament Card
+
 ```jsx
-<div className="bg-white rounded-lg p-6 shadow-sm">
-  <h3 className="tournament-name text-primary mb-2">
-    GIẢI ĐẤU MÙA XUÂN 2024
-  </h3>
-  <div className="grid grid-cols-3 gap-4 mb-4">
-    <div className="text-center">
-      <div className="stats-medium text-green-600">32</div>
-      <p className="body-small text-muted-foreground">Người chơi</p>
+<div className='bg-white rounded-lg p-6 shadow-sm'>
+  <h3 className='tournament-name text-primary mb-2'>GIẢI ĐẤU MÙA XUÂN 2024</h3>
+  <div className='grid grid-cols-3 gap-4 mb-4'>
+    <div className='text-center'>
+      <div className='stats-medium text-green-600'>32</div>
+      <p className='body-small text-muted-foreground'>Người chơi</p>
     </div>
-    <div className="text-center">
-      <div className="stats-medium text-blue-600">₫500K</div>
-      <p className="body-small text-muted-foreground">Giải thưởng</p>
+    <div className='text-center'>
+      <div className='stats-medium text-blue-600'>₫500K</div>
+      <p className='body-small text-muted-foreground'>Giải thưởng</p>
     </div>
-    <div className="text-center">
-      <div className="stats-medium text-orange-600">3</div>
-      <p className="body-small text-muted-foreground">Ngày</p>
+    <div className='text-center'>
+      <div className='stats-medium text-orange-600'>3</div>
+      <p className='body-small text-muted-foreground'>Ngày</p>
     </div>
   </div>
-  <p className="description mb-4">
-    Giải đấu bi-a 8 bi lớn nhất trong năm...
-  </p>
-  <button className="button-text bg-primary text-white px-6 py-2 rounded-lg">
+  <p className='description mb-4'>Giải đấu bi-a 8 bi lớn nhất trong năm...</p>
+  <button className='button-text bg-primary text-white px-6 py-2 rounded-lg'>
     Đăng ký tham gia
   </button>
 </div>
 ```
 
 ### Player Stats Card
+
 ```jsx
-<div className="bg-white rounded-lg p-6 shadow-sm">
-  <div className="flex items-center gap-4 mb-4">
-    <img className="w-16 h-16 rounded-full" src="avatar.jpg" />
+<div className='bg-white rounded-lg p-6 shadow-sm'>
+  <div className='flex items-center gap-4 mb-4'>
+    <img className='w-16 h-16 rounded-full' src='avatar.jpg' />
     <div>
-      <h3 className="username text-lg">Nguyễn Văn An</h3>
-      <span className="badge-text bg-green-100 text-green-800 px-2 py-1 rounded">
+      <h3 className='username text-lg'>Nguyễn Văn An</h3>
+      <span className='badge-text bg-green-100 text-green-800 px-2 py-1 rounded'>
         PRO PLAYER
       </span>
     </div>
   </div>
-  <div className="grid grid-cols-2 gap-4">
-    <div className="text-center">
-      <div className="elo-score text-blue-600">2450</div>
-      <p className="body-small text-muted-foreground">ELO</p>
+  <div className='grid grid-cols-2 gap-4'>
+    <div className='text-center'>
+      <div className='elo-score text-blue-600'>2450</div>
+      <p className='body-small text-muted-foreground'>ELO</p>
     </div>
-    <div className="text-center">
-      <div className="win-rate text-green-600">87.5%</div>
-      <p className="body-small text-muted-foreground">Tỷ lệ thắng</p>
+    <div className='text-center'>
+      <div className='win-rate text-green-600'>87.5%</div>
+      <p className='body-small text-muted-foreground'>Tỷ lệ thắng</p>
     </div>
   </div>
 </div>
@@ -240,6 +257,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ## 8. Migration Guide
 
 ### Từ typography cũ sang mới
+
 ```jsx
 {/* CŨ */}
 <h1 className="text-3xl font-bold">Title</h1>
@@ -253,6 +271,7 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 ```
 
 ### Checklist migration
+
 - [ ] Thay thế all heading tags với classes mới
 - [ ] Cập nhật stats/numbers với font Racing Sans One
 - [ ] Brand elements sử dụng Bebas Neue
@@ -279,5 +298,5 @@ Hệ thống typography của SABO ARENA sử dụng 4 font chính để tạo n
 
 ---
 
-*Cập nhật cuối: $(date)*
-*Phiên bản: 1.0*
+_Cập nhật cuối: $(date)_
+_Phiên bản: 1.0_

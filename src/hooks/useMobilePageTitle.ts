@@ -1,5 +1,8 @@
 import { useLocation } from 'react-router-dom';
-import { MOBILE_PAGE_TITLES, type MobilePageTitle } from '@/components/mobile/MobilePlayerLayout';
+import {
+  MOBILE_PAGE_TITLES,
+  type MobilePageTitle,
+} from '@/components/mobile/MobilePlayerLayout';
 
 /**
  * Hook để tự động detect page title dựa trên route hiện tại
@@ -17,7 +20,7 @@ export const useMobilePageTitle = (): MobilePageTitle | undefined => {
     '/tournaments': MOBILE_PAGE_TITLES.TOURNAMENTS,
     '/challenges': MOBILE_PAGE_TITLES.CHALLENGES,
     '/leaderboard': MOBILE_PAGE_TITLES.LEADERBOARD,
-    
+
     // Secondary Routes
     '/calendar': MOBILE_PAGE_TITLES.CALENDAR,
     '/community': MOBILE_PAGE_TITLES.COMMUNITY,
@@ -26,11 +29,11 @@ export const useMobilePageTitle = (): MobilePageTitle | undefined => {
     '/notifications': MOBILE_PAGE_TITLES.NOTIFICATIONS,
     '/settings': MOBILE_PAGE_TITLES.SETTINGS,
     '/wallet': MOBILE_PAGE_TITLES.WALLET,
-    
+
     // Club Routes
     '/clubs': MOBILE_PAGE_TITLES.CLUBS,
     '/club-registration': MOBILE_PAGE_TITLES.CLUB_REGISTRATION,
-    
+
     // Public Routes
     '/about': MOBILE_PAGE_TITLES.ABOUT,
     '/contact': MOBILE_PAGE_TITLES.CONTACT,

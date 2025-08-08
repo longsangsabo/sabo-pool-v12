@@ -16,13 +16,13 @@
   border-radius: 12px;
   padding: 16px 12px;
   text-align: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
   transition: all 0.2s ease;
 }
 
 .stat-card-compact:hover {
   border-color: hsl(var(--primary));
-  box-shadow: 0 4px 12px hsl(var(--primary) / 0.1);
+  box-shadow: 0 4px 12px hsl(var(--primary) / 10%);
   transform: translateY(-2px);
 }
 
@@ -67,7 +67,7 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 4px hsl(var(--primary) / 0.2);
+  box-shadow: 0 2px 4px hsl(var(--primary) / 20%);
 }
 
 /* THEME TOGGLE */
@@ -88,7 +88,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -101,33 +101,33 @@
 }
 
 /* MOBILE RESPONSIVE */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .profile-stats-horizontal {
     gap: 8px;
     padding: 16px 12px;
   }
-  
+
   .stat-card-compact {
     padding: 12px 8px;
   }
-  
+
   .stat-number {
     font-size: 18px;
   }
-  
+
   .stat-label {
     font-size: 10px;
   }
-  
+
   .username-display {
     font-size: 22px;
   }
-  
+
   .theme-toggle-container {
     top: 16px;
     right: 16px;
   }
-  
+
   .theme-toggle-btn {
     width: 36px;
     height: 36px;

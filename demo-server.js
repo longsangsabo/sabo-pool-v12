@@ -14,10 +14,17 @@ app.use(express.urlencoded({ extended: true }));
 // VNPAY Configuration
 const VNPAY_CONFIG = {
   TMN_CODE: process.env.VNP_TMN_CODE || 'T53WMA78',
-  HASH_SECRET: process.env.VNP_HASH_SECRET || 'M1TOK8Z2U7KIPX67FDFBSXTPHGSEFHZ9',
-  PAYMENT_URL: process.env.VNP_PAYMENT_URL || 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
-  RETURN_URL: process.env.VNP_RETURN_URL || `http://localhost:${PORT}/api/webhooks/vnpay-return`,
-  IPN_URL: process.env.VNP_IPN_URL || `http://localhost:${PORT}/api/webhooks/vnpay-ipn`
+  HASH_SECRET:
+    process.env.VNP_HASH_SECRET || 'M1TOK8Z2U7KIPX67FDFBSXTPHGSEFHZ9',
+  PAYMENT_URL:
+    process.env.VNP_PAYMENT_URL ||
+    'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
+  RETURN_URL:
+    process.env.VNP_RETURN_URL ||
+    `http://localhost:${PORT}/api/webhooks/vnpay-return`,
+  IPN_URL:
+    process.env.VNP_IPN_URL ||
+    `http://localhost:${PORT}/api/webhooks/vnpay-ipn`,
 };
 
 // Utility functions
@@ -35,7 +42,7 @@ function createVNPAYHash(params, secretKey) {
 
   const hmac = crypto.createHmac('sha512', secretKey);
   hmac.update(queryString);
-  
+
   return hmac.digest('hex');
 }
 
@@ -156,7 +163,7 @@ app.post('/api/payments/create-vnpay', (req, res) => {
     if (!orderId || !amount || !orderInfo || !orderType) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required parameters'
+        message: 'Missing required parameters',
       });
     }
 
@@ -172,7 +179,7 @@ app.post('/api/payments/create-vnpay', (req, res) => {
       vnp_ReturnUrl: VNPAY_CONFIG.RETURN_URL,
       vnp_IpAddr: req.ip || '127.0.0.1',
       vnp_CreateDate: moment().format('YYYYMMDDHHmmss'),
-      vnp_Locale: 'vn'
+      vnp_Locale: 'vn',
     };
 
     const secureHash = createVNPAYHash(params, VNPAY_CONFIG.HASH_SECRET);
@@ -187,14 +194,13 @@ app.post('/api/payments/create-vnpay', (req, res) => {
       paymentUrl: paymentUrl,
       orderId: orderId,
       amount: amount,
-      message: 'Payment URL generated successfully'
+      message: 'Payment URL generated successfully',
     });
-
   } catch (error) {
     console.error('Error creating payment:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to create payment'
+      message: 'Failed to create payment',
     });
   }
 });
@@ -208,16 +214,20 @@ app.get('/api/webhooks/vnpay-return', (req, res) => {
     if (!receivedHash) {
       return res.status(400).json({
         success: false,
-        message: 'Missing secure hash'
+        message: 'Missing secure hash',
       });
     }
 
-    const isValidHash = verifyVNPAYHash(queryParams, receivedHash, VNPAY_CONFIG.HASH_SECRET);
-    
+    const isValidHash = verifyVNPAYHash(
+      queryParams,
+      receivedHash,
+      VNPAY_CONFIG.HASH_SECRET
+    );
+
     if (!isValidHash) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid payment signature'
+        message: 'Invalid payment signature',
       });
     }
 
@@ -225,7 +235,9 @@ app.get('/api/webhooks/vnpay-return', (req, res) => {
     const orderId = queryParams.vnp_TxnRef;
     const amount = parseInt(queryParams.vnp_Amount) / 100;
 
-    console.log(`Payment return: ${orderId}, Code: ${responseCode}, Amount: ${amount} VND`);
+    console.log(
+      `Payment return: ${orderId}, Code: ${responseCode}, Amount: ${amount} VND`
+    );
 
     if (responseCode === '00') {
       res.send(`
@@ -255,12 +267,11 @@ app.get('/api/webhooks/vnpay-return', (req, res) => {
         </html>
       `);
     }
-
   } catch (error) {
     console.error('Error processing return:', error);
     res.status(500).json({
       success: false,
-      message: 'Error processing payment return'
+      message: 'Error processing payment return',
     });
   }
 });
@@ -275,8 +286,12 @@ app.get('/api/webhooks/vnpay-ipn', (req, res) => {
       return res.status(400).send('Invalid IPN');
     }
 
-    const isValidHash = verifyVNPAYHash(queryParams, receivedHash, VNPAY_CONFIG.HASH_SECRET);
-    
+    const isValidHash = verifyVNPAYHash(
+      queryParams,
+      receivedHash,
+      VNPAY_CONFIG.HASH_SECRET
+    );
+
     if (!isValidHash) {
       return res.status(400).send('Invalid signature');
     }
@@ -285,11 +300,12 @@ app.get('/api/webhooks/vnpay-ipn', (req, res) => {
     const orderId = queryParams.vnp_TxnRef;
     const amount = parseInt(queryParams.vnp_Amount) / 100;
 
-    console.log(`IPN received: ${orderId}, Code: ${responseCode}, Amount: ${amount} VND`);
+    console.log(
+      `IPN received: ${orderId}, Code: ${responseCode}, Amount: ${amount} VND`
+    );
 
     // Return success response to stop IPN retries
     res.send('{"RspCode":"00","Message":"OK"}');
-
   } catch (error) {
     console.error('Error processing IPN:', error);
     res.status(500).send('{"RspCode":"99","Message":"Internal Error"}');
@@ -299,12 +315,12 @@ app.get('/api/webhooks/vnpay-ipn', (req, res) => {
 // Payment status endpoint
 app.get('/api/payments/vnpay-status/:orderId', (req, res) => {
   const { orderId } = req.params;
-  
+
   res.json({
     success: true,
     orderId: orderId,
     status: 'pending',
-    message: 'Order status retrieved successfully'
+    message: 'Order status retrieved successfully',
   });
 });
 
@@ -312,11 +328,13 @@ app.get('/api/payments/vnpay-status/:orderId', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 VNPAY Demo Server running on http://localhost:${PORT}`);
   console.log(`📊 Demo homepage: http://localhost:${PORT}`);
-  console.log(`💳 Test card: 4524 0418 7644 5035 (VÕ LONG SANG, 10/27, OTP: 160922)`);
+  console.log(
+    `💳 Test card: 4524 0418 7644 5035 (VÕ LONG SANG, 10/27, OTP: 160922)`
+  );
   console.log(`🔧 Configuration:`);
   console.log(`   TMN Code: ${VNPAY_CONFIG.TMN_CODE}`);
   console.log(`   Payment URL: ${VNPAY_CONFIG.PAYMENT_URL}`);
   console.log(`   Return URL: ${VNPAY_CONFIG.RETURN_URL}`);
 });
 
-module.exports = app; 
+module.exports = app;

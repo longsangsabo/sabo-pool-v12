@@ -34,7 +34,7 @@ function sendToAnalytics(metric: WebVitalMetric) {
       custom_map: { metric_rating: metric.rating }
     });
   }
-  
+
   // Send to Supabase for internal tracking
   supabase.from('web_vitals_metrics').insert({
     metric_name: metric.name,
@@ -117,27 +117,27 @@ export function initWebVitalsTracking() {
 // src/lib/monitoring/customMetrics.ts
 class PerformanceTracker {
   private startTimes: Map<string, number> = new Map();
-  
+
   startTimer(name: string): void {
     this.startTimes.set(name, performance.now());
   }
-  
+
   endTimer(name: string): number {
     const startTime = this.startTimes.get(name);
     if (!startTime) {
       console.warn(`Timer '${name}' was not started`);
       return 0;
     }
-    
+
     const duration = performance.now() - startTime;
     this.startTimes.delete(name);
-    
+
     // Send to analytics
     this.trackCustomMetric(name, duration);
-    
+
     return duration;
   }
-  
+
   private trackCustomMetric(name: string, value: number): void {
     // Track in Supabase
     supabase.from('performance_metrics').insert({
@@ -148,7 +148,7 @@ class PerformanceTracker {
       timestamp: new Date().toISOString(),
       user_agent: navigator.userAgent
     });
-    
+
     // Also send to external monitoring
     if (window.gtag) {
       window.gtag('event', 'custom_performance', {
@@ -158,28 +158,28 @@ class PerformanceTracker {
       });
     }
   }
-  
+
   // Pre-defined business metrics
   trackTournamentCreation(): void {
     this.startTimer('tournament_creation');
   }
-  
+
   completeTournamentCreation(): void {
     this.endTimer('tournament_creation');
   }
-  
+
   trackChallengeFlow(): void {
     this.startTimer('challenge_flow');
   }
-  
+
   completeChallengeFlow(): void {
     this.endTimer('challenge_flow');
   }
-  
+
   trackProfileUpdate(): void {
     this.startTimer('profile_update');
   }
-  
+
   completeProfileUpdate(): void {
     this.endTimer('profile_update');
   }
@@ -205,12 +205,12 @@ interface ErrorContext {
 class ErrorTracker {
   private errorQueue: Array<any> = [];
   private isOnline = navigator.onLine;
-  
+
   constructor() {
     // Global error handlers
     window.addEventListener('error', this.handleError.bind(this));
     window.addEventListener('unhandledrejection', this.handlePromiseRejection.bind(this));
-    
+
     // Network status
     window.addEventListener('online', () => {
       this.isOnline = true;
@@ -218,7 +218,7 @@ class ErrorTracker {
     });
     window.addEventListener('offline', () => this.isOnline = false);
   }
-  
+
   private handleError(event: ErrorEvent): void {
     this.trackError({
       message: event.message,
@@ -230,7 +230,7 @@ class ErrorTracker {
       severity: 'medium'
     });
   }
-  
+
   private handlePromiseRejection(event: PromiseRejectionEvent): void {
     this.trackError({
       message: `Unhandled Promise Rejection: ${event.reason}`,
@@ -239,7 +239,7 @@ class ErrorTracker {
       stack: event.reason?.stack
     });
   }
-  
+
   trackError(error: any, context?: Partial<ErrorContext>): void {
     const errorData = {
       ...error,
@@ -250,14 +250,14 @@ class ErrorTracker {
       timestamp: Date.now(),
       sessionId: getSessionId()
     };
-    
+
     if (this.isOnline) {
       this.sendError(errorData);
     } else {
       this.errorQueue.push(errorData);
     }
   }
-  
+
   private async sendError(errorData: any): Promise<void> {
     try {
       // Send to Supabase
@@ -270,7 +270,7 @@ class ErrorTracker {
         user_agent: errorData.userAgent,
         timestamp: new Date(errorData.timestamp).toISOString()
       });
-      
+
       // Also send to external service (Sentry, etc.)
       if (window.Sentry) {
         window.Sentry.captureException(errorData);
@@ -279,7 +279,7 @@ class ErrorTracker {
       console.error('Failed to send error to tracking service:', e);
     }
   }
-  
+
   private flushErrorQueue(): void {
     while (this.errorQueue.length > 0) {
       const error = this.errorQueue.shift();
@@ -299,7 +299,7 @@ export const errorTracker = new ErrorTracker();
 // src/lib/monitoring/businessMetrics.ts
 class BusinessMetricsTracker {
   private sessionStart = Date.now();
-  
+
   // Tournament metrics
   trackTournamentView(tournamentId: string): void {
     this.trackEvent('tournament_viewed', {
@@ -307,7 +307,7 @@ class BusinessMetricsTracker {
       page_url: window.location.href
     });
   }
-  
+
   trackTournamentRegistration(tournamentId: string, success: boolean): void {
     this.trackEvent('tournament_registration', {
       tournament_id: tournamentId,
@@ -315,7 +315,7 @@ class BusinessMetricsTracker {
       conversion_time: Date.now() - this.sessionStart
     });
   }
-  
+
   // Challenge metrics
   trackChallengeCreated(challengeType: string, stakeAmount: number): void {
     this.trackEvent('challenge_created', {
@@ -323,14 +323,14 @@ class BusinessMetricsTracker {
       stake_amount: stakeAmount
     });
   }
-  
+
   trackChallengeAccepted(challengeId: string, responseTime: number): void {
     this.trackEvent('challenge_accepted', {
       challenge_id: challengeId,
       response_time: responseTime
     });
   }
-  
+
   // User behavior metrics
   trackPageView(pageName: string): void {
     this.trackEvent('page_view', {
@@ -339,7 +339,7 @@ class BusinessMetricsTracker {
       session_duration: Date.now() - this.sessionStart
     });
   }
-  
+
   trackFeatureUsage(featureName: string, action: string): void {
     this.trackEvent('feature_usage', {
       feature_name: featureName,
@@ -347,7 +347,7 @@ class BusinessMetricsTracker {
       timestamp: Date.now()
     });
   }
-  
+
   // Conversion funnel tracking
   trackFunnelStep(funnelName: string, step: string, stepNumber: number): void {
     this.trackEvent('funnel_step', {
@@ -357,7 +357,7 @@ class BusinessMetricsTracker {
       time_in_funnel: Date.now() - this.sessionStart
     });
   }
-  
+
   private trackEvent(eventName: string, properties: any): void {
     const eventData = {
       event_name: eventName,
@@ -367,10 +367,10 @@ class BusinessMetricsTracker {
       url: window.location.href,
       timestamp: new Date().toISOString()
     };
-    
+
     // Send to analytics
     supabase.from('analytics_events').insert(eventData);
-    
+
     // Also send to external analytics
     if (window.gtag) {
       window.gtag('event', eventName, properties);
@@ -387,7 +387,7 @@ export const businessMetrics = new BusinessMetricsTracker();
 // src/lib/monitoring/conversionTracking.ts
 class ConversionTracker {
   private funnels: Map<string, any> = new Map();
-  
+
   startFunnel(funnelName: string, initialData?: any): void {
     this.funnels.set(funnelName, {
       startTime: Date.now(),
@@ -396,11 +396,11 @@ class ConversionTracker {
       steps: []
     });
   }
-  
+
   trackFunnelStep(funnelName: string, stepName: string, data?: any): void {
     const funnel = this.funnels.get(funnelName);
     if (!funnel) return;
-    
+
     funnel.steps.push({
       step: funnel.currentStep,
       name: stepName,
@@ -408,14 +408,14 @@ class ConversionTracker {
       timeFromStart: Date.now() - funnel.startTime,
       data: data
     });
-    
+
     funnel.currentStep++;
   }
-  
+
   completeFunnel(funnelName: string, success: boolean, finalData?: any): void {
     const funnel = this.funnels.get(funnelName);
     if (!funnel) return;
-    
+
     const conversionData = {
       funnel_name: funnelName,
       success: success,
@@ -429,23 +429,23 @@ class ConversionTracker {
       user_id: getCurrentUserId(),
       timestamp: new Date().toISOString()
     };
-    
+
     // Track conversion
     supabase.from('conversion_tracking').insert(conversionData);
-    
+
     // Clean up
     this.funnels.delete(funnelName);
   }
-  
+
   // Pre-defined funnels
   startTournamentRegistrationFunnel(tournamentId: string): void {
     this.startFunnel('tournament_registration', { tournament_id: tournamentId });
   }
-  
+
   trackTournamentRegistrationStep(stepName: string): void {
     this.trackFunnelStep('tournament_registration', stepName);
   }
-  
+
   completeTournamentRegistration(success: boolean): void {
     this.completeFunnel('tournament_registration', success);
   }
@@ -467,58 +467,58 @@ export const alertRules = {
     threshold: 1.0, // 1%
     duration: '5m',
     severity: 'critical',
-    channels: ['slack', 'email', 'sms']
+    channels: ['slack', 'email', 'sms'],
   },
-  
+
   slowResponseTime: {
     metric: 'response_time_p95',
     threshold: 5000, // 5 seconds
     duration: '5m',
     severity: 'high',
-    channels: ['slack', 'email']
+    channels: ['slack', 'email'],
   },
-  
+
   memoryLeak: {
     metric: 'memory_usage',
     threshold: 200, // 200MB
     duration: '10m',
     severity: 'high',
-    channels: ['slack']
+    channels: ['slack'],
   },
-  
+
   // Business alerts
   lowConversionRate: {
     metric: 'tournament_registration_rate',
     threshold: 0.05, // 5%
     duration: '1h',
     severity: 'medium',
-    channels: ['slack']
+    channels: ['slack'],
   },
-  
+
   highUserDropoff: {
     metric: 'session_abandonment_rate',
     threshold: 0.8, // 80%
     duration: '30m',
     severity: 'medium',
-    channels: ['slack']
+    channels: ['slack'],
   },
-  
+
   // Infrastructure alerts
   highCPUUsage: {
     metric: 'cpu_usage',
     threshold: 80, // 80%
     duration: '5m',
     severity: 'high',
-    channels: ['slack', 'email']
+    channels: ['slack', 'email'],
   },
-  
+
   databaseSlowQueries: {
     metric: 'db_query_time_p95',
     threshold: 10000, // 10 seconds
     duration: '2m',
     severity: 'critical',
-    channels: ['slack', 'email']
-  }
+    channels: ['slack', 'email'],
+  },
 };
 ```
 
@@ -529,12 +529,12 @@ export const alertRules = {
 class AlertManager {
   private activeAlerts: Map<string, any> = new Map();
   private alertCooldowns: Map<string, number> = new Map();
-  
+
   async checkAlerts(): Promise<void> {
     for (const [alertName, rule] of Object.entries(alertRules)) {
       try {
         const currentValue = await this.getMetricValue(rule.metric, rule.duration);
-        
+
         if (this.shouldTriggerAlert(alertName, rule, currentValue)) {
           await this.triggerAlert(alertName, rule, currentValue);
         } else if (this.shouldResolveAlert(alertName, rule, currentValue)) {
@@ -545,23 +545,23 @@ class AlertManager {
       }
     }
   }
-  
+
   private shouldTriggerAlert(alertName: string, rule: any, currentValue: number): boolean {
     const isThresholdBreached = currentValue > rule.threshold;
-    const isNotInCooldown = !this.alertCooldowns.has(alertName) || 
+    const isNotInCooldown = !this.alertCooldowns.has(alertName) ||
                            Date.now() > this.alertCooldowns.get(alertName)!;
     const isNotAlreadyActive = !this.activeAlerts.has(alertName);
-    
+
     return isThresholdBreached && isNotInCooldown && isNotAlreadyActive;
   }
-  
+
   private shouldResolveAlert(alertName: string, rule: any, currentValue: number): boolean {
     const isThresholdNormal = currentValue <= rule.threshold;
     const isAlertActive = this.activeAlerts.has(alertName);
-    
+
     return isThresholdNormal && isAlertActive;
   }
-  
+
   private async triggerAlert(alertName: string, rule: any, currentValue: number): Promise<void> {
     const alert = {
       name: alertName,
@@ -572,14 +572,14 @@ class AlertManager {
       timestamp: Date.now(),
       status: 'active'
     };
-    
+
     this.activeAlerts.set(alertName, alert);
-    
+
     // Send notifications
     for (const channel of rule.channels) {
       await this.sendNotification(channel, alert);
     }
-    
+
     // Log alert
     await supabase.from('alert_logs').insert({
       alert_name: alertName,
@@ -590,34 +590,34 @@ class AlertManager {
       status: 'triggered',
       timestamp: new Date().toISOString()
     });
-    
+
     // Set cooldown (prevent spam)
     this.alertCooldowns.set(alertName, Date.now() + (15 * 60 * 1000)); // 15 minutes
   }
-  
+
   private async resolveAlert(alertName: string): Promise<void> {
     const alert = this.activeAlerts.get(alertName);
     if (!alert) return;
-    
+
     alert.status = 'resolved';
     alert.resolvedAt = Date.now();
-    
+
     // Send resolution notification
     await this.sendNotification('slack', {
       ...alert,
       message: `✅ Alert resolved: ${alertName}`
     });
-    
+
     // Log resolution
     await supabase.from('alert_logs').insert({
       alert_name: alertName,
       status: 'resolved',
       timestamp: new Date().toISOString()
     });
-    
+
     this.activeAlerts.delete(alertName);
   }
-  
+
   private async sendNotification(channel: string, alert: any): Promise<void> {
     switch (channel) {
       case 'slack':
@@ -631,11 +631,11 @@ class AlertManager {
         break;
     }
   }
-  
+
   private async sendSlackNotification(alert: any): Promise<void> {
     const webhookUrl = process.env.SLACK_WEBHOOK_URL;
     if (!webhookUrl) return;
-    
+
     const message = {
       text: `🚨 ${alert.severity.toUpperCase()} Alert: ${alert.name}`,
       attachments: [{
@@ -648,7 +648,7 @@ class AlertManager {
         ]
       }]
     };
-    
+
     await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -682,10 +682,10 @@ export function MetricsDashboard() {
   const [webVitals, setWebVitals] = useState<MetricData[]>([]);
   const [errorRates, setErrorRates] = useState<MetricData[]>([]);
   const [businessMetrics, setBusinessMetrics] = useState<MetricData[]>([]);
-  
+
   useEffect(() => {
     fetchMetrics();
-    
+
     // Set up real-time subscriptions
     const webVitalsSubscription = supabase
       .channel('web_vitals_changes')
@@ -697,36 +697,36 @@ export function MetricsDashboard() {
         setWebVitals(prev => [...prev, payload.new as MetricData]);
       })
       .subscribe();
-      
+
     return () => {
       supabase.removeChannel(webVitalsSubscription);
     };
   }, []);
-  
+
   const fetchMetrics = async () => {
     const { data: vitals } = await supabase
       .from('web_vitals_metrics')
       .select('*')
       .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
       .order('created_at', { ascending: false });
-      
+
     const { data: errors } = await supabase
       .from('error_logs')
       .select('*')
       .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
       .order('created_at', { ascending: false });
-      
+
     const { data: business } = await supabase
       .from('analytics_events')
       .select('*')
       .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
       .order('created_at', { ascending: false });
-      
+
     setWebVitals(vitals || []);
     setErrorRates(errors || []);
     setBusinessMetrics(business || []);
   };
-  
+
   return (
     <div className="monitoring-dashboard">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -734,27 +734,27 @@ export function MetricsDashboard() {
         <div className="metric-card">
           <h3>Core Web Vitals</h3>
           <div className="metrics-grid">
-            <MetricDisplay 
-              name="LCP" 
-              value={getLatestMetric(webVitals, 'LCP')} 
+            <MetricDisplay
+              name="LCP"
+              value={getLatestMetric(webVitals, 'LCP')}
               threshold={2.5}
               unit="s"
             />
-            <MetricDisplay 
-              name="FID" 
-              value={getLatestMetric(webVitals, 'FID')} 
+            <MetricDisplay
+              name="FID"
+              value={getLatestMetric(webVitals, 'FID')}
               threshold={100}
               unit="ms"
             />
-            <MetricDisplay 
-              name="CLS" 
-              value={getLatestMetric(webVitals, 'CLS')} 
+            <MetricDisplay
+              name="CLS"
+              value={getLatestMetric(webVitals, 'CLS')}
               threshold={0.1}
               unit=""
             />
           </div>
         </div>
-        
+
         {/* Error Rates */}
         <div className="metric-card">
           <h3>Error Rates</h3>
@@ -772,26 +772,26 @@ export function MetricsDashboard() {
             </div>
           </div>
         </div>
-        
+
         {/* Business Metrics */}
         <div className="metric-card">
           <h3>Business Metrics</h3>
           <div className="business-summary">
-            <MetricDisplay 
-              name="Tournament Registrations" 
-              value={countEvents(businessMetrics, 'tournament_registration')} 
+            <MetricDisplay
+              name="Tournament Registrations"
+              value={countEvents(businessMetrics, 'tournament_registration')}
               threshold={50}
               unit=""
             />
-            <MetricDisplay 
-              name="Challenge Creations" 
-              value={countEvents(businessMetrics, 'challenge_created')} 
+            <MetricDisplay
+              name="Challenge Creations"
+              value={countEvents(businessMetrics, 'challenge_created')}
               threshold={30}
               unit=""
             />
-            <MetricDisplay 
-              name="Profile Updates" 
-              value={countEvents(businessMetrics, 'profile_updated')} 
+            <MetricDisplay
+              name="Profile Updates"
+              value={countEvents(businessMetrics, 'profile_updated')}
               threshold={100}
               unit=""
             />

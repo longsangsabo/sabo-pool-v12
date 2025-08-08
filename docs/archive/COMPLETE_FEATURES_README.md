@@ -9,6 +9,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 ### 🏠 **Core Features (Tính năng cốt lõi)**
 
 #### 1. **Authentication & User Management**
+
 - ✅ Đăng ký/Đăng nhập với email
 - ✅ Xác thực OAuth (Google, Facebook)
 - ✅ Quản lý profile người dùng
@@ -16,6 +17,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Hệ thống rank và achievements
 
 #### 2. **ELO Rating System v2.0**
+
 - ✅ Hệ thống tính điểm ELO nâng cao
 - ✅ Dynamic K-factors
 - ✅ Advanced bonuses và penalties
@@ -25,6 +27,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Prediction algorithms
 
 #### 3. **Challenge System**
+
 - ✅ Tạo thách đấu
 - ✅ Chấp nhận/từ chối thách đấu
 - ✅ Betting system
@@ -32,6 +35,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Result tracking
 
 #### 4. **Tournament Management**
+
 - ✅ Tạo và quản lý giải đấu
 - ✅ Tournament brackets
 - ✅ Registration system
@@ -41,12 +45,14 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 ### 📱 **Mobile-First Features**
 
 #### 5. **Bottom Navigation**
+
 - ✅ Navigation bar cho mobile
 - ✅ 7 tab chính: Home, Discovery, Challenges, Tournaments, Chat, Wallet, Profile
 - ✅ Badge notifications
 - ✅ Responsive design
 
 #### 6. **Chat System**
+
 - ✅ Real-time messaging
 - ✅ Direct và group chats
 - ✅ File sharing
@@ -55,6 +61,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Chat list với search và filter
 
 #### 7. **Notification System**
+
 - ✅ Real-time notifications
 - ✅ Multiple notification types
 - ✅ Notification center
@@ -64,6 +71,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 ### 🔍 **Discovery & Search**
 
 #### 8. **Advanced Search**
+
 - ✅ Search filters (location, skill level, distance)
 - ✅ Category-based search
 - ✅ Rating filters
@@ -71,6 +79,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Advanced search modal
 
 #### 9. **Player Discovery**
+
 - ✅ Player profiles
 - ✅ Skill matching
 - ✅ Location-based discovery
@@ -78,6 +87,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Performance statistics
 
 #### 10. **Club Management**
+
 - ✅ Club profiles
 - ✅ Member management
 - ✅ Club events
@@ -86,6 +96,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 ### 💰 **Financial Features**
 
 #### 11. **Wallet System**
+
 - ✅ Digital wallet
 - ✅ Transaction history
 - ✅ Multiple payment methods
@@ -93,6 +104,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Transfer between users
 
 #### 12. **Membership System**
+
 - ✅ Free tier
 - ✅ Premium membership
 - ✅ Pro membership
@@ -102,6 +114,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 ### 📊 **Analytics & Performance**
 
 #### 13. **Analytics Dashboard**
+
 - ✅ Personal statistics
 - ✅ Performance tracking
 - ✅ Win rate analysis
@@ -110,6 +123,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Opponent analysis
 
 #### 14. **Live Streaming**
+
 - ✅ Live match streaming
 - ✅ Chat integration
 - ✅ Viewer count
@@ -119,6 +133,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 ### 🔒 **Security & PWA**
 
 #### 15. **Security Features**
+
 - ✅ Two-factor authentication
 - ✅ Password management
 - ✅ Session management
@@ -127,6 +142,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Security score
 
 #### 16. **PWA Features**
+
 - ✅ Progressive Web App
 - ✅ Offline functionality
 - ✅ Install prompts
@@ -137,12 +153,14 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 ### 🎯 **Advanced Features**
 
 #### 17. **Smart Matching**
+
 - ✅ AI-powered opponent matching
 - ✅ Skill-based recommendations
 - ✅ Location-based matching
 - ✅ Availability matching
 
 #### 18. **Social Features**
+
 - ✅ Social feed
 - ✅ Post creation
 - ✅ Comments và reactions
@@ -150,6 +168,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ Activity feed
 
 #### 19. **QR Code System**
+
 - ✅ QR code generation
 - ✅ Quick match setup
 - ✅ Payment QR codes
@@ -158,6 +177,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 ## 🏗️ **Architecture & Technology**
 
 ### **Frontend Stack**
+
 - ✅ **React 18** với TypeScript
 - ✅ **Vite** build tool
 - ✅ **Tailwind CSS** styling
@@ -167,6 +187,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ **Zustand** state management
 
 ### **Backend Integration**
+
 - ✅ **Supabase** backend
 - ✅ **PostgreSQL** database
 - ✅ **Real-time subscriptions**
@@ -174,6 +195,7 @@ Sabo Pool Arena Hub là một ứng dụng web toàn diện dành cho cộng đ�
 - ✅ **Edge Functions**
 
 ### **Mobile Optimization**
+
 - ✅ **Responsive design**
 - ✅ **Touch gestures**
 - ✅ **Mobile-first UI**
@@ -210,11 +232,13 @@ src/
 ## 🚀 **Getting Started**
 
 ### **Prerequisites**
+
 - Node.js 18+
 - npm hoặc yarn
 - Supabase account
 
 ### **Installation**
+
 ```bash
 # Clone repository
 git clone [repository-url]
@@ -232,6 +256,7 @@ npm run dev
 ```
 
 ### **Environment Variables**
+
 ```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -241,16 +266,19 @@ VITE_APP_URL=http://localhost:5173
 ## 📱 **Mobile Features**
 
 ### **Bottom Navigation**
+
 - 7 tab chính với icons và badges
 - Responsive design cho mobile
 - Smooth transitions
 
 ### **Touch Gestures**
+
 - Swipe gestures cho discovery
 - Pull-to-refresh
 - Long press actions
 
 ### **PWA Features**
+
 - Install prompt
 - Offline functionality
 - Push notifications
@@ -259,17 +287,19 @@ VITE_APP_URL=http://localhost:5173
 ## 🔧 **Configuration**
 
 ### **ELO System Configuration**
+
 ```typescript
 // ELO calculation parameters
 const ELO_CONFIG = {
   baseKFactor: 32,
   volatilityWeight: 0.1,
   confidenceThreshold: 0.8,
-  bonusMultiplier: 1.2
+  bonusMultiplier: 1.2,
 };
 ```
 
 ### **Notification Settings**
+
 ```typescript
 // Notification preferences
 const NOTIFICATION_SETTINGS = {
@@ -277,19 +307,21 @@ const NOTIFICATION_SETTINGS = {
   tournaments: true,
   messages: true,
   achievements: true,
-  system: false
+  system: false,
 };
 ```
 
 ## 📊 **Performance Metrics**
 
 ### **Core Metrics**
+
 - ✅ Page load time: < 2s
 - ✅ Time to interactive: < 3s
 - ✅ Lighthouse score: > 90
 - ✅ Mobile responsiveness: 100%
 
 ### **User Engagement**
+
 - ✅ Daily active users tracking
 - ✅ Session duration monitoring
 - ✅ Feature usage analytics
@@ -298,12 +330,14 @@ const NOTIFICATION_SETTINGS = {
 ## 🔒 **Security Features**
 
 ### **Authentication**
+
 - ✅ JWT tokens
 - ✅ Refresh token rotation
 - ✅ Session management
 - ✅ Device tracking
 
 ### **Data Protection**
+
 - ✅ Row Level Security (RLS)
 - ✅ Input validation
 - ✅ XSS protection
@@ -312,6 +346,7 @@ const NOTIFICATION_SETTINGS = {
 ## 🎯 **Future Enhancements**
 
 ### **Planned Features**
+
 - [ ] AI-powered match predictions
 - [ ] Advanced tournament brackets
 - [ ] Live streaming with multiple cameras
@@ -324,6 +359,7 @@ const NOTIFICATION_SETTINGS = {
 - [ ] AR/VR integration
 
 ### **Performance Improvements**
+
 - [ ] Code splitting optimization
 - [ ] Image optimization
 - [ ] Caching strategies
@@ -333,6 +369,7 @@ const NOTIFICATION_SETTINGS = {
 ## 🤝 **Contributing**
 
 ### **Development Guidelines**
+
 1. Follow TypeScript best practices
 2. Use conventional commits
 3. Write unit tests for new features
@@ -340,6 +377,7 @@ const NOTIFICATION_SETTINGS = {
 5. Document new features
 
 ### **Code Quality**
+
 - ESLint configuration
 - Prettier formatting
 - TypeScript strict mode
@@ -359,4 +397,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-**🎱 Sabo Pool Arena Hub - Where Pool Players Connect, Compete, and Excel! 🏆** 
+**🎱 Sabo Pool Arena Hub - Where Pool Players Connect, Compete, and Excel! 🏆**

@@ -44,7 +44,10 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
               <div className='w-3 h-3 bg-slate-500 rounded-full animate-pulse'></div>
               <div className='absolute inset-0 w-3 h-3 bg-slate-400 rounded-full animate-ping'></div>
             </div>
-            <Badge variant='destructive' className='bg-slate-600 dark:bg-slate-700 text-slate-100 animate-pulse border-slate-400 dark:border-slate-600'>
+            <Badge
+              variant='destructive'
+              className='bg-slate-600 dark:bg-slate-700 text-slate-100 animate-pulse border-slate-400 dark:border-slate-600'
+            >
               LIVE
             </Badge>
           </div>
@@ -76,7 +79,9 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
           <div className='col-span-2 text-center'>
             <Avatar className='w-12 h-12 mx-auto mb-2'>
               <AvatarImage src={match.player1.avatar} />
-              <AvatarFallback className='bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>{match.player1.name[0]}</AvatarFallback>
+              <AvatarFallback className='bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
+                {match.player1.name[0]}
+              </AvatarFallback>
             </Avatar>
             <div className='text-sm font-semibold truncate text-slate-700 dark:text-slate-300'>
               {match.player1.name}
@@ -100,7 +105,9 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
           <div className='col-span-2 text-center'>
             <Avatar className='w-12 h-12 mx-auto mb-2'>
               <AvatarImage src={match.player2.avatar} />
-              <AvatarFallback className='bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>{match.player2.name[0]}</AvatarFallback>
+              <AvatarFallback className='bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
+                {match.player2.name[0]}
+              </AvatarFallback>
             </Avatar>
             <div className='text-sm font-semibold truncate text-slate-700 dark:text-slate-300'>
               {match.player2.name}
@@ -123,7 +130,9 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
                 style={{ width: `${progress1}%` }}
               />
             </div>
-            <div className='text-xs font-bold w-6 text-slate-700 dark:text-slate-300'>{match.score.player1}</div>
+            <div className='text-xs font-bold w-6 text-slate-700 dark:text-slate-300'>
+              {match.score.player1}
+            </div>
           </div>
 
           <div className='flex items-center gap-2'>
@@ -136,7 +145,9 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onWatch }) => {
                 style={{ width: `${progress2}%` }}
               />
             </div>
-            <div className='text-xs font-bold w-6 text-slate-700 dark:text-slate-300'>{match.score.player2}</div>
+            <div className='text-xs font-bold w-6 text-slate-700 dark:text-slate-300'>
+              {match.score.player2}
+            </div>
           </div>
         </div>
 

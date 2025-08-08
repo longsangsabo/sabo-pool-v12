@@ -8,7 +8,7 @@ import DocCleanupDashboard from '@/components/admin/DocCleanupDashboard';
 
 const AdminDocCleanup: React.FC = () => {
   return (
-    <div className="p-6">
+    <div className='p-6'>
       <DocCleanupDashboard />
     </div>
   );

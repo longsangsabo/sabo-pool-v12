@@ -116,7 +116,10 @@ const EnhancedSettingsPage = () => {
               <User className='w-4 h-4' />
               Hồ sơ
             </TabsTrigger>
-            <TabsTrigger value='notifications' className='flex items-center gap-2'>
+            <TabsTrigger
+              value='notifications'
+              className='flex items-center gap-2'
+            >
               <Bell className='w-4 h-4' />
               Thông báo
             </TabsTrigger>
@@ -218,7 +221,9 @@ const EnhancedSettingsPage = () => {
 
                   <div className='flex items-center justify-between'>
                     <div>
-                      <Label htmlFor='email-notifications'>Thông báo email</Label>
+                      <Label htmlFor='email-notifications'>
+                        Thông báo email
+                      </Label>
                       <p className='text-sm text-gray-500'>
                         Nhận email về hoạt động quan trọng
                       </p>
@@ -250,7 +255,9 @@ const EnhancedSettingsPage = () => {
 
                   <div className='flex items-center justify-between'>
                     <div>
-                      <Label htmlFor='tournament-notifications'>Thông báo giải đấu</Label>
+                      <Label htmlFor='tournament-notifications'>
+                        Thông báo giải đấu
+                      </Label>
                       <p className='text-sm text-gray-500'>
                         Nhận thông tin về giải đấu mới
                       </p>
@@ -259,14 +266,19 @@ const EnhancedSettingsPage = () => {
                       id='tournament-notifications'
                       checked={notifications.tournaments}
                       onCheckedChange={checked =>
-                        setNotifications(prev => ({ ...prev, tournaments: checked }))
+                        setNotifications(prev => ({
+                          ...prev,
+                          tournaments: checked,
+                        }))
                       }
                     />
                   </div>
 
                   <div className='flex items-center justify-between'>
                     <div>
-                      <Label htmlFor='challenge-notifications'>Thông báo thách đấu</Label>
+                      <Label htmlFor='challenge-notifications'>
+                        Thông báo thách đấu
+                      </Label>
                       <p className='text-sm text-gray-500'>
                         Nhận thông báo khi có thách đấu mới
                       </p>
@@ -275,14 +287,19 @@ const EnhancedSettingsPage = () => {
                       id='challenge-notifications'
                       checked={notifications.challenges}
                       onCheckedChange={checked =>
-                        setNotifications(prev => ({ ...prev, challenges: checked }))
+                        setNotifications(prev => ({
+                          ...prev,
+                          challenges: checked,
+                        }))
                       }
                     />
                   </div>
 
                   <div className='flex items-center justify-between'>
                     <div>
-                      <Label htmlFor='marketing-notifications'>Thông báo khuyến mãi</Label>
+                      <Label htmlFor='marketing-notifications'>
+                        Thông báo khuyến mãi
+                      </Label>
                       <p className='text-sm text-gray-500'>
                         Nhận thông tin về ưu đãi và sự kiện
                       </p>
@@ -291,7 +308,10 @@ const EnhancedSettingsPage = () => {
                       id='marketing-notifications'
                       checked={notifications.marketing}
                       onCheckedChange={checked =>
-                        setNotifications(prev => ({ ...prev, marketing: checked }))
+                        setNotifications(prev => ({
+                          ...prev,
+                          marketing: checked,
+                        }))
                       }
                     />
                   </div>
@@ -322,8 +342,10 @@ const EnhancedSettingsPage = () => {
               </CardHeader>
               <CardContent className='space-y-6'>
                 <div className='space-y-4'>
-                  <h3 className='text-sm font-medium text-gray-900'>Quyền riêng tư</h3>
-                  
+                  <h3 className='text-sm font-medium text-gray-900'>
+                    Quyền riêng tư
+                  </h3>
+
                   <div className='flex items-center justify-between'>
                     <div>
                       <Label htmlFor='public-profile'>Hồ sơ công khai</Label>
@@ -335,7 +357,10 @@ const EnhancedSettingsPage = () => {
                       id='public-profile'
                       checked={privacy.profileVisible}
                       onCheckedChange={checked =>
-                        setPrivacy(prev => ({ ...prev, profileVisible: checked }))
+                        setPrivacy(prev => ({
+                          ...prev,
+                          profileVisible: checked,
+                        }))
                       }
                     />
                   </div>
@@ -377,7 +402,7 @@ const EnhancedSettingsPage = () => {
 
                 <div className='space-y-4'>
                   <h3 className='text-sm font-medium text-gray-900'>Bảo mật</h3>
-                  
+
                   <div className='flex items-center justify-between'>
                     <div>
                       <Label htmlFor='two-factor'>Xác thực hai bước</Label>
@@ -437,8 +462,10 @@ const EnhancedSettingsPage = () => {
               </CardHeader>
               <CardContent className='space-y-6'>
                 <div className='space-y-3'>
-                  <h3 className='text-sm font-medium text-gray-900'>Thao tác tài khoản</h3>
-                  
+                  <h3 className='text-sm font-medium text-gray-900'>
+                    Thao tác tài khoản
+                  </h3>
+
                   <Button
                     variant='outline'
                     className='w-full justify-start'
@@ -470,11 +497,13 @@ const EnhancedSettingsPage = () => {
                 <hr />
 
                 <div className='space-y-3'>
-                  <h3 className='text-sm font-medium text-red-600'>Vùng nguy hiểm</h3>
+                  <h3 className='text-sm font-medium text-red-600'>
+                    Vùng nguy hiểm
+                  </h3>
                   <p className='text-sm text-gray-500'>
                     Các thao tác này không thể hoàn tác
                   </p>
-                  
+
                   <Button
                     variant='destructive'
                     className='w-full justify-start'

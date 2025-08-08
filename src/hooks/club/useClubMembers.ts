@@ -18,11 +18,17 @@ interface UseClubMembersOptions {
   offset?: number; // offset-based pagination
 }
 
-export const fetchClubMembers = async (clubId: string, opts: UseClubMembersOptions = {}): Promise<ClubMemberData[]> => {
+export const fetchClubMembers = async (
+  clubId: string,
+  opts: UseClubMembersOptions = {}
+): Promise<ClubMemberData[]> => {
   const { status, search, limit = 50, role, offset = 0 } = opts;
   let query = supabase
     .from('club_members')
-    .select('user_id, status, role, profiles(full_name, display_name, avatar_url, verified_rank)', { count: 'exact' })
+    .select(
+      'user_id, status, role, profiles(full_name, display_name, avatar_url, verified_rank)',
+      { count: 'exact' }
+    )
     .eq('club_id', clubId)
     .range(offset, offset + limit - 1);
 
@@ -33,23 +39,31 @@ export const fetchClubMembers = async (clubId: string, opts: UseClubMembersOptio
   if (error) throw error;
   if (!data) return [];
 
-  const mapped = data.map((m: any) => {
-    const name = m.profiles?.display_name || m.profiles?.full_name || 'Người chơi';
-    if (search && !name.toLowerCase().includes(search.toLowerCase())) return null;
-    return {
-      id: m.user_id,
-      name,
-      avatar_url: m.profiles?.avatar_url,
-      rank: m.profiles?.verified_rank,
-      status: m.status || 'member',
-      role: m.role || 'member'
-    } as ClubMemberData;
-  }).filter(Boolean) as ClubMemberData[];
+  const mapped = data
+    .map((m: any) => {
+      const name =
+        m.profiles?.display_name || m.profiles?.full_name || 'Người chơi';
+      if (search && !name.toLowerCase().includes(search.toLowerCase()))
+        return null;
+      return {
+        id: m.user_id,
+        name,
+        avatar_url: m.profiles?.avatar_url,
+        rank: m.profiles?.verified_rank,
+        status: m.status || 'member',
+        role: m.role || 'member',
+      } as ClubMemberData;
+    })
+    .filter(Boolean) as ClubMemberData[];
 
   return mapped;
 };
 
-export const useClubMembers = (clubId?: string, opts: UseClubMembersOptions = {}, enabled: boolean = true) => {
+export const useClubMembers = (
+  clubId?: string,
+  opts: UseClubMembersOptions = {},
+  enabled: boolean = true
+) => {
   return useQuery({
     queryKey: ['club-members', clubId, opts],
     queryFn: async () => {
@@ -61,13 +75,21 @@ export const useClubMembers = (clubId?: string, opts: UseClubMembersOptions = {}
   });
 };
 
-export const useInfiniteClubMembers = (clubId?: string, opts: Omit<UseClubMembersOptions, 'offset'> = {}, enabled: boolean = true) => {
+export const useInfiniteClubMembers = (
+  clubId?: string,
+  opts: Omit<UseClubMembersOptions, 'offset'> = {},
+  enabled: boolean = true
+) => {
   const { limit = 50 } = opts;
   return useInfiniteQuery<ClubMemberData[]>({
     queryKey: ['club-members-infinite', clubId, opts],
     queryFn: async ({ pageParam = 0 }) => {
       if (!clubId) return [];
-      return fetchClubMembers(clubId, { ...opts, offset: pageParam * limit, limit });
+      return fetchClubMembers(clubId, {
+        ...opts,
+        offset: pageParam * limit,
+        limit,
+      });
     },
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage) return undefined;

@@ -12,10 +12,9 @@
 
 .safe-area-optimized {
   /* Handle device safe areas (notches, home indicators) */
-  padding-top: max(env(safe-area-inset-top), 0px);
-  padding-bottom: max(env(safe-area-inset-bottom), 0px);
-  padding-left: max(env(safe-area-inset-left), 0px);
-  padding-right: max(env(safe-area-inset-right), 0px);
+  padding: max(env(safe-area-inset-top), 0px)
+    max(env(safe-area-inset-right), 0px) max(env(safe-area-inset-bottom), 0px)
+    max(env(safe-area-inset-left), 0px);
 }
 
 /* Enhanced Touch Targets */
@@ -23,11 +22,14 @@
   /* Minimum 44px touch target for accessibility */
   min-height: 44px;
   min-width: 44px;
+
   /* Prevent text selection on touch */
-  -webkit-user-select: none;
   user-select: none;
+  user-select: none;
+
   /* Prevent callout on long press */
   -webkit-touch-callout: none;
+
   /* Smooth tap highlighting */
   -webkit-tap-highlight-color: transparent;
 }
@@ -40,7 +42,9 @@
 /* Mobile Card Enhancements */
 .mobile-card {
   /* Optimized for touch interaction */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .mobile-card:active {
@@ -57,7 +61,7 @@
 }
 
 .mobile-list-item:active {
-  background-color: hsl(var(--accent) / 0.8);
+  background-color: hsl(var(--accent) / 80%);
 }
 
 /* Mobile Navigation Enhancements */
@@ -67,9 +71,9 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: hsl(var(--card) / 0.95);
+  background: hsl(var(--card) / 95%);
   backdrop-filter: blur(20px);
-  border-top: 1px solid hsl(var(--border) / 0.5);
+  border-top: 1px solid hsl(var(--border) / 50%);
   padding-bottom: max(env(safe-area-inset-bottom), 16px);
   z-index: 50;
 }
@@ -84,7 +88,7 @@
 
 .mobile-nav-item:active {
   transform: scale(0.95);
-  background-color: hsl(var(--accent) / 0.8);
+  background-color: hsl(var(--accent) / 80%);
 }
 
 /* Mobile Header Optimizations */
@@ -92,9 +96,9 @@
   /* Optimized header height for mobile */
   height: 64px;
   padding-top: max(env(safe-area-inset-top), 0px);
-  background: hsl(var(--card) / 0.95);
+  background: hsl(var(--card) / 95%);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid hsl(var(--border) / 0.5);
+  border-bottom: 1px solid hsl(var(--border) / 50%);
 }
 
 /* Mobile Form Enhancements */
@@ -110,66 +114,66 @@
   /* Enhanced focus state for mobile */
   outline: none;
   border-color: hsl(var(--primary));
-  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2);
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 20%);
 }
 
 /* Mobile Spacing Utilities */
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .mobile-spacing-enhanced {
     padding: 16px;
   }
-  
+
   .mobile-spacing-tight {
     padding: 12px;
   }
-  
+
   .mobile-spacing-loose {
     padding: 24px;
   }
-  
+
   .mobile-gap-enhanced {
     gap: 16px;
   }
-  
+
   .mobile-gap-tight {
     gap: 12px;
   }
-  
+
   .mobile-gap-loose {
     gap: 24px;
   }
 }
 
 /* Mobile Typography Optimizations */
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .mobile-heading-large {
     font-size: 1.875rem; /* 30px */
     line-height: 1.2;
     font-weight: 700;
   }
-  
+
   .mobile-heading-medium {
     font-size: 1.5rem; /* 24px */
     line-height: 1.3;
     font-weight: 600;
   }
-  
+
   .mobile-heading-small {
     font-size: 1.25rem; /* 20px */
     line-height: 1.4;
     font-weight: 600;
   }
-  
+
   .mobile-body-large {
     font-size: 1.125rem; /* 18px */
     line-height: 1.6;
   }
-  
+
   .mobile-body-normal {
     font-size: 1rem; /* 16px */
     line-height: 1.6;
   }
-  
+
   .mobile-body-small {
     font-size: 0.875rem; /* 14px */
     line-height: 1.5;
@@ -182,6 +186,7 @@
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -193,6 +198,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -210,7 +216,7 @@
 /* Mobile Gesture Support */
 .mobile-swipeable {
   touch-action: pan-x;
-  -webkit-user-select: none;
+  user-select: none;
   user-select: none;
 }
 
@@ -233,17 +239,17 @@
 @media (prefers-color-scheme: dark) {
   .mobile-card {
     background: hsl(var(--card));
-    border: 1px solid hsl(var(--border) / 0.5);
-    box-shadow: 0 2px 8px hsl(var(--background) / 0.5);
+    border: 1px solid hsl(var(--border) / 50%);
+    box-shadow: 0 2px 8px hsl(var(--background) / 50%);
   }
-  
+
   .mobile-nav-enhanced {
-    background: hsl(var(--card) / 0.95);
-    border-top: 1px solid hsl(var(--border) / 0.3);
+    background: hsl(var(--card) / 95%);
+    border-top: 1px solid hsl(var(--border) / 30%);
   }
-  
+
   .mobile-header-enhanced {
-    background: hsl(var(--card) / 0.95);
-    border-bottom: 1px solid hsl(var(--border) / 0.3);
+    background: hsl(var(--card) / 95%);
+    border-bottom: 1px solid hsl(var(--border) / 30%);
   }
 }

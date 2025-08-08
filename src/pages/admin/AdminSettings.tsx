@@ -70,7 +70,7 @@ const AdminSettings = () => {
           </p>
         </div>
         <div className='flex gap-3'>
-          <Button 
+          <Button
             variant='outline'
             onClick={handleLogout}
             className='gap-2 text-red-600 border-red-200 hover:bg-red-50'
@@ -246,7 +246,9 @@ const AdminSettings = () => {
               <Shield className='w-5 h-5' />
               Quản lý tài khoản Admin
             </CardTitle>
-            <CardDescription>Thao tác với phiên đăng nhập admin</CardDescription>
+            <CardDescription>
+              Thao tác với phiên đăng nhập admin
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className='bg-red-50 border border-red-200 rounded-lg p-4'>

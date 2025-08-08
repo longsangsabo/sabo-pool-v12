@@ -7,6 +7,7 @@ Hệ thống ELO được tối ưu hóa hoàn toàn cho SABO POOL ARENA với c
 ## 🚀 Tính năng chính
 
 ### 1. **Dynamic K-Factor System**
+
 - K-factor thay đổi dựa trên nhiều yếu tố:
   - Số trận đã chơi (kinh nghiệm)
   - Loại trận đấu (regular, tournament, challenge, quick)
@@ -16,6 +17,7 @@ Hệ thống ELO được tối ưu hóa hoàn toàn cho SABO POOL ARENA với c
 - Phạm vi K-factor: 16-60
 
 ### 2. **Advanced Bonus System**
+
 - **Tournament Bonus**: Tăng theo cấp độ giải đấu
   - International: +40% rating
   - National: +30% rating
@@ -29,6 +31,7 @@ Hệ thống ELO được tối ưu hóa hoàn toàn cho SABO POOL ARENA với c
 - **Challenge Bonus**: Thưởng dựa trên số tiền cược
 
 ### 3. **Enhanced Ranking System**
+
 - **14 cấp độ rank** từ E đến S+:
   - S+ (2800+): Legendary
   - S (2600+): Master
@@ -46,6 +49,7 @@ Hệ thống ELO được tối ưu hóa hoàn toàn cho SABO POOL ARENA với c
   - E (200+): Newcomer
 
 ### 4. **Performance Metrics**
+
 - **Recent Form**: Đánh giá phong độ gần đây (-100 đến 100)
 - **Consistency Score**: Độ ổn định rating (0-100%)
 - **Rating Volatility**: Độ biến động rating
@@ -53,6 +57,7 @@ Hệ thống ELO được tối ưu hóa hoàn toàn cho SABO POOL ARENA với c
 - **Match Quality Score**: Chất lượng trận đấu (1-10)
 
 ### 5. **Advanced Prediction System**
+
 - Dự đoán kết quả với độ tin cậy
 - Tính toán tiềm năng upset
 - Gợi ý số tiền cược cho challenge
@@ -61,16 +66,19 @@ Hệ thống ELO được tối ưu hóa hoàn toàn cho SABO POOL ARENA với c
 ## 📊 Công thức tính toán
 
 ### Công thức ELO cơ bản:
+
 ```
 New Rating = Old Rating + K × (Actual Result - Expected Result) + Bonus + Volatility Adjustment
 ```
 
 ### Expected Score:
+
 ```
 Expected Score = 1 / (1 + 10^((Opponent Rating - Your Rating) / 400))
 ```
 
 ### Dynamic K-Factor:
+
 ```
 Base K = f(matches_played)
 Tournament Multiplier = f(tournament_tier)
@@ -81,6 +89,7 @@ Final K = Base K × Tournament × Challenge × Streak × Volatility
 ```
 
 ### Advanced Bonus:
+
 ```
 Tournament Bonus = Rating × 0.2 × Tier_Multiplier
 Streak Bonus = Rating × min(Streak × 0.03, 0.15)
@@ -94,15 +103,18 @@ Challenge Bonus = Rating × min(0.3, Bet_Amount / 2000)
 ## 🎯 Các tính năng mới
 
 ### 1. **Form Adjustment**
+
 - Điều chỉnh rating dựa trên phong độ gần đây
 - Tối đa ±50 điểm điều chỉnh
 - Công thức: `Adjusted Rating = Current Rating + (Form / 100) × 50`
 
 ### 2. **Volatility Adjustment**
+
 - Người chơi có độ biến động cao sẽ có thay đổi rating mạnh hơn
 - Công thức: `Volatility_Adjustment = Base_Change × (Volatility_Factor - 1)`
 
 ### 3. **Match Quality Scoring**
+
 - Đánh giá chất lượng trận đấu từ 1-10
 - Dựa trên:
   - Chênh lệch rating
@@ -111,6 +123,7 @@ Challenge Bonus = Rating × min(0.3, Bet_Amount / 2000)
   - Điểm chất lượng
 
 ### 4. **Confidence Interval**
+
 - Độ tin cậy của thay đổi rating
 - Dựa trên:
   - Số trận đã chơi
@@ -120,6 +133,7 @@ Challenge Bonus = Rating × min(0.3, Bet_Amount / 2000)
 ## 🛠️ Cấu hình hệ thống
 
 ### Default Configuration:
+
 ```typescript
 {
   baseKFactor: 32,
@@ -138,6 +152,7 @@ Challenge Bonus = Rating × min(0.3, Bet_Amount / 2000)
 ## 📈 Database Schema
 
 ### Enhanced Tables:
+
 - `profiles`: Thêm các cột mới
   - `rating_volatility`: Độ biến động rating
   - `recent_form`: Phong độ gần đây
@@ -160,18 +175,21 @@ Challenge Bonus = Rating × min(0.3, Bet_Amount / 2000)
 ## 🎮 Components mới
 
 ### 1. **Enhanced EloCalculator**
+
 - Giao diện tính toán ELO nâng cao
 - Cài đặt tham số tùy chỉnh
 - Hiển thị chi tiết từng bước tính toán
 - Dự đoán kết quả với độ tin cậy
 
 ### 2. **EloStatistics**
+
 - Dashboard thống kê chi tiết
 - 4 tab: Overview, Progression, Performance, Comparison
 - Biểu đồ tiến độ rank
 - Phân tích hiệu suất
 
 ### 3. **EnhancedLeaderboard**
+
 - Bảng xếp hạng với nhiều tiêu chí sắp xếp
 - Chế độ xem table/cards
 - Bộ lọc theo rank
@@ -180,6 +198,7 @@ Challenge Bonus = Rating × min(0.3, Bet_Amount / 2000)
 ## 🔧 API Functions
 
 ### Enhanced ELO Functions:
+
 ```sql
 -- Tính toán ELO nâng cao
 calculate_enhanced_elo_rating()
@@ -206,16 +225,19 @@ calculate_player_elo_statistics()
 ## 📊 Performance Optimizations
 
 ### 1. **Indexing**
+
 - Index trên các cột thường query
 - Composite indexes cho performance
 - Partial indexes cho active players
 
 ### 2. **Caching**
+
 - Cache kết quả tính toán ELO
 - Cache thống kê người chơi
 - Cache bảng xếp hạng
 
 ### 3. **Batch Processing**
+
 - Xử lý hàng loạt thay đổi rating
 - Update thống kê theo batch
 - Background jobs cho tính toán phức tạp
@@ -223,6 +245,7 @@ calculate_player_elo_statistics()
 ## 🎯 Best Practices
 
 ### 1. **K-Factor Guidelines**
+
 - Người mới (< 30 trận): K = 40
 - Trung bình (30-100 trận): K = 32
 - Kinh nghiệm (100-200 trận): K = 28
@@ -230,6 +253,7 @@ calculate_player_elo_statistics()
 - Elite (> 500 trận): K = 20
 
 ### 2. **Bonus Guidelines**
+
 - Tournament: 20-40% tùy cấp độ
 - Streak: Tối đa 15%
 - Quality: Tối đa 15%
@@ -238,6 +262,7 @@ calculate_player_elo_statistics()
 - Form: 5% nếu > 50
 
 ### 3. **Rating Bounds**
+
 - Floor: 100 (không thể thấp hơn)
 - Ceiling: 3000 (không thể cao hơn)
 - Initial: 1000 (người chơi mới)
@@ -245,21 +270,25 @@ calculate_player_elo_statistics()
 ## 🔮 Future Enhancements
 
 ### 1. **Machine Learning Integration**
+
 - Dự đoán kết quả bằng ML
 - Tối ưu hóa K-factor tự động
 - Phát hiện gian lận
 
 ### 2. **Seasonal Adjustments**
+
 - Reset rating theo mùa
 - Seasonal bonuses
 - Historical tracking
 
 ### 3. **Social Features**
+
 - Rating comparison
 - Rival tracking
 - Achievement system
 
 ### 4. **Analytics Dashboard**
+
 - Real-time statistics
 - Trend analysis
 - Performance insights
@@ -267,6 +296,7 @@ calculate_player_elo_statistics()
 ## 📝 Migration Guide
 
 ### 1. **Database Migration**
+
 ```bash
 # Chạy migration mới
 supabase db push
@@ -276,11 +306,13 @@ supabase db diff
 ```
 
 ### 2. **Code Updates**
+
 - Update imports trong components
 - Replace old ELO functions
 - Update type definitions
 
 ### 3. **Testing**
+
 - Test với dữ liệu thực
 - Verify calculations
 - Performance testing
@@ -294,4 +326,4 @@ Hệ thống ELO v2.0 cung cấp một nền tảng mạnh mẽ, công bằng v�
 **Tác giả**: SABO POOL ARENA Development Team  
 **Phiên bản**: 2.0  
 **Ngày cập nhật**: 2024  
-**Trạng thái**: Production Ready 
+**Trạng thái**: Production Ready

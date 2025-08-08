@@ -377,7 +377,9 @@ const ClubSettings = () => {
           <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
             <div className='flex items-start justify-between'>
               <div>
-                <h3 className='font-medium text-red-800'>Đăng xuất tài khoản</h3>
+                <h3 className='font-medium text-red-800'>
+                  Đăng xuất tài khoản
+                </h3>
                 <p className='text-sm text-red-700 mt-1'>
                   Đăng xuất khỏi hệ thống quản lý câu lạc bộ
                 </p>

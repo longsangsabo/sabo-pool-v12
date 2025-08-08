@@ -17,7 +17,7 @@ class AdminDashboardAPI {
     this.port = process.env.PORT || 3001;
     this.projectRoot = path.join(__dirname, '..', '..');
     this.metricsDir = path.join(__dirname, 'metrics');
-    
+
     this.setupMiddleware();
     this.setupRoutes();
     this.ensureDirectories();
@@ -137,7 +137,7 @@ class AdminDashboardAPI {
     const [realTimeMetrics, systemHealth, cleanupStats] = await Promise.all([
       this.getRealTimeMetrics(),
       this.getSystemHealth(),
-      this.getCleanupStats()
+      this.getCleanupStats(),
     ]);
 
     return {
@@ -145,10 +145,10 @@ class AdminDashboardAPI {
         totalFiles: realTimeMetrics.fileCount,
         spaceSaved: cleanupStats.totalSpaceSaved,
         cleanupEfficiency: cleanupStats.efficiency,
-        systemHealth: systemHealth.overall
+        systemHealth: systemHealth.overall,
       },
       alerts: await this.getSystemAlerts(),
-      recentActivity: cleanupStats.recentActivity
+      recentActivity: cleanupStats.recentActivity,
     };
   }
 
@@ -161,22 +161,25 @@ class AdminDashboardAPI {
       distribution: {
         active: 0,
         archived: 0,
-        quarantine: 0
-      }
+        quarantine: 0,
+      },
     };
 
     if (fs.existsSync(docsDir)) {
       metrics.fileCount = this.countFiles(docsDir);
       metrics.totalSize = this.calculateDirSize(docsDir);
-      
+
       // Count files in different directories
       const activeDir = path.join(docsDir, 'active');
       const archiveDir = path.join(docsDir, 'archive');
       const quarantineDir = path.join(docsDir, 'quarantine');
-      
-      if (fs.existsSync(activeDir)) metrics.distribution.active = this.countFiles(activeDir);
-      if (fs.existsSync(archiveDir)) metrics.distribution.archived = this.countFiles(archiveDir);
-      if (fs.existsSync(quarantineDir)) metrics.distribution.quarantine = this.countFiles(quarantineDir);
+
+      if (fs.existsSync(activeDir))
+        metrics.distribution.active = this.countFiles(activeDir);
+      if (fs.existsSync(archiveDir))
+        metrics.distribution.archived = this.countFiles(archiveDir);
+      if (fs.existsSync(quarantineDir))
+        metrics.distribution.quarantine = this.countFiles(quarantineDir);
     }
 
     return metrics;
@@ -187,31 +190,31 @@ class AdminDashboardAPI {
     const trends = {
       fileCount: [],
       storageSize: [],
-      cleanupActivity: []
+      cleanupActivity: [],
     };
 
     // Simulate historical data for demo
     const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
     const now = new Date();
-    
+
     for (let i = days - 1; i >= 0; i--) {
       const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
       const dateStr = date.toISOString().split('T')[0];
-      
+
       trends.fileCount.push({
         date: dateStr,
-        count: Math.floor(Math.random() * 50) + 150 - i // Decreasing trend
+        count: Math.floor(Math.random() * 50) + 150 - i, // Decreasing trend
       });
-      
+
       trends.storageSize.push({
         date: dateStr,
-        size: Math.floor(Math.random() * 1000000) + 5000000 - (i * 10000)
+        size: Math.floor(Math.random() * 1000000) + 5000000 - i * 10000,
       });
-      
+
       trends.cleanupActivity.push({
         date: dateStr,
         filesProcessed: Math.floor(Math.random() * 20),
-        filesRemoved: Math.floor(Math.random() * 5)
+        filesRemoved: Math.floor(Math.random() * 5),
       });
     }
 
@@ -224,20 +227,26 @@ class AdminDashboardAPI {
       const metricsPath = path.join(__dirname, 'metrics-collector.js');
       if (fs.existsSync(metricsPath)) {
         // Run metrics collector to get real data
-        const output = execSync('node ' + metricsPath, { 
+        const output = execSync('node ' + metricsPath, {
           cwd: __dirname,
-          encoding: 'utf8' 
+          encoding: 'utf8',
         });
-        
+
         // Parse output for real metrics
         const lines = output.split('\n');
-        const totalFiles = this.extractNumber(lines.find(l => l.includes('Total Files:')) || '0');
-        const duplicates = this.extractNumber(lines.find(l => l.includes('Duplicate Files:')) || '0');
-        const qualityScore = this.extractNumber(lines.find(l => l.includes('Quality Score:')) || '0');
-        
+        const totalFiles = this.extractNumber(
+          lines.find(l => l.includes('Total Files:')) || '0'
+        );
+        const duplicates = this.extractNumber(
+          lines.find(l => l.includes('Duplicate Files:')) || '0'
+        );
+        const qualityScore = this.extractNumber(
+          lines.find(l => l.includes('Quality Score:')) || '0'
+        );
+
         // Calculate real space that could be saved (estimate)
         const potentialSavings = duplicates * 50000; // 50KB per duplicate estimate
-        
+
         return {
           totalCleanups: 3, // Real cleanup runs so far
           filesProcessed: totalFiles,
@@ -252,21 +261,23 @@ class AdminDashboardAPI {
               timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
               action: 'Real metrics collection completed',
               result: `${totalFiles} files analyzed, ${duplicates} duplicates found`,
-              status: 'success'
+              status: 'success',
             },
             {
-              timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+              timestamp: new Date(
+                Date.now() - 2 * 60 * 60 * 1000
+              ).toISOString(),
               action: 'System health check',
               result: `Quality score: ${qualityScore}/100`,
-              status: 'success'
-            }
-          ]
+              status: 'success',
+            },
+          ],
         };
       }
     } catch (error) {
       console.warn('Could not get real cleanup stats:', error.message);
     }
-    
+
     // Fallback with known real data
     return {
       totalCleanups: 3,
@@ -282,9 +293,9 @@ class AdminDashboardAPI {
           timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
           action: 'Real metrics collected',
           result: '5072 files analyzed, 61 duplicates found',
-          status: 'success'
-        }
-      ]
+          status: 'success',
+        },
+      ],
     };
   }
 
@@ -299,15 +310,19 @@ class AdminDashboardAPI {
     if (!text) return 0;
     const match = text.match(/([\d.]+)\s*(MB|KB|GB|B)/);
     if (!match) return 0;
-    
+
     const value = parseFloat(match[1]);
     const unit = match[2];
-    
+
     switch (unit) {
-      case 'GB': return value * 1024 * 1024 * 1024;
-      case 'MB': return value * 1024 * 1024;
-      case 'KB': return value * 1024;
-      default: return value;
+      case 'GB':
+        return value * 1024 * 1024 * 1024;
+      case 'MB':
+        return value * 1024 * 1024;
+      case 'KB':
+        return value * 1024;
+      default:
+        return value;
     }
   }
 
@@ -322,11 +337,11 @@ class AdminDashboardAPI {
     } catch (error) {
       console.warn('Could not run file analysis:', error.message);
     }
-    
+
     return {
       totalFiles: 0,
       duplicateGroups: [],
-      recommendations: []
+      recommendations: [],
     };
   }
 
@@ -336,7 +351,7 @@ class AdminDashboardAPI {
       configuration: true,
       storage: true,
       permissions: true,
-      overall: 85
+      overall: 85,
     };
 
     // Check daemon status
@@ -348,23 +363,30 @@ class AdminDashboardAPI {
     }
 
     // Calculate overall health
-    const components = [health.daemon, health.configuration, health.storage, health.permissions];
-    health.overall = Math.round((components.filter(Boolean).length / components.length) * 100);
+    const components = [
+      health.daemon,
+      health.configuration,
+      health.storage,
+      health.permissions,
+    ];
+    health.overall = Math.round(
+      (components.filter(Boolean).length / components.length) * 100
+    );
 
     return health;
   }
 
   async getSystemAlerts() {
     const alerts = [];
-    
+
     // Check for system issues
     const health = await this.getSystemHealth();
-    
+
     if (!health.daemon) {
       alerts.push({
         level: 'warning',
         message: 'Cleanup daemon is not running',
-        action: 'Restart the daemon'
+        action: 'Restart the daemon',
       });
     }
 
@@ -372,7 +394,7 @@ class AdminDashboardAPI {
       alerts.push({
         level: 'error',
         message: 'System health is below 80%',
-        action: 'Check system configuration'
+        action: 'Check system configuration',
       });
     }
 
@@ -381,26 +403,26 @@ class AdminDashboardAPI {
 
   async triggerCleanup(type, dryRun) {
     try {
-      const command = dryRun ? 
-        'node doc-cleanup.js analyze' : 
-        'node doc-cleanup.js run';
-        
-      const output = execSync(command, { 
+      const command = dryRun
+        ? 'node doc-cleanup.js analyze'
+        : 'node doc-cleanup.js run';
+
+      const output = execSync(command, {
         cwd: __dirname,
         encoding: 'utf8',
-        timeout: 30000
+        timeout: 30000,
       });
 
       return {
         success: true,
         message: `${type} cleanup ${dryRun ? 'simulation' : 'execution'} completed`,
-        output: output.substring(0, 500) // Limit output size
+        output: output.substring(0, 500), // Limit output size
       };
     } catch (error) {
       return {
         success: false,
         message: 'Cleanup failed',
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -745,7 +767,9 @@ class AdminDashboardAPI {
 
   start() {
     this.app.listen(this.port, () => {
-      console.log(`🚀 Admin Dashboard running at http://localhost:${this.port}`);
+      console.log(
+        `🚀 Admin Dashboard running at http://localhost:${this.port}`
+      );
       console.log(`📊 Real-time cleanup monitoring available`);
     });
   }

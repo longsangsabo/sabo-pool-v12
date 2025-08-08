@@ -13,8 +13,8 @@ export const MOBILE_PAGE_TITLES = {
   TOURNAMENTS: 'Giải Đấu',
   CHALLENGES: 'Thách Đấu',
   LEADERBOARD: 'Xếp Hạng',
-  
-  // Secondary Pages  
+
+  // Secondary Pages
   CALENDAR: 'Lịch Thi Đấu',
   COMMUNITY: 'Cộng Đồng',
   FEED: 'Bảng Tin',
@@ -22,7 +22,7 @@ export const MOBILE_PAGE_TITLES = {
   NOTIFICATIONS: 'Thông Báo',
   SETTINGS: 'Cài Đặt',
   WALLET: 'Ví Điện Tử',
-  
+
   // Club Pages
   CLUBS: 'Câu Lạc Bộ',
   CLUB_DETAIL: 'Chi Tiết CLB',
@@ -33,7 +33,7 @@ export const MOBILE_PAGE_TITLES = {
   CLUB_PENDING: 'Duyệt Thành Viên',
   CLUB_ACTIVITIES: 'Hoạt Động CLB',
   CLUB_SETTINGS: 'Cài Đặt CLB',
-  
+
   // Public Pages
   ABOUT: 'Giới Thiệu',
   CONTACT: 'Liên Hệ',
@@ -43,7 +43,8 @@ export const MOBILE_PAGE_TITLES = {
 } as const;
 
 // ✅ Type cho page titles
-export type MobilePageTitle = typeof MOBILE_PAGE_TITLES[keyof typeof MOBILE_PAGE_TITLES];
+export type MobilePageTitle =
+  (typeof MOBILE_PAGE_TITLES)[keyof typeof MOBILE_PAGE_TITLES];
 
 interface MobilePlayerLayoutProps {
   children: React.ReactNode;
@@ -69,7 +70,7 @@ export const MobilePlayerLayout: React.FC<MobilePlayerLayoutProps> = ({
   const { theme } = useTheme();
   const { isMobile } = useOptimizedResponsive();
   const autoPageTitle = useMobilePageTitle();
-  
+
   // Use custom title if provided, otherwise auto-detect
   const finalPageTitle = customPageTitle || autoPageTitle;
 
@@ -82,41 +83,42 @@ export const MobilePlayerLayout: React.FC<MobilePlayerLayoutProps> = ({
     <>
       {/* Billiards Background Overlay - Dark Mode Only */}
       {theme === 'dark' && showBackground && (
-        <div 
+        <div
           className='fixed inset-0 w-full h-full z-0'
           style={{
-            backgroundImage: 'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
+            backgroundImage:
+              'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
+            backgroundAttachment: 'fixed',
           }}
         />
       )}
-      
+
       {/* Mobile Header */}
       {showHeader && (
         <MobileHeader title={finalPageTitle} onMenuClick={onMenuClick} />
       )}
-      
+
       {/* Main Content Container */}
-      <div 
+      <div
         className={`min-h-screen relative z-10 ${
-          theme === 'dark' && showBackground ? 'bg-transparent' : 'bg-background'
+          theme === 'dark' && showBackground
+            ? 'bg-transparent'
+            : 'bg-background'
         } ${className}`}
       >
         {/* Content Area */}
-        <main 
+        <main
           className={`${customPadding} ${showHeader ? 'pt-8' : 'pt-4'} ${showNavigation ? 'pb-20' : 'pb-4'}`}
         >
           {children}
         </main>
       </div>
-      
+
       {/* Mobile Navigation */}
-      {showNavigation && (
-        <MobileNavigation />
-      )}
+      {showNavigation && <MobileNavigation />}
     </>
   );
 };

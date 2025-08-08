@@ -14,7 +14,10 @@ interface UseClubActivitiesOptions {
   offset?: number; // offset based pagination
 }
 
-export const fetchClubActivities = async (clubId: string, opts: UseClubActivitiesOptions = {}): Promise<ClubActivityData[]> => {
+export const fetchClubActivities = async (
+  clubId: string,
+  opts: UseClubActivitiesOptions = {}
+): Promise<ClubActivityData[]> => {
   const { limit = 30, offset = 0 } = opts; // cursor not yet applied (placeholder)
   const { data, error } = await supabase
     .from('club_activities')
@@ -35,7 +38,11 @@ export const fetchClubActivities = async (clubId: string, opts: UseClubActivitie
   }));
 };
 
-export const useClubActivities = (clubId?: string, opts: UseClubActivitiesOptions = {}, enabled: boolean = true) => {
+export const useClubActivities = (
+  clubId?: string,
+  opts: UseClubActivitiesOptions = {},
+  enabled: boolean = true
+) => {
   return useQuery({
     queryKey: ['club-activities', clubId, opts],
     queryFn: async () => {
@@ -47,13 +54,21 @@ export const useClubActivities = (clubId?: string, opts: UseClubActivitiesOption
   });
 };
 
-export const useInfiniteClubActivities = (clubId?: string, opts: Omit<UseClubActivitiesOptions, 'offset'> = {}, enabled: boolean = true) => {
+export const useInfiniteClubActivities = (
+  clubId?: string,
+  opts: Omit<UseClubActivitiesOptions, 'offset'> = {},
+  enabled: boolean = true
+) => {
   const { limit = 30 } = opts;
   return useInfiniteQuery<ClubActivityData[]>({
     queryKey: ['club-activities-infinite', clubId, opts],
     queryFn: async ({ pageParam = 0 }) => {
       if (!clubId) return [];
-      return fetchClubActivities(clubId, { ...opts, offset: pageParam * limit, limit });
+      return fetchClubActivities(clubId, {
+        ...opts,
+        offset: pageParam * limit,
+        limit,
+      });
     },
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage) return undefined;

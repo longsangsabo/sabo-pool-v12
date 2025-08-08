@@ -19,24 +19,24 @@ export const MobileSectionHeader: React.FC<MobileSectionHeaderProps> = ({
   iconColor = 'text-primary',
   className,
   children,
-  size = 'md'
+  size = 'md',
 }) => {
   const headerSizes = {
     sm: 'text-base',
-    md: 'text-lg', 
-    lg: 'text-xl'
+    md: 'text-lg',
+    lg: 'text-xl',
   };
 
   const subtitleSizes = {
     sm: 'text-xs',
     md: 'text-sm',
-    lg: 'text-base'
+    lg: 'text-base',
   };
 
   const iconSizes = {
     sm: 'w-4 h-4',
     md: 'w-5 h-5',
-    lg: 'w-6 h-6'
+    lg: 'w-6 h-6',
   };
 
   return (
@@ -54,11 +54,7 @@ export const MobileSectionHeader: React.FC<MobileSectionHeaderProps> = ({
           </p>
         )}
       </div>
-      {children && (
-        <div className='flex-shrink-0 ml-4'>
-          {children}
-        </div>
-      )}
+      {children && <div className='flex-shrink-0 ml-4'>{children}</div>}
     </div>
   );
 };

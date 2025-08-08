@@ -16,7 +16,9 @@ export interface ClubProfileData {
   total_tournaments?: number;
 }
 
-export const fetchClubProfile = async (clubId: string): Promise<ClubProfileData | null> => {
+export const fetchClubProfile = async (
+  clubId: string
+): Promise<ClubProfileData | null> => {
   const { data, error } = await supabase
     .from('clubs')
     .select('*')

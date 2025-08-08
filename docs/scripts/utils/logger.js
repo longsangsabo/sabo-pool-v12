@@ -13,14 +13,14 @@ class Logger {
     this.maxFileSize = options.maxFileSize || 10 * 1024 * 1024; // 10MB
     this.maxFiles = options.maxFiles || 10;
     this.enableConsole = options.enableConsole !== false;
-    
+
     this.levels = {
       error: 0,
       warn: 1,
       info: 2,
-      debug: 3
+      debug: 3,
     };
-    
+
     this.init();
   }
 
@@ -43,7 +43,7 @@ class Logger {
       level: level.toUpperCase(),
       message,
       meta,
-      pid: process.pid
+      pid: process.pid,
     };
 
     const logLine = this.formatLogEntry(logEntry);
@@ -58,33 +58,35 @@ class Logger {
   }
 
   formatLogEntry(entry) {
-    const metaStr = Object.keys(entry.meta).length > 0 ? 
-      ` | ${JSON.stringify(entry.meta)}` : '';
-    
+    const metaStr =
+      Object.keys(entry.meta).length > 0
+        ? ` | ${JSON.stringify(entry.meta)}`
+        : '';
+
     return `${entry.timestamp} [${entry.level}] ${entry.message}${metaStr}`;
   }
 
   outputToConsole(level, logLine) {
     const colors = {
       error: '\x1b[31m', // Red
-      warn: '\x1b[33m',  // Yellow
-      info: '\x1b[36m',  // Cyan
-      debug: '\x1b[90m'  // Gray
+      warn: '\x1b[33m', // Yellow
+      info: '\x1b[36m', // Cyan
+      debug: '\x1b[90m', // Gray
     };
-    
+
     const reset = '\x1b[0m';
     const color = colors[level] || '';
-    
+
     console.log(`${color}${logLine}${reset}`);
   }
 
   async writeToFile(logLine) {
     try {
       const logFile = path.join(this.logDir, 'cleanup.log');
-      
+
       // Check file size and rotate if necessary
       await this.rotateLogIfNeeded(logFile);
-      
+
       await fs.appendFile(logFile, logLine + '\n');
     } catch (error) {
       console.error('Failed to write to log file:', error);
@@ -94,7 +96,7 @@ class Logger {
   async rotateLogIfNeeded(logFile) {
     try {
       const stats = await fs.stat(logFile);
-      
+
       if (stats.size > this.maxFileSize) {
         await this.rotateLog(logFile);
       }
@@ -106,10 +108,10 @@ class Logger {
   async rotateLog(logFile) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const rotatedFile = logFile.replace('.log', `_${timestamp}.log`);
-    
+
     try {
       await fs.rename(logFile, rotatedFile);
-      
+
       // Clean up old log files
       await this.cleanupOldLogs();
     } catch (error) {
@@ -125,7 +127,7 @@ class Logger {
         .map(file => ({
           name: file,
           path: path.join(this.logDir, file),
-          stat: null
+          stat: null,
         }));
 
       // Get file stats
@@ -142,7 +144,7 @@ class Logger {
         .filter(file => file.stat)
         .sort((a, b) => b.stat.mtime - a.stat.mtime)
         .slice(this.maxFiles) // Keep only the newest files
-        .forEach(async (file) => {
+        .forEach(async file => {
           try {
             await fs.unlink(file.path);
           } catch (error) {
@@ -176,7 +178,7 @@ class Logger {
       const logFile = path.join(this.logDir, 'cleanup.log');
       const content = await fs.readFile(logFile, 'utf8');
       const logLines = content.split('\n');
-      
+
       return logLines.slice(-lines).join('\n');
     } catch (error) {
       return `No logs available: ${error.message}`;

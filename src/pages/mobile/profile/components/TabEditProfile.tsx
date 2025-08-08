@@ -5,13 +5,23 @@ import { Button } from '@/components/ui/button';
 interface Props {
   editingProfile: ProfileData | null;
   saving: boolean;
-  onChange: <K extends keyof ProfileData>(field: K, value: ProfileData[K]) => void;
+  onChange: <K extends keyof ProfileData>(
+    field: K,
+    value: ProfileData[K]
+  ) => void;
   onSave: () => void;
   onCancel: () => void;
   theme: string;
 }
 
-export const TabEditProfile: React.FC<Props> = ({ editingProfile, saving, onChange, onSave, onCancel, theme }) => {
+export const TabEditProfile: React.FC<Props> = ({
+  editingProfile,
+  saving,
+  onChange,
+  onSave,
+  onCancel,
+  theme,
+}) => {
   return (
     <div className='p-4 space-y-4'>
       <div className='grid gap-4'>
@@ -100,10 +110,21 @@ export const TabEditProfile: React.FC<Props> = ({ editingProfile, saving, onChan
         </div>
       </div>
       <div className='flex gap-2 pt-2'>
-        <Button disabled={saving} onClick={onSave} className={`flex-1 ${saving ? 'opacity-70 pointer-events-none' : ''}`} size='sm'>
+        <Button
+          disabled={saving}
+          onClick={onSave}
+          className={`flex-1 ${saving ? 'opacity-70 pointer-events-none' : ''}`}
+          size='sm'
+        >
           {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
         </Button>
-        <Button disabled={saving} onClick={onCancel} variant='outline' size='sm' className='flex-1'>
+        <Button
+          disabled={saving}
+          onClick={onCancel}
+          variant='outline'
+          size='sm'
+          className='flex-1'
+        >
           Hủy
         </Button>
       </div>

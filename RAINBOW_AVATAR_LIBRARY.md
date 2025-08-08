@@ -28,9 +28,9 @@ Component avatar chính với các hiệu ứng đa dạng.
 
 ```typescript
 interface RainbowAvatarProps {
-  src?: string;                    // URL hình ảnh
-  alt?: string;                    // Alt text
-  fallback?: string;               // Text fallback
+  src?: string; // URL hình ảnh
+  alt?: string; // Alt text
+  fallback?: string; // Text fallback
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'custom';
   variant?: 'default' | 'rainbow' | 'glow' | 'pulse' | 'shimmer';
   intensity?: 'subtle' | 'normal' | 'intense';
@@ -49,15 +49,15 @@ interface RainbowAvatarProps {
 import { RainbowAvatar } from '@/components/ui/rainbow-avatar';
 
 // Avatar cơ bản
-<RainbowAvatar 
-  src="/avatar.jpg" 
-  fallback="U" 
-  size="lg" 
+<RainbowAvatar
+  src="/avatar.jpg"
+  fallback="U"
+  size="lg"
 />
 
 // Avatar với hiệu ứng rainbow
-<RainbowAvatar 
-  src="/avatar.jpg" 
+<RainbowAvatar
+  src="/avatar.jpg"
   variant="rainbow"
   intensity="normal"
   speed="normal"
@@ -72,11 +72,7 @@ Component avatar tối ưu cho SABO ARENA với octagon shape và stamp xác th�
 ```tsx
 import { SaboAvatar } from '@/components/ui/sabo-avatar';
 
-<SaboAvatar 
-  size="xl"
-  showUpload={true}
-  fallbackName="User Name"
-/>
+<SaboAvatar size='xl' showUpload={true} fallbackName='User Name' />;
 ```
 
 ### 3. AvatarCustomizer
@@ -86,12 +82,12 @@ Component đầy đủ để người dùng tùy chỉnh avatar với giao diệ
 ```tsx
 import { AvatarCustomizer } from '@/components/ui/avatar-customizer';
 
-<AvatarCustomizer 
-  size="xl"
+<AvatarCustomizer
+  size='xl'
   showControls={true}
   showUpload={true}
-  fallbackName="User Name"
-/>
+  fallbackName='User Name'
+/>;
 ```
 
 ## Hook useRainbowAvatar
@@ -146,42 +142,68 @@ interface UseRainbowAvatarReturn {
 ## Hiệu ứng Avatar
 
 ### 1. Rainbow (Cầu Vồng)
+
 Hiệu ứng viền cầu vồng chuyển động mềm mại với các màu sắc tinh tế.
 
 ```css
 /* Tùy chỉnh intensity */
-.rainbow-subtle { --rainbow-intensity: 0.4; }
-.rainbow-normal { --rainbow-intensity: 0.7; }
-.rainbow-intense { --rainbow-intensity: 0.9; }
+.rainbow-subtle {
+  --rainbow-intensity: 0.4;
+}
+.rainbow-normal {
+  --rainbow-intensity: 0.7;
+}
+.rainbow-intense {
+  --rainbow-intensity: 0.9;
+}
 
 /* Tùy chỉnh speed */
-.rainbow-slow { --rainbow-speed: 12s; }
-.rainbow-fast { --rainbow-speed: 4s; }
+.rainbow-slow {
+  --rainbow-speed: 12s;
+}
+.rainbow-fast {
+  --rainbow-speed: 4s;
+}
 ```
 
 ### 2. Glow (Phát sáng)
+
 Hiệu ứng phát sáng dịu nhẹ quanh avatar.
 
 ### 3. Pulse (Nhấp nháy)
+
 Hiệu ứng nhấp nháy với viền gradient.
 
 ### 4. Shimmer (Lấp lánh)
+
 Hiệu ứng ánh sáng di chuyển qua avatar.
 
 ## Shapes (Hình dạng)
 
 ### Circle
+
 Hình tròn chuẩn.
 
 ### Square
+
 Hình vuông.
 
 ### Octagon (SABO Style)
+
 Hình bát giác đặc trưng của SABO ARENA.
 
 ```css
 .sabo-octagon {
-  clip-path: polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%);
+  clip-path: polygon(
+    0% 10%,
+    10% 0%,
+    90% 0%,
+    100% 10%,
+    100% 90%,
+    90% 100%,
+    10% 100%,
+    0% 90%
+  );
 }
 ```
 
@@ -229,9 +251,9 @@ Hỗ trợ dark/light mode với intensity tự động điều chỉnh.
 ```tsx
 // Thay thế avatar cũ trong OptimizedMobileProfile
 <div className='avatar-container relative w-[90vw] max-w-[360px] h-[90vw] max-h-[360px]'>
-  <SaboAvatar 
-    size="custom"
-    className="w-full h-full"
+  <SaboAvatar
+    size='custom'
+    className='w-full h-full'
     showUpload={true}
     fallbackName={profile.display_name}
   />
@@ -242,12 +264,12 @@ Hỗ trợ dark/light mode với intensity tự động điều chỉnh.
 
 ```tsx
 // Avatar nhỏ trong MobileHeader
-<RainbowAvatar 
+<RainbowAvatar
   src={profile?.avatar_url}
-  variant="glow"
-  intensity="subtle"
-  size="sm"
-  shape="circle"
+  variant='glow'
+  intensity='subtle'
+  size='sm'
+  shape='circle'
 />
 ```
 
@@ -255,8 +277,8 @@ Hỗ trợ dark/light mode với intensity tự động điều chỉnh.
 
 ```tsx
 // Panel tùy chỉnh đầy đủ
-<AvatarCustomizer 
-  size="xl"
+<AvatarCustomizer
+  size='xl'
   showControls={true}
   showUpload={true}
   fallbackName={profile?.display_name}
@@ -274,12 +296,14 @@ Hỗ trợ dark/light mode với intensity tự động điều chỉnh.
 ### Từ Avatar cũ sang RainbowAvatar
 
 1. **Import mới**:
+
 ```tsx
 import { SaboAvatar } from '@/components/ui/sabo-avatar';
 import { useRainbowAvatar } from '@/hooks/useRainbowAvatar';
 ```
 
 2. **Thay thế component**:
+
 ```tsx
 // Cũ
 <img className="avatar" src={avatarUrl} />
@@ -289,6 +313,7 @@ import { useRainbowAvatar } from '@/hooks/useRainbowAvatar';
 ```
 
 3. **Upload logic**:
+
 ```tsx
 // Cũ
 const handleAvatarUpload = async (file) => { ... }
@@ -330,18 +355,21 @@ await actions.uploadAvatar(file);
 ## Troubleshooting
 
 ### Avatar không hiển thị
+
 - Kiểm tra URL avatar có hợp lệ
 - Verify Supabase storage permissions
 - Check fallback text
 
 ### Animation không smooth
+
 - Kiểm tra CSS `will-change` properties
 - Verify browser support cho CSS animations
 - Check performance trong DevTools
 
 ### Upload failed
+
 - Kiểm tra file size (max 5MB)
-- Verify file type (image/*)
+- Verify file type (image/\*)
 - Check Supabase storage quotas
 - Verify user authentication
 

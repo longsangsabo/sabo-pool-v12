@@ -26,12 +26,12 @@ class DocCleanupDaemon {
       } else {
         this.config = {
           duplicateThreshold: 0.95, // 95% similarity threshold
-          archiveAfterDays: 90,     // Archive docs older than 90 days
-          cleanupInterval: 3600000,  // Run cleanup every hour
+          archiveAfterDays: 90, // Archive docs older than 90 days
+          cleanupInterval: 3600000, // Run cleanup every hour
           email: {
             alerts: true,
-            recipients: []
-          }
+            recipients: [],
+          },
         };
         fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 2));
       }
@@ -44,16 +44,16 @@ class DocCleanupDaemon {
   async start() {
     console.log('🚀 Starting Document Cleanup Daemon...');
     this.ensureDirectories();
-    
+
     // Initial cleanup
     await this.runCleanupCycle();
-    
+
     // Schedule regular cleanups
     setInterval(() => this.runCleanupCycle(), this.config.cleanupInterval);
-    
+
     // Keep process alive
     process.stdin.resume();
-    
+
     // Handle shutdown gracefully
     process.on('SIGINT', () => this.shutdown());
     process.on('SIGTERM', () => this.shutdown());
@@ -65,7 +65,7 @@ class DocCleanupDaemon {
       path.join(this.projectRoot, 'docs/archive'),
       path.join(this.projectRoot, 'docs/quarantine'),
       path.join(__dirname, 'logs'),
-      path.join(this.projectRoot, 'backups')
+      path.join(this.projectRoot, 'backups'),
     ];
 
     dirs.forEach(dir => {
@@ -82,19 +82,19 @@ class DocCleanupDaemon {
     try {
       // 1. Collect current metrics
       const metrics = await this.metricsCollector.collectCurrentMetrics();
-      
+
       // 2. Archive old documents
       await this.archiveOldDocuments();
-      
+
       // 3. Handle duplicates
       await this.handleDuplicates();
-      
+
       // 4. Create backup
       await this.createBackup();
-      
+
       // 5. Update metrics
       const endMetrics = await this.metricsCollector.collectCurrentMetrics();
-      
+
       // 6. Log results
       const duration = Date.now() - startTime;
       this.log({
@@ -103,8 +103,8 @@ class DocCleanupDaemon {
         duration,
         metrics: {
           before: metrics,
-          after: endMetrics
-        }
+          after: endMetrics,
+        },
       });
 
       console.log('✅ Cleanup cycle completed successfully');
@@ -113,7 +113,7 @@ class DocCleanupDaemon {
       this.log({
         timestamp: new Date().toISOString(),
         type: 'error',
-        error: error.message
+        error: error.message,
       });
     }
   }
@@ -122,19 +122,19 @@ class DocCleanupDaemon {
     console.log('📦 Archiving old documents...');
     const activeDir = path.join(this.projectRoot, 'docs/active');
     const archiveDir = path.join(this.projectRoot, 'docs/archive');
-    
+
     if (!fs.existsSync(activeDir)) return;
 
     const files = fs.readdirSync(activeDir);
     const now = Date.now();
-    
+
     files.forEach(file => {
       const filePath = path.join(activeDir, file);
       const stats = fs.statSync(filePath);
-      
+
       // Check if file is older than archiveAfterDays
       const ageInDays = (now - stats.mtime.getTime()) / (1000 * 60 * 60 * 24);
-      
+
       if (ageInDays > this.config.archiveAfterDays) {
         const archivePath = path.join(archiveDir, file);
         fs.renameSync(filePath, archivePath);
@@ -147,7 +147,7 @@ class DocCleanupDaemon {
     console.log('🔍 Checking for duplicates...');
     const docsDir = path.join(this.projectRoot, 'docs');
     const quarantineDir = path.join(this.projectRoot, 'docs/quarantine');
-    
+
     // This would implement duplicate detection logic
     // For now, just log the action
     console.log('No duplicates found');
@@ -157,8 +157,11 @@ class DocCleanupDaemon {
     console.log('💾 Creating backup...');
     const backupDir = path.join(this.projectRoot, 'backups');
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const backupFile = path.join(backupDir, `cleanup-backup-${timestamp}.tar.gz`);
-    
+    const backupFile = path.join(
+      backupDir,
+      `cleanup-backup-${timestamp}.tar.gz`
+    );
+
     try {
       execSync(`tar -czf "${backupFile}" -C "${this.projectRoot}" docs/`);
       console.log(`✅ Backup created: ${backupFile}`);
@@ -173,18 +176,15 @@ class DocCleanupDaemon {
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true });
     }
-    
-    fs.appendFileSync(
-      this.logPath,
-      JSON.stringify(entry) + '\n'
-    );
+
+    fs.appendFileSync(this.logPath, JSON.stringify(entry) + '\n');
   }
 
   shutdown() {
     console.log('\n🛑 Shutting down daemon...');
     this.log({
       timestamp: new Date().toISOString(),
-      type: 'shutdown'
+      type: 'shutdown',
     });
     process.exit(0);
   }

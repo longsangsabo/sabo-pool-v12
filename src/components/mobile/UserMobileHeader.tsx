@@ -155,13 +155,13 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           <div className='flex items-center gap-2'>
             {/* SABO Logo */}
             <div className='relative'>
-              <img 
-                src="https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png"
-                alt="SABO ARENA Logo"
+              <img
+                src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+                alt='SABO ARENA Logo'
                 className='w-9 h-9 object-cover rounded-full'
               />
             </div>
-            
+
             {/* Title with gradient */}
             <div className='flex flex-col'>
               <h1 className='font-black text-lg bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent leading-none tracking-tight'>
@@ -214,7 +214,11 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           {showProfile && user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant='ghost' size='sm' className='p-1 hover:bg-muted/50 transition-colors'>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='p-1 hover:bg-muted/50 transition-colors'
+                >
                   <Avatar className='w-8 h-8 ring-2 ring-primary/20'>
                     <AvatarImage src={profile?.avatar_url} />
                     <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold'>
@@ -226,7 +230,10 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align='end' className='w-56 bg-background/95 backdrop-blur-sm border shadow-lg'>
+              <DropdownMenuContent
+                align='end'
+                className='w-56 bg-background/95 backdrop-blur-sm border shadow-lg'
+              >
                 <div className='px-3 py-2'>
                   <p className='text-sm font-semibold'>
                     {profile?.display_name ||
@@ -238,24 +245,36 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={() => navigate('/profile')} className='hover:bg-muted/50 cursor-pointer'>
+                <DropdownMenuItem
+                  onClick={() => navigate('/profile')}
+                  className='hover:bg-muted/50 cursor-pointer'
+                >
                   <User className='w-4 h-4 mr-2' />
                   Hồ sơ cá nhân
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={() => navigate('/wallet')} className='hover:bg-muted/50 cursor-pointer'>
+                <DropdownMenuItem
+                  onClick={() => navigate('/wallet')}
+                  className='hover:bg-muted/50 cursor-pointer'
+                >
                   <Wallet className='w-4 h-4 mr-2' />
                   Ví của tôi
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={() => navigate('/settings')} className='hover:bg-muted/50 cursor-pointer'>
+                <DropdownMenuItem
+                  onClick={() => navigate('/settings')}
+                  className='hover:bg-muted/50 cursor-pointer'
+                >
                   <Settings className='w-4 h-4 mr-2' />
                   Cài đặt
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={handleSignOut} className='hover:bg-destructive/10 text-destructive cursor-pointer'>
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  className='hover:bg-destructive/10 text-destructive cursor-pointer'
+                >
                   <LogOut className='w-4 h-4 mr-2' />
                   Đăng xuất
                 </DropdownMenuItem>

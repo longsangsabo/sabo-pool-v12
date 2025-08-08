@@ -111,10 +111,12 @@ const UnifiedChallengeCard: React.FC<UnifiedChallengeCardProps> = ({
 
       return {
         color:
-          colorMap[matchStatus.badge as keyof typeof colorMap] || 'bg-slate-500',
+          colorMap[matchStatus.badge as keyof typeof colorMap] ||
+          'bg-slate-500',
         label: matchStatus.badge,
         variant: matchStatus.variant,
-        className: 'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
+        className:
+          'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
       };
     }
 
@@ -165,7 +167,8 @@ const UnifiedChallengeCard: React.FC<UnifiedChallengeCardProps> = ({
           color: 'bg-slate-500',
           label: 'Không xác định',
           variant: 'outline' as const,
-          className: 'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
+          className:
+            'bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10',
         };
     }
   };
@@ -272,11 +275,23 @@ const UnifiedChallengeCard: React.FC<UnifiedChallengeCardProps> = ({
       const isWinner = challengerScore > opponentScore;
       return (
         <div className='flex items-center gap-2 text-lg font-bold'>
-          <span className={isWinner ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500'}>
+          <span
+            className={
+              isWinner
+                ? 'text-slate-600 dark:text-slate-300'
+                : 'text-slate-400 dark:text-slate-500'
+            }
+          >
             {challenge.challenger_score}
           </span>
           <span className='text-muted-foreground'>-</span>
-          <span className={!isWinner ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500'}>
+          <span
+            className={
+              !isWinner
+                ? 'text-slate-600 dark:text-slate-300'
+                : 'text-slate-400 dark:text-slate-500'
+            }
+          >
             {challenge.opponent_score}
           </span>
         </div>

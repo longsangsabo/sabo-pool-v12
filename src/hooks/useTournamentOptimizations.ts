@@ -8,7 +8,9 @@ export const useTournamentOptimizations = (tournaments: Tournament[]) => {
       upcoming: tournaments.filter(t => t.status === 'upcoming'),
       ongoing: tournaments.filter(t => t.status === 'ongoing'),
       completed: tournaments.filter(t => t.status === 'completed'),
-      registration_open: tournaments.filter(t => t.status === 'registration_open'),
+      registration_open: tournaments.filter(
+        t => t.status === 'registration_open'
+      ),
     };
   }, [tournaments]);
 
@@ -24,19 +26,23 @@ export const useTournamentOptimizations = (tournaments: Tournament[]) => {
   }, [tournaments, tournamentsByStatus]);
 
   // Optimized search function
-  const searchTournaments = useCallback((query: string, status?: string) => {
-    if (!query && !status) return tournaments;
-    
-    return tournaments.filter(tournament => {
-      const matchesQuery = !query || 
-        tournament.name.toLowerCase().includes(query.toLowerCase()) ||
-        tournament.description?.toLowerCase().includes(query.toLowerCase());
-      
-      const matchesStatus = !status || tournament.status === status;
-      
-      return matchesQuery && matchesStatus;
-    });
-  }, [tournaments]);
+  const searchTournaments = useCallback(
+    (query: string, status?: string) => {
+      if (!query && !status) return tournaments;
+
+      return tournaments.filter(tournament => {
+        const matchesQuery =
+          !query ||
+          tournament.name.toLowerCase().includes(query.toLowerCase()) ||
+          tournament.description?.toLowerCase().includes(query.toLowerCase());
+
+        const matchesStatus = !status || tournament.status === status;
+
+        return matchesQuery && matchesStatus;
+      });
+    },
+    [tournaments]
+  );
 
   return {
     tournamentsByStatus,

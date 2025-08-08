@@ -18,7 +18,7 @@ CREATE TABLE season_history (
   ranking_points INTEGER NOT NULL,     -- Điểm ranking
   final_rank INTEGER NOT NULL,         -- Hạng cuối mùa
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
+
   UNIQUE(season_name, season_year, user_id)
 );
 ```
@@ -26,6 +26,7 @@ CREATE TABLE season_history (
 ### View `season_stats`
 
 View để xem thống kê tổng quan của từng mùa giải:
+
 - Tổng số người chơi
 - Điểm cao nhất
 - Điểm thấp nhất
@@ -46,6 +47,7 @@ Function để tìm thành tích tốt nhất của một người chơi qua cá
 ### 2. Xem bảng xếp hạng mùa giải
 
 Tab **"Bảng xếp hạng"** hiển thị:
+
 - **Thống kê mùa giải**: Tổng người chơi, điểm cao nhất, trung bình, thấp nhất
 - **Bộ lọc**: Chọn mùa giải, tìm kiếm theo nickname
 - **Bảng xếp hạng**: Danh sách người chơi theo hạng với phân trang
@@ -53,6 +55,7 @@ Tab **"Bảng xếp hạng"** hiển thị:
 ### 3. Tìm kiếm lịch sử cá nhân
 
 Tab **"Tìm kiếm cá nhân"** cho phép:
+
 - Nhập nickname để tìm kiếm
 - Xem thành tích tốt nhất của người chơi
 - Xem lịch sử thi đấu qua các mùa giải
@@ -63,6 +66,7 @@ Tab **"Tìm kiếm cá nhân"** cho phép:
 ### Mùa giải 2024-S2
 
 Đã import dữ liệu của 153 người chơi với:
+
 - **Hạng 1**: HẢI BÉ (13,725 điểm)
 - **Hạng 2**: TUẤN KIỆT (9,700 điểm)
 - **Hạng 3**: HÙNG FERARRI (5,125 điểm)
@@ -106,7 +110,7 @@ const {
   getSeasonStats,
   getUserBestSeason,
   getAvailableSeasons,
-  searchPlayerHistory
+  searchPlayerHistory,
 } = useSeasonHistory();
 ```
 
@@ -122,6 +126,7 @@ const {
 ### SeasonHistoryTab
 
 Component chính hiển thị:
+
 - Tabs cho bảng xếp hạng và tìm kiếm cá nhân
 - Thống kê mùa giải
 - Bộ lọc và tìm kiếm
@@ -130,6 +135,7 @@ Component chính hiển thị:
 ### PlayerHistoryCard
 
 Component tìm kiếm lịch sử cá nhân:
+
 - Form tìm kiếm theo nickname
 - Hiển thị thành tích tốt nhất
 - Lịch sử thi đấu qua các mùa
@@ -163,6 +169,7 @@ CREATE POLICY "Admins can insert season history" ON season_history
 ### 1. Chuẩn bị dữ liệu
 
 Chuẩn bị file CSV hoặc Excel với format:
+
 ```
 nickname,ranking_points,final_rank
 NGUYỄN VĂN A,1500,1
@@ -223,4 +230,4 @@ SELECT * FROM get_user_best_season('test_nickname');
 - [ ] Biểu đồ xu hướng ranking
 - [ ] So sánh mùa giải
 - [ ] Thông báo khi có mùa giải mới
-- [ ] Tích hợp với hệ thống tournament 
+- [ ] Tích hợp với hệ thống tournament

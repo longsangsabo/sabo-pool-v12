@@ -44,11 +44,13 @@ npm start
 ## 📋 API Endpoints
 
 ### Create Payment
+
 **POST** `/api/payments/create-vnpay`
 
 Creates a new VNPAY payment request.
 
 **Request Body:**
+
 ```json
 {
   "orderId": "ORDER_123456",
@@ -59,6 +61,7 @@ Creates a new VNPAY payment request.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -70,17 +73,20 @@ Creates a new VNPAY payment request.
 ```
 
 ### Payment Return Handler
+
 **GET** `/api/webhooks/vnpay-return`
 
 Handles user redirect after payment completion.
 
 **Query Parameters:**
+
 - `vnp_ResponseCode`: Payment response code
 - `vnp_TxnRef`: Order reference
 - `vnp_Amount`: Payment amount
 - `vnp_SecureHash`: Security hash
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -93,21 +99,25 @@ Handles user redirect after payment completion.
 ```
 
 ### Instant Payment Notification (IPN)
+
 **GET** `/api/webhooks/vnpay-ipn`
 
 Handles server-to-server payment notifications.
 
 **Response:**
+
 ```json
-{"RspCode":"00","Message":"OK"}
+{ "RspCode": "00", "Message": "OK" }
 ```
 
 ### Payment Status
+
 **GET** `/api/payments/vnpay-status/:orderId`
 
 Get payment status for an order.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -118,11 +128,13 @@ Get payment status for an order.
 ```
 
 ### Refund Payment
+
 **POST** `/api/payments/vnpay-refund`
 
 Process refund for a VNPAY payment.
 
 **Request Body:**
+
 ```json
 {
   "orderId": "ORDER_123456",
@@ -134,11 +146,13 @@ Process refund for a VNPAY payment.
 ## 🧪 Test Configuration
 
 ### Test Environment
+
 - **Payment URL**: `https://sandbox.vnpayment.vn/paymentv2/vpcpay.html`
 - **TMN Code**: `T53WMA78`
 - **Hash Secret**: `2TNWAPY5F1REXUB1XTMDUYBKFGI2DZP6`
 
 ### Test Card Details (VCB Bank)
+
 - **Card Number**: `4524 0418 7644 5035`
 - **Cardholder Name**: `VÕ LONG SANG`
 - **Expiry Date**: `10/27`
@@ -150,7 +164,7 @@ Process refund for a VNPAY payment.
 
 ```javascript
 // Create payment request
-const createPayment = async (orderData) => {
+const createPayment = async orderData => {
   try {
     const response = await fetch('/api/payments/create-vnpay', {
       method: 'POST',
@@ -161,12 +175,12 @@ const createPayment = async (orderData) => {
         orderId: orderData.id,
         amount: orderData.amount,
         orderInfo: orderData.description,
-        orderType: 'billpayment'
-      })
+        orderType: 'billpayment',
+      }),
     });
 
     const result = await response.json();
-    
+
     if (result.success) {
       // Redirect to VNPAY payment page
       window.location.href = result.paymentUrl;
@@ -179,7 +193,7 @@ const createPayment = async (orderData) => {
 };
 
 // Check payment status
-const checkPaymentStatus = async (orderId) => {
+const checkPaymentStatus = async orderId => {
   try {
     const response = await fetch(`/api/payments/vnpay-status/${orderId}`);
     const result = await response.json();
@@ -203,15 +217,15 @@ const updateOrderStatus = async (orderId, status, paymentData) => {
     data: {
       status: status,
       paymentData: paymentData,
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   });
 };
 
-const getOrder = async (orderId) => {
+const getOrder = async orderId => {
   // Get order from your database
   return await db.orders.findUnique({
-    where: { id: orderId }
+    where: { id: orderId },
   });
 };
 ```
@@ -229,15 +243,19 @@ The integration includes comprehensive error handling for:
 ## 🔒 Security Features
 
 ### Hash Verification
+
 All incoming requests are verified using HMAC SHA512 hash to ensure data integrity.
 
 ### IP Address Validation
+
 Client IP addresses are captured and validated for security.
 
 ### Environment Variable Protection
+
 Sensitive configuration is stored in environment variables.
 
 ### Rate Limiting
+
 Implement rate limiting to prevent abuse:
 
 ```javascript
@@ -246,7 +264,7 @@ const rateLimit = require('express-rate-limit');
 const paymentLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // limit each IP to 10 requests per windowMs
-  message: 'Too many payment requests from this IP'
+  message: 'Too many payment requests from this IP',
 });
 
 app.use('/api/payments', paymentLimiter);
@@ -254,22 +272,23 @@ app.use('/api/payments', paymentLimiter);
 
 ## 📊 Response Codes
 
-| Code | Description |
-|------|-------------|
-| 00   | Success |
-| 07   | Invalid amount |
-| 09   | Invalid order information |
-| 13   | Invalid order type |
-| 24   | Customer cancelled |
-| 51   | Insufficient balance |
-| 65   | Exceeded daily limit |
-| 75   | Bank maintenance |
+| Code | Description                 |
+| ---- | --------------------------- |
+| 00   | Success                     |
+| 07   | Invalid amount              |
+| 09   | Invalid order information   |
+| 13   | Invalid order type          |
+| 24   | Customer cancelled          |
+| 51   | Insufficient balance        |
+| 65   | Exceeded daily limit        |
+| 75   | Bank maintenance            |
 | 79   | Invalid payment information |
-| 99   | Unknown error |
+| 99   | Unknown error               |
 
 ## 🚀 Production Deployment
 
 ### 1. Environment Variables
+
 Update environment variables for production:
 
 ```env
@@ -281,12 +300,15 @@ VNP_IPN_URL=https://your-production-domain.com/api/webhooks/vnpay-ipn
 ```
 
 ### 2. SSL Certificate
+
 Ensure your domain has a valid SSL certificate for secure communication.
 
 ### 3. Webhook URLs
+
 Configure webhook URLs in your VNPAY merchant dashboard.
 
 ### 4. Monitoring
+
 Implement logging and monitoring for payment transactions:
 
 ```javascript
@@ -297,14 +319,15 @@ const logger = winston.createLogger({
   format: winston.format.json(),
   transports: [
     new winston.transports.File({ filename: 'payment-logs.json' }),
-    new winston.transports.Console()
-  ]
+    new winston.transports.Console(),
+  ],
 });
 ```
 
 ## 🧪 Testing
 
 ### Manual Testing
+
 1. Start the server: `npm run dev`
 2. Create a payment: `POST /api/payments/create-vnpay`
 3. Use test card details to complete payment
@@ -312,6 +335,7 @@ const logger = winston.createLogger({
 5. Check IPN notifications
 
 ### Automated Testing
+
 ```bash
 # Run tests
 npm test
@@ -352,15 +376,17 @@ Logs are written to console and can be configured for file output.
    - Check firewall settings
 
 ### Debug Mode
+
 Enable debug logging by setting `NODE_ENV=development` in your environment.
 
 ## 📞 Support
 
 For VNPAY-specific issues, contact VNPAY support:
+
 - Email: support@vnpay.vn
 - Phone: +84 24 3944 6699
 - Documentation: https://sandbox.vnpayment.vn/apis/docs/huong-dan-tich-hop
 
 ## 📄 License
 
-This integration is provided under the MIT License. See LICENSE file for details. 
+This integration is provided under the MIT License. See LICENSE file for details.

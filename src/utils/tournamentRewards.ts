@@ -27,9 +27,9 @@ export const calculateRewardsFromTiers = async (
   prizeTiers?: any[]
 ): Promise<TournamentRewardsCalculation> => {
   // console.log('🔍 calculateRewardsFromTiers input:', {
-    tournament_id: tournament?.id,
-    prize_pool: tournament?.prize_pool,
-    prizeTiers: prizeTiers?.length,
+  //   tournament_id: tournament?.id,
+  //   prize_pool: tournament?.prize_pool,
+  //   prizeTiers: prizeTiers?.length,
   // });
 
   // Get total prize from tournament or calculate

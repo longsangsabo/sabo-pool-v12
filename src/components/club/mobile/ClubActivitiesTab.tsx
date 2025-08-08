@@ -7,7 +7,12 @@ import { Button } from '@/components/ui/button';
 
 interface ClubActivitiesTabProps {
   clubId?: string;
-  initialActivities?: Array<{ id: string; type: string; content: string; created_at: string; }>;
+  initialActivities?: Array<{
+    id: string;
+    type: string;
+    content: string;
+    created_at: string;
+  }>;
   dark?: boolean;
 }
 
@@ -17,11 +22,8 @@ export const ClubActivitiesTab: React.FC<ClubActivitiesTabProps> = ({
   dark,
 }) => {
   const limit = 30;
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteClubActivities(
-    clubId,
-    { limit },
-    !!clubId
-  );
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteClubActivities(clubId, { limit }, !!clubId);
 
   const remote = useMemo(() => (data?.pages || []).flat(), [data]);
   const activities = clubId ? remote : initialActivities.slice(0, limit);
@@ -30,18 +32,23 @@ export const ClubActivitiesTab: React.FC<ClubActivitiesTabProps> = ({
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!hasNextPage || !loadMoreRef.current) return;
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) fetchNextPage();
-      });
-    }, { rootMargin: '160px' });
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) fetchNextPage();
+        });
+      },
+      { rootMargin: '160px' }
+    );
     observer.observe(loadMoreRef.current);
     return () => observer.disconnect();
   }, [hasNextPage, fetchNextPage, data]);
 
   return (
     <TabsContent value='activities'>
-      <div className={`mobile-card-standard p-3 ${dark ? 'mobile-card-glass' : ''} mobile-spacing-group`}> 
+      <div
+        className={`mobile-card-standard p-3 ${dark ? 'mobile-card-glass' : ''} mobile-spacing-group`}
+      >
         <h3 className='mobile-heading-tertiary flex items-center gap-2'>
           <Activity className='mobile-icon-secondary text-blue-500' />
           Hoạt động gần đây
@@ -53,9 +60,9 @@ export const ClubActivitiesTab: React.FC<ClubActivitiesTabProps> = ({
           </div>
         )}
         {!isLoading && activities.length === 0 && (
-          <ClubEmptyState 
-            title='Chưa có hoạt động' 
-            description='Các hoạt động của CLB sẽ xuất hiện tại đây.' 
+          <ClubEmptyState
+            title='Chưa có hoạt động'
+            description='Các hoạt động của CLB sẽ xuất hiện tại đây.'
           />
         )}
         <div className='space-y-2'>
@@ -77,7 +84,9 @@ export const ClubActivitiesTab: React.FC<ClubActivitiesTabProps> = ({
           ))}
           {hasNextPage && (
             <div ref={loadMoreRef} className='py-6 flex justify-center'>
-              {isFetchingNextPage && <Loader2 className='mobile-icon-secondary animate-spin text-muted-foreground' />}
+              {isFetchingNextPage && (
+                <Loader2 className='mobile-icon-secondary animate-spin text-muted-foreground' />
+              )}
             </div>
           )}
         </div>

@@ -8,7 +8,10 @@ export interface ClubRoleData {
   status: string; // active | pending | removed
 }
 
-export const fetchClubRole = async (clubId: string, userId: string): Promise<ClubRoleData | null> => {
+export const fetchClubRole = async (
+  clubId: string,
+  userId: string
+): Promise<ClubRoleData | null> => {
   const { data, error } = await supabase
     .from('club_members')
     .select('club_id, user_id, role, status')
@@ -19,7 +22,11 @@ export const fetchClubRole = async (clubId: string, userId: string): Promise<Clu
   return (data as unknown as ClubRoleData) || null;
 };
 
-export const useClubRole = (clubId?: string, userId?: string, enabled: boolean = true) => {
+export const useClubRole = (
+  clubId?: string,
+  userId?: string,
+  enabled: boolean = true
+) => {
   return useQuery({
     queryKey: ['club-role', clubId, userId],
     queryFn: async () => {
@@ -38,8 +45,8 @@ export const useIsClubOwner = (userId?: string, enabled: boolean = true) => {
     queryFn: async () => {
       if (!userId) return false;
       // Check membership table first
-  const sb: any = supabase;
-  const { data: memberData, error: memberError } = await sb
+      const sb: any = supabase;
+      const { data: memberData, error: memberError } = await sb
         .from('club_members')
         .select('role, status')
         .eq('user_id', userId)
@@ -52,13 +59,16 @@ export const useIsClubOwner = (userId?: string, enabled: boolean = true) => {
       if (memberData && memberData.length > 0) return true;
 
       // Fallback: some schemas may store ownership via club_profiles.user_id
-  const { data: profileData, error: profileError } = await sb
+      const { data: profileData, error: profileError } = await sb
         .from('club_profiles')
         .select('id')
         .eq('user_id', userId)
         .limit(1);
       if (profileError) {
-        console.warn('[useIsClubOwner] club_profiles query error', profileError);
+        console.warn(
+          '[useIsClubOwner] club_profiles query error',
+          profileError
+        );
       }
       return Boolean(profileData && profileData.length > 0);
     },

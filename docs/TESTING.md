@@ -1,11 +1,13 @@
 # 🧪 Testing Guide
 
 ## Overview
+
 Comprehensive testing strategy for SABO Pool Arena application.
 
 ## Testing Structure
 
 ### Test Types
+
 1. **Unit Tests** - Individual component testing
 2. **Integration Tests** - Component interaction testing
 3. **E2E Tests** - Full user workflow testing
@@ -14,6 +16,7 @@ Comprehensive testing strategy for SABO Pool Arena application.
 ## Running Tests
 
 ### Development Testing
+
 ```bash
 # Run all tests
 npm test
@@ -28,6 +31,7 @@ npm run test:e2e
 ```
 
 ### Performance Testing
+
 ```bash
 # Lighthouse performance audit
 npm run lighthouse
@@ -42,6 +46,7 @@ npm run perf:monitor
 ## Test Coverage
 
 ### Critical Test Areas
+
 - ✅ User Authentication (login/register/logout)
 - ✅ Tournament Creation & Management
 - ✅ Challenge System (create/accept/complete)
@@ -54,40 +59,44 @@ npm run perf:monitor
 ### Test Scenarios
 
 #### Authentication Flow
+
 ```javascript
 describe('Authentication', () => {
-  test('User can register successfully')
-  test('User can login with valid credentials')
-  test('User cannot login with invalid credentials')
-  test('User can logout successfully')
-  test('Protected routes require authentication')
-})
+  test('User can register successfully');
+  test('User can login with valid credentials');
+  test('User cannot login with invalid credentials');
+  test('User can logout successfully');
+  test('Protected routes require authentication');
+});
 ```
 
 #### Tournament Management
+
 ```javascript
 describe('Tournaments', () => {
-  test('User can create tournament')
-  test('User can join tournament')
-  test('Tournament brackets generate correctly')
-  test('Tournament results are recorded')
-  test('Admin can manage tournaments')
-})
+  test('User can create tournament');
+  test('User can join tournament');
+  test('Tournament brackets generate correctly');
+  test('Tournament results are recorded');
+  test('Admin can manage tournaments');
+});
 ```
 
 #### Payment Integration
+
 ```javascript
 describe('Payment', () => {
-  test('VNPAY integration works correctly')
-  test('Payment verification succeeds')
-  test('Failed payments are handled gracefully')
-  test('Refund process works correctly')
-})
+  test('VNPAY integration works correctly');
+  test('Payment verification succeeds');
+  test('Failed payments are handled gracefully');
+  test('Refund process works correctly');
+});
 ```
 
 ## Automated Testing
 
 ### CI/CD Pipeline
+
 ```yaml
 # .github/workflows/test.yml
 name: Test Suite
@@ -110,6 +119,7 @@ jobs:
 ```
 
 ### Quality Gates
+
 - ✅ Test coverage > 80%
 - ✅ All critical paths tested
 - ✅ No failing tests
@@ -118,6 +128,7 @@ jobs:
 ## Manual Testing Checklist
 
 ### Pre-Release Testing
+
 - [ ] User registration and login flow
 - [ ] Tournament creation and management
 - [ ] Challenge system functionality
@@ -128,6 +139,7 @@ jobs:
 - [ ] Performance and load testing
 
 ### Post-Deployment Testing
+
 - [ ] Application loads correctly in production
 - [ ] All critical features work as expected
 - [ ] Database connections are stable
@@ -137,6 +149,7 @@ jobs:
 ## Performance Benchmarks
 
 ### Target Metrics
+
 - **First Contentful Paint**: < 1.5s
 - **Largest Contentful Paint**: < 2.5s
 - **Cumulative Layout Shift**: < 0.1
@@ -144,6 +157,7 @@ jobs:
 - **Time to Interactive**: < 3s
 
 ### Load Testing
+
 ```bash
 # Simulate concurrent users
 npx artillery run load-test.yml
@@ -155,9 +169,11 @@ npm run monitor:production
 ## Bug Reporting
 
 ### Bug Report Template
+
 ```markdown
 **Bug Description**: Brief description of the issue
-**Steps to Reproduce**: 
+**Steps to Reproduce**:
+
 1. Step 1
 2. Step 2
 3. Step 3
@@ -172,6 +188,7 @@ npm run monitor:production
 ## Test Environment Setup
 
 ### Local Testing Environment
+
 ```bash
 # Setup test database
 npm run db:test:setup
@@ -184,9 +201,11 @@ npm run test:full
 ```
 
 ### Staging Environment
+
 - Mirror of production environment
 - Safe testing of new features
 - Integration testing with external services
 
 ---
-*Last Updated: August 5, 2025*
+
+_Last Updated: August 5, 2025_

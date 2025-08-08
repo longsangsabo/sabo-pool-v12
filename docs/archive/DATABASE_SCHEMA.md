@@ -11,6 +11,7 @@ The application uses **Supabase PostgreSQL** with Row Level Security (RLS) polic
 ### 1. User Management
 
 #### `profiles`
+
 User profile information and system roles.
 
 ```sql
@@ -40,6 +41,7 @@ CREATE TABLE profiles (
 ```
 
 **Key Features:**
+
 - Auto-admin assignment for specific phones/emails
 - Role-based access control
 - Ban management system
@@ -48,6 +50,7 @@ CREATE TABLE profiles (
 ### 2. Club Management
 
 #### `club_profiles`
+
 Club information and verification status.
 
 ```sql
@@ -69,6 +72,7 @@ CREATE TABLE club_profiles (
 ```
 
 #### `club_registrations`
+
 Club registration applications and approval workflow.
 
 ```sql
@@ -109,6 +113,7 @@ CREATE TABLE club_registrations (
 ### 3. Tournament System
 
 #### `tournaments`
+
 Tournament management with registration and bracket support.
 
 ```sql
@@ -135,6 +140,7 @@ CREATE TABLE tournaments (
 ```
 
 #### `tournament_registrations`
+
 Player tournament registrations.
 
 ```sql
@@ -151,6 +157,7 @@ CREATE TABLE tournament_registrations (
 ### 4. Match & Challenge System
 
 #### `matches`
+
 Match records with scoring and tournament linking.
 
 ```sql
@@ -172,6 +179,7 @@ CREATE TABLE matches (
 ```
 
 #### `challenges`
+
 Player challenge system with betting and expiration.
 
 ```sql
@@ -201,6 +209,7 @@ CREATE TABLE challenges (
 ### 5. Ranking System
 
 #### `player_rankings`
+
 ELO and SPA points with rank tracking.
 
 ```sql
@@ -223,6 +232,7 @@ CREATE TABLE player_rankings (
 ```
 
 #### `ranks`
+
 Rank definitions and requirements.
 
 ```sql
@@ -242,6 +252,7 @@ CREATE TABLE ranks (
 ### 6. Notification System
 
 #### `notifications`
+
 System-wide notification management.
 
 ```sql
@@ -266,6 +277,7 @@ CREATE TABLE notifications (
 ### 7. System Administration
 
 #### `system_logs`
+
 Automation and system event logging.
 
 ```sql
@@ -279,6 +291,7 @@ CREATE TABLE system_logs (
 ```
 
 #### `admin_actions`
+
 Admin action audit trail.
 
 ```sql
@@ -298,33 +311,37 @@ CREATE TABLE admin_actions (
 ### User Access Patterns
 
 #### Public Read Access
+
 - `profiles` - All users can view profiles
 - `club_profiles` - All users can view club information
 - `tournaments` - Public tournament listings
 - `matches` - Public match history
 
 #### User-Specific Access
+
 - `notifications` - Users see only their notifications
 - `challenges` - Users manage challenges they're involved in
 - `player_rankings` - Users can update their own rankings
 
 #### Admin-Only Access
+
 - `club_registrations` - Admins approve club applications
 - `admin_actions` - Admins can view audit logs
 - `system_logs` - Admin system monitoring
 
 ### Example RLS Policy
+
 ```sql
 -- Users can view their own notifications
-CREATE POLICY "Users can view their own notifications" 
-ON notifications FOR SELECT 
+CREATE POLICY "Users can view their own notifications"
+ON notifications FOR SELECT
 USING (auth.uid() = user_id);
 
 -- Admins can manage club registrations
-CREATE POLICY "Admins can view all club registrations" 
-ON club_registrations FOR SELECT 
+CREATE POLICY "Admins can view all club registrations"
+ON club_registrations FOR SELECT
 USING (EXISTS (
-  SELECT 1 FROM profiles 
+  SELECT 1 FROM profiles
   WHERE user_id = auth.uid() AND is_admin = true
 ));
 ```
@@ -334,42 +351,52 @@ USING (EXISTS (
 ### Core Functions
 
 #### `create_notification()`
+
 Creates system notifications with proper formatting.
 
 #### `approve_club_registration()`
+
 Handles club approval workflow with notifications.
 
 #### `daily_checkin()`
+
 Manages user check-in streak system.
 
 #### `award_tournament_points()`
+
 Calculates and awards tournament SPA points.
 
 ### Automation Functions
 
 #### `reset_daily_challenges()`
+
 Resets daily challenge limits (runs daily).
 
 #### `decay_inactive_spa_points()`
+
 Applies point decay to inactive players (runs weekly).
 
 #### `update_weekly_leaderboard()`
+
 Creates weekly leaderboard snapshots.
 
 #### `automated_season_reset()`
+
 Handles quarterly season resets.
 
 #### `system_health_check()`
+
 Monitors system health and data integrity.
 
 ## 📊 Key Views & Materialized Views
 
 ### `admin_dashboard_stats`
+
 Materialized view for admin dashboard metrics.
 
 ```sql
 CREATE MATERIALIZED VIEW admin_dashboard_stats AS
-SELECT 
+SELECT
   (SELECT COUNT(*) FROM profiles) as total_users,
   (SELECT COUNT(*) FROM club_profiles WHERE verification_status = 'approved') as active_clubs,
   (SELECT COUNT(*) FROM tournaments WHERE status = 'active') as active_tournaments,
@@ -379,12 +406,14 @@ SELECT
 ## 🚀 Performance Optimizations
 
 ### Indexes
+
 - User lookup: `profiles(user_id)`
 - Match queries: `matches(player1_id, player2_id)`
 - Tournament searches: `tournaments(status, club_id)`
 - Notification filtering: `notifications(user_id, is_read)`
 
 ### Query Patterns
+
 - Use RLS policies for security
 - Leverage indexes for common queries
 - Use JSONB efficiently for metadata
@@ -393,21 +422,25 @@ SELECT
 ## 🔧 Maintenance Tasks
 
 ### Daily
+
 - Monitor system logs
 - Check automation function execution
 - Review error rates
 
 ### Weekly
+
 - Update leaderboard snapshots
 - Apply point decay
 - Clean expired challenges
 
 ### Monthly
+
 - Generate user reports
 - Archive old data
 - Update statistics
 
 ### Quarterly
+
 - Season resets
 - Data cleanup
 - Performance review
@@ -415,12 +448,14 @@ SELECT
 ## 📈 Monitoring & Alerts
 
 ### Key Metrics
+
 - **Query Performance**: Monitor slow queries
 - **Connection Pool**: Watch active connections
 - **Storage Usage**: Track database size
 - **Error Rates**: Monitor failed operations
 
 ### Health Checks
+
 - Automation function execution
 - RLS policy effectiveness
 - Data consistency checks

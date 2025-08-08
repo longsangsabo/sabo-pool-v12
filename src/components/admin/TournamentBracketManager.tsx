@@ -38,8 +38,7 @@ interface TournamentBracketManagerProps {
 export const TournamentBracketManager: React.FC<
   TournamentBracketManagerProps
 > = ({ tournaments, onRefresh }) => {
-  const { createBracket, isCreatingBracket } =
-    useSABOBracket('admin-hook');
+  const { createBracket, isCreatingBracket } = useSABOBracket('admin-hook');
   const { toast } = useToast();
   const [selectedTournament, setSelectedTournament] = useState<string | null>(
     null

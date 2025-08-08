@@ -54,8 +54,18 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
 
   // Quick filter options
   const quickFilters = [
-    { id: 'hot', label: '🔥 HOT', value: 'registration_open', color: 'bg-red-500' },
-    { id: 'premium', label: '⭐ Premium', value: 'premium', color: 'bg-purple-500' },
+    {
+      id: 'hot',
+      label: '🔥 HOT',
+      value: 'registration_open',
+      color: 'bg-red-500',
+    },
+    {
+      id: 'premium',
+      label: '⭐ Premium',
+      value: 'premium',
+      color: 'bg-purple-500',
+    },
     { id: 'today', label: '📅 Hôm nay', value: 'today', color: 'bg-blue-500' },
     { id: 'free', label: '💫 Miễn phí', value: 'free', color: 'bg-green-500' },
   ];
@@ -69,7 +79,10 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
   ];
 
   const addFilterPill = (filter: Omit<FilterPill, 'id'>) => {
-    const pill: FilterPill = { ...filter, id: `${filter.type}-${filter.value}` };
+    const pill: FilterPill = {
+      ...filter,
+      id: `${filter.type}-${filter.value}`,
+    };
     if (!activePills.find(p => p.id === pill.id)) {
       setActivePills(prev => [...prev, pill]);
     }
@@ -88,19 +101,21 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
   return (
     <div className={`space-y-4 ${className}`}>
       {/* Main Search Bar */}
-      <div className="relative">
-        <div className={`
+      <div className='relative'>
+        <div
+          className={`
           flex items-center gap-3 p-3 bg-white dark:bg-gray-800 
           rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700
           ${isMobile ? 'flex-col space-y-3' : ''}
-        `}>
+        `}
+        >
           {/* Search Input */}
           <div className={`relative flex-1 ${isMobile ? 'w-full' : ''}`}>
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
             <Input
-              placeholder="Tìm kiếm giải đấu..."
+              placeholder='Tìm kiếm giải đấu...'
               value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
+              onChange={e => onSearchChange(e.target.value)}
               className={`
                 pl-10 border-0 bg-gray-50 dark:bg-gray-700 
                 focus-visible:ring-2 focus-visible:ring-primary/20
@@ -109,28 +124,30 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
             />
             {searchTerm && (
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={() => onSearchChange('')}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                className='absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0'
               >
-                <X className="w-3 h-3" />
+                <X className='w-3 h-3' />
               </Button>
             )}
           </div>
 
           {/* Status Filter */}
           <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-            <SelectTrigger className={`
+            <SelectTrigger
+              className={`
               ${isMobile ? 'w-full h-12' : 'w-48 h-10'} 
               border-0 bg-gray-50 dark:bg-gray-700
-            `}>
-              <SelectValue placeholder="Trạng thái" />
+            `}
+            >
+              <SelectValue placeholder='Trạng thái' />
             </SelectTrigger>
             <SelectContent>
-              {statusOptions.map((option) => (
+              {statusOptions.map(option => (
                 <SelectItem key={option.value} value={option.value}>
-                  <div className="flex items-center gap-2">
+                  <div className='flex items-center gap-2'>
                     <span>{option.icon}</span>
                     <span>{option.label}</span>
                   </div>
@@ -141,8 +158,8 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
 
           {/* Advanced Filters Toggle */}
           <Button
-            variant="outline"
-            size={isMobile ? "default" : "sm"}
+            variant='outline'
+            size={isMobile ? 'default' : 'sm'}
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
             className={`
               border-gray-300 hover:border-primary hover:bg-primary/5
@@ -150,10 +167,10 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
               ${showAdvancedFilters ? 'bg-primary/10 border-primary' : ''}
             `}
           >
-            <SlidersHorizontal className="w-4 h-4 mr-2" />
+            <SlidersHorizontal className='w-4 h-4 mr-2' />
             Bộ lọc
             {activePills.length > 0 && (
-              <Badge className="ml-2 bg-primary text-white text-xs">
+              <Badge className='ml-2 bg-primary text-white text-xs'>
                 {activePills.length}
               </Badge>
             )}
@@ -162,18 +179,20 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
       </div>
 
       {/* Quick Filter Pills */}
-      <div className="flex flex-wrap gap-2">
-        {quickFilters.map((filter) => (
+      <div className='flex flex-wrap gap-2'>
+        {quickFilters.map(filter => (
           <Button
             key={filter.id}
-            variant="outline"
-            size="sm"
-            onClick={() => addFilterPill({
-              label: filter.label,
-              value: filter.value,
-              type: 'status',
-              color: filter.color,
-            })}
+            variant='outline'
+            size='sm'
+            onClick={() =>
+              addFilterPill({
+                label: filter.label,
+                value: filter.value,
+                type: 'status',
+                color: filter.color,
+              })
+            }
             className={`
               rounded-full border-gray-300 hover:border-primary 
               hover:bg-primary/5 transition-all duration-200
@@ -187,11 +206,11 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
 
       {/* Active Filter Pills */}
       {activePills.length > 0 && (
-        <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+        <div className='flex flex-wrap gap-2 items-center'>
+          <span className='text-sm text-gray-600 dark:text-gray-400 font-medium'>
             Đang lọc:
           </span>
-          {activePills.map((pill) => (
+          {activePills.map(pill => (
             <Badge
               key={pill.id}
               className={`
@@ -199,22 +218,22 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
                 flex items-center gap-2 rounded-full shadow-sm
               `}
             >
-              <span className="text-xs font-medium">{pill.label}</span>
+              <span className='text-xs font-medium'>{pill.label}</span>
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={() => removeFilterPill(pill.id)}
-                className="h-4 w-4 p-0 hover:bg-white/20 rounded-full"
+                className='h-4 w-4 p-0 hover:bg-white/20 rounded-full'
               >
-                <X className="w-3 h-3" />
+                <X className='w-3 h-3' />
               </Button>
             </Badge>
           ))}
           <Button
-            variant="ghost"
-            size="sm"
+            variant='ghost'
+            size='sm'
             onClick={clearAllFilters}
-            className="text-gray-500 hover:text-gray-700 text-xs"
+            className='text-gray-500 hover:text-gray-700 text-xs'
           >
             Xóa tất cả
           </Button>
@@ -223,102 +242,100 @@ const ModernTournamentFilters: React.FC<ModernTournamentFiltersProps> = ({
 
       {/* Advanced Filters Panel */}
       {showAdvancedFilters && (
-        <Card className="border-gray-200 dark:border-gray-700 shadow-lg">
-          <CardContent className="p-4">
-            <div className={`
+        <Card className='border-gray-200 dark:border-gray-700 shadow-lg'>
+          <CardContent className='p-4'>
+            <div
+              className={`
               grid gap-4 
               ${isMobile ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-4'}
-            `}>
+            `}
+            >
               {/* Entry Fee Range */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                  <DollarSign className="w-4 h-4" />
+              <div className='space-y-2'>
+                <label className='text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2'>
+                  <DollarSign className='w-4 h-4' />
                   Phí tham gia
                 </label>
                 <Select>
-                  <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Chọn mức phí" />
+                  <SelectTrigger className='h-9'>
+                    <SelectValue placeholder='Chọn mức phí' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="free">Miễn phí</SelectItem>
-                    <SelectItem value="low">Dưới 100k</SelectItem>
-                    <SelectItem value="medium">100k - 500k</SelectItem>
-                    <SelectItem value="high">Trên 500k</SelectItem>
+                    <SelectItem value='free'>Miễn phí</SelectItem>
+                    <SelectItem value='low'>Dưới 100k</SelectItem>
+                    <SelectItem value='medium'>100k - 500k</SelectItem>
+                    <SelectItem value='high'>Trên 500k</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Game Format */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                  <Trophy className="w-4 h-4" />
+              <div className='space-y-2'>
+                <label className='text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2'>
+                  <Trophy className='w-4 h-4' />
                   Thể thức
                 </label>
                 <Select>
-                  <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Loại bi-a" />
+                  <SelectTrigger className='h-9'>
+                    <SelectValue placeholder='Loại bi-a' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="8_ball">8-Ball</SelectItem>
-                    <SelectItem value="9_ball">9-Ball</SelectItem>
-                    <SelectItem value="10_ball">10-Ball</SelectItem>
+                    <SelectItem value='8_ball'>8-Ball</SelectItem>
+                    <SelectItem value='9_ball'>9-Ball</SelectItem>
+                    <SelectItem value='10_ball'>10-Ball</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Participants */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                  <Users className="w-4 h-4" />
+              <div className='space-y-2'>
+                <label className='text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2'>
+                  <Users className='w-4 h-4' />
                   Quy mô
                 </label>
                 <Select>
-                  <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Số người tham gia" />
+                  <SelectTrigger className='h-9'>
+                    <SelectValue placeholder='Số người tham gia' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="small">8-16 người</SelectItem>
-                    <SelectItem value="medium">17-32 người</SelectItem>
-                    <SelectItem value="large">33-64 người</SelectItem>
-                    <SelectItem value="xlarge">65+ người</SelectItem>
+                    <SelectItem value='small'>8-16 người</SelectItem>
+                    <SelectItem value='medium'>17-32 người</SelectItem>
+                    <SelectItem value='large'>33-64 người</SelectItem>
+                    <SelectItem value='xlarge'>65+ người</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Date Range */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
+              <div className='space-y-2'>
+                <label className='text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2'>
+                  <Calendar className='w-4 h-4' />
                   Thời gian
                 </label>
                 <Select>
-                  <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Khoảng thời gian" />
+                  <SelectTrigger className='h-9'>
+                    <SelectValue placeholder='Khoảng thời gian' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="today">Hôm nay</SelectItem>
-                    <SelectItem value="week">Tuần này</SelectItem>
-                    <SelectItem value="month">Tháng này</SelectItem>
-                    <SelectItem value="quarter">3 tháng tới</SelectItem>
+                    <SelectItem value='today'>Hôm nay</SelectItem>
+                    <SelectItem value='week'>Tuần này</SelectItem>
+                    <SelectItem value='month'>Tháng này</SelectItem>
+                    <SelectItem value='quarter'>3 tháng tới</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             {/* Apply Filters */}
-            <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-              <Button 
-                size="sm" 
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+            <div className='flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700'>
+              <Button
+                size='sm'
+                className='bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'
               >
-                <Zap className="w-4 h-4 mr-2" />
+                <Zap className='w-4 h-4 mr-2' />
                 Áp dụng bộ lọc
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={clearAllFilters}
-              >
+              <Button variant='outline' size='sm' onClick={clearAllFilters}>
                 Đặt lại
               </Button>
             </div>

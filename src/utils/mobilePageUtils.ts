@@ -1,5 +1,8 @@
 // Re-export from MobilePlayerLayout for easier access
-export { MOBILE_PAGE_TITLES, type MobilePageTitle } from '@/components/mobile/MobilePlayerLayout';
+export {
+  MOBILE_PAGE_TITLES,
+  type MobilePageTitle,
+} from '@/components/mobile/MobilePlayerLayout';
 export { useMobilePageTitle } from '@/hooks/useMobilePageTitle';
 
 import { MOBILE_PAGE_TITLES } from '@/components/mobile/MobilePlayerLayout';
@@ -49,12 +52,12 @@ export const isMainPage = (pathname: string): boolean => {
   const mainPages = [
     '/',
     '/dashboard',
-    '/profile', 
+    '/profile',
     '/tournaments',
     '/challenges',
-    '/leaderboard'
+    '/leaderboard',
   ];
-  
+
   return mainPages.includes(pathname);
 };
 
@@ -63,8 +66,13 @@ export const isMainPage = (pathname: string): boolean => {
  */
 export const shouldShowHeader = (pathname: string): boolean => {
   // Hide header trên auth pages
-  const authPages = ['/auth', '/auth/login', '/auth/register', '/auth/forgot-password'];
-  
+  const authPages = [
+    '/auth',
+    '/auth/login',
+    '/auth/register',
+    '/auth/forgot-password',
+  ];
+
   return !authPages.some(page => pathname.startsWith(page));
 };
 
@@ -74,6 +82,6 @@ export const shouldShowHeader = (pathname: string): boolean => {
 export const shouldShowNavigation = (pathname: string): boolean => {
   // Hide navigation trên auth pages và admin pages
   const hiddenNavPages = ['/auth', '/admin'];
-  
+
   return !hiddenNavPages.some(page => pathname.startsWith(page));
 };

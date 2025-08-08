@@ -19,50 +19,49 @@
 
 .dark-card-avatar-frame:hover {
   transform: translateY(-4px);
-  box-shadow: 
-    0 12px 24px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(168, 162, 158, 0.3);
+  box-shadow:
+    0 12px 24px rgb(0 0 0 / 60%),
+    0 0 20px rgb(168 162 158 / 30%);
 }
 
 .dark-card-avatar-frame:hover .dark-card-border::before {
-  background: linear-gradient(135deg, 
-    rgba(168, 162, 158, 0.4) 0%,
-    rgba(107, 114, 128, 0.3) 25%,
-    rgba(75, 85, 99, 0.2) 50%,
-    rgba(107, 114, 128, 0.3) 75%,
-    rgba(168, 162, 158, 0.4) 100%
+  background: linear-gradient(
+    135deg,
+    rgb(168 162 158 / 40%) 0%,
+    rgb(107 114 128 / 30%) 25%,
+    rgb(75 85 99 / 20%) 50%,
+    rgb(107 114 128 / 30%) 75%,
+    rgb(168 162 158 / 40%) 100%
   );
 }
 
 /* Dark Card Border - Simplified Clean Design */
 .dark-card-border {
-  background: rgba(31, 41, 59, 0.3); /* Nền mờ thay vì solid */
+  background: rgb(31 41 59 / 30%); /* Nền mờ thay vì solid */
   backdrop-filter: blur(10px); /* Hiệu ứng mờ */
   border-radius: 12px;
   position: relative;
-  border: 2px solid rgba(75, 85, 99, 0.6); /* Tăng độ dày và opacity của viền */
+  border: 2px solid rgb(75 85 99 / 60%); /* Tăng độ dày và opacity của viền */
   overflow: hidden;
   height: 100%;
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Thêm shadow cho điểm nhấn */
+  box-shadow: 0 4px 12px rgb(0 0 0 / 40%); /* Thêm shadow cho điểm nhấn */
 }
 
 /* Gradient Border Effect */
 .dark-card-border::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(168, 162, 158, 0.4) 0%, /* Tăng opacity cho điểm nhấn */
-    rgba(107, 114, 128, 0.3) 25%,
-    rgba(75, 85, 99, 0.2) 50%,
-    rgba(107, 114, 128, 0.3) 75%,
-    rgba(168, 162, 158, 0.4) 100%
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgb(168 162 158 / 40%) 0%,
+    /* Tăng opacity cho điểm nhấn */ rgb(107 114 128 / 30%) 25%,
+    rgb(75 85 99 / 20%) 50%,
+    rgb(107 114 128 / 30%) 75%,
+    rgb(168 162 158 / 40%) 100%
   );
   border-radius: 8px;
   z-index: -1;
@@ -75,42 +74,44 @@
   position: relative;
   overflow: hidden;
   background: #111827;
-  margin: 12px 12px 0 12px;
+  margin: 12px 12px 0;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   border: 2px solid transparent;
-  background-image: 
+  background-image:
     linear-gradient(#111827, #111827),
-    linear-gradient(135deg, 
-      rgba(96, 165, 250, 0.6) 0%,
-      rgba(59, 130, 246, 0.8) 25%,
-      rgba(147, 51, 234, 0.6) 50%,
-      rgba(59, 130, 246, 0.8) 75%,
-      rgba(96, 165, 250, 0.6) 100%
+    linear-gradient(
+      135deg,
+      rgb(96 165 250 / 60%) 0%,
+      rgb(59 130 246 / 80%) 25%,
+      rgb(147 51 234 / 60%) 50%,
+      rgb(59 130 246 / 80%) 75%,
+      rgb(96 165 250 / 60%) 100%
     );
   background-origin: border-box;
   background-clip: padding-box, border-box;
-  box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 4px 8px rgb(0 0 0 / 30%),
+    inset 0 1px 2px rgb(255 255 255 / 10%);
 }
 
 .dark-image-area:hover {
   transform: scale(1.01);
   background: #0f172a;
-  box-shadow: 
-    0 8px 16px rgba(0, 0, 0, 0.4),
-    inset 0 1px 2px rgba(255, 255, 255, 0.2),
-    0 0 20px rgba(96, 165, 250, 0.3);
-  background-image: 
+  box-shadow:
+    0 8px 16px rgb(0 0 0 / 40%),
+    inset 0 1px 2px rgb(255 255 255 / 20%),
+    0 0 20px rgb(96 165 250 / 30%);
+  background-image:
     linear-gradient(#0f172a, #0f172a),
-    linear-gradient(135deg, 
-      rgba(96, 165, 250, 0.8) 0%,
-      rgba(59, 130, 246, 1.0) 25%,
-      rgba(147, 51, 234, 0.8) 50%,
-      rgba(59, 130, 246, 1.0) 75%,
-      rgba(96, 165, 250, 0.8) 100%
+    linear-gradient(
+      135deg,
+      rgb(96 165 250 / 80%) 0%,
+      rgb(59 130 246 / 100%) 25%,
+      rgb(147 51 234 / 80%) 50%,
+      rgb(59 130 246 / 100%) 75%,
+      rgb(96 165 250 / 80%) 100%
     );
 }
 
@@ -150,7 +151,7 @@
 .dark-upload-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgb(0 0 0 / 80%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -163,7 +164,7 @@
   position: absolute;
   bottom: 12px;
   left: 12px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgb(0 0 0 / 80%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -173,7 +174,7 @@
   width: 40px;
   height: 40px;
   backdrop-filter: blur(8px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgb(255 255 255 / 20%);
 }
 
 .dark-image-area:hover .dark-hover-overlay {
@@ -195,11 +196,11 @@
   right: 0;
   background: linear-gradient(
     to top,
-    rgba(30, 41, 59, 0.95) 0%,
-    rgba(30, 41, 59, 0.8) 60%,
+    rgb(30 41 59 / 95%) 0%,
+    rgb(30 41 59 / 80%) 60%,
     transparent 100%
   );
-  padding: 20px 12px 16px 12px; /* Tăng padding top để có không gian căn giữa */
+  padding: 20px 12px 16px; /* Tăng padding top để có không gian căn giữa */
   z-index: 2;
   display: flex;
   align-items: center;
@@ -212,7 +213,7 @@
   font-weight: 700; /* font-bold */
   background: linear-gradient(
     135deg,
-    #ffffff 0%,
+    #fff 0%,
     #f0f9ff 10%,
     #e0f2fe 20%,
     #bae6fd 30%,
@@ -222,9 +223,9 @@
     #0284c7 70%,
     #0369a1 80%,
     #075985 90%,
-    #ffffff 100%
+    #fff 100%
   );
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1; /* leading-none */
@@ -234,30 +235,47 @@
   pointer-events: none;
   text-align: center;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   max-width: 95%;
   overflow: hidden;
   display: block;
-  transition: font-size 0.2s ease, letter-spacing 0.2s ease;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  transition:
+    font-size 0.2s ease,
+    letter-spacing 0.2s ease;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    sans-serif;
+
   /* Fallback color without shadow */
-  color: #ffffff;
+  color: #fff;
 }
 
 /* Override với SABO style - sử dụng inline styles sẽ có độ ưu tiên cao hơn */
 .dark-nickname-text-overlay[style] {
-  font-family: 'Khand', 'Oswald', 'Bebas Neue', 'Antonio', 'Fjalla One', 'Roboto Condensed', condensed, sans-serif !important;
+  font-family:
+    Khand, Oswald, 'Bebas Neue', Antonio, 'Fjalla One', 'Roboto Condensed',
+    condensed, sans-serif !important;
   font-weight: 900 !important;
   font-size: 1.575rem !important; /* Tăng từ 1.375rem lên 1.575rem */
   font-stretch: condensed !important;
   line-height: 0.9 !important; /* Cao và compact */
-  background: linear-gradient(to right, #60a5fa, #ffffff, #3b82f6) !important;
-  -webkit-background-clip: text !important;
+  background: linear-gradient(to right, #60a5fa, #fff, #3b82f6) !important;
+  background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
   letter-spacing: 0.05em !important; /* Spacing cho condensed */
-  filter: brightness(1.5) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3)) !important; /* Tăng độ sáng lên 50% */
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 255, 255, 0.1) !important; /* Viền chữ cực nhẹ */
+  filter: brightness(1.5) drop-shadow(0 1px 2px rgb(0 0 0 / 30%)) !important; /* Tăng độ sáng lên 50% */
+  text-shadow:
+    0 0 1px rgb(0 0 0 / 50%),
+    0 0 2px rgb(255 255 255 / 10%) !important; /* Viền chữ cực nhẹ */
   font-variant: small-caps !important; /* Cứng cáp hơn */
   display: flex !important;
   align-items: center !important;
@@ -270,26 +288,28 @@
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
 }
 
 /* CSS Fallback scaling - keeping minimal for text-xs base */
-.dark-nickname-text-overlay[data-length="medium"] {
+.dark-nickname-text-overlay[data-length='medium'] {
   font-size: 0.7rem !important;
   letter-spacing: 0.04em !important;
 }
 
-.dark-nickname-text-overlay[data-length="long"] {
+.dark-nickname-text-overlay[data-length='long'] {
   font-size: 0.65rem !important;
   letter-spacing: 0.03em !important;
 }
 
-.dark-nickname-text-overlay[data-length="very-long"] {
+.dark-nickname-text-overlay[data-length='very-long'] {
   font-size: 0.6rem !important;
   letter-spacing: 0.02em !important;
 }
@@ -297,7 +317,7 @@
 /* Dark Rank Section - Enhanced Dark Style */
 .dark-rank-section {
   padding: 8px 16px;
-  margin: 0 8px 2px 8px; /* Giảm margin-bottom từ 4px xuống 2px */
+  margin: 0 8px 2px; /* Giảm margin-bottom từ 4px xuống 2px */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -308,7 +328,9 @@
   font-weight: 900;
   text-align: center;
   letter-spacing: 0.05em;
-  font-family: 'Oswald', 'Bebas Neue', 'Antonio', 'Fjalla One', 'Roboto Condensed', condensed, sans-serif;
+  font-family:
+    Oswald, 'Bebas Neue', Antonio, 'Fjalla One', 'Roboto Condensed', condensed,
+    sans-serif;
   margin: 0;
   line-height: 0.9;
   position: relative;
@@ -321,7 +343,7 @@
   text-transform: uppercase;
   background: linear-gradient(
     135deg,
-    #ffffff 0%,
+    #fff 0%,
     #f0f9ff 10%,
     #e0f2fe 20%,
     #bae6fd 30%,
@@ -331,14 +353,14 @@
     #0284c7 70%,
     #0369a1 80%,
     #075985 90%,
-    #ffffff 100%
+    #fff 100%
   );
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  filter: brightness(1.1) drop-shadow(0 2px 4px rgb(0 0 0 / 50%));
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
 }
 
 /* Dark Size variants - Complex multi-color without shadows */
@@ -347,11 +369,24 @@
   letter-spacing: 0.04em !important;
   font-weight: 700;
   line-height: 1;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 10%, #e0f2fe 20%, #bae6fd 30%, #7dd3fc 40%, #38bdf8 50%, #0ea5e9 60%, #0284c7 70%, #0369a1 80%, #075985 90%, #ffffff 100%);
-  -webkit-background-clip: text;
+  background: linear-gradient(
+    135deg,
+    #fff 0%,
+    #f0f9ff 10%,
+    #e0f2fe 20%,
+    #bae6fd 30%,
+    #7dd3fc 40%,
+    #38bdf8 50%,
+    #0ea5e9 60%,
+    #0284c7 70%,
+    #0369a1 80%,
+    #075985 90%,
+    #fff 100%
+  );
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  color: #ffffff;
+  color: #fff;
 }
 
 .dark-card-avatar-frame.w-\[200px\] .dark-rank-text {
@@ -363,11 +398,24 @@
   letter-spacing: 0.06em !important;
   font-weight: 700;
   line-height: 1;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 10%, #e0f2fe 20%, #bae6fd 30%, #7dd3fc 40%, #38bdf8 50%, #0ea5e9 60%, #0284c7 70%, #0369a1 80%, #075985 90%, #ffffff 100%);
-  -webkit-background-clip: text;
+  background: linear-gradient(
+    135deg,
+    #fff 0%,
+    #f0f9ff 10%,
+    #e0f2fe 20%,
+    #bae6fd 30%,
+    #7dd3fc 40%,
+    #38bdf8 50%,
+    #0ea5e9 60%,
+    #0284c7 70%,
+    #0369a1 80%,
+    #075985 90%,
+    #fff 100%
+  );
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  color: #ffffff;
+  color: #fff;
 }
 
 .dark-card-avatar-frame.w-\[320px\] .dark-rank-text {
@@ -375,7 +423,7 @@
 }
 
 /* Dark Responsive adjustments */
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .dark-card-avatar-container {
     margin: 16px 0;
   }
@@ -385,7 +433,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .dark-card-avatar-container {
     margin: 5px 0;
   }
@@ -411,7 +459,7 @@
   right: -8px;
   width: 28px;
   height: 28px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgb(0 0 0 / 20%);
   backdrop-filter: blur(10px);
   border: none; /* Bỏ viền */
   border-radius: 50%;
@@ -424,7 +472,7 @@
 }
 
 .dark-camera-button:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgb(0 0 0 / 30%);
   transform: scale(1.1);
 }
 
@@ -436,22 +484,27 @@
 
 /* Dark hover effects */
 .dark-card-avatar-frame:hover {
-  box-shadow: 
-    0 12px 24px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 0 20px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 12px 24px rgb(0 0 0 / 60%),
+    0 0 0 1px rgb(255 255 255 / 12%),
+    0 0 20px rgb(0 0 0 / 30%);
 }
 
 /* Enhanced focus states for accessibility */
-.dark-card-avatar-container input[type="file"]:focus + .dark-card-avatar-frame {
+.dark-card-avatar-container input[type='file']:focus + .dark-card-avatar-frame {
   outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
 }
 
 /* Animation for upload state */
 @keyframes dark-pulse-upload {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .dark-card-avatar-container .uploading {
@@ -483,11 +536,11 @@
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 2px;
-  font-family: 'Courier New', 'Monaco', monospace; /* DECO font style */
+  font-family: 'Courier New', Monaco, monospace; /* DECO font style */
 }
 
 .dark-stat-label {
   font-size: 0.75rem;
   color: #d1d5db;
-  font-family: 'Courier New', 'Monaco', monospace; /* DECO font style */
+  font-family: 'Courier New', Monaco, monospace; /* DECO font style */
 }

@@ -224,7 +224,9 @@ const ClubDetailPage = () => {
 
   // Mobile view
   if (isMobile) {
-    console.log('[ClubDetailPage] Rendering mobile club detail (public/player layout)');
+    console.log(
+      '[ClubDetailPage] Rendering mobile club detail (public/player layout)'
+    );
     return (
       <ClubProfileMobile
         clubId={id}
@@ -240,7 +242,8 @@ const ClubDetailPage = () => {
           phone: (club as any).contact_info || club.phone,
           created_at: club.created_at,
           total_matches: (club as any).total_matches || 0,
-          total_tournaments: (club as any).total_tournaments || tournaments.length,
+          total_tournaments:
+            (club as any).total_tournaments || tournaments.length,
         }}
         members={members.map(m => ({
           id: m.user_id,
@@ -273,7 +276,7 @@ const ClubDetailPage = () => {
             description: 'Tính năng xem thành tích đang được phát triển',
           });
         }}
-        onMemberClick={(memberId) => {
+        onMemberClick={memberId => {
           navigate(`/players/${memberId}`);
         }}
       />
@@ -285,7 +288,7 @@ const ClubDetailPage = () => {
     <div className='min-h-screen bg-gray-50 pt-16'>
       {/* Debug info for mobile testing - remove in production */}
       <MobileDebugInfo />
-      
+
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {/* Club Header */}
         <Card className='mb-6 overflow-hidden'>

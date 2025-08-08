@@ -9,13 +9,13 @@ Hệ thống thách đấu cho phép các vận động viên thách đấu vớ
 ### Điều Kiện và Mức Điểm
 
 | Điểm cược | Số ván đấu | Tỉ lệ chấp (1 hạng) | Tỉ lệ chấp (0.5 hạng) |
-|-----------|------------|---------------------|----------------------|
-| 600 - 650 | RACE 22    | 3.5                 | 2.5                  |
-| 500 - 550 | RACE 18    | 3                   | 2                    |
-| 400 - 450 | RACE 16    | 2.5                 | 1.5                  |
-| 300 - 350 | RACE 14    | 2                   | 1.5                  |
-| 200 - 250 | RACE 12    | 1.5                 | 1                    |
-| 100 - 150 | RACE 8     | 1                   | 0.5                  |
+| --------- | ---------- | ------------------- | --------------------- |
+| 600 - 650 | RACE 22    | 3.5                 | 2.5                   |
+| 500 - 550 | RACE 18    | 3                   | 2                     |
+| 400 - 450 | RACE 16    | 2.5                 | 1.5                   |
+| 300 - 350 | RACE 14    | 2                   | 1.5                   |
+| 200 - 250 | RACE 12    | 1.5                 | 1                     |
+| 100 - 150 | RACE 8     | 1                   | 0.5                   |
 
 ### Quy Trình Thách Đấu
 
@@ -31,7 +31,9 @@ Hệ thống thách đấu cho phép các vận động viên thách đấu vớ
 ### Bảng Chính
 
 #### 1. `challenges`
+
 Lưu trữ thông tin thách đấu:
+
 - Người thách đấu và đối thủ
 - CLB diễn ra trận đấu
 - Điểm cược và cấu hình (race to, handicap)
@@ -39,14 +41,18 @@ Lưu trữ thông tin thách đấu:
 - Kết quả và thông tin xác minh
 
 #### 2. `challenge_results`
+
 Kết quả thách đấu và thay đổi ELO:
+
 - Người thắng/thua
 - Điểm số
 - Điểm ELO trao đổi
 - Thay đổi ELO của từng người chơi
 
 #### 3. `challenge_verifications`
+
 Xác minh thách đấu:
+
 - Loại xác minh (hình ảnh, hóa đơn, khác)
 - Dữ liệu xác minh (hình ảnh, số hóa đơn, mô tả)
 - Trạng thái xác minh
@@ -55,6 +61,7 @@ Xác minh thách đấu:
 ## Tính Năng Chính
 
 ### 1. Tạo Thách Đấu
+
 - Chọn đối thủ từ danh sách người chơi
 - Chọn CLB diễn ra trận đấu
 - Chọn điểm cược (100-650 điểm)
@@ -62,18 +69,21 @@ Xác minh thách đấu:
 - Lên lịch thời gian (tùy chọn)
 
 ### 2. Quản Lý Thách Đấu
+
 - Chấp nhận/từ chối thách đấu
 - Bắt đầu trận đấu
 - Nhập kết quả
 - Hủy thách đấu
 
 ### 3. Xác Minh Thách Đấu
+
 - Upload hình ảnh làm bằng chứng
 - Nhập số hóa đơn
 - Mô tả cách xác minh
 - Phê duyệt/từ chối xác minh
 
 ### 4. Tính Điểm ELO
+
 - Tính toán ELO dựa trên rating hiện tại
 - K-factor thay đổi theo điểm cược
 - Cập nhật rating người chơi
@@ -82,6 +92,7 @@ Xác minh thách đấu:
 ## API Endpoints
 
 ### Challenges
+
 - `GET /challenges` - Lấy danh sách thách đấu
 - `POST /challenges` - Tạo thách đấu mới
 - `PUT /challenges/:id/accept` - Chấp nhận thách đấu
@@ -91,6 +102,7 @@ Xác minh thách đấu:
 - `DELETE /challenges/:id` - Hủy thách đấu
 
 ### Verifications
+
 - `POST /challenges/:id/verify` - Xác minh thách đấu
 - `GET /challenges/:id/verifications` - Lấy danh sách xác minh
 - `PUT /verifications/:id/approve` - Phê duyệt xác minh
@@ -99,21 +111,27 @@ Xác minh thách đấu:
 ## Components React
 
 ### 1. ChallengeCard
+
 Hiển thị thông tin thách đấu:
+
 - Người thách đấu và đối thủ
 - Cấu hình thách đấu (race to, handicap)
 - Trạng thái và kết quả
 - Các action tương ứng
 
 ### 2. CreateChallengeForm
+
 Form tạo thách đấu mới:
+
 - Chọn đối thủ và CLB
 - Chọn điểm cược với preview cấu hình
 - Lên lịch thời gian
 - Validation và error handling
 
 ### 3. ChallengeVerificationModal
+
 Modal xác minh thách đấu:
+
 - Upload hình ảnh
 - Nhập thông tin hóa đơn
 - Mô tả cách xác minh
@@ -122,7 +140,9 @@ Modal xác minh thách đấu:
 ## Hooks React
 
 ### useChallenges
+
 Quản lý thách đấu:
+
 - CRUD thách đấu
 - Chấp nhận/từ chối
 - Nhập kết quả
@@ -132,21 +152,25 @@ Quản lý thách đấu:
 ## Quy Trình Xác Minh
 
 ### 1. Yêu Cầu Xác Minh
+
 - Trận đấu phải diễn ra tại CLB đã đăng ký
 - Kết quả phải được nhập bởi người thắng
 - Cần bằng chứng xác minh (hình ảnh, hóa đơn, v.v.)
 
 ### 2. Loại Bằng Chứng
+
 - **Hình ảnh**: Ảnh chụp trận đấu, bảng điểm, v.v.
 - **Hóa đơn**: Hóa đơn CLB có tên người chơi
 - **Khác**: Mô tả cách xác minh khác
 
 ### 3. Quyền Xác Minh
+
 - Quản lý CLB nơi diễn ra trận đấu
 - Admin hệ thống
 - Người dùng có quyền xác minh
 
 ### 4. Quy Trình Xử Lý
+
 1. Upload bằng chứng
 2. Nhập thông tin bổ sung
 3. Gửi yêu cầu xác minh
@@ -156,6 +180,7 @@ Quản lý thách đấu:
 ## Tính Điểm ELO
 
 ### Công Thức Tính
+
 ```
 K-factor = f(bet_points)
 Expected Win = 1 / (1 + 10^((opponent_rating - player_rating) / 400))
@@ -163,6 +188,7 @@ ELO Change = K-factor * (actual_result - expected_result)
 ```
 
 ### K-factor Theo Điểm Cược
+
 - 600-650 điểm: K = 32
 - 500-550 điểm: K = 28
 - 400-450 điểm: K = 24
@@ -171,6 +197,7 @@ ELO Change = K-factor * (actual_result - expected_result)
 - 100-150 điểm: K = 12
 
 ### Cập Nhật Rating
+
 - Cập nhật rating người chơi
 - Cập nhật bảng xếp hạng mùa
 - Cập nhật bảng xếp hạng CLB
@@ -179,18 +206,21 @@ ELO Change = K-factor * (actual_result - expected_result)
 ## Bảo Mật và Validation
 
 ### RLS Policies
+
 - Chỉ người thách đấu mới có thể tạo thách đấu
 - Chỉ đối thủ mới có thể chấp nhận/từ chối
 - Chỉ người thắng mới có thể nhập kết quả
 - Chỉ quản lý CLB mới có thể xác minh
 
 ### Validation
+
 - Điểm cược phải từ 100-650
 - Không thể thách đấu chính mình
 - Trận đấu phải diễn ra tại CLB đã đăng ký
 - Kết quả phải hợp lệ (race to)
 
 ### Anti-Fraud
+
 - Xác minh bắt buộc cho mọi trận đấu
 - Bằng chứng hình ảnh/hóa đơn
 - Quyền xác minh hạn chế
@@ -199,12 +229,14 @@ ELO Change = K-factor * (actual_result - expected_result)
 ## Monitoring và Analytics
 
 ### Thống Kê
+
 - Số lượng thách đấu theo thời gian
 - Tỷ lệ chấp nhận/từ chối
 - Điểm ELO trao đổi trung bình
 - Thời gian xác minh trung bình
 
 ### Báo Cáo
+
 - Báo cáo thách đấu theo CLB
 - Thống kê người chơi thách đấu nhiều nhất
 - Phân tích xu hướng điểm cược
@@ -213,12 +245,14 @@ ELO Change = K-factor * (actual_result - expected_result)
 ## Deployment
 
 ### Migration
+
 ```sql
 -- Chạy migration để tạo hệ thống thách đấu
 supabase db push
 ```
 
 ### Functions
+
 ```sql
 -- Tạo các function cần thiết
 CREATE OR REPLACE FUNCTION get_challenge_config(...)
@@ -228,6 +262,7 @@ CREATE OR REPLACE FUNCTION verify_challenge(...)
 ```
 
 ### Storage
+
 ```sql
 -- Tạo bucket cho hình ảnh xác minh
 supabase storage create-bucket verification-images
@@ -236,6 +271,7 @@ supabase storage create-bucket verification-images
 ## Tương Lai
 
 ### Tính Năng Dự Kiến
+
 - Live streaming thách đấu
 - Hệ thống đặt cược thách đấu
 - Tournament từ thách đấu
@@ -243,8 +279,9 @@ supabase storage create-bucket verification-images
 - Mobile app cho thách đấu
 
 ### Mở Rộng
+
 - Thách đấu team
 - Thách đấu online
 - Hệ thống ranking thách đấu
 - Leaderboard thách đấu
-- Rewards cho thách đấu 
+- Rewards cho thách đấu

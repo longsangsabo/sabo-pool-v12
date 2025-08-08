@@ -75,7 +75,7 @@ const ClubTournamentManagementInternal: React.FC = () => {
   return (
     <div className='space-y-4'>
       {/* Mobile-optimized header using shared component */}
-      <MobileSectionHeader 
+      <MobileSectionHeader
         title='Quản lý Giải đấu'
         subtitle='Tạo mới và quản lý các giải đấu CLB'
         icon={Trophy}
@@ -90,7 +90,10 @@ const ClubTournamentManagementInternal: React.FC = () => {
       >
         {/* Main tabs - improved mobile spacing */}
         <TabsList className='grid w-full grid-cols-2 h-10 bg-muted/50'>
-          <TabsTrigger value='tournaments' className='text-sm h-8 px-3 font-medium'>
+          <TabsTrigger
+            value='tournaments'
+            className='text-sm h-8 px-3 font-medium'
+          >
             <Trophy className='w-4 h-4 mr-1.5' />
             Danh sách
           </TabsTrigger>
@@ -131,152 +134,153 @@ const ClubTournamentManagementInternal: React.FC = () => {
           </Button>
         </div>
 
-          <TabsContent value='create'>
-            <ProfileProvider>
-              <TournamentProvider>
-                {(() => {
-                  console.log(
-                    '🎯 About to render EnhancedTournamentForm inside providers'
-                  );
-                  return (
-                    <EnhancedTournamentForm
-                      onSuccess={handleTournamentSuccess}
-                      onCancel={() => {
-                        console.log('❌ Form canceled');
-                      }}
-                    />
-                  );
-                })()}
-              </TournamentProvider>
-            </ProfileProvider>
-          </TabsContent>
-
-          <TabsContent value='tournaments'>
-            <TournamentManagementHub ref={tournamentManagementRef} />
-          </TabsContent>
-
-          <TabsContent value='automation'>
-            <div className='space-y-6'>
-              {/* Tournament Selector */}
-              <TournamentSelector />
-
-              {/* Tournament Control Panel */}
-              {selectedTournamentId && (
-                <TournamentControlPanel
-                  tournamentId={selectedTournamentId}
-                  isClubOwner={true}
-                />
-              )}
-
-              {/* Tournament Match Manager */}
-              {selectedTournamentId && (
-                <TournamentMatchManager
-                  tournamentId={selectedTournamentId}
-                  isClubOwner={true}
-                />
-              )}
-
-              {!selectedTournamentId && (
-                <MobileCard 
-                  title='Chọn giải đấu để quản lý'
-                  icon={Zap}
-                  iconColor='text-amber-500'
-                  variant='outlined'
-                  className='border-dashed'
-                >
-                  <div className='flex flex-col items-center justify-center py-6 text-center'>
-                    <p className='text-sm text-muted-foreground max-w-sm'>
-                      Vui lòng chọn một giải đấu từ danh sách để sử dụng các tính năng tự động hóa
-                    </p>
-                  </div>
-                </MobileCard>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value='bracket-view'>
-            <div className='space-y-6'>
-              {/* Tournament Selector */}
-              <TournamentSelector />
-
-              {/* Tournament Control Panel for selected tournament */}
-              {selectedTournamentId && (
-                <TournamentControlPanel
-                  tournamentId={selectedTournamentId}
-                  isClubOwner={true}
-                />
-              )}
-
-              {/* Test Button for Development */}
-              {process.env.NODE_ENV === 'development' &&
-                selectedTournamentId && (
-                  <Card className='border-dashed border-orange-200 bg-orange-50/50'>
-                    <CardContent className='pt-6'>
-                      <div className='flex items-center justify-between'>
-                        <div>
-                          <h3 className='font-semibold text-orange-800'>
-                            🧪 Development Test
-                          </h3>
-                          <p className='text-sm text-orange-600'>
-                            Test complete tournament flow: scores → advancement
-                            → completion
-                          </p>
-                        </div>
-                        <Button
-                          onClick={createTestTournamentFlow}
-                          variant='outline'
-                          className='border-orange-200 text-orange-700 hover:bg-orange-100'
-                        >
-                          🚀 Test Flow
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-              {/* Auto Bracket Display */}
-              {selectedTournamentId ? (
-                <TournamentBracket
-                  tournamentId={selectedTournamentId}
-                  adminMode={true}
-                />
-              ) : (
-                <MobileCard 
-                  title='Chọn giải đấu để xem bảng đấu'
-                  icon={Workflow}
-                  iconColor='text-blue-500'
-                  variant='outlined'
-                  className='border-dashed'
-                >
-                  <div className='flex flex-col items-center justify-center py-6 text-center'>
-                    <p className='text-sm text-muted-foreground max-w-sm'>
-                      Vui lòng chọn một giải đấu từ danh sách để xem và quản lý bảng đấu
-                    </p>
-                  </div>
-                </MobileCard>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value='results'>
-            <div className='space-y-6'>
-              {/* Tournament Selector */}
-              <TournamentSelector />
-
-              {/* Manual Results Generator for Completed Tournaments */}
-              {selectedTournamentId &&
-                selectedTournament?.status === 'completed' && (
-                  <ManualResultsGenerator
-                    tournamentId={selectedTournamentId}
-                    tournamentName={selectedTournament.name}
-                    onResultsGenerated={refreshAll}
+        <TabsContent value='create'>
+          <ProfileProvider>
+            <TournamentProvider>
+              {(() => {
+                console.log(
+                  '🎯 About to render EnhancedTournamentForm inside providers'
+                );
+                return (
+                  <EnhancedTournamentForm
+                    onSuccess={handleTournamentSuccess}
+                    onCancel={() => {
+                      console.log('❌ Form canceled');
+                    }}
                   />
-                )}
+                );
+              })()}
+            </TournamentProvider>
+          </ProfileProvider>
+        </TabsContent>
 
-              {/* Tournament Results Display */}
-              <TournamentResults tournamentId={selectedTournamentId} />
-            </div>
-          </TabsContent>
+        <TabsContent value='tournaments'>
+          <TournamentManagementHub ref={tournamentManagementRef} />
+        </TabsContent>
+
+        <TabsContent value='automation'>
+          <div className='space-y-6'>
+            {/* Tournament Selector */}
+            <TournamentSelector />
+
+            {/* Tournament Control Panel */}
+            {selectedTournamentId && (
+              <TournamentControlPanel
+                tournamentId={selectedTournamentId}
+                isClubOwner={true}
+              />
+            )}
+
+            {/* Tournament Match Manager */}
+            {selectedTournamentId && (
+              <TournamentMatchManager
+                tournamentId={selectedTournamentId}
+                isClubOwner={true}
+              />
+            )}
+
+            {!selectedTournamentId && (
+              <MobileCard
+                title='Chọn giải đấu để quản lý'
+                icon={Zap}
+                iconColor='text-amber-500'
+                variant='outlined'
+                className='border-dashed'
+              >
+                <div className='flex flex-col items-center justify-center py-6 text-center'>
+                  <p className='text-sm text-muted-foreground max-w-sm'>
+                    Vui lòng chọn một giải đấu từ danh sách để sử dụng các tính
+                    năng tự động hóa
+                  </p>
+                </div>
+              </MobileCard>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value='bracket-view'>
+          <div className='space-y-6'>
+            {/* Tournament Selector */}
+            <TournamentSelector />
+
+            {/* Tournament Control Panel for selected tournament */}
+            {selectedTournamentId && (
+              <TournamentControlPanel
+                tournamentId={selectedTournamentId}
+                isClubOwner={true}
+              />
+            )}
+
+            {/* Test Button for Development */}
+            {process.env.NODE_ENV === 'development' && selectedTournamentId && (
+              <Card className='border-dashed border-orange-200 bg-orange-50/50'>
+                <CardContent className='pt-6'>
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      <h3 className='font-semibold text-orange-800'>
+                        🧪 Development Test
+                      </h3>
+                      <p className='text-sm text-orange-600'>
+                        Test complete tournament flow: scores → advancement →
+                        completion
+                      </p>
+                    </div>
+                    <Button
+                      onClick={createTestTournamentFlow}
+                      variant='outline'
+                      className='border-orange-200 text-orange-700 hover:bg-orange-100'
+                    >
+                      🚀 Test Flow
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Auto Bracket Display */}
+            {selectedTournamentId ? (
+              <TournamentBracket
+                tournamentId={selectedTournamentId}
+                adminMode={true}
+              />
+            ) : (
+              <MobileCard
+                title='Chọn giải đấu để xem bảng đấu'
+                icon={Workflow}
+                iconColor='text-blue-500'
+                variant='outlined'
+                className='border-dashed'
+              >
+                <div className='flex flex-col items-center justify-center py-6 text-center'>
+                  <p className='text-sm text-muted-foreground max-w-sm'>
+                    Vui lòng chọn một giải đấu từ danh sách để xem và quản lý
+                    bảng đấu
+                  </p>
+                </div>
+              </MobileCard>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value='results'>
+          <div className='space-y-6'>
+            {/* Tournament Selector */}
+            <TournamentSelector />
+
+            {/* Manual Results Generator for Completed Tournaments */}
+            {selectedTournamentId &&
+              selectedTournament?.status === 'completed' && (
+                <ManualResultsGenerator
+                  tournamentId={selectedTournamentId}
+                  tournamentName={selectedTournament.name}
+                  onResultsGenerated={refreshAll}
+                />
+              )}
+
+            {/* Tournament Results Display */}
+            <TournamentResults tournamentId={selectedTournamentId} />
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   );

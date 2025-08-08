@@ -1,10 +1,17 @@
-export type ClubRole = 'owner' | 'moderator' | 'member' | 'guest' | undefined | null;
+export type ClubRole =
+  | 'owner'
+  | 'moderator'
+  | 'member'
+  | 'guest'
+  | undefined
+  | null;
 
 export const clubRoleUtils = {
   isOwner: (role: ClubRole) => role === 'owner',
   isModerator: (role: ClubRole) => role === 'moderator',
   isStaff: (role: ClubRole) => role === 'owner' || role === 'moderator',
-  canManageMembers: (role: ClubRole) => role === 'owner' || role === 'moderator',
+  canManageMembers: (role: ClubRole) =>
+    role === 'owner' || role === 'moderator',
   canPromote: (currentUserRole: ClubRole, targetRole: ClubRole) => {
     if (!currentUserRole) return false;
     if (targetRole === 'owner') return false; // cannot manage owner

@@ -4,9 +4,26 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Bell, Menu, Building, MoreHorizontal, Home, Moon, Sun, Settings, Users, User } from 'lucide-react';
+import {
+  Bell,
+  Menu,
+  Building,
+  MoreHorizontal,
+  Home,
+  Moon,
+  Sun,
+  Settings,
+  Users,
+  User,
+} from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/hooks/useTheme';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,7 +34,10 @@ interface ClubMobileHeaderProps {
   clubProfile?: any;
 }
 
-export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({ onMenuClick, clubProfile }) => {
+export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({
+  onMenuClick,
+  clubProfile,
+}) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
@@ -43,16 +63,21 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({ onMenuClick,
       <div className='flex h-14 items-center px-3'>
         {/* Left Section */}
         <div className='flex items-center gap-3 flex-1 min-w-0'>
-          <Button variant='ghost' size='icon' onClick={onMenuClick} className='hover:bg-muted/50'>
+          <Button
+            variant='ghost'
+            size='icon'
+            onClick={onMenuClick}
+            className='hover:bg-muted/50'
+          >
             <Menu className='w-5 h-5' />
           </Button>
-          
+
           {/* SABO Logo + Brand */}
           <div className='flex items-center gap-2'>
             <div className='relative'>
-              <img 
-                src="https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png"
-                alt="SABO ARENA Logo"
+              <img
+                src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+                alt='SABO ARENA Logo'
                 className='w-8 h-8 object-cover rounded-full'
               />
             </div>
@@ -65,7 +90,7 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({ onMenuClick,
               </span>
             </div>
           </div>
-          
+
           {/* Club Info */}
           <div className='flex items-center gap-2 min-w-0 ml-2'>
             <div className='w-0.5 h-6 bg-border'></div>
@@ -74,7 +99,10 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({ onMenuClick,
                 {clubProfile?.club_name || clubProfile?.name || 'Câu Lạc Bộ'}
               </span>
               {isClubOwner && (
-                <Badge variant='secondary' className='h-3 px-1 text-[9px] font-medium bg-primary/15 text-primary w-fit mt-0.5'>
+                <Badge
+                  variant='secondary'
+                  className='h-3 px-1 text-[9px] font-medium bg-primary/15 text-primary w-fit mt-0.5'
+                >
                   Owner
                 </Badge>
               )}
@@ -84,7 +112,12 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({ onMenuClick,
 
         {/* Right Section - Simplified */}
         <div className='flex items-center gap-1'>
-          <Button variant='ghost' size='icon' onClick={() => navigate('/notifications')} className='relative hover:bg-muted/50'>
+          <Button
+            variant='ghost'
+            size='icon'
+            onClick={() => navigate('/notifications')}
+            className='relative hover:bg-muted/50'
+          >
             <Bell className='w-5 h-5' />
             {notificationCount && notificationCount > 0 && (
               <span className='absolute -top-1 -right-1 bg-destructive text-[10px] leading-none text-white font-medium w-4 h-4 rounded-full flex items-center justify-center animate-pulse'>
@@ -92,7 +125,7 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({ onMenuClick,
               </span>
             )}
           </Button>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' size='icon' className='hover:bg-muted/50'>
@@ -100,35 +133,56 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({ onMenuClick,
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='w-52'>
-              <DropdownMenuItem onClick={() => navigate('/dashboard')} className='flex items-center gap-2'>
+              <DropdownMenuItem
+                onClick={() => navigate('/dashboard')}
+                className='flex items-center gap-2'
+              >
                 <Home className='w-4 h-4' />
                 Trang chủ
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className='flex items-center gap-2'>
-                {theme === 'light' ? <Moon className='w-4 h-4' /> : <Sun className='w-4 h-4' />}
+              <DropdownMenuItem
+                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                className='flex items-center gap-2'
+              >
+                {theme === 'light' ? (
+                  <Moon className='w-4 h-4' />
+                ) : (
+                  <Sun className='w-4 h-4' />
+                )}
                 {theme === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/club-management/settings')} className='flex items-center gap-2'>
+              <DropdownMenuItem
+                onClick={() => navigate('/club-management/settings')}
+                className='flex items-center gap-2'
+              >
                 <Settings className='w-4 h-4' />
                 Cài đặt CLB
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/club-management/members')} className='flex items-center gap-2'>
+              <DropdownMenuItem
+                onClick={() => navigate('/club-management/members')}
+                className='flex items-center gap-2'
+              >
                 <Users className='w-4 h-4' />
                 Quản lý thành viên
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/profile')} className='flex items-center gap-2'>
+              <DropdownMenuItem
+                onClick={() => navigate('/profile')}
+                className='flex items-center gap-2'
+              >
                 <User className='w-4 h-4' />
                 Hồ sơ cá nhân
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          
+
           <Avatar className='w-8 h-8 border border-border'>
             <AvatarImage src={user?.user_metadata?.avatar_url} />
             <AvatarFallback className='text-xs bg-gradient-to-br from-blue-500 to-purple-600 text-white'>
-              {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'U'}
+              {user?.user_metadata?.full_name?.charAt(0) ||
+                user?.email?.charAt(0)?.toUpperCase() ||
+                'U'}
             </AvatarFallback>
           </Avatar>
         </div>

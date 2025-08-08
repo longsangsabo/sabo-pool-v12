@@ -90,7 +90,6 @@ const Dashboard = () => {
     toast.info('Tính năng tạo nội dung đang phát triển');
   }, []);
 
-
   return (
     <>
       <Helmet>
@@ -112,7 +111,9 @@ const Dashboard = () => {
         {/* Pull to refresh indicator */}
         <div
           className={`flex justify-center items-center transition-all duration-200 ${
-            isPullRefreshing || loading || pullDistance > 0 ? 'py-2' : 'h-0 py-0 overflow-hidden'
+            isPullRefreshing || loading || pullDistance > 0
+              ? 'py-2'
+              : 'h-0 py-0 overflow-hidden'
           }`}
           style={getRefreshIndicatorStyle()}
         >
@@ -126,7 +127,7 @@ const Dashboard = () => {
         {/* Story Reel with real data */}
         <MobileStoryReel stories={stories} />
 
-  {/* Debug component removed */}
+        {/* Debug component removed */}
 
         {/* Social Feed */}
         <div className='px-4 space-y-4 pb-4'>

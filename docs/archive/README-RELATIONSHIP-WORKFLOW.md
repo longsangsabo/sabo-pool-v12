@@ -1,26 +1,31 @@
 # 🔄 Relationship Management Workflow
 
 ## Tổng quan
+
 Hệ thống tự động hóa để quản lý và đảm bảo consistency của Supabase foreign key relationships trong toàn bộ codebase.
 
 ## 🚀 Features
 
 ### 1. **Relationship Mapping System**
+
 - Định nghĩa chuẩn cho tất cả relationships
 - Mapping tự động giữa tables và foreign keys
 - Utility functions để build queries consistent
 
 ### 2. **Validation Engine**
+
 - Tự động scan và detect relationship issues
 - Báo cáo chi tiết về các vấn đề
 - Phân loại theo mức độ nghiêm trọng (error/warning/info)
 
 ### 3. **Auto-Fix Tool**
+
 - Tự động sửa các pattern không đúng chuẩn
 - Smart context-aware fixes
 - Preview mode để xem trước changes
 
 ### 4. **Development Integration**
+
 - CLI commands để check/fix relationships
 - VS Code tasks integration
 - Pre-commit hooks để prevent issues
@@ -48,7 +53,7 @@ scripts/
 # Check for relationship issues
 npm run relationship-check
 
-# Preview potential fixes  
+# Preview potential fixes
 npm run relationship-preview
 
 # Apply auto-fixes
@@ -60,7 +65,7 @@ npm run relationship-check -- --verbose
 
 ### VS Code Integration
 
-1. **Command Palette**: 
+1. **Command Palette**:
    - `Tasks: Run Task` → `Check Relationships`
    - `Tasks: Run Task` → `Fix Relationships`
 
@@ -69,11 +74,11 @@ npm run relationship-check -- --verbose
 ### Programmatic Usage
 
 ```typescript
-import { 
+import {
   getStandardRelationship,
   buildSelectWithRelationships,
   validateRelationships,
-  autoFixRelationships 
+  autoFixRelationships,
 } from '@/utils/relationshipMapper';
 
 // Get standard relationship name
@@ -84,10 +89,10 @@ const rel = getStandardRelationship('challenges', 'challenger_id');
 const query = buildSelectWithRelationships('*', [
   {
     alias: 'challenger_profile',
-    table: 'challenges', 
+    table: 'challenges',
     foreignKey: 'challenger_id',
-    fields: ['full_name', 'display_name']
-  }
+    fields: ['full_name', 'display_name'],
+  },
 ]);
 
 // Validate code content
@@ -101,21 +106,21 @@ const fixed = autoFixRelationships(codeContent);
 
 ### Current Standards
 
-| Table | Foreign Key | Referenced Table | Standard Format |
-|-------|-------------|------------------|-----------------|
-| challenges | challenger_id | profiles | `profiles!challenger_id` |
-| challenges | opponent_id | profiles | `profiles!opponent_id` |
-| challenges | club_id | club_profiles | `club_profiles!club_id` |
-| matches | player1_id | profiles | `profiles!player1_id` |
-| matches | player2_id | profiles | `profiles!player2_id` |
-| tournaments | created_by | profiles | `profiles!created_by` |
+| Table       | Foreign Key   | Referenced Table | Standard Format          |
+| ----------- | ------------- | ---------------- | ------------------------ |
+| challenges  | challenger_id | profiles         | `profiles!challenger_id` |
+| challenges  | opponent_id   | profiles         | `profiles!opponent_id`   |
+| challenges  | club_id       | club_profiles    | `club_profiles!club_id`  |
+| matches     | player1_id    | profiles         | `profiles!player1_id`    |
+| matches     | player2_id    | profiles         | `profiles!player2_id`    |
+| tournaments | created_by    | profiles         | `profiles!created_by`    |
 
 ### ❌ Deprecated Patterns
 
 ```typescript
 // OLD - Don't use these
 profiles!challenges_challenger_id_fkey
-profiles!challenges_opponent_id_fkey 
+profiles!challenges_opponent_id_fkey
 user_profiles!challenger_id
 clubs!club_id
 
@@ -128,7 +133,7 @@ club_profiles!club_id
 
 ## 🔧 Common Fixes Applied
 
-1. **Foreign Key Format**: 
+1. **Foreign Key Format**:
    - `profiles!challenges_challenger_id_fkey` → `profiles!challenger_id`
 
 2. **Table References**:
@@ -145,21 +150,25 @@ club_profiles!club_id
 ## 📊 Validation Rules
 
 ### Error Level Issues
+
 - Deprecated foreign key formats
 - Incorrect table references
 - Missing relationship definitions
 
-### Warning Level Issues  
+### Warning Level Issues
+
 - Outdated table names
 - Inconsistent query patterns
 
 ### Info Level Issues
+
 - Complex queries that could use utilities
 - Potential optimization opportunities
 
 ## 🚀 Development Workflow
 
 ### Pre-commit Hook
+
 ```bash
 # Automatically runs relationship check before commit
 git commit -m "feature: add new challenge system"
@@ -168,6 +177,7 @@ git commit -m "feature: add new challenge system"
 ```
 
 ### CI/CD Integration
+
 ```yaml
 # .github/workflows/relationship-check.yml
 - name: Check Relationships
@@ -175,6 +185,7 @@ git commit -m "feature: add new challenge system"
 ```
 
 ### IDE Integration
+
 - Real-time validation trong VS Code
 - Quick fixes suggestions
 - Auto-completion for standard relationships
@@ -200,20 +211,24 @@ git commit -m "feature: add new challenge system"
 ### Common Issues
 
 **Issue**: Script không chạy được
+
 ```bash
 chmod +x scripts/relationship-check.js
 npm run relationship-check
 ```
 
 **Issue**: VS Code tasks không hiển thị
+
 - Reload VS Code window
 - Check `.vscode/settings.json` syntax
 
 **Issue**: Auto-fix không apply changes
+
 - Check file permissions
 - Ensure files không bị lock bởi editor
 
 ### Debug Mode
+
 ```bash
 npm run relationship-check -- --verbose
 ```
@@ -227,4 +242,4 @@ npm run relationship-check -- --verbose
 
 ---
 
-*Generated by Relationship Management Workflow v1.0*
+_Generated by Relationship Management Workflow v1.0_

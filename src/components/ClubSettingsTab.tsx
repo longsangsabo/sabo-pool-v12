@@ -23,7 +23,9 @@ const ClubSettingsTab = () => {
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
         <div>
-          <h2 className='text-2xl font-bold text-foreground'>Cài đặt & Hồ sơ</h2>
+          <h2 className='text-2xl font-bold text-foreground'>
+            Cài đặt & Hồ sơ
+          </h2>
           <p className='text-muted-foreground'>
             Quản lý thông tin câu lạc bộ và cấu hình hệ thống
           </p>

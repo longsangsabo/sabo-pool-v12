@@ -16,7 +16,7 @@ export const fetchClubRole = async (clubId: string, userId: string): Promise<Clu
     .eq('user_id', userId)
     .maybeSingle();
   if (error) throw error;
-  return data as ClubRoleData || null;
+  return (data as unknown as ClubRoleData) || null;
 };
 
 export const useClubRole = (clubId?: string, userId?: string, enabled: boolean = true) => {
@@ -37,15 +37,30 @@ export const useIsClubOwner = (userId?: string, enabled: boolean = true) => {
     queryKey: ['is-club-owner', userId],
     queryFn: async () => {
       if (!userId) return false;
-      const { data, error } = await supabase
+      // Check membership table first
+  const sb: any = supabase;
+  const { data: memberData, error: memberError } = await sb
         .from('club_members')
         .select('role, status')
         .eq('user_id', userId)
         .eq('role', 'owner')
         .eq('status', 'active')
         .limit(1);
-      if (error) throw error;
-      return Boolean(data && data.length > 0);
+      if (memberError) {
+        console.warn('[useIsClubOwner] club_members query error', memberError);
+      }
+      if (memberData && memberData.length > 0) return true;
+
+      // Fallback: some schemas may store ownership via club_profiles.user_id
+  const { data: profileData, error: profileError } = await sb
+        .from('club_profiles')
+        .select('id')
+        .eq('user_id', userId)
+        .limit(1);
+      if (profileError) {
+        console.warn('[useIsClubOwner] club_profiles query error', profileError);
+      }
+      return Boolean(profileData && profileData.length > 0);
     },
     enabled: enabled && !!userId,
     staleTime: 60 * 1000,

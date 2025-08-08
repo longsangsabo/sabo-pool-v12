@@ -23,7 +23,7 @@ import '@/utils/debugTournamentRefresh';
 const HomePage = lazy(() => import('@/pages/Home'));
 // Use enhanced login page with role-based redirect logic
 const EnhancedLoginPage = lazy(() => import('@/pages/EnhancedLoginPage'));
-const RegisterPage = lazy(() => import('@/pages/Register'));
+const RegisterPage = lazy(() => import('@/pages/RegisterPage'));
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/SimpleClubContactPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPage'));

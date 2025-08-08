@@ -179,8 +179,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       console.log('🔧 Auth: Sign out completed successfully');
 
-      // Force redirect to auth page
-      window.location.href = '/auth';
+  // Redirect to public landing page
+  window.location.href = '/';
     } catch (error) {
       console.error('🔧 Auth: Sign out error:', error);
 
@@ -197,8 +197,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       localStorage.removeItem('supabase.auth.token');
       sessionStorage.clear();
 
-      // Force redirect
-      window.location.href = '/auth';
+  // Force redirect to landing even on error
+  window.location.href = '/';
     }
   };
 

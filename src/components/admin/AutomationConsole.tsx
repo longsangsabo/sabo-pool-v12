@@ -8,7 +8,8 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet-async';
-import { Loader2, Activity, ShieldCheck, RefreshCw, Play, Broom, Settings2 } from 'lucide-react';
+// NOTE: "Broom" icon not available in installed lucide-react version; replaced with Sparkles
+import { Loader2, Activity, ShieldCheck, RefreshCw, Play, Sparkles, Settings2 } from 'lucide-react';
 import TournamentAutomationService, { TournamentState } from '@/services/TournamentAutomationService';
 
 const stateOptions: TournamentState[] = [
@@ -189,7 +190,7 @@ const AutomationConsole: React.FC = () => {
                   />
                   <span className='text-sm text-muted-foreground'>days to keep</span>
                   <Button onClick={handleCleanup} variant='outline' disabled={loadingAction==='cleanup'}>
-                    {loadingAction==='cleanup' ? <Loader2 className='h-4 w-4 animate-spin'/> : <Broom className='h-4 w-4'/>}
+                    {loadingAction==='cleanup' ? <Loader2 className='h-4 w-4 animate-spin'/> : <Sparkles className='h-4 w-4'/>}
                     <span>Cleanup</span>
                   </Button>
                 </div>

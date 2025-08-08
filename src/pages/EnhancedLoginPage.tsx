@@ -337,7 +337,7 @@ const EnhancedLoginPage = () => {
 
           <div className='text-center mt-6 space-y-4'>
             <Link
-              to='/forgot-password'
+              to='/auth/forgot-password'
               className='text-blue-600 hover:text-blue-800 text-sm font-medium'
             >
               Quên mật khẩu?
@@ -346,7 +346,7 @@ const EnhancedLoginPage = () => {
             <div className='text-gray-600 text-sm'>
               Chưa có tài khoản?{' '}
               <Link
-                to='/register'
+                to='/auth/register'
                 className='text-blue-600 hover:text-blue-800 font-medium'
               >
                 Đăng ký ngay

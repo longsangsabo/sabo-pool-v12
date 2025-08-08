@@ -113,7 +113,7 @@ const Home: React.FC = () => {
         </div>
         <div className='max-w-7xl mx-auto px-6 md:px-10 pt-20 md:pt-28 pb-20 text-center'>
           <h1 className='text-3xl md:text-5xl font-black tracking-tight leading-tight bg-gradient-to-r from-sky-300 via-indigo-300 to-fuchsia-300 bg-clip-text text-transparent drop-shadow'>
-            Nền tảng Xếp Hạng & Thách Đấu Bida Hiện Đại
+            SABO ARENA - Nền tảng Billiards đầu tiên tại Việt Nam
           </h1>
           <p className='mt-5 max-w-2xl mx-auto text-base md:text-lg text-slate-300'>
             Theo dõi phong độ – Tham gia giải đấu realtime – Thách đấu bạn bè – Xây dựng cộng đồng cơ thủ chuyên nghiệp.

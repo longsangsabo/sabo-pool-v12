@@ -31,7 +31,7 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   if (!user) {
     return (
       <Navigate
-        to={`/auth?redirect=${encodeURIComponent(location.pathname)}`}
+        to={`/auth/login?redirect=${encodeURIComponent(location.pathname)}`}
         replace
       />
     );

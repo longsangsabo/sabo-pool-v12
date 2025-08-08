@@ -143,7 +143,7 @@ const EnhancedRegisterPage = () => {
             ? 'Đăng ký thành công! Bạn và người giới thiệu đều nhận được 100 SPA! Vui lòng kiểm tra email để xác thực tài khoản.'
             : 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.'
         );
-        navigate('/login');
+        navigate('/auth/login');
       }
     } catch (error) {
       console.error('Email registration error:', error);
@@ -301,7 +301,7 @@ const EnhancedRegisterPage = () => {
             <div className='text-gray-600 text-sm'>
               Đã có tài khoản?{' '}
               <Link
-                to='/login'
+                to='/auth/login'
                 className='text-blue-600 hover:text-blue-800 font-medium'
               >
                 Đăng nhập ngay

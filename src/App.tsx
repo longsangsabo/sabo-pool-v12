@@ -23,7 +23,7 @@ import '@/utils/debugTournamentRefresh';
 const HomePage = lazy(() => import('@/pages/Home'));
 // Use enhanced login page with role-based redirect logic
 const EnhancedLoginPage = lazy(() => import('@/pages/EnhancedLoginPage'));
-const RegisterPage = lazy(() => import('@/pages/RegisterPage'));
+const EnhancedRegisterPage = lazy(() => import('@/pages/EnhancedRegisterPage'));
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/SimpleClubContactPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPage'));
@@ -73,6 +73,7 @@ const AuthPage = lazy(() => import('@/pages/AuthPage'));
 const AuthTestPage = lazy(() => import('@/pages/AuthTestPage'));
 const AuthCallbackPage = lazy(() => import('@/pages/AuthCallbackPage'));
 const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPassword'));
+const AuthRouteGuard = lazy(() => import('@/pages/AuthRouteGuard'));
 
 // Create a stable query client
 const queryClient = new QueryClient({
@@ -138,7 +139,7 @@ const AppContent = () => {
             path='/auth'
             element={
               <PublicRoute>
-                <AuthPage />
+                <AuthRouteGuard />
               </PublicRoute>
             }
           />
@@ -154,7 +155,7 @@ const AppContent = () => {
             path='/auth/register'
             element={
               <PublicRoute>
-                <RegisterPage />
+                <EnhancedRegisterPage />
               </PublicRoute>
             }
           />

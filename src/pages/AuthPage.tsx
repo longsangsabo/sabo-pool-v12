@@ -195,7 +195,7 @@ const AuthPage = () => {
     // TODO: Implement actual reset password logic
     setTimeout(() => {
       toast.success('Mật khẩu đã được cập nhật thành công!');
-      navigate('/auth?mode=login');
+      navigate('/auth/login');
       setLoading(false);
     }, 1500);
   };
@@ -257,7 +257,7 @@ const AuthPage = () => {
             </CardHeader>
             <CardContent className='space-y-4'>
               <Button
-                onClick={() => navigate('/auth?mode=login')}
+                onClick={() => navigate('/auth/login')}
                 className='w-full'
               >
                 Về trang đăng nhập
@@ -649,7 +649,7 @@ const AuthPage = () => {
             {mode === 'login' && (
               <>
                 <button
-                  onClick={() => navigate('/auth?mode=forgot-password')}
+                  onClick={() => navigate('/auth/forgot-password')}
                   className='text-sm text-primary hover:text-primary/80 transition-colors'
                 >
                   Quên mật khẩu?
@@ -658,7 +658,7 @@ const AuthPage = () => {
                 <div className='text-sm text-muted-foreground'>
                   Chưa có tài khoản?{' '}
                   <button
-                    onClick={() => navigate('/auth?mode=register')}
+                    onClick={() => navigate('/auth/register')}
                     className='text-primary hover:text-primary/80 font-medium transition-colors'
                   >
                     Đăng ký ngay
@@ -671,7 +671,7 @@ const AuthPage = () => {
               <div className='text-sm text-muted-foreground'>
                 Đã có tài khoản?{' '}
                 <button
-                  onClick={() => navigate('/auth?mode=login')}
+                  onClick={() => navigate('/auth/login')}
                   className='text-primary hover:text-primary/80 font-medium transition-colors'
                 >
                   Đăng nhập
@@ -681,7 +681,7 @@ const AuthPage = () => {
 
             {(mode === 'forgot-password' || mode === 'reset-password') && (
               <button
-                onClick={() => navigate('/auth?mode=login')}
+                onClick={() => navigate('/auth/login')}
                 className='text-sm text-primary hover:text-primary/80 transition-colors'
               >
                 ← Về trang đăng nhập

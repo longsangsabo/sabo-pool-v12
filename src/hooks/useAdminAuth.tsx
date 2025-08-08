@@ -15,7 +15,7 @@ export const useAdminAuth = () => {
   useEffect(() => {
     if (!authLoading && !adminLoading) {
       if (!user) {
-        navigate('/auth?mode=login&redirect=/admin');
+        navigate('/auth/login?redirect=/admin');
       } else if (isAdmin === false) {
         // Temporary bypass for admin emails during debug
         const isAdminEmail =

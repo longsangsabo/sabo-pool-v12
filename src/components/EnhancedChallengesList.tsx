@@ -3,6 +3,7 @@ import { Clock, Trophy, MapPin, Users, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useEnhancedChallenges } from '@/hooks/useEnhancedChallenges';
 import { Challenge } from '@/types/challenge'; // Use the comprehensive challenge types
@@ -125,6 +126,7 @@ const EnhancedChallengesList = () => {
     );
   }
 
+  const navigate = useNavigate();
   return (
     <div className='space-y-6'>
       {/* Daily Challenge Stats */}
@@ -168,7 +170,7 @@ const EnhancedChallengesList = () => {
             <CardContent className='p-8 text-center'>
               <Trophy className='w-12 h-12 text-gray-300 mx-auto mb-4' />
               <p className='text-gray-500 mb-4'>Chưa có thách đấu nào</p>
-              <Button onClick={() => (window.location.href = '/discovery')}>
+              <Button onClick={() => navigate('/discovery')}>
                 Tìm đối thủ
               </Button>
             </CardContent>

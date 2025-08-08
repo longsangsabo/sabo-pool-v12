@@ -32,10 +32,16 @@ export const emergencyAuthRecovery = () => {
 
     console.log('✅ Emergency auth recovery completed');
 
-    // Force redirect to auth page
-    setTimeout(() => {
-      window.location.href = '/auth?recovery=true';
-    }, 500);
+    // Previously forced redirect to /auth?recovery=true (gây khó chịu người dùng)
+    // Thay bằng emit sự kiện để UI có thể hiển thị thông báo và mở modal đăng nhập ngay tại trang hiện tại.
+    try {
+      const recoveryEvent = new CustomEvent('auth-recovery', { detail: { ts: Date.now() } });
+      window.dispatchEvent(recoveryEvent);
+      console.log('📣 Dispatched auth-recovery event (no hard redirect)');
+    } catch (evtErr) {
+      console.warn('Event dispatch failed, fallback soft reload');
+      setTimeout(() => window.location.reload(), 800);
+    }
   } catch (error) {
     console.error('❌ Emergency auth recovery failed:', error);
     // Force reload as last resort

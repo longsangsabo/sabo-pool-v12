@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
@@ -7,6 +7,7 @@ import { SEOHead } from '@/components/SEOHead';
 
 const PaymentResultPage = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [countdown, setCountdown] = useState(10);
 
   const status = searchParams.get('status');
@@ -17,7 +18,7 @@ const PaymentResultPage = () => {
       setCountdown(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          window.location.href = '/dashboard/membership';
+          navigate('/dashboard/membership');
           return 0;
         }
         return prev - 1;

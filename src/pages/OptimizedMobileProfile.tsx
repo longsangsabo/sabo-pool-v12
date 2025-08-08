@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
 import { useAvatar } from '@/contexts/AvatarContext';
@@ -61,6 +62,7 @@ interface ProfileData {
 }
 
 const OptimizedMobileProfile = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { theme } = useTheme();
   const {
@@ -718,7 +720,7 @@ const OptimizedMobileProfile = () => {
                     <Button 
                       variant='outline' 
                       size='sm'
-                      onClick={() => (window.location.href = '/club-registration')}
+                      onClick={() => navigate('/club-registration')}
                     >
                       <Building className='w-4 h-4 mr-2' />
                       Đăng ký CLB mới

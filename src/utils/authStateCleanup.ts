@@ -56,9 +56,15 @@ export const robustSignOut = async () => {
   } catch (error) {
     console.warn('⚠️ Sign out error (will continue):', error);
   } finally {
-    // Always force page refresh for clean state
-    console.log('🔄 Forcing page refresh...');
-    window.location.href = '/auth';
+    // Thay vì luôn redirect, phát sự kiện để UI quyết định (giữ nguyên context nếu cần)
+    try {
+      const evt = new CustomEvent('auth-signed-out', { detail: { ts: Date.now() } });
+      window.dispatchEvent(evt);
+      console.log('� Dispatched auth-signed-out event (no forced redirect)');
+    } catch (e) {
+      console.warn('Event dispatch failed, fallback soft reload');
+      setTimeout(() => window.location.reload(), 600);
+    }
   }
 };
 
@@ -87,9 +93,9 @@ export const robustSignIn = async (signInFunction: () => Promise<any>) => {
     }
 
     if (result.data?.user) {
-      console.log('✅ Sign in successful, refreshing page...');
-      // Force page refresh for clean state
-      window.location.href = '/dashboard';
+      console.log('✅ Sign in successful (no forced redirect). Emitting event.');
+      const evt = new CustomEvent('auth-signed-in', { detail: { user: result.data.user } });
+      window.dispatchEvent(evt);
     }
 
     return result;

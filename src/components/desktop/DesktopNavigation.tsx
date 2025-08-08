@@ -19,7 +19,7 @@ const navigationItems = [
   { name: 'Trang chủ', href: '/', icon: Home },
   { name: 'Giải đấu', href: '/tournaments', icon: Trophy },
   { name: 'Thách đấu', href: '/challenges', icon: Swords },
-  { name: 'Cộng đồng', href: '/social-feed', icon: Heart },
+  { name: 'Cộng đồng', href: '/community', icon: Heart },
   { name: 'Lịch', href: '/calendar', icon: Calendar },
   { name: 'Bảng xếp hạng', href: '/leaderboard', icon: BarChart3 },
   { name: 'Marketplace', href: '/enhanced-marketplace', icon: Store },

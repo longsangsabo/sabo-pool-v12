@@ -13,6 +13,10 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Performance tracking context
+  let actionName = 'unknown';
+  const perfStart = Date.now();
+
   try {
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -21,6 +25,7 @@ serve(async (req) => {
     );
 
     const { action, params } = await req.json();
+    actionName = action;
 
     let result: any = null;
 
@@ -115,11 +120,41 @@ serve(async (req) => {
         throw new Error(`Unknown action: ${action}`);
     }
 
+    try {
+      await supabase.from('automation_performance_log').insert({
+        automation_type: actionName,
+        success: true,
+        execution_time_ms: Date.now() - perfStart,
+        details: result,
+      });
+    } catch (logErr) {
+      console.error('perf log (success) failed:', logErr);
+    }
+
     return new Response(JSON.stringify({ ...result, timestamp: new Date().toISOString() }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error: any) {
     console.error('tournament-automation error:', error);
+
+    // Best-effort failure logging
+    try {
+      const supa = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+        { auth: { autoRefreshToken: false, persistSession: false } }
+      );
+      await supa.from('automation_performance_log').insert({
+        automation_type: actionName,
+        success: false,
+        execution_time_ms: Math.max(0, Date.now() - perfStart),
+        error_message: error?.message || String(error),
+        details: { error: error?.message || 'unknown' },
+      });
+    } catch (logErr) {
+      console.error('perf log (error) failed:', logErr);
+    }
+
     return new Response(
       JSON.stringify({ success: false, error: error.message, timestamp: new Date().toISOString() }),
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

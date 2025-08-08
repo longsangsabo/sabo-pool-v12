@@ -1,4 +1,3 @@
-import { TournamentRewards } from '@/types/tournament-extended';
 import { RankCode } from '@/utils/eloConstants';
 
 export interface TournamentRewardsCalculation {
@@ -27,11 +26,11 @@ export const calculateRewardsFromTiers = async (
   tournament: any,
   prizeTiers?: any[]
 ): Promise<TournamentRewardsCalculation> => {
-  console.log('🔍 calculateRewardsFromTiers input:', {
+  // console.log('🔍 calculateRewardsFromTiers input:', {
     tournament_id: tournament?.id,
     prize_pool: tournament?.prize_pool,
     prizeTiers: prizeTiers?.length,
-  });
+  // });
 
   // Get total prize from tournament or calculate
   let totalPrize = 0;

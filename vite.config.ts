@@ -1,35 +1,34 @@
-import { defineConfig } from "vite";
+import { defineConfig, PluginOption } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const plugins = [react()];
-  
-  // Only load optional plugins when needed
+  const plugins: PluginOption[] = [react()];
+
   if (mode === 'development') {
-    // Dynamically import componentTagger only in development
-    try {
-      const { componentTagger } = require("lovable-tagger");
-      plugins.push(componentTagger());
-    } catch (e) {
-      console.warn("lovable-tagger not available, skipping");
-    }
+    import('lovable-tagger')
+      .then(mod => {
+        if (mod.componentTagger) plugins.push(mod.componentTagger());
+      })
+      .catch(() => {});
   }
-  
+
   if (mode === 'analyze') {
-    // Dynamically import visualizer only when analyzing
-    try {
-      const { visualizer } = require('rollup-plugin-visualizer');
-      plugins.push(visualizer({
-        filename: 'dist/stats.html',
-        open: true,
-        gzipSize: true,
-        brotliSize: true,
-      }));
-    } catch (e) {
-      console.warn("rollup-plugin-visualizer not available, skipping");
-    }
+    import('rollup-plugin-visualizer')
+      .then(mod => {
+        if (mod.visualizer) {
+          plugins.push(
+            mod.visualizer({
+              filename: 'dist/stats.html',
+              open: true,
+              gzipSize: true,
+              brotliSize: true,
+            })
+          );
+        }
+      })
+      .catch(() => {});
   }
 
   return {
@@ -54,7 +53,7 @@ export default defineConfig(({ mode }) => {
           // manualChunks: undefined, // Explicitly disable manual chunking
           
           // Ensure proper asset file naming
-          assetFileNames: (assetInfo) => {
+          assetFileNames: (assetInfo: any) => {
             const info = assetInfo.name?.split('.') || [];
             const ext = info[info.length - 1];
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {

@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from '@/components/ui/sonner';
@@ -13,6 +13,8 @@ import { PublicRoute } from '@/components/auth/PublicRoute';
 import { AdminRoute } from '@/components/auth/AdminRoute';
 import MainLayout from '@/components/MainLayout';
 import { useRealtimeNotifications } from '@/hooks/useRealtimeNotifications';
+import { OfflineIndicator } from '@/components/pwa/OfflineIndicator';
+import { ReAuthModal } from '@/components/auth/ReAuthModal';
 
 // ✅ Import debug utilities for tournament refresh
 import '@/utils/debugTournamentRefresh';
@@ -105,12 +107,20 @@ const AppContent = () => {
     return <>{children}</>;
   };
 
+  // Landing route component to handle root path redirection
+  const LandingRoute: React.FC = () => {
+    const { user, session, loading } = useAuth();
+    if (loading) return <div className='p-8 text-center'>Đang tải...</div>;
+    if (user && session) return <Navigate to='/dashboard' replace />;
+    return <HomePage />;
+  };
+
   return (
     <div className='min-h-screen bg-background'>
       <Suspense fallback={<AppLoadingFallback />}>
         <Routes>
           {/* Public routes - no authentication required */}
-          <Route path='/' element={<HomePage />} />
+          <Route path='/' element={<LandingRoute />} />
           <Route path='/about' element={<AboutPage />} />
           <Route path='/contact' element={<ContactPage />} />
           <Route path='/privacy' element={<PrivacyPolicyPage />} />
@@ -221,6 +231,7 @@ const AppContent = () => {
       </Suspense>
       {/* ✅ Render notification popup */}
       <PopupComponent />
+      <OfflineIndicator />
     </div>
   );
 };
@@ -238,6 +249,7 @@ const App = () => {
           <Router>
             <CombinedProviders>
               <AppContent />
+              <ReAuthModal />
             </CombinedProviders>
             <Toaster />
           </Router>

@@ -72,25 +72,27 @@ const renderWithRouter = (component: React.ReactElement) => {
 
 describe('TournamentCard', () => {
   test('renders tournament information correctly', () => {
+    const fixedDate = '2024-12-01T00:00:00Z';
+    const tournament = TournamentAdapter.createMockEnhanced({
+      tournament_start: fixedDate,
+      max_participants: 32,
+      current_participants: 0,
+      entry_fee: 100000,
+      prize_pool: 1000000,
+    } as any);
     const { getByText } = renderWithRouter(
-      <TournamentCard
-        tournament={TournamentAdapter.createMockEnhanced()}
-        onView={() => {}}
-      />
+      <TournamentCard tournament={tournament} onView={() => {}} />
     );
 
     expect(getByText('Test Tournament')).toBeInTheDocument();
     expect(getByText('Test tournament description')).toBeInTheDocument();
-    expect(getByText('1,000,000 VND')).toBeInTheDocument();
+    expect(getByText('1.0M VND')).toBeInTheDocument();
     expect(getByText('32 người')).toBeInTheDocument();
   });
 
   test('shows registration open status', () => {
     const { getByText } = renderWithRouter(
-      <TournamentCard
-        tournament={TournamentAdapter.createMockEnhanced()}
-        onView={() => {}}
-      />
+      <TournamentCard tournament={TournamentAdapter.createMockEnhanced()} onView={() => {}} />
     );
 
     expect(getByText('Đang mở đăng ký')).toBeInTheDocument();
@@ -110,13 +112,15 @@ describe('TournamentCard', () => {
   });
 
   test('displays correct date format', () => {
+    const fixedDate = '2024-12-01T00:00:00Z';
+    const tournament = TournamentAdapter.createMockEnhanced({
+      tournament_start: fixedDate,
+    } as any);
     const { getByText } = renderWithRouter(
-      <TournamentCard
-        tournament={TournamentAdapter.createMockEnhanced()}
-        onView={() => {}}
-      />
+      <TournamentCard tournament={tournament} onView={() => {}} />
     );
 
-    expect(getByText(/1\/12\/2024/)).toBeInTheDocument();
+    // vi-VN full date: '1 tháng 12, 2024'
+    expect(getByText('1 tháng 12, 2024')).toBeInTheDocument();
   });
 });

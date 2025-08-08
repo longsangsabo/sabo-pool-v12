@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { Loader2, Shield } from 'lucide-react';
@@ -13,6 +13,7 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const loading = authLoading || adminLoading;
 
@@ -51,14 +52,27 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
             </div>
             <CardTitle className='text-xl'>Không Có Quyền Truy Cập</CardTitle>
           </CardHeader>
-          <CardContent className='text-center'>
-            <p className='text-muted-foreground mb-4'>
+          <CardContent className='text-center space-y-4'>
+            <p className='text-muted-foreground'>
               Bạn cần quyền admin để truy cập trang này.
             </p>
-            <p className='text-xs text-muted-foreground mb-4'>
-              Email: {user?.email} | Admin: {isAdmin ? 'Yes' : 'No'}
+            <p className='text-xs text-muted-foreground'>
+              Email: {user?.email}
             </p>
-            <Navigate to='/dashboard' replace />
+            <div className='flex gap-2 justify-center'>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className='text-sm underline'
+              >
+                Về Dashboard
+              </button>
+              <button
+                onClick={() => navigate('/')}
+                className='text-sm underline'
+              >
+                Trang chủ
+              </button>
+            </div>
           </CardContent>
         </Card>
       </div>

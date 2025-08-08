@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { setupAuthMonitoring } from '@/utils/authRecovery';
+import { useTokenRefresh } from '@/hooks/useTokenRefresh';
 
 interface AuthState {
   user: User | null;
@@ -175,6 +176,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       subscription.unsubscribe();
     };
   }, []);
+
+  // Proactive token refresh to avoid sudden expiry redirects
+  useTokenRefresh(authState.session);
 
   const signOut = async (): Promise<void> => {
     try {

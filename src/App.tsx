@@ -135,16 +135,14 @@ const AppContent = () => {
           />
           <Route path='/auth/callback' element={<AuthCallbackPage />} />
 
-          {/* Protected routes with MainLayout - these will show the sidebar */}
+          {/* Protected routes with MainLayout - layout route without path to avoid overriding public home */}
           <Route
-            path='/'
             element={
               <ProtectedRoute>
                 <MainLayout />
               </ProtectedRoute>
             }
           >
-            <Route index element={<Dashboard />} />
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='profile' element={<Profile />} />
             <Route path='challenges' element={<EnhancedChallengesPageV2 />} />

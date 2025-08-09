@@ -27,6 +27,6 @@ export const useClubNavigation = () => {
     navigateToClubManagement,
     navigateToClubDashboard,
     isClubOwner,
-    clubProfile
+    clubProfile,
   };
 };

@@ -92,7 +92,10 @@ describe('TournamentCard', () => {
 
   test('shows registration open status', () => {
     const { getByText } = renderWithRouter(
-      <TournamentCard tournament={TournamentAdapter.createMockEnhanced()} onView={() => {}} />
+      <TournamentCard
+        tournament={TournamentAdapter.createMockEnhanced()}
+        onView={() => {}}
+      />
     );
 
     expect(getByText('Đang mở đăng ký')).toBeInTheDocument();

@@ -7,11 +7,7 @@ interface ClubOwnerAutoRedirectProps {
   children: React.ReactNode;
 }
 
-const CLUB_MANAGEMENT_ROUTES = [
-  '/club-management',
-  '/club',
-  '/clubs'
-];
+const CLUB_MANAGEMENT_ROUTES = ['/club-management', '/club', '/clubs'];
 
 const EXCLUDED_ROUTES = [
   '/login',
@@ -20,10 +16,12 @@ const EXCLUDED_ROUTES = [
   '/auth',
   '/challenges',
   '/tournaments',
-  '/dashboard'
+  '/dashboard',
 ];
 
-export const ClubOwnerAutoRedirect: React.FC<ClubOwnerAutoRedirectProps> = ({ children }) => {
+export const ClubOwnerAutoRedirect: React.FC<ClubOwnerAutoRedirectProps> = ({
+  children,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -33,10 +31,10 @@ export const ClubOwnerAutoRedirect: React.FC<ClubOwnerAutoRedirectProps> = ({ ch
     if (loading || !user) return;
 
     const currentPath = location.pathname;
-    const isOnExcludedRoute = EXCLUDED_ROUTES.some(route => 
+    const isOnExcludedRoute = EXCLUDED_ROUTES.some(route =>
       currentPath.startsWith(route)
     );
-    const isOnClubRoute = CLUB_MANAGEMENT_ROUTES.some(route => 
+    const isOnClubRoute = CLUB_MANAGEMENT_ROUTES.some(route =>
       currentPath.startsWith(route)
     );
 

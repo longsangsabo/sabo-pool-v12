@@ -24,7 +24,9 @@ export const CountdownChip = ({
         <AlertCircle
           className={`${size === 'sm' ? 'w-3 h-3' : 'w-4 h-4'} text-red-500`}
         />
-        <span className='font-medium text-red-600 dark:text-red-400'>Hết hạn</span>
+        <span className='font-medium text-red-600 dark:text-red-400'>
+          Hết hạn
+        </span>
       </div>
     );
   }
@@ -32,7 +34,8 @@ export const CountdownChip = ({
   return (
     <div
       className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border ${
-        info.bgColor || 'bg-slate-100 dark:bg-slate-800/50 border-slate-300 dark:border-slate-600'
+        info.bgColor ||
+        'bg-slate-100 dark:bg-slate-800/50 border-slate-300 dark:border-slate-600'
       } ${size === 'sm' ? 'text-xs' : 'text-sm'} ${info.urgent ? 'animate-pulse' : ''}`}
     >
       <Clock

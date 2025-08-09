@@ -19,7 +19,10 @@ export const ReAuthModal: React.FC = () => {
     if (!email || !password) return;
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       if (error) {
         toast.error('Đăng nhập lại thất bại');
       } else {
@@ -36,7 +39,9 @@ export const ReAuthModal: React.FC = () => {
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4'>
       <div className='bg-background border rounded-lg shadow-xl w-full max-w-sm p-6 space-y-4'>
         <h2 className='text-lg font-semibold'>Phiên đăng nhập đã hết hạn</h2>
-        <p className='text-sm text-muted-foreground'>Đăng nhập lại để tiếp tục thao tác mà không mất ngữ cảnh.</p>
+        <p className='text-sm text-muted-foreground'>
+          Đăng nhập lại để tiếp tục thao tác mà không mất ngữ cảnh.
+        </p>
         <form onSubmit={handleLogin} className='space-y-3'>
           <div>
             <input
@@ -75,7 +80,11 @@ export const ReAuthModal: React.FC = () => {
           </div>
           <button
             type='button'
-            onClick={() => (window.location.href = '/auth?redirect=' + encodeURIComponent(window.location.pathname))}
+            onClick={() =>
+              (window.location.href =
+                '/auth?redirect=' +
+                encodeURIComponent(window.location.pathname))
+            }
             className='w-full text-xs underline text-muted-foreground hover:text-foreground'
           >
             Chuyển đến trang đăng nhập đầy đủ

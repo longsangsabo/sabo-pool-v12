@@ -30,7 +30,9 @@ export const ArenaLogo: React.FC<ArenaLogoProps> = ({
       >
         <span className='text-xl drop-shadow-sm'>AR</span>
       </div>
-      <div className='mt-2 text-xs font-medium text-muted-foreground'>{subtitle}</div>
+      <div className='mt-2 text-xs font-medium text-muted-foreground'>
+        {subtitle}
+      </div>
     </div>
   );
 };

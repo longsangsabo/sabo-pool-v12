@@ -146,7 +146,10 @@ const OptimizedMobileProfile: React.FC = () => {
             </div>
           )}
           {activeTab === 'club' && (
-            <ClubSection theme={theme as 'light' | 'dark'} role={profile.role} />
+            <ClubSection
+              theme={theme as 'light' | 'dark'}
+              role={profile.role}
+            />
           )}
         </CardContent>
       </Card>

@@ -18,7 +18,7 @@ export const PullToRefreshIndicator = ({ state }: { state: PullState }) => {
     <div
       className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-200'
       style={{
-        transform: `translate(-50%, ${Math.max(-30, currentY - 50)}px)` ,
+        transform: `translate(-50%, ${Math.max(-30, currentY - 50)}px)`,
         opacity: Math.max(0.3, progress),
       }}
     >
@@ -32,8 +32,8 @@ export const PullToRefreshIndicator = ({ state }: { state: PullState }) => {
           {isRefreshing
             ? 'Đang làm mới...'
             : progress >= 1
-            ? 'Thả để làm mới'
-            : 'Kéo để làm mới'}
+              ? 'Thả để làm mới'
+              : 'Kéo để làm mới'}
         </span>
       </div>
     </div>

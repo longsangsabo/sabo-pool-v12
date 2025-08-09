@@ -1,5 +1,10 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from '@/components/ui/sonner';
@@ -165,8 +170,14 @@ const AppContent = () => {
             }
           />
           {/* Friendly redirects for legacy paths */}
-          <Route path='/login' element={<Navigate to='/auth/login' replace />} />
-          <Route path='/register' element={<Navigate to='/auth/register' replace />} />
+          <Route
+            path='/login'
+            element={<Navigate to='/auth/login' replace />}
+          />
+          <Route
+            path='/register'
+            element={<Navigate to='/auth/register' replace />}
+          />
           <Route
             path='/auth/forgot-password'
             element={

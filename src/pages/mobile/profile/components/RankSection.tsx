@@ -8,7 +8,10 @@ interface RankSectionProps {
   theme: 'light' | 'dark';
 }
 
-export const RankSection: React.FC<RankSectionProps> = ({ onOpenRequest, theme }) => {
+export const RankSection: React.FC<RankSectionProps> = ({
+  onOpenRequest,
+  theme,
+}) => {
   return (
     <div className='space-y-4'>
       <RankRegistrationForm />
@@ -20,8 +23,11 @@ export const RankSection: React.FC<RankSectionProps> = ({ onOpenRequest, theme }
       >
         <Award className='w-4 h-4 mr-2' /> Gửi yêu cầu thay đổi hạng
       </Button>
-      <p className={`text-xs ${theme === 'dark' ? 'text-slate-400':'text-slate-500'}`}>
-        Bạn có thể gửi yêu cầu nếu thứ hạng thực tế đã thay đổi hoặc cần xác thực lại.
+      <p
+        className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}
+      >
+        Bạn có thể gửi yêu cầu nếu thứ hạng thực tế đã thay đổi hoặc cần xác
+        thực lại.
       </p>
     </div>
   );

@@ -49,7 +49,7 @@ export const advanceWinner = async (
       };
     }
 
-  // console.log('✅ Successfully advanced winner:', data);
+    // console.log('✅ Successfully advanced winner:', data);
     return {
       success: true,
       data: data,
@@ -92,7 +92,7 @@ export const fixAllTournamentProgression = async (
       };
     }
 
-  // console.log('✅ Tournament progression fixed:', data);
+    // console.log('✅ Tournament progression fixed:', data);
     return {
       success: true,
       data: data,

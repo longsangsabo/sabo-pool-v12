@@ -25,7 +25,6 @@ import CreateChallengeButton from '@/components/CreateChallengeButton';
 import TrustScoreBadge from '@/components/TrustScoreBadge';
 import CompactStatCard from '@/components/challenges/CompactStatCard';
 import { CompletedChallengeCard } from '@/components/challenges/CompletedChallengeCard';
-import { OpenChallengeCard } from '@/components/challenges/OpenChallengeCard';
 import LiveMatchCard from '@/components/challenges/LiveMatchCard';
 import LiveActivityFeed from '@/components/challenges/LiveActivityFeed';
 
@@ -84,7 +83,7 @@ const EnhancedChallengesPageV2: React.FC = () => {
   // Hook để lấy matches từ challenges đã được accept
   const [matchesData, setMatchesData] = useStateForMatches<any[]>([]);
   const [loadingMatches, setLoadingMatches] = useState(false);
-  const [activeTab, setActiveTab] = useState('all-cards');
+  const [activeTab, setActiveTab] = useState('community-challenges');
   const [challengeTypeFilter, setChallengeTypeFilter] = useState<
     'all' | 'standard' | 'sabo'
   >('all');
@@ -172,15 +171,18 @@ const EnhancedChallengesPageV2: React.FC = () => {
     let won = 0;
     let lost = 0;
     completedChallenges.forEach(c => {
-      const challengerFinal = c.challenger_final_score ?? c.challenger_score ?? 0;
+      const challengerFinal =
+        c.challenger_final_score ?? c.challenger_score ?? 0;
       const opponentFinal = c.opponent_final_score ?? c.opponent_score ?? 0;
       let winnerId: string | null = null;
       if (challengerFinal !== opponentFinal) {
-        winnerId = challengerFinal > opponentFinal ? c.challenger_id : c.opponent_id;
+        winnerId =
+          challengerFinal > opponentFinal ? c.challenger_id : c.opponent_id;
       }
       if (winnerId) {
         if (winnerId === user?.id) won += 1;
-        else if (c.challenger_id === user?.id || c.opponent_id === user?.id) lost += 1;
+        else if (c.challenger_id === user?.id || c.opponent_id === user?.id)
+          lost += 1;
       }
     });
     const totalCompleted = completedChallenges.length;
@@ -191,7 +193,8 @@ const EnhancedChallengesPageV2: React.FC = () => {
       completed: totalCompleted,
       won,
       lost,
-      winRate: totalCompleted > 0 ? Math.round((won / totalCompleted) * 100) : 0,
+      winRate:
+        totalCompleted > 0 ? Math.round((won / totalCompleted) * 100) : 0,
     };
   })();
 
@@ -407,82 +410,6 @@ const EnhancedChallengesPageV2: React.FC = () => {
   const handleChallengeClick = (challenge: any) => {
     setSelectedChallenge(challenge);
     setShowDetailsModal(true);
-  };
-
-  const renderChallengeCard = (challenge: any) => {
-    const isChallenger = user?.id === challenge.challenger_id;
-    const canRespond = !isChallenger && challenge.status === 'pending';
-
-    // Get associated match for this challenge
-    const associatedMatch = getMatchForChallenge(challenge.id);
-    const hasMatch = !!associatedMatch;
-    const canAcceptMatch =
-      hasMatch && associatedMatch.status === 'scheduled' && isChallenger;
-
-    const handleAction = async (
-      challengeId: string,
-      action: 'accept' | 'decline' | 'cancel' | 'view'
-    ) => {
-      switch (action) {
-        case 'accept':
-          await acceptChallenge(challengeId);
-          break;
-        case 'decline':
-          await declineChallenge(challengeId);
-          break;
-        case 'view':
-        default:
-          handleChallengeClick(challenge);
-          break;
-      }
-    };
-
-    // Convert status to UnifiedChallengeCard format
-    const getUnifiedStatus = (status: string) => {
-      switch (status) {
-        case 'pending':
-          return challenge.opponent_id ? 'pending' : 'open';
-        case 'accepted':
-          return 'ongoing';
-        case 'completed':
-          return 'completed';
-        default:
-          return 'pending';
-      }
-    };
-
-    return (
-      <div key={challenge.id} onClick={() => handleChallengeClick(challenge)}>
-        <UnifiedChallengeCard
-          challenge={{
-            ...challenge,
-            status: getUnifiedStatus(challenge.status),
-          }}
-          onJoin={
-            challenge.status === 'pending' && !challenge.opponent_id
-              ? handleJoinOpenChallenge
-              : undefined
-          }
-          onAction={handleAction}
-        />
-
-        {/* Additional match action button for accepted challenges */}
-        {canAcceptMatch && (
-          <div className='mt-2'>
-            <Button
-              size='sm'
-              onClick={e => {
-                e.stopPropagation();
-                handleAcceptMatch(associatedMatch.id);
-              }}
-              className='w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700'
-            >
-              Xác nhận trận đấu
-            </Button>
-          </div>
-        )}
-      </div>
-    );
   };
 
   const renderOpenChallengeCard = (challenge: any) => {
@@ -732,460 +659,418 @@ const EnhancedChallengesPageV2: React.FC = () => {
               </div>
             </div>
 
-            {/* Enhanced Tabs for Desktop */}
+            {/* Enhanced 2-Group Tab System */}
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
               className='space-y-6'
             >
-              <TabsList className='grid w-full grid-cols-6 bg-card/50 backdrop-blur-sm border border-border/50 p-1 rounded-lg shadow-sm h-12'>
+              <TabsList className='grid w-full grid-cols-2 bg-card/50 backdrop-blur-sm border border-border/50 p-1 rounded-lg shadow-sm h-14'>
+                <TabsTrigger
+                  value='community-challenges'
+                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-sm flex flex-col gap-1 py-2'
+                >
+                  <span className='flex items-center gap-2'>
+                    <Users className='w-4 h-4' />
+                    Thách đấu Cộng đồng
+                  </span>
+                  <span className='text-xs opacity-80'>
+                    Mở • Live • Kết quả gần đây
+                  </span>
+                </TabsTrigger>
                 <TabsTrigger
                   value='my-challenges'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
+                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-sm flex flex-col gap-1 py-2'
                 >
-                  Thách đấu của tôi (
-                  {getFilteredChallenges(myChallenges).length})
-                </TabsTrigger>
-                <TabsTrigger
-                  value='my-matches'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
-                >
-                  📊 Trận đấu ({getFilteredChallenges(myMatches).length})
-                </TabsTrigger>
-                <TabsTrigger
-                  value='active-challenges'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
-                >
-                  Đang diễn ra (
-                  {getFilteredChallenges(activeChallenges, true).length})
-                </TabsTrigger>
-                <TabsTrigger
-                  value='completed-challenges'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
-                >
-                  🏆 Hoàn thành (
-                  {getFilteredChallenges(completedChallenges).length})
-                </TabsTrigger>
-                <TabsTrigger
-                  value='open-challenges'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
-                >
-                  Mở ({getFilteredChallenges(openChallenges).length})
-                </TabsTrigger>
-                <TabsTrigger
-                  value='all-cards'
-                  className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200 font-medium text-xs'
-                >
-                  🎯 Tất cả Cards
+                  <span className='flex items-center gap-2'>
+                    <Target className='w-4 h-4' />
+                    Thách đấu của tôi
+                  </span>
+                  <span className='text-xs opacity-80'>
+                    Đang hoạt động • Lịch sử • Trận đấu
+                  </span>
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value='my-challenges' className='space-y-6'>
-                {getFilteredChallenges(myChallenges).length > 0 ? (
-                  <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                    {getFilteredChallenges(myChallenges).map(
-                      renderChallengeCard
-                    )}
+              {/* 🌐 COMMUNITY CHALLENGES TAB */}
+              <TabsContent value='community-challenges' className='space-y-8'>
+                <div className='space-y-6'>
+                  {/* Community Header */}
+                  <div className='text-center space-y-2'>
+                    <h2 className='text-2xl font-bold text-foreground flex items-center justify-center gap-3'>
+                      <Users className='w-7 h-7 text-primary' />
+                      Thách đấu Cộng đồng
+                    </h2>
+                    <p className='text-muted-foreground'>
+                      Tham gia cộng đồng billiards, xem trận đấu live và thách đấu mở
+                    </p>
                   </div>
-                ) : (
-                  <Card className='bg-gradient-to-br from-slate-50/50 to-gray-50/50 border border-border/50'>
-                    <CardContent className='p-16 text-center'>
-                      <div className='p-4 rounded-full bg-gradient-to-br from-primary/10 to-primary/20 w-fit mx-auto mb-6'>
-                        <Target className='w-16 h-16 text-primary mx-auto' />
-                      </div>
-                      <h3 className='text-xl font-semibold text-foreground mb-3'>
-                        Chưa có thách đấu nào
-                      </h3>
-                      <p className='text-muted-foreground mb-6 max-w-md mx-auto'>
-                        Tạo thách đấu đầu tiên của bạn để bắt đầu cuộc phiêu lưu
-                        billiards!
+
+                  {/* Section 1: Open Challenges */}
+                  <Card className='bg-gradient-to-br from-emerald-50/50 to-green-50/50 border border-emerald-200/30'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center gap-3 text-lg'>
+                        <Zap className='w-5 h-5 text-emerald-600' />
+                        Thách đấu Mở
+                        <Badge variant='secondary'>
+                          {getFilteredChallenges(openChallenges).length}
+                        </Badge>
+                      </CardTitle>
+                      <p className='text-sm text-muted-foreground'>
+                        Thách đấu ai cũng có thể tham gia
                       </p>
-                      <Button
-                        onClick={() => setShowCreateModal(true)}
-                        className='bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105'
-                      >
-                        <Plus className='w-4 h-4 mr-2' />
-                        🎯 Tạo thách đấu
-                      </Button>
+                    </CardHeader>
+                    <CardContent>
+                      {getFilteredChallenges(openChallenges).length > 0 ? (
+                        <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
+                          {getFilteredChallenges(openChallenges).map(
+                            renderOpenChallengeCard
+                          )}
+                        </div>
+                      ) : (
+                        <div className='text-center py-12'>
+                          <div className='p-4 rounded-full bg-gradient-to-br from-emerald-100 to-green-100 w-fit mx-auto mb-4'>
+                            <Users className='w-12 h-12 text-emerald-600 mx-auto' />
+                          </div>
+                          <h3 className='text-lg font-semibold text-foreground mb-2'>
+                            Chưa có thách đấu mở nào
+                          </h3>
+                          <p className='text-muted-foreground mb-4'>
+                            Hãy tạo thách đấu mở để mọi người có thể tham gia!
+                          </p>
+                          <Button
+                            onClick={() => setShowCreateModal(true)}
+                            className='bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
+                          >
+                            <Plus className='w-4 h-4 mr-2' />
+                            Tạo thách đấu mở
+                          </Button>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
-                )}
-              </TabsContent>
 
-              <TabsContent value='my-matches' className='space-y-6'>
-                {getFilteredChallenges(myMatches).length > 0 ? (
-                  <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                    {getFilteredChallenges(myMatches).map(challenge => (
-                      <UnifiedChallengeCard
-                        key={challenge.id}
-                        challenge={challenge}
-                        variant='match'
-                        currentUserId={user?.id || ''}
-                        onSubmitScore={handleSubmitScore}
-                        isSubmittingScore={isSubmittingScore}
-                        onAction={handleChallengeAction}
-                      />
-                    ))}
-                  </div>
-                ) : (
+                  {/* Section 2: Live Matches */}
+                  <Card className='bg-gradient-to-br from-red-50/50 to-orange-50/50 border border-red-200/30'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center gap-3 text-lg'>
+                        <div className='flex items-center gap-2'>
+                          <div className='w-3 h-3 bg-red-500 rounded-full animate-pulse'></div>
+                          <span>Trận đấu Live</span>
+                        </div>
+                        <Badge variant='destructive'>
+                          {getFilteredChallenges(activeChallenges, true).length}
+                        </Badge>
+                      </CardTitle>
+                      <p className='text-sm text-muted-foreground'>
+                        Các trận đấu đang diễn ra trong cộng đồng
+                      </p>
+                    </CardHeader>
+                    <CardContent>
+                      {getFilteredChallenges(activeChallenges, true).length > 0 ? (
+                        <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
+                          {getFilteredChallenges(activeChallenges, true).map(
+                            challenge => (
+                              <LiveMatchCard
+                                key={challenge.id}
+                                match={{
+                                  id: challenge.id,
+                                  player1: {
+                                    name: challenge.challenger_profile?.full_name || 'Unknown',
+                                    avatar: challenge.challenger_profile?.avatar_url || '',
+                                    rank: challenge.challenger_profile?.verified_rank || 'A',
+                                  },
+                                  player2: {
+                                    name: challenge.opponent_profile?.full_name || 'Unknown',
+                                    avatar: challenge.opponent_profile?.avatar_url || '',
+                                    rank: challenge.opponent_profile?.verified_rank || 'A',
+                                  },
+                                  score: {
+                                    player1: challenge.challenger_score || 0,
+                                    player2: challenge.opponent_score || 0,
+                                  },
+                                  raceToTarget: challenge.race_to || 8,
+                                  location: 'Pool Arena',
+                                  startTime: challenge.created_at,
+                                  betPoints: challenge.bet_points || 0,
+                                }}
+                                onWatch={id => console.log('Watch match:', id)}
+                              />
+                            )
+                          )}
+                        </div>
+                      ) : (
+                        <div className='text-center py-12'>
+                          <div className='p-4 rounded-full bg-gradient-to-br from-red-100 to-orange-100 w-fit mx-auto mb-4'>
+                            <Zap className='w-12 h-12 text-red-600 mx-auto' />
+                          </div>
+                          <h3 className='text-lg font-semibold text-foreground mb-2'>
+                            Không có trận đấu live nào
+                          </h3>
+                          <p className='text-muted-foreground'>
+                            Các trận đấu đang diễn ra sẽ hiển thị ở đây
+                          </p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Section 3: Recent Community Results */}
                   <Card className='bg-gradient-to-br from-blue-50/50 to-indigo-50/50 border border-blue-200/30'>
-                    <CardContent className='p-16 text-center'>
-                      <div className='p-4 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 w-fit mx-auto mb-6'>
-                        <Trophy className='w-16 h-16 text-blue-600 mx-auto' />
-                      </div>
-                      <h3 className='text-xl font-semibold text-foreground mb-3'>
-                        Chưa có trận đấu nào
-                      </h3>
-                      <p className='text-muted-foreground max-w-md mx-auto'>
-                        Khi bạn chấp nhận thách đấu, trận đấu sẽ hiển thị ở đây
-                        để bạn có thể nhập tỷ số.
+                    <CardHeader>
+                      <CardTitle className='flex items-center gap-3 text-lg'>
+                        <Trophy className='w-5 h-5 text-blue-600' />
+                        Kết quả gần đây
+                        <Badge variant='outline'>
+                          {getFilteredChallenges(completedChallenges).length}
+                        </Badge>
+                      </CardTitle>
+                      <p className='text-sm text-muted-foreground'>
+                        Các thách đấu đã hoàn thành trong cộng đồng
                       </p>
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-
-              <TabsContent value='active-challenges' className='space-y-6'>
-                {getFilteredChallenges(activeChallenges, true).length > 0 ? (
-                  <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                    {getFilteredChallenges(activeChallenges, true).map(
-                      challenge => (
-                        <UnifiedChallengeCard
-                          key={challenge.id}
-                          challenge={challenge}
-                          variant='match'
-                          currentUserId={user?.id || ''}
-                          onSubmitScore={handleSubmitScore}
-                          isSubmittingScore={isSubmittingScore}
-                          onAction={handleChallengeAction}
-                        />
-                      )
-                    )}
-                  </div>
-                ) : (
-                  <Card className='bg-gradient-to-br from-amber-50/50 to-orange-50/50 border border-amber-200/30'>
-                    <CardContent className='p-16 text-center'>
-                      <div className='p-4 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 w-fit mx-auto mb-6'>
-                        <Zap className='w-16 h-16 text-amber-600 mx-auto' />
-                      </div>
-                      <h3 className='text-xl font-semibold text-foreground mb-3'>
-                        Không có trận đấu nào đang diễn ra
-                      </h3>
-                      <p className='text-muted-foreground max-w-md mx-auto'>
-                        Các trận đấu đã được chấp nhận sẽ hiển thị ở đây. Hãy
-                        chấp nhận một thách đấu để bắt đầu!
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-
-              <TabsContent value='completed-challenges' className='space-y-6'>
-                {getFilteredChallenges(completedChallenges).length > 0 ? (
-                  <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                    {getFilteredChallenges(completedChallenges).map(
-                      challenge => (
-                        <CompletedChallengeCard
-                          key={challenge.id}
-                          challenge={challenge}
-                          onView={() => handleChallengeClick(challenge)}
-                        />
-                      )
-                    )}
-                  </div>
-                ) : (
-                  <Card className='bg-gradient-to-br from-purple-50/50 to-violet-50/50 border border-purple-200/30'>
-                    <CardContent className='p-16 text-center'>
-                      <div className='p-4 rounded-full bg-gradient-to-br from-purple-100 to-violet-100 w-fit mx-auto mb-6'>
-                        <Trophy className='w-16 h-16 text-purple-600 mx-auto' />
-                      </div>
-                      <h3 className='text-xl font-semibold text-foreground mb-3'>
-                        Chưa có thách đấu nào hoàn thành
-                      </h3>
-                      <p className='text-muted-foreground max-w-md mx-auto'>
-                        Các thách đấu đã hoàn thành sẽ hiển thị ở đây để bạn có
-                        thể xem lại kết quả và thống kê.
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-
-              <TabsContent value='all-cards' className='space-y-8'>
-                <div className='space-y-8'>
-                  {/* Section 1: UnifiedChallengeCard (Match Variant) */}
-                  <div className='space-y-4'>
-                    <h3 className='text-lg font-semibold text-foreground flex items-center gap-2'>
-                      <Trophy className='w-5 h-5' />
-                      UnifiedChallengeCard (Match Variant)
-                    </h3>
-                    <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                      {challenges.slice(0, 3).map(challenge => (
-                        <div
-                          key={`unified-match-${challenge.id}`}
-                          className='space-y-2'
-                        >
-                          <Badge variant='outline' className='text-xs'>
-                            UnifiedChallengeCard (Match)
-                          </Badge>
-                          <UnifiedChallengeCard
-                            challenge={challenge}
-                            variant='match'
-                            currentUserId={user?.id || ''}
-                            onSubmitScore={handleSubmitScore}
-                            isSubmittingScore={isSubmittingScore}
-                            onAction={(id, action) =>
-                              handleChallengeAction(id, action)
-                            }
-                          />
+                    </CardHeader>
+                    <CardContent>
+                      {getFilteredChallenges(completedChallenges).length > 0 ? (
+                        <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
+                          {getFilteredChallenges(completedChallenges).slice(0, 6).map(
+                            challenge => (
+                              <CompletedChallengeCard
+                                key={challenge.id}
+                                challenge={challenge}
+                                onView={() => handleChallengeClick(challenge)}
+                              />
+                            )
+                          )}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Section 2: OpenChallengeCard */}
-                  <div className='space-y-4'>
-                    <h3 className='text-lg font-semibold text-foreground flex items-center gap-2'>
-                      <Users className='w-5 h-5' />
-                      OpenChallengeCard
-                    </h3>
-                    <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                      {openChallenges.slice(0, 3).map(challenge => (
-                        <div key={`open-${challenge.id}`} className='space-y-2'>
-                          <Badge variant='outline' className='text-xs'>
-                            OpenChallengeCard
-                          </Badge>
-                          <OpenChallengeCard
-                            challenge={challenge}
-                            onJoin={handleJoinOpenChallenge}
-                            currentUser={user}
-                          />
-                        </div>
-                      ))}
-                      {/* Demo card if no open challenges */}
-                      {openChallenges.length === 0 && (
-                        <div className='space-y-2'>
-                          <Badge variant='outline' className='text-xs'>
-                            OpenChallengeCard (Demo)
-                          </Badge>
-                          <Card className='p-6 border-dashed border-2 border-muted-foreground/20'>
-                            <div className='text-center'>
-                              <Users className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
-                              <p className='text-muted-foreground text-sm'>
-                                No open challenges available.
-                                <br />
-                                Create an open challenge to see this card in
-                                action!
-                              </p>
-                            </div>
-                          </Card>
+                      ) : (
+                        <div className='text-center py-12'>
+                          <div className='p-4 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 w-fit mx-auto mb-4'>
+                            <Trophy className='w-12 h-12 text-blue-600 mx-auto' />
+                          </div>
+                          <h3 className='text-lg font-semibold text-foreground mb-2'>
+                            Chưa có kết quả nào
+                          </h3>
+                          <p className='text-muted-foreground'>
+                            Các thách đấu hoàn thành sẽ hiển thị ở đây
+                          </p>
                         </div>
                       )}
-                    </div>
-                  </div>
-
-                  {/* Section 3: CompletedChallengeCard */}
-                  <div className='space-y-4'>
-                    <h3 className='text-lg font-semibold text-foreground flex items-center gap-2'>
-                      <Star className='w-5 h-5' />
-                      CompletedChallengeCard
-                    </h3>
-                    <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                      {completedChallenges.slice(0, 3).map(challenge => (
-                        <div
-                          key={`completed-${challenge.id}`}
-                          className='space-y-2'
-                        >
-                          <Badge variant='outline' className='text-xs'>
-                            CompletedChallengeCard
-                          </Badge>
-                          <CompletedChallengeCard
-                            challenge={challenge}
-                            onView={() => handleChallengeClick(challenge)}
-                          />
-                        </div>
-                      ))}
-                      {/* Demo card if no completed challenges */}
-                      {completedChallenges.length === 0 && (
-                        <div className='space-y-2'>
-                          <Badge variant='outline' className='text-xs'>
-                            CompletedChallengeCard (Demo)
-                          </Badge>
-                          <Card className='p-6 border-dashed border-2 border-muted-foreground/20'>
-                            <div className='text-center'>
-                              <Star className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
-                              <p className='text-muted-foreground text-sm'>
-                                No completed challenges yet.
-                                <br />
-                                Complete some challenges to see this card!
-                              </p>
-                            </div>
-                          </Card>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Section 4: LiveMatchCard */}
-                  <div className='space-y-4'>
-                    <h3 className='text-lg font-semibold text-foreground flex items-center gap-2'>
-                      <Zap className='w-5 h-5' />
-                      LiveMatchCard (Demo Data)
-                    </h3>
-                    <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                      {/* LiveMatchCard Demo 1 */}
-                      <div className='space-y-2'>
-                        <Badge variant='outline' className='text-xs'>
-                          LiveMatchCard
-                        </Badge>
-                        <LiveMatchCard
-                          match={{
-                            id: 'demo-live-1',
-                            player1: {
-                              name: 'Nguyễn Văn A',
-                              avatar: '',
-                              rank: 'Pro',
-                            },
-                            player2: {
-                              name: 'Trần Văn B',
-                              avatar: '',
-                              rank: 'Expert',
-                            },
-                            score: {
-                              player1: 3,
-                              player2: 2,
-                            },
-                            raceToTarget: 5,
-                            location: 'Club Billiards VIP',
-                            startTime: new Date().toISOString(),
-                            betPoints: 100,
-                          }}
-                          onWatch={id => console.log('Watch match:', id)}
-                        />
-                      </div>
-
-                      {/* LiveMatchCard Demo 2 */}
-                      <div className='space-y-2'>
-                        <Badge variant='outline' className='text-xs'>
-                          LiveMatchCard
-                        </Badge>
-                        <LiveMatchCard
-                          match={{
-                            id: 'demo-live-2',
-                            player1: {
-                              name: 'Lê Thị C',
-                              avatar: '',
-                              rank: 'Master',
-                            },
-                            player2: {
-                              name: 'Phạm Văn D',
-                              avatar: '',
-                              rank: 'Pro',
-                            },
-                            score: {
-                              player1: 1,
-                              player2: 4,
-                            },
-                            raceToTarget: 7,
-                            location: 'Arena Premium',
-                            startTime: new Date(
-                              Date.now() - 1800000
-                            ).toISOString(),
-                            betPoints: 250,
-                          }}
-                          onWatch={id => console.log('Watch match:', id)}
-                        />
-                      </div>
-
-                      {/* LiveMatchCard Demo 3 */}
-                      <div className='space-y-2'>
-                        <Badge variant='outline' className='text-xs'>
-                          LiveMatchCard
-                        </Badge>
-                        <LiveMatchCard
-                          match={{
-                            id: 'demo-live-3',
-                            player1: {
-                              name: 'Hoàng Văn E',
-                              avatar: '',
-                              rank: 'Expert',
-                            },
-                            player2: {
-                              name: 'Vũ Thị F',
-                              avatar: '',
-                              rank: 'Advanced',
-                            },
-                            score: {
-                              player1: 6,
-                              player2: 6,
-                            },
-                            raceToTarget: 9,
-                            location: 'Elite Club',
-                            startTime: new Date(
-                              Date.now() - 3600000
-                            ).toISOString(),
-                            betPoints: 500,
-                          }}
-                          onWatch={id => console.log('Watch match:', id)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Instructions */}
-                  <Card className='bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200'>
-                    <CardContent className='p-6'>
-                      <h4 className='font-semibold text-blue-900 mb-3 flex items-center gap-2'>
-                        <Shield className='w-5 h-5' />
-                        Selected Card Components Overview
-                      </h4>
-                      <div className='text-sm text-blue-800 space-y-2'>
-                        <p>
-                          <strong>UnifiedChallengeCard (Match):</strong> Main
-                          card for match display with score submission
-                        </p>
-                        <p>
-                          <strong>OpenChallengeCard:</strong> For open
-                          challenges that players can join
-                        </p>
-                        <p>
-                          <strong>CompletedChallengeCard:</strong> Shows
-                          completed challenge results and winners
-                        </p>
-                        <p>
-                          <strong>LiveMatchCard:</strong> Real-time ongoing
-                          matches with live scores
-                        </p>
-                      </div>
                     </CardContent>
                   </Card>
                 </div>
               </TabsContent>
 
-              <TabsContent value='open-challenges' className='space-y-6'>
-                {getFilteredChallenges(openChallenges).length > 0 ? (
-                  <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
-                    {getFilteredChallenges(openChallenges).map(
-                      renderOpenChallengeCard
-                    )}
+              {/* 👤 MY CHALLENGES TAB */}
+              <TabsContent value='my-challenges' className='space-y-8'>
+                <div className='space-y-6'>
+                  {/* Personal Header */}
+                  <div className='text-center space-y-2'>
+                    <h2 className='text-2xl font-bold text-foreground flex items-center justify-center gap-3'>
+                      <Target className='w-7 h-7 text-primary' />
+                      Thách đấu của tôi
+                    </h2>
+                    <p className='text-muted-foreground'>
+                      Quản lý thách đấu cá nhân, xem lịch sử và tiến độ
+                    </p>
                   </div>
-                ) : (
-                  <Card className='bg-gradient-to-br from-emerald-50/50 to-green-50/50 border border-emerald-200/30'>
-                    <CardContent className='p-16 text-center'>
-                      <div className='p-4 rounded-full bg-gradient-to-br from-emerald-100 to-green-100 w-fit mx-auto mb-6'>
-                        <Users className='w-16 h-16 text-emerald-600 mx-auto' />
-                      </div>
-                      <h3 className='text-xl font-semibold text-foreground mb-3'>
-                        Không có thách đấu mở nào
-                      </h3>
-                      <p className='text-muted-foreground max-w-md mx-auto'>
-                        Các thách đấu mở từ người chơi khác sẽ hiển thị ở đây.
-                        Hãy kiểm tra lại sau!
+
+                  {/* Section 1: My Active Challenges */}
+                  <Card className='bg-gradient-to-br from-amber-50/50 to-orange-50/50 border border-amber-200/30'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center gap-3 text-lg'>
+                        <Zap className='w-5 h-5 text-amber-600' />
+                        Thách đấu đang hoạt động
+                        <Badge variant='secondary'>
+                          {getFilteredChallenges(activeChallenges, true).filter(c => 
+                            c.challenger_id === user?.id || c.opponent_id === user?.id
+                          ).length}
+                        </Badge>
+                      </CardTitle>
+                      <p className='text-sm text-muted-foreground'>
+                        Các thách đấu đã được chấp nhận và sẵn sàng thi đấu
                       </p>
+                    </CardHeader>
+                    <CardContent>
+                      {getFilteredChallenges(activeChallenges, true).filter(c => 
+                        c.challenger_id === user?.id || c.opponent_id === user?.id
+                      ).length > 0 ? (
+                        <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
+                          {getFilteredChallenges(activeChallenges, true)
+                            .filter(c => c.challenger_id === user?.id || c.opponent_id === user?.id)
+                            .map(challenge => (
+                              <UnifiedChallengeCard
+                                key={challenge.id}
+                                challenge={challenge}
+                                variant='match'
+                                currentUserId={user?.id || ''}
+                                onSubmitScore={handleSubmitScore}
+                                isSubmittingScore={isSubmittingScore}
+                                onAction={handleChallengeAction}
+                              />
+                            ))}
+                        </div>
+                      ) : (
+                        <div className='text-center py-12'>
+                          <div className='p-4 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 w-fit mx-auto mb-4'>
+                            <Zap className='w-12 h-12 text-amber-600 mx-auto' />
+                          </div>
+                          <h3 className='text-lg font-semibold text-foreground mb-2'>
+                            Không có thách đấu đang hoạt động
+                          </h3>
+                          <p className='text-muted-foreground'>
+                            Hãy tạo hoặc chấp nhận thách đấu để bắt đầu!
+                          </p>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
-                )}
+
+                  {/* Section 2: Pending Responses */}
+                  <Card className='bg-gradient-to-br from-yellow-50/50 to-amber-50/50 border border-yellow-200/30'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center gap-3 text-lg'>
+                        <Clock className='w-5 h-5 text-yellow-600' />
+                        Chờ phản hồi
+                        <Badge variant='outline'>
+                          {myChallenges.filter(c => c.status === 'pending').length}
+                        </Badge>
+                      </CardTitle>
+                      <p className='text-sm text-muted-foreground'>
+                        Thách đấu đang chờ bạn hoặc đối thủ phản hồi
+                      </p>
+                    </CardHeader>
+                    <CardContent>
+                      {myChallenges.filter(c => c.status === 'pending').length > 0 ? (
+                        <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
+                          {myChallenges
+                            .filter(c => c.status === 'pending')
+                            .map(challenge => (
+                              <UnifiedChallengeCard
+                                key={challenge.id}
+                                challenge={challenge}
+                                currentUserId={user?.id || ''}
+                                onAction={handleChallengeAction}
+                              />
+                            ))}
+                        </div>
+                      ) : (
+                        <div className='text-center py-12'>
+                          <div className='p-4 rounded-full bg-gradient-to-br from-yellow-100 to-amber-100 w-fit mx-auto mb-4'>
+                            <Clock className='w-12 h-12 text-yellow-600 mx-auto' />
+                          </div>
+                          <h3 className='text-lg font-semibold text-foreground mb-2'>
+                            Không có thách đấu chờ phản hồi
+                          </h3>
+                          <p className='text-muted-foreground'>
+                            Tất cả thách đấu đã được xử lý
+                          </p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Section 3: My Matches (Score Entry) */}
+                  <Card className='bg-gradient-to-br from-green-50/50 to-emerald-50/50 border border-green-200/30'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center gap-3 text-lg'>
+                        <Trophy className='w-5 h-5 text-green-600' />
+                        Trận đấu của tôi
+                        <Badge variant='outline'>
+                          {getFilteredChallenges(myMatches).length}
+                        </Badge>
+                      </CardTitle>
+                      <p className='text-sm text-muted-foreground'>
+                        Nhập điểm số và quản lý kết quả trận đấu
+                      </p>
+                    </CardHeader>
+                    <CardContent>
+                      {getFilteredChallenges(myMatches).length > 0 ? (
+                        <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
+                          {getFilteredChallenges(myMatches).map(challenge => (
+                            <UnifiedChallengeCard
+                              key={challenge.id}
+                              challenge={challenge}
+                              variant='match'
+                              currentUserId={user?.id || ''}
+                              onSubmitScore={handleSubmitScore}
+                              isSubmittingScore={isSubmittingScore}
+                              onAction={handleChallengeAction}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className='text-center py-12'>
+                          <div className='p-4 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 w-fit mx-auto mb-4'>
+                            <Trophy className='w-12 h-12 text-green-600 mx-auto' />
+                          </div>
+                          <h3 className='text-lg font-semibold text-foreground mb-2'>
+                            Chưa có trận đấu nào
+                          </h3>
+                          <p className='text-muted-foreground mb-4'>
+                            Khi bạn chấp nhận thách đấu, trận đấu sẽ hiển thị ở đây
+                          </p>
+                          <Button
+                            onClick={() => setShowCreateModal(true)}
+                            className='bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
+                          >
+                            <Plus className='w-4 h-4 mr-2' />
+                            Tạo thách đấu mới
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Section 4: My History */}
+                  <Card className='bg-gradient-to-br from-purple-50/50 to-violet-50/50 border border-purple-200/30'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center gap-3 text-lg'>
+                        <Star className='w-5 h-5 text-purple-600' />
+                        Lịch sử của tôi
+                        <Badge variant='outline'>
+                          {getFilteredChallenges(completedChallenges).filter(c =>
+                            c.challenger_id === user?.id || c.opponent_id === user?.id
+                          ).length}
+                        </Badge>
+                      </CardTitle>
+                      <p className='text-sm text-muted-foreground'>
+                        Tất cả thách đấu đã hoàn thành của bạn
+                      </p>
+                    </CardHeader>
+                    <CardContent>
+                      {getFilteredChallenges(completedChallenges).filter(c =>
+                        c.challenger_id === user?.id || c.opponent_id === user?.id
+                      ).length > 0 ? (
+                        <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
+                          {getFilteredChallenges(completedChallenges)
+                            .filter(c => c.challenger_id === user?.id || c.opponent_id === user?.id)
+                            .slice(0, 9)
+                            .map(challenge => (
+                              <CompletedChallengeCard
+                                key={challenge.id}
+                                challenge={challenge}
+                                onView={() => handleChallengeClick(challenge)}
+                              />
+                            ))}
+                        </div>
+                      ) : (
+                        <div className='text-center py-12'>
+                          <div className='p-4 rounded-full bg-gradient-to-br from-purple-100 to-violet-100 w-fit mx-auto mb-4'>
+                            <Star className='w-12 h-12 text-purple-600 mx-auto' />
+                          </div>
+                          <h3 className='text-lg font-semibold text-foreground mb-2'>
+                            Chưa có lịch sử thách đấu
+                          </h3>
+                          <p className='text-muted-foreground'>
+                            Hoàn thành thách đấu đầu tiên để xem lịch sử!
+                          </p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
               </TabsContent>
+
             </Tabs>
           </CardContent>
         </Card>

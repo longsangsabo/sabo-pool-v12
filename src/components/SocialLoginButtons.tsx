@@ -12,7 +12,9 @@ const SocialLoginButtons = () => {
     setSocialLoading('google');
     try {
       const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
-      const { data, error } = await supabase.auth.signInWithOAuth(OAUTH_CONFIGS.google);
+      const { data, error } = await supabase.auth.signInWithOAuth(
+        OAUTH_CONFIGS.google
+      );
 
       if (error) {
         console.error('Google login error:', error);
@@ -54,7 +56,9 @@ const SocialLoginButtons = () => {
     setSocialLoading('facebook');
     try {
       const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
-      const { data, error } = await supabase.auth.signInWithOAuth(OAUTH_CONFIGS.facebook);
+      const { data, error } = await supabase.auth.signInWithOAuth(
+        OAUTH_CONFIGS.facebook
+      );
 
       if (error) {
         console.error('Facebook login error:', error);

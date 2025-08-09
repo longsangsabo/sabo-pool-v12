@@ -11,34 +11,34 @@ export const AuthProgress: React.FC<AuthProgressProps> = ({
   step,
   totalSteps,
   currentStep,
-  className = ''
+  className = '',
 }) => {
   const progressPercentage = (step / totalSteps) * 100;
 
   return (
     <div className={`w-full max-w-md mx-auto mb-6 ${className}`}>
       {/* Step indicator */}
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-600 font-medium">
+      <div className='flex items-center justify-between mb-2'>
+        <span className='text-sm text-gray-600 font-medium'>
           Bước {step}/{totalSteps}
         </span>
-        <span className="text-sm font-semibold text-indigo-600">
+        <span className='text-sm font-semibold text-indigo-600'>
           {currentStep}
         </span>
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-        <div 
-          className="bg-gradient-to-r from-indigo-500 to-blue-600 h-2 rounded-full transition-all duration-500 ease-out"
+      <div className='w-full bg-gray-200 rounded-full h-2 overflow-hidden'>
+        <div
+          className='bg-gradient-to-r from-indigo-500 to-blue-600 h-2 rounded-full transition-all duration-500 ease-out'
           style={{ width: `${progressPercentage}%` }}
         />
       </div>
 
       {/* Step labels */}
-      <div className="flex justify-between mt-2 text-xs text-gray-500">
+      <div className='flex justify-between mt-2 text-xs text-gray-500'>
         {Array.from({ length: totalSteps }, (_, index) => (
-          <span 
+          <span
             key={index}
             className={`
               ${index + 1 <= step ? 'text-indigo-600 font-medium' : 'text-gray-400'}
@@ -63,11 +63,11 @@ interface AuthStepperProps {
 export const AuthStepper: React.FC<AuthStepperProps> = ({
   steps,
   currentStep,
-  className = ''
+  className = '',
 }) => {
   return (
     <div className={`w-full max-w-2xl mx-auto mb-8 ${className}`}>
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         {steps.map((stepLabel, index) => {
           const stepNumber = index + 1;
           const isActive = stepNumber === currentStep;
@@ -75,22 +75,31 @@ export const AuthStepper: React.FC<AuthStepperProps> = ({
           const isUpcoming = stepNumber > currentStep;
 
           return (
-            <div key={index} className="flex flex-col items-center flex-1">
+            <div key={index} className='flex flex-col items-center flex-1'>
               {/* Step circle */}
-              <div 
+              <div
                 className={`
                   w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300
-                  ${isCompleted 
-                    ? 'bg-green-500 text-white' 
-                    : isActive 
-                      ? 'bg-indigo-600 text-white ring-4 ring-indigo-200' 
-                      : 'bg-gray-200 text-gray-500'
+                  ${
+                    isCompleted
+                      ? 'bg-green-500 text-white'
+                      : isActive
+                        ? 'bg-indigo-600 text-white ring-4 ring-indigo-200'
+                        : 'bg-gray-200 text-gray-500'
                   }
                 `}
               >
                 {isCompleted ? (
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <svg
+                    className='w-4 h-4'
+                    fill='currentColor'
+                    viewBox='0 0 20 20'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+                      clipRule='evenodd'
+                    />
                   </svg>
                 ) : (
                   stepNumber
@@ -98,7 +107,7 @@ export const AuthStepper: React.FC<AuthStepperProps> = ({
               </div>
 
               {/* Step label */}
-              <span 
+              <span
                 className={`
                   mt-2 text-xs text-center font-medium transition-colors duration-300
                   ${isActive ? 'text-indigo-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}
@@ -109,7 +118,7 @@ export const AuthStepper: React.FC<AuthStepperProps> = ({
 
               {/* Connector line */}
               {index < steps.length - 1 && (
-                <div 
+                <div
                   className={`
                     absolute h-0.5 w-full mt-4 transition-colors duration-300
                     ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}
@@ -117,7 +126,7 @@ export const AuthStepper: React.FC<AuthStepperProps> = ({
                   style={{
                     left: '50%',
                     transform: 'translateX(50%)',
-                    zIndex: -1
+                    zIndex: -1,
                   }}
                 />
               )}
@@ -143,7 +152,7 @@ export const AuthCircularProgress: React.FC<AuthCircularProgressProps> = ({
   size = 80,
   strokeWidth = 8,
   className = '',
-  children
+  children,
 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -151,39 +160,37 @@ export const AuthCircularProgress: React.FC<AuthCircularProgressProps> = ({
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className={`relative inline-flex items-center justify-center ${className}`}>
-      <svg
-        width={size}
-        height={size}
-        className="transform -rotate-90"
-      >
+    <div
+      className={`relative inline-flex items-center justify-center ${className}`}
+    >
+      <svg width={size} height={size} className='transform -rotate-90'>
         {/* Background circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="currentColor"
+          stroke='currentColor'
           strokeWidth={strokeWidth}
-          fill="transparent"
-          className="text-gray-200"
+          fill='transparent'
+          className='text-gray-200'
         />
         {/* Progress circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="currentColor"
+          stroke='currentColor'
           strokeWidth={strokeWidth}
-          fill="transparent"
+          fill='transparent'
           strokeDasharray={strokeDasharray}
           strokeDashoffset={strokeDashoffset}
-          className="text-indigo-600 transition-all duration-500 ease-out"
-          strokeLinecap="round"
+          className='text-indigo-600 transition-all duration-500 ease-out'
+          strokeLinecap='round'
         />
       </svg>
       {/* Content inside circle */}
       {children && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className='absolute inset-0 flex items-center justify-center'>
           {children}
         </div>
       )}
@@ -207,9 +214,5 @@ export const PhoneVerificationProgress: React.FC = () => (
 );
 
 export const OAuthProgress: React.FC = () => (
-  <AuthProgress
-    step={2}
-    totalSteps={3}
-    currentStep="Xử lý đăng nhập"
-  />
+  <AuthProgress step={2} totalSteps={3} currentStep='Xử lý đăng nhập' />
 );

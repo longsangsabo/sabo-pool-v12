@@ -35,7 +35,9 @@ export const emergencyAuthRecovery = () => {
     // Previously forced redirect to /auth?recovery=true (gây khó chịu người dùng)
     // Thay bằng emit sự kiện để UI có thể hiển thị thông báo và mở modal đăng nhập ngay tại trang hiện tại.
     try {
-      const recoveryEvent = new CustomEvent('auth-recovery', { detail: { ts: Date.now() } });
+      const recoveryEvent = new CustomEvent('auth-recovery', {
+        detail: { ts: Date.now() },
+      });
       window.dispatchEvent(recoveryEvent);
       console.log('📣 Dispatched auth-recovery event (no hard redirect)');
     } catch (evtErr) {

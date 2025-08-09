@@ -33,9 +33,9 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
     confirmPassword: '',
     fullName: '',
     phone: '',
-});
-const [errors, setErrors] = useState<Record<string, string>>({});
-const [otpOpen, setOtpOpen] = useState(false);
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [otpOpen, setOtpOpen] = useState(false);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -24,7 +24,7 @@ export const MATCH_RESULT_GRADIENT: Record<'win' | 'loss', GradientSpec> = {
   loss: {
     light: 'bg-gradient-to-r from-rose-50 to-red-50/50 border-rose-100',
     dark: 'bg-gradient-to-r from-rose-950/30 to-red-900/20 border-rose-800/30',
-  }
+  },
 };
 
 export const CHALLENGE_GRADIENT: GradientSpec = {
@@ -33,15 +33,17 @@ export const CHALLENGE_GRADIENT: GradientSpec = {
 };
 
 export const QUICK_ACTION_BUTTON_STYLE = {
-  light: 'h-16 flex-col gap-2 border-dashed transition-all duration-200 bg-slate-50/50 border-slate-200 text-slate-600 hover:bg-slate-100/70',
-  dark: 'h-16 flex-col gap-2 border-dashed transition-all duration-200 bg-slate-800/30 border-slate-600/50 text-slate-300 hover:bg-slate-700/40'
+  light:
+    'h-16 flex-col gap-2 border-dashed transition-all duration-200 bg-slate-50/50 border-slate-200 text-slate-600 hover:bg-slate-100/70',
+  dark: 'h-16 flex-col gap-2 border-dashed transition-all duration-200 bg-slate-800/30 border-slate-600/50 text-slate-300 hover:bg-slate-700/40',
 };
 
 export const SECTION_CARD_STYLE = {
   light: 'bg-white border-slate-200',
-  dark: 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
+  dark: 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm',
 };
 
-export const iconBadgeBase = (theme: 'light' | 'dark') => theme === 'dark'
-  ? 'bg-slate-700/50 border border-slate-600/30'
-  : 'bg-slate-100 border border-slate-200';
+export const iconBadgeBase = (theme: 'light' | 'dark') =>
+  theme === 'dark'
+    ? 'bg-slate-700/50 border border-slate-600/30'
+    : 'bg-slate-100 border border-slate-200';

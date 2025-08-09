@@ -51,7 +51,7 @@ const Header = () => {
     { name: 'Xếp hạng', href: '/leaderboard', icon: Trophy },
     { name: 'Thách đấu', href: '/challenges', icon: Gamepad2 },
     { name: 'Giải đấu', href: '/tournaments', icon: Calendar },
-  { name: 'Cộng đồng', href: '/community', icon: Heart },
+    { name: 'Cộng đồng', href: '/community', icon: Heart },
     { name: 'Marketplace', href: '/enhanced-marketplace', icon: Store },
     { name: 'CLB', href: '/clubs', icon: Users },
     { name: 'Đăng ký CLB', href: '/club-registration', icon: Shield },

@@ -65,5 +65,5 @@ export const RANK_OPTIONS = [
   { value: '1800', label: '1800 - F' },
   { value: '1900', label: '1900 - F+' },
   { value: '2000', label: '2000 - E' },
-  { value: '2100', label: '2100 - E+' }
+  { value: '2100', label: '2100 - E+' },
 ] as const;

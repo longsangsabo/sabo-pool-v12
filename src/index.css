@@ -3,6 +3,7 @@
 @import url('./styles/mobile-enhancements.css');
 @import url('./styles/mobile-ui-standards.css');
 @import url('./styles/rainbow-avatar.css');
+@import url('./styles/typography.css');
 
 @tailwind base;
 @tailwind components;

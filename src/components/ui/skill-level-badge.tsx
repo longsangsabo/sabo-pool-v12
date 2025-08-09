@@ -1,6 +1,9 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { getSkillLevelStyle, getSkillLevelLabel } from '@/utils/skillLevelUtils';
+import {
+  getSkillLevelStyle,
+  getSkillLevelLabel,
+} from '@/utils/skillLevelUtils';
 import { ProfileData } from '@/types/profile';
 
 interface SkillLevelBadgeProps {
@@ -9,14 +12,14 @@ interface SkillLevelBadgeProps {
   className?: string;
 }
 
-export const SkillLevelBadge: React.FC<SkillLevelBadgeProps> = ({ 
-  skillLevel, 
+export const SkillLevelBadge: React.FC<SkillLevelBadgeProps> = ({
+  skillLevel,
   theme = 'light',
-  className = '' 
+  className = '',
 }) => {
   return (
-    <Badge 
-      variant="secondary" 
+    <Badge
+      variant='secondary'
       className={`${getSkillLevelStyle(skillLevel, theme)} ${className}`}
     >
       {getSkillLevelLabel(skillLevel)}

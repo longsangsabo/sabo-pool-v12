@@ -15,7 +15,7 @@ export const DesktopProfileBackground: React.FC = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed'
+          backgroundAttachment: 'fixed',
         }}
       />
       <div

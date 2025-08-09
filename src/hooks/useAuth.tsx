@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -50,9 +56,7 @@ interface AuthContextType extends AuthState {
     fullName?: string,
     referralCode?: string
   ) => Promise<{ data?: any; error?: any }>;
-  requestPhoneOtp: (
-    phone: string
-  ) => Promise<{ data?: any; error?: any }>;
+  requestPhoneOtp: (phone: string) => Promise<{ data?: any; error?: any }>;
   verifyPhoneOtp: (
     phone: string,
     token: string
@@ -94,66 +98,71 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     retryCount: 0,
   });
 
-  const [lastAction, setLastAction] = useState<(() => Promise<void>) | null>(null);
+  const [lastAction, setLastAction] = useState<(() => Promise<void>) | null>(
+    null
+  );
 
   // Enhanced error handling
-  const handleAuthError = useCallback((error: any, context = 'Authentication'): string => {
-    console.error(`🔧 Auth Error [${context}]:`, error);
-    
-    if (!error) return 'Lỗi không xác định';
-    
-    // Network errors
-    if (error.name === 'TypeError' || error.message?.includes('fetch')) {
-      return 'Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet.';
-    }
-    
-    // Supabase specific errors
-    if (error.message) {
-      const message = error.message.toLowerCase();
-      
-      if (message.includes('email not confirmed')) {
-        return 'Email chưa được xác thực. Vui lòng kiểm tra hộp thư.';
+  const handleAuthError = useCallback(
+    (error: any, context = 'Authentication'): string => {
+      console.error(`🔧 Auth Error [${context}]:`, error);
+
+      if (!error) return 'Lỗi không xác định';
+
+      // Network errors
+      if (error.name === 'TypeError' || error.message?.includes('fetch')) {
+        return 'Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet.';
       }
-      if (message.includes('invalid login credentials')) {
-        return 'Email hoặc mật khẩu không đúng.';
-      }
-      if (message.includes('too many requests')) {
-        return 'Quá nhiều lần thử. Vui lòng thử lại sau.';
-      }
-      if (message.includes('signup disabled')) {
-        return 'Đăng ký tài khoản hiện tại đang tạm khóa.';
-      }
-      if (message.includes('phone number')) {
-        return 'Số điện thoại không hợp lệ hoặc đã được sử dụng.';
-      }
-      if (message.includes('session not found')) {
-        return 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
-      }
-      if (message.includes('weak password')) {
-        return 'Mật khẩu quá yếu. Vui lòng chọn mật khẩu mạnh hơn.';
-      }
-    }
-    
-    // HTTP status codes
-    if (error.status) {
-      switch (error.status) {
-        case 400:
-          return 'Thông tin không hợp lệ. Vui lòng kiểm tra lại.';
-        case 401:
-          return 'Không có quyền truy cập. Vui lòng đăng nhập lại.';
-        case 403:
-          return 'Tài khoản bị khóa hoặc không có quyền.';
-        case 404:
-          return 'Không tìm thấy tài khoản.';
-        case 429:
+
+      // Supabase specific errors
+      if (error.message) {
+        const message = error.message.toLowerCase();
+
+        if (message.includes('email not confirmed')) {
+          return 'Email chưa được xác thực. Vui lòng kiểm tra hộp thư.';
+        }
+        if (message.includes('invalid login credentials')) {
+          return 'Email hoặc mật khẩu không đúng.';
+        }
+        if (message.includes('too many requests')) {
           return 'Quá nhiều lần thử. Vui lòng thử lại sau.';
-        case 500:
-          return 'Lỗi hệ thống. Vui lòng thử lại sau.';
+        }
+        if (message.includes('signup disabled')) {
+          return 'Đăng ký tài khoản hiện tại đang tạm khóa.';
+        }
+        if (message.includes('phone number')) {
+          return 'Số điện thoại không hợp lệ hoặc đã được sử dụng.';
+        }
+        if (message.includes('session not found')) {
+          return 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+        }
+        if (message.includes('weak password')) {
+          return 'Mật khẩu quá yếu. Vui lòng chọn mật khẩu mạnh hơn.';
+        }
       }
-    }
-    
-    return error.message || 'Đã xảy ra lỗi. Vui lòng thử lại.';
-  }, []);
+
+      // HTTP status codes
+      if (error.status) {
+        switch (error.status) {
+          case 400:
+            return 'Thông tin không hợp lệ. Vui lòng kiểm tra lại.';
+          case 401:
+            return 'Không có quyền truy cập. Vui lòng đăng nhập lại.';
+          case 403:
+            return 'Tài khoản bị khóa hoặc không có quyền.';
+          case 404:
+            return 'Không tìm thấy tài khoản.';
+          case 429:
+            return 'Quá nhiều lần thử. Vui lòng thử lại sau.';
+          case 500:
+            return 'Lỗi hệ thống. Vui lòng thử lại sau.';
+        }
+      }
+
+      return error.message || 'Đã xảy ra lỗi. Vui lòng thử lại.';
+    },
+    []
+  );
 
   const clearError = useCallback(() => {
     setAuthState(prev => ({ ...prev, error: null }));
@@ -175,9 +184,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     setupAuthMonitoring();
     const handler = () => {
-      toast.warning('Phiên đăng nhập gặp lỗi – đã làm sạch và cần đăng nhập lại.', {
-        description: 'Vui lòng đăng nhập lại. Trang không bị chuyển hướng để tránh mất ngữ cảnh.'
-      });
+      toast.warning(
+        'Phiên đăng nhập gặp lỗi – đã làm sạch và cần đăng nhập lại.',
+        {
+          description:
+            'Vui lòng đăng nhập lại. Trang không bị chuyển hướng để tránh mất ngữ cảnh.',
+        }
+      );
     };
     const signedOutHandler = () => {
       toast.success('Đã đăng xuất. Bạn có thể đăng nhập lại bất cứ lúc nào.');
@@ -391,7 +404,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const signInWithGoogle = async () => {
     try {
       const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
-      const { data, error } = await supabase.auth.signInWithOAuth(OAUTH_CONFIGS.google);
+      const { data, error } = await supabase.auth.signInWithOAuth(
+        OAUTH_CONFIGS.google
+      );
       return { data, error };
     } catch (error) {
       return { error };
@@ -401,54 +416,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const signInWithFacebook = async () => {
     try {
       const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
-      const { data, error } = await supabase.auth.signInWithOAuth(OAUTH_CONFIGS.facebook);
+      const { data, error } = await supabase.auth.signInWithOAuth(
+        OAUTH_CONFIGS.facebook
+      );
       return { data, error };
     } catch (error) {
       return { error };
     }
   };
 
-// Phone OTP helpers
-const requestPhoneOtp = async (phone: string) => {
-  try {
-    const e164 = formatPhoneToE164(phone);
-    const { data, error } = await supabase.auth.signInWithOtp({
-      phone: e164,
-      options: { channel: 'sms' },
-    });
-    return { data, error };
-  } catch (error) {
-    return { error } as any;
-  }
-};
+  // Phone OTP helpers
+  const requestPhoneOtp = async (phone: string) => {
+    try {
+      const e164 = formatPhoneToE164(phone);
+      const { data, error } = await supabase.auth.signInWithOtp({
+        phone: e164,
+        options: { channel: 'sms' },
+      });
+      return { data, error };
+    } catch (error) {
+      return { error } as any;
+    }
+  };
 
-const verifyPhoneOtp = async (phone: string, token: string) => {
-  try {
-    const e164 = formatPhoneToE164(phone);
-    const { data, error } = await supabase.auth.verifyOtp({
-      phone: e164,
-      token,
-      type: 'sms',
-    });
-    return { data, error };
-  } catch (error) {
-    return { error } as any;
-  }
-};
+  const verifyPhoneOtp = async (phone: string, token: string) => {
+    try {
+      const e164 = formatPhoneToE164(phone);
+      const { data, error } = await supabase.auth.verifyOtp({
+        phone: e164,
+        token,
+        type: 'sms',
+      });
+      return { data, error };
+    } catch (error) {
+      return { error } as any;
+    }
+  };
 
-// Backward-compatible aliases
-const signInWithPhone = async (phone: string) => requestPhoneOtp(phone);
-const signInWithEmail = signIn;
+  // Backward-compatible aliases
+  const signInWithPhone = async (phone: string) => requestPhoneOtp(phone);
+  const signInWithEmail = signIn;
 
-const signUpWithPhone = async (
-  phone: string,
-  _password?: string,
-  _fullName?: string,
-  _referralCode?: string
-) => {
-  // We use OTP for phone sign-up; metadata can be handled post-verification
-  return requestPhoneOtp(phone);
-};
+  const signUpWithPhone = async (
+    phone: string,
+    _password?: string,
+    _fullName?: string,
+    _referralCode?: string
+  ) => {
+    // We use OTP for phone sign-up; metadata can be handled post-verification
+    return requestPhoneOtp(phone);
+  };
 
   const signUpWithEmail = async (
     email: string,
@@ -478,29 +495,35 @@ const signUpWithPhone = async (
     }
   }, [handleAuthError, setError]);
 
-  const resetPassword = useCallback(async (email: string) => {
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: getAuthRedirectUrl('passwordReset'),
-      });
-      if (error) throw error;
-      return { error: null };
-    } catch (error) {
-      const errorMessage = handleAuthError(error, 'Password Reset');
-      return { error: errorMessage };
-    }
-  }, [handleAuthError]);
+  const resetPassword = useCallback(
+    async (email: string) => {
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: getAuthRedirectUrl('passwordReset'),
+        });
+        if (error) throw error;
+        return { error: null };
+      } catch (error) {
+        const errorMessage = handleAuthError(error, 'Password Reset');
+        return { error: errorMessage };
+      }
+    },
+    [handleAuthError]
+  );
 
-  const updatePassword = useCallback(async (password: string) => {
-    try {
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) throw error;
-      return { error: null };
-    } catch (error) {
-      const errorMessage = handleAuthError(error, 'Password Update');
-      return { error: errorMessage };
-    }
-  }, [handleAuthError]);
+  const updatePassword = useCallback(
+    async (password: string) => {
+      try {
+        const { error } = await supabase.auth.updateUser({ password });
+        if (error) throw error;
+        return { error: null };
+      } catch (error) {
+        const errorMessage = handleAuthError(error, 'Password Update');
+        return { error: errorMessage };
+      }
+    },
+    [handleAuthError]
+  );
 
   const retryLastAction = useCallback(async () => {
     if (lastAction && authState.retryCount < 3) {
@@ -513,7 +536,14 @@ const signUpWithPhone = async (
         setError(errorMessage);
       }
     }
-  }, [lastAction, authState.retryCount, incrementRetryCount, resetRetryCount, handleAuthError, setError]);
+  }, [
+    lastAction,
+    authState.retryCount,
+    incrementRetryCount,
+    resetRetryCount,
+    handleAuthError,
+    setError,
+  ]);
 
   const value: AuthContextType = {
     ...authState,

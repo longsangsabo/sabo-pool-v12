@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { getAuthSuccessMessage, getAuthErrorMessage, getSecureRedirectUrl } from '@/utils/authConfig';
+import {
+  getAuthSuccessMessage,
+  getAuthErrorMessage,
+  getSecureRedirectUrl,
+} from '@/utils/authConfig';
 
 const AuthCallbackPage = () => {
   const navigate = useNavigate();
@@ -25,14 +29,14 @@ const AuthCallbackPage = () => {
           requestedRedirect: redirectTo,
           secureRedirect: secureRedirectUrl,
           hasUser: !!user,
-          userId: user?.id
+          userId: user?.id,
         });
 
         if (user) {
           // Success case
           const successMessage = getAuthSuccessMessage(type);
           toast.success(successMessage);
-          
+
           // Add small delay for better UX
           setTimeout(() => {
             navigate(secureRedirectUrl, { replace: true });
@@ -41,7 +45,7 @@ const AuthCallbackPage = () => {
           // Auth failed case
           const errorMessage = getAuthErrorMessage(type);
           toast.error(errorMessage);
-          
+
           setTimeout(() => {
             navigate('/auth/login', { replace: true });
           }, 1000);
@@ -78,11 +82,11 @@ const AuthCallbackPage = () => {
     <div className='min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 flex items-center justify-center'>
       <div className='text-center text-white max-w-md mx-auto p-6'>
         <div className='animate-spin rounded-full h-16 w-16 border-b-2 border-yellow-400 mx-auto mb-6'></div>
-        
+
         <h1 className='text-xl font-semibold mb-2'>
           {getLoadingMessage(type)}
         </h1>
-        
+
         <p className='text-sm text-gray-300 mb-4'>
           Vui lòng đợi trong giây lát
         </p>
@@ -96,11 +100,11 @@ const AuthCallbackPage = () => {
 
         {/* Progress bar */}
         <div className='w-full bg-blue-800/50 rounded-full h-1 mt-4'>
-          <div 
+          <div
             className='bg-yellow-400 h-1 rounded-full transition-all duration-3000 ease-out'
-            style={{ 
+            style={{
               width: isProcessing ? '100%' : '0%',
-              transition: 'width 3s ease-out'
+              transition: 'width 3s ease-out',
             }}
           />
         </div>

@@ -19,7 +19,7 @@ export class AuthErrorBoundary extends Component<Props, State> {
     this.state = {
       hasError: false,
       error: null,
-      errorInfo: null
+      errorInfo: null,
     };
   }
 
@@ -27,16 +27,16 @@ export class AuthErrorBoundary extends Component<Props, State> {
     return {
       hasError: true,
       error,
-      errorInfo: null
+      errorInfo: null,
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Auth Error Boundary caught an error:', error, errorInfo);
-    
+
     this.setState({
       error,
-      errorInfo
+      errorInfo,
     });
 
     // Log to monitoring service
@@ -57,14 +57,14 @@ export class AuthErrorBoundary extends Component<Props, State> {
         (window as any).Sentry.captureException(error, {
           tags: {
             component: 'AuthErrorBoundary',
-            auth_error: true
+            auth_error: true,
           },
           extra: {
             errorInfo,
             user_agent: navigator.userAgent,
             url: window.location.href,
-            timestamp: new Date().toISOString()
-          }
+            timestamp: new Date().toISOString(),
+          },
         });
       }
 
@@ -74,20 +74,21 @@ export class AuthErrorBoundary extends Component<Props, State> {
         error: {
           name: error.name,
           message: error.message,
-          stack: error.stack
+          stack: error.stack,
         },
         errorInfo,
         userAgent: navigator.userAgent,
-        url: window.location.href
+        url: window.location.href,
       };
 
-      const existingLogs = JSON.parse(localStorage.getItem('auth_error_logs') || '[]');
+      const existingLogs = JSON.parse(
+        localStorage.getItem('auth_error_logs') || '[]'
+      );
       existingLogs.push(errorLog);
-      
+
       // Keep only last 10 errors
       const limitedLogs = existingLogs.slice(-10);
       localStorage.setItem('auth_error_logs', JSON.stringify(limitedLogs));
-
     } catch (loggingError) {
       console.error('Failed to log auth error:', loggingError);
     }
@@ -97,7 +98,7 @@ export class AuthErrorBoundary extends Component<Props, State> {
     this.setState({
       hasError: false,
       error: null,
-      errorInfo: null
+      errorInfo: null,
     });
   };
 
@@ -117,13 +118,15 @@ export class AuthErrorBoundary extends Component<Props, State> {
       }
 
       // Default error UI
-      return <AuthErrorFallback 
-        error={this.state.error}
-        errorInfo={this.state.errorInfo}
-        onRetry={this.handleRetry}
-        onReload={this.handleReload}
-        onGoHome={this.handleGoHome}
-      />;
+      return (
+        <AuthErrorFallback
+          error={this.state.error}
+          errorInfo={this.state.errorInfo}
+          onRetry={this.handleRetry}
+          onReload={this.handleReload}
+          onGoHome={this.handleGoHome}
+        />
+      );
     }
 
     return this.props.children;
@@ -144,47 +147,47 @@ const AuthErrorFallback: React.FC<AuthErrorFallbackProps> = ({
   errorInfo,
   onRetry,
   onReload,
-  onGoHome
+  onGoHome,
 }) => {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 text-red-600">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
+      <div className='max-w-md w-full space-y-8'>
+        <div className='text-center'>
+          <div className='mx-auto h-12 w-12 text-red-600'>
+            <svg fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                strokeLinecap='round'
+                strokeLinejoin='round'
                 strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
               />
             </svg>
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          <h2 className='mt-6 text-3xl font-extrabold text-gray-900'>
             Lỗi Hệ Thống Xác Thực
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className='mt-2 text-sm text-gray-600'>
             Đã xảy ra lỗi trong quá trình xác thực. Vui lòng thử lại.
           </p>
         </div>
 
         {/* Error details for development */}
         {isDevelopment && error && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-            <h3 className="text-sm font-medium text-red-800 mb-2">
+          <div className='mt-4 p-4 bg-red-50 border border-red-200 rounded-md'>
+            <h3 className='text-sm font-medium text-red-800 mb-2'>
               Chi tiết lỗi (Development):
             </h3>
-            <p className="text-xs text-red-700 font-mono break-words">
+            <p className='text-xs text-red-700 font-mono break-words'>
               {error.message}
             </p>
             {error.stack && (
-              <details className="mt-2">
-                <summary className="text-xs text-red-600 cursor-pointer">
+              <details className='mt-2'>
+                <summary className='text-xs text-red-600 cursor-pointer'>
                   Stack trace
                 </summary>
-                <pre className="text-xs text-red-600 mt-1 whitespace-pre-wrap">
+                <pre className='text-xs text-red-600 mt-1 whitespace-pre-wrap'>
                   {error.stack}
                 </pre>
               </details>
@@ -193,35 +196,33 @@ const AuthErrorFallback: React.FC<AuthErrorFallbackProps> = ({
         )}
 
         {/* Action buttons */}
-        <div className="mt-8 space-y-3">
+        <div className='mt-8 space-y-3'>
           <button
             onClick={onRetry}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
           >
             Thử lại
           </button>
-          
+
           <button
             onClick={onReload}
-            className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className='w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
           >
             Tải lại trang
           </button>
 
           <button
             onClick={onGoHome}
-            className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className='w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
           >
             Về trang chủ
           </button>
         </div>
 
         {/* Support info */}
-        <div className="mt-6 text-center text-xs text-gray-500">
+        <div className='mt-6 text-center text-xs text-gray-500'>
           <p>Nếu vấn đề vẫn tiếp tục, vui lòng liên hệ support.</p>
-          <p className="mt-1">
-            Error ID: {new Date().getTime().toString(36)}
-          </p>
+          <p className='mt-1'>Error ID: {new Date().getTime().toString(36)}</p>
         </div>
       </div>
     </div>

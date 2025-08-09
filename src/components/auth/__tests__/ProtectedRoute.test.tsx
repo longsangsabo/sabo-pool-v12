@@ -6,12 +6,12 @@ import { render, screen } from '@testing-library/react';
 import { ProtectedRoute } from '../ProtectedRoute';
 
 jest.mock('@/hooks/useAuth', () => ({
-  useAuth: () => ({ user: null, loading: false, session: null })
+  useAuth: () => ({ user: null, loading: false, session: null }),
 }));
 
 const AuthPageProbe = () => {
   const loc = useLocation();
-  return <div data-testid="auth-probe">Auth Page {loc.search}</div>;
+  return <div data-testid='auth-probe'>Auth Page {loc.search}</div>;
 };
 
 describe('ProtectedRoute', () => {
@@ -19,8 +19,15 @@ describe('ProtectedRoute', () => {
     render(
       <MemoryRouter initialEntries={['/profile']}>
         <Routes>
-          <Route path="/auth" element={<AuthPageProbe />} />
-          <Route path="/profile" element={<ProtectedRoute><div>Profile</div></ProtectedRoute>} />
+          <Route path='/auth' element={<AuthPageProbe />} />
+          <Route
+            path='/profile'
+            element={
+              <ProtectedRoute>
+                <div>Profile</div>
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -28,7 +35,7 @@ describe('ProtectedRoute', () => {
     // Should not render profile
     expect(screen.queryByText('Profile')).toBeNull();
     const authEl = screen.getByTestId('auth-probe');
-  expect(authEl).not.toBeNull();
+    expect(authEl).not.toBeNull();
     expect(authEl.textContent).toMatch(/redirect=%2Fprofile/);
   });
 });

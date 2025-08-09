@@ -3,10 +3,11 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, apikey, content-type',
 };
 
-serve(async (req) => {
+serve(async req => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -24,7 +25,7 @@ serve(async (req) => {
     const { action, params } = await req.json();
     actionName = action || 'refresh_all';
 
-    let result: any = { success: true, refreshed: [] };
+    const result: any = { success: true, refreshed: [] };
 
     switch (action) {
       case 'refresh_leaderboard': {
@@ -56,8 +57,8 @@ serve(async (req) => {
         // Refresh all materialized views
         const views = [
           'refresh_mv_leaderboard_stats',
-          'refresh_admin_dashboard_stats', 
-          'refresh_mv_daily_ai_usage'
+          'refresh_admin_dashboard_stats',
+          'refresh_mv_daily_ai_usage',
         ];
 
         for (const viewFunc of views) {
@@ -88,14 +89,16 @@ serve(async (req) => {
       console.error('Performance log failed:', logErr);
     }
 
-    return new Response(JSON.stringify({
-      ...result,
-      timestamp: new Date().toISOString(),
-      execution_time_ms: Date.now() - perfStart,
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-
+    return new Response(
+      JSON.stringify({
+        ...result,
+        timestamp: new Date().toISOString(),
+        execution_time_ms: Date.now() - perfStart,
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   } catch (error: any) {
     console.error('Analytics refresh error:', error);
 
@@ -123,9 +126,9 @@ serve(async (req) => {
         error: error.message,
         timestamp: new Date().toISOString(),
       }),
-      { 
-        status: 400, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
   }

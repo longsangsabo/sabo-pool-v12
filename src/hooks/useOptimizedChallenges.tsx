@@ -29,7 +29,12 @@ interface UseOptimizedChallengesReturn {
     opponentScore: number
   ) => Promise<any>;
   isSubmittingScore: boolean;
-  getWinRate: (userId: string) => Promise<{ winRate: number; wins: number; losses: number; total: number } | null>;
+  getWinRate: (userId: string) => Promise<{
+    winRate: number;
+    wins: number;
+    losses: number;
+    total: number;
+  } | null>;
   isWinRateLoading: (userId: string) => boolean;
   /** Optimistic local update helper */
   applyLocalPatch: (patch: Partial<Challenge> & { id: string }) => void;
@@ -50,7 +55,20 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
   const queryClient = useQueryClient();
 
   // Win rate cache
-  const winRateCache = useMemo(() => new Map<string, { wins: number; losses: number; total: number; winRate: number; timestamp: number }>(), []);
+  const winRateCache = useMemo(
+    () =>
+      new Map<
+        string,
+        {
+          wins: number;
+          losses: number;
+          total: number;
+          winRate: number;
+          timestamp: number;
+        }
+      >(),
+    []
+  );
   const winRateLoading = useRef(new Set<string>());
 
   // Helper: fetch & cache profiles for user ids (used in diff insert/update)
@@ -71,7 +89,9 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     if (toFetch.length) {
       const { data: profilesRes } = await supabase
         .from('profiles')
-        .select('user_id, full_name, display_name, verified_rank, elo, avatar_url')
+        .select(
+          'user_id, full_name, display_name, verified_rank, elo, avatar_url'
+        )
         .in('user_id', toFetch);
       const { data: rankingsRes } = await supabase
         .from('player_rankings')
@@ -92,240 +112,275 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
   }, []);
 
   // Differential apply for realtime changes
-  const applyRealtimeDiff = useCallback(async (payload: any) => {
-    setChallenges(prev => {
-      const list = [...prev];
-      const idx = list.findIndex(c => c.id === payload.new?.id || payload.old?.id);
-      if (payload.eventType === 'INSERT' && payload.new) {
-        if (idx === -1) {
-          // Enrich later asynchronously
-          list.unshift(payload.new as Challenge);
+  const applyRealtimeDiff = useCallback(
+    async (payload: any) => {
+      setChallenges(prev => {
+        const list = [...prev];
+        const idx = list.findIndex(
+          c => c.id === payload.new?.id || payload.old?.id
+        );
+        if (payload.eventType === 'INSERT' && payload.new) {
+          if (idx === -1) {
+            // Enrich later asynchronously
+            list.unshift(payload.new as Challenge);
+          }
+        } else if (payload.eventType === 'UPDATE' && payload.new) {
+          if (idx !== -1) {
+            list[idx] = { ...list[idx], ...(payload.new as any) };
+          } else {
+            list.unshift(payload.new as Challenge);
+          }
+        } else if (payload.eventType === 'DELETE' && payload.old) {
+          if (idx !== -1) list.splice(idx, 1);
         }
-      } else if (payload.eventType === 'UPDATE' && payload.new) {
-        if (idx !== -1) {
-          list[idx] = { ...list[idx], ...(payload.new as any) };
-        } else {
-          list.unshift(payload.new as Challenge);
-        }
-      } else if (payload.eventType === 'DELETE' && payload.old) {
-        if (idx !== -1) list.splice(idx, 1);
-      }
-      return list.sort((a, b) => (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
-    });
+        return list.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      });
 
-    // Enrich profiles for inserted/updated rows if needed
-    const target = payload.new || payload.old;
-    if (target) {
-      await fetchProfilesForUserIds([target.challenger_id, target.opponent_id].filter(Boolean));
-      // Rebuild enriched objects for affected ids only
-      setChallenges(prev => prev.map(ch => {
-        if (ch.id !== target.id) return ch;
-        const enrich = (uid?: string | null) => {
-          if (!uid) return null;
-            const p = profileCache.get(uid)?.data;
-            return p ? {
-              user_id: uid,
-              full_name: p.full_name || '',
-              display_name: p.display_name,
-              verified_rank: p.verified_rank,
-              current_rank: p.verified_rank,
-              spa_points: p.spa_points || 0,
-              elo_points: p.elo_points || 1000,
-              avatar_url: p.avatar_url,
-              elo: p.elo || 1000,
-            } : null;
-        };
-        return {
-          ...ch,
-          challenger_profile: enrich(ch.challenger_id),
-          opponent_profile: enrich(ch.opponent_id),
-        } as Challenge;
-      }));
-    }
-  }, [fetchProfilesForUserIds]);
+      // Enrich profiles for inserted/updated rows if needed
+      const target = payload.new || payload.old;
+      if (target) {
+        await fetchProfilesForUserIds(
+          [target.challenger_id, target.opponent_id].filter(Boolean)
+        );
+        // Rebuild enriched objects for affected ids only
+        setChallenges(prev =>
+          prev.map(ch => {
+            if (ch.id !== target.id) return ch;
+            const enrich = (uid?: string | null) => {
+              if (!uid) return null;
+              const p = profileCache.get(uid)?.data;
+              return p
+                ? {
+                    user_id: uid,
+                    full_name: p.full_name || '',
+                    display_name: p.display_name,
+                    verified_rank: p.verified_rank,
+                    current_rank: p.verified_rank,
+                    spa_points: p.spa_points || 0,
+                    elo_points: p.elo_points || 1000,
+                    avatar_url: p.avatar_url,
+                    elo: p.elo || 1000,
+                  }
+                : null;
+            };
+            return {
+              ...ch,
+              challenger_profile: enrich(ch.challenger_id),
+              opponent_profile: enrich(ch.opponent_id),
+            } as Challenge;
+          })
+        );
+      }
+    },
+    [fetchProfilesForUserIds]
+  );
 
   // Debounced fetch with pagination and smart caching
-  const fetchChallenges = useCallback(async (reset: boolean = false) => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // Check cache freshness to prevent unnecessary fetches
-      if (!reset) {
-        const lastFetch = localStorage.getItem('lastChallengeFetch');
-        const cacheAge = lastFetch ? Date.now() - parseInt(lastFetch) : Infinity;
-        
-        // Use cached data if fetch happened within last 30 seconds
-        if (cacheAge < 30000 && challenges.length > 0) {
-          console.log('🚀 Using cached challenge data to prevent excessive fetching');
-          setLoading(false);
-          return;
-        }
+  const fetchChallenges = useCallback(
+    async (reset: boolean = false) => {
+      if (!user) {
+        setLoading(false);
+        return;
       }
 
-      setLoading(true);
-      setError(null);
-      let currentPage = reset ? 0 : page;
-      if (reset) {
-        setPage(0);
-        setHasMore(true);
-      }
-      const from = currentPage * pageSize;
-      const to = from + pageSize - 1;
+      try {
+        // Check cache freshness to prevent unnecessary fetches
+        if (!reset) {
+          const lastFetch = localStorage.getItem('lastChallengeFetch');
+          const cacheAge = lastFetch
+            ? Date.now() - parseInt(lastFetch)
+            : Infinity;
 
-      const { data: challengesData, error: fetchError, count } = await supabase
-        .from('challenges')
-        .select('*', { count: 'exact' })
-        .order('created_at', { ascending: false })
-        .range(from, to);
-
-      if (fetchError) throw fetchError;
-
-      // Update cache timestamp
-      localStorage.setItem('lastChallengeFetch', Date.now().toString());
-
-      // Collect unique user IDs
-      const userIds = new Set<string>();
-      challengesData?.forEach(challenge => {
-        if (challenge.challenger_id) userIds.add(challenge.challenger_id);
-        if (challenge.opponent_id) userIds.add(challenge.opponent_id);
-      });
-
-      // Use cached profiles if available and recent
-      const now = Date.now();
-      const cachedProfiles = new Map();
-      const uncachedUserIds = new Set<string>();
-
-      userIds.forEach(userId => {
-        const cached = profileCache.get(userId);
-        if (cached && now - cached.timestamp < CACHE_DURATION) {
-          cachedProfiles.set(userId, cached.data);
-        } else {
-          uncachedUserIds.add(userId);
-        }
-      });
-
-      // Fetch only uncached profiles
-      let freshProfiles: any[] = [];
-      if (uncachedUserIds.size > 0) {
-        const [profilesRes, rankingsRes] = await Promise.all([
-          supabase
-            .from('profiles')
-            .select(
-              'user_id, full_name, display_name, verified_rank, elo, avatar_url'
-            )
-            .in('user_id', Array.from(uncachedUserIds)),
-          supabase
-            .from('player_rankings')
-            .select('user_id, spa_points, elo_points')
-            .in('user_id', Array.from(uncachedUserIds)),
-        ]);
-
-        if (profilesRes.data) {
-          freshProfiles = profilesRes.data.map(profile => {
-            const ranking = (rankingsRes.data || []).find(
-              r => r.user_id === profile.user_id
+          // Use cached data if fetch happened within last 30 seconds
+          if (cacheAge < 30000 && challenges.length > 0) {
+            console.log(
+              '🚀 Using cached challenge data to prevent excessive fetching'
             );
-            return {
-              ...profile,
-              spa_points: ranking?.spa_points || 0,
-              elo_points: ranking?.elo_points || 1000,
-            };
+            setLoading(false);
+            return;
+          }
+        }
+
+        setLoading(true);
+        setError(null);
+        const currentPage = reset ? 0 : page;
+        if (reset) {
+          setPage(0);
+          setHasMore(true);
+        }
+        const from = currentPage * pageSize;
+        const to = from + pageSize - 1;
+
+        const {
+          data: challengesData,
+          error: fetchError,
+          count,
+        } = await supabase
+          .from('challenges')
+          .select('*', { count: 'exact' })
+          .order('created_at', { ascending: false })
+          .range(from, to);
+
+        if (fetchError) throw fetchError;
+
+        // Update cache timestamp
+        localStorage.setItem('lastChallengeFetch', Date.now().toString());
+
+        // Collect unique user IDs
+        const userIds = new Set<string>();
+        challengesData?.forEach(challenge => {
+          if (challenge.challenger_id) userIds.add(challenge.challenger_id);
+          if (challenge.opponent_id) userIds.add(challenge.opponent_id);
+        });
+
+        // Use cached profiles if available and recent
+        const now = Date.now();
+        const cachedProfiles = new Map();
+        const uncachedUserIds = new Set<string>();
+
+        userIds.forEach(userId => {
+          const cached = profileCache.get(userId);
+          if (cached && now - cached.timestamp < CACHE_DURATION) {
+            cachedProfiles.set(userId, cached.data);
+          } else {
+            uncachedUserIds.add(userId);
+          }
+        });
+
+        // Fetch only uncached profiles
+        let freshProfiles: any[] = [];
+        if (uncachedUserIds.size > 0) {
+          const [profilesRes, rankingsRes] = await Promise.all([
+            supabase
+              .from('profiles')
+              .select(
+                'user_id, full_name, display_name, verified_rank, elo, avatar_url'
+              )
+              .in('user_id', Array.from(uncachedUserIds)),
+            supabase
+              .from('player_rankings')
+              .select('user_id, spa_points, elo_points')
+              .in('user_id', Array.from(uncachedUserIds)),
+          ]);
+
+          if (profilesRes.data) {
+            freshProfiles = profilesRes.data.map(profile => {
+              const ranking = (rankingsRes.data || []).find(
+                r => r.user_id === profile.user_id
+              );
+              return {
+                ...profile,
+                spa_points: ranking?.spa_points || 0,
+                elo_points: ranking?.elo_points || 1000,
+              };
+            });
+          }
+
+          // Cache fresh profiles
+          freshProfiles.forEach(profile => {
+            profileCache.set(profile.user_id, {
+              data: profile,
+              timestamp: now,
+            });
+            cachedProfiles.set(profile.user_id, profile);
           });
         }
 
-        // Cache fresh profiles
-        freshProfiles.forEach(profile => {
-          profileCache.set(profile.user_id, {
-            data: profile,
-            timestamp: now,
+        // Enrich challenges with cached + fresh profile data
+        const enrichedChallenges =
+          challengesData?.map(challenge => ({
+            ...challenge,
+            // Convert string values to numbers where needed for type compatibility
+            handicap_1_rank: challenge.handicap_1_rank
+              ? parseFloat(challenge.handicap_1_rank)
+              : undefined,
+            handicap_05_rank: challenge.handicap_05_rank
+              ? parseFloat(challenge.handicap_05_rank)
+              : undefined,
+            // Add properly typed profile data
+            challenger_profile: cachedProfiles.get(challenge.challenger_id)
+              ? {
+                  user_id: challenge.challenger_id,
+                  full_name:
+                    cachedProfiles.get(challenge.challenger_id)?.full_name ||
+                    '',
+                  display_name: cachedProfiles.get(challenge.challenger_id)
+                    ?.display_name,
+                  verified_rank: cachedProfiles.get(challenge.challenger_id)
+                    ?.verified_rank,
+                  current_rank: cachedProfiles.get(challenge.challenger_id)
+                    ?.verified_rank,
+                  spa_points:
+                    cachedProfiles.get(challenge.challenger_id)?.spa_points ||
+                    0,
+                  elo_points:
+                    cachedProfiles.get(challenge.challenger_id)?.elo_points ||
+                    1000,
+                  avatar_url: cachedProfiles.get(challenge.challenger_id)
+                    ?.avatar_url,
+                  elo: cachedProfiles.get(challenge.challenger_id)?.elo || 1000,
+                }
+              : null,
+            opponent_profile: cachedProfiles.get(challenge.opponent_id)
+              ? {
+                  user_id: challenge.opponent_id,
+                  full_name:
+                    cachedProfiles.get(challenge.opponent_id)?.full_name || '',
+                  display_name: cachedProfiles.get(challenge.opponent_id)
+                    ?.display_name,
+                  verified_rank: cachedProfiles.get(challenge.opponent_id)
+                    ?.verified_rank,
+                  current_rank: cachedProfiles.get(challenge.opponent_id)
+                    ?.verified_rank,
+                  spa_points:
+                    cachedProfiles.get(challenge.opponent_id)?.spa_points || 0,
+                  elo_points:
+                    cachedProfiles.get(challenge.opponent_id)?.elo_points ||
+                    1000,
+                  avatar_url: cachedProfiles.get(challenge.opponent_id)
+                    ?.avatar_url,
+                  elo: cachedProfiles.get(challenge.opponent_id)?.elo || 1000,
+                }
+              : null,
+          })) || [];
+
+        setChallenges(prev => {
+          if (reset || currentPage === 0)
+            return enrichedChallenges as Challenge[];
+          // merge unique
+          const existingIds = new Set(prev.map(c => c.id));
+          const merged = [...prev];
+          enrichedChallenges.forEach(c => {
+            if (!existingIds.has(c.id)) merged.push(c as Challenge);
           });
-          cachedProfiles.set(profile.user_id, profile);
+          return merged.sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          );
         });
+        // hasMore determination
+        if (count !== null && count !== undefined) {
+          const loaded = (currentPage + 1) * pageSize;
+          setHasMore(loaded < count);
+        } else if (challengesData && challengesData.length < pageSize) {
+          setHasMore(false);
+        }
+        if (!reset) setPage(p => (p === currentPage ? p : currentPage));
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error occurred';
+        setError(errorMessage);
+        console.error('❌ Challenge fetch error:', err);
+      } finally {
+        setLoading(false);
       }
-
-      // Enrich challenges with cached + fresh profile data
-      const enrichedChallenges =
-        challengesData?.map(challenge => ({
-          ...challenge,
-          // Convert string values to numbers where needed for type compatibility
-          handicap_1_rank: challenge.handicap_1_rank
-            ? parseFloat(challenge.handicap_1_rank)
-            : undefined,
-          handicap_05_rank: challenge.handicap_05_rank
-            ? parseFloat(challenge.handicap_05_rank)
-            : undefined,
-          // Add properly typed profile data
-          challenger_profile: cachedProfiles.get(challenge.challenger_id)
-            ? {
-                user_id: challenge.challenger_id,
-                full_name:
-                  cachedProfiles.get(challenge.challenger_id)?.full_name || '',
-                display_name: cachedProfiles.get(challenge.challenger_id)
-                  ?.display_name,
-                verified_rank: cachedProfiles.get(challenge.challenger_id)
-                  ?.verified_rank,
-                current_rank: cachedProfiles.get(challenge.challenger_id)
-                  ?.verified_rank,
-                spa_points:
-                  cachedProfiles.get(challenge.challenger_id)?.spa_points || 0,
-                elo_points:
-                  cachedProfiles.get(challenge.challenger_id)?.elo_points ||
-                  1000,
-                avatar_url: cachedProfiles.get(challenge.challenger_id)
-                  ?.avatar_url,
-                elo: cachedProfiles.get(challenge.challenger_id)?.elo || 1000,
-              }
-            : null,
-          opponent_profile: cachedProfiles.get(challenge.opponent_id)
-            ? {
-                user_id: challenge.opponent_id,
-                full_name:
-                  cachedProfiles.get(challenge.opponent_id)?.full_name || '',
-                display_name: cachedProfiles.get(challenge.opponent_id)
-                  ?.display_name,
-                verified_rank: cachedProfiles.get(challenge.opponent_id)
-                  ?.verified_rank,
-                current_rank: cachedProfiles.get(challenge.opponent_id)
-                  ?.verified_rank,
-                spa_points:
-                  cachedProfiles.get(challenge.opponent_id)?.spa_points || 0,
-                elo_points:
-                  cachedProfiles.get(challenge.opponent_id)?.elo_points || 1000,
-                avatar_url: cachedProfiles.get(challenge.opponent_id)
-                  ?.avatar_url,
-                elo: cachedProfiles.get(challenge.opponent_id)?.elo || 1000,
-              }
-            : null,
-        })) || [];
-
-      setChallenges(prev => {
-        if (reset || currentPage === 0) return enrichedChallenges as Challenge[];
-        // merge unique
-        const existingIds = new Set(prev.map(c => c.id));
-        const merged = [...prev];
-        enrichedChallenges.forEach(c => { if (!existingIds.has(c.id)) merged.push(c as Challenge); });
-        return merged.sort((a,b)=> (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
-      });
-      // hasMore determination
-      if (count !== null && count !== undefined) {
-        const loaded = (currentPage + 1) * pageSize;
-        setHasMore(loaded < count);
-      } else if (challengesData && challengesData.length < pageSize) {
-        setHasMore(false);
-      }
-      if (!reset) setPage(p => (p === currentPage ? p : currentPage));
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Unknown error occurred';
-      setError(errorMessage);
-      console.error('❌ Challenge fetch error:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [user, page, pageSize]);
+    },
+    [user, page, pageSize]
+  );
 
   const loadMoreChallenges = useCallback(async () => {
     if (loading || !hasMore) return;
@@ -334,43 +389,67 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
   }, [loading, hasMore, fetchChallenges]);
 
   // Win rate retrieval
-  const getWinRate = useCallback(async (userId: string) => {
-    if (!userId) return null;
-    const cached = winRateCache.get(userId);
-    const now = Date.now();
-    if (cached && now - cached.timestamp < 5 * 60_000) {
-      return { winRate: cached.winRate, wins: cached.wins, losses: cached.losses, total: cached.total };
-    }
-    if (winRateLoading.current.has(userId)) return null;
-    winRateLoading.current.add(userId);
-    try {
-      const { data, error } = await supabase
-        .from('matches')
-        .select('player1_id, player2_id, winner_id, status')
-        .or(`player1_id.eq.${userId},player2_id.eq.${userId}`)
-        .eq('status', 'completed')
-        .limit(100);
-      if (error) throw error;
-      const wins = (data || []).filter(m => m.winner_id === userId).length;
-      const total = data?.length || 0;
-      const losses = total - wins;
-      const winRate = total ? wins / total : 0;
-      winRateCache.set(userId, { wins, losses, total, winRate, timestamp: now });
-      return { winRate, wins, losses, total };
-    } catch (e) {
-      console.warn('Win rate fetch failed', e);
-      return null;
-    } finally {
-      winRateLoading.current.delete(userId);
-    }
-  }, [winRateCache]);
+  const getWinRate = useCallback(
+    async (userId: string) => {
+      if (!userId) return null;
+      const cached = winRateCache.get(userId);
+      const now = Date.now();
+      if (cached && now - cached.timestamp < 5 * 60_000) {
+        return {
+          winRate: cached.winRate,
+          wins: cached.wins,
+          losses: cached.losses,
+          total: cached.total,
+        };
+      }
+      if (winRateLoading.current.has(userId)) return null;
+      winRateLoading.current.add(userId);
+      try {
+        const { data, error } = await supabase
+          .from('matches')
+          .select('player1_id, player2_id, winner_id, status')
+          .or(`player1_id.eq.${userId},player2_id.eq.${userId}`)
+          .eq('status', 'completed')
+          .limit(100);
+        if (error) throw error;
+        const wins = (data || []).filter(m => m.winner_id === userId).length;
+        const total = data?.length || 0;
+        const losses = total - wins;
+        const winRate = total ? wins / total : 0;
+        winRateCache.set(userId, {
+          wins,
+          losses,
+          total,
+          winRate,
+          timestamp: now,
+        });
+        return { winRate, wins, losses, total };
+      } catch (e) {
+        console.warn('Win rate fetch failed', e);
+        return null;
+      } finally {
+        winRateLoading.current.delete(userId);
+      }
+    },
+    [winRateCache]
+  );
 
-  const isWinRateLoading = useCallback((userId: string) => winRateLoading.current.has(userId), []);
+  const isWinRateLoading = useCallback(
+    (userId: string) => winRateLoading.current.has(userId),
+    []
+  );
 
   // Optimistic local patch
-  const applyLocalPatch = useCallback((patch: Partial<Challenge> & { id: string }) => {
-    setChallenges(prev => prev.map(c => (c.id === patch.id ? { ...c, ...patch } as Challenge : c)));
-  }, []);
+  const applyLocalPatch = useCallback(
+    (patch: Partial<Challenge> & { id: string }) => {
+      setChallenges(prev =>
+        prev.map(c =>
+          c.id === patch.id ? ({ ...c, ...patch } as Challenge) : c
+        )
+      );
+    },
+    []
+  );
 
   // Memoized derived data
   const { receivedChallenges, sentChallenges, openChallenges } = useMemo(() => {
@@ -784,10 +863,13 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
   // Enhanced real-time subscription with smart debouncing
   useEffect(() => {
     if (!user) return;
-    
-    console.log('🔄 Setting up optimized real-time subscription for user:', user.id);
+
+    console.log(
+      '🔄 Setting up optimized real-time subscription for user:',
+      user.id
+    );
     fetchChallenges(true);
-    
+
     // Debounced refresh to prevent excessive calls
     let refreshTimeout: NodeJS.Timeout;
     const debouncedApplyDiff = (payload: any) => {
@@ -800,28 +882,40 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
 
     const subscription = supabase
       .channel(`optimized_challenges_${user.id}`)
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'challenges',
-        // Only listen to changes relevant to this user
-        filter: `or(challenger_id.eq.${user.id},opponent_id.eq.${user.id},opponent_id.is.null)`
-      }, (payload: any) => {
-        const changedId = (payload?.new && (payload.new as any).id) || (payload?.old && (payload.old as any).id);
-        console.log('🔄 Challenge event:', payload?.eventType, changedId?.slice(-8));
-        
-        // Only process meaningful changes
-        if (payload?.eventType === 'INSERT' || 
-            payload?.eventType === 'UPDATE' || 
-            payload?.eventType === 'DELETE') {
-          debouncedApplyDiff(payload);
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'challenges',
+          // Only listen to changes relevant to this user
+          filter: `or(challenger_id.eq.${user.id},opponent_id.eq.${user.id},opponent_id.is.null)`,
+        },
+        (payload: any) => {
+          const changedId =
+            (payload?.new && (payload.new as any).id) ||
+            (payload?.old && (payload.old as any).id);
+          console.log(
+            '🔄 Challenge event:',
+            payload?.eventType,
+            changedId?.slice(-8)
+          );
+
+          // Only process meaningful changes
+          if (
+            payload?.eventType === 'INSERT' ||
+            payload?.eventType === 'UPDATE' ||
+            payload?.eventType === 'DELETE'
+          ) {
+            debouncedApplyDiff(payload);
+          }
         }
-      })
+      )
       .subscribe();
-      
-    return () => { 
+
+    return () => {
       if (refreshTimeout) clearTimeout(refreshTimeout);
-      supabase.removeChannel(subscription); 
+      supabase.removeChannel(subscription);
     };
   }, [user?.id]); // Only depend on user.id to prevent unnecessary re-subscriptions
 
@@ -847,11 +941,11 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     openChallenges,
     loading,
     error,
-  fetchChallenges,
-  loadMoreChallenges,
-  hasMore,
-  page,
-  pageSize,
+    fetchChallenges,
+    loadMoreChallenges,
+    hasMore,
+    page,
+    pageSize,
     createChallenge,
     acceptChallenge,
     declineChallenge,
@@ -860,8 +954,8 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     getAcceptedChallenges,
     submitScore,
     isSubmittingScore: submitScoreMutation.isPending,
-  getWinRate,
-  isWinRateLoading,
-  applyLocalPatch,
+    getWinRate,
+    isWinRateLoading,
+    applyLocalPatch,
   };
 };

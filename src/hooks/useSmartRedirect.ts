@@ -20,55 +20,57 @@ export const useSmartRedirect = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const redirectAfterAuth = useCallback((user: User, customRedirect?: string) => {
-    try {
-      // 1. Check for custom redirect parameter
-      if (customRedirect) {
-        const secureUrl = getSecureRedirectUrl(customRedirect);
-        navigate(secureUrl, { replace: true });
-        return;
-      }
+  const redirectAfterAuth = useCallback(
+    (user: User, customRedirect?: string) => {
+      try {
+        // 1. Check for custom redirect parameter
+        if (customRedirect) {
+          const secureUrl = getSecureRedirectUrl(customRedirect);
+          navigate(secureUrl, { replace: true });
+          return;
+        }
 
-      // 2. Check for intended destination (stored before auth)
-      const intendedPath = sessionStorage.getItem('intendedPath');
-      if (intendedPath) {
-        sessionStorage.removeItem('intendedPath');
-        const secureUrl = getSecureRedirectUrl(intendedPath);
-        navigate(secureUrl, { replace: true });
-        return;
-      }
+        // 2. Check for intended destination (stored before auth)
+        const intendedPath = sessionStorage.getItem('intendedPath');
+        if (intendedPath) {
+          sessionStorage.removeItem('intendedPath');
+          const secureUrl = getSecureRedirectUrl(intendedPath);
+          navigate(secureUrl, { replace: true });
+          return;
+        }
 
-      // 3. Check URL search params for redirect
-      const urlParams = new URLSearchParams(location.search);
-      const redirectParam = urlParams.get('redirect');
-      if (redirectParam) {
-        const secureUrl = getSecureRedirectUrl(redirectParam);
-        navigate(secureUrl, { replace: true });
-        return;
-      }
+        // 3. Check URL search params for redirect
+        const urlParams = new URLSearchParams(location.search);
+        const redirectParam = urlParams.get('redirect');
+        if (redirectParam) {
+          const secureUrl = getSecureRedirectUrl(redirectParam);
+          navigate(secureUrl, { replace: true });
+          return;
+        }
 
-      // 4. Role-based default redirects
-      const userRole = getUserRole(user);
-      
-      switch (userRole) {
-        case 'admin':
-          navigate('/admin/dashboard', { replace: true });
-          break;
-        case 'club_owner':
-          navigate('/club-management', { replace: true });
-          break;
-        case 'user':
-        default:
-          navigate('/dashboard', { replace: true });
-          break;
-      }
+        // 4. Role-based default redirects
+        const userRole = getUserRole(user);
 
-    } catch (error) {
-      console.error('Smart redirect error:', error);
-      // Fallback to dashboard
-      navigate('/dashboard', { replace: true });
-    }
-  }, [navigate, location]);
+        switch (userRole) {
+          case 'admin':
+            navigate('/admin/dashboard', { replace: true });
+            break;
+          case 'club_owner':
+            navigate('/club-management', { replace: true });
+            break;
+          case 'user':
+          default:
+            navigate('/dashboard', { replace: true });
+            break;
+        }
+      } catch (error) {
+        console.error('Smart redirect error:', error);
+        // Fallback to dashboard
+        navigate('/dashboard', { replace: true });
+      }
+    },
+    [navigate, location]
+  );
 
   const saveIntendedPath = useCallback((path: string) => {
     try {
@@ -99,7 +101,7 @@ export const useSmartRedirect = () => {
     redirectAfterAuth,
     saveIntendedPath,
     clearIntendedPath,
-    getIntendedPath
+    getIntendedPath,
   };
 };
 
@@ -111,11 +113,11 @@ const getUserRole = (user: User): string => {
   if (user.user_metadata?.role) {
     return user.user_metadata.role;
   }
-  
+
   if (user.app_metadata?.role) {
     return user.app_metadata.role;
   }
-  
+
   // Default role
   return 'user';
 };
@@ -125,42 +127,54 @@ const getUserRole = (user: User): string => {
  */
 export const useAuthRedirect = () => {
   const { redirectAfterAuth, saveIntendedPath } = useSmartRedirect();
-  
-  const handleAuthSuccess = useCallback((user: User, options?: {
-    customRedirect?: string;
-    delay?: number;
-  }) => {
-    const { customRedirect, delay = 0 } = options || {};
-    
-    if (delay > 0) {
-      setTimeout(() => {
-        redirectAfterAuth(user, customRedirect);
-      }, delay);
-    } else {
-      redirectAfterAuth(user, customRedirect);
-    }
-  }, [redirectAfterAuth]);
 
-  const handleAuthFailure = useCallback((error?: any, options?: {
-    redirectTo?: string;
-    delay?: number;
-  }) => {
-    const { redirectTo = '/auth/login', delay = 0 } = options || {};
-    
-    console.error('Auth failure:', error);
-    
-    if (delay > 0) {
-      setTimeout(() => {
+  const handleAuthSuccess = useCallback(
+    (
+      user: User,
+      options?: {
+        customRedirect?: string;
+        delay?: number;
+      }
+    ) => {
+      const { customRedirect, delay = 0 } = options || {};
+
+      if (delay > 0) {
+        setTimeout(() => {
+          redirectAfterAuth(user, customRedirect);
+        }, delay);
+      } else {
+        redirectAfterAuth(user, customRedirect);
+      }
+    },
+    [redirectAfterAuth]
+  );
+
+  const handleAuthFailure = useCallback(
+    (
+      error?: any,
+      options?: {
+        redirectTo?: string;
+        delay?: number;
+      }
+    ) => {
+      const { redirectTo = '/auth/login', delay = 0 } = options || {};
+
+      console.error('Auth failure:', error);
+
+      if (delay > 0) {
+        setTimeout(() => {
+          window.location.href = redirectTo;
+        }, delay);
+      } else {
         window.location.href = redirectTo;
-      }, delay);
-    } else {
-      window.location.href = redirectTo;
-    }
-  }, []);
+      }
+    },
+    []
+  );
 
   return {
     handleAuthSuccess,
     handleAuthFailure,
-    saveIntendedPath
+    saveIntendedPath,
   };
 };

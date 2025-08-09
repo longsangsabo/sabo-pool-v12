@@ -29,23 +29,44 @@ export const DesktopProfileContent: React.FC<DesktopProfileContentProps> = ({
   onEditField,
   onSave,
   onCancel,
-  className = ''
+  className = '',
 }) => {
   const userRole = profile?.role || 'player';
 
   const tabs = [
-    { value: 'edit', label: 'Chỉnh sửa', icon: Pencil, content: (
-      <TabEditProfile
-        editingProfile={editingProfile}
-        saving={saving as any}
-        onChange={onEditField as any}
-        onSave={onSave}
-        onCancel={onCancel}
-        theme={theme}
-      />) },
-    { value: 'basic', label: 'Thông tin', icon: User, content: <EditableProfileForm profile={profile} /> },
-    { value: 'rank', label: 'Xác thực hạng', icon: Shield, content: <RankVerificationForm /> },
-    { value: 'club', label: 'Quản lý CLB', icon: Building, content: <ClubManagementTab userRole={userRole} /> }
+    {
+      value: 'edit',
+      label: 'Chỉnh sửa',
+      icon: Pencil,
+      content: (
+        <TabEditProfile
+          editingProfile={editingProfile}
+          saving={saving as any}
+          onChange={onEditField as any}
+          onSave={onSave}
+          onCancel={onCancel}
+          theme={theme}
+        />
+      ),
+    },
+    {
+      value: 'basic',
+      label: 'Thông tin',
+      icon: User,
+      content: <EditableProfileForm profile={profile} />,
+    },
+    {
+      value: 'rank',
+      label: 'Xác thực hạng',
+      icon: Shield,
+      content: <RankVerificationForm />,
+    },
+    {
+      value: 'club',
+      label: 'Quản lý CLB',
+      icon: Building,
+      content: <ClubManagementTab userRole={userRole} />,
+    },
   ];
 
   return (

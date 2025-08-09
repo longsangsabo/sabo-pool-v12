@@ -58,7 +58,9 @@ export const robustSignOut = async () => {
   } finally {
     // Thay vì luôn redirect, phát sự kiện để UI quyết định (giữ nguyên context nếu cần)
     try {
-      const evt = new CustomEvent('auth-signed-out', { detail: { ts: Date.now() } });
+      const evt = new CustomEvent('auth-signed-out', {
+        detail: { ts: Date.now() },
+      });
       window.dispatchEvent(evt);
       console.log('� Dispatched auth-signed-out event (no forced redirect)');
     } catch (e) {
@@ -93,8 +95,12 @@ export const robustSignIn = async (signInFunction: () => Promise<any>) => {
     }
 
     if (result.data?.user) {
-      console.log('✅ Sign in successful (no forced redirect). Emitting event.');
-      const evt = new CustomEvent('auth-signed-in', { detail: { user: result.data.user } });
+      console.log(
+        '✅ Sign in successful (no forced redirect). Emitting event.'
+      );
+      const evt = new CustomEvent('auth-signed-in', {
+        detail: { user: result.data.user },
+      });
       window.dispatchEvent(evt);
     }
 

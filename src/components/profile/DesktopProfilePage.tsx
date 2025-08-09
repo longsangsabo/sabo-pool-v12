@@ -9,7 +9,12 @@ import ProfileErrorBoundary from './ProfileErrorBoundary';
 import { RefreshCw, Settings, Shield, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import DesktopProfileBackground from './DesktopProfileBackground';
 import DesktopProfileHero from './DesktopProfileHero';
 import DesktopProfileSkeleton from './DesktopProfileSkeleton';
@@ -37,7 +42,7 @@ const DesktopProfilePage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showRankRequestModal, setShowRankRequestModal] = useState(false);
-  const [rankChangeType, setRankChangeType] = useState<'up'|'down'>('up');
+  const [rankChangeType, setRankChangeType] = useState<'up' | 'down'>('up');
   const [requestedRank, setRequestedRank] = useState('');
   const [rankReason, setRankReason] = useState('');
   const [selectedClubId, setSelectedClubId] = useState('');
@@ -53,7 +58,7 @@ const DesktopProfilePage: React.FC = () => {
     { value: '1800', label: '1800 - F' },
     { value: '1900', label: '1900 - F+' },
     { value: '2000', label: '2000 - E' },
-    { value: '2100', label: '2100 - E+' }
+    { value: '2100', label: '2100 - E+' },
   ];
 
   const allowedTabs = ['basic', 'rank', 'club', 'edit'];
@@ -68,12 +73,19 @@ const DesktopProfilePage: React.FC = () => {
       } else {
         // Tab cũ (ví dụ: activities) đã bị loại bỏ -> dọn dẹp query + thông báo nhẹ
         urlParams.delete('tab');
-        window.history.replaceState({}, '', `${window.location.pathname}?${urlParams.toString()}`.replace(/\?$/, ''));
+        window.history.replaceState(
+          {},
+          '',
+          `${window.location.pathname}?${urlParams.toString()}`.replace(
+            /\?$/,
+            ''
+          )
+        );
         toast.message('Tab này không còn tồn tại, quay về thông tin cơ bản');
         setActiveTab('basic');
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Lắng nghe thao tác Back/Forward của trình duyệt để đồng bộ state tab
@@ -144,13 +156,15 @@ const DesktopProfilePage: React.FC = () => {
         bio: profile.bio || '',
         skill_level: (profile as any).skill_level || 'beginner',
         role: profile.role || 'player',
-        active_role: profile.active_role || 'player'
+        active_role: profile.active_role || 'player',
       });
     }
   }, [profile]);
 
   const handleEditField = (field: string, value: any) => {
-    setEditingProfile((prev: any) => prev ? { ...prev, [field]: value } : prev);
+    setEditingProfile((prev: any) =>
+      prev ? { ...prev, [field]: value } : prev
+    );
   };
 
   const handleSaveProfile = async () => {
@@ -203,7 +217,7 @@ const DesktopProfilePage: React.FC = () => {
       bio: profile.bio || '',
       skill_level: (profile as any).skill_level || 'beginner',
       role: profile.role || 'player',
-      active_role: profile.active_role || 'player'
+      active_role: profile.active_role || 'player',
     });
   };
 
@@ -224,9 +238,17 @@ const DesktopProfilePage: React.FC = () => {
         <Card className='w-full max-w-md'>
           <CardContent className='pt-6'>
             <div className='text-center space-y-4'>
-              <div className='text-destructive font-medium'>Có lỗi khi tải thông tin profile</div>
-              <div className='text-sm text-muted-foreground bg-muted p-3 rounded-md'>{error.message}</div>
-              <Button onClick={() => refetch()} variant='outline' className='w-full'>
+              <div className='text-destructive font-medium'>
+                Có lỗi khi tải thông tin profile
+              </div>
+              <div className='text-sm text-muted-foreground bg-muted p-3 rounded-md'>
+                {error.message}
+              </div>
+              <Button
+                onClick={() => refetch()}
+                variant='outline'
+                className='w-full'
+              >
                 <RefreshCw className='mr-2 h-4 w-4' /> Thử lại
               </Button>
             </div>
@@ -237,7 +259,10 @@ const DesktopProfilePage: React.FC = () => {
   }
 
   return (
-  <ProfileErrorBoundary onRecover={() => setActiveTab('basic')} recoverLabel='Quay về thông tin cơ bản'>
+    <ProfileErrorBoundary
+      onRecover={() => setActiveTab('basic')}
+      recoverLabel='Quay về thông tin cơ bản'
+    >
       <div className='relative min-h-screen'>
         <DesktopProfileBackground />
         <div className='relative z-10'>
@@ -246,7 +271,9 @@ const DesktopProfilePage: React.FC = () => {
               {/* Sidebar trái: chỉ còn Activities (đã gỡ Quick Actions để tránh trùng) */}
               <aside className='hidden xl:block col-span-3'>
                 <div className='sticky top-24 space-y-6'>
-                  <ProfileActivities activities={profile?.recent_activities || []} />
+                  <ProfileActivities
+                    activities={profile?.recent_activities || []}
+                  />
                 </div>
               </aside>
 
@@ -267,28 +294,49 @@ const DesktopProfilePage: React.FC = () => {
                   {/* Thông tin phụ: bio + badges + completion */}
                   <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-6'>
                     {/* Completion Card (giữ vì không xuất hiện ở tab khác) */}
-                    <div className={`relative col-span-1 rounded-2xl border p-5 flex flex-col justify-between overflow-hidden
-                      ${theme==='dark' ? 'bg-slate-900/60 border-slate-700/60' : 'bg-white border-slate-200'}`}>
+                    <div
+                      className={`relative col-span-1 rounded-2xl border p-5 flex flex-col justify-between overflow-hidden
+                      ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700/60' : 'bg-white border-slate-200'}`}
+                    >
                       <div className='pointer-events-none absolute inset-0 [mask-image:radial-gradient(circle_at_top_right,white,transparent_70%)] bg-gradient-to-bl from-cyan-500/10 via-transparent to-blue-500/10' />
                       <div className='relative'>
                         <div className='flex items-center justify-between mb-4'>
                           <div className='flex items-center gap-2'>
-                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center border
-                              ${theme==='dark' ? 'bg-slate-800/70 border-slate-600/40' : 'bg-slate-100 border-slate-200'}`}>
+                            <div
+                              className={`w-8 h-8 rounded-xl flex items-center justify-center border
+                              ${theme === 'dark' ? 'bg-slate-800/70 border-slate-600/40' : 'bg-slate-100 border-slate-200'}`}
+                            >
                               <Settings className='w-4 h-4 text-slate-400' />
                             </div>
-                            <span className={`text-sm font-semibold ${theme==='dark' ? 'text-slate-100' : 'text-slate-800'}`}>Hoàn thiện hồ sơ</span>
+                            <span
+                              className={`text-sm font-semibold ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}
+                            >
+                              Hoàn thiện hồ sơ
+                            </span>
                           </div>
-                          <span className={`text-sm font-bold tracking-wide ${theme==='dark' ? 'text-blue-300' : 'text-blue-600'}`}>{profile?.completion_percentage ?? 0}%</span>
+                          <span
+                            className={`text-sm font-bold tracking-wide ${theme === 'dark' ? 'text-blue-300' : 'text-blue-600'}`}
+                          >
+                            {profile?.completion_percentage ?? 0}%
+                          </span>
                         </div>
-                        <div className={`w-full rounded-full h-3 mb-3 overflow-hidden ${theme==='dark' ? 'bg-slate-800/70' : 'bg-slate-200'}`}>
+                        <div
+                          className={`w-full rounded-full h-3 mb-3 overflow-hidden ${theme === 'dark' ? 'bg-slate-800/70' : 'bg-slate-200'}`}
+                        >
                           <div
                             className={`h-3 rounded-full transition-all duration-700 ease-out
-                              ${theme==='dark' ? 'bg-gradient-to-r from-blue-500 via-cyan-500 to-emerald-500' : 'bg-gradient-to-r from-blue-500 to-blue-600'}`}
-                            style={{ width: `${profile?.completion_percentage ?? 0}%` }}
+                              ${theme === 'dark' ? 'bg-gradient-to-r from-blue-500 via-cyan-500 to-emerald-500' : 'bg-gradient-to-r from-blue-500 to-blue-600'}`}
+                            style={{
+                              width: `${profile?.completion_percentage ?? 0}%`,
+                            }}
                           />
                         </div>
-                        <p className={`text-xs ${theme==='dark' ? 'text-slate-400' : 'text-slate-500'}`}>Hoàn thiện hồ sơ để tăng uy tín và cơ hội tham gia giải đấu</p>
+                        <p
+                          className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}
+                        >
+                          Hoàn thiện hồ sơ để tăng uy tín và cơ hội tham gia
+                          giải đấu
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -309,7 +357,9 @@ const DesktopProfilePage: React.FC = () => {
 
                 {/* Activities không còn là tab: hiển thị luôn dưới cùng trên mobile nếu cần */}
                 <div className='block xl:hidden'>
-                  <ProfileActivities activities={profile?.recent_activities || []} />
+                  <ProfileActivities
+                    activities={profile?.recent_activities || []}
+                  />
                 </div>
               </main>
             </div>
@@ -317,43 +367,94 @@ const DesktopProfilePage: React.FC = () => {
         </div>
       </div>
       {/* Rank Request Modal */}
-      <Dialog open={showRankRequestModal} onOpenChange={setShowRankRequestModal}>
+      <Dialog
+        open={showRankRequestModal}
+        onOpenChange={setShowRankRequestModal}
+      >
         <DialogContent className='max-w-md'>
           <DialogHeader>
             <DialogTitle>Yêu cầu thay đổi hạng</DialogTitle>
           </DialogHeader>
           <div className='space-y-4'>
             <div className='flex gap-2'>
-              <Button size='sm' variant={rankChangeType==='up'? 'default':'outline'} className='flex-1' onClick={()=>setRankChangeType('up')}>Tăng hạng</Button>
-              <Button size='sm' variant={rankChangeType==='down'? 'default':'outline'} className='flex-1' onClick={()=>setRankChangeType('down')}>Giảm hạng</Button>
+              <Button
+                size='sm'
+                variant={rankChangeType === 'up' ? 'default' : 'outline'}
+                className='flex-1'
+                onClick={() => setRankChangeType('up')}
+              >
+                Tăng hạng
+              </Button>
+              <Button
+                size='sm'
+                variant={rankChangeType === 'down' ? 'default' : 'outline'}
+                className='flex-1'
+                onClick={() => setRankChangeType('down')}
+              >
+                Giảm hạng
+              </Button>
             </div>
             <div>
               <label className='text-xs font-medium mb-1 block'>Chọn CLB</label>
-              <select className='w-full px-3 py-2 text-sm rounded-md border bg-background' value={selectedClubId} onChange={e=>setSelectedClubId(e.target.value)}>
+              <select
+                className='w-full px-3 py-2 text-sm rounded-md border bg-background'
+                value={selectedClubId}
+                onChange={e => setSelectedClubId(e.target.value)}
+              >
                 <option value=''>-- Chọn CLB --</option>
                 <option value='demo'>Demo Club</option>
               </select>
             </div>
             <div>
-              <label className='text-xs font-medium mb-1 block'>Chọn hạng mới</label>
-              <select className='w-full px-3 py-2 text-sm rounded-md border bg-background' value={requestedRank} onChange={e=>setRequestedRank(e.target.value)}>
+              <label className='text-xs font-medium mb-1 block'>
+                Chọn hạng mới
+              </label>
+              <select
+                className='w-full px-3 py-2 text-sm rounded-md border bg-background'
+                value={requestedRank}
+                onChange={e => setRequestedRank(e.target.value)}
+              >
                 <option value=''>-- Chọn --</option>
-                {rankOptions.map(o=> <option key={o.value} value={o.value}>{o.label}</option>)}
+                {rankOptions.map(o => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
               <label className='text-xs font-medium mb-1 block'>Lý do</label>
-              <textarea rows={3} className='w-full px-3 py-2 text-sm rounded-md border bg-background resize-none' value={rankReason} onChange={e=>setRankReason(e.target.value)} placeholder='Mô tả vì sao bạn muốn thay đổi hạng...'/>
+              <textarea
+                rows={3}
+                className='w-full px-3 py-2 text-sm rounded-md border bg-background resize-none'
+                value={rankReason}
+                onChange={e => setRankReason(e.target.value)}
+                placeholder='Mô tả vì sao bạn muốn thay đổi hạng...'
+              />
             </div>
             <div className='flex justify-end gap-2 pt-2'>
-              <Button variant='outline' size='sm' onClick={()=>setShowRankRequestModal(false)}>Hủy</Button>
-              <Button size='sm' disabled={!requestedRank || !rankReason || !selectedClubId} onClick={submitRankChange}>Gửi yêu cầu</Button>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={() => setShowRankRequestModal(false)}
+              >
+                Hủy
+              </Button>
+              <Button
+                size='sm'
+                disabled={!requestedRank || !rankReason || !selectedClubId}
+                onClick={submitRankChange}
+              >
+                Gửi yêu cầu
+              </Button>
             </div>
-            <p className='text-[10px] text-muted-foreground'>Sau khi CLB phê duyệt, hạng của bạn sẽ được cập nhật.</p>
+            <p className='text-[10px] text-muted-foreground'>
+              Sau khi CLB phê duyệt, hạng của bạn sẽ được cập nhật.
+            </p>
           </div>
         </DialogContent>
       </Dialog>
-  </ProfileErrorBoundary>
+    </ProfileErrorBoundary>
   );
 };
 

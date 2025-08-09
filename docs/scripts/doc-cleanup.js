@@ -39,7 +39,7 @@ class DocCleanupSystem {
 
   async runCleanup(options = {}) {
     const startTime = Date.now();
-    let summary = {
+    const summary = {
       filesScanned: 0,
       duplicatesFound: 0,
       filesArchived: 0,

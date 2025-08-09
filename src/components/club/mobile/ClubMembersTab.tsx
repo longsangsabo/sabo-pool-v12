@@ -137,9 +137,7 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
                 </span>
               )}
             </div>
-            <h3 className='mobile-heading-tertiary'>
-              Thành viên
-            </h3>
+            <h3 className='mobile-heading-tertiary'>Thành viên</h3>
           </div>
           {isOwner && (
             <button

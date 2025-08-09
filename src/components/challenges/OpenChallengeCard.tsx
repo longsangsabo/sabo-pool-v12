@@ -13,7 +13,12 @@ interface OpenChallengeCardProps {
   onJoin: (challengeId: string) => void;
   currentUser?: any;
   isJoining?: boolean;
-  winRateInfo?: { winRate: number; wins: number; losses: number; total: number } | null;
+  winRateInfo?: {
+    winRate: number;
+    wins: number;
+    losses: number;
+    total: number;
+  } | null;
 }
 
 export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
@@ -60,7 +65,8 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
                 </div>
                 {winRateInfo && winRateInfo.total >= 5 && (
                   <div className='text-[10px] text-emerald-600 dark:text-emerald-400 font-medium'>
-                    Win rate: {(winRateInfo.winRate * 100).toFixed(0)}% ({winRateInfo.wins}-{winRateInfo.losses})
+                    Win rate: {(winRateInfo.winRate * 100).toFixed(0)}% (
+                    {winRateInfo.wins}-{winRateInfo.losses})
                   </div>
                 )}
               </div>

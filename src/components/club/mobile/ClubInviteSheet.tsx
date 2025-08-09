@@ -39,7 +39,6 @@ export const ClubInviteSheet: React.FC<ClubInviteSheetProps> = ({
     if (debounced) {
       handleSearch(debounced);
     } else setResults([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounced]);
 
   const handleSearch = async (q: string) => {

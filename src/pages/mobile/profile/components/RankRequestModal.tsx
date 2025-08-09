@@ -1,5 +1,10 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { RANK_OPTIONS } from '@/types/profile';
 
@@ -34,7 +39,7 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
   onSubmit,
   disabled,
   changeType,
-  setChangeType
+  setChangeType,
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -95,7 +100,9 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
           </div>
 
           <div>
-            <label className='text-xs font-medium mb-1 block'>Chọn hạng mới</label>
+            <label className='text-xs font-medium mb-1 block'>
+              Chọn hạng mới
+            </label>
             <select
               className={`w-full px-3 py-2 text-sm rounded-md border outline-none transition ${
                 theme === 'dark'
@@ -139,14 +146,17 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
             </Button>
             <Button
               size='sm'
-              disabled={disabled || !requestedRank || !rankReason || !selectedClubId}
+              disabled={
+                disabled || !requestedRank || !rankReason || !selectedClubId
+              }
               onClick={onSubmit}
             >
               Gửi yêu cầu
             </Button>
           </div>
           <p className='text-[10px] text-muted-foreground'>
-            Sau khi CLB phê duyệt, hạng của bạn sẽ được cập nhật và đồng bộ đến các khu vực liên quan.
+            Sau khi CLB phê duyệt, hạng của bạn sẽ được cập nhật và đồng bộ đến
+            các khu vực liên quan.
           </p>
         </div>
       </DialogContent>

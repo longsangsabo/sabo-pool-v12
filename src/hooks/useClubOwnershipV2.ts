@@ -25,7 +25,7 @@ export const useClubOwnershipV2 = (): ClubOwnershipData => {
     clubProfile: null,
     memberData: null,
     loading: true,
-    error: null
+    error: null,
   });
 
   useEffect(() => {
@@ -36,50 +36,55 @@ export const useClubOwnershipV2 = (): ClubOwnershipData => {
           clubProfile: null,
           memberData: null,
           loading: false,
-          error: null
+          error: null,
         });
         return;
       }
 
       try {
         // Use the new database function
-        const { data: ownershipData, error } = await supabase
-          .rpc('get_user_club_profile', { p_user_id: user.id });
+        const { data: ownershipData, error } = await supabase.rpc(
+          'get_user_club_profile',
+          { p_user_id: user.id }
+        );
 
         if (error) {
           console.error('Error checking club ownership:', error);
           setData(prev => ({
             ...prev,
             loading: false,
-            error: error.message
+            error: error.message,
           }));
           return;
         }
 
         const clubData = ownershipData?.[0];
-        
+
         setData({
           isClubOwner: clubData?.is_owner || false,
-          clubProfile: clubData?.club_id ? {
-            id: clubData.club_id,
-            club_name: clubData.club_name,
-            verification_status: clubData.verification_status,
-            user_id: user.id
-          } : null,
-          memberData: clubData?.member_role ? {
-            role: clubData.member_role,
-            status: clubData.member_status
-          } : null,
+          clubProfile: clubData?.club_id
+            ? {
+                id: clubData.club_id,
+                club_name: clubData.club_name,
+                verification_status: clubData.verification_status,
+                user_id: user.id,
+              }
+            : null,
+          memberData: clubData?.member_role
+            ? {
+                role: clubData.member_role,
+                status: clubData.member_status,
+              }
+            : null,
           loading: false,
-          error: null
+          error: null,
         });
-
       } catch (error) {
         console.error('Error in useClubOwnershipV2:', error);
         setData(prev => ({
           ...prev,
           loading: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         }));
       }
     };

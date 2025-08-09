@@ -90,7 +90,7 @@ const EnhancedRegisterPage = () => {
         phone,
         password: phonePassword,
         fullName: phoneFullName,
-        referralCode: referralCode || undefined
+        referralCode: referralCode || undefined,
       });
 
       const { error } = await signUpWithPhone(phone);
@@ -115,7 +115,7 @@ const EnhancedRegisterPage = () => {
 
     try {
       const { error } = await verifyPhoneOtp(otpPhone, code);
-      
+
       if (error) {
         handleAuthError(error);
       } else {
@@ -139,7 +139,7 @@ const EnhancedRegisterPage = () => {
 
     try {
       const { error } = await signUpWithPhone(otpPhone);
-      
+
       if (error) {
         handleAuthError(error);
       } else {
@@ -222,7 +222,11 @@ const EnhancedRegisterPage = () => {
           className='fixed top-4 right-4 z-50 h-10 w-10 rounded-full border border-slate-300/60 bg-white/40 hover:bg-slate-100 hover:border-slate-400 dark:border-slate-700/50 dark:bg-slate-800/40 dark:hover:border-slate-500 dark:hover:bg-slate-800/60 transition-colors'
           aria-label='Chuyển giao diện'
         >
-          {theme === 'light' ? <Moon className='w-4 h-4 text-slate-700' /> : <Sun className='w-4 h-4 text-amber-300' />}
+          {theme === 'light' ? (
+            <Moon className='w-4 h-4 text-slate-700' />
+          ) : (
+            <Sun className='w-4 h-4 text-amber-300' />
+          )}
         </Button>
 
         {/* Back to Home Button */}
@@ -237,7 +241,10 @@ const EnhancedRegisterPage = () => {
         <div className='bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-slate-200/70 dark:border-slate-700/60 p-8 w-full max-w-md transition-colors duration-300'>
           {/* Logo and Brand */}
           <div className='text-center mb-8'>
-            <Link to='/' className='flex flex-col items-center justify-center group mb-4'>
+            <Link
+              to='/'
+              className='flex flex-col items-center justify-center group mb-4'
+            >
               <div className='relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-indigo-500/40 shadow-md shadow-indigo-900/30'>
                 <img
                   src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
@@ -249,7 +256,9 @@ const EnhancedRegisterPage = () => {
             <h1 className='text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2'>
               TẠO TÀI KHOẢN
             </h1>
-            <p className='text-slate-600 dark:text-slate-400'>Tạo tài khoản miễn phí</p>
+            <p className='text-slate-600 dark:text-slate-400'>
+              Tạo tài khoản miễn phí
+            </p>
           </div>
 
           {referralCode && (
@@ -324,7 +333,9 @@ const EnhancedRegisterPage = () => {
                     className='w-full h-12 text-lg rounded-[11px] border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
                   >
                     <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
-                    <span className='relative'>{loading ? 'Đang đăng ký...' : 'Đăng ký'}</span>
+                    <span className='relative'>
+                      {loading ? 'Đang đăng ký...' : 'Đăng ký'}
+                    </span>
                   </Button>
                 </div>
               </form>
@@ -380,7 +391,9 @@ const EnhancedRegisterPage = () => {
                     className='w-full h-12 text-lg rounded-[11px] border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
                   >
                     <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
-                    <span className='relative'>{loading ? 'Đang đăng ký...' : 'Đăng ký'}</span>
+                    <span className='relative'>
+                      {loading ? 'Đang đăng ký...' : 'Đăng ký'}
+                    </span>
                   </Button>
                 </div>
               </form>

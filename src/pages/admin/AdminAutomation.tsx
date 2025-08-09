@@ -19,7 +19,9 @@ const AdminAutomation = () => {
       <div className='flex items-center justify-center h-64'>
         <div className='text-center'>
           <h2 className='text-2xl font-bold mb-2'>Access Denied</h2>
-          <p className='text-muted-foreground'>You don't have permission to access this page.</p>
+          <p className='text-muted-foreground'>
+            You don't have permission to access this page.
+          </p>
         </div>
       </div>
     );
@@ -29,7 +31,10 @@ const AdminAutomation = () => {
     <>
       <Helmet>
         <title>Admin Automation Console</title>
-        <meta name='description' content='Manage and monitor tournament automation tasks and health.' />
+        <meta
+          name='description'
+          content='Manage and monitor tournament automation tasks and health.'
+        />
         <link rel='canonical' href='/admin/automation' />
       </Helmet>
       <AutomationConsole />
@@ -38,4 +43,3 @@ const AdminAutomation = () => {
 };
 
 export default AdminAutomation;
-

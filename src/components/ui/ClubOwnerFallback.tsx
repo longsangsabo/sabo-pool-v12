@@ -11,9 +11,9 @@ interface ClubOwnerFallbackProps {
 }
 
 export const ClubOwnerFallback: React.FC<ClubOwnerFallbackProps> = ({
-  title = "Quyền truy cập bị hạn chế",
-  message = "Bạn cần là chủ câu lạc bộ để truy cập trang này.",
-  showRegisterButton = true
+  title = 'Quyền truy cập bị hạn chế',
+  message = 'Bạn cần là chủ câu lạc bộ để truy cập trang này.',
+  showRegisterButton = true,
 }) => {
   const navigate = useNavigate();
 
@@ -27,27 +27,23 @@ export const ClubOwnerFallback: React.FC<ClubOwnerFallbackProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent className='space-y-4'>
-          <p className='text-muted-foreground'>
-            {message}
-          </p>
-          
+          <p className='text-muted-foreground'>{message}</p>
+
           {showRegisterButton && (
             <div className='space-y-2'>
               <p className='text-sm text-muted-foreground'>
-                Vui lòng đăng ký câu lạc bộ hoặc liên hệ quản trị viên để được hỗ trợ.
+                Vui lòng đăng ký câu lạc bộ hoặc liên hệ quản trị viên để được
+                hỗ trợ.
               </p>
               <div className='flex gap-2'>
-                <Button 
+                <Button
                   onClick={() => navigate('/club-registration')}
                   className='flex items-center gap-2'
                 >
                   <Building className='w-4 h-4' />
                   Đăng ký CLB
                 </Button>
-                <Button 
-                  variant='outline'
-                  onClick={() => navigate('/profile')}
-                >
+                <Button variant='outline' onClick={() => navigate('/profile')}>
                   Về trang cá nhân
                 </Button>
               </div>

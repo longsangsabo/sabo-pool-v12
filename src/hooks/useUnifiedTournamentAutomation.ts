@@ -28,7 +28,8 @@ interface AutomationLog {
 }
 
 export const useUnifiedTournamentAutomation = (tournamentId?: string) => {
-  const [automationStatus, setAutomationStatus] = useState<AutomationStatus | null>(null);
+  const [automationStatus, setAutomationStatus] =
+    useState<AutomationStatus | null>(null);
   const [automationLogs, setAutomationLogs] = useState<AutomationLog[]>([]);
   const [loading, setLoading] = useState(false);
   const [isFixing, setIsFixing] = useState(false);
@@ -38,15 +39,18 @@ export const useUnifiedTournamentAutomation = (tournamentId?: string) => {
     try {
       setLoading(true);
       const response = await TournamentAutomationService.status(tId);
-      
+
       if (response.success && response.data) {
         const statusData = response.data.automation_status || {};
         setAutomationStatus({
           isActive: statusData.tournament_status !== 'completed',
-          lastTriggered: statusData.status_calculated_at ? new Date(statusData.status_calculated_at) : null,
+          lastTriggered: statusData.status_calculated_at
+            ? new Date(statusData.status_calculated_at)
+            : null,
           successCount: statusData.completed_matches || 0,
           errorCount: 0, // Calculate from logs if needed
-          currentStatus: statusData.tournament_status === 'ongoing' ? 'processing' : 'idle',
+          currentStatus:
+            statusData.tournament_status === 'ongoing' ? 'processing' : 'idle',
           tournament_id: statusData.tournament_id,
           tournament_name: statusData.tournament_name,
           total_matches: statusData.total_matches,
@@ -70,47 +74,53 @@ export const useUnifiedTournamentAutomation = (tournamentId?: string) => {
   }, []);
 
   // Fix tournament progression using the automation service
-  const fixTournamentProgression = useCallback(async (tId?: string) => {
-    const targetId = tId || tournamentId;
-    if (!targetId) {
-      toast.error('Không có tournament ID');
-      return;
-    }
-
-    try {
-      setIsFixing(true);
-      toast.info('🔧 Đang sửa chữa tournament progression...');
-      
-      const response = await TournamentAutomationService.recoverOne(targetId);
-      
-      if (response.success) {
-        toast.success('✅ Đã sửa chữa tournament thành công');
-        // Reload status after fix
-        await loadAutomationStatus(targetId);
-      } else {
-        throw new Error(response.error || 'Không thể sửa chữa tournament');
+  const fixTournamentProgression = useCallback(
+    async (tId?: string) => {
+      const targetId = tId || tournamentId;
+      if (!targetId) {
+        toast.error('Không có tournament ID');
+        return;
       }
-    } catch (error: any) {
-      console.error('Fix tournament error:', error);
-      toast.error('❌ Lỗi khi sửa chữa: ' + error.message);
-    } finally {
-      setIsFixing(false);
-    }
-  }, [tournamentId, loadAutomationStatus]);
+
+      try {
+        setIsFixing(true);
+        toast.info('🔧 Đang sửa chữa tournament progression...');
+
+        const response = await TournamentAutomationService.recoverOne(targetId);
+
+        if (response.success) {
+          toast.success('✅ Đã sửa chữa tournament thành công');
+          // Reload status after fix
+          await loadAutomationStatus(targetId);
+        } else {
+          throw new Error(response.error || 'Không thể sửa chữa tournament');
+        }
+      } catch (error: any) {
+        console.error('Fix tournament error:', error);
+        toast.error('❌ Lỗi khi sửa chữa: ' + error.message);
+      } finally {
+        setIsFixing(false);
+      }
+    },
+    [tournamentId, loadAutomationStatus]
+  );
 
   // Force start tournament
-  const forceStartTournament = useCallback(async (tId?: string) => {
-    const targetId = tId || tournamentId;
-    if (!targetId) return;
+  const forceStartTournament = useCallback(
+    async (tId?: string) => {
+      const targetId = tId || tournamentId;
+      if (!targetId) return;
 
-    try {
-      await TournamentAutomationService.forceStart(targetId);
-      toast.success('🚀 Đã force start tournament');
-      await loadAutomationStatus(targetId);
-    } catch (error: any) {
-      toast.error('Lỗi force start: ' + error.message);
-    }
-  }, [tournamentId, loadAutomationStatus]);
+      try {
+        await TournamentAutomationService.forceStart(targetId);
+        toast.success('🚀 Đã force start tournament');
+        await loadAutomationStatus(targetId);
+      } catch (error: any) {
+        toast.error('Lỗi force start: ' + error.message);
+      }
+    },
+    [tournamentId, loadAutomationStatus]
+  );
 
   // Health check for all tournaments
   const performHealthCheck = useCallback(async () => {

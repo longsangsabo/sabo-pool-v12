@@ -4,9 +4,10 @@
  */
 
 export const getAuthRedirectUrl = (path = '/auth/callback') => {
-  const baseUrl = process.env.NODE_ENV === 'production' 
-    ? process.env.VITE_APP_URL || 'https://saboarena.com'
-    : window.location.origin;
+  const baseUrl =
+    process.env.NODE_ENV === 'production'
+      ? process.env.VITE_APP_URL || 'https://saboarena.com'
+      : window.location.origin;
   return `${baseUrl}${path}`;
 };
 
@@ -14,17 +15,17 @@ export const getAuthRedirectUrl = (path = '/auth/callback') => {
 export const AUTH_REDIRECTS = {
   // All email auth flows → auth callback
   emailSignup: getAuthRedirectUrl('/auth/callback?type=email_signup'),
-  emailResend: getAuthRedirectUrl('/auth/callback?type=email_confirm'), 
+  emailResend: getAuthRedirectUrl('/auth/callback?type=email_confirm'),
   emailLogin: getAuthRedirectUrl('/auth/callback?type=email_login'),
-  
+
   // OAuth providers → auth callback
   oauth: getAuthRedirectUrl('/auth/callback?type=oauth'),
-  
+
   // Phone OTP (no redirect needed - handled in-app)
   phoneOtp: null,
-  
+
   // Password reset
-  passwordReset: getAuthRedirectUrl('/auth/callback?type=password_reset')
+  passwordReset: getAuthRedirectUrl('/auth/callback?type=password_reset'),
 };
 
 // Success messages based on auth type
@@ -64,13 +65,13 @@ export const getAuthErrorMessage = (type: string | null): string => {
 // Validate redirect URL to prevent open redirect attacks
 export const getSecureRedirectUrl = (path: string): string => {
   const allowedPaths = [
-    '/dashboard', 
-    '/admin', 
+    '/dashboard',
+    '/admin',
     '/club-management',
     '/profile',
-    '/settings'
+    '/settings',
   ];
-  
+
   return allowedPaths.includes(path) ? path : '/dashboard';
 };
 
@@ -101,9 +102,9 @@ export const AUTH_CONFIG = {
   oauth: OAUTH_CONFIGS,
   messages: {
     success: getAuthSuccessMessage,
-    error: getAuthErrorMessage
+    error: getAuthErrorMessage,
   },
   security: {
-    validateRedirect: getSecureRedirectUrl
-  }
+    validateRedirect: getSecureRedirectUrl,
+  },
 } as const;

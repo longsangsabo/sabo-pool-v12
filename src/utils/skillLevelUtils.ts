@@ -1,7 +1,7 @@
 import { SKILL_LEVELS } from '@/types/profile';
 
 export const getSkillLevelStyle = (
-  skillLevel: keyof typeof SKILL_LEVELS, 
+  skillLevel: keyof typeof SKILL_LEVELS,
   theme: 'light' | 'dark' = 'light'
 ) => {
   const darkStyles = {
@@ -12,9 +12,10 @@ export const getSkillLevelStyle = (
   };
 
   // Fallback to 'beginner' if skillLevel is invalid
-  const safeSkillLevel = skillLevel && SKILL_LEVELS[skillLevel] ? skillLevel : 'beginner';
-  
-  return theme === 'dark' 
+  const safeSkillLevel =
+    skillLevel && SKILL_LEVELS[skillLevel] ? skillLevel : 'beginner';
+
+  return theme === 'dark'
     ? darkStyles[safeSkillLevel] || darkStyles.beginner
     : SKILL_LEVELS[safeSkillLevel]?.color || SKILL_LEVELS.beginner.color;
 };

@@ -37,10 +37,30 @@ import {
 
 // 4 tabs chính hiển thị trên navigation bar
 const mainNavItems = [
-  { icon: Home, path: '/club-management', label: 'Tổng quan', color: 'text-blue-600' },
-  { icon: Trophy, path: '/club-management/tournaments', label: 'Giải đấu', color: 'text-amber-600' },
-  { icon: Users, path: '/club-management/members', label: 'Thành viên', color: 'text-green-600' },
-  { icon: Calendar, path: '/club-management/schedule', label: 'Lịch trình', color: 'text-purple-600' },
+  {
+    icon: Home,
+    path: '/club-management',
+    label: 'Tổng quan',
+    color: 'text-blue-600',
+  },
+  {
+    icon: Trophy,
+    path: '/club-management/tournaments',
+    label: 'Giải đấu',
+    color: 'text-amber-600',
+  },
+  {
+    icon: Users,
+    path: '/club-management/members',
+    label: 'Thành viên',
+    color: 'text-green-600',
+  },
+  {
+    icon: Calendar,
+    path: '/club-management/schedule',
+    label: 'Lịch trình',
+    color: 'text-purple-600',
+  },
 ];
 
 // Các trang quan trọng khác trong dropdown "Thêm"
@@ -220,8 +240,8 @@ export const ClubMobileNavigation: React.FC = () => {
                 <Icon
                   className={cn(
                     'w-6 h-6 transition-all duration-300',
-                    isActive 
-                      ? 'drop-shadow-sm scale-110' 
+                    isActive
+                      ? 'drop-shadow-sm scale-110'
                       : `hover:scale-110 ${item.color}`
                   )}
                 />
@@ -277,7 +297,9 @@ export const ClubMobileNavigation: React.FC = () => {
                 )}
               >
                 <MoreHorizontal className='w-6 h-6 text-slate-600' />
-                <span className='text-xs mt-1.5 font-medium text-muted-foreground'>Thêm</span>
+                <span className='text-xs mt-1.5 font-medium text-muted-foreground'>
+                  Thêm
+                </span>
               </Button>
             </DropdownMenuTrigger>
 
@@ -307,12 +329,19 @@ export const ClubMobileNavigation: React.FC = () => {
                           }}
                           className={cn(
                             'flex items-center gap-3 cursor-pointer py-2.5 px-3 rounded-lg mx-1 mb-1 transition-all duration-200',
-                            isActive 
-                              ? 'bg-primary/10 text-primary font-medium shadow-sm' 
+                            isActive
+                              ? 'bg-primary/10 text-primary font-medium shadow-sm'
                               : 'hover:bg-muted/50'
                           )}
                         >
-                          <Icon className={cn('w-4 h-4', isActive ? 'text-primary' : 'text-muted-foreground')} />
+                          <Icon
+                            className={cn(
+                              'w-4 h-4',
+                              isActive
+                                ? 'text-primary'
+                                : 'text-muted-foreground'
+                            )}
+                          />
                           <span className='flex-1'>{item.label}</span>
                           {item.path.includes('verification') &&
                             verificationCount &&

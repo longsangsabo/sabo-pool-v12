@@ -20,7 +20,8 @@ export const usePlayerStats = () => {
     let cancelled = false;
 
     const load = async () => {
-      setLoading(true); setError(null);
+      setLoading(true);
+      setError(null);
       try {
         const { data, error } = await supabase
           .from('player_rankings')
@@ -46,10 +47,20 @@ export const usePlayerStats = () => {
     load();
 
     // Realtime subscription optional
-    const channel = supabase.channel('player-stats')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'player_rankings', filter: `user_id=eq.${user.id}` }, () => {
-        load();
-      })
+    const channel = supabase
+      .channel('player-stats')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'player_rankings',
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          load();
+        }
+      )
       .subscribe();
 
     return () => {

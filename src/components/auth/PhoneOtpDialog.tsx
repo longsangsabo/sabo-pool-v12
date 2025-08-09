@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@/components/ui/input-otp';
 import { maskPhone } from '@/utils/phone';
 
 interface PhoneOtpDialogProps {
@@ -59,7 +68,7 @@ export const PhoneOtpDialog: React.FC<PhoneOtpDialogProps> = ({
 
   const handleResend = async () => {
     if (!onResend || !canResend) return;
-    
+
     setResendLoading(true);
     try {
       await onResend();
@@ -73,15 +82,15 @@ export const PhoneOtpDialog: React.FC<PhoneOtpDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className='sm:max-w-md'>
         <DialogHeader>
           <DialogTitle>Xác thực OTP</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
+        <div className='space-y-4'>
+          <p className='text-sm text-muted-foreground'>
             Mã xác thực đã được gửi tới số {maskPhone(phone)}.
           </p>
-          <div className="flex justify-center">
+          <div className='flex justify-center'>
             <InputOTP maxLength={6} value={code} onChange={setCode}>
               <InputOTPGroup>
                 {Array.from({ length: 6 }).map((_, i) => (
@@ -92,12 +101,12 @@ export const PhoneOtpDialog: React.FC<PhoneOtpDialogProps> = ({
           </div>
 
           {/* Resend section */}
-          <div className="text-center text-sm text-muted-foreground">
+          <div className='text-center text-sm text-muted-foreground'>
             {canResend ? (
               onResend ? (
-                <Button 
-                  variant="link" 
-                  className="p-0 h-auto text-sm"
+                <Button
+                  variant='link'
+                  className='p-0 h-auto text-sm'
                   onClick={handleResend}
                   disabled={resendLoading}
                 >
@@ -111,11 +120,18 @@ export const PhoneOtpDialog: React.FC<PhoneOtpDialogProps> = ({
             )}
           </div>
 
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={onClose} disabled={loading || resendLoading}>
+          <div className='flex justify-end gap-2 pt-2'>
+            <Button
+              variant='outline'
+              onClick={onClose}
+              disabled={loading || resendLoading}
+            >
               Hủy
             </Button>
-            <Button onClick={handleVerify} disabled={loading || resendLoading || code.length < 6}>
+            <Button
+              onClick={handleVerify}
+              disabled={loading || resendLoading || code.length < 6}
+            >
               {loading ? 'Đang xác minh...' : 'Xác minh'}
             </Button>
           </div>

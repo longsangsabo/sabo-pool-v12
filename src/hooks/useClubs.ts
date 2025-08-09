@@ -26,12 +26,13 @@ export const useClubs = (limit = 50) => {
           .limit(limit);
         if (error) throw error;
         if (!cancelled) {
-          setClubs((data as any[])?.map(c => ({
-            id: c.id,
-            name: c.name || c.club_name || 'CLB',
-            address: c.address,
-            status: c.status
-          }))
+          setClubs(
+            (data as any[])?.map(c => ({
+              id: c.id,
+              name: c.name || c.club_name || 'CLB',
+              address: c.address,
+              status: c.status,
+            }))
           );
         }
       } catch (e: any) {
@@ -41,7 +42,9 @@ export const useClubs = (limit = 50) => {
       }
     };
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [limit]);
 
   return { clubs, loading, error };

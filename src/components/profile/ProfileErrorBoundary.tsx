@@ -72,7 +72,11 @@ class ProfileErrorBoundary extends Component<Props, State> {
 
   handleRecover = () => {
     if (this.props.onRecover) {
-      try { this.props.onRecover(); } catch (e) { console.warn('onRecover error', e); }
+      try {
+        this.props.onRecover();
+      } catch (e) {
+        console.warn('onRecover error', e);
+      }
     }
     this.setState({ hasError: false, error: null, retryCount: 0 });
   };

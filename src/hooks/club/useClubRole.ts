@@ -44,14 +44,14 @@ export const useIsClubOwner = (userId?: string, enabled: boolean = true) => {
     queryKey: ['is-club-owner', userId],
     queryFn: async () => {
       if (!userId) return false;
-      
+
       // Check if user has club_owner role in profiles
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('user_id', userId)
         .single();
-        
+
       if (profileError || !profileData?.role?.includes('club_owner')) {
         return false;
       }
@@ -63,12 +63,12 @@ export const useIsClubOwner = (userId?: string, enabled: boolean = true) => {
         .eq('user_id', userId)
         .eq('verification_status', 'approved')
         .limit(1);
-        
+
       if (clubError) {
         console.warn('[useIsClubOwner] club_profiles query error', clubError);
         return false;
       }
-      
+
       return Boolean(clubData && clubData.length > 0);
     },
     enabled: enabled && !!userId,

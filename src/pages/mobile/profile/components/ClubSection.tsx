@@ -18,19 +18,25 @@ export const ClubSection: React.FC<ClubSectionProps> = ({ theme, role }) => {
         </p>
         {role === 'club_owner' || role === 'both' ? (
           <div className='space-y-2'>
-            <div className={`bg-blue-50 border border-blue-200 rounded-lg p-3 ${
-              theme === 'dark'
-                ? 'bg-blue-900/20 border-blue-800/50 backdrop-blur-sm'
-                : 'bg-blue-50 border-blue-200'
-            }`}>
-              <div className={`text-sm font-medium ${
-                theme === 'dark' ? 'text-blue-200' : 'text-blue-800'
-              }`}>
+            <div
+              className={`bg-blue-50 border border-blue-200 rounded-lg p-3 ${
+                theme === 'dark'
+                  ? 'bg-blue-900/20 border-blue-800/50 backdrop-blur-sm'
+                  : 'bg-blue-50 border-blue-200'
+              }`}
+            >
+              <div
+                className={`text-sm font-medium ${
+                  theme === 'dark' ? 'text-blue-200' : 'text-blue-800'
+                }`}
+              >
                 Bạn đã là chủ CLB
               </div>
-              <div className={`text-xs mt-1 ${
-                theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
-              }`}>
+              <div
+                className={`text-xs mt-1 ${
+                  theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
+                }`}
+              >
                 Quản lý câu lạc bộ hiện tại của bạn
               </div>
             </div>

@@ -19,6 +19,10 @@ import { ReAuthModal } from '@/components/auth/ReAuthModal';
 // ✅ Import debug utilities for tournament refresh
 import '@/utils/debugTournamentRefresh';
 
+// 🔧 Debug environment and auth in development
+import EnvironmentDebugger from '@/components/debug/EnvironmentDebugger';
+import '@/utils/testAuth';
+
 // Lazy load components - Public pages
 const HomePage = lazy(() => import('@/pages/Home'));
 // Use enhanced login page with role-based redirect logic
@@ -256,6 +260,8 @@ const App = () => {
             <CombinedProviders>
               <AppContent />
               <ReAuthModal />
+              {/* 🔧 Environment debugger for development */}
+              {import.meta.env.DEV && <EnvironmentDebugger />}
             </CombinedProviders>
             <Toaster />
           </Router>

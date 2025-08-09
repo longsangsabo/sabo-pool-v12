@@ -1105,7 +1105,7 @@ body.tech-theme {
   position: fixed;
   bottom: 88px;
   right: 16px;
-  z-index: 998;
+  z-index: 997; /* Reduced from 998 to avoid conflicts */
 }
 
 .mobile-fab-primary {
@@ -1119,11 +1119,14 @@ body.tech-theme {
   );
   color: white;
   box-shadow: 0 4px 12px hsl(var(--primary) / 40%);
-  transition: all 0.3s ease;
+  transition: all 0.15s ease; /* Faster transition */
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: manipulation; /* Better touch handling */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-fab-primary:hover {

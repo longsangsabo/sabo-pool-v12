@@ -144,7 +144,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     }
   }, [fetchProfilesForUserIds]);
 
-  // Debounced fetch with pagination
+  // Debounced fetch with pagination and smart caching
   const fetchChallenges = useCallback(async (reset: boolean = false) => {
     if (!user) {
       setLoading(false);
@@ -152,6 +152,19 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     }
 
     try {
+      // Check cache freshness to prevent unnecessary fetches
+      if (!reset) {
+        const lastFetch = localStorage.getItem('lastChallengeFetch');
+        const cacheAge = lastFetch ? Date.now() - parseInt(lastFetch) : Infinity;
+        
+        // Use cached data if fetch happened within last 30 seconds
+        if (cacheAge < 30000 && challenges.length > 0) {
+          console.log('🚀 Using cached challenge data to prevent excessive fetching');
+          setLoading(false);
+          return;
+        }
+      }
+
       setLoading(true);
       setError(null);
       let currentPage = reset ? 0 : page;
@@ -169,6 +182,9 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
         .range(from, to);
 
       if (fetchError) throw fetchError;
+
+      // Update cache timestamp
+      localStorage.setItem('lastChallengeFetch', Date.now().toString());
 
       // Collect unique user IDs
       const userIds = new Set<string>();
@@ -765,20 +781,49 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     },
   });
 
-  // Optimized real-time subscription - single channel
+  // Enhanced real-time subscription with smart debouncing
   useEffect(() => {
     if (!user) return;
+    
+    console.log('🔄 Setting up optimized real-time subscription for user:', user.id);
     fetchChallenges(true);
-    const subscription = supabase
-      .channel('optimized_challenges_diff')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'challenges' }, (payload: any) => {
-        const changedId = (payload?.new && (payload.new as any).id) || (payload?.old && (payload.old as any).id);
-        console.log('🔄 Diff event:', payload?.eventType, changedId);
+    
+    // Debounced refresh to prevent excessive calls
+    let refreshTimeout: NodeJS.Timeout;
+    const debouncedApplyDiff = (payload: any) => {
+      if (refreshTimeout) clearTimeout(refreshTimeout);
+      refreshTimeout = setTimeout(() => {
+        console.log('🔄 Applying debounced diff:', payload?.eventType);
         applyRealtimeDiff(payload);
+      }, 500); // 500ms debounce to group rapid changes
+    };
+
+    const subscription = supabase
+      .channel(`optimized_challenges_${user.id}`)
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'challenges',
+        // Only listen to changes relevant to this user
+        filter: `or(challenger_id.eq.${user.id},opponent_id.eq.${user.id},opponent_id.is.null)`
+      }, (payload: any) => {
+        const changedId = (payload?.new && (payload.new as any).id) || (payload?.old && (payload.old as any).id);
+        console.log('🔄 Challenge event:', payload?.eventType, changedId?.slice(-8));
+        
+        // Only process meaningful changes
+        if (payload?.eventType === 'INSERT' || 
+            payload?.eventType === 'UPDATE' || 
+            payload?.eventType === 'DELETE') {
+          debouncedApplyDiff(payload);
+        }
       })
       .subscribe();
-    return () => { supabase.removeChannel(subscription); };
-  }, [user, fetchChallenges, applyRealtimeDiff]);
+      
+    return () => { 
+      if (refreshTimeout) clearTimeout(refreshTimeout);
+      supabase.removeChannel(subscription); 
+    };
+  }, [user?.id]); // Only depend on user.id to prevent unnecessary re-subscriptions
 
   const submitScore = useCallback(
     async (

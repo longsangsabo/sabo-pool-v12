@@ -1,20 +1,28 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo, memo, lazy, Suspense } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { useOptimizedChallenges } from '@/hooks/useOptimizedChallenges';
 import { toast } from 'sonner';
 import { Calendar, Search, Trophy, Users, Zap, RefreshCw, Clock, AlertCircle } from 'lucide-react';
-// Extracted modular mobile components
-import { CountdownChip } from './mobile/CountdownChip';
-import { MobileSkeletonList, MobileSkeletonStats } from './mobile/MobileChallengeSkeletons';
-import { PullToRefreshIndicator } from './mobile/PullToRefresh';
+
+// 🚀 Lazy load heavy components for better initial performance
+const CountdownChip = lazy(() => import('./mobile/CountdownChip').then(m => ({ default: m.CountdownChip })));
+const MobileSkeletonList = lazy(() => import('./mobile/MobileChallengeSkeletons').then(m => ({ default: m.MobileSkeletonList })));
+const MobileSkeletonStats = lazy(() => import('./mobile/MobileChallengeSkeletons').then(m => ({ default: m.MobileSkeletonStats })));
+const PullToRefreshIndicator = lazy(() => import('./mobile/PullToRefresh').then(m => ({ default: m.PullToRefreshIndicator })));
+
+// Fallback components for lazy loading
+const SkeletonFallback = () => (
+  <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-8 w-24 rounded"></div>
+);
 import { VirtualizedChallengeList } from './mobile/VirtualizedChallengeList';
 import UnifiedChallengeCard from './UnifiedChallengeCard';
 import { OpenChallengeCard } from './OpenChallengeCard';
 import { CompletedChallengeCard } from './CompletedChallengeCard';
 import LiveMatchCard from './LiveMatchCard';
 import UnifiedCreateChallengeModal from '@/components/modals/UnifiedCreateChallengeModal';
+import ImprovedCreateChallengeModal from '@/components/modals/ImprovedCreateChallengeModal';
 import { ActiveChallengeHighlight } from './ActiveChallengeHighlight';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ChallengeProfile } from '@/types/challenge';
@@ -510,7 +518,9 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
                         </div>
                       </div>
                       <div className='flex flex-col items-end gap-1'>
-                        <CountdownChip info={getCountdownInfo(challenge)} size="sm" />
+                        <Suspense fallback={<SkeletonFallback />}>
+                          <CountdownChip info={getCountdownInfo(challenge)} size="sm" />
+                        </Suspense>
                         <div className='text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1'>
                           {new Date(challenge.created_at).toLocaleTimeString(
                             'vi-VN',
@@ -708,8 +718,10 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
   const [selectedChallenge, setSelectedChallenge] = useState<any>(null);
   const [isChallengeDetailOpen, setIsChallengeDetailOpen] = useState(false);
 
-  // 🚀 Performance: Memoize expensive data processing
+  // 🚀 Performance: Memoize expensive data processing with better dependencies
   const filteredChallenges = useMemo(() => {
+    console.log('🎯 Recalculating filtered challenges...');
+    
     const openChallenges = displayChallenges
       .filter(c => !c.opponent_id && c.status === 'pending' && c.challenger_id !== user?.id)
       .map(convertToLocalChallenge);
@@ -726,12 +738,28 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
       .filter(c => c.status === 'completed' && (c.challenger_id === user?.id || c.opponent_id === user?.id))
       .map(convertToLocalChallenge);
 
-    return { openChallenges, ongoingChallenges, upcomingChallenges, completedChallenges };
-  }, [displayChallenges, user?.id]);
+    console.log('📊 Filtered results:', {
+      open: openChallenges.length,
+      ongoing: ongoingChallenges.length, 
+      upcoming: upcomingChallenges.length,
+      completed: completedChallenges.length
+    });
 
-  // 🎨 UX: Enhanced pull-to-refresh with haptic feedback
+    return { openChallenges, ongoingChallenges, upcomingChallenges, completedChallenges };
+  }, [displayChallenges.length, user?.id]); // Simplified dependencies - only length to prevent frequent recalculation
+
+  // 🎨 UX: Enhanced pull-to-refresh with smarter caching
   const handleRefresh = useCallback(async () => {
     if (isRefreshing) return;
+    
+    // Check if last refresh was recent to prevent spam
+    const lastRefresh = localStorage.getItem('lastChallengeRefresh');
+    const now = Date.now();
+    if (lastRefresh && now - parseInt(lastRefresh) < 5000) { // 5 second cooldown
+      console.log('🔄 Refresh cooldown active, skipping...');
+      toast.info('Đang tải dữ liệu mới nhất...');
+      return;
+    }
     
     // Trigger haptic feedback
     if ('vibrate' in navigator) {
@@ -741,6 +769,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
     setIsRefreshing(true);
     try {
       await fetchChallenges(true);
+      localStorage.setItem('lastChallengeRefresh', now.toString());
       toast.success('🔄 Dữ liệu đã được cập nhật!');
     } catch (error) {
       toast.error('❌ Lỗi khi tải dữ liệu');
@@ -893,9 +922,10 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
     }
   };
 
-  const handleCreateChallenge = () => {
+  const handleCreateChallenge = useCallback(() => {
+    console.log('🎯 handleCreateChallenge called, opening modal...');
     setIsCreateModalOpen(true);
-  };
+  }, []);
 
   const handleChallengeCreated = () => {
     setIsCreateModalOpen(false);
@@ -976,7 +1006,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
 
     return (
       <div
-        className={`fixed inset-0 z-50 ${isChallengeDetailOpen ? 'block' : 'hidden'}`}
+        className={`fixed inset-0 z-[9999] ${isChallengeDetailOpen ? 'block' : 'hidden'}`}
         role='dialog'
         aria-modal='true'
         aria-labelledby='challenge-modal-title'
@@ -1319,7 +1349,9 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
                   />
                   {/* Add countdown chip for upcoming challenges */}
                   <div className="absolute top-3 right-3">
-                    <CountdownChip info={getCountdownInfo(challenge)} size="md" />
+                    <Suspense fallback={<SkeletonFallback />}>
+                      <CountdownChip info={getCountdownInfo(challenge)} size="md" />
+                    </Suspense>
                   </div>
                 </div>
               ))
@@ -1413,8 +1445,18 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
                     🔄 Làm mới
                   </button>
                   <button
-                    onClick={handleCreateChallenge}
-                    className='px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('🎯 Empty State Create Challenge Button Clicked');
+                      handleCreateChallenge();
+                    }}
+                    className='px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors touch-manipulation'
+                    style={{ 
+                      touchAction: 'manipulation',
+                      userSelect: 'none',
+                      WebkitTapHighlightColor: 'transparent'
+                    }}
                   >
                     ➕ Tạo thách đấu
                   </button>
@@ -1520,6 +1562,12 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
         <div className='flex items-center justify-between mb-4'>
           <h1 className='text-xl font-bold text-foreground'>🏆 Thách Đấu</h1>
           <div className='flex items-center gap-2'>
+            {/* Debug Info */}
+            {import.meta.env.DEV && (
+              <div className='text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded'>
+                Modal: {isCreateModalOpen ? 'OPEN' : 'CLOSED'}
+              </div>
+            )}
             <button
               onClick={handleRefresh}
               disabled={isRefreshing || loading}
@@ -1531,8 +1579,18 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
               <span className='font-medium'>{isRefreshing ? 'Đang tải...' : 'Làm mới'}</span>
             </button>
             <button
-              onClick={handleCreateChallenge}
-              className='flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground rounded-xl transition-all duration-200 mobile-touch-button font-semibold shadow-md transform hover:scale-105 active:scale-95'
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🎯 Create Challenge Button Clicked');
+                handleCreateChallenge();
+              }}
+              className='flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground rounded-xl transition-all duration-100 mobile-touch-button font-semibold shadow-md touch-manipulation'
+              style={{ 
+                touchAction: 'manipulation',
+                userSelect: 'none',
+                WebkitTapHighlightColor: 'transparent'
+              }}
             >
               <span className='text-lg'>+</span>
               <span className='text-sm'>Tạo thách đấu</span>
@@ -1635,12 +1693,15 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
         </Tabs>
       </div>
 
-      {/* Create Challenge Modal */}
-      <UnifiedCreateChallengeModal
+      {/* Create Challenge Modal - Improved Version */}
+      {console.log('🎯 Rendering ImprovedCreateChallengeModal, isOpen:', isCreateModalOpen)}
+      <ImprovedCreateChallengeModal
         isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        onClose={() => {
+          console.log('🎯 Closing ImprovedCreateChallengeModal');
+          setIsCreateModalOpen(false);
+        }}
         onChallengeCreated={handleChallengeCreated}
-        variant='standard'
       />
 
       {/* Challenge Detail Modal */}

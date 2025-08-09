@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import {
   EnhancedAuthTabs,
   PhoneTabContent,
@@ -17,7 +18,7 @@ import { AuthDivider } from '@/components/auth/AuthDivider';
 import { TermsCheckbox } from '@/components/auth/TermsCheckbox';
 import { OAuthSetupGuide } from '@/components/auth/OAuthSetupGuide';
 import { handleAuthError } from '@/utils/authHelpers';
-import { Gift } from 'lucide-react';
+import { Gift, Moon, Sun, ArrowLeft } from 'lucide-react';
 
 const EnhancedRegisterPage = () => {
   const [phone, setPhone] = useState('');
@@ -35,6 +36,7 @@ const EnhancedRegisterPage = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
   const { signUpWithPhone, signUpWithEmail } = useAuth();
   const [searchParams] = useSearchParams();
   const referralCode = searchParams.get('ref');
@@ -156,22 +158,52 @@ const EnhancedRegisterPage = () => {
   return (
     <>
       <Helmet>
-        <title>Đăng ký - SABO ARENA</title>
+        <title>ĐĂNG KÝ - SABO ARENA</title>
       </Helmet>
 
-      <div className='min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 flex items-center justify-center p-4'>
-        <div className='bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md'>
+      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center p-4 transition-colors duration-300'>
+        {/* Theme Toggle Button */}
+        <Button
+          variant='ghost'
+          size='sm'
+          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          className='fixed top-4 right-4 z-50 h-10 w-10 rounded-full border border-slate-300/60 bg-white/40 hover:bg-slate-100 hover:border-slate-400 dark:border-slate-700/50 dark:bg-slate-800/40 dark:hover:border-slate-500 dark:hover:bg-slate-800/60 transition-colors'
+          aria-label='Chuyển giao diện'
+        >
+          {theme === 'light' ? <Moon className='w-4 h-4 text-slate-700' /> : <Sun className='w-4 h-4 text-amber-300' />}
+        </Button>
+
+        {/* Back to Home Button */}
+        <Link
+          to='/'
+          className='fixed top-4 left-4 z-50 flex items-center gap-2 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors'
+        >
+          <ArrowLeft className='w-4 h-4' />
+          <span className='text-sm font-medium'>Về trang chủ</span>
+        </Link>
+
+        <div className='bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-slate-200/70 dark:border-slate-700/60 p-8 w-full max-w-md transition-colors duration-300'>
+          {/* Logo and Brand */}
           <div className='text-center mb-8'>
-            <h1 className='text-3xl font-bold text-gray-800 mb-2'>
-              🎱 Đăng ký
+            <Link to='/' className='flex flex-col items-center justify-center group mb-4'>
+              <div className='relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-indigo-500/40 shadow-md shadow-indigo-900/30'>
+                <img
+                  src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+                  alt='SABO ARENA'
+                  className='w-full h-full object-cover transition-transform group-hover:scale-105'
+                />
+              </div>
+            </Link>
+            <h1 className='text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2'>
+              TẠO TÀI KHOẢN
             </h1>
-            <p className='text-gray-600'>SABO ARENA</p>
+            <p className='text-slate-600 dark:text-slate-400'>Tạo tài khoản miễn phí</p>
           </div>
 
           {referralCode && (
-            <Alert className='mb-6 border-green-200 bg-green-50'>
-              <Gift className='h-4 w-4 text-green-600' />
-              <AlertDescription className='text-green-800'>
+            <Alert className='mb-6 border-emerald-200 bg-emerald-50 dark:border-emerald-700/50 dark:bg-emerald-900/20'>
+              <Gift className='h-4 w-4 text-emerald-600 dark:text-emerald-400' />
+              <AlertDescription className='text-emerald-800 dark:text-emerald-300'>
                 <strong>Chúc mừng!</strong> Bạn được giới thiệu bởi mã:{' '}
                 <strong>{referralCode}</strong>
                 <br />
@@ -180,12 +212,12 @@ const EnhancedRegisterPage = () => {
             </Alert>
           )}
 
-          <div className='space-y-3'>
+          {/* <div className='space-y-3'>
             <FacebookLoginButton />
             <GoogleLoginButton />
-          </div>
-          <OAuthSetupGuide />
-          <AuthDivider />
+          </div> */}
+          {/* <OAuthSetupGuide /> */}
+          {/* <AuthDivider /> */}
 
           <EnhancedAuthTabs defaultTab='phone'>
             <PhoneTabContent>
@@ -195,7 +227,7 @@ const EnhancedRegisterPage = () => {
                   value={phoneFullName}
                   onChange={e => setPhoneFullName(e.target.value)}
                   placeholder='Họ và tên'
-                  className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                  className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                   required
                   disabled={loading}
                 />
@@ -204,7 +236,7 @@ const EnhancedRegisterPage = () => {
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   placeholder='0961167717'
-                  className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                  className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                   required
                   disabled={loading}
                   maxLength={10}
@@ -215,7 +247,7 @@ const EnhancedRegisterPage = () => {
                   value={phonePassword}
                   onChange={e => setPhonePassword(e.target.value)}
                   placeholder='Mật khẩu (ít nhất 6 ký tự)'
-                  className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                  className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                   required
                   disabled={loading}
                 />
@@ -224,7 +256,7 @@ const EnhancedRegisterPage = () => {
                   value={phoneConfirmPassword}
                   onChange={e => setPhoneConfirmPassword(e.target.value)}
                   placeholder='Xác nhận mật khẩu'
-                  className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                  className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                   required
                   disabled={loading}
                 />
@@ -233,13 +265,16 @@ const EnhancedRegisterPage = () => {
                   onCheckedChange={setPhoneTermsAccepted}
                   disabled={loading}
                 />
-                <Button
-                  type='submit'
-                  disabled={loading || !phoneTermsAccepted}
-                  className='w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-xl font-semibold'
-                >
-                  {loading ? 'Đang đăng ký...' : 'Đăng ký'}
-                </Button>
+                <div className='group relative inline-flex rounded-xl p-[1px] bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 shadow-lg shadow-indigo-900/40 hover:shadow-indigo-800/60 transition-shadow w-full'>
+                  <Button
+                    type='submit'
+                    disabled={loading || !phoneTermsAccepted}
+                    className='w-full h-12 text-lg rounded-[11px] border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
+                  >
+                    <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
+                    <span className='relative'>{loading ? 'Đang đăng ký...' : 'Đăng ký'}</span>
+                  </Button>
+                </div>
               </form>
             </PhoneTabContent>
 
@@ -250,7 +285,7 @@ const EnhancedRegisterPage = () => {
                   value={emailFullName}
                   onChange={e => setEmailFullName(e.target.value)}
                   placeholder='Họ và tên'
-                  className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                  className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                   required
                   disabled={loading}
                 />
@@ -259,7 +294,7 @@ const EnhancedRegisterPage = () => {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder='Email'
-                  className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                  className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                   required
                   disabled={loading}
                 />
@@ -268,7 +303,7 @@ const EnhancedRegisterPage = () => {
                   value={emailPassword}
                   onChange={e => setEmailPassword(e.target.value)}
                   placeholder='Mật khẩu (ít nhất 6 ký tự)'
-                  className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                  className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                   required
                   disabled={loading}
                 />
@@ -277,7 +312,7 @@ const EnhancedRegisterPage = () => {
                   value={emailConfirmPassword}
                   onChange={e => setEmailConfirmPassword(e.target.value)}
                   placeholder='Xác nhận mật khẩu'
-                  className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                  className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                   required
                   disabled={loading}
                 />
@@ -286,33 +321,30 @@ const EnhancedRegisterPage = () => {
                   onCheckedChange={setEmailTermsAccepted}
                   disabled={loading}
                 />
-                <Button
-                  type='submit'
-                  disabled={loading || !emailTermsAccepted}
-                  className='w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-xl font-semibold'
-                >
-                  {loading ? 'Đang đăng ký...' : 'Đăng ký'}
-                </Button>
+                <div className='group relative inline-flex rounded-xl p-[1px] bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 shadow-lg shadow-indigo-900/40 hover:shadow-indigo-800/60 transition-shadow w-full'>
+                  <Button
+                    type='submit'
+                    disabled={loading || !emailTermsAccepted}
+                    className='w-full h-12 text-lg rounded-[11px] border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
+                  >
+                    <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
+                    <span className='relative'>{loading ? 'Đang đăng ký...' : 'Đăng ký'}</span>
+                  </Button>
+                </div>
               </form>
             </EmailTabContent>
           </EnhancedAuthTabs>
 
           <div className='text-center mt-6 space-y-4'>
-            <div className='text-gray-600 text-sm'>
+            <div className='text-slate-600 dark:text-slate-400 text-sm'>
               Đã có tài khoản?{' '}
               <Link
                 to='/auth/login'
-                className='text-blue-600 hover:text-blue-800 font-medium'
+                className='text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium transition-colors'
               >
                 Đăng nhập ngay
               </Link>
             </div>
-            <Link
-              to='/'
-              className='inline-block text-gray-500 hover:text-gray-700 text-sm'
-            >
-              ← Về trang chủ
-            </Link>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import {
   EnhancedAuthTabs,
   PhoneTabContent,
@@ -16,6 +17,7 @@ import { AuthDivider } from '@/components/auth/AuthDivider';
 import { OAuthSetupGuide } from '@/components/auth/OAuthSetupGuide';
 import { handleAuthError } from '@/utils/authHelpers';
 import { supabase } from '@/integrations/supabase/client';
+import { Moon, Sun, ArrowLeft } from 'lucide-react';
 
 const EnhancedLoginPage = () => {
   // Phone login state
@@ -28,6 +30,7 @@ const EnhancedLoginPage = () => {
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
   const {
     signInWithPhone,
     signInWithEmail,
@@ -212,9 +215,9 @@ const EnhancedLoginPage = () => {
   // Show loading if auth is still initializing
   if (authLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-green-900 via-green-800 to-green-900 flex items-center justify-center'>
-        <div className='text-center text-white'>
-          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400 mx-auto mb-4'></div>
+      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center transition-colors duration-300'>
+        <div className='text-center text-slate-800 dark:text-slate-50'>
+          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500 mx-auto mb-4'></div>
           <p>Đang tải...</p>
         </div>
       </div>
@@ -227,31 +230,61 @@ const EnhancedLoginPage = () => {
         <title>Đăng nhập - SABO ARENA</title>
       </Helmet>
 
-      <div className='min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 flex items-center justify-center p-4'>
-        <div className='bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md'>
+      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center p-4 transition-colors duration-300'>
+        {/* Theme Toggle Button */}
+        <Button
+          variant='ghost'
+          size='sm'
+          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          className='fixed top-4 right-4 z-50 h-10 w-10 rounded-full border border-slate-300/60 bg-white/40 hover:bg-slate-100 hover:border-slate-400 dark:border-slate-700/50 dark:bg-slate-800/40 dark:hover:border-slate-500 dark:hover:bg-slate-800/60 transition-colors'
+          aria-label='Chuyển giao diện'
+        >
+          {theme === 'light' ? <Moon className='w-4 h-4 text-slate-700' /> : <Sun className='w-4 h-4 text-amber-300' />}
+        </Button>
+
+        {/* Back to Home Button */}
+        <Link
+          to='/'
+          className='fixed top-4 left-4 z-50 flex items-center gap-2 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors'
+        >
+          <ArrowLeft className='w-4 h-4' />
+          <span className='text-sm font-medium'>Về trang chủ</span>
+        </Link>
+
+        <div className='bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-slate-200/70 dark:border-slate-700/60 p-8 w-full max-w-md transition-colors duration-300'>
+          {/* Logo and Brand */}
           <div className='text-center mb-8'>
-            <h1 className='text-3xl font-bold text-gray-800 mb-2'>
-              🎱 Đăng nhập
+            <Link to='/' className='flex flex-col items-center justify-center group mb-4'>
+              <div className='relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-indigo-500/40 shadow-md shadow-indigo-900/30'>
+                <img
+                  src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+                  alt='SABO ARENA'
+                  className='w-full h-full object-cover transition-transform group-hover:scale-105'
+                />
+              </div>
+            </Link>
+            <h1 className='text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2'>
+              ĐĂNG NHẬP
             </h1>
-            <p className='text-gray-600'>SABO ARENA</p>
+            <p className='text-slate-600 dark:text-slate-400'>Chào mừng bạn trở lại!</p>
           </div>
 
           {/* Social Login Buttons */}
-          <div className='space-y-3'>
+          {/* <div className='space-y-3'>
             <FacebookLoginButton />
             <GoogleLoginButton />
-          </div>
+          </div> */}
 
-          <OAuthSetupGuide />
+          {/* <OAuthSetupGuide /> */}
 
-          <AuthDivider />
+          {/* <AuthDivider /> */}
 
           {/* Phone/Email Tabs */}
           <EnhancedAuthTabs defaultTab='phone'>
             <PhoneTabContent>
               <form onSubmit={handlePhoneSubmit} className='space-y-4'>
                 <div>
-                  <label className='block text-gray-700 text-sm font-medium mb-2'>
+                  <label className='block text-slate-700 dark:text-slate-300 text-sm font-medium mb-2'>
                     Số điện thoại
                   </label>
                   <Input
@@ -259,7 +292,7 @@ const EnhancedLoginPage = () => {
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                     placeholder='0987654321'
-                    className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                    className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                     required
                     disabled={loading}
                     maxLength={10}
@@ -268,7 +301,7 @@ const EnhancedLoginPage = () => {
                 </div>
 
                 <div>
-                  <label className='block text-gray-700 text-sm font-medium mb-2'>
+                  <label className='block text-slate-700 dark:text-slate-300 text-sm font-medium mb-2'>
                     Mật khẩu
                   </label>
                   <Input
@@ -276,26 +309,29 @@ const EnhancedLoginPage = () => {
                     value={phonePassword}
                     onChange={e => setPhonePassword(e.target.value)}
                     placeholder='Nhập mật khẩu'
-                    className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                    className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                     required
                     disabled={loading}
                   />
                 </div>
 
-                <Button
-                  type='submit'
-                  disabled={loading}
-                  className='w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-xl font-semibold'
-                >
-                  {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-                </Button>
+                <div className='group relative inline-flex rounded-xl p-[1px] bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 shadow-lg shadow-indigo-900/40 hover:shadow-indigo-800/60 transition-shadow w-full'>
+                  <Button
+                    type='submit'
+                    disabled={loading}
+                    className='w-full h-12 text-lg rounded-[11px] border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
+                  >
+                    <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
+                    <span className='relative'>{loading ? 'Đang đăng nhập...' : 'Đăng nhập'}</span>
+                  </Button>
+                </div>
               </form>
             </PhoneTabContent>
 
             <EmailTabContent>
               <form onSubmit={handleEmailSubmit} className='space-y-4'>
                 <div>
-                  <label className='block text-gray-700 text-sm font-medium mb-2'>
+                  <label className='block text-slate-700 dark:text-slate-300 text-sm font-medium mb-2'>
                     Email
                   </label>
                   <Input
@@ -303,14 +339,14 @@ const EnhancedLoginPage = () => {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder='example@email.com'
-                    className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                    className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                     required
                     disabled={loading}
                   />
                 </div>
 
                 <div>
-                  <label className='block text-gray-700 text-sm font-medium mb-2'>
+                  <label className='block text-slate-700 dark:text-slate-300 text-sm font-medium mb-2'>
                     Mật khẩu
                   </label>
                   <Input
@@ -318,19 +354,22 @@ const EnhancedLoginPage = () => {
                     value={emailPassword}
                     onChange={e => setEmailPassword(e.target.value)}
                     placeholder='Nhập mật khẩu'
-                    className='w-full h-12 text-lg border-2 border-gray-300 focus:border-blue-500 rounded-xl'
+                    className='w-full h-12 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
                     required
                     disabled={loading}
                   />
                 </div>
 
-                <Button
-                  type='submit'
-                  disabled={loading}
-                  className='w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-xl font-semibold'
-                >
-                  {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-                </Button>
+                <div className='group relative inline-flex rounded-xl p-[1px] bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 shadow-lg shadow-indigo-900/40 hover:shadow-indigo-800/60 transition-shadow w-full'>
+                  <Button
+                    type='submit'
+                    disabled={loading}
+                    className='w-full h-12 text-lg rounded-[11px] border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
+                  >
+                    <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
+                    <span className='relative'>{loading ? 'Đang đăng nhập...' : 'Đăng nhập'}</span>
+                  </Button>
+                </div>
               </form>
             </EmailTabContent>
           </EnhancedAuthTabs>
@@ -338,27 +377,20 @@ const EnhancedLoginPage = () => {
           <div className='text-center mt-6 space-y-4'>
             <Link
               to='/auth/forgot-password'
-              className='text-blue-600 hover:text-blue-800 text-sm font-medium'
+              className='text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium transition-colors'
             >
               Quên mật khẩu?
             </Link>
 
-            <div className='text-gray-600 text-sm'>
+            <div className='text-slate-600 dark:text-slate-400 text-sm'>
               Chưa có tài khoản?{' '}
               <Link
                 to='/auth/register'
-                className='text-blue-600 hover:text-blue-800 font-medium'
+                className='text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium transition-colors'
               >
                 Đăng ký ngay
               </Link>
             </div>
-
-            <Link
-              to='/'
-              className='inline-block text-gray-500 hover:text-gray-700 text-sm'
-            >
-              ← Về trang chủ
-            </Link>
           </div>
         </div>
       </div>

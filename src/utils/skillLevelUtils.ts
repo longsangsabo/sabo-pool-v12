@@ -11,9 +11,12 @@ export const getSkillLevelStyle = (
     pro: 'bg-yellow-900/50 text-yellow-200 border border-yellow-800/50',
   };
 
+  // Fallback to 'beginner' if skillLevel is invalid
+  const safeSkillLevel = skillLevel && SKILL_LEVELS[skillLevel] ? skillLevel : 'beginner';
+  
   return theme === 'dark' 
-    ? darkStyles[skillLevel] 
-    : SKILL_LEVELS[skillLevel].color;
+    ? darkStyles[safeSkillLevel] || darkStyles.beginner
+    : SKILL_LEVELS[safeSkillLevel]?.color || SKILL_LEVELS.beginner.color;
 };
 
 export const getSkillLevelLabel = (skillLevel: keyof typeof SKILL_LEVELS) => {

@@ -47,11 +47,12 @@ const EmailVerificationBanner = () => {
     setIsResending(true);
     setCanResend(false);
     try {
+      const { AUTH_REDIRECTS } = await import('@/utils/authConfig');
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email: user.email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?type=signup`,
+          emailRedirectTo: AUTH_REDIRECTS.emailResend,
         },
       });
 

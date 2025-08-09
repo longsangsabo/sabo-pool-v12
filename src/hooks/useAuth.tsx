@@ -1,10 +1,18 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { setupAuthMonitoring } from '@/utils/authRecovery';
 import { useTokenRefresh } from '@/hooks/useTokenRefresh';
 import { formatPhoneToE164 } from '@/utils/phone';
+import { authConfig, getAuthRedirectUrl } from '@/utils/authConfig';
+
+interface AuthError extends Error {
+  code?: string;
+  details?: string;
+  hint?: string;
+  status?: number;
+}
 
 interface AuthState {
   user: User | null;
@@ -12,6 +20,10 @@ interface AuthState {
   isAuthenticated: boolean;
   profile: any;
   session: Session | null;
+  error: string | null;
+  isInitialized: boolean;
+  lastLoginMethod: string | null;
+  retryCount: number;
 }
 
 interface AuthContextType extends AuthState {
@@ -56,6 +68,13 @@ interface AuthContextType extends AuthState {
     fullName?: string,
     referralCode?: string
   ) => Promise<{ data?: any; error?: any }>;
+  // Enhanced methods
+  clearError: () => void;
+  refreshSession: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error?: any }>;
+  updatePassword: (password: string) => Promise<{ error?: any }>;
+  retryLastAction: () => Promise<void>;
+  handleAuthError: (error: any, context?: string) => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -69,7 +88,88 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     isAuthenticated: false,
     profile: null,
     session: null,
+    error: null,
+    isInitialized: false,
+    lastLoginMethod: null,
+    retryCount: 0,
   });
+
+  const [lastAction, setLastAction] = useState<(() => Promise<void>) | null>(null);
+
+  // Enhanced error handling
+  const handleAuthError = useCallback((error: any, context = 'Authentication'): string => {
+    console.error(`🔧 Auth Error [${context}]:`, error);
+    
+    if (!error) return 'Lỗi không xác định';
+    
+    // Network errors
+    if (error.name === 'TypeError' || error.message?.includes('fetch')) {
+      return 'Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet.';
+    }
+    
+    // Supabase specific errors
+    if (error.message) {
+      const message = error.message.toLowerCase();
+      
+      if (message.includes('email not confirmed')) {
+        return 'Email chưa được xác thực. Vui lòng kiểm tra hộp thư.';
+      }
+      if (message.includes('invalid login credentials')) {
+        return 'Email hoặc mật khẩu không đúng.';
+      }
+      if (message.includes('too many requests')) {
+        return 'Quá nhiều lần thử. Vui lòng thử lại sau.';
+      }
+      if (message.includes('signup disabled')) {
+        return 'Đăng ký tài khoản hiện tại đang tạm khóa.';
+      }
+      if (message.includes('phone number')) {
+        return 'Số điện thoại không hợp lệ hoặc đã được sử dụng.';
+      }
+      if (message.includes('session not found')) {
+        return 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+      }
+      if (message.includes('weak password')) {
+        return 'Mật khẩu quá yếu. Vui lòng chọn mật khẩu mạnh hơn.';
+      }
+    }
+    
+    // HTTP status codes
+    if (error.status) {
+      switch (error.status) {
+        case 400:
+          return 'Thông tin không hợp lệ. Vui lòng kiểm tra lại.';
+        case 401:
+          return 'Không có quyền truy cập. Vui lòng đăng nhập lại.';
+        case 403:
+          return 'Tài khoản bị khóa hoặc không có quyền.';
+        case 404:
+          return 'Không tìm thấy tài khoản.';
+        case 429:
+          return 'Quá nhiều lần thử. Vui lòng thử lại sau.';
+        case 500:
+          return 'Lỗi hệ thống. Vui lòng thử lại sau.';
+      }
+    }
+    
+    return error.message || 'Đã xảy ra lỗi. Vui lòng thử lại.';
+  }, []);
+
+  const clearError = useCallback(() => {
+    setAuthState(prev => ({ ...prev, error: null }));
+  }, []);
+
+  const setError = useCallback((error: string) => {
+    setAuthState(prev => ({ ...prev, error }));
+  }, []);
+
+  const incrementRetryCount = useCallback(() => {
+    setAuthState(prev => ({ ...prev, retryCount: prev.retryCount + 1 }));
+  }, []);
+
+  const resetRetryCount = useCallback(() => {
+    setAuthState(prev => ({ ...prev, retryCount: 0 }));
+  }, []);
 
   // Setup auth monitoring on mount
   useEffect(() => {
@@ -118,6 +218,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAuthenticated: !!session?.user,
         profile: null,
         session,
+        error: null,
+        isInitialized: true,
+        lastLoginMethod: session?.user?.app_metadata?.provider || null,
+        retryCount: 0,
       };
 
       setAuthState(newState);
@@ -152,6 +256,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             isAuthenticated: false,
             profile: null,
             session: null,
+            error: null,
+            isInitialized: true,
+            lastLoginMethod: null,
+            retryCount: 0,
           });
           return;
         }
@@ -166,6 +274,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           isAuthenticated: !!session?.user,
           profile: null,
           session,
+          error: null,
+          isInitialized: true,
+          lastLoginMethod: session?.user?.app_metadata?.provider || null,
+          retryCount: 0,
         });
       })
       .catch(error => {
@@ -177,6 +289,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             isAuthenticated: false,
             profile: null,
             session: null,
+            error: 'Session check failed',
+            isInitialized: true,
+            lastLoginMethod: null,
+            retryCount: 0,
           });
         }
       });
@@ -201,6 +317,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAuthenticated: false,
         profile: null,
         session: null,
+        error: null,
+        isInitialized: true,
+        lastLoginMethod: null,
+        retryCount: 0,
       });
 
       // Clear any auth-related storage
@@ -224,6 +344,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAuthenticated: false,
         profile: null,
         session: null,
+        error: null,
+        isInitialized: true,
+        lastLoginMethod: null,
+        retryCount: 0,
       });
 
       // Clear storage anyway
@@ -249,12 +373,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const signUp = async (email: string, password: string, metadata?: any) => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const { AUTH_REDIRECTS } = await import('@/utils/authConfig');
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl,
+          emailRedirectTo: AUTH_REDIRECTS.emailSignup,
           data: metadata,
         },
       });
@@ -266,16 +390,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const signInWithGoogle = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
-      });
+      const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
+      const { data, error } = await supabase.auth.signInWithOAuth(OAUTH_CONFIGS.google);
       return { data, error };
     } catch (error) {
       return { error };
@@ -284,13 +400,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const signInWithFacebook = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'facebook',
-        options: {
-          redirectTo: `${window.location.origin}/`,
-          scopes: 'email',
-        },
-      });
+      const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
+      const { data, error } = await supabase.auth.signInWithOAuth(OAUTH_CONFIGS.facebook);
       return { data, error };
     } catch (error) {
       return { error };
@@ -339,17 +450,70 @@ const signUpWithPhone = async (
   return requestPhoneOtp(phone);
 };
 
-const signUpWithEmail = async (
-  email: string,
-  password: string,
-  fullName?: string,
-  referralCode?: string
-) => {
-  return signUp(email, password, {
-    full_name: fullName,
-    referral_code: referralCode,
-  });
-};
+  const signUpWithEmail = async (
+    email: string,
+    password: string,
+    fullName?: string,
+    referralCode?: string
+  ) => {
+    return signUp(email, password, {
+      full_name: fullName,
+      referral_code: referralCode,
+    });
+  };
+
+  // Enhanced methods
+  const refreshSession = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.auth.refreshSession();
+      if (error) {
+        throw error;
+      }
+      console.log('🔧 Auth: Session refreshed successfully');
+    } catch (error) {
+      console.error('🔧 Auth: Session refresh failed:', error);
+      const errorMessage = handleAuthError(error, 'Session Refresh');
+      setError(errorMessage);
+      throw error;
+    }
+  }, [handleAuthError, setError]);
+
+  const resetPassword = useCallback(async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: getAuthRedirectUrl('passwordReset'),
+      });
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      const errorMessage = handleAuthError(error, 'Password Reset');
+      return { error: errorMessage };
+    }
+  }, [handleAuthError]);
+
+  const updatePassword = useCallback(async (password: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      const errorMessage = handleAuthError(error, 'Password Update');
+      return { error: errorMessage };
+    }
+  }, [handleAuthError]);
+
+  const retryLastAction = useCallback(async () => {
+    if (lastAction && authState.retryCount < 3) {
+      incrementRetryCount();
+      try {
+        await lastAction();
+        resetRetryCount();
+      } catch (error) {
+        const errorMessage = handleAuthError(error, 'Retry Action');
+        setError(errorMessage);
+      }
+    }
+  }, [lastAction, authState.retryCount, incrementRetryCount, resetRetryCount, handleAuthError, setError]);
 
   const value: AuthContextType = {
     ...authState,
@@ -364,6 +528,12 @@ const signUpWithEmail = async (
     signUpWithEmail,
     requestPhoneOtp,
     verifyPhoneOtp,
+    clearError,
+    refreshSession,
+    resetPassword,
+    updatePassword,
+    retryLastAction,
+    handleAuthError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

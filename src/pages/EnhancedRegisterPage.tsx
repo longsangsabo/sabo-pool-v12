@@ -18,6 +18,7 @@ import { AuthDivider } from '@/components/auth/AuthDivider';
 import { TermsCheckbox } from '@/components/auth/TermsCheckbox';
 import { OAuthSetupGuide } from '@/components/auth/OAuthSetupGuide';
 import { handleAuthError } from '@/utils/authHelpers';
+import { PhoneOtpDialog } from '@/components/auth/PhoneOtpDialog';
 import { Gift, Moon, Sun, ArrowLeft } from 'lucide-react';
 
 const EnhancedRegisterPage = () => {
@@ -35,9 +36,19 @@ const EnhancedRegisterPage = () => {
   const [emailTermsAccepted, setEmailTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // OTP states
+  const [otpOpen, setOtpOpen] = useState(false);
+  const [otpPhone, setOtpPhone] = useState('');
+  const [pendingPhoneData, setPendingPhoneData] = useState<{
+    phone: string;
+    password: string;
+    fullName: string;
+    referralCode?: string;
+  } | null>(null);
+
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  const { signUpWithPhone, signUpWithEmail } = useAuth();
+  const { signUpWithPhone, signUpWithEmail, verifyPhoneOtp } = useAuth();
   const [searchParams] = useSearchParams();
   const referralCode = searchParams.get('ref');
 
@@ -74,28 +85,69 @@ const EnhancedRegisterPage = () => {
     setLoading(true);
 
     try {
-      const { error } = await signUpWithPhone(
+      // Store form data for later use after OTP verification
+      setPendingPhoneData({
         phone,
-        phonePassword,
-        phoneFullName,
-        referralCode
-      );
+        password: phonePassword,
+        fullName: phoneFullName,
+        referralCode: referralCode || undefined
+      });
+
+      const { error } = await signUpWithPhone(phone);
 
       if (error) {
         handleAuthError(error);
       } else {
-        toast.success(
-          referralCode
-            ? 'Đăng ký thành công! Bạn và người giới thiệu đều nhận được 100 SPA!'
-            : 'Đăng ký thành công! Chào mừng bạn đến với SABO ARENA!'
-        );
-        navigate('/dashboard');
+        toast.success('Mã OTP đã được gửi đến số điện thoại của bạn!');
+        setOtpPhone(phone);
+        setOtpOpen(true);
       }
     } catch (error) {
       console.error('Phone registration error:', error);
       toast.error('Có lỗi xảy ra khi đăng ký');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleOtpVerify = async (code: string) => {
+    if (!pendingPhoneData || !otpPhone) return;
+
+    try {
+      const { error } = await verifyPhoneOtp(otpPhone, code);
+      
+      if (error) {
+        handleAuthError(error);
+      } else {
+        toast.success(
+          pendingPhoneData.referralCode
+            ? 'Đăng ký thành công! Bạn và người giới thiệu đều nhận được 100 SPA!'
+            : 'Đăng ký thành công! Chào mừng bạn đến với SABO ARENA!'
+        );
+        setOtpOpen(false);
+        setPendingPhoneData(null);
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      toast.error('Có lỗi xảy ra khi xác thực OTP');
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (!otpPhone) return;
+
+    try {
+      const { error } = await signUpWithPhone(otpPhone);
+      
+      if (error) {
+        handleAuthError(error);
+      } else {
+        toast.success('Mã OTP mới đã được gửi đến số điện thoại của bạn!');
+      }
+    } catch (error) {
+      console.error('Resend OTP error:', error);
+      toast.error('Có lỗi xảy ra khi gửi lại mã OTP');
     }
   };
 
@@ -347,6 +399,18 @@ const EnhancedRegisterPage = () => {
             </div>
           </div>
         </div>
+
+        {/* OTP Dialog */}
+        <PhoneOtpDialog
+          isOpen={otpOpen}
+          phone={otpPhone}
+          onClose={() => {
+            setOtpOpen(false);
+            setPendingPhoneData(null);
+          }}
+          onVerify={handleOtpVerify}
+          onResend={handleResendOtp}
+        />
       </div>
     </>
   );

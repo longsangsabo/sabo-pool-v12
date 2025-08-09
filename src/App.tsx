@@ -74,6 +74,7 @@ const AuthTestPage = lazy(() => import('@/pages/AuthTestPage'));
 const AuthCallbackPage = lazy(() => import('@/pages/AuthCallbackPage'));
 const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPassword'));
 const AuthRouteGuard = lazy(() => import('@/pages/AuthRouteGuard'));
+const OtpTestPage = lazy(() => import('@/pages/OtpTestPage'));
 
 // Create a stable query client
 const queryClient = new QueryClient({
@@ -171,6 +172,7 @@ const AppContent = () => {
             }
           />
           <Route path='/auth/callback' element={<AuthCallbackPage />} />
+          <Route path='/test/otp' element={<OtpTestPage />} />
 
           {/* Protected routes with MainLayout - layout route without path to avoid overriding public home */}
           <Route

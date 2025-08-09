@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
@@ -9,6 +9,7 @@ interface PhoneOtpDialogProps {
   phone: string;
   onClose: () => void;
   onVerify: (code: string) => Promise<void> | void;
+  onResend?: () => Promise<void> | void;
 }
 
 export const PhoneOtpDialog: React.FC<PhoneOtpDialogProps> = ({
@@ -16,9 +17,34 @@ export const PhoneOtpDialog: React.FC<PhoneOtpDialogProps> = ({
   phone,
   onClose,
   onVerify,
+  onResend,
 }) => {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [countdown, setCountdown] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+
+  // Countdown timer for resend
+  useEffect(() => {
+    if (!isOpen) {
+      setCountdown(60);
+      setCanResend(false);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isOpen]);
 
   const handleVerify = async () => {
     if (code.length < 6) return;
@@ -28,6 +54,20 @@ export const PhoneOtpDialog: React.FC<PhoneOtpDialogProps> = ({
       setCode('');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!onResend || !canResend) return;
+    
+    setResendLoading(true);
+    try {
+      await onResend();
+      setCountdown(60);
+      setCanResend(false);
+      setCode('');
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -50,11 +90,32 @@ export const PhoneOtpDialog: React.FC<PhoneOtpDialogProps> = ({
               </InputOTPGroup>
             </InputOTP>
           </div>
+
+          {/* Resend section */}
+          <div className="text-center text-sm text-muted-foreground">
+            {canResend ? (
+              onResend ? (
+                <Button 
+                  variant="link" 
+                  className="p-0 h-auto text-sm"
+                  onClick={handleResend}
+                  disabled={resendLoading}
+                >
+                  {resendLoading ? 'Đang gửi...' : 'Gửi lại mã OTP'}
+                </Button>
+              ) : (
+                <span>Không thể gửi lại mã</span>
+              )
+            ) : (
+              <span>Gửi lại mã sau {countdown}s</span>
+            )}
+          </div>
+
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={onClose} disabled={loading}>
+            <Button variant="outline" onClick={onClose} disabled={loading || resendLoading}>
               Hủy
             </Button>
-            <Button onClick={handleVerify} disabled={loading || code.length < 6}>
+            <Button onClick={handleVerify} disabled={loading || resendLoading || code.length < 6}>
               {loading ? 'Đang xác minh...' : 'Xác minh'}
             </Button>
           </div>

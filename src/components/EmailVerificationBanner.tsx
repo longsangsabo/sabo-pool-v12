@@ -10,6 +10,8 @@ const EmailVerificationBanner = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [canResend, setCanResend] = useState(true);
 
   useEffect(() => {
     if (user && !user.email_confirmed_at) {
@@ -19,10 +21,31 @@ const EmailVerificationBanner = () => {
     }
   }, [user]);
 
+  // Countdown timer for resend
+  useEffect(() => {
+    if (countdown <= 0) {
+      setCanResend(true);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [countdown]);
+
   const handleResendVerification = async () => {
-    if (!user?.email) return;
+    if (!user?.email || !canResend) return;
 
     setIsResending(true);
+    setCanResend(false);
     try {
       const { error } = await supabase.auth.resend({
         type: 'signup',
@@ -34,13 +57,16 @@ const EmailVerificationBanner = () => {
 
       if (error) {
         toast.error(`Lỗi gửi email: ${error.message}`);
+        setCanResend(true);
       } else {
         setEmailSent(true);
+        setCountdown(60); // Start 60 second countdown
         toast.success('Email xác thực đã được gửi lại!');
         setTimeout(() => setEmailSent(false), 5000);
       }
     } catch (error: any) {
       toast.error('Có lỗi xảy ra khi gửi email');
+      setCanResend(true);
     } finally {
       setIsResending(false);
     }
@@ -78,7 +104,7 @@ const EmailVerificationBanner = () => {
             variant='outline'
             size='sm'
             onClick={handleResendVerification}
-            disabled={isResending || emailSent}
+            disabled={isResending || !canResend}
             className='text-blue-800 border-blue-300 hover:bg-blue-100'
           >
             {isResending ? (
@@ -86,6 +112,8 @@ const EmailVerificationBanner = () => {
                 <div className='animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600 mr-2'></div>
                 Đang gửi...
               </>
+            ) : !canResend ? (
+              `Gửi lại sau ${countdown}s`
             ) : emailSent ? (
               <>
                 <Check className='h-3 w-3 mr-2' />

@@ -1,9 +1,11 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { BarChart3, Trophy, Archive, Activity, Settings } from 'lucide-react';
 import { SPAAnalyticsDashboard } from '@/components/analytics/SPAAnalyticsDashboard';
 import { RealtimeSPAFeed } from '@/components/spa/RealtimeSPAFeed';
 import { AdminSPAManager } from '@/components/admin/AdminSPAManager';
 import { EnhancedSPALeaderboard } from '@/components/spa/EnhancedSPALeaderboard';
+import { LegacySPADashboard } from '@/components/legacy/LegacySPADashboard';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 
 export default function SPADashboardPage() {
@@ -22,12 +24,30 @@ export default function SPADashboardPage() {
 
       <Tabs defaultValue='analytics' className='w-full'>
         <TabsList
-          className={`grid w-full ${isAdmin ? 'grid-cols-4' : 'grid-cols-3'}`}
+          className={`grid w-full ${isAdmin ? 'grid-cols-5' : 'grid-cols-4'}`}
         >
-          <TabsTrigger value='analytics'>Phân tích</TabsTrigger>
-          <TabsTrigger value='leaderboard'>Xếp hạng</TabsTrigger>
-          <TabsTrigger value='realtime'>Real-time</TabsTrigger>
-          {isAdmin && <TabsTrigger value='admin'>Quản lý</TabsTrigger>}
+          <TabsTrigger value='analytics' className='flex items-center gap-2'>
+            <BarChart3 className='h-4 w-4' />
+            Phân tích
+          </TabsTrigger>
+          <TabsTrigger value='leaderboard' className='flex items-center gap-2'>
+            <Trophy className='h-4 w-4' />
+            Xếp hạng
+          </TabsTrigger>
+          <TabsTrigger value='legacy' className='flex items-center gap-2'>
+            <Archive className='h-4 w-4' />
+            Legacy
+          </TabsTrigger>
+          <TabsTrigger value='realtime' className='flex items-center gap-2'>
+            <Activity className='h-4 w-4' />
+            Real-time
+          </TabsTrigger>
+          {isAdmin && (
+            <TabsTrigger value='admin' className='flex items-center gap-2'>
+              <Settings className='h-4 w-4' />
+              Quản lý
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value='analytics' className='space-y-6'>
@@ -36,6 +56,10 @@ export default function SPADashboardPage() {
 
         <TabsContent value='leaderboard' className='space-y-6'>
           <EnhancedSPALeaderboard />
+        </TabsContent>
+
+        <TabsContent value='legacy' className='space-y-6'>
+          <LegacySPADashboard />
         </TabsContent>
 
         <TabsContent value='realtime' className='space-y-6'>

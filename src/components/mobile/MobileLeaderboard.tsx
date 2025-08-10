@@ -3,9 +3,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Crown, Medal, Trophy, TrendingUp } from 'lucide-react';
+import { Crown, Medal, Trophy, TrendingUp, Archive } from 'lucide-react';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useTheme } from '@/hooks/useTheme';
+import { CombinedSPALeaderboard } from '@/components/legacy/CombinedSPALeaderboard';
 
 interface MobileLeaderboardProps {
   className?: string;
@@ -16,7 +17,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
   className,
   hideTitle = false,
 }) => {
-  const [activeTab, setActiveTab] = useState<'elo' | 'spa'>('elo');
+  const [activeTab, setActiveTab] = useState<'elo' | 'spa' | 'legacy'>('elo');
   const { leaderboard, loading, error, updateFilters } = useLeaderboard();
   const { theme } = useTheme();
 
@@ -70,11 +71,15 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
   };
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value as 'elo' | 'spa');
-    updateFilters({
-      sortBy: value === 'elo' ? 'elo' : ('ranking_points' as any),
-      sortOrder: 'desc',
-    });
+    setActiveTab(value as 'elo' | 'spa' | 'legacy');
+    
+    // Only update filters for elo and spa tabs, not for legacy
+    if (value !== 'legacy') {
+      updateFilters({
+        sortBy: value === 'elo' ? 'elo' : ('ranking_points' as any),
+        sortOrder: 'desc',
+      });
+    }
   };
 
   if (loading) {
@@ -160,7 +165,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
         className='w-full'
       >
         <TabsList
-          className={`grid w-full grid-cols-2 mb-2 ${
+          className={`grid w-full grid-cols-3 mb-2 ${
             theme === 'dark'
               ? 'bg-gray-800/60 border-gray-700/50'
               : 'bg-white/80 border-gray-200/50'
@@ -187,6 +192,17 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
           >
             <Crown className='w-4 h-4' />
             SPA
+          </TabsTrigger>
+          <TabsTrigger
+            value='legacy'
+            className={`flex items-center gap-2 transition-all duration-200 ${
+              theme === 'dark'
+                ? 'data-[state=active]:bg-orange-600 data-[state=active]:text-white'
+                : 'data-[state=active]:bg-orange-500 data-[state=active]:text-white'
+            }`}
+          >
+            <Archive className='w-4 h-4' />
+            Legacy
           </TabsTrigger>
         </TabsList>
 
@@ -371,6 +387,12 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value='legacy'>
+          <div className='space-y-4'>
+            <CombinedSPALeaderboard />
           </div>
         </TabsContent>
       </Tabs>

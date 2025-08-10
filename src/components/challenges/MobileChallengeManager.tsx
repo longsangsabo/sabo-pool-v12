@@ -31,11 +31,13 @@ import { vi } from 'date-fns/locale';
 
 interface MobileChallengeManagerProps {
   className?: string;
+  showHeader?: boolean; // Add this prop to control header visibility
 }
 
 // 🚀 Performance: Memoized component để tránh unnecessary re-renders
 const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
   className,
+  showHeader = true, // Default to showing header for backward compatibility
 }) => {
   const { user } = useAuth();
   const [processingChallengeId, setProcessingChallengeId] = useState<string | null>(null);
@@ -402,7 +404,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
 
     return (
       <div className='mb-6'>
-        <div className='bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3'>
+        <div className='bg-white/70 dark:bg-slate-900/30 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-3 shadow-lg'>
           <div className='flex items-center justify-between mb-3'>
             <h2 className='text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1'>
               🏆 <span>Cộng Đồng</span>
@@ -1347,12 +1349,17 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
                     }}
                     variant='compact'
                   />
-                  {/* Add countdown chip for upcoming challenges */}
-                  <div className="absolute top-3 right-3">
-                    <Suspense fallback={<SkeletonFallback />}>
-                      <CountdownChip info={getCountdownInfo(challenge)} size="md" />
-                    </Suspense>
-                  </div>
+                  {/* Add countdown chip for upcoming challenges - Hide if expired to avoid duplicate */}
+                  {(() => {
+                    const countdown = getCountdownInfo(challenge);
+                    return !countdown.expired ? (
+                      <div className="absolute top-3 right-3">
+                        <Suspense fallback={<SkeletonFallback />}>
+                          <CountdownChip info={countdown} size="md" />
+                        </Suspense>
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
               ))
             ) : (
@@ -1403,12 +1410,16 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
                         isJoining={processingChallengeId === challenge.id}
                         winRateInfo={winRates[challenge.challenger_id]}
                       />
-                      {/* 🎨 UX: Enhanced countdown chip with urgency styling */}
-                      <div className={`absolute top-3 right-3 z-10 ${countdown.urgent ? 'animate-bounce' : ''}`}>
-                        <CountdownChip info={getCountdownInfo(challenge)} size="sm" />
-                      </div>
-                      {/* 🎨 UX: Add urgency glow effect for soon-to-expire challenges */}
-                      {countdown.urgent && (
+                      {/* 🎨 UX: Enhanced countdown chip with urgency styling - Only show if NOT expired to avoid duplicate with OpenChallengeCard badge */}
+                      {!countdown.expired && (
+                        <div className={`absolute top-3 right-3 z-10 ${countdown.urgent ? 'animate-bounce' : ''}`}>
+                          <Suspense fallback={<SkeletonFallback />}>
+                            <CountdownChip info={countdown} size="sm" />
+                          </Suspense>
+                        </div>
+                      )}
+                      {/* 🎨 UX: Add urgency glow effect for soon-to-expire challenges - Only if not expired */}
+                      {countdown.urgent && !countdown.expired && (
                         <div className="absolute inset-0 rounded-xl border-2 border-orange-300 dark:border-orange-600 animate-pulse pointer-events-none"></div>
                       )}
                     </div>
@@ -1559,44 +1570,47 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
       
       <div className='p-4'>
         {/* 🎨 UX: Enhanced header with better styling and interactions */}
-        <div className='flex items-center justify-between mb-4'>
-          <h1 className='text-xl font-bold text-foreground'>🏆 Thách Đấu</h1>
-          <div className='flex items-center gap-2'>
-            {/* Debug Info */}
-            {import.meta.env.DEV && (
-              <div className='text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded'>
-                Modal: {isCreateModalOpen ? 'OPEN' : 'CLOSED'}
-              </div>
-            )}
-            <button
-              onClick={handleRefresh}
-              disabled={isRefreshing || loading}
-              className='flex items-center gap-1.5 px-3 py-2 text-sm text-primary hover:bg-primary/10 rounded-xl transition-all duration-200 disabled:opacity-50 mobile-touch-button transform hover:scale-105 active:scale-95'
-            >
-              <RefreshCw
-                className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`}
-              />
-              <span className='font-medium'>{isRefreshing ? 'Đang tải...' : 'Làm mới'}</span>
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🎯 Create Challenge Button Clicked');
-                handleCreateChallenge();
-              }}
-              className='flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground rounded-xl transition-all duration-100 mobile-touch-button font-semibold shadow-md touch-manipulation'
-              style={{ 
-                touchAction: 'manipulation',
-                userSelect: 'none',
-                WebkitTapHighlightColor: 'transparent'
-              }}
-            >
-              <span className='text-lg'>+</span>
-              <span className='text-sm'>Tạo thách đấu</span>
-            </button>
+        {showHeader && (
+          <div className='flex items-center justify-between mb-4 gap-2'>
+            <h1 className='text-xl font-bold text-foreground'>🏆 Thách Đấu</h1>
+            <div className='flex items-center gap-2 flex-shrink-0'>
+              {/* Debug Info */}
+              {import.meta.env.DEV && (
+                <div className='text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded'>
+                  Modal: {isCreateModalOpen ? 'OPEN' : 'CLOSED'}
+                </div>
+              )}
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing || loading}
+                className='flex items-center gap-1.5 px-2 py-2 text-sm text-primary hover:bg-primary/10 rounded-xl transition-all duration-200 disabled:opacity-50 mobile-touch-button transform hover:scale-105 active:scale-95'
+              >
+                <RefreshCw
+                  className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`}
+                />
+                <span className='font-medium hidden sm:inline'>{isRefreshing ? 'Đang tải...' : 'Làm mới'}</span>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('🎯 Create Challenge Button Clicked');
+                  handleCreateChallenge();
+                }}
+                className='flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground rounded-xl transition-all duration-100 mobile-touch-button font-semibold shadow-md touch-manipulation text-sm'
+                style={{ 
+                  touchAction: 'manipulation',
+                  userSelect: 'none',
+                  WebkitTapHighlightColor: 'transparent'
+                }}
+              >
+                <span className='text-lg'>+</span>
+                <span className='hidden sm:inline'>Tạo thách đấu</span>
+                <span className='sm:hidden'>Tạo</span>
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Community Overview Dashboard */}
         <CommunityOverview />
@@ -1624,7 +1638,7 @@ const MobileChallengeManager: React.FC<MobileChallengeManagerProps> = memo(({
         )}
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className='w-full'>
-          <TabsList className='grid w-full grid-cols-4 mb-4 h-auto p-0.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm sticky top-0 z-40'>
+          <TabsList className='grid w-full grid-cols-4 mb-4 h-auto p-0.5 bg-white/70 dark:bg-slate-900/30 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 rounded-xl shadow-lg'>
             <TabsTrigger
               value='live'
               className='flex flex-col gap-0.5 p-2 rounded-lg text-slate-600 dark:text-slate-400 data-[state=active]:bg-red-100 data-[state=active]:dark:bg-red-900/30 data-[state=active]:text-red-700 data-[state=active]:dark:text-red-300 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-red-200 data-[state=active]:dark:border-red-700 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20 transform hover:scale-105 active:scale-95'

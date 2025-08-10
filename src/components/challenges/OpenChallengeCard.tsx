@@ -39,18 +39,18 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
   };
 
   return (
-    <Card className='bg-slate-900/30 dark:bg-slate-800/40 border border-slate-200/20 dark:border-slate-700/30 hover:border-slate-300/30 dark:hover:border-slate-600/40 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/10'>
+    <Card className='bg-white/70 dark:bg-slate-900/30 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 hover:border-slate-300/70 dark:hover:border-slate-600/70 transition-all duration-200 hover:shadow-lg hover:shadow-slate-500/20 shadow-lg'>
       <CardContent className='p-4'>
         <div className='flex items-start justify-between mb-3'>
-          <div className='flex items-center gap-3'>
+          <div className='flex items-center gap-3 flex-1 min-w-0'>
             <Avatar className='w-10 h-10'>
               <AvatarImage src={challenge.challenger_profile?.avatar_url} />
               <AvatarFallback className='bg-slate-700/50 text-slate-300 dark:bg-slate-600/50 dark:text-slate-200'>
                 {challenge.challenger_profile?.full_name?.charAt(0) || '?'}
               </AvatarFallback>
             </Avatar>
-            <div>
-              <h3 className='font-semibold text-sm text-slate-800 dark:text-slate-200'>
+            <div className='flex-1 min-w-0'>
+              <h3 className='font-semibold text-sm text-slate-800 dark:text-slate-200 truncate'>
                 {challenge.challenger_profile?.full_name || 'Unknown Player'}
               </h3>
               <div className='flex flex-col gap-1'>
@@ -73,12 +73,15 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
             </div>
           </div>
 
-          <Badge
-            variant={isExpired ? 'destructive' : 'secondary'}
-            className='text-xs'
-          >
-            {isExpired ? 'Hết hạn' : 'Mở'}
-          </Badge>
+          {/* Badge positioned to avoid overlap with absolute positioned CountdownChip */}
+          <div className='flex-shrink-0 ml-3'>
+            <Badge
+              variant={isExpired ? 'destructive' : 'secondary'}
+              className='text-xs whitespace-nowrap'
+            >
+              {isExpired ? 'Hết hạn' : 'Mở'}
+            </Badge>
+          </div>
         </div>
 
         {/* Challenge Details */}
@@ -95,7 +98,7 @@ export const OpenChallengeCard: React.FC<OpenChallengeCardProps> = ({
           </div>
 
           {challenge.message && (
-            <p className='text-sm text-slate-600 dark:text-slate-300 bg-slate-100/50 dark:bg-slate-800/50 p-2 rounded text-center italic'>
+            <p className='text-sm text-slate-600 dark:text-slate-300 bg-slate-100/70 dark:bg-slate-800/70 backdrop-blur-sm p-2 rounded text-center italic'>
               "{challenge.message}"
             </p>
           )}

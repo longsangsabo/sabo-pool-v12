@@ -1080,9 +1080,9 @@ const EnhancedChallengesPageV2: React.FC = () => {
 
   // Mobile Layout Component - Enhanced with MobileChallengeManager
   const MobileLayout = () => (
-    <div className='min-h-screen bg-background'>
+    <div className='min-h-screen'>
       <div className='px-0 py-0'>
-        <MobileChallengeManager className='h-screen' />
+        <MobileChallengeManager className='h-screen' showHeader={false} />
       </div>
     </div>
   );

@@ -1,0 +1,434 @@
+```sql
+-- optimized_schema.sql
+-- SABO ARENA OPTIMIZED DATABASE SCHEMA
+-- Generated from expert database analysis
+-- Version: 2.0 - Consolidated & Performance Optimized
+
+-- =============================================================================
+-- 1. USER MANAGEMENT SYSTEM
+-- =============================================================================
+
+-- Core user profiles (consolidated from multiple user tables)
+CREATE TABLE profiles_optimized (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID UNIQUE NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    
+    -- Basic Information
+    full_name TEXT,
+    display_name TEXT,
+    nickname TEXT,
+    email TEXT, -- Denormalized for performance
+    phone TEXT,
+    avatar_url TEXT,
+    cover_image_url TEXT,
+    bio TEXT,
+    
+    -- Location
+    city TEXT,
+    district TEXT,
+    
+    -- Game Stats (denormalized for performance)
+    current_rank sabo_rank DEFAULT 'K',
+    verified_rank TEXT,
+    elo_points INTEGER DEFAULT 1000,
+    spa_points INTEGER DEFAULT 0,
+    skill_level TEXT DEFAULT 'beginner',
+    
+    -- System Fields
+    active_role TEXT DEFAULT 'player' CHECK (active_role IN ('player', 'club_owner', 'admin')),
+    is_admin BOOLEAN DEFAULT FALSE,
+    is_demo_user BOOLEAN DEFAULT FALSE,
+    ban_status TEXT DEFAULT 'active' CHECK (ban_status IN ('active', 'suspended', 'banned')),
+    ban_reason TEXT,
+    banned_at TIMESTAMPTZ,
+    banned_by UUID REFERENCES auth.users(id),
+    
+    -- Metadata
+    member_since TIMESTAMPTZ DEFAULT NOW(),
+    completion_percentage NUMERIC DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE profiles_optimized IS 'Consolidated user profiles with denormalized stats for performance';
+
+-- Player statistics (consolidated from player_stats, player_rankings, player_trust_scores)
+CREATE TABLE player_statistics (
+    user_id UUID PRIMARY KEY REFERENCES profiles_optimized(user_id) ON DELETE CASCADE,
+    
+    -- Match Statistics
+    total_matches INTEGER DEFAULT 0,
+    total_wins INTEGER DEFAULT 0,
+    total_losses INTEGER DEFAULT 0,
+    win_percentage NUMERIC DEFAULT 0,
+    current_streak INTEGER DEFAULT 0,
+    longest_win_streak INTEGER DEFAULT 0,
+    
+    -- Tournament Statistics
+    tournaments_played INTEGER DEFAULT 0,
+    tournaments_won INTEGER DEFAULT 0,
+    
+    -- Trust & Rating
+    trust_score NUMERIC DEFAULT 0,
+    trust_percentage NUMERIC DEFAULT 0,
+    rating_count INTEGER DEFAULT 0,
+    
+    -- Ranking Information
+    promotion_eligible BOOLEAN DEFAULT FALSE,
+    last_promotion_date TIMESTAMPTZ,
+    
+    -- Metadata
+    last_calculated TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE player_statistics IS 'Consolidated player performance metrics and rankings';
+
+-- =============================================================================
+-- 2. TOURNAMENT SYSTEM (Consolidated from 10+ tables to 4 core tables)
+-- =============================================================================
+
+-- Main tournaments table (simplified with JSON config)
+CREATE TABLE tournaments_v2 (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    
+    -- Basic Information
+    name TEXT NOT NULL,
+    description TEXT,
+    club_id UUID, -- Will reference clubs_v2(id)
+    venue_address TEXT,
+    
+    -- Tournament Configuration (JSON for flexibility)
+    config JSONB NOT NULL DEFAULT '{
+        "max_participants": 16,
+        "tournament_type": "single_elimination",
+        "game_format": "9_ball",
+        "entry_fee": 0,
+        "has_third_place_match": false,
+        "allow_all_ranks": true,
+        "eligible_ranks": [],
+        "min_rank_requirement": null,
+        "max_rank_requirement": null
+    }',
+    
+    -- Prize Configuration (consolidated from multiple prize tables)
+    prize_config JSONB DEFAULT '{
+        "first_prize": 0,
+        "second_prize": 0,
+        "third_prize": 0,
+        "spa_points_config": {},
+        "elo_points_config": {},
+        "physical_prizes": []
+    }',
+    
+    -- Status & Timing
+    status TEXT DEFAULT 'registration_open' CHECK (status IN (
+        'draft', 'registration_open', 'registration_closed', 
+        'in_progress', 'completed', 'cancelled'
+    )),
+    current_phase TEXT DEFAULT 'registration' CHECK (current_phase IN (
+        'registration', 'seeding', 'in_progress', 'completed'
+    )),
+    
+    -- Dates
+    registration_start TIMESTAMPTZ,
+    registration_end TIMESTAMPTZ,
+    tournament_start TIMESTAMPTZ,
+    tournament_end TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    
+    -- Participants
+    current_participants INTEGER DEFAULT 0,
+    
+    -- Management
+    management_status TEXT DEFAULT 'manual' CHECK (management_status IN ('manual', 'automated')),
+    bracket_progression JSONB DEFAULT '{
+        "final_ready": false,
+        "semifinal_ready": false,
+        "tournament_complete": false
+    }',
+    
+    -- Metadata
+    created_by UUID REFERENCES profiles_optimized(user_id),
+    is_visible BOOLEAN DEFAULT TRUE,
+    is_draft BOOLEAN DEFAULT FALSE,
+    rules TEXT,
+    contact_info TEXT,
+    
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
+);
+
+COMMENT ON TABLE tournaments_v2 IS 'Main tournaments table with JSON configuration for flexibility';
+
+-- Tournament participants (consolidated from tournament_registrations + tournament_results)
+CREATE TABLE tournament_participants (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tournament_id UUID NOT NULL REFERENCES tournaments_v2(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES profiles_optimized(user_id) ON DELETE CASCADE,
+    
+    -- Registration Information
+    registration_date TIMESTAMPTZ DEFAULT NOW(),
+    registration_status TEXT DEFAULT 'pending' CHECK (registration_status IN (
+        'pending', 'approved', 'rejected', 'cancelled'
+    )),
+    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'eliminated', 'withdrawn')),
+    
+    -- Seeding & Bracket
+    seed_position INTEGER,
+    bracket_position INTEGER,
+    current_bracket VARCHAR(20) DEFAULT 'winners',
+    elimination_round INTEGER,
+    
+    -- Payment
+    entry_fee NUMERIC DEFAULT 0,
+    payment_status TEXT DEFAULT 'pending' CHECK (payment_status IN ('pending', 'paid', 'refunded')),
+    payment_method TEXT,
+    
+    -- Results (denormalized for performance)
+    final_position INTEGER,
+    matches_played INTEGER DEFAULT 0,
+    matches_won INTEGER DEFAULT 0,
+    matches_lost INTEGER DEFAULT 0,
+    win_percentage NUMERIC DEFAULT 0,
+    
+    -- Rewards
+    spa_points_earned INTEGER DEFAULT 0,
+    elo_points_earned INTEGER DEFAULT 0,
+    prize_amount NUMERIC DEFAULT 0,
+    physical_rewards TEXT[] DEFAULT '{}',
+    
+    -- Metadata
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    
+    UNIQUE(tournament_id, user_id)
+);
+
+COMMENT ON TABLE tournament_participants IS 'Tournament participants with registration and results data';
+
+-- Tournament matches (simplified from tournament_matches)
+CREATE TABLE tournament_matches_v2 (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tournament_id UUID NOT NULL REFERENCES tournaments_v2(id) ON DELETE CASCADE,
+    
+    -- Match Structure
+    round_number INTEGER NOT NULL,
+    match_number INTEGER NOT NULL,
+    match_stage TEXT, -- 'winners', 'losers', 'final', 'third_place'
+    round_position INTEGER,
+    
+    -- Players
+    player1_id UUID REFERENCES profiles_optimized(user_id),
+    player2_id UUID REFERENCES profiles_optimized(user_id),
+    winner_id UUID REFERENCES profiles_optimized(user_id),
+    
+    -- Match Details
+    score_player1 INTEGER DEFAULT 0,
+    score_player2 INTEGER DEFAULT 0,
+    status TEXT DEFAULT 'scheduled' CHECK (status IN (
+        'scheduled', 'in_progress', 'completed', 'cancelled', 'no_show'
+    )),
+    
+    -- Timing
+    scheduled_time TIMESTAMPTZ,
+    actual_start_time TIMESTAMPTZ,
+    actual_end_time TIMESTAMPTZ,
+    
+    -- Verification
+    score_status TEXT,
+    score_input_by UUID REFERENCES profiles_optimized(user_id),
+    score_submitted_at TIMESTAMPTZ,
+    
+    -- Officials
+    referee_id UUID REFERENCES profiles_optimized(user_id),
+    
+    -- Metadata
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE tournament_matches_v2 IS 'Tournament matches with simplified structure';
+
+-- Tournament events (for audit trail and notifications)
+CREATE TABLE tournament_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tournament_id UUID NOT NULL REFERENCES tournaments_v2(id) ON DELETE CASCADE,
+    match_id UUID REFERENCES tournament_matches_v2(id),
+    
+    -- Event Details
+    event_type TEXT NOT NULL, -- 'match_completed', 'tournament_finished', 'player_advanced', etc.
+    event_data JSONB NOT NULL DEFAULT '{}',
+    
+    -- Processing
+    processed BOOLEAN DEFAULT FALSE,
+    processed_at TIMESTAMPTZ,
+    
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE tournament_events IS 'Event log for tournament progression and notifications';
+
+-- =============================================================================
+-- 3. WALLET & POINTS SYSTEM (Consolidated from 6 tables to 2)
+-- =============================================================================
+
+-- Unified user wallet (consolidated from wallets, spa_points, etc.)
+CREATE TABLE user_wallets (
+    user_id UUID PRIMARY KEY REFERENCES profiles_optimized(user_id) ON DELETE CASCADE,
+    
+    -- Current Balances
+    spa_points INTEGER DEFAULT 0,
+    cash_balance NUMERIC(10,2) DEFAULT 0,
+    
+    -- Lifetime Statistics
+    total_earned_points INTEGER DEFAULT 0,
+    total_spent_points INTEGER DEFAULT 0,
+    total_earned_cash NUMERIC(10,2) DEFAULT 0,
+    total_spent_cash NUMERIC(10,2) DEFAULT 0,
+    
+    -- Status
+    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'frozen', 'suspended')),
+    
+    -- Metadata
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE user_wallets IS 'Unified wallet system for SPA points and cash';
+
+-- Unified transaction log (consolidated from multiple transaction tables)
+CREATE TABLE wallet_transactions_v2 (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES profiles_optimized(user_id) ON DELETE CASCADE,
+    
+    -- Transaction Details
+    transaction_type TEXT NOT NULL CHECK (transaction_type IN (
+        'spa_earn', 'spa_spend', 'cash_earn', 'cash_spend', 'spa_bonus', 'spa_penalty'
+    )),
+    amount NUMERIC(10,2) NOT NULL,
+    currency TEXT NOT NULL CHECK (currency IN ('SPA', 'USD', 'VND')),
+    
+    -- Context
+    source_type TEXT NOT NULL, -- 'tournament_win', 'challenge_win', 'purchase', 'bonus', etc.
+    source_id UUID, -- Reference to tournament, challenge, etc.
+    description TEXT,
+    metadata JSONB DEFAULT '{}',
+    
+    -- Balances (for audit trail)
+    balance_before NUMERIC(10,2) NOT NULL,
+    balance_after NUMERIC(10,2) NOT NULL,
+    
+    -- Status
+    status TEXT DEFAULT 'completed' CHECK (status IN ('pending', 'completed', 'failed', 'reversed')),
+    
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE wallet_transactions_v2 IS 'Unified transaction log for all wallet activities';
+
+-- =============================================================================
+-- 4. CLUB MANAGEMENT SYSTEM (Consolidated from 3+ tables to 2)
+-- =============================================================================
+
+-- Clubs (consolidated from clubs, club_profiles, club_registrations)
+CREATE TABLE clubs_v2 (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    owner_id UUID NOT NULL REFERENCES profiles_optimized(user_id),
+    
+    -- Basic Information
+    name TEXT NOT NULL,
+    club_code TEXT UNIQUE,
+    description TEXT,
+    
+    -- Contact Information
+    address TEXT,
+    district TEXT,
+    city TEXT DEFAULT 'Ho Chi Minh City',
+    postal_code TEXT,
+    phone TEXT,
+    email TEXT,
+    website TEXT,
+    facebook_url TEXT,
+    
+    -- Business Information
+    business_license_url TEXT,
+    tax_registration_url TEXT,
+    
+    -- Configuration (JSON for flexibility)
+    config JSONB DEFAULT '{
+        "table_count": 0,
+        "table_types": [],
+        "basic_hourly_rate": 0,
+        "peak_hour_rate": 0,
+        "weekend_rate": 0,
+        "member_discount_rate": 0,
+        "opening_hours": {},
+        "facilities": [],
+        "services": [],
+        "amenities": {}
+    }',
+    
+    -- Media
+    logo_url TEXT,
+    photos TEXT[] DEFAULT '{}',
+    
+    -- Status & Verification
+    verification_status TEXT DEFAULT 'pending' CHECK (verification_status IN (
+        'pending', 'approved', 'rejected', 'suspended'
+    )),
+    is_active BOOLEAN DEFAULT TRUE,
+    is_sabo_owned BOOLEAN DEFAULT FALSE,
+    
+    -- Metrics (denormalized for performance)
+    priority_score NUMERIC DEFAULT 0,
+    available_tables INTEGER DEFAULT 0,
+    
+    -- Review Information
+    reviewed_by UUID REFERENCES profiles_optimized(user_id),
+    review_date TIMESTAMPTZ,
+    approval_date TIMESTAMPTZ,
+    reviewer_notes TEXT,
+    rejection_reason TEXT,
+    
+    -- Financial
+    monthly_fee NUMERIC DEFAULT 0,
+    setup_fee NUMERIC DEFAULT 0,
+    deposit_amount NUMERIC DEFAULT 0,
+    payment_status TEXT DEFAULT 'pending' CHECK (payment_status IN ('pending', 'paid', 'overdue')),
+    
+    -- Metadata
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
+);
+
+COMMENT ON TABLE clubs_v2 IS 'Consolidated club information with JSON configuration';
+
+-- Club memberships (consolidated from club_members, memberships)
+CREATE TABLE club_memberships (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    club_id UUID NOT NULL REFERENCES clubs_v2(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES profiles_optimized(user_id) ON DELETE CASCADE,
+    
+    -- Membership Details
+    role TEXT DEFAULT 'member' CHECK (role IN ('owner', 'admin', 'instructor', 'member')),
+    membership_type TEXT DEFAULT 'regular',
+    membership_number TEXT UNIQUE,
+    
+    -- Status & Dates
+    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'suspended', 'expired')),
+    joined_at TIMESTAMPTZ DEFAULT NOW(),
+    expiry_date TIMESTAMPTZ,
+    
+    -- Usage Statistics (denormalized for performance)
+    total_visits INTEGER DEFAULT 0,
+    last_visit TIMESTAMPTZ,
+    total_hours_played INTEGER DEFAULT 0,
+    
+    -- Preferences
+    preferred_table_types TEXT

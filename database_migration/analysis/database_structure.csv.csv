@@ -1,0 +1,922 @@
+table_name,column_name,data_type,character_maximum_length,is_nullable,column_default,ordinal_position,constraint_type
+admin_actions,id,uuid,null,NO,gen_random_uuid(),1,PK
+admin_actions,admin_id,uuid,null,NO,null,2,FK
+admin_actions,action_type,text,null,NO,null,3,
+admin_actions,target_type,text,null,YES,null,4,
+admin_actions,target_id,uuid,null,YES,null,5,
+admin_actions,details,jsonb,null,YES,'{}'::jsonb,6,
+admin_actions,ip_address,inet,null,YES,null,7,
+admin_actions,user_agent,text,null,YES,null,8,
+admin_actions,created_at,timestamp with time zone,null,NO,now(),9,
+analytics_events,id,uuid,null,NO,gen_random_uuid(),1,PK
+analytics_events,user_id,uuid,null,YES,null,2,FK
+analytics_events,event_type,text,null,NO,null,3,
+analytics_events,event_name,text,null,NO,null,4,
+analytics_events,properties,jsonb,null,YES,'{}'::jsonb,5,
+analytics_events,session_id,text,null,YES,null,6,
+analytics_events,page_url,text,null,YES,null,7,
+analytics_events,user_agent,text,null,YES,null,8,
+analytics_events,ip_address,inet,null,YES,null,9,
+analytics_events,created_at,timestamp with time zone,null,NO,now(),10,
+api_performance_metrics,id,uuid,null,NO,gen_random_uuid(),1,PK
+api_performance_metrics,endpoint,text,null,NO,null,2,
+api_performance_metrics,method,text,null,NO,null,3,
+api_performance_metrics,response_time_ms,integer,null,NO,null,4,
+api_performance_metrics,status_code,integer,null,NO,null,5,
+api_performance_metrics,user_id,uuid,null,YES,null,6,FK
+api_performance_metrics,error_message,text,null,YES,null,7,
+api_performance_metrics,created_at,timestamp with time zone,null,NO,now(),8,
+automation_performance_log,id,uuid,null,NO,gen_random_uuid(),1,PK
+automation_performance_log,automation_type,text,null,NO,null,2,
+automation_performance_log,execution_time_ms,integer,null,NO,null,3,
+automation_performance_log,success,boolean,null,NO,true,4,
+automation_performance_log,error_message,text,null,YES,null,5,
+automation_performance_log,details,jsonb,null,YES,'{}'::jsonb,6,
+automation_performance_log,created_at,timestamp with time zone,null,NO,now(),7,
+challenge_conversations,id,uuid,null,NO,gen_random_uuid(),1,PK
+challenge_conversations,challenge_id,uuid,null,NO,null,2,FK
+challenge_conversations,sender_id,uuid,null,NO,null,3,
+challenge_conversations,message,text,null,NO,null,4,
+challenge_conversations,created_at,timestamp with time zone,null,NO,now(),5,
+challenge_conversations,is_read,boolean,null,YES,false,6,
+challenge_matches,id,uuid,null,NO,gen_random_uuid(),1,PK
+challenge_matches,challenge_id,uuid,null,NO,null,2,FK
+challenge_matches,challenge_id,uuid,null,NO,null,2,FK
+challenge_matches,status,text,null,NO,'scheduled'::text,3,
+challenge_matches,challenger_score,integer,null,YES,0,4,
+challenge_matches,opponent_score,integer,null,YES,0,5,
+challenge_matches,winner_id,uuid,null,YES,null,6,FK
+challenge_matches,started_at,timestamp with time zone,null,YES,null,7,
+challenge_matches,completed_at,timestamp with time zone,null,YES,null,8,
+challenge_matches,challenger_confirmed,boolean,null,YES,false,9,
+challenge_matches,opponent_confirmed,boolean,null,YES,false,10,
+challenge_matches,club_confirmed,boolean,null,YES,false,11,
+challenge_matches,created_at,timestamp with time zone,null,NO,now(),12,
+challenge_matches,updated_at,timestamp with time zone,null,NO,now(),13,
+challenges,id,uuid,null,NO,gen_random_uuid(),1,PK
+challenges,challenger_id,uuid,null,NO,null,2,FK
+challenges,opponent_id,uuid,null,YES,null,3,FK
+challenges,status,text,null,NO,'pending'::text,4,
+challenges,challenge_message,text,null,YES,null,5,
+challenges,response_message,text,null,YES,null,6,
+challenges,created_at,timestamp with time zone,null,NO,now(),7,
+challenges,responded_at,timestamp with time zone,null,YES,null,8,
+challenges,completed_at,timestamp with time zone,null,YES,null,9,
+challenges,is_open_challenge,boolean,null,YES,false,10,
+challenges,bet_points,integer,null,YES,100,11,
+challenges,race_to,integer,null,YES,5,12,
+challenges,handicap_1_rank,text,null,YES,null,13,
+challenges,handicap_05_rank,text,null,YES,null,14,
+challenges,message,text,null,YES,null,15,
+challenges,expires_at,timestamp with time zone,null,YES,(now() + '7 days'::interval),16,
+challenges,challenge_type,text,null,YES,'standard'::text,17,
+challenges,handicap_data,jsonb,null,YES,'{}'::jsonb,18,
+challenges,club_id,uuid,null,YES,null,19,FK
+challenges,scheduled_time,timestamp with time zone,null,YES,null,20,
+challenges,challenger_score,integer,null,YES,0,21,
+challenges,opponent_score,integer,null,YES,0,22,
+challenges,winner_id,uuid,null,YES,null,23,
+challenges,started_at,timestamp with time zone,null,YES,null,24,
+challenges,updated_at,timestamp with time zone,null,YES,now(),25,
+chat_messages,id,uuid,null,NO,gen_random_uuid(),1,PK
+chat_messages,session_id,uuid,null,NO,null,2,FK
+chat_messages,sender_type,text,null,NO,null,3,
+chat_messages,content,text,null,NO,null,4,
+chat_messages,created_at,timestamp with time zone,null,NO,now(),5,
+club_facilities,id,uuid,null,NO,gen_random_uuid(),1,PK
+club_facilities,club_id,uuid,null,NO,null,2,FK
+club_facilities,facility_name,text,null,NO,null,3,
+club_facilities,facility_type,text,null,NO,null,4,
+club_facilities,facility_code,text,null,YES,null,5,
+club_facilities,specifications,jsonb,null,YES,'{}'::jsonb,6,
+club_facilities,capacity,integer,null,YES,null,7,
+club_facilities,status,text,null,YES,'active'::text,8,
+club_facilities,condition_rating,integer,null,YES,null,9,
+club_facilities,last_maintenance_date,timestamp with time zone,null,YES,null,10,
+club_facilities,next_maintenance_date,timestamp with time zone,null,YES,null,11,
+club_facilities,maintenance_notes,text,null,YES,null,12,
+club_facilities,total_usage_hours,integer,null,YES,0,13,
+club_facilities,usage_this_month,integer,null,YES,0,14,
+club_facilities,created_at,timestamp with time zone,null,YES,now(),15,
+club_facilities,updated_at,timestamp with time zone,null,YES,now(),16,
+club_instructors,id,uuid,null,NO,gen_random_uuid(),1,PK
+club_instructors,club_id,uuid,null,NO,null,2,FK
+club_instructors,user_id,uuid,null,YES,null,3,
+club_instructors,full_name,text,null,NO,null,4,
+club_instructors,email,text,null,YES,null,5,
+club_instructors,phone,text,null,YES,null,6,
+club_instructors,avatar_url,text,null,YES,null,7,
+club_instructors,experience_years,integer,null,YES,0,8,
+club_instructors,specializations,ARRAY,null,YES,null,9,
+club_instructors,bio,text,null,YES,null,10,
+club_instructors,certifications,jsonb,null,YES,'[]'::jsonb,11,
+club_instructors,verified_ranks,ARRAY,null,YES,null,12,
+club_instructors,availability_schedule,jsonb,null,YES,'{}'::jsonb,13,
+club_instructors,is_active,boolean,null,YES,true,14,
+club_instructors,total_students,integer,null,YES,0,15,
+club_instructors,success_rate,numeric,null,YES,0,16,
+club_instructors,rating,numeric,null,YES,0,17,
+club_instructors,hired_date,timestamp with time zone,null,YES,now(),18,
+club_instructors,created_at,timestamp with time zone,null,YES,now(),19,
+club_instructors,updated_at,timestamp with time zone,null,YES,now(),20,
+club_members,id,uuid,null,NO,gen_random_uuid(),1,PK
+club_members,club_id,uuid,null,NO,null,2,FK
+club_members,user_id,uuid,null,NO,null,3,
+club_members,membership_type,text,null,YES,'regular'::text,4,
+club_members,membership_number,text,null,YES,null,5,UNIQUE
+club_members,join_date,timestamp with time zone,null,YES,now(),6,
+club_members,status,text,null,YES,'active'::text,7,
+club_members,expiry_date,timestamp with time zone,null,YES,null,8,
+club_members,total_visits,integer,null,YES,0,9,
+club_members,last_visit,timestamp with time zone,null,YES,null,10,
+club_members,total_hours_played,integer,null,YES,0,11,
+club_members,preferred_table_types,ARRAY,null,YES,null,12,
+club_members,preferred_time_slots,ARRAY,null,YES,null,13,
+club_members,notification_preferences,jsonb,null,YES,'{}'::jsonb,14,
+club_members,membership_fee,numeric,null,YES,0,15,
+club_members,outstanding_balance,numeric,null,YES,0,16,
+club_members,created_at,timestamp with time zone,null,YES,now(),17,
+club_members,updated_at,timestamp with time zone,null,YES,now(),18,
+club_members,role,text,null,YES,'member'::text,19,
+club_profiles,id,uuid,null,NO,gen_random_uuid(),1,PK
+club_profiles,user_id,uuid,null,NO,null,2,FK
+club_profiles,club_name,text,null,NO,null,3,
+club_profiles,address,text,null,YES,null,4,
+club_profiles,phone,text,null,YES,null,5,
+club_profiles,verification_status,text,null,YES,'pending'::text,6,
+club_profiles,description,text,null,YES,null,7,
+club_profiles,contact_info,text,null,YES,null,8,
+club_profiles,created_at,timestamp with time zone,null,NO,now(),9,
+club_profiles,updated_at,timestamp with time zone,null,NO,now(),10,
+club_profiles,is_sabo_owned,boolean,null,YES,false,11,
+club_profiles,available_tables,integer,null,YES,0,12,
+club_profiles,priority_score,numeric,null,YES,0,13,
+club_profiles,hourly_rate,numeric,null,YES,0,14,
+club_registrations,id,uuid,null,NO,gen_random_uuid(),1,PK
+club_registrations,user_id,uuid,null,NO,null,2,
+club_registrations,club_name,text,null,NO,null,3,
+club_registrations,club_code,text,null,YES,null,4,UNIQUE
+club_registrations,description,text,null,YES,null,5,
+club_registrations,address,text,null,NO,null,6,
+club_registrations,district,text,null,NO,null,7,
+club_registrations,city,text,null,NO,null,8,
+club_registrations,province,text,null,YES,'Ho Chi Minh City'::text,9,
+club_registrations,postal_code,text,null,YES,null,10,
+club_registrations,coordinates,jsonb,null,YES,null,11,
+club_registrations,phone,text,null,NO,null,12,
+club_registrations,email,text,null,YES,null,13,
+club_registrations,website,text,null,YES,null,14,
+club_registrations,facebook_url,text,null,YES,null,15,
+club_registrations,opening_hours,jsonb,null,NO,null,16,
+club_registrations,table_count,integer,null,NO,null,17,
+club_registrations,table_types,ARRAY,null,NO,null,18,
+club_registrations,basic_hourly_rate,numeric,null,NO,null,19,
+club_registrations,peak_hour_rate,numeric,null,YES,null,20,
+club_registrations,weekend_rate,numeric,null,YES,null,21,
+club_registrations,member_discount_rate,numeric,null,YES,0,22,
+club_registrations,facilities,ARRAY,null,YES,null,23,
+club_registrations,services,ARRAY,null,YES,null,24,
+club_registrations,amenities,jsonb,null,YES,'{}'::jsonb,25,
+club_registrations,logo_url,text,null,YES,null,26,
+club_registrations,photos,ARRAY,null,YES,'{}'::text[],27,
+club_registrations,business_license_url,text,null,YES,null,28,
+club_registrations,tax_registration_url,text,null,YES,null,29,
+club_registrations,status,text,null,YES,'draft'::text,30,
+club_registrations,submission_date,timestamp with time zone,null,YES,null,31,
+club_registrations,review_date,timestamp with time zone,null,YES,null,32,
+club_registrations,approval_date,timestamp with time zone,null,YES,null,33,
+club_registrations,reviewed_by,uuid,null,YES,null,34,
+club_registrations,reviewer_notes,text,null,YES,null,35,
+club_registrations,rejection_reason,text,null,YES,null,36,
+club_registrations,monthly_fee,numeric,null,YES,0,37,
+club_registrations,setup_fee,numeric,null,YES,0,38,
+club_registrations,deposit_amount,numeric,null,YES,0,39,
+club_registrations,payment_status,text,null,YES,'pending'::text,40,
+club_registrations,created_at,timestamp with time zone,null,YES,now(),41,
+club_registrations,updated_at,timestamp with time zone,null,YES,now(),42,
+club_registrations,deleted_at,timestamp with time zone,null,YES,null,43,
+club_tables,id,uuid,null,NO,gen_random_uuid(),1,PK
+club_tables,club_id,uuid,null,NO,null,2,UNIQUE
+club_tables,table_number,integer,null,NO,null,3,UNIQUE
+club_tables,table_name,text,null,YES,null,4,
+club_tables,status,text,null,NO,'available'::text,5,
+club_tables,current_match_id,uuid,null,YES,null,6,
+club_tables,last_used_at,timestamp with time zone,null,YES,null,7,
+club_tables,created_at,timestamp with time zone,null,NO,now(),8,
+club_tables,updated_at,timestamp with time zone,null,NO,now(),9,
+clubs,id,uuid,null,NO,gen_random_uuid(),1,PK
+clubs,name,text,null,NO,null,2,
+clubs,description,text,null,YES,null,3,
+clubs,address,text,null,YES,null,4,
+clubs,contact_info,text,null,YES,null,5,
+clubs,owner_id,uuid,null,YES,null,6,FK
+clubs,status,text,null,YES,'active'::text,7,
+clubs,created_at,timestamp with time zone,null,NO,now(),8,
+clubs,updated_at,timestamp with time zone,null,NO,now(),9,
+daily_challenge_stats,id,uuid,null,NO,gen_random_uuid(),1,PK
+daily_challenge_stats,user_id,uuid,null,NO,null,2,FK
+daily_challenge_stats,user_id,uuid,null,NO,null,2,UNIQUE
+daily_challenge_stats,challenge_date,date,null,NO,null,3,UNIQUE
+daily_challenge_stats,challenge_count,integer,null,YES,0,4,
+daily_challenge_stats,spa_points_earned,integer,null,YES,0,5,
+daily_challenge_stats,created_at,timestamp with time zone,null,NO,now(),6,
+daily_challenge_stats,updated_at,timestamp with time zone,null,NO,now(),7,
+elo_history,id,uuid,null,NO,gen_random_uuid(),1,PK
+elo_history,user_id,uuid,null,NO,null,2,
+elo_history,elo_change,integer,null,NO,null,3,
+elo_history,new_elo,integer,null,NO,null,4,
+elo_history,reason,text,null,YES,null,5,
+elo_history,match_id,uuid,null,YES,null,6,
+elo_history,created_at,timestamp with time zone,null,YES,now(),7,
+elo_rules,id,uuid,null,NO,gen_random_uuid(),1,PK
+elo_rules,rule_type,text,null,NO,null,2,
+elo_rules,condition_key,text,null,NO,null,3,
+elo_rules,points_base,integer,null,NO,0,4,
+elo_rules,points_multiplier,numeric,null,NO,1.0,5,
+elo_rules,tier_level,integer,null,YES,null,6,
+elo_rules,description,text,null,YES,null,7,
+elo_rules,is_active,boolean,null,NO,true,8,
+elo_rules,created_at,timestamp with time zone,null,NO,now(),9,
+elo_rules,updated_at,timestamp with time zone,null,NO,now(),10,
+favorite_opponents,id,uuid,null,NO,gen_random_uuid(),1,PK
+favorite_opponents,user_id,uuid,null,NO,null,2,UNIQUE
+favorite_opponents,user_id,uuid,null,NO,null,2,FK
+favorite_opponents,opponent_user_id,uuid,null,NO,null,3,UNIQUE
+favorite_opponents,opponent_user_id,uuid,null,NO,null,3,FK
+favorite_opponents,matches_played,integer,null,YES,0,4,
+favorite_opponents,wins,integer,null,YES,0,5,
+favorite_opponents,losses,integer,null,YES,0,6,
+favorite_opponents,favorite_rank,integer,null,YES,1,7,
+favorite_opponents,created_at,timestamp with time zone,null,NO,now(),8,
+favorite_opponents,updated_at,timestamp with time zone,null,NO,now(),9,
+instructor_certifications,id,uuid,null,NO,gen_random_uuid(),1,PK
+instructor_certifications,instructor_id,uuid,null,NO,null,2,FK
+instructor_certifications,certification_name,text,null,NO,null,3,
+instructor_certifications,certification_type,text,null,NO,null,4,
+instructor_certifications,issuing_organization,text,null,NO,null,5,
+instructor_certifications,certificate_number,text,null,YES,null,6,UNIQUE
+instructor_certifications,certificate_url,text,null,YES,null,7,
+instructor_certifications,issue_date,date,null,NO,null,8,
+instructor_certifications,expiry_date,date,null,YES,null,9,
+instructor_certifications,valid_for_ranks,ARRAY,null,YES,null,10,
+instructor_certifications,valid_for_games,ARRAY,null,YES,null,11,
+instructor_certifications,status,text,null,YES,'active'::text,12,
+instructor_certifications,verified_by,uuid,null,YES,null,13,
+instructor_certifications,verification_date,timestamp with time zone,null,YES,null,14,
+instructor_certifications,created_at,timestamp with time zone,null,YES,now(),15,
+instructor_certifications,updated_at,timestamp with time zone,null,YES,now(),16,
+match_results,id,uuid,null,NO,gen_random_uuid(),1,PK
+match_results,match_id,uuid,null,NO,null,2,UNIQUE
+match_results,match_id,uuid,null,NO,null,2,FK
+match_results,player_id,uuid,null,NO,null,3,FK
+match_results,player_id,uuid,null,NO,null,3,UNIQUE
+match_results,result,text,null,NO,null,4,
+match_results,elo_before,integer,null,NO,1000,5,
+match_results,elo_after,integer,null,NO,1000,6,
+match_results,elo_change,integer,null,NO,0,7,
+match_results,spa_points_earned,integer,null,NO,0,8,
+match_results,created_at,timestamp with time zone,null,NO,now(),9,
+matches,id,uuid,null,NO,gen_random_uuid(),1,PK
+matches,player1_id,uuid,null,NO,null,2,FK
+matches,player1_id,uuid,null,NO,null,2,FK
+matches,player2_id,uuid,null,NO,null,3,FK
+matches,player2_id,uuid,null,NO,null,3,FK
+matches,winner_id,uuid,null,YES,null,4,FK
+matches,winner_id,uuid,null,YES,null,4,FK
+matches,match_type,text,null,NO,'casual'::text,5,
+matches,score_player1,integer,null,YES,0,6,
+matches,score_player2,integer,null,YES,0,7,
+matches,status,text,null,NO,'scheduled'::text,8,
+matches,tournament_id,uuid,null,YES,null,9,FK
+matches,challenge_id,uuid,null,YES,null,10,UNIQUE
+matches,challenge_id,uuid,null,YES,null,10,FK
+matches,scheduled_time,timestamp with time zone,null,YES,null,11,
+matches,actual_start_time,timestamp with time zone,null,YES,null,12,
+matches,actual_end_time,timestamp with time zone,null,YES,null,13,
+matches,created_at,timestamp with time zone,null,NO,now(),14,
+matches,updated_at,timestamp with time zone,null,NO,now(),15,
+matches,played_at,timestamp with time zone,null,YES,null,16,
+memberships,id,uuid,null,NO,gen_random_uuid(),1,PK
+memberships,user_id,uuid,null,NO,null,2,UNIQUE
+memberships,user_id,uuid,null,NO,null,2,FK
+memberships,club_id,uuid,null,NO,null,3,FK
+memberships,club_id,uuid,null,NO,null,3,UNIQUE
+memberships,role,text,null,YES,'member'::text,4,
+memberships,joined_at,timestamp with time zone,null,NO,now(),5,
+memberships,updated_at,timestamp with time zone,null,NO,now(),6,
+memberships,status,text,null,YES,'active'::text,7,
+mutual_ratings,id,uuid,null,NO,gen_random_uuid(),1,PK
+mutual_ratings,rater_id,uuid,null,NO,null,2,FK
+mutual_ratings,rater_id,uuid,null,NO,null,2,UNIQUE
+mutual_ratings,rated_entity_id,uuid,null,NO,null,3,UNIQUE
+mutual_ratings,rated_entity_type,text,null,NO,null,4,UNIQUE
+mutual_ratings,rating,integer,null,NO,null,5,
+mutual_ratings,review_text,text,null,YES,null,6,
+mutual_ratings,created_at,timestamp with time zone,null,NO,now(),7,
+mutual_ratings,updated_at,timestamp with time zone,null,NO,now(),8,
+notifications,id,uuid,null,NO,gen_random_uuid(),1,PK
+notifications,user_id,uuid,null,NO,null,2,FK
+notifications,title,text,null,NO,null,3,
+notifications,message,text,null,YES,null,4,
+notifications,type,text,null,YES,'info'::text,5,
+notifications,is_read,boolean,null,YES,false,6,
+notifications,action_url,text,null,YES,null,7,
+notifications,created_at,timestamp with time zone,null,NO,now(),8,
+notifications,updated_at,timestamp with time zone,null,NO,now(),9,
+notifications,deleted_at,timestamp with time zone,null,YES,null,10,
+notifications,auto_popup,boolean,null,YES,false,11,
+notifications,priority,text,null,YES,'normal'::text,12,
+notifications,metadata,jsonb,null,YES,'{}'::jsonb,13,
+notifications,club_id,uuid,null,YES,null,14,
+openai_usage_logs,id,uuid,null,NO,gen_random_uuid(),1,PK
+openai_usage_logs,user_id,uuid,null,YES,null,2,FK
+openai_usage_logs,model_id,text,null,NO,null,3,
+openai_usage_logs,prompt_tokens,integer,null,NO,0,4,
+openai_usage_logs,completion_tokens,integer,null,NO,0,5,
+openai_usage_logs,total_tokens,integer,null,NO,0,6,
+openai_usage_logs,cost_usd,numeric,null,NO,0,7,
+openai_usage_logs,request_type,text,null,NO,null,8,
+openai_usage_logs,session_id,text,null,YES,null,9,
+openai_usage_logs,created_at,timestamp with time zone,null,NO,now(),10,
+performance_metrics,id,uuid,null,NO,gen_random_uuid(),1,PK
+performance_metrics,metric_name,text,null,NO,null,2,
+performance_metrics,metric_value,numeric,null,NO,null,3,
+performance_metrics,metric_unit,text,null,YES,null,4,
+performance_metrics,context,jsonb,null,YES,'{}'::jsonb,5,
+performance_metrics,recorded_at,timestamp with time zone,null,NO,now(),6,
+performance_metrics,created_at,timestamp with time zone,null,NO,now(),7,
+player_availability,id,uuid,null,NO,gen_random_uuid(),1,PK
+player_availability,user_id,uuid,null,NO,null,2,FK
+player_availability,available_until,timestamp with time zone,null,YES,null,3,
+player_availability,location,text,null,YES,null,4,
+player_availability,max_distance_km,integer,null,YES,10,5,
+player_availability,is_active,boolean,null,YES,true,6,
+player_availability,created_at,timestamp with time zone,null,NO,now(),7,
+player_availability,updated_at,timestamp with time zone,null,NO,now(),8,
+player_milestones,id,uuid,null,NO,gen_random_uuid(),1,PK
+player_milestones,user_id,uuid,null,NO,null,2,UNIQUE
+player_milestones,milestone_id,uuid,null,NO,null,3,UNIQUE
+player_milestones,completed_at,timestamp with time zone,null,NO,now(),4,
+player_milestones,reward_claimed,boolean,null,YES,false,5,
+player_milestones,created_at,timestamp with time zone,null,YES,now(),6,
+player_rankings,id,uuid,null,NO,gen_random_uuid(),1,PK
+player_rankings,user_id,uuid,null,NO,null,2,FK
+player_rankings,user_id,uuid,null,NO,null,2,UNIQUE
+player_rankings,current_rank_id,uuid,null,YES,null,3,FK
+player_rankings,current_rank,text,null,YES,null,4,
+player_rankings,elo_points,integer,null,YES,1000,5,
+player_rankings,spa_points,integer,null,YES,0,6,
+player_rankings,total_matches,integer,null,YES,0,7,
+player_rankings,wins,integer,null,YES,0,8,
+player_rankings,losses,integer,null,YES,0,9,
+player_rankings,win_streak,integer,null,YES,0,10,
+player_rankings,last_promotion_date,timestamp with time zone,null,YES,null,11,
+player_rankings,promotion_eligible,boolean,null,YES,false,12,
+player_rankings,created_at,timestamp with time zone,null,NO,now(),13,
+player_rankings,updated_at,timestamp with time zone,null,NO,now(),14,
+player_rankings,verified_rank,text,null,YES,null,15,
+player_stats,id,uuid,null,NO,gen_random_uuid(),1,PK
+player_stats,user_id,uuid,null,NO,null,2,FK
+player_stats,user_id,uuid,null,NO,null,2,UNIQUE
+player_stats,total_matches,integer,null,NO,0,3,
+player_stats,total_wins,integer,null,NO,0,4,
+player_stats,total_losses,integer,null,NO,0,5,
+player_stats,win_percentage,numeric,null,NO,0,6,
+player_stats,current_streak,integer,null,NO,0,7,
+player_stats,longest_win_streak,integer,null,NO,0,8,
+player_stats,tournaments_played,integer,null,NO,0,9,
+player_stats,tournaments_won,integer,null,NO,0,10,
+player_stats,spa_points_earned,integer,null,NO,0,11,
+player_stats,created_at,timestamp with time zone,null,NO,now(),12,
+player_stats,updated_at,timestamp with time zone,null,NO,now(),13,
+player_trust_scores,id,uuid,null,NO,gen_random_uuid(),1,PK
+player_trust_scores,user_id,uuid,null,NO,null,2,FK
+player_trust_scores,user_id,uuid,null,NO,null,2,UNIQUE
+player_trust_scores,trust_score,numeric,null,NO,0,3,
+player_trust_scores,trust_percentage,numeric,null,NO,0,4,
+player_trust_scores,rating_count,integer,null,NO,0,5,
+player_trust_scores,last_calculated,timestamp with time zone,null,NO,now(),6,
+player_trust_scores,created_at,timestamp with time zone,null,NO,now(),7,
+player_trust_scores,updated_at,timestamp with time zone,null,NO,now(),8,
+practice_sessions,id,uuid,null,NO,gen_random_uuid(),1,PK
+practice_sessions,player1_id,uuid,null,NO,null,2,
+practice_sessions,player2_id,uuid,null,NO,null,3,
+practice_sessions,location,text,null,YES,null,4,
+practice_sessions,status,text,null,YES,'scheduled'::text,5,
+practice_sessions,scheduled_time,timestamp with time zone,null,YES,null,6,
+practice_sessions,actual_start_time,timestamp with time zone,null,YES,null,7,
+practice_sessions,actual_end_time,timestamp with time zone,null,YES,null,8,
+practice_sessions,created_at,timestamp with time zone,null,YES,now(),9,
+practice_sessions,updated_at,timestamp with time zone,null,YES,now(),10,
+profiles,id,uuid,null,NO,gen_random_uuid(),1,PK
+profiles,user_id,uuid,null,NO,null,2,FK
+profiles,user_id,uuid,null,NO,null,2,UNIQUE
+profiles,full_name,text,null,YES,null,3,
+profiles,display_name,text,null,YES,null,4,
+profiles,avatar_url,text,null,YES,null,5,
+profiles,bio,text,null,YES,null,6,
+profiles,verified_rank,text,null,YES,null,7,
+profiles,elo,integer,null,YES,1000,8,
+profiles,created_at,timestamp with time zone,null,NO,now(),9,
+profiles,updated_at,timestamp with time zone,null,NO,now(),10,
+profiles,is_admin,boolean,null,YES,false,11,
+profiles,phone,text,null,YES,null,12,
+profiles,skill_level,text,null,YES,'beginner'::text,13,
+profiles,active_role,text,null,YES,'player'::text,14,
+profiles,role,text,null,YES,'player'::text,15,
+profiles,nickname,text,null,YES,null,16,
+profiles,email,text,null,YES,null,17,
+profiles,city,text,null,YES,null,18,
+profiles,district,text,null,YES,null,19,
+profiles,member_since,timestamp with time zone,null,YES,now(),20,
+profiles,completion_percentage,numeric,null,YES,0,21,
+profiles,is_demo_user,boolean,null,YES,false,22,
+profiles,ban_status,text,null,YES,'active'::text,23,
+profiles,ban_reason,text,null,YES,null,24,
+profiles,banned_at,timestamp with time zone,null,YES,null,25,
+profiles,banned_by,uuid,null,YES,null,26,FK
+profiles,cover_image_url,text,null,YES,null,27,
+profiles,current_rank,USER-DEFINED,null,YES,'K'::sabo_rank,28,
+rank_requests,id,uuid,null,NO,gen_random_uuid(),1,PK
+rank_requests,user_id,uuid,null,NO,null,2,FK
+rank_requests,user_id,uuid,null,NO,null,2,FK
+rank_requests,requested_rank,text,null,NO,null,3,
+rank_requests,current_rank,text,null,YES,null,4,
+rank_requests,evidence_url,text,null,YES,null,5,
+rank_requests,status,text,null,NO,'pending'::text,6,
+rank_requests,admin_notes,text,null,YES,null,7,
+rank_requests,created_at,timestamp with time zone,null,NO,now(),8,
+rank_requests,updated_at,timestamp with time zone,null,NO,now(),9,
+rank_requests,club_id,uuid,null,YES,null,10,FK
+rank_requests,rejection_reason,text,null,YES,null,11,
+rank_requests,approved_by,uuid,null,YES,null,12,
+rank_requests,approved_at,timestamp with time zone,null,YES,null,13,
+rank_test_results,id,uuid,null,NO,gen_random_uuid(),1,PK
+rank_test_results,rank_verification_id,uuid,null,NO,null,2,FK
+rank_test_results,test_schedule_id,uuid,null,YES,null,3,FK
+rank_test_results,test_date,timestamp with time zone,null,NO,null,4,
+rank_test_results,duration_minutes,integer,null,YES,null,5,
+rank_test_results,overall_score,numeric,null,NO,null,6,
+rank_test_results,practical_score,numeric,null,YES,null,7,
+rank_test_results,theory_score,numeric,null,YES,null,8,
+rank_test_results,skill_scores,jsonb,null,YES,'{}'::jsonb,9,
+rank_test_results,test_data,jsonb,null,YES,'{}'::jsonb,10,
+rank_test_results,pass_status,boolean,null,YES,null,11,
+rank_test_results,grade,text,null,YES,null,12,
+rank_test_results,percentile,numeric,null,YES,null,13,
+rank_test_results,detailed_feedback,text,null,YES,null,14,
+rank_test_results,recommendations,text,null,YES,null,15,
+rank_test_results,created_at,timestamp with time zone,null,YES,now(),16,
+rank_test_results,updated_at,timestamp with time zone,null,YES,now(),17,
+rank_verifications,id,uuid,null,NO,gen_random_uuid(),1,PK
+rank_verifications,user_id,uuid,null,NO,null,2,
+rank_verifications,club_id,uuid,null,NO,null,3,FK
+rank_verifications,instructor_id,uuid,null,YES,null,4,FK
+rank_verifications,current_rank,text,null,YES,null,5,
+rank_verifications,requested_rank,text,null,NO,null,6,
+rank_verifications,rank_category,text,null,YES,'pool'::text,7,
+rank_verifications,application_date,timestamp with time zone,null,YES,now(),8,
+rank_verifications,application_notes,text,null,YES,null,9,
+rank_verifications,evidence_photos,ARRAY,null,YES,'{}'::text[],10,
+rank_verifications,video_evidence_url,text,null,YES,null,11,
+rank_verifications,test_scheduled_date,timestamp with time zone,null,YES,null,12,
+rank_verifications,test_actual_date,timestamp with time zone,null,YES,null,13,
+rank_verifications,test_location,text,null,YES,null,14,
+rank_verifications,test_duration_minutes,integer,null,YES,null,15,
+rank_verifications,test_score,numeric,null,YES,null,16,
+rank_verifications,max_score,numeric,null,YES,100,17,
+rank_verifications,practical_score,numeric,null,YES,null,18,
+rank_verifications,theory_score,numeric,null,YES,null,19,
+rank_verifications,skills_assessment,jsonb,null,YES,'{}'::jsonb,20,
+rank_verifications,strengths,ARRAY,null,YES,null,21,
+rank_verifications,areas_for_improvement,ARRAY,null,YES,null,22,
+rank_verifications,status,text,null,YES,'pending'::text,23,
+rank_verifications,verified_by,uuid,null,YES,null,24,
+rank_verifications,verification_date,timestamp with time zone,null,YES,null,25,
+rank_verifications,certificate_url,text,null,YES,null,26,
+rank_verifications,certificate_number,text,null,YES,null,27,
+rank_verifications,instructor_feedback,text,null,YES,null,28,
+rank_verifications,student_feedback,text,null,YES,null,29,
+rank_verifications,club_notes,text,null,YES,null,30,
+rank_verifications,test_fee,numeric,null,YES,0,31,
+rank_verifications,payment_status,text,null,YES,'pending'::text,32,
+rank_verifications,created_at,timestamp with time zone,null,YES,now(),33,
+rank_verifications,updated_at,timestamp with time zone,null,YES,now(),34,
+ranks,id,uuid,null,NO,gen_random_uuid(),1,PK
+ranks,code,text,null,NO,null,2,UNIQUE
+ranks,rank_name,text,null,NO,null,3,
+ranks,rank_order,integer,null,NO,null,4,
+ranks,elo_requirement,integer,null,NO,null,5,
+ranks,rank_color,text,null,YES,'text-slate-600'::text,6,
+ranks,description,text,null,YES,null,7,
+ranks,created_at,timestamp with time zone,null,NO,now(),8,
+ranks,updated_at,timestamp with time zone,null,NO,now(),9,
+ranks,level,integer,null,YES,null,10,
+referrals,id,uuid,null,NO,gen_random_uuid(),1,PK
+referrals,referrer_id,uuid,null,NO,null,2,
+referrals,referred_id,uuid,null,YES,null,3,
+referrals,referral_code,text,null,NO,null,4,UNIQUE
+referrals,status,text,null,YES,'pending'::text,5,
+referrals,reward_claimed,boolean,null,YES,false,6,
+referrals,completed_at,timestamp with time zone,null,YES,null,7,
+referrals,created_at,timestamp with time zone,null,YES,now(),8,
+reward_redemptions,id,uuid,null,NO,gen_random_uuid(),1,PK
+reward_redemptions,user_id,uuid,null,NO,null,2,FK
+reward_redemptions,reward_type,text,null,NO,null,3,
+reward_redemptions,points_cost,integer,null,NO,null,4,
+reward_redemptions,status,text,null,YES,'pending'::text,5,
+reward_redemptions,redemption_data,jsonb,null,YES,'{}'::jsonb,6,
+reward_redemptions,redeemed_at,timestamp with time zone,null,NO,now(),7,
+reward_redemptions,processed_at,timestamp with time zone,null,YES,null,8,
+reward_redemptions,created_at,timestamp with time zone,null,NO,now(),9,
+reward_redemptions,updated_at,timestamp with time zone,null,NO,now(),10,
+sabo_challenges,id,uuid,null,NO,gen_random_uuid(),1,PK
+sabo_challenges,challenger_id,uuid,null,NO,null,2,
+sabo_challenges,opponent_id,uuid,null,NO,null,3,
+sabo_challenges,stake_amount,integer,null,NO,100,4,
+sabo_challenges,race_to,integer,null,NO,5,5,
+sabo_challenges,handicap_challenger,integer,null,NO,0,6,
+sabo_challenges,handicap_opponent,integer,null,NO,0,7,
+sabo_challenges,status,text,null,NO,'pending'::text,8,
+sabo_challenges,created_at,timestamp with time zone,null,NO,now(),9,
+sabo_challenges,expires_at,timestamp with time zone,null,NO,(now() + '7 days'::interval),10,
+sabo_challenges,accepted_at,timestamp with time zone,null,YES,null,11,
+sabo_challenges,started_at,timestamp with time zone,null,YES,null,12,
+sabo_challenges,score_confirmation_timestamp,timestamp with time zone,null,YES,null,13,
+sabo_challenges,challenger_final_score,integer,null,NO,0,14,
+sabo_challenges,opponent_final_score,integer,null,NO,0,15,
+sabo_challenges,winner_id,uuid,null,YES,null,16,
+sabo_challenges,rack_history,jsonb,null,NO,'[]'::jsonb,17,
+sabo_challenges,updated_at,timestamp with time zone,null,NO,now(),18,
+spa_bonus_activities,id,uuid,null,NO,gen_random_uuid(),1,PK
+spa_bonus_activities,activity_type,character varying,100,NO,null,2,
+spa_bonus_activities,title,character varying,255,NO,null,3,
+spa_bonus_activities,description,text,null,YES,null,4,
+spa_bonus_activities,bonus_points,integer,null,NO,null,5,
+spa_bonus_activities,is_active,boolean,null,YES,true,6,
+spa_bonus_activities,max_claims_per_user,integer,null,YES,1,7,
+spa_bonus_activities,created_at,timestamp with time zone,null,NO,"timezone('utc'::text, now())",8,
+spa_bonus_activities,updated_at,timestamp with time zone,null,NO,"timezone('utc'::text, now())",9,
+spa_milestones,id,uuid,null,NO,gen_random_uuid(),1,PK
+spa_milestones,title,character varying,255,NO,null,2,
+spa_milestones,description,text,null,YES,null,3,
+spa_milestones,target_value,integer,null,NO,null,4,
+spa_milestones,reward_points,integer,null,NO,null,5,
+spa_milestones,milestone_type,character varying,50,NO,null,6,
+spa_milestones,is_active,boolean,null,YES,true,7,
+spa_milestones,created_at,timestamp with time zone,null,NO,"timezone('utc'::text, now())",8,
+spa_milestones,updated_at,timestamp with time zone,null,NO,"timezone('utc'::text, now())",9,
+spa_points_log,id,uuid,null,NO,gen_random_uuid(),1,PK
+spa_points_log,user_id,uuid,null,NO,null,2,FK
+spa_points_log,points,integer,null,NO,null,3,
+spa_points_log,category,text,null,NO,null,4,
+spa_points_log,description,text,null,YES,null,5,
+spa_points_log,reference_id,uuid,null,YES,null,6,
+spa_points_log,reference_type,text,null,YES,null,7,
+spa_points_log,created_at,timestamp with time zone,null,NO,now(),8,
+spa_reward_milestones,id,uuid,null,NO,gen_random_uuid(),1,PK
+spa_reward_milestones,milestone_name,text,null,NO,null,2,
+spa_reward_milestones,milestone_type,text,null,NO,null,3,
+spa_reward_milestones,requirement_value,integer,null,NO,null,4,
+spa_reward_milestones,spa_reward,integer,null,NO,null,5,
+spa_reward_milestones,bonus_conditions,jsonb,null,YES,'{}'::jsonb,6,
+spa_reward_milestones,is_active,boolean,null,YES,true,7,
+spa_reward_milestones,is_repeatable,boolean,null,YES,false,8,
+spa_reward_milestones,created_at,timestamp with time zone,null,YES,now(),9,
+spa_reward_milestones,updated_at,timestamp with time zone,null,YES,now(),10,
+spa_transaction_log,id,uuid,null,NO,gen_random_uuid(),1,PK
+spa_transaction_log,user_id,uuid,null,YES,null,2,FK
+spa_transaction_log,transaction_type,character varying,50,NO,null,3,
+spa_transaction_log,points_change,integer,null,NO,null,4,
+spa_transaction_log,previous_balance,integer,null,NO,null,5,
+spa_transaction_log,new_balance,integer,null,NO,null,6,
+spa_transaction_log,description,text,null,YES,null,7,
+spa_transaction_log,reference_id,uuid,null,YES,null,8,
+spa_transaction_log,created_at,timestamp with time zone,null,NO,"timezone('utc'::text, now())",9,
+spa_transactions,id,uuid,null,NO,gen_random_uuid(),1,PK
+spa_transactions,user_id,uuid,null,NO,null,2,FK
+spa_transactions,amount,integer,null,NO,null,3,
+spa_transactions,source_type,text,null,NO,null,4,
+spa_transactions,description,text,null,YES,null,5,
+spa_transactions,reference_id,uuid,null,YES,null,6,
+spa_transactions,created_at,timestamp with time zone,null,NO,now(),7,
+spa_transactions,metadata,jsonb,null,YES,'{}'::jsonb,8,
+spa_transactions,transaction_type,text,null,YES,'rank_verification'::text,9,
+spa_transactions,status,text,null,YES,'completed'::text,10,
+system_logs,id,uuid,null,NO,gen_random_uuid(),1,PK
+system_logs,level,text,null,NO,null,2,
+system_logs,message,text,null,NO,null,3,
+system_logs,context,jsonb,null,YES,'{}'::jsonb,4,
+system_logs,source,text,null,YES,null,5,
+system_logs,user_id,uuid,null,YES,null,6,FK
+system_logs,created_at,timestamp with time zone,null,NO,now(),7,
+test_schedules,id,uuid,null,NO,gen_random_uuid(),1,PK
+test_schedules,club_id,uuid,null,NO,null,2,FK
+test_schedules,instructor_id,uuid,null,YES,null,3,FK
+test_schedules,test_date,date,null,NO,null,4,
+test_schedules,start_time,time without time zone,null,NO,null,5,
+test_schedules,end_time,time without time zone,null,NO,null,6,
+test_schedules,duration_minutes,integer,null,NO,null,7,
+test_schedules,test_type,text,null,NO,null,8,
+test_schedules,max_participants,integer,null,YES,1,9,
+test_schedules,current_participants,integer,null,YES,0,10,
+test_schedules,rank_requirements,ARRAY,null,YES,null,11,
+test_schedules,skill_requirements,ARRAY,null,YES,null,12,
+test_schedules,equipment_needed,ARRAY,null,YES,null,13,
+test_schedules,booking_deadline,timestamp with time zone,null,YES,null,14,
+test_schedules,cancellation_policy,text,null,YES,null,15,
+test_schedules,status,text,null,YES,'available'::text,16,
+test_schedules,created_at,timestamp with time zone,null,YES,now(),17,
+test_schedules,updated_at,timestamp with time zone,null,YES,now(),18,
+tournament_automation_log,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_automation_log,tournament_id,uuid,null,NO,null,2,
+tournament_automation_log,match_id,uuid,null,YES,null,3,
+tournament_automation_log,automation_type,text,null,NO,null,4,
+tournament_automation_log,status,text,null,NO,'pending'::text,5,
+tournament_automation_log,details,jsonb,null,YES,'{}'::jsonb,6,
+tournament_automation_log,created_at,timestamp with time zone,null,YES,now(),7,
+tournament_automation_log,completed_at,timestamp with time zone,null,YES,null,8,
+tournament_automation_log,error_message,text,null,YES,null,9,
+tournament_brackets,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_brackets,tournament_id,uuid,null,NO,null,2,
+tournament_brackets,bracket_data,jsonb,null,YES,'{}'::jsonb,3,
+tournament_brackets,total_rounds,integer,null,NO,0,4,
+tournament_brackets,bracket_type,text,null,YES,'single_elimination'::text,5,
+tournament_brackets,created_at,timestamp with time zone,null,NO,now(),6,
+tournament_brackets,updated_at,timestamp with time zone,null,NO,now(),7,
+tournament_matches,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_matches,tournament_id,uuid,null,NO,null,2,FK
+tournament_matches,round_number,integer,null,NO,null,3,
+tournament_matches,match_number,integer,null,NO,null,4,
+tournament_matches,player1_id,uuid,null,YES,null,5,FK
+tournament_matches,player2_id,uuid,null,YES,null,6,FK
+tournament_matches,winner_id,uuid,null,YES,null,7,FK
+tournament_matches,status,text,null,NO,'scheduled'::text,8,
+tournament_matches,score_player1,integer,null,YES,0,9,
+tournament_matches,score_player2,integer,null,YES,0,10,
+tournament_matches,scheduled_time,timestamp with time zone,null,YES,null,11,
+tournament_matches,actual_start_time,timestamp with time zone,null,YES,null,12,
+tournament_matches,actual_end_time,timestamp with time zone,null,YES,null,13,
+tournament_matches,bracket_type,text,null,YES,null,14,
+tournament_matches,branch_type,text,null,YES,null,15,
+tournament_matches,is_third_place_match,boolean,null,YES,false,16,
+tournament_matches,score_status,text,null,YES,null,17,
+tournament_matches,score_input_by,uuid,null,YES,null,18,FK
+tournament_matches,score_submitted_at,timestamp with time zone,null,YES,null,19,
+tournament_matches,match_stage,text,null,YES,null,20,
+tournament_matches,loser_branch,text,null,YES,null,21,
+tournament_matches,round_position,integer,null,YES,null,22,
+tournament_matches,referee_id,uuid,null,YES,null,23,FK
+tournament_matches,notes,text,null,YES,null,24,
+tournament_matches,created_at,timestamp with time zone,null,NO,now(),25,
+tournament_matches,updated_at,timestamp with time zone,null,NO,now(),26,
+tournament_physical_prizes,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_physical_prizes,tournament_id,uuid,null,NO,null,2,FK
+tournament_physical_prizes,position,integer,null,NO,null,3,
+tournament_physical_prizes,item_name,text,null,NO,null,4,
+tournament_physical_prizes,item_description,text,null,YES,null,5,
+tournament_physical_prizes,quantity,integer,null,YES,1,6,
+tournament_physical_prizes,estimated_value,numeric,null,YES,0,7,
+tournament_physical_prizes,sponsor_name,text,null,YES,null,8,
+tournament_physical_prizes,image_url,text,null,YES,null,9,
+tournament_physical_prizes,is_available,boolean,null,YES,true,10,
+tournament_physical_prizes,created_at,timestamp with time zone,null,NO,now(),11,
+tournament_physical_prizes,updated_at,timestamp with time zone,null,NO,now(),12,
+tournament_point_configs,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_point_configs,tournament_id,uuid,null,NO,null,2,FK
+tournament_point_configs,tournament_id,uuid,null,NO,null,2,UNIQUE
+tournament_point_configs,point_type,text,null,NO,null,3,UNIQUE
+tournament_point_configs,position_range,text,null,NO,null,4,UNIQUE
+tournament_point_configs,base_points,integer,null,NO,0,5,
+tournament_point_configs,rank_multiplier,jsonb,null,YES,'{}'::jsonb,6,
+tournament_point_configs,tier_bonus,integer,null,YES,0,7,
+tournament_point_configs,is_active,boolean,null,YES,true,8,
+tournament_point_configs,created_at,timestamp with time zone,null,NO,now(),9,
+tournament_point_configs,updated_at,timestamp with time zone,null,NO,now(),10,
+tournament_prize_tiers,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_prize_tiers,tournament_id,uuid,null,NO,null,2,UNIQUE
+tournament_prize_tiers,tournament_id,uuid,null,NO,null,2,FK
+tournament_prize_tiers,position,integer,null,NO,null,3,UNIQUE
+tournament_prize_tiers,position_name,text,null,NO,null,4,
+tournament_prize_tiers,cash_amount,numeric,null,YES,0,5,
+tournament_prize_tiers,spa_points,integer,null,YES,0,6,
+tournament_prize_tiers,elo_points,integer,null,YES,0,7,
+tournament_prize_tiers,physical_items,ARRAY,null,YES,null,8,
+tournament_prize_tiers,is_visible,boolean,null,YES,true,9,
+tournament_prize_tiers,created_at,timestamp with time zone,null,NO,now(),10,
+tournament_prize_tiers,updated_at,timestamp with time zone,null,NO,now(),11,
+tournament_registrations,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_registrations,tournament_id,uuid,null,NO,null,2,UNIQUE
+tournament_registrations,tournament_id,uuid,null,NO,null,2,FK
+tournament_registrations,user_id,uuid,null,NO,null,3,UNIQUE
+tournament_registrations,user_id,uuid,null,NO,null,3,FK
+tournament_registrations,registration_date,timestamp with time zone,null,YES,now(),4,
+tournament_registrations,payment_status,text,null,YES,'pending'::text,5,
+tournament_registrations,payment_priority,integer,null,YES,0,6,
+tournament_registrations,created_at,timestamp with time zone,null,YES,now(),7,
+tournament_registrations,updated_at,timestamp with time zone,null,YES,now(),8,
+tournament_registrations,bracket_position,integer,null,YES,null,9,
+tournament_registrations,registration_status,text,null,YES,'pending'::text,10,
+tournament_registrations,status,text,null,YES,'active'::text,11,
+tournament_registrations,notes,text,null,YES,null,12,
+tournament_registrations,entry_fee,numeric,null,YES,0,13,
+tournament_registrations,payment_method,text,null,YES,null,14,
+tournament_registrations,current_bracket,character varying,20,YES,'winners'::character varying,15,
+tournament_registrations,elimination_round,integer,null,YES,null,16,
+tournament_results,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_results,tournament_id,uuid,null,NO,null,2,FK
+tournament_results,tournament_id,uuid,null,NO,null,2,UNIQUE
+tournament_results,user_id,uuid,null,NO,null,3,UNIQUE
+tournament_results,user_id,uuid,null,NO,null,3,FK
+tournament_results,final_position,integer,null,NO,null,4,
+tournament_results,matches_played,integer,null,YES,0,5,
+tournament_results,matches_won,integer,null,YES,0,6,
+tournament_results,matches_lost,integer,null,YES,0,7,
+tournament_results,win_percentage,numeric,null,YES,0,8,
+tournament_results,spa_points_earned,integer,null,YES,0,9,
+tournament_results,elo_points_earned,integer,null,YES,0,10,
+tournament_results,prize_amount,numeric,null,YES,0,11,
+tournament_results,placement_type,text,null,YES,null,13,
+tournament_results,created_at,timestamp with time zone,null,YES,now(),14,
+tournament_results,updated_at,timestamp with time zone,null,YES,now(),15,
+tournament_results,position,integer,null,YES,null,16,
+tournament_results,points_earned,integer,null,YES,0,17,
+tournament_results,physical_rewards,ARRAY,null,YES,'{}'::text[],18,
+tournament_reward_templates,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_reward_templates,name,text,null,NO,null,2,UNIQUE
+tournament_reward_templates,description,text,null,YES,null,3,
+tournament_reward_templates,club_id,uuid,null,YES,null,4,UNIQUE
+tournament_reward_templates,club_id,uuid,null,YES,null,4,FK
+tournament_reward_templates,created_by,uuid,null,YES,null,5,FK
+tournament_reward_templates,max_participants,integer,null,NO,null,6,
+tournament_reward_templates,rank_category,text,null,NO,null,7,
+tournament_reward_templates,tournament_type,text,null,NO,'single_elimination'::text,8,
+tournament_reward_templates,reward_structure,jsonb,null,NO,'{}'::jsonb,9,
+tournament_reward_templates,is_active,boolean,null,NO,true,10,
+tournament_reward_templates,is_default,boolean,null,NO,false,11,
+tournament_reward_templates,usage_count,integer,null,NO,0,12,
+tournament_reward_templates,created_at,timestamp with time zone,null,NO,now(),13,
+tournament_reward_templates,updated_at,timestamp with time zone,null,NO,now(),14,
+tournament_seeding,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_seeding,tournament_id,uuid,null,NO,null,2,UNIQUE
+tournament_seeding,tournament_id,uuid,null,NO,null,2,UNIQUE
+tournament_seeding,tournament_id,uuid,null,NO,null,2,FK
+tournament_seeding,user_id,uuid,null,NO,null,3,UNIQUE
+tournament_seeding,seed_position,integer,null,NO,null,4,UNIQUE
+tournament_seeding,seeding_method,text,null,YES,'elo_ranking'::text,5,
+tournament_seeding,created_at,timestamp with time zone,null,YES,now(),6,
+tournament_seeding,updated_at,timestamp with time zone,null,YES,now(),7,
+tournament_special_awards,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_special_awards,tournament_id,uuid,null,NO,null,2,FK
+tournament_special_awards,award_name,text,null,NO,null,3,
+tournament_special_awards,award_description,text,null,YES,null,4,
+tournament_special_awards,criteria,text,null,YES,null,5,
+tournament_special_awards,cash_amount,numeric,null,YES,0,6,
+tournament_special_awards,spa_points,integer,null,YES,0,7,
+tournament_special_awards,elo_points,integer,null,YES,0,8,
+tournament_special_awards,physical_items,ARRAY,null,YES,null,9,
+tournament_special_awards,is_active,boolean,null,YES,true,10,
+tournament_special_awards,created_at,timestamp with time zone,null,NO,now(),11,
+tournament_special_awards,updated_at,timestamp with time zone,null,NO,now(),12,
+tournament_tiers,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournament_tiers,tier_name,text,null,NO,null,2,UNIQUE
+tournament_tiers,tier_level,integer,null,NO,null,3,UNIQUE
+tournament_tiers,points_multiplier,numeric,null,NO,1.0,4,
+tournament_tiers,qualification_required,boolean,null,NO,false,5,
+tournament_tiers,min_participants,integer,null,NO,8,6,
+tournament_tiers,description,text,null,YES,null,7,
+tournament_tiers,created_at,timestamp with time zone,null,NO,now(),8,
+tournament_tiers,updated_at,timestamp with time zone,null,NO,now(),9,
+tournaments,id,uuid,null,NO,gen_random_uuid(),1,PK
+tournaments,name,text,null,NO,null,2,
+tournaments,description,text,null,YES,null,3,
+tournaments,club_id,uuid,null,YES,null,4,FK
+tournaments,max_participants,integer,null,YES,16,5,
+tournaments,entry_fee,integer,null,YES,0,6,
+tournaments,prize_pool,integer,null,YES,0,7,
+tournaments,status,text,null,YES,'registration_open'::text,8,
+tournaments,tournament_type,text,null,YES,'single_elimination'::text,9,
+tournaments,registration_start,timestamp with time zone,null,YES,null,10,
+tournaments,registration_end,timestamp with time zone,null,YES,null,11,
+tournaments,start_date,timestamp with time zone,null,YES,null,12,
+tournaments,end_date,timestamp with time zone,null,YES,null,13,
+tournaments,venue_address,text,null,YES,null,14,
+tournaments,created_at,timestamp with time zone,null,NO,now(),15,
+tournaments,updated_at,timestamp with time zone,null,NO,now(),16,
+tournaments,created_by,uuid,null,YES,null,17,FK
+tournaments,tier_level,integer,null,YES,1,18,
+tournaments,game_format,text,null,YES,'9_ball'::text,19,
+tournaments,has_third_place_match,boolean,null,YES,false,20,
+tournaments,rules,text,null,YES,null,21,
+tournaments,contact_info,text,null,YES,null,22,
+tournaments,requires_approval,boolean,null,YES,false,23,
+tournaments,is_public,boolean,null,YES,true,24,
+tournaments,allow_all_ranks,boolean,null,YES,true,25,
+tournaments,eligible_ranks,ARRAY,null,YES,'{}'::text[],26,
+tournaments,min_rank_requirement,text,null,YES,null,27,
+tournaments,max_rank_requirement,text,null,YES,null,28,
+tournaments,spa_points_config,jsonb,null,YES,'{}'::jsonb,30,
+tournaments,elo_points_config,jsonb,null,YES,'{}'::jsonb,31,
+tournaments,physical_prizes,jsonb,null,YES,'{}'::jsonb,32,
+tournaments,current_participants,integer,null,YES,0,33,
+tournaments,current_phase,text,null,YES,'registration'::text,34,
+tournaments,deleted_at,timestamp with time zone,null,YES,null,35,
+tournaments,is_visible,boolean,null,YES,true,36,
+tournaments,tournament_start,timestamp with time zone,null,YES,null,37,
+tournaments,tournament_end,timestamp with time zone,null,YES,null,38,
+tournaments,first_prize,numeric,null,YES,0,39,
+tournaments,second_prize,numeric,null,YES,0,40,
+tournaments,third_prize,numeric,null,YES,0,41,
+tournaments,management_status,text,null,YES,'manual'::text,42,
+tournaments,completed_at,timestamp with time zone,null,YES,null,43,
+tournaments,bracket_progression,jsonb,null,YES,"'{""final_ready"": false, ""semifinal_ready"": false, ""branch_a_completed"": false, ""branch_b_completed"": false, ""tournament_complete"": false, ""winners_bracket_completed"": false}'::jsonb",44,
+tournaments,bracket_config,jsonb,null,YES,"'{""type"": ""double_elimination_16"", ""final_matches"": 3, ""total_matches"": 27, ""losers_matches"": 10, ""winners_matches"": 14}'::jsonb",45,
+tournaments,is_draft,boolean,null,YES,false,46,
+user_bonus_claims,id,uuid,null,NO,gen_random_uuid(),1,PK
+user_bonus_claims,user_id,uuid,null,YES,null,2,UNIQUE
+user_bonus_claims,user_id,uuid,null,YES,null,2,FK
+user_bonus_claims,activity_id,uuid,null,YES,null,3,UNIQUE
+user_bonus_claims,activity_id,uuid,null,YES,null,3,FK
+user_bonus_claims,points_awarded,integer,null,NO,null,4,
+user_bonus_claims,reference_data,jsonb,null,YES,null,5,
+user_bonus_claims,claimed_at,timestamp with time zone,null,NO,"timezone('utc'::text, now())",6,
+user_chat_sessions,id,uuid,null,NO,gen_random_uuid(),1,PK
+user_chat_sessions,user_id,uuid,null,NO,null,2,FK
+user_chat_sessions,chat_type,text,null,NO,'support'::text,3,
+user_chat_sessions,status,text,null,YES,'active'::text,4,
+user_chat_sessions,title,text,null,YES,null,5,
+user_chat_sessions,created_at,timestamp with time zone,null,NO,now(),6,
+user_chat_sessions,updated_at,timestamp with time zone,null,NO,now(),7,
+user_chat_sessions,last_message_at,timestamp with time zone,null,YES,null,8,
+user_follows,id,uuid,null,NO,gen_random_uuid(),1,PK
+user_follows,follower_id,uuid,null,NO,null,2,UNIQUE
+user_follows,follower_id,uuid,null,NO,null,2,FK
+user_follows,following_id,uuid,null,NO,null,3,UNIQUE
+user_follows,following_id,uuid,null,NO,null,3,FK
+user_follows,created_at,timestamp with time zone,null,NO,now(),4,
+user_milestone_progress,id,uuid,null,NO,gen_random_uuid(),1,PK
+user_milestone_progress,user_id,uuid,null,YES,null,2,UNIQUE
+user_milestone_progress,user_id,uuid,null,YES,null,2,FK
+user_milestone_progress,milestone_id,uuid,null,YES,null,3,FK
+user_milestone_progress,milestone_id,uuid,null,YES,null,3,UNIQUE
+user_milestone_progress,current_progress,integer,null,YES,0,4,
+user_milestone_progress,is_completed,boolean,null,YES,false,5,
+user_milestone_progress,completed_at,timestamp with time zone,null,YES,null,6,
+user_milestone_progress,reward_claimed,boolean,null,YES,false,7,
+user_milestone_progress,created_at,timestamp with time zone,null,NO,"timezone('utc'::text, now())",8,
+user_milestone_progress,updated_at,timestamp with time zone,null,NO,"timezone('utc'::text, now())",9,
+user_penalties,id,uuid,null,NO,gen_random_uuid(),1,PK
+user_penalties,user_id,uuid,null,NO,null,2,FK
+user_penalties,penalty_type,text,null,NO,null,3,
+user_penalties,severity,text,null,YES,'minor'::text,4,
+user_penalties,reason,text,null,NO,null,5,
+user_penalties,start_date,timestamp with time zone,null,NO,now(),6,
+user_penalties,end_date,timestamp with time zone,null,YES,null,7,
+user_penalties,is_active,boolean,null,YES,true,8,
+user_penalties,issued_by,uuid,null,YES,null,9,FK
+user_penalties,appeal_status,text,null,YES,'none'::text,10,
+user_penalties,appeal_reason,text,null,YES,null,11,
+user_penalties,created_at,timestamp with time zone,null,NO,now(),12,
+user_penalties,updated_at,timestamp with time zone,null,NO,now(),13,
+user_roles,id,uuid,null,NO,gen_random_uuid(),1,PK
+user_roles,user_id,uuid,null,NO,null,2,UNIQUE
+user_roles,user_id,uuid,null,NO,null,2,FK
+user_roles,role,USER-DEFINED,null,NO,null,3,UNIQUE
+user_roles,created_at,timestamp with time zone,null,YES,now(),4,
+user_roles,created_by,uuid,null,YES,null,5,FK
+user_streaks,id,uuid,null,NO,gen_random_uuid(),1,PK
+user_streaks,user_id,uuid,null,NO,null,2,FK
+user_streaks,user_id,uuid,null,NO,null,2,UNIQUE
+user_streaks,streak_type,text,null,NO,null,3,UNIQUE
+user_streaks,current_streak,integer,null,YES,0,4,
+user_streaks,longest_streak,integer,null,YES,0,5,
+user_streaks,streak_start_date,timestamp with time zone,null,YES,null,6,
+user_streaks,last_activity_date,timestamp with time zone,null,YES,null,7,
+user_streaks,created_at,timestamp with time zone,null,NO,now(),8,
+user_streaks,updated_at,timestamp with time zone,null,NO,now(),9,
+wallet_transactions,id,uuid,null,NO,gen_random_uuid(),1,PK
+wallet_transactions,user_id,uuid,null,NO,null,2,
+wallet_transactions,amount,numeric,null,NO,null,3,
+wallet_transactions,transaction_type,text,null,NO,null,4,
+wallet_transactions,description,text,null,YES,null,5,
+wallet_transactions,tournament_id,uuid,null,YES,null,6,
+wallet_transactions,match_id,uuid,null,YES,null,7,
+wallet_transactions,status,text,null,YES,'completed'::text,8,
+wallet_transactions,created_at,timestamp with time zone,null,YES,now(),9,
+wallet_transactions,updated_at,timestamp with time zone,null,YES,now(),10,
+wallets,id,uuid,null,NO,gen_random_uuid(),1,PK
+wallets,user_id,uuid,null,NO,null,2,UNIQUE
+wallets,points_balance,integer,null,YES,0,3,
+wallets,total_earned,integer,null,YES,0,4,
+wallets,total_spent,integer,null,YES,0,5,
+wallets,created_at,timestamp with time zone,null,YES,now(),6,
+wallets,updated_at,timestamp with time zone,null,YES,now(),7,
+wallets,balance,numeric,null,YES,0,8,
+wallets,status,text,null,YES,'active'::text,9,
+web_vitals_metrics,id,uuid,null,NO,gen_random_uuid(),1,PK
+web_vitals_metrics,user_id,uuid,null,YES,null,2,FK
+web_vitals_metrics,metric_name,text,null,NO,null,3,
+web_vitals_metrics,metric_value,numeric,null,NO,null,4,
+web_vitals_metrics,page_url,text,null,NO,null,5,
+web_vitals_metrics,user_agent,text,null,YES,null,6,
+web_vitals_metrics,created_at,timestamp with time zone,null,NO,now(),7,

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -33,10 +33,69 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isCropping, setIsCropping] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Add global event listeners for better pointer handling
+  useEffect(() => {
+    const handleGlobalPointerMove = (e: PointerEvent) => {
+      if (isDragging && containerRef.current && imageRef.current) {
+        e.preventDefault();
+        
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const img = imageRef.current;
+        
+        // Calculate displayed image bounds
+        const imageAspectRatio = img.naturalWidth / img.naturalHeight;
+        const containerAspectRatio = containerRect.width / containerRect.height;
+        
+        let displayedWidth, displayedHeight, offsetX, offsetY;
+        
+        if (imageAspectRatio > containerAspectRatio) {
+          displayedWidth = containerRect.width;
+          displayedHeight = containerRect.width / imageAspectRatio;
+          offsetX = 0;
+          offsetY = (containerRect.height - displayedHeight) / 2;
+        } else {
+          displayedHeight = containerRect.height;
+          displayedWidth = containerRect.height * imageAspectRatio;
+          offsetX = (containerRect.width - displayedWidth) / 2;
+          offsetY = 0;
+        }
+        
+        // Calculate new position constrained to displayed image bounds
+        const newX = Math.max(offsetX, Math.min(
+          e.clientX - containerRect.left - dragStart.x, 
+          offsetX + displayedWidth - cropArea.width
+        ));
+        const newY = Math.max(offsetY, Math.min(
+          e.clientY - containerRect.top - dragStart.y, 
+          offsetY + displayedHeight - cropArea.height
+        ));
+        
+        setCropArea(prev => ({ ...prev, x: newX, y: newY }));
+      }
+    };
+
+    const handleGlobalPointerUp = () => {
+      setIsDragging(false);
+      setIsResizing(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener('pointermove', handleGlobalPointerMove);
+      document.addEventListener('pointerup', handleGlobalPointerUp);
+    }
+
+    return () => {
+      document.removeEventListener('pointermove', handleGlobalPointerMove);
+      document.removeEventListener('pointerup', handleGlobalPointerUp);
+    };
+  }, [isDragging, dragStart, cropArea.width, cropArea.height]);
 
   // Initialize crop area when image loads
   const handleImageLoad = useCallback(() => {
@@ -44,74 +103,117 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
     
     const img = imageRef.current;
     const container = containerRef.current;
-    
-    // Calculate initial crop area (centered square)
     const containerRect = container.getBoundingClientRect();
-    const imgRect = img.getBoundingClientRect();
     
-    const minSize = Math.min(imgRect.width, imgRect.height) * 0.8;
-    const centerX = (imgRect.width - minSize) / 2;
-    const centerY = (imgRect.height - minSize) / 2;
+    // Calculate the actual displayed image dimensions (with object-contain)
+    const imageAspectRatio = img.naturalWidth / img.naturalHeight;
+    const containerAspectRatio = containerRect.width / containerRect.height;
+    
+    let displayedWidth, displayedHeight, offsetX, offsetY;
+    
+    if (imageAspectRatio > containerAspectRatio) {
+      // Image is wider than container - fits by width
+      displayedWidth = containerRect.width;
+      displayedHeight = containerRect.width / imageAspectRatio;
+      offsetX = 0;
+      offsetY = (containerRect.height - displayedHeight) / 2;
+    } else {
+      // Image is taller than container - fits by height
+      displayedHeight = containerRect.height;
+      displayedWidth = containerRect.height * imageAspectRatio;
+      offsetX = (containerRect.width - displayedWidth) / 2;
+      offsetY = 0;
+    }
+    
+    // Create initial crop area (80% of displayed image, centered)
+    const cropSize = Math.min(displayedWidth, displayedHeight) * 0.8;
+    const centerX = offsetX + (displayedWidth - cropSize) / 2;
+    const centerY = offsetY + (displayedHeight - cropSize) / 2;
     
     setCropArea({
       x: centerX,
       y: centerY,
-      width: minSize,
-      height: minSize / aspectRatio,
+      width: cropSize,
+      height: cropSize / aspectRatio,
+    });
+    
+    setImageLoaded(true);
+    
+    console.log('Image loaded:', {
+      natural: { width: img.naturalWidth, height: img.naturalHeight },
+      container: { width: containerRect.width, height: containerRect.height },
+      displayed: { width: displayedWidth, height: displayedHeight, offsetX, offsetY },
+      cropArea: { x: centerX, y: centerY, width: cropSize, height: cropSize / aspectRatio }
     });
   }, [aspectRatio]);
 
   // Handle touch/mouse events for dragging
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    if (!containerRef.current) return;
+    
     e.preventDefault();
     setIsDragging(true);
+    
+    const containerRect = containerRef.current.getBoundingClientRect();
     setDragStart({
-      x: e.clientX - cropArea.x,
-      y: e.clientY - cropArea.y,
+      x: e.clientX - containerRect.left - cropArea.x,
+      y: e.clientY - containerRect.top - cropArea.y,
     });
   }, [cropArea]);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDragging || !imageRef.current) return;
-    
+    // This is now handled by global event listeners
     e.preventDefault();
-    const imgRect = imageRef.current.getBoundingClientRect();
-    
-    const newX = Math.max(0, Math.min(e.clientX - dragStart.x, imgRect.width - cropArea.width));
-    const newY = Math.max(0, Math.min(e.clientY - dragStart.y, imgRect.height - cropArea.height));
-    
-    setCropArea(prev => ({ ...prev, x: newX, y: newY }));
-  }, [isDragging, dragStart, cropArea.width, cropArea.height]);
+  }, []);
 
   const handlePointerUp = useCallback(() => {
-    setIsDragging(false);
-    setIsResizing(false);
+    // This is now handled by global event listeners
   }, []);
 
   // Handle crop area resize
   const handleResize = useCallback((direction: string, deltaX: number, deltaY: number) => {
-    if (!imageRef.current) return;
+    if (!containerRef.current || !imageRef.current) return;
     
-    const imgRect = imageRef.current.getBoundingClientRect();
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const img = imageRef.current;
+    
+    // Calculate displayed image bounds
+    const imageAspectRatio = img.naturalWidth / img.naturalHeight;
+    const containerAspectRatio = containerRect.width / containerRect.height;
+    
+    let displayedWidth, displayedHeight, offsetX, offsetY;
+    
+    if (imageAspectRatio > containerAspectRatio) {
+      displayedWidth = containerRect.width;
+      displayedHeight = containerRect.width / imageAspectRatio;
+      offsetX = 0;
+      offsetY = (containerRect.height - displayedHeight) / 2;
+    } else {
+      displayedHeight = containerRect.height;
+      displayedWidth = containerRect.height * imageAspectRatio;
+      offsetX = (containerRect.width - displayedWidth) / 2;
+      offsetY = 0;
+    }
+    
     setCropArea(prev => {
       let newArea = { ...prev };
       
       if (direction.includes('right')) {
-        newArea.width = Math.max(50, Math.min(prev.width + deltaX, imgRect.width - prev.x));
+        newArea.width = Math.max(50, Math.min(prev.width + deltaX, offsetX + displayedWidth - prev.x));
       }
       if (direction.includes('bottom')) {
-        newArea.height = Math.max(50, Math.min(prev.height + deltaY, imgRect.height - prev.y));
+        newArea.height = Math.max(50, Math.min(prev.height + deltaY, offsetY + displayedHeight - prev.y));
       }
       if (direction.includes('left')) {
         const newWidth = Math.max(50, prev.width - deltaX);
         const maxX = prev.x + prev.width - newWidth;
-        newArea.x = Math.max(0, maxX);
+        newArea.x = Math.max(offsetX, maxX);
         newArea.width = newWidth;
       }
       if (direction.includes('top')) {
         const newHeight = Math.max(50, prev.height - deltaY);
         const maxY = prev.y + prev.height - newHeight;
-        newArea.y = Math.max(0, maxY);
+        newArea.y = Math.max(offsetY, maxY);
         newArea.height = newHeight;
       }
       
@@ -126,73 +228,128 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
 
   // Crop and return the result
   const handleCrop = useCallback(async () => {
-    if (!imageRef.current || !canvasRef.current) return;
+    if (!imageRef.current || !canvasRef.current || !containerRef.current) return;
     
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    setIsCropping(true);
     
-    const img = imageRef.current;
-    const imgRect = img.getBoundingClientRect();
-    
-    // Calculate scale factors
-    const scaleX = img.naturalWidth / imgRect.width;
-    const scaleY = img.naturalHeight / imgRect.height;
-    
-    // Set canvas dimensions
-    canvas.width = 400;
-    canvas.height = 400;
-    
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Apply transformations
-    ctx.save();
-    
-    // Rotate if needed
-    if (rotation !== 0) {
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate((rotation * Math.PI) / 180);
-      ctx.translate(-canvas.width / 2, -canvas.height / 2);
+    try {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Cannot get canvas context');
+      
+      const img = imageRef.current;
+      const containerRect = containerRef.current.getBoundingClientRect();
+      
+      // Calculate the actual displayed image dimensions (with object-contain)
+      const imageAspectRatio = img.naturalWidth / img.naturalHeight;
+      const containerAspectRatio = containerRect.width / containerRect.height;
+      
+      let displayedWidth, displayedHeight, offsetX, offsetY;
+      
+      if (imageAspectRatio > containerAspectRatio) {
+        // Image is wider than container - fits by width
+        displayedWidth = containerRect.width;
+        displayedHeight = containerRect.width / imageAspectRatio;
+        offsetX = 0;
+        offsetY = (containerRect.height - displayedHeight) / 2;
+      } else {
+        // Image is taller than container - fits by height
+        displayedHeight = containerRect.height;
+        displayedWidth = containerRect.height * imageAspectRatio;
+        offsetX = (containerRect.width - displayedWidth) / 2;
+        offsetY = 0;
+      }
+      
+      // Calculate scale factors from displayed image to natural size
+      const scaleX = img.naturalWidth / displayedWidth;
+      const scaleY = img.naturalHeight / displayedHeight;
+      
+      // Adjust crop area coordinates to account for image offset and scale
+      const adjustedX = (cropArea.x - offsetX) * scaleX / scale;
+      const adjustedY = (cropArea.y - offsetY) * scaleY / scale;
+      const adjustedWidth = cropArea.width * scaleX / scale;
+      const adjustedHeight = cropArea.height * scaleY / scale;
+      
+      // Ensure we don't go outside image bounds
+      const sourceX = Math.max(0, Math.min(adjustedX, img.naturalWidth - adjustedWidth));
+      const sourceY = Math.max(0, Math.min(adjustedY, img.naturalHeight - adjustedHeight));
+      const sourceWidth = Math.min(adjustedWidth, img.naturalWidth - sourceX);
+      const sourceHeight = Math.min(adjustedHeight, img.naturalHeight - sourceY);
+      
+      // Set canvas dimensions
+      canvas.width = 400;
+      canvas.height = 400;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Apply transformations
+      ctx.save();
+      
+      // Rotate if needed
+      if (rotation !== 0) {
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate((rotation * Math.PI) / 180);
+        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+      }
+      
+      // Draw cropped area
+      ctx.drawImage(
+        img,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+      
+      ctx.restore();
+      
+      console.log('Crop calculation:', {
+        container: { width: containerRect.width, height: containerRect.height },
+        displayed: { width: displayedWidth, height: displayedHeight, offsetX, offsetY },
+        cropArea: cropArea,
+        natural: { width: img.naturalWidth, height: img.naturalHeight },
+        source: { x: sourceX, y: sourceY, width: sourceWidth, height: sourceHeight },
+        scale: scale
+      });
+      
+      // Convert to blob
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const file = new File([blob], 'cropped-avatar.jpg', {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            });
+            onCropComplete(file);
+            onOpenChange(false);
+            toast.success('Đã cắt ảnh thành công!');
+          } else {
+            toast.error('Lỗi khi tạo file ảnh');
+          }
+          setIsCropping(false);
+        },
+        'image/jpeg',
+        0.9
+      );
+    } catch (error) {
+      console.error('Crop error:', error);
+      toast.error('Lỗi khi cắt ảnh: ' + (error instanceof Error ? error.message : 'Không xác định'));
+      setIsCropping(false);
     }
-    
-    // Draw cropped area
-    ctx.drawImage(
-      img,
-      cropArea.x * scaleX,
-      cropArea.y * scaleY,
-      cropArea.width * scaleX,
-      cropArea.height * scaleY,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-    
-    ctx.restore();
-    
-    // Convert to blob
-    canvas.toBlob(
-      (blob) => {
-        if (blob) {
-          const file = new File([blob], 'cropped-avatar.jpg', {
-            type: 'image/jpeg',
-            lastModified: Date.now(),
-          });
-          onCropComplete(file);
-          onOpenChange(false);
-          toast.success('Đã cắt ảnh thành công!');
-        }
-      },
-      'image/jpeg',
-      0.9
-    );
   }, [cropArea, rotation, scale, onCropComplete, onOpenChange]);
 
   const handleCancel = useCallback(() => {
     onOpenChange(false);
     setScale(1);
     setRotation(0);
+    setCropArea({ x: 0, y: 0, width: 100, height: 100 });
+    setImageLoaded(false);
+    setIsCropping(false);
   }, [onOpenChange]);
 
   return (
@@ -206,10 +363,17 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
         </DialogHeader>
         
         <div className="px-4">
+          {/* Loading state */}
+          {!imageLoaded && (
+            <div className="relative bg-black rounded-lg overflow-hidden aspect-square flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-2 border-white border-t-transparent" />
+            </div>
+          )}
+          
           {/* Image Editor */}
           <div
             ref={containerRef}
-            className="relative bg-black rounded-lg overflow-hidden aspect-square"
+            className={`relative bg-black rounded-lg overflow-hidden aspect-square ${!imageLoaded ? 'hidden' : ''}`}
             style={{ touchAction: 'none' }}
           >
             <img
@@ -226,71 +390,85 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
             />
             
             {/* Crop Overlay */}
-            <div
-              className="absolute border-2 border-blue-500 bg-blue-500/10"
-              style={{
-                left: cropArea.x,
-                top: cropArea.y,
-                width: cropArea.width,
-                height: cropArea.height,
-                cursor: isDragging ? 'grabbing' : 'grab',
-              }}
-              onPointerDown={handlePointerDown}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
-            >
-              {/* Corner handles for resizing */}
-              <div className="absolute -top-1 -left-1 w-3 h-3 bg-blue-500 border border-white rounded-full cursor-nw-resize" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 border border-white rounded-full cursor-ne-resize" />
-              <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-blue-500 border border-white rounded-full cursor-sw-resize" />
-              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-blue-500 border border-white rounded-full cursor-se-resize" />
-              
-              {/* Move icon */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white">
-                <Move className="w-4 h-4" />
+            {imageLoaded && (
+              <div
+                className="absolute border-2 border-blue-500 bg-blue-500/10"
+                style={{
+                  left: cropArea.x,
+                  top: cropArea.y,
+                  width: cropArea.width,
+                  height: cropArea.height,
+                  cursor: isDragging ? 'grabbing' : 'grab',
+                }}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+              >
+                {/* Corner handles for resizing */}
+                <div className="absolute -top-1 -left-1 w-3 h-3 bg-blue-500 border border-white rounded-full cursor-nw-resize" />
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 border border-white rounded-full cursor-ne-resize" />
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-blue-500 border border-white rounded-full cursor-sw-resize" />
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-blue-500 border border-white rounded-full cursor-se-resize" />
+                
+                {/* Move icon */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white">
+                  <Move className="w-4 h-4" />
+                </div>
               </div>
-            </div>
+            )}
           </div>
           
           {/* Controls */}
-          <div className="flex items-center justify-between py-3 gap-2">
-            <div className="flex items-center gap-1">
+          {imageLoaded && (
+            <div className="flex items-center justify-between py-3 gap-2">
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setScale(Math.max(0.5, scale - 0.1))}
+                  disabled={scale <= 0.5 || isCropping}
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setScale(Math.min(3, scale + 0.1))}
+                  disabled={scale >= 3 || isCropping}
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </Button>
+              </div>
+              
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setScale(Math.max(0.5, scale - 0.1))}
-                disabled={scale <= 0.5}
+                onClick={() => setRotation((rotation + 90) % 360)}
+                disabled={isCropping}
               >
-                <ZoomOut className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setScale(Math.min(3, scale + 0.1))}
-                disabled={scale >= 3}
-              >
-                <ZoomIn className="w-4 h-4" />
+                <RotateCw className="w-4 h-4" />
               </Button>
             </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setRotation((rotation + 90) % 360)}
-            >
-              <RotateCw className="w-4 h-4" />
-            </Button>
-          </div>
+          )}
         </div>
         
         <DialogFooter className="p-4 pt-2">
-          <Button variant="outline" onClick={handleCancel} className="flex-1">
+          <Button variant="outline" onClick={handleCancel} className="flex-1" disabled={isCropping}>
             <X className="w-4 h-4 mr-2" />
             Hủy
           </Button>
-          <Button onClick={handleCrop} className="flex-1">
-            <Check className="w-4 h-4 mr-2" />
-            Cắt ảnh
+          <Button onClick={handleCrop} className="flex-1" disabled={!imageLoaded || isCropping}>
+            {isCropping ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                Đang xử lý...
+              </>
+            ) : (
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                Cắt ảnh
+              </>
+            )}
           </Button>
         </DialogFooter>
         

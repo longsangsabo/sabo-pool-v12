@@ -1,183 +1,262 @@
-# Supabase CLI
+# 🎱 SABO Pool Arena Hub
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
-](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+A comprehensive pool arena management system with VNPAY payment integration, built with React, TypeScript, and modern web technologies.
 
-[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
+## 🚀 Features
 
-This repository contains all the functionality for Supabase CLI.
+- **🏆 Tournament Management** - Create and manage pool tournaments
+- **💰 Payment Integration** - VNPAY payment gateway integration
+- **📊 ELO Ranking System** - Advanced player ranking algorithm
+- **👥 User Management** - Complete user profiles and authentication
+- **📱 PWA Support** - Progressive Web App capabilities
+- **🎨 Modern UI/UX** - Beautiful, responsive design with Tailwind CSS
+- **🔔 Real-time Notifications** - Live updates and notifications
+- **📈 Analytics Dashboard** - Comprehensive statistics and insights
 
-- [x] Running Supabase locally
-- [x] Managing database migrations
-- [x] Creating and deploying Supabase Functions
-- [x] Generating types directly from your database schema
-- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
+## 🛠️ Tech Stack
 
-## Getting started
+- **Frontend:** React 18, TypeScript, Vite
+- **Styling:** Tailwind CSS, Radix UI
+- **State Management:** React Query, React Hook Form
+- **Backend:** Supabase, Express.js
+- **Payment:** VNPAY Integration
+- **Deployment:** Loveable, Vercel
+- **Code Quality:** ESLint, Prettier, Husky
 
-### Install the CLI
+## 📦 Installation
 
-Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
+### Prerequisites
 
-```bash
-npm i supabase --save-dev
-```
+- Node.js 18+
+- npm 8+
+- Git
 
-To install the beta release channel:
-
-```bash
-npm i supabase@beta --save-dev
-```
-
-When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
-
-```
-NODE_OPTIONS=--no-experimental-fetch yarn add supabase
-```
-
-> **Note**
-For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
-
-<details>
-  <summary><b>macOS</b></summary>
-
-  Available via [Homebrew](https://brew.sh). To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To install the beta release channel:
-  
-  ```sh
-  brew install supabase/tap/supabase-beta
-  brew link --overwrite supabase-beta
-  ```
-  
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Windows</b></summary>
-
-  Available via [Scoop](https://scoop.sh). To install:
-
-  ```powershell
-  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-  scoop install supabase
-  ```
-
-  To upgrade:
-
-  ```powershell
-  scoop update supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Linux</b></summary>
-
-  Available via [Homebrew](https://brew.sh) and Linux packages.
-
-  #### via Homebrew
-
-  To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-
-  #### via Linux packages
-
-  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
-
-  ```sh
-  sudo apk add --allow-untrusted <...>.apk
-  ```
-
-  ```sh
-  sudo dpkg -i <...>.deb
-  ```
-
-  ```sh
-  sudo rpm -i <...>.rpm
-  ```
-
-  ```sh
-  sudo pacman -U <...>.pkg.tar.zst
-  ```
-</details>
-
-<details>
-  <summary><b>Other Platforms</b></summary>
-
-  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
-
-  ```sh
-  go install github.com/supabase/cli@latest
-  ```
-
-  Add a symlink to the binary in `$PATH` for easier access:
-
-  ```sh
-  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
-  ```
-
-  This works on other non-standard Linux distros.
-</details>
-
-<details>
-  <summary><b>Community Maintained Packages</b></summary>
-
-  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
-  To install in your working directory:
-
-  ```bash
-  pkgx install supabase
-  ```
-
-  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
-</details>
-
-### Run the CLI
+### Setup
 
 ```bash
-supabase bootstrap
+# Clone the repository
+git clone https://github.com/yourusername/sabo-pool-arena-hub.git
+cd sabo-pool-arena-hub
+
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp .env.example .env
+
+# Start development server
+npm run dev
 ```
 
-Or using npx:
+## � Documentation
+
+### Quick Links
+
+- **[🚀 Deployment Guide](docs/DEPLOYMENT.md)** - Complete deployment instructions
+- **[🧪 Testing Guide](docs/TESTING.md)** - Testing strategies and procedures
+- **[📊 Monitoring Guide](docs/MONITORING.md)** - Performance and analytics setup
+- **[🎯 Features Documentation](docs/FEATURES.md)** - Detailed feature implementation
+- **[🗄️ Database Schema](DATABASE_SCHEMA.md)** - Database structure and relationships
+- **[🔧 Troubleshooting](TROUBLESHOOTING.md)** - Common issues and solutions
+- **[🔐 Security Guide](SECURITY_ENV_GUIDE.md)** - Security best practices
+
+### Development Resources
+
+- **[Setup Guide](SETUP_GUIDE.md)** - Initial project setup
+- **[Handover Guide](HANDOVER_GUIDE.md)** - Project handover information
+- **[Archive](docs/archive/)** - Historical documentation and completed tasks
+
+## �🔧 Development
+
+### Available Scripts
 
 ```bash
-npx supabase bootstrap
+# Development
+npm run dev              # Start development server
+npm run build           # Build for production
+npm run preview         # Preview production build
+
+# Code Quality
+npm run lint            # Run ESLint
+npm run lint:fix        # Fix ESLint issues
+npm run format          # Format code with Prettier
+npm run format:check    # Check code formatting
+npm run type-check      # Run TypeScript type checking
+
+# Testing
+npm test                # Run tests
+npm run test:watch      # Run tests in watch mode
+
+# Database
+npm run db:push         # Push database changes
+npm run db:reset        # Reset database
 ```
 
-The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+### Code Quality Tools
 
-## Docs
+- **ESLint** - Code linting with TypeScript support
+- **Prettier** - Code formatting
+- **Husky** - Git hooks for pre-commit checks
+- **lint-staged** - Run linters on staged files
 
-Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+### Pre-commit Hooks
 
-## Breaking changes
+The project uses Husky to run automatic checks before commits:
 
-We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
+- ESLint fixes
+- Prettier formatting
+- Type checking
 
-However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
+## 🌐 Deployment
 
-## Developing
+### Loveable Deployment
 
-To run from source:
+1. Push code to GitHub
+2. Connect repository to Loveable
+3. Configure environment variables
+4. Deploy
 
-```sh
-# Go >= 1.22
-go run . help
+### Environment Variables
+
+```env
+# VNPAY Configuration
+VNP_TMN_CODE=your_terminal_id
+VNP_HASH_SECRET=your_secret_key
+VNP_RETURN_URL=your_return_url
+VNP_PAYMENT_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+
+# Supabase Configuration
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Server Configuration
+NODE_ENV=production
+PORT=3000
 ```
+
+## 📁 Project Structure
+
+### Profile Architecture (Refactored)
+
+Active profile implementation has been simplified:
+
+- `src/pages/Profile.tsx` – runtime switch (mobile vs desktop)
+- `src/pages/OptimizedMobileProfile.tsx` – mobile orchestration
+- `src/components/profile/DesktopProfilePage.tsx` – desktop orchestration
+- Supporting responsive atoms still under `src/components/profile/responsive/`
+- Branding primitives: `ArenaLogo`, `MirrorAvatar` re-namespaced at `src/components/profile/branding/`
+
+Archived (pending final removal after verification period):
+
+- `archive/legacy-profile/` – all deprecated legacy / arena / timeline / tabs components (.bak copies)
+
+Dead code detection scripts added:
+
+```bash
+npm run deadcode:ts-prune   # Static tree-shake style detection (TypeScript symbols)
+npm run deadcode:knip       # Broader dependency & unused file analysis
+```
+
+After 1–2 sprints without rollback, remove `archive/legacy-profile/` entirely.
+
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Base UI components
+│   ├── auth/           # Authentication components
+│   ├── tournament/     # Tournament components
+│   └── ...
+├── pages/              # Page components
+├── hooks/              # Custom React hooks
+├── utils/              # Utility functions
+├── types/              # TypeScript type definitions
+├── integrations/       # External service integrations
+└── main.tsx           # Application entry point
+```
+
+## 🤝 Contributing
+
+### Development Workflow
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run code quality checks (`npm run lint && npm run format`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+### Code Standards
+
+- Follow TypeScript best practices
+- Use ESLint and Prettier for code formatting
+- Write meaningful commit messages
+- Add tests for new features
+- Update documentation as needed
+
+## 📋 CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration:
+
+### Automated Checks
+
+- **Linting** - ESLint with TypeScript support
+- **Formatting** - Prettier code formatting
+- **Type Checking** - TypeScript compilation
+- **Testing** - Unit and integration tests
+- **Build** - Production build verification
+- **Security** - Dependency vulnerability scanning
+
+### Deployment
+
+- **Preview** - Automatic deployment for pull requests
+- **Production** - Automatic deployment for main branch
+
+## 🔒 Security
+
+- Input validation and sanitization
+- CORS configuration
+- Rate limiting
+- Security headers
+- Dependency vulnerability scanning
+- Regular security updates via Dependabot
+
+## 📊 Performance
+
+- Code splitting and lazy loading
+- Image optimization
+- Bundle size optimization
+- Caching strategies
+- PWA capabilities for offline support
+
+## 🐛 Bug Reports
+
+Please use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) when reporting issues.
+
+## 💡 Feature Requests
+
+Please use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) when suggesting new features.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Team
+
+- **Lead Developer** - [Your Name](https://github.com/yourusername)
+- **UI/UX Designer** - [Designer Name](https://github.com/designerusername)
+- **Backend Developer** - [Backend Dev](https://github.com/backendusername)
+
+## 🙏 Acknowledgments
+
+- VNPAY for payment integration
+- Supabase for backend services
+- Tailwind CSS for styling
+- Radix UI for accessible components
+
+---
+
+**Made with ❤️ by the SABO Pool Arena Team**
+
+# Environment variables configured on Netlify Dashboard ✅

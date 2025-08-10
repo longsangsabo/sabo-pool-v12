@@ -32,10 +32,10 @@ ALTER TABLE legacy_spa_points ENABLE ROW LEVEL SECURITY;
 
 -- Test the policy - this should now work
 SELECT 
-    full_name, 
-    spa_points, 
-    position_rank, 
-    claimed,
-    facebook_url
+	full_name, 
+	spa_points, 
+	position_rank, 
+	claimed,
+	facebook_url
 FROM legacy_spa_points 
 WHERE full_name = 'ANH LONG MAGIC';

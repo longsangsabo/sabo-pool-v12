@@ -11,8 +11,8 @@ echo ""
 MIGRATION_FILE="supabase/migrations/20250810120000_fix_challenge_spa_only.sql"
 
 if [ ! -f "$MIGRATION_FILE" ]; then
-    echo "❌ Migration file not found: $MIGRATION_FILE"
-    exit 1
+	echo "❌ Migration file not found: $MIGRATION_FILE"
+	exit 1
 fi
 
 echo "✅ Found migration file: $MIGRATION_FILE"

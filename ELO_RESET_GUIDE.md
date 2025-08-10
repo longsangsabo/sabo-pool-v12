@@ -7,22 +7,33 @@ Script này sẽ reset tất cả điểm ELO của players về giá trị chu�
 ## 🏆 Bảng Mapping Hạng - ELO
 
 ### SABO Pool Arena Ranking System
-| Hạng | ELO Points | Skill Level & Mô tả |
-|------|------------|---------------------|
-| **E+** | 2100 | **Expert Plus** - 90-100% clear 1 chấm, 70% phá 2 chấm • Điều bi phức tạp, safety chủ động • Sát ngưỡng lên D (chưa mở) |
-| **E** | 2000 | **Expert** - 90-100% clear 1 chấm, 70% phá 2 chấm • Điều bi phức tạp, safety chủ động |
-| **F+** | 1900 | **Advanced Plus** - 60-80% clear 1 chấm, đôi khi phá 2 chấm • Safety & spin control khá chắc • Sát ngưỡng lên E |
-| **F** | 1800 | **Advanced** - 60-80% clear 1 chấm, đôi khi phá 2 chấm • Safety & spin control khá chắc |
-| **G+** | 1700 | **Intermediate Plus** - Clear 1 chấm + 3-7 bi kế; bắt đầu điều bi 3 băng • Trình phong trào "ngon" • Sát ngưỡng lên F |
-| **G** | 1600 | **Intermediate** - Clear 1 chấm + 3-7 bi kế; bắt đầu điều bi 3 băng • Trình phong trào "ngon" |
-| **H+** | 1500 | **Amateur Plus** - Đi 5-8 bi; có thể "rùa" 1 chấm hình dễ • Chuẩn bị lên G |
-| **H** | 1400 | **Amateur** - Đi 5-8 bi; có thể "rùa" 1 chấm hình dễ |
-| **I+** | 1300 | **Beginner Plus** - 3-5 bi; chưa điều được chấm • Sát ngưỡng lên H |
-| **I** | 1200 | **Beginner** - 3-5 bi; chưa điều được chấm ✅ |
-| **K+** | 1100 | **Novice Plus** - 2-4 bi khi hình dễ; mới tập • Sát ngưỡng lên I ✅ |
-| **K** | 1000 | **Novice** - 2-4 bi khi hình dễ; mới tập ✅ |
+| Hạng | ELO Points | Mô tả |
+|------|------------|-------|
+| **E+** | 2800 | Expert Plus - Cao thủ |
+| **E** | 2600 | Expert - Chuyên gia |
+| **F+** | 2400 | Advanced Plus - Nâng cao+ |
+| **F** | 2200 | Advanced - Nâng cao |
+| **G+** | 2000 | Intermediate Plus - Trung cấp+ |
+| **G** | 1800 | Intermediate - Trung cấp |
+| **H+** | 1600 | Amateur Plus - Nghiệp dư+ |
+| **H** | 1400 | Amateur - Nghiệp dư |
+| **I+** | 1200 | Beginner Plus - Mới bắt đầu+ |
+| **I** | 1000 | Beginner - Mới bắt đầu |
+| **K+** | 800 | Novice Plus - Tập sự+ |
+| **K** | 600 | Novice - Tập sự |
 
-**Chú ý**: SABO Pool chỉ sử dụng hệ thống ranking K→E+ (12 hạng), không có Dan/Kyu system.
+### Traditional Dan/Kyu System (Legacy Support)
+| Hạng | ELO Points |
+|------|------------|
+| Dan7 | 2400 |
+| Dan6 | 2300 |
+| Dan5 | 2200 |
+| Dan4 | 2100 |
+| Dan3 | 2000 |
+| Dan2 | 1900 |
+| Dan1 | 1800 |
+| Kyu1 | 1700 |
+| Kyu2-10 | 1600-800 |
 
 ## 🚀 Cách Thực Hiện
 
@@ -48,22 +59,21 @@ SELECT * FROM player_rankings;
 
 ### ✅ Sau khi reset thành công:
 
-1. **Tất cả players** sẽ có ELO tương ứng với `verified_rank` theo skill level thực tế
-2. **Players chưa có rank** sẽ được set ELO = 1000 (K rank - Novice: 2-4 bi khi hình dễ)
-3. **Players chưa có record** sẽ được tạo mới với ELO phù hợp theo hạng
-4. **Backup data** được tạo tự động cho rollback
+1. **Tất cả players** sẽ có ELO tương ứng với `verified_rank`
+2. **Players chưa có rank** sẽ được set ELO = 1000 (Beginner)
+3. **Players chưa có record** sẽ được tạo mới với ELO phù hợp
+4. **Backup data** được tạo tự động
 5. **Transaction log** ghi lại toàn bộ changes
 
 ### 📈 Statistics mẫu:
 ```
 - Total Players Reset: 1,247
-- Average ELO: 1,450
-- Highest ELO: 2100 (E+ rank)
-- Lowest ELO: 1000 (K rank)
-- Expert Players (2000+): 89 (7.1%)
-- Advanced Players (1800-1999): 156 (12.5%)
-- Intermediate Players (1400-1799): 423 (33.9%)
-- Beginner/Novice Players (<1400): 579 (46.4%)
+- Average ELO: 1,385
+- Highest ELO: 2800 (E+ rank)
+- Lowest ELO: 600 (K rank)
+- Advanced Players (2000+): 156 (12.5%)
+- Intermediate Players (1400-1999): 423 (33.9%)
+- Beginner Players (<1400): 668 (53.6%)
 ```
 
 ## 🔧 Tính Năng Đặc Biệt
@@ -71,10 +81,10 @@ SELECT * FROM player_rankings;
 ### 1. Smart Functions
 ```sql
 -- Convert rank to ELO
-SELECT get_elo_from_rank('G+'); -- Returns 1700
+SELECT get_elo_from_rank('G+'); -- Returns 2000
 
 -- Convert ELO to rank  
-SELECT get_rank_from_elo(1850); -- Returns 'F'
+SELECT get_rank_from_elo(1850); -- Returns 'G'
 ```
 
 ### 2. Real-time View
@@ -104,10 +114,10 @@ WHERE rank_elo_consistency = 'MISMATCH';
 - ✅ Không ảnh hưởng SPA points
 
 ### 🎮 Gameplay Impact
-- ✅ Players sẽ có ELO chuẩn theo skill level thực tế (clear chấm, điều bi, safety)
-- ✅ Matchmaking sẽ fair hơn với đối thủ cùng trình độ
-- ✅ Tournament seeding chính xác theo khả năng thực tế
-- ✅ Ranking leaderboard phản ánh đúng skill progression K→E+
+- ✅ Players sẽ có ELO chuẩn theo skill thực tế
+- ✅ Matchmaking sẽ fair hơn
+- ✅ Tournament seeding chính xác hơn
+- ✅ Ranking leaderboard realistic hơn
 
 ### 🔄 Sau Reset
 - Cần **rebalance tournament** brackets nếu đang diễn ra
@@ -157,11 +167,11 @@ WHERE user_id NOT IN (SELECT player_id FROM player_rankings);
 
 ## 🎯 Kết Luận
 
-Sau khi reset ELO thành công với skill-based mapping:
-- ✅ **Fair gameplay** với ELO phản ánh đúng khả năng clear chấm, điều bi của player
-- ✅ **Accurate matchmaking** dựa trên skill level thực tế (K: 2-4 bi → E+: 90-100% clear chấm)
-- ✅ **Realistic rankings** theo progression tự nhiên từ Novice đến Expert
-- ✅ **Better tournaments** với seeding chuẩn theo trình độ billiard thực tế
-- ✅ **Consistent system** đồng bộ ELO-rank-skill across toàn platform
+Sau khi reset ELO thành công:
+- ✅ **Fair gameplay** với ELO chuẩn theo rank
+- ✅ **Accurate matchmaking** system  
+- ✅ **Realistic leaderboards** and rankings
+- ✅ **Better tournament** seeding
+- ✅ **Consistent data** across all systems
 
-Hệ thống sẽ hoạt động tối ưu với ELO points phản ánh chính xác skill level billiard của từng player! 🎱🚀
+Hệ thống sẽ hoạt động tối ưu với ELO points chuẩn theo skill level thực tế của từng player! 🚀

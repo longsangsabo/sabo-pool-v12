@@ -10,22 +10,22 @@
 ### ✅ 2. Thêm lộ trình SPA milestone và logic cộng điểm
 - **Hoàn thành**: 15 milestone đa dạng với logic tự động
 - **Các loại milestone**:
-  - **Games Played**: 1, 10, 50, 100, 500 trận (50-1000 SPA)
-  - **Wins**: 1, 5, 25, 100 thắng (75-800 SPA)  
-  - **SPA Earned**: 1000, 5000, 10000 SPA tích lũy (200-1000 SPA)
-  - **Tournaments**: 1, 5, 20 giải đấu tham gia (100-750 SPA)
+	- **Games Played**: 1, 10, 50, 100, 500 trận (50-1000 SPA)
+	- **Wins**: 1, 5, 25, 100 thắng (75-800 SPA)  
+	- **SPA Earned**: 1000, 5000, 10000 SPA tích lũy (200-1000 SPA)
+	- **Tournaments**: 1, 5, 20 giải đấu tham gia (100-750 SPA)
 
 ### ✅ 3. Chương trình tặng điểm SPA kích lệ user
 - **Hoàn thành**: 8 loại bonus activity
 - **Các bonus đã triển khai**:
-  - 🎁 **Tài khoản mới**: +100 SPA (1 lần)
-  - 🏆 **Đăng ký hạng thành công**: +200 SPA (1 lần)
-  - 👥 **Giới thiệu bạn bè**: +150 SPA (tối đa 100 lần)
-  - 🥇 **Thắng giải đấu đầu tiên**: +300 SPA (1 lần)
-  - 📅 **Đăng nhập 30 ngày liên tiếp**: +250 SPA (12 lần/năm)
-  - 👤 **Hoàn thiện profile**: +75 SPA (1 lần)
-  - 💰 **Nạp tiền lần đầu**: +500 SPA (1 lần)
-  - 📱 **Chia sẻ mạng xã hội**: +25 SPA (10 lần)
+	- 🎁 **Tài khoản mới**: +100 SPA (1 lần)
+	- 🏆 **Đăng ký hạng thành công**: +200 SPA (1 lần)
+	- 👥 **Giới thiệu bạn bè**: +150 SPA (tối đa 100 lần)
+	- 🥇 **Thắng giải đấu đầu tiên**: +300 SPA (1 lần)
+	- 📅 **Đăng nhập 30 ngày liên tiếp**: +250 SPA (12 lần/năm)
+	- 👤 **Hoàn thiện profile**: +75 SPA (1 lần)
+	- 💰 **Nạp tiền lần đầu**: +500 SPA (1 lần)
+	- 📱 **Chia sẻ mạng xã hội**: +25 SPA (10 lần)
 
 ## 🏗️ KIẾN TRÚC HỆ THỐNG
 

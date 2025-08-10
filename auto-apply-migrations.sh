@@ -9,32 +9,32 @@ echo ""
 
 # Check if Supabase CLI is available
 if command -v supabase &> /dev/null; then
-    echo "✅ Supabase CLI found, attempting automatic migration..."
+	echo "✅ Supabase CLI found, attempting automatic migration..."
     
-    # Apply migrations
-    echo "📋 Applying SPA Challenge System migration..."
-    supabase db push
+	# Apply migrations
+	echo "📋 Applying SPA Challenge System migration..."
+	supabase db push
     
-    if [ $? -eq 0 ]; then
-        echo "✅ Database migrations applied successfully!"
-    else
-        echo "❌ Automatic migration failed. Please apply manually."
-    fi
+	if [ $? -eq 0 ]; then
+		echo "✅ Database migrations applied successfully!"
+	else
+		echo "❌ Automatic migration failed. Please apply manually."
+	fi
 else
-    echo "⚠️  Supabase CLI not found. Please apply migrations manually:"
-    echo ""
-    echo "Method 1: Supabase Dashboard"
-    echo "1. Go to https://supabase.com/dashboard"
-    echo "2. Open SQL Editor"
-    echo "3. Copy and run these files:"
-    echo "   - supabase/migrations/20250810120000_fix_challenge_spa_only.sql"
-    echo "   - supabase/migrations/20250810130000_legacy_spa_points_system.sql"
-    echo ""
-    echo "Method 2: Install Supabase CLI and run:"
-    echo "   npm install -g supabase"
-    echo "   supabase login"
-    echo "   supabase link --project-ref YOUR_PROJECT_REF"
-    echo "   supabase db push"
+	echo "⚠️  Supabase CLI not found. Please apply migrations manually:"
+	echo ""
+	echo "Method 1: Supabase Dashboard"
+	echo "1. Go to https://supabase.com/dashboard"
+	echo "2. Open SQL Editor"
+	echo "3. Copy and run these files:"
+	echo "   - supabase/migrations/20250810120000_fix_challenge_spa_only.sql"
+	echo "   - supabase/migrations/20250810130000_legacy_spa_points_system.sql"
+	echo ""
+	echo "Method 2: Install Supabase CLI and run:"
+	echo "   npm install -g supabase"
+	echo "   supabase login"
+	echo "   supabase link --project-ref YOUR_PROJECT_REF"
+	echo "   supabase db push"
 fi
 
 echo ""

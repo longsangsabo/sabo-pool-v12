@@ -24,10 +24,10 @@
 
 ### 🎯 Single Source of Truth
 - **`SPA_SYSTEM_DEPLOYMENT_GUIDE.md`** - **MASTER DOCUMENTATION**
-  - Deployment instructions
-  - Complete feature overview
-  - API integration guide
-  - Testing procedures
+	- Deployment instructions
+	- Complete feature overview
+	- API integration guide
+	- Testing procedures
 
 ### 📂 Supporting Files
 - `admin-spa-reset.sql` - Admin reset script

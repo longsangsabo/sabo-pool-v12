@@ -47,7 +47,6 @@ const SABOStyleTestPage = lazy(() => import('@/pages/SABOStyleTestPage'));
 const ClubDetailPage = lazy(() => import('@/pages/ClubDetailPage'));
 const LeaderboardPage = lazy(() => import('@/pages/LeaderboardPage'));
 const TournamentPage = lazy(() => import('@/pages/TournamentsPage'));
-const GuidePage = lazy(() => import('@/pages/GuidePage'));
 
 // Protected pages - User dashboard and features
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
@@ -63,8 +62,6 @@ const ClubRegistrationPage = lazy(() => import('@/pages/ClubRegistrationPage'));
 const FeedPage = lazy(() => import('@/pages/FeedPage'));
 const MarketplacePage = lazy(() => import('@/pages/EnhancedMarketplacePage'));
 const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'));
-const SPADashboard = lazy(() => import('@/pages/SPADashboard'));
-const SPATestPage = lazy(() => import('@/pages/SPATestPage'));
 
 // Demo pages
 // const DemoPlayerPage = lazy(() => import('@/pages/DemoPlayerPage'));
@@ -140,7 +137,6 @@ const AppContent = () => {
           <Route path='/privacy' element={<PrivacyPolicyPage />} />
           <Route path='/terms' element={<TermsOfServicePage />} />
           <Route path='/news' element={<NewsPage />} />
-          <Route path='/guide' element={<GuidePage />} />
 
           {/* Demo pages */}
           {/* <Route path='/demo' element={<RainbowAvatarDemo />} /> */}
@@ -215,8 +211,6 @@ const AppContent = () => {
             <Route path='feed' element={<FeedPage />} />
             <Route path='marketplace' element={<MarketplacePage />} />
             <Route path='notifications' element={<NotificationsPage />} />
-            <Route path='spa' element={<SPADashboard />} />
-            <Route path='spa-test' element={<SPATestPage />} />
             <Route path='auth-test' element={<AuthTestPage />} />
 
             {/* Public pages accessible through sidebar when logged in */}

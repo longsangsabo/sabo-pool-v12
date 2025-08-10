@@ -22,9 +22,9 @@ Sau khi chạy migration thành công, bạn sẽ có các bảng mới:
 2. Truy cập `/spa` để xem SPA Dashboard
 3. Kiểm tra điểm SPA hiện tại đã được reset về 0
 4. Thực hiện các hoạt động để kiểm tra milestone:
-   - Chơi game (milestone games_played)
-   - Thắng game (milestone wins) 
-   - Tham gia tournament (milestone tournaments_joined)
+	 - Chơi game (milestone games_played)
+	 - Thắng game (milestone wins) 
+	 - Tham gia tournament (milestone tournaments_joined)
 
 ## Bước 4: Test Bonus Activities
 
@@ -60,14 +60,14 @@ await spaService.triggerGameComplete(userId, won);
 import { useSPA } from '@/hooks/useSPA';
 
 const MyComponent = () => {
-  const { 
-    currentPoints, 
-    milestones, 
-    triggerGameComplete,
-    awardBonusActivity 
-  } = useSPA();
+	const { 
+		currentPoints, 
+		milestones, 
+		triggerGameComplete,
+		awardBonusActivity 
+	} = useSPA();
   
-  // Component logic here
+	// Component logic here
 };
 ```
 

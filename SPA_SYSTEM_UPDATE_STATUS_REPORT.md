@@ -43,12 +43,12 @@
 **Files that may need review:**
 
 1. **`src/hooks/useChallenges.tsx`**
-   - ✅ Already correctly maps both spa_points and elo_points
-   - 🔄 May need SPA balance validation (similar to useOptimizedChallenges)
+	- ✅ Already correctly maps both spa_points and elo_points
+	- 🔄 May need SPA balance validation (similar to useOptimizedChallenges)
 
 2. **`src/hooks/useOpenChallenges.ts`**
-   - ✅ Already correctly maps both spa_points and elo_points
-   - 🔄 Should be compatible as-is
+	- ✅ Already correctly maps both spa_points and elo_points
+	- 🔄 Should be compatible as-is
 
 ## 🎯 System Architecture Clarification
 
@@ -72,19 +72,19 @@
 
 ### 1. **Immediate Actions**
 1. **Apply Database Migration**
-   ```bash
-   supabase db push
-   ```
+	```bash
+	supabase db push
+	```
 
 2. **Verify Component Logic**
-   - Review each ELO usage to determine if it should be SPA
-   - Update betting-related logic to use SPA
-   - Keep skill display logic using ELO
+	- Review each ELO usage to determine if it should be SPA
+	- Update betting-related logic to use SPA
+	- Keep skill display logic using ELO
 
 3. **Update Hooks**
-   - Ensure challenge creation uses SPA for betting
-   - Verify challenge acceptance checks SPA balance
-   - Update challenge result processing
+	- Ensure challenge creation uses SPA for betting
+	- Verify challenge acceptance checks SPA balance
+	- Update challenge result processing
 
 ### 2. **Testing Required**
 1. **Challenge Creation**: Verify SPA balance checking

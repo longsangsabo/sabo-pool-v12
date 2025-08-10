@@ -21,19 +21,19 @@
 
 ### ✅ Master Documentation (Single Source of Truth)
 - **`SPA_COMPLETE_ECOSYSTEM_DOCUMENTATION.md`** - **MASTER SPA DOCUMENTATION**
-  - Complete SPA ecosystem overview
-  - Tournament integration & rewards  
-  - Challenge betting system (SPA points, NOT ELO)
-  - Milestone tracking system
-  - Bonus activity rewards
-  - Database schema documentation
-  - API implementation guides
+	- Complete SPA ecosystem overview
+	- Tournament integration & rewards  
+	- Challenge betting system (SPA points, NOT ELO)
+	- Milestone tracking system
+	- Bonus activity rewards
+	- Database schema documentation
+	- API implementation guides
 
 ### ✅ Current Database Migration
 - **`20250810120000_fix_challenge_spa_only.sql`** - **ACTIVE MIGRATION**
-  - Corrects challenge system to use SPA points (not ELO)
-  - Implements fixed betting amounts: 100, 200, 300, 400, 500, 600
-  - Validates SPA point exchange and constraints
+	- Corrects challenge system to use SPA points (not ELO)
+	- Implements fixed betting amounts: 100, 200, 300, 400, 500, 600
+	- Validates SPA point exchange and constraints
 
 ### ✅ Updated References
 - **`README.md`** - Updated to reference `SPA_COMPLETE_ECOSYSTEM_DOCUMENTATION.md`

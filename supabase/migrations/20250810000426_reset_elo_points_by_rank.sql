@@ -1,30 +1,49 @@
 -- Reset điểm ELO về tương ứng với các mức hạng
 -- Migration này sẽ reset tất cả player về điểm ELO chuẩn theo hạng đã verify
 
--- Function để convert hạng thành ELO rating (SABO Pool Arena System - CORRECT)
+-- Function để convert hạng thành ELO rating
 CREATE OR REPLACE FUNCTION get_elo_from_rank(rank_text TEXT)
 RETURNS INTEGER AS $$
 BEGIN
-  -- SABO Pool Arena Ranking System - Correct mapping from eloConstants.ts
+  -- SABO Pool Arena Ranking System
   CASE rank_text
-    WHEN 'E+' THEN RETURN 2100; -- From RANK_ELO constant
-    WHEN 'E' THEN RETURN 2000;  -- From RANK_ELO constant
-    WHEN 'F+' THEN RETURN 1900; -- From RANK_ELO constant
-    WHEN 'F' THEN RETURN 1800;  -- From RANK_ELO constant
-    WHEN 'G+' THEN RETURN 1700; -- From RANK_ELO constant
-    WHEN 'G' THEN RETURN 1600;  -- From RANK_ELO constant
-    WHEN 'H+' THEN RETURN 1500; -- From RANK_ELO constant
-    WHEN 'H' THEN RETURN 1400;  -- From RANK_ELO constant
-    WHEN 'I+' THEN RETURN 1300; -- From RANK_ELO constant
-    WHEN 'I' THEN RETURN 1200;  -- From RANK_ELO constant ✅
-    WHEN 'K+' THEN RETURN 1100; -- From RANK_ELO constant ✅
-    WHEN 'K' THEN RETURN 1000;  -- From RANK_ELO constant ✅
-    -- Skill levels for backward compatibility
-    WHEN 'beginner' THEN RETURN 1000; -- K level (default)
-    WHEN 'intermediate' THEN RETURN 1400; -- H level
-    WHEN 'advanced' THEN RETURN 1800; -- F level
+    WHEN 'E+' THEN RETURN 2800;
+    WHEN 'E' THEN RETURN 2600;
+    WHEN 'F+' THEN RETURN 2400;
+    WHEN 'F' THEN RETURN 2200;
+    WHEN 'G+' THEN RETURN 2000;
+    WHEN 'G' THEN RETURN 1800;
+    WHEN 'H+' THEN RETURN 1600;
+    WHEN 'H' THEN RETURN 1400;
+    WHEN 'I+' THEN RETURN 1200;
+    WHEN 'I' THEN RETURN 1000;
+    WHEN 'K+' THEN RETURN 800;
+    WHEN 'K' THEN RETURN 600;
+    -- Traditional ranks mapping
+    WHEN 'Dan1' THEN RETURN 1800;
+    WHEN 'Dan2' THEN RETURN 1900;
+    WHEN 'Dan3' THEN RETURN 2000;
+    WHEN 'Dan4' THEN RETURN 2100;
+    WHEN 'Dan5' THEN RETURN 2200;
+    WHEN 'Dan6' THEN RETURN 2300;
+    WHEN 'Dan7' THEN RETURN 2400;
+    -- Kyu ranks
+    WHEN 'Kyu1' THEN RETURN 1700;
+    WHEN 'Kyu2' THEN RETURN 1600;
+    WHEN 'Kyu3' THEN RETURN 1500;
+    WHEN 'Kyu4' THEN RETURN 1400;
+    WHEN 'Kyu5' THEN RETURN 1300;
+    WHEN 'Kyu6' THEN RETURN 1200;
+    WHEN 'Kyu7' THEN RETURN 1100;
+    WHEN 'Kyu8' THEN RETURN 1000;
+    WHEN 'Kyu9' THEN RETURN 900;
+    WHEN 'Kyu10' THEN RETURN 800;
+    -- Beginner levels
+    WHEN 'beginner' THEN RETURN 1000;
+    WHEN 'intermediate' THEN RETURN 1400;
+    WHEN 'advanced' THEN RETURN 1800;
     -- Default for unrecognized ranks
-    ELSE RETURN 1000; -- Default to K level
+    ELSE RETURN 1000;
   END CASE;
 END;
 $$ LANGUAGE plpgsql;
@@ -91,17 +110,17 @@ CREATE OR REPLACE FUNCTION get_rank_from_elo(elo_rating INTEGER)
 RETURNS TEXT AS $$
 BEGIN
   CASE 
-    WHEN elo_rating >= 2100 THEN RETURN 'E+';
-    WHEN elo_rating >= 2000 THEN RETURN 'E';
-    WHEN elo_rating >= 1900 THEN RETURN 'F+';
-    WHEN elo_rating >= 1800 THEN RETURN 'F';
-    WHEN elo_rating >= 1700 THEN RETURN 'G+';
-    WHEN elo_rating >= 1600 THEN RETURN 'G';
-    WHEN elo_rating >= 1500 THEN RETURN 'H+';
+    WHEN elo_rating >= 2800 THEN RETURN 'E+';
+    WHEN elo_rating >= 2600 THEN RETURN 'E';
+    WHEN elo_rating >= 2400 THEN RETURN 'F+';
+    WHEN elo_rating >= 2200 THEN RETURN 'F';
+    WHEN elo_rating >= 2000 THEN RETURN 'G+';
+    WHEN elo_rating >= 1800 THEN RETURN 'G';
+    WHEN elo_rating >= 1600 THEN RETURN 'H+';
     WHEN elo_rating >= 1400 THEN RETURN 'H';
-    WHEN elo_rating >= 1300 THEN RETURN 'I+';
-    WHEN elo_rating >= 1200 THEN RETURN 'I';
-    WHEN elo_rating >= 1100 THEN RETURN 'K+';
+    WHEN elo_rating >= 1200 THEN RETURN 'I+';
+    WHEN elo_rating >= 1000 THEN RETURN 'I';
+    WHEN elo_rating >= 800 THEN RETURN 'K+';
     ELSE RETURN 'K';
   END CASE;
 END;

@@ -299,16 +299,16 @@ SELECT * FROM spa_bonus_activities;
 import { useSPA } from '@/hooks/useSPA';
 
 function SPAComponent() {
-  const { userSPA, awardBonus, milestones } = useSPA();
+	const { userSPA, awardBonus, milestones } = useSPA();
   
-  return (
-    <div>
-      <h2>SPA Balance: {userSPA.balance}</h2>
-      <button onClick={() => awardBonus('daily_login')}>
-        Daily Login (+100 SPA)
-      </button>
-    </div>
-  );
+	return (
+		<div>
+			<h2>SPA Balance: {userSPA.balance}</h2>
+			<button onClick={() => awardBonus('daily_login')}>
+				Daily Login (+100 SPA)
+			</button>
+		</div>
+	);
 }
 ```
 

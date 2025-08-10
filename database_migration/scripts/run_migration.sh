@@ -61,7 +61,6 @@ log_err() { log "${RED}ERROR${NC} $1"; }
 log_ok() { log "${GREEN}OK${NC} $1"; }
 
 fatal() { log_err "$1"; echo "FAILED" > "$STATE_FILE.failed"; exit 1; }
-
 require_cmd() { command -v "$1" >/dev/null 2>&1 || fatal "Missing required command: $1"; }
 
 parse_args() {
@@ -117,14 +116,15 @@ pre_checks() {
 }
 
 load_sql_files_if_needed() {
-  # Idempotent applying of migration function definitions (no data mutation yet)
   log_section "Loading SQL definitions"
-  for f in 001_migration_functions.sql 002_validation_scripts.sql 003_backward_compatibility.sql 004_master_migration.sql; do
-    if [[ -f "$MIG_DIR/$f" ]]; then
-      log "Applying $f"; psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$MIG_DIR/$f" >> "$LOG_FILE" 2>&1 || fatal "Failed applying $f"
-    else
-      fatal "Missing expected migration file: $f"
-    fi
+  local files=(001_migration_functions.sql 002_validation_scripts.sql 003_backward_compatibility.sql 004_master_migration.sql 006_metrics_extension.sql)
+  for f in "${files[@]}"; do
+    [[ ! -f "$MIG_DIR/$f" ]] && { [[ "$f" == 006_metrics_extension.sql ]] && continue || fatal "Missing expected migration file: $f"; }
+    local start_ts
+    start_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    log "Applying $f"
+    psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$MIG_DIR/$f" >> "$LOG_FILE" 2>&1 || fatal "Failed applying $f"
+    psql "$DB_URL" -qAt -c "SELECT log_migration('apply_sql','definitions','$f',NULL,true,NULL,'${start_ts}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
   done
   log_ok "SQL definitions loaded"
 }
@@ -136,9 +136,42 @@ confirm_live() {
   [[ "$ans" == "yes" ]] || fatal "Live migration aborted by user"
 }
 
+summarize_report() {
+  local file="$1"
+  log_section "Report summary"
+  if command -v jq >/dev/null 2>&1; then
+    jq '.integrity_summary' "$file" 2>/dev/null | tee -a "$LOG_FILE" || log_warn "Could not parse integrity_summary with jq"
+  else
+    log_warn "jq not installed - raw JSON head:"; head -n 5 "$file" | tee -a "$LOG_FILE"
+  fi
+}
+
+check_integrity_or_fail() {
+  local file="$1" mode="$2" mismatch="false"
+  if command -v jq >/dev/null 2>&1; then
+    if jq -e '.integrity_summary[] | select(.status != "OK")' "$file" >/dev/null 2>&1; then mismatch="true"; fi
+  else
+    if grep -q '"status":"MISMATCH"' "$file"; then mismatch="true"; fi
+  fi
+  if [[ "$mismatch" == "true" ]]; then
+    log_err "Integrity summary contains mismatches. See $file"
+    local start_env=${SCRIPT_GLOBAL_START:-}
+    if [[ -n "$start_env" ]]; then
+      psql "$DB_URL" -qAt -c "SELECT log_migration('integrity_check',${mode@Q},'mismatch_detected',NULL,false,NULL,'${start_env}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
+    else
+      psql "$DB_URL" -qAt -c "SELECT log_migration('integrity_check',${mode@Q},'mismatch_detected',NULL,false,NULL);" >> "$LOG_FILE" 2>&1 || true
+    fi
+    exit 2
+  else
+    log_ok "Integrity summary clean (all OK)"
+    local start_env=${SCRIPT_GLOBAL_START:-}
+    psql "$DB_URL" -qAt -c "SELECT log_migration('integrity_check',${mode@Q},'all_ok',NULL,true,NULL,${start_env:+ '${start_env}'::timestamptz});" >> "$LOG_FILE" 2>&1 || true
+  fi
+}
+
 run_dry() {
   log_section "Dry-run migration"
-  local out
+  local out start_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   set +e
   out=$(psql "$DB_URL" -qAt -c "SELECT execute_safe_migration(TRUE)::text;" 2>>"$LOG_FILE")
   local ec=$?
@@ -150,6 +183,8 @@ run_dry() {
   log_ok "Dry-run report saved: $REPORT_JSON"
   date -u +%s > "$STATE_FILE.dry_success"
   summarize_report "$REPORT_JSON"
+  check_integrity_or_fail "$REPORT_JSON" "dry-run"
+  psql "$DB_URL" -qAt -c "SELECT log_migration('execute_safe_migration','dry-run','wrapper_total',NULL,true,NULL,'${start_ts}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
 }
 
 run_live() {
@@ -158,7 +193,7 @@ run_live() {
   fi
   confirm_live
   log_section "LIVE migration"
-  local out
+  local out start_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   set +e
   out=$(psql "$DB_URL" -qAt -c "SELECT execute_safe_migration(FALSE)::text;" 2>>"$LOG_FILE")
   local ec=$?
@@ -169,11 +204,13 @@ run_live() {
   echo "$out" | sed 's/^\s*//' > "$REPORT_JSON"
   log_ok "Live migration report saved: $REPORT_JSON"
   summarize_report "$REPORT_JSON"
+  check_integrity_or_fail "$REPORT_JSON" "live"
+  psql "$DB_URL" -qAt -c "SELECT log_migration('execute_safe_migration','live','wrapper_total',NULL,true,NULL,'${start_ts}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
 }
 
 run_report_only() {
   log_section "Generate report only"
-  local out
+  local out start_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   set +e
   out=$(psql "$DB_URL" -qAt -c "SELECT generate_migration_report()::text;" 2>>"$LOG_FILE")
   local ec=$?
@@ -184,16 +221,8 @@ run_report_only() {
   echo "$out" | sed 's/^\s*//' > "$REPORT_JSON"
   log_ok "Report saved: $REPORT_JSON"
   summarize_report "$REPORT_JSON"
-}
-
-summarize_report() {
-  local file="$1"
-  log_section "Report summary"
-  if command -v jq >/dev/null 2>&1; then
-    jq '.integrity_summary' "$file" 2>/dev/null | tee -a "$LOG_FILE" || log_warn "Could not parse integrity_summary with jq"
-  else
-    log_warn "jq not installed - raw JSON head:"; head -n 5 "$file" | tee -a "$LOG_FILE"
-  fi
+  check_integrity_or_fail "$REPORT_JSON" "report"
+  psql "$DB_URL" -qAt -c "SELECT log_migration('migration_report','report','wrapper_total',NULL,true,NULL,'${start_ts}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
 }
 
 main() {

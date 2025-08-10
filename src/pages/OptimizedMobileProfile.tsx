@@ -20,7 +20,7 @@ import { ClubSection } from './mobile/profile/components/ClubSection';
 import { RankSection } from './mobile/profile/components/RankSection';
 import { usePlayerStats } from '@/hooks/usePlayerStats';
 import { useMobilePageTitle } from '@/hooks/useMobilePageTitle';
-import { MOBILE_PAGE_TITLES } from '@/components/mobile/MobilePlayerLayout';
+import ClaimLegacySPA from '@/components/legacy/ClaimLegacySPA';
 
 const OptimizedMobileProfile: React.FC = () => {
   const { user } = useAuth();
@@ -150,6 +150,11 @@ const OptimizedMobileProfile: React.FC = () => {
               theme={theme as 'light' | 'dark'}
               role={profile.role}
             />
+          )}
+          {activeTab === 'legacy-spa' && (
+            <div className='p-5'>
+              <ClaimLegacySPA />
+            </div>
           )}
         </CardContent>
       </Card>

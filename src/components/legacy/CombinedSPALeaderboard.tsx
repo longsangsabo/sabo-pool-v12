@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLegacySPA } from '../../hooks/useLegacySPA';
+import { supabase } from '@/integrations/supabase/client';
 
 interface LeaderboardEntry {
   user_type: 'registered' | 'legacy';
@@ -32,17 +33,85 @@ export const CombinedSPALeaderboard: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const [leaderboardData, statsData] = await Promise.all([
-        getLeaderboard(100),
-        getLegacyStats(),
-      ]);
+      try {
+        // Load leaderboard with direct SQL to bypass view issues
+        const { data: legacyData, error: legacyError } = await supabase
+          .from('legacy_spa_points')
+          .select('*')
+          .order('spa_points', { ascending: false });
 
-      setEntries(leaderboardData);
-      setStats(statsData);
+        if (legacyError) {
+          console.error('Legacy data error:', legacyError);
+          return;
+        }
+
+        // Transform legacy data to leaderboard format
+        const legacyEntries: LeaderboardEntry[] = (legacyData || []).map(player => ({
+          user_type: 'legacy' as const,
+          user_id: null,
+          full_name: player.full_name,
+          nick_name: player.nick_name || player.full_name,
+          spa_points: player.spa_points,
+          elo_points: 1000,
+          verified_rank: null,
+          avatar_url: null,
+          facebook_url: player.facebook_url,
+          is_registered: false,
+          can_claim: !player.claimed,
+        }));
+
+        // Load active players with SPA points
+        const { data: activeData, error: activeError } = await supabase
+          .from('player_rankings')
+          .select(`
+            player_id,
+            spa_points,
+            elo_points,
+            profiles!inner(
+              full_name,
+              display_name,
+              verified_rank,
+              avatar_url
+            )
+          `)
+          .gt('spa_points', 0)
+          .order('spa_points', { ascending: false });
+
+        if (!activeError && activeData) {
+          const activeEntries: LeaderboardEntry[] = activeData.map(player => ({
+            user_type: 'registered' as const,
+            user_id: player.player_id,
+            full_name: (player.profiles as any)?.full_name || (player.profiles as any)?.display_name || 'Unknown',
+            nick_name: (player.profiles as any)?.display_name || 'Unknown',
+            spa_points: player.spa_points,
+            elo_points: player.elo_points,
+            verified_rank: (player.profiles as any)?.verified_rank,
+            avatar_url: (player.profiles as any)?.avatar_url,
+            facebook_url: null,
+            is_registered: true,
+            can_claim: null,
+          }));
+
+          // Combine and sort all entries
+          const allEntries = [...legacyEntries, ...activeEntries]
+            .sort((a, b) => b.spa_points - a.spa_points);
+
+          setEntries(allEntries);
+        } else {
+          setEntries(legacyEntries);
+        }
+
+        // Load legacy stats
+        const legacyStats = await getLegacyStats();
+        setStats(legacyStats);
+
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
+      }
     };
 
     loadData();
-  }, [getLeaderboard, getLegacyStats]);
+  }, [getLegacyStats]);
 
   const filteredEntries = showOnlyUnclaimed
     ? entries.filter(entry => !entry.is_registered && entry.can_claim)

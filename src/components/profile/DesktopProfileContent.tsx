@@ -4,7 +4,8 @@ import EditableProfileForm from '@/components/profile/EditableProfileForm';
 import ClubManagementTab from '@/components/profile/ClubManagementTab';
 import RankVerificationForm from '@/components/RankVerificationForm';
 import { TabEditProfile } from '@/pages/mobile/profile/components/TabEditProfile';
-import { User, Trophy, Building, Shield, Pencil } from 'lucide-react';
+import ClaimLegacySPA from '@/components/legacy/ClaimLegacySPA';
+import { User, Trophy, Building, Shield, Pencil, Crown } from 'lucide-react';
 
 interface DesktopProfileContentProps {
   profile: any;
@@ -66,6 +67,12 @@ export const DesktopProfileContent: React.FC<DesktopProfileContentProps> = ({
       label: 'Quản lý CLB',
       icon: Building,
       content: <ClubManagementTab userRole={userRole} />,
+    },
+    {
+      value: 'legacy-spa',
+      label: 'Kế thừa SPA',
+      icon: Crown,
+      content: <ClaimLegacySPA />,
     },
   ];
 

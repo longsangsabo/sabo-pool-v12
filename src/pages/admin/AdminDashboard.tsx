@@ -17,6 +17,7 @@ import {
   RefreshCw,
   AlertTriangle,
   CheckCircle,
+  Crown,
 } from 'lucide-react';
 import { TournamentBracketManager } from '@/components/admin/TournamentBracketManager';
 import { RealTimeBracketUpdates } from '@/components/admin/RealTimeBracketUpdates';
@@ -24,6 +25,7 @@ import { TournamentIntegrityChecker } from '@/components/testing/TournamentInteg
 import { TournamentEndToEndTest } from '@/components/testing/TournamentEndToEndTest';
 import { PerformanceProfiler } from '@/components/testing/PerformanceProfiler';
 import { ResponsiveTestSuite } from '@/components/testing/ResponsiveTestSuite';
+import LegacySPAAdmin from '@/components/legacy/LegacySPAAdmin';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -240,7 +242,7 @@ export default function AdminDashboard() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue='bracket-manager' className='space-y-6'>
-        <TabsList className='grid w-full grid-cols-4'>
+        <TabsList className='grid w-full grid-cols-5'>
           <TabsTrigger
             value='bracket-manager'
             className='flex items-center gap-2'
@@ -255,6 +257,10 @@ export default function AdminDashboard() {
           <TabsTrigger value='tournaments' className='flex items-center gap-2'>
             <Trophy className='h-4 w-4' />
             All Tournaments
+          </TabsTrigger>
+          <TabsTrigger value='legacy-spa' className='flex items-center gap-2'>
+            <Crown className='h-4 w-4' />
+            Legacy SPA
           </TabsTrigger>
           <TabsTrigger value='testing' className='flex items-center gap-2'>
             <CheckCircle className='h-4 w-4' />
@@ -360,6 +366,10 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value='legacy-spa' className='space-y-6'>
+          <LegacySPAAdmin />
         </TabsContent>
 
         <TabsContent value='testing' className='space-y-6'>

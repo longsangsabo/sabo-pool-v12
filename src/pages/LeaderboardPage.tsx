@@ -7,10 +7,11 @@ import PageLayout from '@/components/layout/PageLayout';
 import { EnhancedLeaderboard } from '@/components/EnhancedLeaderboard';
 import ClubStatsDashboard from '@/components/ClubStatsDashboard';
 import MobileLeaderboard from '@/components/mobile/MobileLeaderboard';
+import { SimpleSPALeaderboard } from '@/components/legacy/SimpleSPALeaderboard';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useSystemStats } from '@/hooks/useSystemStats';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
-import { TrendingUp, Building2, Users } from 'lucide-react';
+import { TrendingUp, Building2, Users, Crown } from 'lucide-react';
 
 const LeaderboardPage = () => {
   const { leaderboard, loading, error } = useLeaderboard();
@@ -65,10 +66,14 @@ const LeaderboardPage = () => {
           </div>
 
           <Tabs defaultValue='leaderboard' className='w-full'>
-            <TabsList className='grid w-full grid-cols-3'>
+            <TabsList className='grid w-full grid-cols-4'>
               <TabsTrigger value='leaderboard' className='flex items-center'>
                 <TrendingUp className='w-4 h-4 mr-2' />
-                Bảng xếp hạng
+                ELO Ranking
+              </TabsTrigger>
+              <TabsTrigger value='spa-leaderboard' className='flex items-center'>
+                <Crown className='w-4 h-4 mr-2' />
+                SPA Leaderboard
               </TabsTrigger>
               <TabsTrigger value='club-stats' className='flex items-center'>
                 <Building2 className='w-4 h-4 mr-2' />
@@ -90,6 +95,10 @@ const LeaderboardPage = () => {
               ) : (
                 <EnhancedLeaderboard players={transformedPlayers} />
               )}
+            </TabsContent>
+
+            <TabsContent value='spa-leaderboard'>
+              <SimpleSPALeaderboard />
             </TabsContent>
 
             <TabsContent value='club-stats'>

@@ -247,3 +247,5 @@ export const LegacySPAAdmin: React.FC = () => {
     </div>
   );
 };
+
+export default LegacySPAAdmin;

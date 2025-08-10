@@ -47,6 +47,7 @@ const SABOStyleTestPage = lazy(() => import('@/pages/SABOStyleTestPage'));
 const ClubDetailPage = lazy(() => import('@/pages/ClubDetailPage'));
 const LeaderboardPage = lazy(() => import('@/pages/LeaderboardPage'));
 const TournamentPage = lazy(() => import('@/pages/TournamentsPage'));
+const GuidePage = lazy(() => import('@/pages/GuidePage'));
 
 // Protected pages - User dashboard and features
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
@@ -139,6 +140,7 @@ const AppContent = () => {
           <Route path='/privacy' element={<PrivacyPolicyPage />} />
           <Route path='/terms' element={<TermsOfServicePage />} />
           <Route path='/news' element={<NewsPage />} />
+          <Route path='/guide' element={<GuidePage />} />
 
           {/* Demo pages */}
           {/* <Route path='/demo' element={<RainbowAvatarDemo />} /> */}

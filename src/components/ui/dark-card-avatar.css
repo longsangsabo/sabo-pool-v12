@@ -544,3 +544,61 @@
   color: #d1d5db;
   font-family: 'Courier New', Monaco, monospace; /* DECO font style */
 }
+
+/* ===================================
+   DARK THEME DRAG & DROP STYLES
+   =================================== */
+
+/* Dark theme drag active states */
+.dark-image-area.drag-active {
+  border-color: #60a5fa !important;
+  box-shadow: 
+    0 0 0 2px rgba(96, 165, 250, 0.3),
+    0 4px 12px rgba(96, 165, 250, 0.2) !important;
+  background: rgba(96, 165, 250, 0.05);
+}
+
+.dark-image-area.processing {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Dark drag overlay */
+.dark-drag-overlay {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: #60a5fa !important;
+}
+
+.dark-drag-overlay .drag-content {
+  color: #60a5fa !important;
+}
+
+/* Dark processing overlay */
+.dark-processing-overlay {
+  background: rgba(15, 23, 42, 0.9) !important;
+}
+
+.dark-processing-overlay .processing-content {
+  color: #60a5fa !important;
+}
+
+/* Dark hover effects */
+.dark-image-area:hover:not(.drag-active):not(.processing) {
+  border-color: rgba(96, 165, 250, 0.4);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(96, 165, 250, 0.2);
+}
+
+/* Dark placeholder states */
+.dark-avatar-placeholder .drop-indicator {
+  color: #60a5fa !important;
+}
+
+.dark-avatar-placeholder .processing-indicator {
+  color: #9ca3af;
+}
+
+.dark-avatar-placeholder .upload-indicator {
+  color: #6b7280;
+}

@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Crown, Medal, Trophy, TrendingUp } from 'lucide-react';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useTheme } from '@/hooks/useTheme';
-import { SimpleSPALeaderboard } from '@/components/legacy/SimpleSPALeaderboard';
 
 interface MobileLeaderboardProps {
   className?: string;
@@ -289,7 +288,90 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
         </TabsContent>
 
         <TabsContent value='spa'>
-          <SimpleSPALeaderboard />
+          <div className='space-y-2'>
+            {sortedData.map((player, index) => (
+              <Card
+                key={player.id}
+                className={`overflow-hidden transition-all duration-200 hover:scale-[1.02] ${
+                  theme === 'dark'
+                    ? 'bg-gray-800/60 border-gray-700/50 backdrop-blur-sm hover:bg-gray-800/80'
+                    : 'bg-white/80 border-gray-200/50 backdrop-blur-sm hover:bg-white/90 hover:shadow-lg'
+                }`}
+              >
+                <CardContent className='p-3'>
+                  <div className='flex items-center space-x-3'>
+                    {/* Top Position */}
+                    <div
+                      className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-all duration-300 ${
+                        index < 3
+                          ? theme === 'dark'
+                            ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-lg animate-pulse'
+                            : 'bg-gradient-to-br from-purple-400 to-pink-400 text-white shadow-md'
+                          : theme === 'dark'
+                            ? 'bg-gray-700 text-gray-300'
+                            : 'bg-gray-200 text-gray-700'
+                      }`}
+                    >
+                      {getRankIcon(index + 1) || index + 1}
+                    </div>
+
+                    {/* Avatar */}
+                    <Avatar className='w-11 h-11 ring-2 ring-offset-1 ring-purple-500/30 transition-all duration-300'>
+                      <AvatarImage src={player.avatar_url} />
+                      <AvatarFallback
+                        className={`${
+                          theme === 'dark'
+                            ? 'bg-gray-700 text-gray-300'
+                            : 'bg-gray-100 text-gray-700'
+                        }`}
+                      >
+                        {player.username.substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    {/* User Info */}
+                    <div className='flex-1 min-w-0'>
+                      <p
+                        className={`font-semibold truncate transition-colors duration-200 ${
+                          theme === 'dark' ? 'text-gray-100' : 'text-gray-900'
+                        }`}
+                      >
+                        {player.username}
+                      </p>
+                      <div className='flex items-center gap-2 mt-1'>
+                        <Badge
+                          variant='secondary'
+                          className={`text-xs px-2 py-0.5 transition-all duration-200 ${getRankBadgeColor(player.current_rank)}`}
+                        >
+                          {player.current_rank || 'Chưa xếp hạng'}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* SPA Points */}
+                    <div className='text-right'>
+                      <p
+                        className={`text-lg font-bold transition-colors duration-200 ${
+                          theme === 'dark'
+                            ? 'text-purple-400'
+                            : 'text-purple-600'
+                        }`}
+                      >
+                        {player.ranking_points.toLocaleString()}
+                      </p>
+                      <p
+                        className={`text-xs ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                        }`}
+                      >
+                        SPA
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </TabsContent>
       </Tabs>
     </div>

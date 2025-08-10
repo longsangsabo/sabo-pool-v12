@@ -11,14 +11,12 @@ interface ChallengeCardProps {
     name: string;
     avatar?: string;
     elo: number;
-    spa_points?: number;
     winRate: number;
   };
   opponent?: {
     name: string;
     avatar?: string;
     elo: number;
-    spa_points?: number;
     winRate: number;
   };
   gameFormat: string;
@@ -80,13 +78,13 @@ const SocialChallengeCard: React.FC<ChallengeCardProps> = ({
     }
   };
 
-  const getSkillDifference = () => {
+  const getELODifference = () => {
     if (!opponent) return 0;
     return Math.abs(challenger.elo - opponent.elo);
   };
 
-  const isHighStakes = stakeAmount && stakeAmount > 500; // Updated for SPA context
-  const isCloseSkill = getSkillDifference() < 100;
+  const isHighStakes = stakeAmount && stakeAmount > 1000;
+  const isCloseELO = getELODifference() < 100;
 
   return (
     <Card className='social-card'>
@@ -104,7 +102,7 @@ const SocialChallengeCard: React.FC<ChallengeCardProps> = ({
             {isHighStakes && (
               <Badge className='status-premium'>💎 HIGH STAKES</Badge>
             )}
-            {isCloseSkill && opponent && (
+            {isCloseELO && opponent && (
               <Badge className='status-hot'>🔥 BALANCED</Badge>
             )}
           </div>
@@ -137,9 +135,6 @@ const SocialChallengeCard: React.FC<ChallengeCardProps> = ({
               <div className='flex items-center space-x-3 text-sm text-muted-foreground'>
                 <span className='font-racing text-accent-blue'>
                   {challenger.elo} ELO
-                </span>
-                <span className='font-racing text-green-600'>
-                  {challenger.spa_points || 0} SPA
                 </span>
                 <span className='font-outfit'>{challenger.winRate}% thắng</span>
               </div>
@@ -178,9 +173,6 @@ const SocialChallengeCard: React.FC<ChallengeCardProps> = ({
                   <div className='flex items-center space-x-3 text-sm text-muted-foreground'>
                     <span className='font-racing text-accent-blue'>
                       {opponent.elo} ELO
-                    </span>
-                    <span className='font-racing text-green-600'>
-                      {opponent.spa_points || 0} SPA
                     </span>
                     <span className='font-outfit'>
                       {opponent.winRate}% thắng

@@ -61,7 +61,7 @@ const DesktopProfilePage: React.FC = () => {
     { value: '2100', label: '2100 - E+' },
   ];
 
-  const allowedTabs = ['basic', 'rank', 'club', 'edit', 'legacy-spa'];
+  const allowedTabs = ['basic', 'rank', 'club', 'edit'];
 
   // Đồng bộ tab lần đầu từ URL + dọn dẹp param lỗi thời
   useEffect(() => {

@@ -143,6 +143,19 @@ export function useMobileProfile() {
   const handleAvatarUpload = async (file: File) => {
     if (!file || !user) return;
     
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Vui lòng chọn file hình ảnh');
+      return;
+    }
+    
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      toast.error('Kích thước file quá lớn. Vui lòng chọn file nhỏ hơn 5MB');
+      return;
+    }
+    
     // Show image cropper instead of direct upload
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -150,37 +163,61 @@ export function useMobileProfile() {
       setOriginalImageForCrop(imageDataUrl);
       setShowImageCropper(true);
     };
+    reader.onerror = () => {
+      toast.error('Lỗi khi đọc file ảnh');
+    };
     reader.readAsDataURL(file);
   };
 
   const handleCroppedImageUpload = async (croppedFile: File) => {
     if (!croppedFile || !user) return;
+    
     setUploading(true);
     try {
       const fileExt = 'jpg';
       const fileName = `${user.id}/avatar.${fileExt}`;
+      
+      console.log('Uploading avatar:', fileName, 'Size:', croppedFile.size);
+      
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, croppedFile, { upsert: true });
-      if (uploadError) throw uploadError;
+        
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
+      
       const { data: urlData } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
+        
       const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
-      await supabase
+      
+      console.log('Avatar URL:', avatarUrl);
+      
+      const { error: updateError } = await supabase
         .from('profiles')
         .update({ avatar_url: avatarUrl })
         .eq('user_id', user.id);
+        
+      if (updateError) {
+        console.error('Profile update error:', updateError);
+        throw updateError;
+      }
+      
       updateAvatar(avatarUrl);
       setProfile(p => (p ? { ...p, avatar_url: avatarUrl } : p));
       setEditingProfile(p => (p ? { ...p, avatar_url: avatarUrl } : p));
+      
       // Invalidate any cached profile queries so header avatar refreshes
       queryClient.invalidateQueries({ queryKey: ['user-profile', user.id] });
       queryClient.invalidateQueries({ queryKey: ['current-user-profile'] });
+      
       toast.success('Đã cập nhật ảnh đại diện!');
     } catch (e: any) {
-      console.error(e);
-      toast.error('Lỗi tải ảnh: ' + e.message);
+      console.error('Avatar upload error:', e);
+      toast.error('Lỗi tải ảnh: ' + (e.message || 'Không xác định'));
     } finally {
       setUploading(false);
     }

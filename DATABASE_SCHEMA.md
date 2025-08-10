@@ -210,7 +210,7 @@ CREATE TABLE challenges (
 
 #### `player_rankings`
 
-ELO and SPA points with rank tracking.
+Player rankings with SPA points tracking. For ELO system details, see `ELO_RESET_GUIDE.md`.
 
 ```sql
 CREATE TABLE player_rankings (

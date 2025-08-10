@@ -62,6 +62,8 @@ const ClubRegistrationPage = lazy(() => import('@/pages/ClubRegistrationPage'));
 const FeedPage = lazy(() => import('@/pages/FeedPage'));
 const MarketplacePage = lazy(() => import('@/pages/EnhancedMarketplacePage'));
 const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'));
+const SPADashboard = lazy(() => import('@/pages/SPADashboard'));
+const SPATestPage = lazy(() => import('@/pages/SPATestPage'));
 
 // Demo pages
 // const DemoPlayerPage = lazy(() => import('@/pages/DemoPlayerPage'));
@@ -211,6 +213,8 @@ const AppContent = () => {
             <Route path='feed' element={<FeedPage />} />
             <Route path='marketplace' element={<MarketplacePage />} />
             <Route path='notifications' element={<NotificationsPage />} />
+            <Route path='spa' element={<SPADashboard />} />
+            <Route path='spa-test' element={<SPATestPage />} />
             <Route path='auth-test' element={<AuthTestPage />} />
 
             {/* Public pages accessible through sidebar when logged in */}

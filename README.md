@@ -6,7 +6,7 @@ A comprehensive pool arena management system with VNPAY payment integration, bui
 
 - **🏆 Tournament Management** - Create and manage pool tournaments
 - **💰 Payment Integration** - VNPAY payment gateway integration
-- **📊 ELO Ranking System** - Advanced player ranking algorithm
+- **📊 ELO Ranking System** - Skill-based player ranking (see `ELO_RESET_GUIDE.md`)
 - **👥 User Management** - Complete user profiles and authentication
 - **📱 PWA Support** - Progressive Web App capabilities
 - **🎨 Modern UI/UX** - Beautiful, responsive design with Tailwind CSS

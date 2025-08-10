@@ -2,11 +2,11 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Coins } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useSPABalance } from '@/hooks/useSPABalance';
+import { useSPA } from '@/hooks/useSPA';
 
 export const SPAPointsBadge: React.FC = () => {
   const { user } = useAuth();
-  const { balance, loading } = useSPABalance();
+  const { currentPoints, loading } = useSPA();
 
   if (loading) {
     return (
@@ -30,7 +30,7 @@ export const SPAPointsBadge: React.FC = () => {
       className='bg-gradient-to-r from-yellow-50 to-orange-50 text-yellow-700 border-yellow-200 hover:from-yellow-100 hover:to-orange-100'
     >
       <Coins className='w-3 h-3 mr-1' />
-      <span className='font-medium'>{balance} SPA</span>
+      <span className='font-medium'>{currentPoints.toLocaleString()} SPA</span>
     </Badge>
   );
 };

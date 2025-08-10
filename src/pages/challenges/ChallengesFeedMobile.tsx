@@ -546,7 +546,7 @@ const ChallengesFeedMobile: React.FC = () => {
         full_name: challenge.opponent.name,
         avatar_url: challenge.opponent.avatar,
         current_rank: challenge.opponent.rank,
-        spa_points: challenge.opponent.elo,
+        spa_points: challenge.opponent.spa_points || 0,
         verified_rank: challenge.opponent.rank,
       },
       challenger_score: isCompleted

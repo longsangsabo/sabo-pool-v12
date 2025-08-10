@@ -137,42 +137,42 @@ export interface ChallengeVerification {
 // Challenge configuration based on bet points
 export const CHALLENGE_CONFIGS = [
   {
-    bet_range: { min: 600, max: 650 },
+    bet_amount: 600,
     race_to: 22,
     handicap_1_rank: 3.5,
     handicap_05_rank: 2.5,
     description: 'Thách đấu cao cấp - Race to 22',
   },
   {
-    bet_range: { min: 500, max: 550 },
+    bet_amount: 500,
     race_to: 18,
     handicap_1_rank: 3,
     handicap_05_rank: 2,
     description: 'Thách đấu trung cao - Race to 18',
   },
   {
-    bet_range: { min: 400, max: 450 },
+    bet_amount: 400,
     race_to: 16,
     handicap_1_rank: 2.5,
     handicap_05_rank: 1.5,
     description: 'Thách đấu trung cấp - Race to 16',
   },
   {
-    bet_range: { min: 300, max: 350 },
+    bet_amount: 300,
     race_to: 14,
     handicap_1_rank: 2,
     handicap_05_rank: 1.5,
     description: 'Thách đấu trung bình - Race to 14',
   },
   {
-    bet_range: { min: 200, max: 250 },
+    bet_amount: 200,
     race_to: 12,
     handicap_1_rank: 1.5,
     handicap_05_rank: 1,
     description: 'Thách đấu cơ bản - Race to 12',
   },
   {
-    bet_range: { min: 100, max: 150 },
+    bet_amount: 100,
     race_to: 8,
     handicap_1_rank: 1,
     handicap_05_rank: 0.5,
@@ -181,14 +181,11 @@ export const CHALLENGE_CONFIGS = [
 ];
 
 export const getChallengeConfig = (betPoints: number) => {
-  return CHALLENGE_CONFIGS.find(
-    config =>
-      betPoints >= config.bet_range.min && betPoints <= config.bet_range.max
-  );
+  return CHALLENGE_CONFIGS.find(config => config.bet_amount === betPoints);
 };
 
 export const isValidBetPoints = (betPoints: number) => {
-  return betPoints >= 100 && betPoints <= 650;
+  return [100, 200, 300, 400, 500, 600].includes(betPoints);
 };
 
 export interface ChallengeFilters {
@@ -204,8 +201,8 @@ export interface ChallengeFilters {
 export interface ChallengeStats {
   total_challenges: number;
   completed_challenges: number;
-  total_elo_exchanged: number;
-  average_elo_per_challenge: number;
+  total_spa_exchanged: number;
+  average_spa_per_challenge: number;
   win_rate: number;
   total_bet_points: number;
 }

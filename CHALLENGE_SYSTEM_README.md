@@ -2,29 +2,31 @@
 
 ## Tổng Quan
 
-Hệ thống thách đấu cho phép các vận động viên thách đấu với nhau để tích thêm điểm ELO. Mỗi trận thách đấu diễn ra tại CLB và phải được xác minh bởi quản lý CLB hoặc người dùng có quyền xác minh.
+Hệ thống thách đấu cho phép các vận động viên thách đấu với nhau bằng cách sử dụng **điểm SPA để cược**. Mỗi trận thách đấu diễn ra tại CLB và phải được xác minh bởi quản lý CLB hoặc người dùng có quyền xác minh.
+
+> **Lưu ý quan trọng**: Hệ thống thách đấu sử dụng **SPA points** để cược, **KHÔNG phải ELO points**. ELO chỉ được sử dụng cho xếp hạng trong tournament.
 
 ## Cấu Trúc Thách Đấu
 
-### Điều Kiện và Mức Điểm
+### Điều Kiện và Mức Điểm SPA
 
-| Điểm cược | Số ván đấu | Tỉ lệ chấp (1 hạng) | Tỉ lệ chấp (0.5 hạng) |
-| --------- | ---------- | ------------------- | --------------------- |
-| 600 - 650 | RACE 22    | 3.5                 | 2.5                   |
-| 500 - 550 | RACE 18    | 3                   | 2                     |
-| 400 - 450 | RACE 16    | 2.5                 | 1.5                   |
-| 300 - 350 | RACE 14    | 2                   | 1.5                   |
-| 200 - 250 | RACE 12    | 1.5                 | 1                     |
-| 100 - 150 | RACE 8     | 1                   | 0.5                   |
+| Điểm cược SPA | Số ván đấu | Tỉ lệ chấp (1 hạng) | Tỉ lệ chấp (0.5 hạng) |
+| ------------- | ---------- | ------------------- | --------------------- |
+| 600           | RACE 22    | 3.5                 | 2.5                   |
+| 500           | RACE 18    | 3                   | 2                     |
+| 400           | RACE 16    | 2.5                 | 1.5                   |
+| 300           | RACE 14    | 2                   | 1.5                   |
+| 200           | RACE 12    | 1.5                 | 1                     |
+| 100           | RACE 8     | 1                   | 0.5                   |
 
 ### Quy Trình Thách Đấu
 
-1. **Tạo thách đấu**: Người chơi chọn đối thủ, CLB, và điểm cược
+1. **Tạo thách đấu**: Người chơi chọn đối thủ, CLB, và điểm SPA cược
 2. **Chấp nhận/từ chối**: Đối thủ có thể chấp nhận hoặc từ chối thách đấu
 3. **Diễn ra trận đấu**: Trận đấu diễn ra tại CLB đã chọn
 4. **Nhập kết quả**: Người thắng nhập kết quả trận đấu
 5. **Xác minh**: Quản lý CLB hoặc người có quyền xác minh kết quả
-6. **Tính điểm ELO**: Hệ thống tự động tính và cập nhật điểm ELO
+6. **Trao đổi điểm SPA**: Hệ thống tự động chuyển điểm SPA từ người thua cho người thắng
 
 ## Cấu Trúc Database
 
@@ -42,12 +44,12 @@ Lưu trữ thông tin thách đấu:
 
 #### 2. `challenge_results`
 
-Kết quả thách đấu và thay đổi ELO:
+Kết quả thách đấu và trao đổi điểm SPA:
 
 - Người thắng/thua
 - Điểm số
-- Điểm ELO trao đổi
-- Thay đổi ELO của từng người chơi
+- Điểm SPA trao đổi
+- Thay đổi SPA của từng người chơi
 
 #### 3. `challenge_verifications`
 
@@ -82,12 +84,12 @@ Xác minh thách đấu:
 - Mô tả cách xác minh
 - Phê duyệt/từ chối xác minh
 
-### 4. Tính Điểm ELO
+### 4. Trao Đổi Điểm SPA
 
-- Tính toán ELO dựa trên rating hiện tại
-- K-factor thay đổi theo điểm cược
-- Cập nhật rating người chơi
-- Cập nhật bảng xếp hạng mùa và CLB
+- Trao đổi điểm SPA theo mức cược đã thỏa thuận
+- Người thắng nhận điểm SPA từ người thua
+- Cập nhật số dư SPA trong ví điểm của người chơi
+- Ghi log trao đổi điểm SPA cho việc theo dõi
 
 ## API Endpoints
 
@@ -177,31 +179,31 @@ Quản lý thách đấu:
 4. Admin phê duyệt/từ chối
 5. Cập nhật trạng thái thách đấu
 
-## Tính Điểm ELO
+## Trao Đổi Điểm SPA
 
-### Công Thức Tính
+### Cơ Chế Trao Đổi
 
 ```
-K-factor = f(bet_points)
-Expected Win = 1 / (1 + 10^((opponent_rating - player_rating) / 400))
-ELO Change = K-factor * (actual_result - expected_result)
+SPA Exchange = bet_points (fixed amount agreed upon)
+Winner receives: +bet_points SPA
+Loser pays: -bet_points SPA
 ```
 
-### K-factor Theo Điểm Cược
+### Mức Cược SPA Cố Định
 
-- 600-650 điểm: K = 32
-- 500-550 điểm: K = 28
-- 400-450 điểm: K = 24
-- 300-350 điểm: K = 20
-- 200-250 điểm: K = 16
-- 100-150 điểm: K = 12
+- 600 điểm SPA: RACE 22
+- 500 điểm SPA: RACE 18  
+- 400 điểm SPA: RACE 16
+- 300 điểm SPA: RACE 14
+- 200 điểm SPA: RACE 12
+- 100 điểm SPA: RACE 8
 
-### Cập Nhật Rating
+### Cập Nhật Điểm SPA
 
-- Cập nhật rating người chơi
-- Cập nhật bảng xếp hạng mùa
-- Cập nhật bảng xếp hạng CLB
-- Recalculate rankings
+- Kiểm tra số dư SPA của người cược
+- Chuyển điểm SPA từ người thua cho người thắng
+- Cập nhật wallet points_balance
+- Ghi log spa_points_log cho việc theo dõi
 
 ## Bảo Mật và Validation
 
@@ -232,14 +234,14 @@ ELO Change = K-factor * (actual_result - expected_result)
 
 - Số lượng thách đấu theo thời gian
 - Tỷ lệ chấp nhận/từ chối
-- Điểm ELO trao đổi trung bình
+- Điểm SPA trao đổi trung bình
 - Thời gian xác minh trung bình
 
 ### Báo Cáo
 
 - Báo cáo thách đấu theo CLB
 - Thống kê người chơi thách đấu nhiều nhất
-- Phân tích xu hướng điểm cược
+- Phân tích xu hướng điểm cược SPA
 - Báo cáo gian lận tiềm ẩn
 
 ## Deployment
@@ -256,7 +258,7 @@ supabase db push
 ```sql
 -- Tạo các function cần thiết
 CREATE OR REPLACE FUNCTION get_challenge_config(...)
-CREATE OR REPLACE FUNCTION calculate_challenge_elo(...)
+CREATE OR REPLACE FUNCTION calculate_challenge_spa(...)
 CREATE OR REPLACE FUNCTION process_challenge_result(...)
 CREATE OR REPLACE FUNCTION verify_challenge(...)
 ```

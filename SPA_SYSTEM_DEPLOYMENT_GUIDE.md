@@ -1,4 +1,6 @@
-# Hướng dẫn triển khai hệ thống SPA
+# 🎯 HƯỚNG DẪN TRIỂN KHAI HỆ THỐNG SPA - MASTER DOCUMENTATION
+
+> **📋 Single Source of Truth cho SABO Pool Arena SPA System**
 
 ## Bước 1: Chạy SQL Migration
 
@@ -88,14 +90,14 @@ import SPAPointsBadge from '@/components/SPAPointsBadge';
 - Tournaments Joined (1, 5, 20 tournaments)
 
 ✅ **Chương trình tặng điểm SPA**:
-- Tài khoản mới: +100 SPA
-- Đăng ký hạng: +200 SPA
-- Giới thiệu bạn bề: +150 SPA
-- Thắng giải đấu đầu tiên: +300 SPA
-- Đăng nhập 30 ngày liên tiếp: +250 SPA
-- Hoàn thiện profile: +75 SPA
-- Nạp tiền lần đầu: +500 SPA
-- Chia sẻ lên mạng xã hội: +25 SPA
+- 🎁 **Tài khoản mới**: +100 SPA (1 lần)
+- 🏆 **Đăng ký hạng**: +200 SPA (1 lần) 
+- 👥 **Giới thiệu bạn bè**: +150 SPA (tối đa 100 lần)
+- 🥇 **Thắng giải đấu đầu tiên**: +300 SPA (1 lần)
+- 📅 **Đăng nhập 30 ngày liên tiếp**: +250 SPA (12 lần/năm)
+- 👤 **Hoàn thiện profile**: +75 SPA (1 lần)
+- 💰 **Nạp tiền lần đầu**: +500 SPA (1 lần)
+- 📱 **Chia sẻ mạng xã hội**: +25 SPA (10 lần)
 
 ✅ **SPA Dashboard** - Trang `/spa` để xem milestone và lịch sử
 

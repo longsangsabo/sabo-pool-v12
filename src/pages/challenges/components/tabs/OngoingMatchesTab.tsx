@@ -267,7 +267,7 @@ const OngoingMatchesTab: React.FC<OngoingMatchesTabProps> = ({
                           challenge.challenger?.full_name}
                       </p>
                       <p className='text-xs text-muted-foreground'>
-                        ELO: {challenge.challenger?.current_elo || 1000}
+                        SPA: {challenge.challenger?.spa_points || 0}
                       </p>
                       {challenge.handicap_1_rank > 0 && (
                         <p className='text-xs text-blue-600'>
@@ -291,7 +291,7 @@ const OngoingMatchesTab: React.FC<OngoingMatchesTabProps> = ({
                           challenge.opponent?.full_name}
                       </p>
                       <p className='text-xs text-muted-foreground'>
-                        ELO: {challenge.opponent?.current_elo || 1000}
+                        SPA: {challenge.opponent?.spa_points || 0}
                       </p>
                       {challenge.handicap_05_rank > 0 && (
                         <p className='text-xs text-blue-600'>

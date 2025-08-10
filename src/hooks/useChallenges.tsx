@@ -235,6 +235,24 @@ export const useChallenges = () => {
       }
       */
 
+      // Check SPA balance before creating challenge
+      const { data: walletData, error: walletError } = await supabase
+        .from('wallets')
+        .select('points_balance')
+        .eq('user_id', user.id)
+        .single();
+
+      if (walletError || !walletData) {
+        throw new Error('Unable to verify SPA balance');
+      }
+
+      const currentSPABalance = walletData.points_balance || 0;
+      if (currentSPABalance < challengeData.bet_points) {
+        throw new Error(
+          `Insufficient SPA points. You have ${currentSPABalance} SPA, need ${challengeData.bet_points} SPA`
+        );
+      }
+
       // Create challenge with 48h expiration
       const expiresAt = new Date();
       expiresAt.setHours(expiresAt.getHours() + 48);

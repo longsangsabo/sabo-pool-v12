@@ -5,20 +5,20 @@
 CREATE OR REPLACE FUNCTION get_elo_from_rank(rank_text TEXT)
 RETURNS INTEGER AS $$
 BEGIN
-  -- SABO Pool Arena Ranking System
+  -- SABO Pool Arena Ranking System (1000–2100 scale)
   CASE rank_text
-    WHEN 'E+' THEN RETURN 2800;
-    WHEN 'E' THEN RETURN 2600;
-    WHEN 'F+' THEN RETURN 2400;
-    WHEN 'F' THEN RETURN 2200;
-    WHEN 'G+' THEN RETURN 2000;
-    WHEN 'G' THEN RETURN 1800;
-    WHEN 'H+' THEN RETURN 1600;
+    WHEN 'E+' THEN RETURN 2100;
+    WHEN 'E' THEN RETURN 2000;
+    WHEN 'F+' THEN RETURN 1900;
+    WHEN 'F' THEN RETURN 1800;
+    WHEN 'G+' THEN RETURN 1700;
+    WHEN 'G' THEN RETURN 1600;
+    WHEN 'H+' THEN RETURN 1500;
     WHEN 'H' THEN RETURN 1400;
-    WHEN 'I+' THEN RETURN 1200;
-    WHEN 'I' THEN RETURN 1000;
-    WHEN 'K+' THEN RETURN 800;
-    WHEN 'K' THEN RETURN 600;
+    WHEN 'I+' THEN RETURN 1300;
+    WHEN 'I' THEN RETURN 1200;
+    WHEN 'K+' THEN RETURN 1100;
+    WHEN 'K' THEN RETURN 1000;
     -- Traditional ranks mapping
     WHEN 'Dan1' THEN RETURN 1800;
     WHEN 'Dan2' THEN RETURN 1900;
@@ -110,17 +110,17 @@ CREATE OR REPLACE FUNCTION get_rank_from_elo(elo_rating INTEGER)
 RETURNS TEXT AS $$
 BEGIN
   CASE 
-    WHEN elo_rating >= 2800 THEN RETURN 'E+';
-    WHEN elo_rating >= 2600 THEN RETURN 'E';
-    WHEN elo_rating >= 2400 THEN RETURN 'F+';
-    WHEN elo_rating >= 2200 THEN RETURN 'F';
-    WHEN elo_rating >= 2000 THEN RETURN 'G+';
-    WHEN elo_rating >= 1800 THEN RETURN 'G';
-    WHEN elo_rating >= 1600 THEN RETURN 'H+';
+    WHEN elo_rating >= 2100 THEN RETURN 'E+';
+    WHEN elo_rating >= 2000 THEN RETURN 'E';
+    WHEN elo_rating >= 1900 THEN RETURN 'F+';
+    WHEN elo_rating >= 1800 THEN RETURN 'F';
+    WHEN elo_rating >= 1700 THEN RETURN 'G+';
+    WHEN elo_rating >= 1600 THEN RETURN 'G';
+    WHEN elo_rating >= 1500 THEN RETURN 'H+';
     WHEN elo_rating >= 1400 THEN RETURN 'H';
-    WHEN elo_rating >= 1200 THEN RETURN 'I+';
-    WHEN elo_rating >= 1000 THEN RETURN 'I';
-    WHEN elo_rating >= 800 THEN RETURN 'K+';
+    WHEN elo_rating >= 1300 THEN RETURN 'I+';
+    WHEN elo_rating >= 1200 THEN RETURN 'I';
+    WHEN elo_rating >= 1100 THEN RETURN 'K+';
     ELSE RETURN 'K';
   END CASE;
 END;

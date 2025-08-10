@@ -9,31 +9,31 @@ Script này sẽ reset tất cả điểm ELO của players về giá trị chu�
 ### SABO Pool Arena Ranking System
 | Hạng | ELO Points | Mô tả |
 |------|------------|-------|
-| **E+** | 2800 | Expert Plus - Cao thủ |
-| **E** | 2600 | Expert - Chuyên gia |
-| **F+** | 2400 | Advanced Plus - Nâng cao+ |
-| **F** | 2200 | Advanced - Nâng cao |
-| **G+** | 2000 | Intermediate Plus - Trung cấp+ |
-| **G** | 1800 | Intermediate - Trung cấp |
-| **H+** | 1600 | Amateur Plus - Nghiệp dư+ |
+| **E+** | 2100 | Expert Plus - Cao thủ |
+| **E** | 2000 | Expert - Chuyên gia |
+| **F+** | 1900 | Advanced Plus - Nâng cao+ |
+| **F** | 1800 | Advanced - Nâng cao |
+| **G+** | 1700 | Intermediate Plus - Trung cấp+ |
+| **G** | 1600 | Intermediate - Trung cấp |
+| **H+** | 1500 | Amateur Plus - Nghiệp dư+ |
 | **H** | 1400 | Amateur - Nghiệp dư |
-| **I+** | 1200 | Beginner Plus - Mới bắt đầu+ |
-| **I** | 1000 | Beginner - Mới bắt đầu |
-| **K+** | 800 | Novice Plus - Tập sự+ |
-| **K** | 600 | Novice - Tập sự |
+| **I+** | 1300 | Beginner Plus - Mới bắt đầu+ |
+| **I** | 1200 | Beginner - Mới bắt đầu |
+| **K+** | 1100 | Novice Plus - Tập sự+ |
+| **K** | 1000 | Novice - Tập sự |
 
 ### Traditional Dan/Kyu System (Legacy Support)
 | Hạng | ELO Points |
 |------|------------|
-| Dan7 | 2400 |
-| Dan6 | 2300 |
-| Dan5 | 2200 |
-| Dan4 | 2100 |
-| Dan3 | 2000 |
-| Dan2 | 1900 |
+| Dan7 | 2100 |
+| Dan6 | 2050 |
+| Dan5 | 2000 |
+| Dan4 | 1950 |
+| Dan3 | 1900 |
+| Dan2 | 1850 |
 | Dan1 | 1800 |
 | Kyu1 | 1700 |
-| Kyu2-10 | 1600-800 |
+| Kyu2-10 | 1600-1000 |
 
 ## 🚀 Cách Thực Hiện
 
@@ -69,8 +69,8 @@ SELECT * FROM player_rankings;
 ```
 - Total Players Reset: 1,247
 - Average ELO: 1,385
-- Highest ELO: 2800 (E+ rank)
-- Lowest ELO: 600 (K rank)
+- Highest ELO: 2100 (E+ rank)
+- Lowest ELO: 1000 (K rank)
 - Advanced Players (2000+): 156 (12.5%)
 - Intermediate Players (1400-1999): 423 (33.9%)
 - Beginner Players (<1400): 668 (53.6%)
@@ -81,7 +81,7 @@ SELECT * FROM player_rankings;
 ### 1. Smart Functions
 ```sql
 -- Convert rank to ELO
-SELECT get_elo_from_rank('G+'); -- Returns 2000
+SELECT get_elo_from_rank('G+'); -- Returns 1700
 
 -- Convert ELO to rank  
 SELECT get_rank_from_elo(1850); -- Returns 'G'

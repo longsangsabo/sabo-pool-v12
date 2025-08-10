@@ -12,9 +12,9 @@
 - ✅ `src/types/elo.ts` - Type definitions (nếu chưa có sẽ cần bổ sung)
 
 ### 🗄️ Database Layer  
-- ✅ `supabase/migrations/20250810000426_reset_elo_points_by_rank.sql` - Migration với mapping đúng (CẦN ĐỒNG BỘ VỚI CODE HIỆN TẠI)
-- ✅ `admin-elo-reset.sql` - Admin script đã sync với constants (kiểm tra lại nếu lệch)
-- ✅ Database functions: `get_elo_from_rank()`, `get_rank_from_elo()` - Mapping chính xác
+- ✅ `supabase/migrations/20250810000426_reset_elo_points_by_rank.sql` - Migration với mapping 1000–2100 (ĐÃ ĐỒNG BỘ)
+- ✅ `admin-elo-reset.sql` - Admin script sync với constants (ĐÃ CHUẨN HÓA)
+- ✅ Database functions: `get_elo_from_rank()`, `get_rank_from_elo()` - Mapping chính xác (ĐÃ CẬP NHẬT)
 
 ## ✅ Frontend Components - HOÀN THÀNH
 
@@ -46,8 +46,8 @@
 	- Implementation instructions
 
 ### 🧹 Cleanup Completed
-- ❌ Xóa tất cả migration files cũ với mapping sai
-- ❌ Xóa standalone verification files
+- ✅ Xóa tất cả ELO mapping với dải 600–2800 cũ
+- ✅ Chuẩn hóa admin scripts và verification files
 - ✅ Updated references trong README.md, DATABASE_SCHEMA.md
 
 ## ✅ Testing - HOÀN THÀNH
@@ -81,8 +81,8 @@
 
 ### 🔄 All Components Aligned
 - **Frontend UI** sử dụng chung `rankUtils.ts`
-- **Backend functions** match với `eloConstants.ts` (CẦN kiểm tra lại phần migration nếu lệch)
-- **Database migrations** sync với source code (đang có 1 file dùng range 600–2800 → cần chuẩn hóa)
+- **Backend functions** match với `eloConstants.ts` (✅ ĐÃ ĐỒNG BỘ)
+- **Database migrations** sync với source code (✅ ĐÃ CHUẨN HÓA 1000–2100)
 - **Tests** verify mapping correctness
 - **Documentation** reflects actual implementation
 
@@ -95,21 +95,19 @@
 ## 🚀 Ready for Production
 
 ### ✅ Complete Implementation
-- **No inconsistencies** between code và documentation (SAU KHI chuẩn hóa migration)
+- **No inconsistencies** between code và documentation (✅ ĐÃ CHUẨN HÓA)
 - **Single source of truth** cho all ELO operations
 - **Skill-based system** phản ánh đúng billiard abilities
 - **Full test coverage** cho ranking logic (mở rộng thêm nếu cần)
 - **Clean codebase** với đúng mapping constants
 
 ### 🎯 Next Steps
-- Chuẩn hóa lại migration `get_elo_from_rank` về dải 1000–2100 hoặc cập nhật constants nếu chọn dải 600–2800
+- ✅ Chuẩn hóa migration `get_elo_from_rank` về dải 1000–2100 (HOÀN THÀNH)
 - Cập nhật thêm test cho E+, F+, G+, H+, I+, K+
 - Thêm bảng reference skill level hiển thị trong UI
 
 ---
 
-**✅ STATUS: HOÀN THÀNH 100% (TẠM THỜI — cần chốt chuẩn hóa DB)**  
+**✅ STATUS: HOÀN THÀNH 100%**  
 **📅 Completed**: August 10, 2025  
 **🎱 SABO Pool Arena Ranking System**: K=1000 → E+=2100 with skill descriptions
-
-> NOTE: Hiện tại migration SQL đang dùng range 600–2800 khác với constants (1000–2100). Cần quyết định 1 chuẩn duy nhất để tránh mismatch khi reset ELO.

@@ -345,7 +345,7 @@ export const CombinedSPALeaderboard: React.FC = () => {
             <Crown className='h-6 w-6 text-white' />
           </div>
           <h2 className='text-2xl font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent'>
-            Hướng dẫn nhận SPA
+            BXH SABO 
           </h2>
         </div>
         <button
@@ -357,32 +357,32 @@ export const CombinedSPALeaderboard: React.FC = () => {
           }`}
         >
           <Target className='w-4 h-4' />
-          {showOnlyUnclaimed ? 'Hiện tất cả' : 'Chỉ hiện chưa claim'}
+          {showOnlyUnclaimed ? 'Hiện tất cả' : 'Chưa nhận'}
         </button>
       </div>
 
-      {/* Quy trình Claim SPA Points - Moved to top */}
+      {/* Cách bước - Moved to top */}
       <div className='mb-6 text-xs text-gray-300 bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-600 rounded-xl p-4'>
         <p className='font-semibold mb-3 text-white flex items-center gap-2'>
           <Zap className='w-4 h-4 text-yellow-400' />
-          🔄 Quy trình Claim SPA Points:
+          Các bước:
         </p>
         <ul className='space-y-2'>
           <li className='flex items-start gap-2'>
             <span className='flex-shrink-0 w-6 h-6 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold'>1</span>
-            <span><strong className='text-orange-300'>Bước 1:</strong> Click nút "Claim" bên cạnh entry mong muốn 🟠</span>
+            <span><strong className='text-orange-300'></strong> Click hộp quà 🟠 bên cạnh tên bạn </span>
           </li>
           <li className='flex items-start gap-2'>
             <span className='flex-shrink-0 w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold'>2</span>
-            <span><strong className='text-blue-300'>Bước 2:</strong> Nhập SĐT để SABO liên hệ xác thực danh tính</span>
+            <span><strong className='text-blue-300'></strong> Nhập SĐT của bạn</span>
           </li>
           <li className='flex items-start gap-2'>
             <span className='flex-shrink-0 w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold'>3</span>
-            <span><strong className='text-green-300'>Bước 3:</strong> SABO gọi xác nhận trong 24h</span>
+            <span><strong className='text-green-300'></strong> SABO sẽ gọi xác nhận trong 24h</span>
           </li>
           <li className='flex items-start gap-2'>
             <span className='flex-shrink-0 w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold'>4</span>
-            <span><strong className='text-purple-300'>Bước 4:</strong> SABO admin xác nhận → SPA chuyển vào tài khoản</span>
+            <span><strong className='text-purple-300'></strong> Xác nhận thành công → cộng SPA</span>
           </li>
           <li className='flex items-start gap-2'>
 
@@ -459,42 +459,35 @@ export const CombinedSPALeaderboard: React.FC = () => {
           <table className='min-w-full'>
             <thead className='bg-gradient-to-r from-gray-700/50 to-gray-800/50 backdrop-blur-sm sticky top-0 z-10'>
               <tr>
-                <th className='px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider flex items-center gap-2'>
-                  <Trophy className='w-4 h-4 text-yellow-400' />
-                  Rank
+                <th className='px-2 md:px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-16'>
+                  <div className='flex items-center gap-1 md:gap-2'>
+                    <Trophy className='w-3 h-3 md:w-4 md:h-4 text-yellow-400' />
+                    <span className='hidden sm:inline'>Rank</span>
+                    <span className='sm:hidden'>#</span>
+                  </div>
                 </th>
-                <th className='px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>
-                  <div className='flex items-center gap-2'>
-                    <User className='w-4 h-4 text-blue-400' />
+                <th className='px-2 md:px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>
+                  <div className='flex items-center gap-1 md:gap-2'>
+                    <User className='w-3 h-3 md:w-4 md:h-4 text-blue-400' />
                     Player
                   </div>
                 </th>
-                <th className='px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider'>
-                  <div className='flex items-center justify-end gap-2'>
-                    <Star className='w-4 h-4 text-yellow-400' />
-                    SPA Points
+                <th className='px-2 md:px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider w-20'>
+                  <div className='flex items-center justify-end gap-1 md:gap-2'>
+                    <Star className='w-3 h-3 md:w-4 md:h-4 text-yellow-400' />
+                    <span className='hidden sm:inline'>SPA</span>
+                    <span className='sm:hidden'>SPA</span>
                   </div>
                 </th>
-                <th className='px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider'>
-                  <div className='flex items-center justify-center gap-2'>
-                    <TrendingUp className='w-4 h-4 text-green-400' />
-                    Status
+                <th className='px-2 md:px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider w-16'>
+                  <div className='flex items-center justify-center gap-1 md:gap-2'>
+                    <Gift className='w-3 h-3 md:w-4 md:h-4 text-orange-400' />
+                    <span className='hidden sm:inline'>Action</span>
                   </div>
                 </th>
               </tr>
             </thead>
-          </table>
-          
-          {/* Scrollable Table Body */}
-          <div 
-            className='max-h-[600px] overflow-y-auto bg-gray-900/20'
-            style={{
-              scrollbarWidth: 'thin',
-              scrollbarColor: '#4B5563 rgba(31, 41, 55, 0.5)'
-            }}
-          >
-            <table className='min-w-full'>
-              <tbody className='divide-y divide-gray-700/50'>
+            <tbody className='divide-y divide-gray-700/50 bg-gray-900/20'>
             {filteredEntries.map((entry, index) => (
               <tr
                 key={entry.legacy_entry_id || entry.user_id || `entry-${index}`}
@@ -506,87 +499,67 @@ export const CombinedSPALeaderboard: React.FC = () => {
                     : 'bg-gray-800/10 border-l-4 border-gray-600'
                 }`}
               >
-                <td className='px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-100'>
-                  <div className='flex items-center gap-2'>
-                    {index === 0 && <Crown className='h-4 w-4 text-yellow-400' />}
-                    {index === 1 && <Award className='h-4 w-4 text-gray-400' />}
-                    {index === 2 && <Award className='h-4 w-4 text-orange-400' />}
-                    <span className={`${
+                <td className='px-2 md:px-4 py-2 md:py-4 whitespace-nowrap text-sm font-medium text-gray-100'>
+                  <div className='flex items-center gap-1 md:gap-2'>
+                    {index === 0 && <Crown className='h-3 w-3 md:h-4 md:w-4 text-yellow-400' />}
+                    {index === 1 && <Award className='h-3 w-3 md:h-4 md:w-4 text-gray-400' />}
+                    {index === 2 && <Award className='h-3 w-3 md:h-4 md:w-4 text-orange-400' />}
+                    <span className={`text-xs md:text-sm ${
                       index < 3 ? 'text-yellow-400 font-bold' : 'text-gray-300'
                     }`}>
                       #{index + 1}
                     </span>
                   </div>
                 </td>
-                <td className='px-4 py-4 whitespace-nowrap'>
-                  <div className='flex items-center'>
-                    {entry.avatar_url ? (
-                      <img
-                        className='h-10 w-10 rounded-full mr-3 border-2 border-gray-600 shadow-lg'
-                        src={entry.avatar_url}
-                        alt={entry.full_name}
-                      />
-                    ) : (
-                      <div className='h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mr-3 border-2 border-gray-600 shadow-lg'>
-                        <span className='text-sm font-bold text-white'>
-                          {entry.full_name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                    <div>
-                      <p className='text-sm font-medium text-gray-100 flex items-center gap-2'>
-                        {entry.nick_name || entry.full_name}
-                        {entry.is_registered && (
-                          <CheckCircle className='w-4 h-4 text-green-400' />
-                        )}
-                      </p>
-                      <p className='text-xs text-gray-400'>
-                        {entry.full_name}
-                      </p>
-                    </div>
+                <td className='px-2 md:px-4 py-2 md:py-4 whitespace-nowrap'>
+                  <div className='min-w-0'>
+                    <p className='text-xs md:text-sm font-medium text-gray-100 flex items-center gap-1 truncate'>
+                      <span className='truncate'>{entry.nick_name || entry.full_name}</span>
+                      {entry.is_registered && (
+                        <CheckCircle className='w-3 h-3 md:w-4 md:h-4 text-green-400 flex-shrink-0' />
+                      )}
+                    </p>
+                    <p className='text-xs text-gray-400 truncate hidden md:block'>
+                      {entry.full_name}
+                    </p>
                   </div>
                 </td>
-                <td className='px-4 py-4 whitespace-nowrap text-right'>
-                  <div className='flex items-center justify-end gap-2'>
-                    <Star className='w-4 h-4 text-yellow-400' />
-                    <span className='text-sm font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent'>
+                <td className='px-2 md:px-4 py-2 md:py-4 whitespace-nowrap text-right'>
+                  <div className='flex items-center justify-end gap-1 md:gap-2'>
+                    <Star className='w-3 h-3 md:w-4 md:h-4 text-yellow-400' />
+                    <span className='text-xs md:text-sm font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent'>
                       {entry.spa_points.toLocaleString()}
                     </span>
                   </div>
                 </td>
-                <td className='px-4 py-4 whitespace-nowrap text-center text-sm'>
+                <td className='px-2 md:px-4 py-2 md:py-4 whitespace-nowrap text-center text-sm'>
                   {entry.is_registered ? (
-                    <span className='inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-green-500/20 to-emerald-600/20 text-green-300 border border-green-500/30 backdrop-blur-sm'>
-                      <CheckCircle className='w-3 h-3 mr-1' />
-                      Đã đăng ký
+                    <span className='inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-green-500/20 to-emerald-600/20 text-green-300 border border-green-500/30 backdrop-blur-sm'>
+                      <CheckCircle className='w-4 h-4' />
                     </span>
                   ) : entry.has_pending_claim ? (
-                    <span className='inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-orange-500/20 to-yellow-600/20 text-orange-300 border border-orange-500/30 backdrop-blur-sm'>
-                      <Clock className='w-3 h-3 mr-1' />
-                      Đang xử lý
+                    <span className='inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-orange-500/20 to-yellow-600/20 text-orange-300 border border-orange-500/30 backdrop-blur-sm'>
+                      <Clock className='w-4 h-4' />
                     </span>
                   ) : canUserClaim(entry) ? (
                     <Button
                       onClick={() => handleClaimClick(entry)}
                       size="sm"
                       disabled={claimLoading}
-                      className='bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-4 py-2 text-xs font-medium border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105'
+                      className='w-8 h-8 p-0 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 rounded-full'
                     >
-                      <Gift className='w-3 h-3 mr-1' />
-                      Claim
+                      <Gift className='w-4 h-4' />
                     </Button>
                   ) : (
-                    <span className='inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-gray-600/20 to-gray-700/20 text-gray-400 border border-gray-600/30 backdrop-blur-sm'>
-                      <Clock className='w-3 h-3 mr-1' />
-                      Chờ đăng ký
+                    <span className='inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-gray-600/20 to-gray-700/20 text-gray-400 border border-gray-600/30 backdrop-blur-sm'>
+                      <Clock className='w-4 h-4' />
                     </span>
                   )}
                 </td>
               </tr>
               ))}
             </tbody>
-            </table>
-          </div>
+          </table>
         </div>
       </div>
 

@@ -45,8 +45,12 @@ import {
   UserX,
   Clock,
   Calendar,
+  Shield,
+  Award,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { LegacyClaimAdminPanel } from '../legacy/LegacyClaimAdminPanel';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ClubMember {
   id: string;
@@ -88,11 +92,13 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
   clubId,
 }) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [members, setMembers] = useState<ClubMember[]>([]);
   const [availableUsers, setAvailableUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   const form = useForm<z.infer<typeof addMemberSchema>>({
     resolver: zodResolver(addMemberSchema),
@@ -179,9 +185,49 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
     }
   };
 
+  const checkAuthorization = async () => {
+    if (!user) {
+      setIsAuthorized(false);
+      return;
+    }
+
+    try {
+      // Check if user is admin
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profile?.is_admin) {
+        setIsAuthorized(true);
+        return;
+      }
+
+      // Check if user is owner of SABO/SBO clubs
+      const { data: clubData } = await supabase
+        .from('club_profiles')
+        .select('club_name, verification_status')
+        .eq('user_id', user.id)
+        .eq('verification_status', 'approved');
+
+      const isSaboClubOwner = clubData?.some(club => 
+        club.club_name.includes('SABO') || 
+        club.club_name.includes('SBO') || 
+        club.club_name.includes('POOL ARENA')
+      );
+
+      setIsAuthorized(isSaboClubOwner || false);
+    } catch (error) {
+      console.error('Authorization check error:', error);
+      setIsAuthorized(false);
+    }
+  };
+
   useEffect(() => {
     fetchMembers();
-  }, [clubId]);
+    checkAuthorization();
+  }, [clubId, user]);
 
   useEffect(() => {
     if (isAddDialogOpen) {
@@ -352,6 +398,24 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
           </CardContent>
         </Card>
       </div>
+
+      {/* Legacy SPA Claim Admin Panel - Only for SABO admins */}
+      {isAuthorized && (
+        <Card>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2'>
+              <Shield className="w-5 h-5 text-blue-500" />
+              Xác nhận Claim SPA Points (Legacy)
+            </CardTitle>
+            <p className='text-sm text-muted-foreground'>
+              Xử lý yêu cầu claim điểm SPA từ hệ thống cũ
+            </p>
+          </CardHeader>
+          <CardContent>
+            <LegacyClaimAdminPanel />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Search and Add Member */}
       <Card>

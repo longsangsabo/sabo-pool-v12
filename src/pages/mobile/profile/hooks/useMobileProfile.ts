@@ -9,6 +9,7 @@ import { useAvatar } from '@/contexts/AvatarContext';
 export function useMobileProfile() {
   const { user } = useAuth();
   const { updateAvatar } = useAvatar();
+  const queryClient = useQueryClient();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [editingProfile, setEditingProfile] = useState<ProfileData | null>(
     null
@@ -16,6 +17,10 @@ export function useMobileProfile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  
+  // Image cropper states
+  const [showImageCropper, setShowImageCropper] = useState(false);
+  const [originalImageForCrop, setOriginalImageForCrop] = useState<string | null>(null);
 
   const fetchProfile = useCallback(async () => {
     if (!user) return;
@@ -137,14 +142,26 @@ export function useMobileProfile() {
 
   const handleAvatarUpload = async (file: File) => {
     if (!file || !user) return;
+    
+    // Show image cropper instead of direct upload
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageDataUrl = e.target?.result as string;
+      setOriginalImageForCrop(imageDataUrl);
+      setShowImageCropper(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCroppedImageUpload = async (croppedFile: File) => {
+    if (!croppedFile || !user) return;
     setUploading(true);
-    const queryClient = useQueryClient();
     try {
       const fileExt = 'jpg';
       const fileName = `${user.id}/avatar.${fileExt}`;
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, croppedFile, { upsert: true });
       if (uploadError) throw uploadError;
       const { data: urlData } = supabase.storage
         .from('avatars')
@@ -180,6 +197,11 @@ export function useMobileProfile() {
     handleSaveProfile,
     handleCancelEdit,
     handleAvatarUpload,
+    handleCroppedImageUpload,
     fetchProfile,
+    // Image cropper states
+    showImageCropper,
+    setShowImageCropper,
+    originalImageForCrop,
   };
 }

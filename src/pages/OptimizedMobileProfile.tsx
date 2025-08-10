@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import CardAvatar from '@/components/ui/card-avatar';
 import DarkCardAvatar from '@/components/ui/dark-card-avatar';
+import { MobileImageCropper } from '@/components/ui/mobile-image-cropper';
 import { ArrowUp, Settings } from 'lucide-react';
 import { useMobileProfile } from './mobile/profile/hooks/useMobileProfile';
 import { useClubs } from '@/hooks/useClubs';
@@ -35,6 +36,10 @@ const OptimizedMobileProfile: React.FC = () => {
     handleSaveProfile,
     handleCancelEdit,
     handleAvatarUpload,
+    handleCroppedImageUpload,
+    showImageCropper,
+    setShowImageCropper,
+    originalImageForCrop,
   } = useMobileProfile();
   const { stats: playerStats, loading: statsLoading } = usePlayerStats();
   const [activeTab, setActiveTab] = useState('activities');
@@ -252,6 +257,17 @@ const OptimizedMobileProfile: React.FC = () => {
         clubs={clubsForRank}
         theme={theme as 'light' | 'dark'}
       />
+
+      {/* Image Cropper Modal */}
+      {originalImageForCrop && (
+        <MobileImageCropper
+          open={showImageCropper}
+          onOpenChange={setShowImageCropper}
+          originalImage={originalImageForCrop}
+          onCropComplete={handleCroppedImageUpload}
+          aspectRatio={1} // Square aspect ratio for avatar
+        />
+      )}
     </div>
   );
 };

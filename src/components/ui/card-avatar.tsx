@@ -9,12 +9,10 @@ import {
   Diamond,
   BarChart3,
   Swords,
-  ImageIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { getRankDisplay } from '@/utils/rank-colors';
-import { processAvatarImage, handleDropFiles, formatFileSize } from '@/utils/imageUtils';
 import './card-avatar.css';
 
 interface CardAvatarProps {
@@ -47,8 +45,6 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
   const [showCropper, setShowCropper] = useState(false);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
-  const [dragActive, setDragActive] = useState(false);
-  const [processing, setProcessing] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,77 +56,23 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
     lg: { width: 'w-[320px]', height: 'h-[460px]' },
   };
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    await processImageFile(file);
-  };
-
-  const processImageFile = async (file: File) => {
-    try {
-      setProcessing(true);
-      const originalSize = formatFileSize(file.size);
-      
-      // Process and resize image
-      const processedFile = await processAvatarImage(file);
-      const newSize = formatFileSize(processedFile.size);
-      
-      // Show success message with size info
-      if (file.size !== processedFile.size) {
-        toast.success(`Ảnh đã được tối ưu: ${originalSize} → ${newSize}`);
-      } else {
-        toast.success('Ảnh đã được tải lên thành công!');
-      }
-
-      if (onAvatarChange) {
-        onAvatarChange(processedFile);
-      }
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Có lỗi xảy ra khi xử lý ảnh');
-    } finally {
-      setProcessing(false);
+    if (!file.type.startsWith('image/')) {
+      toast.error('Vui lòng chọn file hình ảnh');
+      return;
     }
-  };
 
-  // Drag and drop handlers
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
-  };
+    if (file.size > 5 * 1024 * 1024) {
+      // 5MB limit
+      toast.error('File quá lớn. Vui lòng chọn file nhỏ hơn 5MB');
+      return;
+    }
 
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = async (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    try {
-      const files = await handleDropFiles(e.dataTransfer);
-      if (files.length === 0) {
-        toast.error('Vui lòng kéo thả file hình ảnh');
-        return;
-      }
-
-      if (files.length > 1) {
-        toast.error('Chỉ có thể tải lên một ảnh đại diện');
-        return;
-      }
-
-      await processImageFile(files[0]);
-    } catch (error) {
-      toast.error('Có lỗi xảy ra khi xử lý file');
+    if (onAvatarChange) {
+      onAvatarChange(file);
     }
   };
 
@@ -143,60 +85,18 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
       >
         {/* Dark Card Border */}
         <div className='card-border'>
-          {/* Main Image Area with Nickname Overlay - Enhanced with Drag & Drop */}
+          {/* Main Image Area with Nickname Overlay */}
           <div
-            className={`image-area ${dragActive ? 'drag-active' : ''} ${
-              processing ? 'processing' : ''
-            }`}
-            onClick={() => !processing && fileInputRef.current?.click()}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
+            className='image-area'
+            onClick={() => fileInputRef.current?.click()}
           >
             {currentAvatar ? (
               <img src={currentAvatar} alt='Avatar' className='avatar-image' />
             ) : (
               <div className='avatar-placeholder'>
                 <div className='placeholder-content'>
-                  {processing ? (
-                    <div className='processing-indicator'>
-                      <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2'></div>
-                      <p className='text-sm text-gray-400 font-medium'>Đang xử lý...</p>
-                    </div>
-                  ) : dragActive ? (
-                    <div className='drop-indicator'>
-                      <ImageIcon className='w-8 h-8 text-blue-400 mb-2' />
-                      <p className='text-sm text-blue-400 font-medium'>Thả ảnh vào đây</p>
-                    </div>
-                  ) : (
-                    <div className='upload-indicator'>
-                      <Camera className='w-8 h-8 text-gray-400 mb-2' />
-                      <p className='text-sm text-gray-400 font-medium'>Đổi ảnh</p>
-                      <p className='text-xs text-gray-500 mt-1'>Hoặc kéo thả ảnh</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Drag Overlay */}
-            {dragActive && (
-              <div className='drag-overlay'>
-                <div className='drag-content'>
-                  <Upload className='w-12 h-12 text-blue-400 mb-2' />
-                  <p className='text-lg font-semibold text-blue-400'>Thả ảnh vào đây</p>
-                  <p className='text-sm text-gray-400'>Ảnh sẽ được tự động tối ưu</p>
-                </div>
-              </div>
-            )}
-
-            {/* Processing Overlay */}
-            {processing && (
-              <div className='processing-overlay'>
-                <div className='processing-content'>
-                  <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2'></div>
-                  <p className='text-sm text-blue-400 font-medium'>Đang tối ưu ảnh...</p>
+                  <Camera className='w-8 h-8 text-gray-400 mb-2' />
+                  <p className='text-sm text-gray-400 font-medium'>Đổi ảnh</p>
                 </div>
               </div>
             )}

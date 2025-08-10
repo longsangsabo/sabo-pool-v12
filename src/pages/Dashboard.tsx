@@ -102,7 +102,7 @@ const Dashboard = () => {
 
       <div
         ref={combinedRef}
-        className='min-h-screen bg-background overflow-auto'
+        className='min-h-screen overflow-auto'
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}

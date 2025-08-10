@@ -115,7 +115,7 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
   const isLiveContent = post.type === 'match_result' && Math.random() > 0.7; // Mock live status
 
   return (
-    <Card className='mobile-feed-card w-full border-0 bg-card shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]'>
+    <Card className='mobile-feed-card w-full bg-white/70 dark:bg-slate-900/30 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-[0.98]'>
       <CardContent className='p-4 space-y-3'>
         {/* User Header */}
         <div className='flex items-center justify-between'>
@@ -166,7 +166,7 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
 
           {/* Post Stats */}
           {post.stats && (
-            <div className='p-3 bg-muted/50 rounded-lg space-y-2'>
+            <div className='p-3 bg-white/40 dark:bg-slate-800/30 rounded-lg space-y-2'>
               {post.stats.score && (
                 <div className='flex justify-between text-sm'>
                   <span className='text-muted-foreground'>Tỷ số:</span>

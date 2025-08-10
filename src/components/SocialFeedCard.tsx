@@ -75,7 +75,7 @@ const SocialFeedCard = ({
   };
 
   return (
-    <Card className='w-full'>
+    <Card className='w-full bg-white/70 dark:bg-slate-900/30 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 shadow-lg'>
       <CardContent className='p-4 space-y-4'>
         {/* User info and post type */}
         <div className='flex items-start justify-between'>
@@ -109,7 +109,7 @@ const SocialFeedCard = ({
 
           {/* Post-specific stats */}
           {post.stats && (
-            <div className='p-3 bg-muted rounded-lg space-y-1'>
+            <div className='p-3 bg-white/40 dark:bg-slate-800/30 rounded-lg space-y-1'>
               {post.stats.score && (
                 <div className='text-sm'>
                   <span className='font-medium'>Tỷ số: </span>

@@ -185,7 +185,7 @@ const FeedPage = () => {
               feedPosts.map((post, index) => (
                 <Card
                   key={`social-${index}`}
-                  className='bg-white shadow-sm border border-gray-200'
+                  className='bg-white/70 dark:bg-slate-900/30 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 shadow-lg'
                 >
                   <CardContent className='p-4'>
                     <div className='flex items-start gap-3'>

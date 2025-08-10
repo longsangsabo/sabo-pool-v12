@@ -117,10 +117,11 @@ export const MobileStoryReel: React.FC<MobileStoryReelProps> = ({
 
   return (
     <div
-      className='relative py-3 border-b border-border/40 transition-colors overflow-hidden
+      className='relative py-3 rounded-2xl border-2 border-white/20 dark:border-slate-700/40 
+      shadow-lg shadow-black/10 dark:shadow-black/30 transition-all duration-300 overflow-hidden
       before:content-[""] before:absolute before:inset-0 
-      before:bg-background/55 before:dark:bg-slate-900/55 
-      before:backdrop-blur-md before:saturate-150'
+      before:bg-white/30 before:dark:bg-slate-900/20 
+      before:backdrop-blur-md before:saturate-150 before:rounded-2xl'
     >
       <div className='px-4 mb-3'>
         <h3 className='text-sm font-semibold text-foreground'>

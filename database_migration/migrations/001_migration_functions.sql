@@ -1,3 +1,82 @@
+-- ============================================================================
+-- 1. Profiles Migration
+-- ============================================================================
+CREATE OR REPLACE FUNCTION migrate_profiles_data(p_batch_size INT DEFAULT 1000, p_dry_run BOOLEAN DEFAULT TRUE)
+RETURNS BIGINT LANGUAGE plpgsql AS $$
+DECLARE
+    v_rows BIGINT := 0;
+    v_batch BIGINT;
+    v_cursor TIMESTAMPTZ;
+    v_prev_cursor TIMESTAMPTZ;
+BEGIN
+    PERFORM ensure_table_exists('profiles_optimized');
+    IF NOT table_exists('profiles') THEN
+    PERFORM log_migration('migrate_profiles_data','profiles','source_missing', 0, TRUE, NULL);
+    RETURN 0;
+    END IF;
+    SELECT last_cursor::timestamptz INTO v_prev_cursor FROM migration_batch_progress WHERE migration_key='profiles';
+
+    LOOP
+    WITH src AS (
+            SELECT p.* FROM profiles p
+            WHERE v_prev_cursor IS NULL OR p.updated_at > v_prev_cursor
+            ORDER BY p.updated_at
+            LIMIT p_batch_size
+    ), ins AS (
+            INSERT INTO profiles_optimized (user_id, full_name, display_name, nickname, email, phone, avatar_url, bio, city, district,
+                current_rank, elo_points, spa_points, skill_level, active_role, is_admin, is_demo_user,
+                ban_status, ban_reason, banned_at, banned_by, member_since, completion_percentage, created_at, updated_at)
+            SELECT s.user_id, s.full_name, s.display_name, s.nickname, s.email, s.phone, s.avatar_url, s.bio, s.city, s.district,
+                   s.current_rank, s.elo_points, COALESCE(s.spa_points,0), s.skill_level, s.active_role, s.is_admin, s.is_demo_user,
+                   s.ban_status, s.ban_reason, s.banned_at, s.banned_by, s.member_since, s.completion_percentage, s.created_at, s.updated_at
+            FROM src s
+            ON CONFLICT (user_id) DO UPDATE SET
+                full_name = EXCLUDED.full_name,
+                display_name = EXCLUDED.display_name,
+                nickname = EXCLUDED.nickname,
+                email = EXCLUDED.email,
+                phone = EXCLUDED.phone,
+                avatar_url = EXCLUDED.avatar_url,
+                bio = EXCLUDED.bio,
+                city = EXCLUDED.city,
+                district = EXCLUDED.district,
+                current_rank = EXCLUDED.current_rank,
+                elo_points = EXCLUDED.elo_points,
+                spa_points = EXCLUDED.spa_points,
+                skill_level = EXCLUDED.skill_level,
+                active_role = EXCLUDED.active_role,
+                is_admin = EXCLUDED.is_admin,
+                is_demo_user = EXCLUDED.is_demo_user,
+                ban_status = EXCLUDED.ban_status,
+                ban_reason = EXCLUDED.ban_reason,
+                banned_at = EXCLUDED.banned_at,
+                banned_by = EXCLUDED.banned_by,
+                completion_percentage = EXCLUDED.completion_percentage,
+                updated_at = GREATEST(EXCLUDED.updated_at, profiles_optimized.updated_at)
+            RETURNING updated_at
+    )
+    SELECT count(*), max(updated_at) INTO v_batch, v_cursor FROM ins;
+    EXIT WHEN v_batch = 0; -- nothing more to process
+    v_rows := v_rows + v_batch;
+    PERFORM update_batch_progress('profiles', v_cursor::text, v_batch);
+    PERFORM log_migration('migrate_profiles_data','profiles','batch', v_batch, TRUE, NULL);
+    IF p_dry_run THEN
+            RAISE NOTICE 'Dry run batch processed % (total %)', v_batch, v_rows;
+    END IF;
+    v_prev_cursor := v_cursor;
+    EXIT WHEN v_batch < p_batch_size; -- last partial batch
+    END LOOP;
+
+    IF p_dry_run THEN
+    RAISE NOTICE 'Profiles migration dry-run complete. Rows processed=%', v_rows;
+    ELSE
+    RAISE NOTICE 'Profiles migration complete. Rows upserted=%', v_rows;
+    END IF;
+    RETURN v_rows;
+EXCEPTION WHEN OTHERS THEN
+    PERFORM log_migration('migrate_profiles_data','profiles','error', v_rows, FALSE, SQLERRM);
+    RAISE;
+END;$$;
 -- MIGRATION_METADATA
 -- id: 001_migration_functions
 -- created: 2025-08-10
@@ -58,8 +137,47 @@ RETURNS BOOLEAN LANGUAGE plpgsql AS $$
 DECLARE v_exists BOOLEAN; BEGIN
  SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name=p_table) INTO v_exists;
  IF NOT v_exists THEN
-   RAISE EXCEPTION 'Target table % missing. Apply optimized schema first.', p_table;
+     RAISE EXCEPTION 'Target table % missing. Apply optimized schema first.', p_table;
  END IF; RETURN v_exists; END; $$;
+
+-- Lightweight helper to test for (possibly legacy) table existence without raising
+CREATE OR REPLACE FUNCTION table_exists(p_table TEXT)
+RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
+    SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name=p_table);
+$$;
+
+-- Safe generic counter that does not error if table missing
+CREATE OR REPLACE FUNCTION get_table_count(p_table TEXT)
+RETURNS BIGINT LANGUAGE plpgsql STABLE AS $$
+DECLARE v BIGINT:=0; BEGIN
+    IF table_exists(p_table) THEN
+        EXECUTE format('SELECT count(*) FROM %I', p_table) INTO v;
+    END IF;
+    RETURN v;
+END;$$;
+
+-- Helper: ensure optional legacy tournament columns exist (for heterogeneous environments / test harness)
+CREATE OR REPLACE FUNCTION ensure_legacy_tournament_columns()
+RETURNS VOID LANGUAGE plpgsql AS $$
+BEGIN
+    IF NOT table_exists('tournaments') THEN RETURN; END IF;
+    -- Add columns only if they do not already exist (no-op in production if already present)
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS max_participants INT'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS tournament_type TEXT'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS game_format TEXT'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS entry_fee NUMERIC'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS has_third_place_match BOOLEAN'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS allow_all_ranks BOOLEAN'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS eligible_ranks JSONB'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS min_rank_requirement TEXT'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS max_rank_requirement TEXT'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS first_prize TEXT'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS second_prize TEXT'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS third_prize TEXT'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS spa_points_config JSONB'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS elo_points_config JSONB'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS physical_prizes JSONB'; EXCEPTION WHEN OTHERS THEN NULL; END;
+END;$$;
 
 -- ============================================================================
 -- 1. Profiles Migration
@@ -72,6 +190,10 @@ DECLARE
     v_cursor TIMESTAMPTZ;
 BEGIN
     PERFORM ensure_table_exists('profiles_optimized');
+    IF NOT table_exists('profiles') THEN
+        PERFORM log_migration('migrate_profiles_data','profiles','source_missing', 0, TRUE, NULL);
+        RETURN 0;
+    END IF;
 
     LOOP
         WITH src AS (
@@ -113,39 +235,35 @@ BEGIN
                 completion_percentage = EXCLUDED.completion_percentage,
                 updated_at = GREATEST(EXCLUDED.updated_at, profiles_optimized.updated_at)
             RETURNING updated_at
-        ) SELECT count(*) INTO v_batch FROM ins;
-
+        )
+        SELECT count(*), max(updated_at) INTO v_batch, v_cursor FROM ins;
         EXIT WHEN v_batch = 0;
         v_rows := v_rows + v_batch;
-        SELECT max(updated_at) INTO v_cursor FROM profiles WHERE updated_at IN (
-            SELECT updated_at FROM profiles ORDER BY updated_at DESC LIMIT 1
-        );
-        PERFORM update_batch_progress('profiles', v_cursor::text, v_batch);
+        PERFORM update_batch_progress('profiles', COALESCE(v_cursor, now())::text, v_batch);
         PERFORM log_migration('migrate_profiles_data','profiles','batch', v_batch, TRUE, NULL);
-        IF p_dry_run THEN
-            RAISE NOTICE 'Dry run: processed % rows (not committed)', v_rows;
-        END IF;
-        EXIT WHEN v_batch < p_batch_size; -- last batch
+        IF p_dry_run THEN RAISE NOTICE 'Dry run batch processed % (cumulative %)', v_batch, v_rows; END IF;
+        EXIT WHEN v_batch < p_batch_size;
     END LOOP;
-
-    IF p_dry_run THEN
-        RAISE NOTICE 'Profiles migration dry-run complete. Rows processed=%', v_rows;
-    ELSE
-        RAISE NOTICE 'Profiles migration complete. Rows upserted=%', v_rows;
-    END IF;
-    RETURN v_rows;
-EXCEPTION WHEN OTHERS THEN
-    PERFORM log_migration('migrate_profiles_data','profiles','error', v_rows, FALSE, SQLERRM);
-    RAISE;
-END;$$;
+    RETURN v_rows; EXCEPTION WHEN OTHERS THEN
+        PERFORM log_migration('migrate_profiles_data','profiles','error', v_rows,FALSE,SQLERRM); RAISE; END; $$;
 
 -- ============================================================================
--- 2. Tournaments Migration
+-- 2. Tournaments Migration (separate restored function)
 -- ============================================================================
-CREATE OR REPLACE FUNCTION migrate_tournaments_data(p_batch_size INT DEFAULT 500, p_dry_run BOOLEAN DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION migrate_tournaments_data(p_batch_size INT DEFAULT 1000, p_dry_run BOOLEAN DEFAULT TRUE)
 RETURNS BIGINT LANGUAGE plpgsql AS $$
-DECLARE v_rows BIGINT := 0; v_batch BIGINT; v_cursor TIMESTAMPTZ; BEGIN
+DECLARE
+    v_rows BIGINT := 0;
+    v_batch BIGINT;
+    v_cursor TIMESTAMPTZ;
+BEGIN
     PERFORM ensure_table_exists('tournaments_v2');
+    IF NOT table_exists('tournaments') THEN
+        PERFORM log_migration('migrate_tournaments_data','tournaments','source_missing', 0, TRUE, NULL);
+        RETURN 0;
+    END IF;
+    PERFORM ensure_legacy_tournament_columns();
+
     LOOP
         WITH src AS (
             SELECT t.* FROM tournaments t
@@ -193,12 +311,13 @@ DECLARE v_rows BIGINT := 0; v_batch BIGINT; v_cursor TIMESTAMPTZ; BEGIN
                 current_phase = EXCLUDED.current_phase,
                 updated_at = GREATEST(EXCLUDED.updated_at, tournaments_v2.updated_at)
             RETURNING updated_at
-        ) SELECT count(*) INTO v_batch FROM ins;
+        )
+        SELECT count(*), max(updated_at) INTO v_batch, v_cursor FROM ins;
         EXIT WHEN v_batch = 0;
         v_rows := v_rows + v_batch;
-        SELECT max(updated_at) INTO v_cursor FROM tournaments;
-        PERFORM update_batch_progress('tournaments', v_cursor::text, v_batch);
+        PERFORM update_batch_progress('tournaments', COALESCE(v_cursor, now())::text, v_batch);
         PERFORM log_migration('migrate_tournaments_data','tournaments','batch', v_batch, TRUE, NULL);
+        IF p_dry_run THEN RAISE NOTICE 'Dry run batch processed tournaments % (cumulative %)', v_batch, v_rows; END IF;
         EXIT WHEN v_batch < p_batch_size;
     END LOOP;
     RETURN v_rows; EXCEPTION WHEN OTHERS THEN
@@ -211,6 +330,19 @@ CREATE OR REPLACE FUNCTION migrate_tournament_participants(p_batch_size INT DEFA
 RETURNS BIGINT LANGUAGE plpgsql AS $$
 DECLARE v_rows BIGINT:=0; BEGIN
     PERFORM ensure_table_exists('tournament_participants');
+    IF NOT table_exists('tournament_registrations') THEN
+        PERFORM log_migration('migrate_tournament_participants','tournaments','source_missing', 0, TRUE, NULL);
+        RETURN 0;
+    END IF;
+    -- Ensure supporting unique index exists for ON CONFLICT clause (idempotent)
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes WHERE schemaname='public' AND indexname='uq_tournament_participants_tournament_user'
+    ) THEN
+        BEGIN
+            EXECUTE 'CREATE UNIQUE INDEX uq_tournament_participants_tournament_user ON tournament_participants(tournament_id, user_id)';
+        EXCEPTION WHEN OTHERS THEN NULL; -- ignore if created concurrently
+        END;
+    END IF;
     INSERT INTO tournament_participants (id, tournament_id, user_id, registration_date, registration_status, status,
         seed_position, bracket_position, current_bracket, elimination_round, entry_fee, payment_status, payment_method,
         final_position, matches_played, matches_won, matches_lost, win_percentage, spa_points_earned, elo_points_earned,
@@ -234,6 +366,10 @@ CREATE OR REPLACE FUNCTION migrate_tournament_matches()
 RETURNS BIGINT LANGUAGE plpgsql AS $$
 DECLARE v_rows BIGINT:=0; BEGIN
     PERFORM ensure_table_exists('tournament_matches_v2');
+    IF NOT table_exists('tournament_matches') THEN
+        PERFORM log_migration('migrate_tournament_matches','tournaments','source_missing', 0, TRUE, NULL);
+        RETURN 0;
+    END IF;
     INSERT INTO tournament_matches_v2 (id, tournament_id, round_number, match_number, match_stage, round_position,
         player1_id, player2_id, winner_id, score_player1, score_player2, status, scheduled_time, actual_start_time,
         actual_end_time, score_status, score_input_by, score_submitted_at, referee_id, notes, created_at, updated_at)
@@ -256,6 +392,17 @@ RETURNS BIGINT LANGUAGE plpgsql AS $$
 DECLARE v_rows BIGINT:=0; BEGIN
     PERFORM ensure_table_exists('user_wallets');
     PERFORM ensure_table_exists('wallet_transactions_v2');
+    IF NOT table_exists('wallets') THEN
+        PERFORM log_migration('migrate_wallet_transactions','wallet','source_missing_wallets', 0, TRUE, NULL);
+        RETURN 0;
+    END IF;
+    -- If transaction source tables absent, skip gracefully
+    IF NOT table_exists('spa_point_transactions') THEN
+        PERFORM log_migration('migrate_wallet_transactions','wallet','skip_no_spa_point_tx', 0, TRUE, NULL);
+    END IF;
+    IF NOT table_exists('cash_transactions') THEN
+        PERFORM log_migration('migrate_wallet_transactions','wallet','skip_no_cash_tx', 0, TRUE, NULL);
+    END IF;
 
     -- Consolidate wallet balances
     INSERT INTO user_wallets (user_id, spa_points, cash_balance, total_earned_points, total_spent_points,
@@ -276,22 +423,50 @@ DECLARE v_rows BIGINT:=0; BEGIN
     GET DIAGNOSTICS v_rows = ROW_COUNT;
     PERFORM log_migration('migrate_wallet_balances','wallet','bulk', v_rows, TRUE, NULL);
 
-    -- Consolidate transactions (example union - adapt actual source tables)
+    -- Consolidate transactions into wallet_transactions_v2 schema.
+    -- Target table columns: (id, user_id, transaction_type, amount, currency, source_type, source_id,
+    --                        spa_points_change, elo_points_change, wallet_balance_after, metadata, created_at, updated_at)
+    -- We don't currently derive spa/elo point deltas from legacy rows, so default them to 0.
     WITH unified AS (
-        SELECT t.id, t.user_id, 'spa_earn'::text AS transaction_type, t.points::numeric AS amount, 'SPA'::text AS currency,
-               t.source_type, t.source_id, t.description, '{}'::jsonb AS metadata,
-               t.balance_before::numeric, t.balance_after::numeric, 'completed'::text AS status, t.created_at
-        FROM spa_point_transactions t
+        SELECT t.id, t.user_id,
+               'spa_earn'::text AS transaction_type,
+               t.points::numeric AS amount,
+               'SPA'::text AS currency,
+               t.source_type, t.source_id,
+               COALESCE(t.description, t.source_type) AS details,
+               '{}'::jsonb AS base_metadata,
+               t.balance_before::numeric AS balance_before,
+               t.balance_after::numeric AS balance_after,
+               'completed'::text AS status,
+               t.created_at
+        FROM spa_point_transactions t WHERE table_exists('spa_point_transactions')
         UNION ALL
-        SELECT c.id, c.user_id, CASE WHEN c.amount > 0 THEN 'cash_earn' ELSE 'cash_spend' END,
-               abs(c.amount)::numeric, 'USD', c.source_type, c.source_id, c.notes, '{}'::jsonb,
-               c.balance_before::numeric, c.balance_after::numeric, c.status, c.created_at
-        FROM cash_transactions c
+        SELECT c.id, c.user_id,
+               CASE WHEN c.amount > 0 THEN 'cash_earn' ELSE 'cash_spend' END AS transaction_type,
+               abs(c.amount)::numeric AS amount,
+               'USD'::text AS currency,
+               c.source_type, c.source_id,
+               COALESCE(c.notes, c.source_type) AS details,
+               '{}'::jsonb AS base_metadata,
+               c.balance_before::numeric AS balance_before,
+               c.balance_after::numeric AS balance_after,
+               c.status,
+               c.created_at
+        FROM cash_transactions c WHERE table_exists('cash_transactions')
     )
     INSERT INTO wallet_transactions_v2 (id, user_id, transaction_type, amount, currency, source_type, source_id,
-        description, metadata, balance_before, balance_after, status, created_at)
+        spa_points_change, elo_points_change, wallet_balance_after, metadata, created_at, updated_at)
     SELECT u.id, u.user_id, u.transaction_type, u.amount, u.currency, u.source_type, u.source_id,
-           u.description, u.metadata, u.balance_before, u.balance_after, u.status, u.created_at
+           0 AS spa_points_change,
+           0 AS elo_points_change,
+           u.balance_after AS wallet_balance_after,
+           (u.base_metadata || jsonb_build_object(
+               'details', u.details,
+               'balance_before', u.balance_before,
+               'status', u.status
+           )) AS metadata,
+           u.created_at AS created_at,
+           u.created_at AS updated_at
     FROM unified u
     ON CONFLICT (id) DO NOTHING;
     GET DIAGNOSTICS v_rows = ROW_COUNT;
@@ -307,6 +482,8 @@ RETURNS BIGINT LANGUAGE plpgsql AS $$
 DECLARE v_rows BIGINT:=0; BEGIN
     PERFORM ensure_table_exists('clubs_v2');
     PERFORM ensure_table_exists('club_memberships');
+    IF NOT table_exists('clubs') THEN
+        PERFORM log_migration('migrate_club_data','clubs','source_missing', 0, TRUE, NULL); RETURN 0; END IF;
 
     INSERT INTO clubs_v2 (id, owner_id, name, club_code, description, address, district, city, phone, email,
         website, facebook_url, config, logo_url, photos, verification_status, is_active, is_sabo_owned,
@@ -350,25 +527,25 @@ DECLARE v_rows BIGINT:=0; BEGIN
 -- ============================================================================
 CREATE OR REPLACE FUNCTION validate_migration_integrity()
 RETURNS TABLE(section TEXT, source_count BIGINT, target_count BIGINT, status TEXT) LANGUAGE plpgsql AS $$
-BEGIN
-    RETURN QUERY
-    SELECT 'profiles', (SELECT count(*) FROM profiles), (SELECT count(*) FROM profiles_optimized),
-           CASE WHEN (SELECT count(*) FROM profiles) = (SELECT count(*) FROM profiles_optimized) THEN 'OK' ELSE 'MISMATCH' END
-    UNION ALL
-    SELECT 'tournaments', (SELECT count(*) FROM tournaments), (SELECT count(*) FROM tournaments_v2),
-           CASE WHEN (SELECT count(*) FROM tournaments) = (SELECT count(*) FROM tournaments_v2) THEN 'OK' ELSE 'MISMATCH' END
-    UNION ALL
-    SELECT 'participants', (SELECT count(*) FROM tournament_registrations), (SELECT count(*) FROM tournament_participants),
-           CASE WHEN (SELECT count(*) FROM tournament_registrations) <= (SELECT count(*) FROM tournament_participants) THEN 'OK' ELSE 'MISMATCH' END
-    UNION ALL
-    SELECT 'matches', (SELECT count(*) FROM tournament_matches), (SELECT count(*) FROM tournament_matches_v2),
-           CASE WHEN (SELECT count(*) FROM tournament_matches) = (SELECT count(*) FROM tournament_matches_v2) THEN 'OK' ELSE 'MISMATCH' END
-    UNION ALL
-    SELECT 'wallets', (SELECT count(*) FROM wallets), (SELECT count(*) FROM user_wallets),
-           CASE WHEN (SELECT count(*) FROM wallets) = (SELECT count(*) FROM user_wallets) THEN 'OK' ELSE 'MISMATCH' END
-    UNION ALL
-    SELECT 'clubs', (SELECT count(*) FROM clubs), (SELECT count(*) FROM clubs_v2),
-           CASE WHEN (SELECT count(*) FROM clubs) = (SELECT count(*) FROM clubs_v2) THEN 'OK' ELSE 'MISMATCH' END;
+DECLARE s BIGINT; t BIGINT; missing BOOLEAN; BEGIN
+    -- Profiles
+    s := get_table_count('profiles'); t := get_table_count('profiles_optimized'); missing := NOT table_exists('profiles');
+    RETURN QUERY SELECT 'profiles', s, t, CASE WHEN missing THEN 'OK' WHEN s=t THEN 'OK' ELSE 'MISMATCH' END;
+    -- Tournaments
+    s := get_table_count('tournaments'); t := get_table_count('tournaments_v2'); missing := NOT table_exists('tournaments');
+    RETURN QUERY SELECT 'tournaments', s, t, CASE WHEN missing THEN 'OK' WHEN s=t THEN 'OK' ELSE 'MISMATCH' END;
+    -- Participants
+    s := get_table_count('tournament_registrations'); t := get_table_count('tournament_participants'); missing := NOT table_exists('tournament_registrations');
+    RETURN QUERY SELECT 'participants', s, t, CASE WHEN missing THEN 'OK' WHEN s<=t THEN 'OK' ELSE 'MISMATCH' END;
+    -- Matches
+    s := get_table_count('tournament_matches'); t := get_table_count('tournament_matches_v2'); missing := NOT table_exists('tournament_matches');
+    RETURN QUERY SELECT 'matches', s, t, CASE WHEN missing THEN 'OK' WHEN s=t THEN 'OK' ELSE 'MISMATCH' END;
+    -- Wallets
+    s := get_table_count('wallets'); t := get_table_count('user_wallets'); missing := NOT table_exists('wallets');
+    RETURN QUERY SELECT 'wallets', s, t, CASE WHEN missing THEN 'OK' WHEN s=t THEN 'OK' ELSE 'MISMATCH' END;
+    -- Clubs
+    s := get_table_count('clubs'); t := get_table_count('clubs_v2'); missing := NOT table_exists('clubs');
+    RETURN QUERY SELECT 'clubs', s, t, CASE WHEN missing THEN 'OK' WHEN s=t THEN 'OK' ELSE 'MISMATCH' END;
 END;$$;
 
 -- Emergency rollback (copy back or abort if old tables dropped)

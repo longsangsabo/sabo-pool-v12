@@ -1,22 +1,16 @@
 #!/usr/bin/env bash
-# SABO ARENA DATABASE MIGRATION RUNNER
-# Purpose: Orchestrate pre-checks, dry-run, live migration, reporting, and error recovery.
-# Requires: psql available, environment variable DATABASE_URL or --db argument.
-# PostgreSQL >= 14 (Supabase compatible)
-
+# CLEAN REWRITE - SABO ARENA MIGRATION RUNNER (corrupted original replaced)
+#!/usr/bin/env bash
 set -euo pipefail
 IFS=$'\n\t'
 
-# Colors
 RED="\033[0;31m"; GREEN="\033[0;32m"; YELLOW="\033[1;33m"; BLUE="\033[0;34m"; NC="\033[0m"
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(dirname "$(dirname "$SCRIPT_DIR") )"
-MIG_DIR="$ROOT_DIR/migrations"
+ROOT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
+MIG_DIR="$ROOT_DIR/database_migration/migrations"
 LOG_DIR="$ROOT_DIR/logs"
 REPORT_DIR="$ROOT_DIR/reports"
 mkdir -p "$LOG_DIR" "$REPORT_DIR"
-
 DATE_TAG="$(date +%Y%m%d_%H%M%S)"
 LOG_FILE="$LOG_DIR/migration_$DATE_TAG.log"
 REPORT_JSON="$REPORT_DIR/migration_report_$DATE_TAG.json"
@@ -24,222 +18,211 @@ STATE_FILE="$ROOT_DIR/.migration_state"
 
 DB_URL="${DATABASE_URL:-}"
 MODE=""
-FORCE="false"
-SKIP_DRY="false"
-BATCH_PROFILES=1000
-BATCH_TOURNAMENTS=500
+FORCE=false
+SKIP_DRY=false
+PERF_THRESHOLD_PCT=5
+MAX_ACTIVE_SESSIONS=30
 
-usage() {
-  cat <<EOF
-Usage: $0 --mode <dry-run|live|report> [--db <url>] [--force] [--skip-dry] \\
-          [--profiles-batch N] [--tournaments-batch N]
-
-Modes:
-  dry-run   Run execute_safe_migration(TRUE) and store JSON report.
-  live      Run execute_safe_migration(FALSE) (requires prior clean dry-run unless --skip-dry).
-  report    Only generate migration report (no data changes).
-
-Options:
-  --db <url>            Database connection URL (or set DATABASE_URL env)
-  --force               Bypass interactive confirmation for live mode
-  --skip-dry            Allow live execution without a fresh dry-run (NOT recommended)
-  --profiles-batch N    Override profiles batch size (default 1000) *informational only*
-  --tournaments-batch N Override tournament batch size (default 500)  *informational only*
-
-Artifacts:
-  Logs:     $LOG_DIR
-  Reports:  $REPORT_DIR
-  State:    $STATE_FILE (tracks last successful dry-run timestamp)
+usage(){ cat <<EOF
+Usage: $0 --mode <dry-run|live|report|validate-only|cleanup> [--db URL] [--force] [--skip-dry]
+	Modes:
+		dry-run        Apply SQL (excluding destructive cleanup) then execute migration in dry-run mode
+		live           Run full migration (excluding cleanup) after successful dry-run
+		report         Show extended report only (no migration execution)
+		validate-only  Same as report but enforces gate
+		cleanup        Apply post-migration cleanup script 005 (only after live & gates passed)
 EOF
-  exit 1
+exit 1; }
+
+log(){ echo -e "$(date -u +%FT%TZ) | $1" | tee -a "$LOG_FILE" >&2; }
+log_section(){ log "${BLUE}==== $1 ====${NC}"; }
+log_warn(){ log "${YELLOW}WARN${NC} $1"; }
+log_err(){ log "${RED}ERROR${NC} $1"; }
+log_ok(){ log "${GREEN}OK${NC} $1"; }
+fatal(){ log_err "$1"; exit 1; }
+
+parse_args(){
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+			--mode) MODE="$2"; shift 2;;
+			--db) DB_URL="$2"; shift 2;;
+			--force) FORCE=true; shift;;
+			--skip-dry) SKIP_DRY=true; shift;;
+			-h|--help) usage;;
+			*) log_warn "Unknown arg $1"; usage;;
+		esac
+	done
+	[[ -z "$MODE" ]] && usage
+	[[ -z "$DB_URL" ]] && fatal "Missing DB URL"
+	return 0
 }
 
-log() { echo -e "$(date -u +'%Y-%m-%dT%H:%M:%SZ') | $1" | tee -a "$LOG_FILE" >&2; }
-log_section() { log "${BLUE}==== $1 ==== ${NC}"; }
-log_warn() { log "${YELLOW}WARN${NC} $1"; }
-log_err() { log "${RED}ERROR${NC} $1"; }
-log_ok() { log "${GREEN}OK${NC} $1"; }
-
-fatal() { log_err "$1"; echo "FAILED" > "$STATE_FILE.failed"; exit 1; }
-require_cmd() { command -v "$1" >/dev/null 2>&1 || fatal "Missing required command: $1"; }
-
-parse_args() {
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      --mode) MODE="$2"; shift 2;;
-      --db) DB_URL="$2"; shift 2;;
-      --force) FORCE="true"; shift;;
-      --skip-dry) SKIP_DRY="true"; shift;;
-      --profiles-batch) BATCH_PROFILES="$2"; shift 2;;
-      --tournaments-batch) BATCH_TOURNAMENTS="$2"; shift 2;;
-      -h|--help) usage;;
-      *) log_warn "Unknown argument: $1"; usage;;
-    esac
-  done
-  [[ -z "$MODE" ]] && usage
-  [[ -z "$DB_URL" ]] && fatal "Database URL not provided (use --db or set DATABASE_URL)."
+pre_checks(){
+	log_section "PreChecks"
+	command -v psql >/dev/null || fatal "psql missing"
+	psql "$DB_URL" -qAt -c 'SELECT 1' >/dev/null || fatal "DB unreachable"
+	log_ok "DB reachable"
+	local active
+	active=$(psql "$DB_URL" -qAt -c "SELECT count(*) FROM pg_stat_activity WHERE state <> 'idle' AND pid<>pg_backend_pid();" || echo 0)
+	[[ $active -le $MAX_ACTIVE_SESSIONS ]] || fatal "Too many active sessions ($active)"
+	log_ok "Active sessions acceptable ($active)"
 }
 
-pre_checks() {
-  log_section "Pre-migration checks"
-  require_cmd psql
-
-  log "Checking database connectivity..."
-  if ! PGPASSWORD="" psql "$DB_URL" -c "SELECT 1" -q >/dev/null 2>&1; then
-    fatal "Cannot connect to database using provided URL"
-  fi
-  log_ok "Database reachable"
-
-  log "Verifying required functions existence (if already applied)..."
-  local fn_missing=0
-  for fn in execute_safe_migration generate_migration_report migrate_profiles_data; do
-    if ! psql "$DB_URL" -qAt -c "SELECT 1 FROM pg_proc WHERE proname='$fn'" | grep -q 1; then
-      log_warn "Function $fn not found yet (will exist after loading SQL scripts)"
-      fn_missing=$((fn_missing+1))
-    fi
-  done
-
-  log "Checking pending locks that might block migration (long running transactions)..."
-  local blockers
-  blockers=$(psql "$DB_URL" -F $'\t' -qAt -c "SELECT pid, state, query FROM pg_stat_activity WHERE state <> 'idle' AND now()-query_start > interval '5 minutes'") || true
-  if [[ -n "$blockers" ]]; then
-    log_warn "Long running transactions detected (review strongly recommended):";
-    echo "$blockers" | tee -a "$LOG_FILE"
-  else
-    log_ok "No problematic long running transactions detected"
-  fi
-
-  log "Disk usage / table size snapshot (top 10)..."
-  psql "$DB_URL" -c "SELECT relname, pg_size_pretty(pg_total_relation_size(relid)) size FROM pg_catalog.pg_statio_user_tables ORDER BY pg_total_relation_size(relid) DESC LIMIT 10;" | tee -a "$LOG_FILE" || true
-
-  log_ok "Pre-checks complete"
+load_sql(){
+	log_section "Load SQL"
+	local base_files=(
+		000_optimized_schema.sql
+		001_migration_functions.sql
+		002_validation_scripts.sql
+		003_backward_compatibility.sql
+		004_master_migration.sql
+		006_advanced_validation.sql
+		007_backward_compatibility.sql
+		008_advanced_optimizations.sql
+		009_security_audit_system.sql
+		010_performance_monitoring.sql
+		011_deployment_automation.sql
+		012_rollback_system.sql
+		013_monitoring_system.sql
+		014_maintenance_automation.sql
+		015_business_intelligence.sql
+	)
+	local cleanup_file=005_cleanup_procedures.sql
+	local files_to_apply=("${base_files[@]}")
+	if [[ "$MODE" == "cleanup" ]]; then
+		files_to_apply=("$cleanup_file")
+		log_warn "Running in CLEANUP mode – ONLY applying $cleanup_file"
+	fi
+	for f in "${files_to_apply[@]}"; do
+		if [[ -f "$MIG_DIR/$f" ]]; then
+			log "Applying $f"
+			psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$MIG_DIR/$f" >>"$LOG_FILE" 2>&1 || fatal "Failed applying $f"
+		else
+			log_warn "Missing $f (skipping)"
+		fi
+	done
+	log_ok "SQL apply phase complete"
 }
 
-load_sql_files_if_needed() {
-  log_section "Loading SQL definitions"
-  local files=(001_migration_functions.sql 002_validation_scripts.sql 003_backward_compatibility.sql 004_master_migration.sql 006_metrics_extension.sql)
-  for f in "${files[@]}"; do
-    [[ ! -f "$MIG_DIR/$f" ]] && { [[ "$f" == 006_metrics_extension.sql ]] && continue || fatal "Missing expected migration file: $f"; }
-    local start_ts
-    start_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-    log "Applying $f"
-    psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$MIG_DIR/$f" >> "$LOG_FILE" 2>&1 || fatal "Failed applying $f"
-    psql "$DB_URL" -qAt -c "SELECT log_migration('apply_sql','definitions','$f',NULL,true,NULL,'${start_ts}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
-  done
-  log_ok "SQL definitions loaded"
+enrich_report(){
+	local file="$1"
+	command -v jq >/dev/null 2>&1 || return 0
+	local enrich
+	enrich=$(psql "$DB_URL" -qAt -c "WITH m AS (SELECT row_to_json(t) latest FROM (SELECT * FROM performance_metrics ORDER BY captured_at DESC LIMIT 1)t), b AS(SELECT count(*) pending FROM domain_events WHERE processed_at IS NULL) SELECT json_build_object('latest_performance',m.latest,'event_backlog',(SELECT pending FROM b))::text FROM m,b;" 2>/dev/null || echo '{}')
+	jq --argjson e "$enrich" '. + {operational_enrichment:$e}' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
 }
 
-confirm_live() {
-  [[ "$FORCE" == "true" ]] && return 0
-  echo -ne "${YELLOW}You are about to run LIVE migration. Type 'yes' to continue: ${NC}" >&2
-  read -r ans
-  [[ "$ans" == "yes" ]] || fatal "Live migration aborted by user"
+performance_gate(){
+	local file="$1"; command -v jq >/dev/null || return 0
+	local threshold=$PERF_THRESHOLD_PCT fail=0
+	jq -r '.performance_benchmarks? // [] | map(.label)|unique[]|select(test("_old$"))' "$file" | while read -r old; do
+		local base="${old%_old}" o n
+		o=$(jq -r --arg l "$old" '.performance_benchmarks[]|select(.label==$l).total_time_ms' "$file" 2>/dev/null)
+		n=$(jq -r --arg l "${base}_new" '.performance_benchmarks[]|select(.label==$l).total_time_ms' "$file" 2>/dev/null)
+		[[ -z "$o" || -z "$n" || $o == null || $n == null ]] && continue
+		awk -v o="$o" -v n="$n" -v t="$threshold" 'BEGIN{ if(n>o*(1+t/100.0)) exit 1}' || fail=1
+	done
+	[[ $fail -eq 0 ]] || return 1
 }
 
-summarize_report() {
-  local file="$1"
-  log_section "Report summary"
-  if command -v jq >/dev/null 2>&1; then
-    jq '.integrity_summary' "$file" 2>/dev/null | tee -a "$LOG_FILE" || log_warn "Could not parse integrity_summary with jq"
-  else
-    log_warn "jq not installed - raw JSON head:"; head -n 5 "$file" | tee -a "$LOG_FILE"
-  fi
+append_recommendations(){
+	local file=$1; command -v jq >/dev/null || return 0
+	local recs=()
+	jq -e '.advanced_integrity_v2[]?|select(.severity=="FAIL")' "$file" >/dev/null 2>&1 && recs+=("Resolve FAIL integrity checks")
+	jq -e '.data_sampling.status=="FAIL"' "$file" >/dev/null 2>&1 && recs+=("Investigate data sampling mismatches")
+	[[ ${#recs[@]} -eq 0 ]] && recs+=("All gates passed – monitor before legacy decommission")
+	jq --argjson r "$(printf '%s\n' "${recs[@]}" | jq -R . | jq -s .)" '. + {recovery_recommendations:$r}' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
 }
 
-check_integrity_or_fail() {
-  local file="$1" mode="$2" mismatch="false"
-  if command -v jq >/dev/null 2>&1; then
-    if jq -e '.integrity_summary[] | select(.status != "OK")' "$file" >/dev/null 2>&1; then mismatch="true"; fi
-  else
-    if grep -q '"status":"MISMATCH"' "$file"; then mismatch="true"; fi
-  fi
-  if [[ "$mismatch" == "true" ]]; then
-    log_err "Integrity summary contains mismatches. See $file"
-    local start_env=${SCRIPT_GLOBAL_START:-}
-    if [[ -n "$start_env" ]]; then
-      psql "$DB_URL" -qAt -c "SELECT log_migration('integrity_check',${mode@Q},'mismatch_detected',NULL,false,NULL,'${start_env}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
-    else
-      psql "$DB_URL" -qAt -c "SELECT log_migration('integrity_check',${mode@Q},'mismatch_detected',NULL,false,NULL);" >> "$LOG_FILE" 2>&1 || true
-    fi
-    exit 2
-  else
-    log_ok "Integrity summary clean (all OK)"
-    local start_env=${SCRIPT_GLOBAL_START:-}
-    psql "$DB_URL" -qAt -c "SELECT log_migration('integrity_check',${mode@Q},'all_ok',NULL,true,NULL,${start_env:+ '${start_env}'::timestamptz});" >> "$LOG_FILE" 2>&1 || true
-  fi
+summarize(){ local file=$1; command -v jq >/dev/null && jq '.integrity_summary' "$file" || head -n 40 "$file"; }
+
+gate(){
+	local file=$1 mode=$2 mismatch=false
+	if command -v jq >/dev/null; then
+		jq -e '.integrity_summary[]|select(.status!="OK")' "$file" >/dev/null 2>&1 && mismatch=true
+		jq -e '.advanced_integrity_v2[]?|select(.severity=="FAIL")' "$file" >/dev/null 2>&1 && mismatch=true
+		jq -e '.data_sampling.status=="FAIL"' "$file" >/dev/null 2>&1 && mismatch=true
+		performance_gate "$file" || mismatch=true
+	else
+		grep -q '"status":"MISMATCH"' "$file" && mismatch=true
+	fi
+	if $mismatch; then
+		log_err "GATE FAIL $mode"; append_recommendations "$file"; exit 2
+	else
+		log_ok "GATE PASS $mode"; append_recommendations "$file"
+	fi
 }
 
-run_dry() {
-  log_section "Dry-run migration"
-  local out start_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  set +e
-  out=$(psql "$DB_URL" -qAt -c "SELECT execute_safe_migration(TRUE)::text;" 2>>"$LOG_FILE")
-  local ec=$?
-  set -e
-  if [[ $ec -ne 0 ]]; then
-    fatal "Dry-run failed (see log)"
-  fi
-  echo "$out" | sed 's/^\s*//' > "$REPORT_JSON"
-  log_ok "Dry-run report saved: $REPORT_JSON"
-  date -u +%s > "$STATE_FILE.dry_success"
-  summarize_report "$REPORT_JSON"
-  check_integrity_or_fail "$REPORT_JSON" "dry-run"
-  psql "$DB_URL" -qAt -c "SELECT log_migration('execute_safe_migration','dry-run','wrapper_total',NULL,true,NULL,'${start_ts}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
+run_dry(){
+	log_section "DryRun"
+	local out
+	out=$(psql "$DB_URL" -qAt -c "SELECT execute_safe_migration(TRUE)::text;" 2>>"$LOG_FILE") || fatal "Dry-run failed"
+	out=$(psql "$DB_URL" -qAt -c "SELECT extended_migration_report()::text;" 2>>"$LOG_FILE") || fatal "Extended report failed"
+	echo "$out" > "$REPORT_JSON"
+	enrich_report "$REPORT_JSON" || true
+	summarize "$REPORT_JSON"
+	gate "$REPORT_JSON" dry-run
+	date -u +%s > "$STATE_FILE.dry_success"
 }
 
-run_live() {
-  if [[ ! -f "$STATE_FILE.dry_success" && "$SKIP_DRY" != "true" ]]; then
-    fatal "No successful dry-run recorded. Use --skip-dry to override (not recommended)."
-  fi
-  confirm_live
-  log_section "LIVE migration"
-  local out start_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  set +e
-  out=$(psql "$DB_URL" -qAt -c "SELECT execute_safe_migration(FALSE)::text;" 2>>"$LOG_FILE")
-  local ec=$?
-  set -e
-  if [[ $ec -ne 0 ]]; then
-    fatal "Live migration failed (see log). Consider running rollback_migration() manually."
-  fi
-  echo "$out" | sed 's/^\s*//' > "$REPORT_JSON"
-  log_ok "Live migration report saved: $REPORT_JSON"
-  summarize_report "$REPORT_JSON"
-  check_integrity_or_fail "$REPORT_JSON" "live"
-  psql "$DB_URL" -qAt -c "SELECT log_migration('execute_safe_migration','live','wrapper_total',NULL,true,NULL,'${start_ts}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
+run_live(){
+	[[ -f "$STATE_FILE.dry_success" || $SKIP_DRY == true ]] || fatal "No successful dry-run"
+	$FORCE || { echo -n "Type yes to continue LIVE: " >&2; read -r a; [[ $a == yes ]] || fatal "Aborted"; }
+	log_section "LiveMigration"
+	capture_pre_migration_snapshot || true
+	local out
+	out=$(psql "$DB_URL" -qAt -c "SELECT execute_safe_migration(FALSE)::text;" 2>>"$LOG_FILE") || fatal "Live migration failed"
+	out=$(psql "$DB_URL" -qAt -c "SELECT extended_migration_report()::text;" 2>>"$LOG_FILE") || fatal "Extended report failed"
+	echo "$out" > "$REPORT_JSON"
+	enrich_report "$REPORT_JSON" || true
+	summarize "$REPORT_JSON"
+	gate "$REPORT_JSON" live
 }
 
-run_report_only() {
-  log_section "Generate report only"
-  local out start_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  set +e
-  out=$(psql "$DB_URL" -qAt -c "SELECT generate_migration_report()::text;" 2>>"$LOG_FILE")
-  local ec=$?
-  set -e
-  if [[ $ec -ne 0 ]]; then
-    fatal "Report generation failed"
-  fi
-  echo "$out" | sed 's/^\s*//' > "$REPORT_JSON"
-  log_ok "Report saved: $REPORT_JSON"
-  summarize_report "$REPORT_JSON"
-  check_integrity_or_fail "$REPORT_JSON" "report"
-  psql "$DB_URL" -qAt -c "SELECT log_migration('migration_report','report','wrapper_total',NULL,true,NULL,'${start_ts}'::timestamptz);" >> "$LOG_FILE" 2>&1 || true
+run_validate(){
+	log_section "ValidateOnly"
+	local out
+	out=$(psql "$DB_URL" -qAt -c "SELECT extended_migration_report()::text;" 2>>"$LOG_FILE") || fatal "Validation report failed"
+	echo "$out" > "$REPORT_JSON"
+	enrich_report "$REPORT_JSON" || true
+	summarize "$REPORT_JSON"
+	gate "$REPORT_JSON" validate-only
 }
 
-main() {
-  parse_args "$@"
-  pre_checks
-  load_sql_files_if_needed
+run_report(){
+	log_section "ReportOnly"
+	local out
+	out=$(psql "$DB_URL" -qAt -c "SELECT extended_migration_report()::text;" 2>>"$LOG_FILE") || fatal "Report failed"
+	echo "$out" > "$REPORT_JSON"
+	enrich_report "$REPORT_JSON" || true
+	summarize "$REPORT_JSON"
+	gate "$REPORT_JSON" report
+}
 
-  case "$MODE" in
-    dry-run) run_dry;;
-    live) run_live;;
-    report) run_report_only;;
-    *) usage;;
-  esac
+capture_pre_migration_snapshot(){
+	local f="$REPORT_DIR/pre_migration_snapshot_$DATE_TAG.json"
+	psql "$DB_URL" -qAt -c "SELECT json_build_object('profiles',(SELECT count(*) FROM profiles),'tournaments',(SELECT count(*) FROM tournaments))::text" > "$f" 2>>"$LOG_FILE" || true
+}
 
-  log_section "Done"
-  log_ok "Migration script finished successfully"
-  echo "SUCCESS" > "$STATE_FILE.last"
+main(){
+	set +e
+	parse_args "$@"
+	local PARSE_EC=$?
+	set -e
+	echo "[DEBUG] parse_args exit=$PARSE_EC" >&2
+	log_section "Args"; log "MODE=$MODE FORCE=$FORCE SKIP_DRY=$SKIP_DRY"
+	pre_checks
+	load_sql
+	case "$MODE" in
+		dry-run) run_dry;;
+		live) run_live;;
+		report) run_report;;
+		validate-only) run_validate;;
+		cleanup) log_section "Cleanup"; log_warn "Ensure gates previously passed before cleanup"; ;;
+		*) usage;;
+	esac
+	log_section "Done"; log_ok "Finished"; echo SUCCESS > "$STATE_FILE.last"
 }
 
 main "$@"
+DATE_TAG="$(date +%Y%m%d_%H%M%S)"; LOG_FILE="$LOG_DIR/migration_$DATE_TAG.log"; REPORT_JSON="$REPORT_DIR/migration_report_$DATE_TAG.json"; STATE_FILE="$ROOT_DIR/.migration_state"

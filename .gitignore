@@ -5,6 +5,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Backup files
+backups/
+*.tar.gz
+*.backup.*
+
 # Environment variables
 .env
 .env.local

@@ -31,6 +31,7 @@ import '@/utils/testAuth';
 // Lazy load components - Public pages
 const HomePage = lazy(() => import('@/pages/Home'));
 const LegacyClaim = lazy(() => import('@/pages/LegacyClaim'));
+const ClaimCodePage = lazy(() => import('@/pages/ClaimCodePage'));
 // Use enhanced login page with role-based redirect logic
 const EnhancedLoginPage = lazy(() => import('@/pages/EnhancedLoginPage'));
 const EnhancedRegisterPage = lazy(() => import('@/pages/EnhancedRegisterPage'));
@@ -143,6 +144,7 @@ const AppContent = () => {
           {/* Public routes - no authentication required */}
           <Route path='/' element={<LandingRoute />} />
           <Route path='/legacy-claim' element={<LegacyClaim />} />
+          <Route path='/claim-code' element={<ClaimCodePage />} />
           <Route path='/about' element={<AboutPage />} />
           <Route path='/contact' element={<ContactPage />} />
           <Route path='/privacy' element={<PrivacyPolicyPage />} />

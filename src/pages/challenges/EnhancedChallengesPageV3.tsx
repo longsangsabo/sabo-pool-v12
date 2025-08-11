@@ -22,6 +22,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useEnhancedChallengesV3 } from '@/hooks/useEnhancedChallengesV3';
 import { EnhancedCommunityTab } from './components/tabs/EnhancedCommunityTab';
 import { EnhancedMyTab } from './components/tabs/EnhancedMyTab';
+import ImprovedCreateChallengeModal from '@/components/modals/ImprovedCreateChallengeModal';
+import { supabase } from '@/integrations/supabase/client';
 
 const EnhancedChallengesPageV3: React.FC = () => {
   const { user } = useAuth();
@@ -45,16 +47,22 @@ const EnhancedChallengesPageV3: React.FC = () => {
     // Actions
     fetchChallenges,
     acceptChallenge,
+    autoExpireChallenges,
   } = useEnhancedChallengesV3();
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
+  const [showCreateChallengeModal, setShowCreateChallengeModal] = useState(false);
   const [userStats, setUserStats] = useState({
     totalChallenges: 0,
     winStreak: 0,
     eloRating: 1000,
   });
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleCreateChallenge = () => {
+    setShowCreateChallengeModal(true);
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -90,10 +98,54 @@ const EnhancedChallengesPageV3: React.FC = () => {
 
   const handleCancelChallenge = async (challengeId: string) => {
     try {
-      // Implementation for cancel challenge
-      toast.success('Đã hủy thách đấu thành công');
+      console.log('Attempting to cancel challenge:', challengeId);
+      console.log('Current user ID:', user.id);
+
+      // First, check if the challenge exists and belongs to the user
+      const { data: challengeCheck, error: checkError } = await supabase
+        .from('challenges')
+        .select('id, challenger_id, status')
+        .eq('id', challengeId)
+        .single();
+
+      console.log('Challenge check:', { challengeCheck, checkError });
+
+      if (checkError || !challengeCheck) {
+        throw new Error('Không tìm thấy thách đấu');
+      }
+
+      if (challengeCheck.challenger_id !== user.id) {
+        throw new Error('Bạn chỉ có thể hủy thách đấu do chính mình tạo');
+      }
+
+      if (!['pending', 'accepted'].includes(challengeCheck.status)) {
+        throw new Error(`Không thể hủy thách đấu đang ở trạng thái "${challengeCheck.status}"`);
+      }
+
+      // Update challenge status to declined (cancelled equivalent)
+      const { data, error } = await supabase
+        .from('challenges')
+        .update({ status: 'declined' })
+        .eq('id', challengeId)
+        .select();
+
+      console.log('Supabase update response:', { data, error });
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('Challenge cancelled successfully:', data);
+
+      // Refresh challenges to update UI
+      await fetchChallenges();
+      
+      toast.success('🚫 Đã hủy thách đấu thành công!');
     } catch (error) {
-      toast.error('Lỗi khi hủy thách đấu');
+      console.error('Error cancelling challenge:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Lỗi không xác định';
+      toast.error(`❌ ${errorMessage}`);
     }
   };
 
@@ -157,9 +209,9 @@ const EnhancedChallengesPageV3: React.FC = () => {
   const myStats = getMyStats();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black/80 dark:bg-black/90 backdrop-blur-sm">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50">
+      <div className="sticky top-0 z-10 bg-black/70 dark:bg-black/80 backdrop-blur-md border-b border-gray-600/50 dark:border-gray-500/20">
         <div className="p-4 space-y-4">
           {/* Title Section */}
           <div className="text-center space-y-2">
@@ -181,7 +233,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
                 transition={{ duration: 2, repeat: Infinity }}
                 className="w-2 h-2 bg-green-500 rounded-full"
               />
-              <span className="text-accent font-medium">
+              <span className="text- font-medium">
                 Hệ thống mới - Trải nghiệm tối ưu! ⚡
               </span>
             </motion.div>
@@ -194,7 +246,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
                 onClick={handleRefresh}
                 variant="outline"
                 size="sm"
-                className="rounded-full"
+                className="rounded-full bg-black/60 dark:bg-black/80 backdrop-blur-sm border-gray-600 dark:border-gray-500"
                 disabled={isRefreshing}
               >
                 <RefreshCw
@@ -219,6 +271,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
               <Button
                 size="sm"
                 className="rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg"
+                onClick={handleCreateChallenge}
               >
                 <Target className="w-4 h-4 mr-2" />
                 Tạo Thách Đấu 🎯
@@ -231,27 +284,27 @@ const EnhancedChallengesPageV3: React.FC = () => {
       {/* Main Content */}
       <div ref={scrollRef} className="p-4">
         <Tabs defaultValue="community" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="community" className="relative">
+          <TabsList className="grid w-full grid-cols-2 mb-6 bg-black/60 dark:bg-black/80 backdrop-blur-sm border border-gray-600/50 dark:border-gray-500/20">
+            <TabsTrigger value="community" className="relative group">
               <span className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                Cộng đồng
+                <Users className="w-4 h-4 text-blue-500 group-data-[state=active]:text-blue-600" />
+                <span className="text-blue-600 group-data-[state=active]:text-blue-700 font-medium">Cộng đồng</span>
               </span>
               {(communityStats.keo + communityStats.live + communityStats.sapToi + communityStats.xong) > 0 && (
-                <Badge className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
                   {communityStats.keo + communityStats.live + communityStats.sapToi + communityStats.xong}
-                </Badge>
+                </span>
               )}
             </TabsTrigger>
-            <TabsTrigger value="my" className="relative">
+            <TabsTrigger value="my" className="relative group">
               <span className="flex items-center gap-2">
-                <Crown className="w-4 h-4" />
-                Của tôi
+                <Crown className="w-4 h-4 text-amber-500 group-data-[state=active]:text-amber-600" />
+                <span className="text-amber-600 group-data-[state=active]:text-amber-700 font-medium">Của tôi</span>
               </span>
               {(myStats.doiDoiThu + myStats.sapToi + myStats.hoanThanh) > 0 && (
-                <Badge className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
                   {myStats.doiDoiThu + myStats.sapToi + myStats.hoanThanh}
-                </Badge>
+                </span>
               )}
             </TabsTrigger>
           </TabsList>
@@ -264,6 +317,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
               xongData={communityXong}
               currentUserId={user.id}
               onJoinChallenge={handleJoinChallenge}
+              onCancelChallenge={handleCancelChallenge}
               isJoining={isJoining}
             />
           </TabsContent>
@@ -297,9 +351,10 @@ const EnhancedChallengesPageV3: React.FC = () => {
         >
           <Button
             size="lg"
-            className="rounded-full shadow-lg bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+            className="rounded-full shadow-lg bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-white border-0"
+            onClick={handleCreateChallenge}
           >
-            <Target className="w-6 h-6 mr-2" />
+            <Flame className="w-6 h-6 mr-2 animate-pulse" />
             KHIÊU CHIẾN NGAY
           </Button>
         </motion.div>
@@ -308,7 +363,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-full shadow-lg bg-background/80 backdrop-blur-sm"
+            className="rounded-full shadow-lg bg-black/70 dark:bg-black/90 backdrop-blur-sm"
           >
             <MessageCircle className="w-4 h-4 mr-2" />
             Hỗ trợ
@@ -317,7 +372,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
       </div>
 
       {/* Bottom Stats Bar */}
-      <div className="sticky bottom-0 bg-gradient-to-r from-card/95 to-accent/5 backdrop-blur-sm border-t border-border/50 p-4">
+      <div className="sticky bottom-0 bg-black/60 backdrop-blur-md border-t border-gray-600/30 p-4">
         <div className="flex justify-around text-center">
           <motion.div whileHover={{ scale: 1.1 }}>
             <p className="text-lg font-bold text-foreground flex items-center justify-center gap-1">
@@ -342,6 +397,16 @@ const EnhancedChallengesPageV3: React.FC = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Create Challenge Modal */}
+      <ImprovedCreateChallengeModal
+        isOpen={showCreateChallengeModal}
+        onClose={() => setShowCreateChallengeModal(false)}
+        onChallengeCreated={() => {
+          fetchChallenges();
+          setShowCreateChallengeModal(false);
+        }}
+      />
     </div>
   );
 };

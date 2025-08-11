@@ -1,5 +1,5 @@
 import React from 'react';
-import { UltraSimpleClaimPanel } from '@/components/legacy/UltraSimpleClaimPanel';
+import UltraSimpleClaimPanel from '@/components/legacy/UltraSimpleClaimPanel';
 
 const AdminLegacyClaims: React.FC = () => {
   return (

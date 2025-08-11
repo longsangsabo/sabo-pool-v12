@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Target, Flame, Clock, Trophy } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Target, Flame, Clock, Trophy, Filter, Calendar, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Challenge } from '@/types/challenge';
 import EnhancedChallengeCard, { EnhancedChallengeCardGrid } from '@/components/challenges/EnhancedChallengeCard';
@@ -15,6 +16,7 @@ interface EnhancedCommunityTabProps {
   xongData: Challenge[];
   currentUserId?: string;
   onJoinChallenge?: (challengeId: string) => void;
+  onCancelChallenge?: (challengeId: string) => void;
   isJoining?: boolean;
 }
 
@@ -25,9 +27,87 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
   xongData,
   currentUserId,
   onJoinChallenge,
+  onCancelChallenge,
   isJoining = false,
 }) => {
   const [activeTab, setActiveTab] = useState('keo');
+  const [sortBy, setSortBy] = useState<'time' | 'rank' | 'amount'>('time');
+  const [filterRank, setFilterRank] = useState<'all' | 'K' | 'I' | 'H' | 'G' | 'F' | 'E'>('all');
+  const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'tomorrow' | 'week'>('all');
+
+  // Helper function to get rank from points/elo (SABO Pool Arena System)
+  const getRankFromPoints = (points?: number) => {
+    if (!points) return 'K';
+    if (points >= 2100) return 'E';
+    if (points >= 2000) return 'E';
+    if (points >= 1900) return 'F';
+    if (points >= 1800) return 'F';
+    if (points >= 1700) return 'G';
+    if (points >= 1600) return 'G';
+    if (points >= 1500) return 'H';
+    if (points >= 1400) return 'H';
+    if (points >= 1300) return 'I';
+    if (points >= 1200) return 'I';
+    if (points >= 1100) return 'K';
+    return 'K';
+  };
+
+  // Helper function to filter by time
+  const filterByTime = (challenges: Challenge[]) => {
+    if (timeFilter === 'all') return challenges;
+    
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+    const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    return challenges.filter(challenge => {
+      const challengeDate = new Date(challenge.scheduled_time || challenge.created_at);
+      
+      switch (timeFilter) {
+        case 'today':
+          return challengeDate >= today && challengeDate < tomorrow;
+        case 'tomorrow':
+          return challengeDate >= tomorrow && challengeDate < new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000);
+        case 'week':
+          return challengeDate >= today && challengeDate < nextWeek;
+        default:
+          return true;
+      }
+    });
+  };
+
+  // Helper function to filter by rank
+  const filterByRank = (challenges: Challenge[]) => {
+    if (filterRank === 'all') return challenges;
+    
+    return challenges.filter(challenge => {
+      const challengerRank = getRankFromPoints(challenge.challenger_profile?.elo || challenge.challenger_profile?.spa_points);
+      return challengerRank === filterRank;
+    });
+  };
+
+  // Helper function to sort challenges
+  const sortChallenges = (challenges: Challenge[]) => {
+    return [...challenges].sort((a, b) => {
+      switch (sortBy) {
+        case 'time':
+          const timeA = new Date(a.scheduled_time || a.created_at).getTime();
+          const timeB = new Date(b.scheduled_time || b.created_at).getTime();
+          return timeA - timeB; // Earliest first
+        case 'rank':
+          const rankA = a.challenger_profile?.elo || a.challenger_profile?.spa_points || 0;
+          const rankB = b.challenger_profile?.elo || b.challenger_profile?.spa_points || 0;
+          return rankB - rankA; // Highest rank first
+        case 'amount':
+          const amountA = a.bet_points || a.stake_amount || 0;
+          const amountB = b.bet_points || b.stake_amount || 0;
+          return amountB - amountA; // Highest amount first
+        default:
+          return 0;
+      }
+    });
+  };
 
   const tabs = [
     {
@@ -35,7 +115,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
       title: 'Kèo',
       icon: Target,
       color: 'text-blue-500 dark:text-blue-400',
-      bgColor: 'bg-blue-50 dark:bg-blue-950/30',
+      bgColor: 'bg-transparent',
       data: keoData,
       variant: 'open' as const,
       description: 'Thách đấu mở chờ đối thủ',
@@ -45,7 +125,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
       title: 'Live',
       icon: Flame,
       color: 'text-red-500 dark:text-red-400',
-      bgColor: 'bg-red-50 dark:bg-red-950/30',
+      bgColor: 'bg-transparent',
       data: liveData,
       variant: 'live' as const,
       description: 'Thách đấu đang diễn ra',
@@ -55,7 +135,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
       title: 'Sắp',
       icon: Clock,
       color: 'text-yellow-500 dark:text-yellow-400',
-      bgColor: 'bg-yellow-50 dark:bg-yellow-950/30',
+      bgColor: 'bg-transparent',
       data: sapToiData,
       variant: 'upcoming' as const,
       description: 'Thách đấu sắp tới',
@@ -65,17 +145,28 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
       title: 'Xong',
       icon: Trophy,
       color: 'text-green-500 dark:text-green-400',
-      bgColor: 'bg-green-50 dark:bg-green-950/30',
+      bgColor: 'bg-transparent',
       data: xongData,
       variant: 'completed' as const,
       description: 'Thách đấu đã hoàn thành',
     },
   ];
 
+  // Process data with filters and sorting
+  const processedTabs = useMemo(() => {
+    return tabs.map(tab => ({
+      ...tab,
+      data: sortChallenges(filterByRank(filterByTime(tab.data)))
+    }));
+  }, [keoData, liveData, sapToiData, xongData, sortBy, filterRank, timeFilter]);
+
   const handleAction = (challengeId: string, action: string) => {
     switch (action) {
       case 'join':
         onJoinChallenge?.(challengeId);
+        break;
+      case 'cancel':
+        onCancelChallenge?.(challengeId);
         break;
       case 'watch':
         console.log('Watch challenge:', challengeId);
@@ -111,10 +202,10 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
           <div className={cn('w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center', tab.bgColor)}>
             <IconComponent className={cn('w-8 h-8', tab.color)} />
           </div>
-          <h3 className="text-lg font-semibold text-foreground dark:text-foreground/95 mb-2">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
             Chưa có thách đấu
           </h3>
-          <p className="text-muted-foreground dark:text-muted-foreground/80">
+          <p className="text-gray-600 dark:text-gray-300">
             {tab.description}
           </p>
         </motion.div>
@@ -129,26 +220,6 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
         transition={{ duration: 0.3 }}
         className="space-y-4"
       >
-        {/* Stats Header */}
-        <div className="flex items-center justify-between p-4 bg-muted/30 dark:bg-muted/20 rounded-lg border border-border/50 dark:border-border/30">
-          <div className="flex items-center gap-3">
-            <div className={cn('p-2 rounded-lg', tab.bgColor)}>
-              <IconComponent className={cn('w-5 h-5', tab.color)} />
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground dark:text-foreground/95">
-                {tab.title}
-              </h3>
-              <p className="text-sm text-muted-foreground dark:text-muted-foreground/80">
-                {tab.description}
-              </p>
-            </div>
-          </div>
-          <Badge variant="secondary" className="bg-background/50 dark:bg-card/50">
-            {tab.data.length}
-          </Badge>
-        </div>
-
         {/* Desktop Grid */}
         <div className="hidden md:block">
           <EnhancedChallengeCardGrid 
@@ -156,6 +227,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
             variant={tab.variant}
             onAction={handleAction}
             onCardClick={handleCardClick}
+            currentUserId={currentUserId}
           />
         </div>
 
@@ -169,6 +241,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
               size="compact"
               onAction={handleAction}
               onCardClick={handleCardClick}
+              currentUserId={currentUserId}
             />
           ))}
         </div>
@@ -178,13 +251,65 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
 
   return (
     <div className="space-y-4">
-      <Card className="border-border/50 dark:border-border/30 bg-card/50 dark:bg-card/80 backdrop-blur-sm">
+      <Card className="border-border/30 dark:border-border/20 bg-transparent backdrop-blur-md">
         <CardContent className="p-0">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            {/* Enhanced Tab Navigation */}
-            <div className="border-b border-border/50 dark:border-border/30 bg-muted/20 dark:bg-muted/10">
+            {/* Enhanced Tab Navigation - Compact 2-row layout */}
+            <div className="border-b border-border/30 dark:border-border/20 bg-transparent backdrop-blur-sm">
+              {/* Filter Controls */}
+              <div className="flex items-center gap-2 p-3 border-b border-border/20 dark:border-border/10">
+                <Filter className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                  <SelectTrigger className="w-32 h-8 text-xs bg-transparent border-border/30 text-gray-300 dark:text-gray-200">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="time">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-3 h-3" />
+                        Time
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="rank">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-3 h-3" />
+                        Hạng
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="amount">Điểm cược</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={timeFilter} onValueChange={(value: any) => setTimeFilter(value)}>
+                  <SelectTrigger className="w-28 h-8 text-xs bg-transparent border-border/30 text-gray-300 dark:text-gray-200">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tất cả</SelectItem>
+                    <SelectItem value="today">Hôm nay</SelectItem>
+                    <SelectItem value="tomorrow">Ngày mai</SelectItem>
+                    <SelectItem value="week">Tuần này</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={filterRank} onValueChange={(value: any) => setFilterRank(value)}>
+                  <SelectTrigger className="w-28 h-8 text-xs bg-transparent border-border/30 text-gray-300 dark:text-gray-200">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Mọi hạng</SelectItem>
+                    <SelectItem value="K">🔰 K hạng (1000-1199)</SelectItem>
+                    <SelectItem value="I">🟦 I hạng (1200-1399)</SelectItem>
+                    <SelectItem value="H">🟩 H hạng (1400-1599)</SelectItem>
+                    <SelectItem value="G">🟨 G hạng (1600-1799)</SelectItem>
+                    <SelectItem value="F">🟧 F hạng (1800-1999)</SelectItem>
+                    <SelectItem value="E">� E hạng (2000+)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-2 gap-1">
-                {tabs.map((tab) => {
+                {processedTabs.map((tab) => {
                   const IconComponent = tab.icon;
                   const isActive = activeTab === tab.id;
                   
@@ -193,42 +318,37 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
                       key={tab.id}
                       value={tab.id}
                       className={cn(
-                        'flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-200',
-                        'data-[state=active]:bg-background data-[state=active]:shadow-sm',
-                        'data-[state=active]:border data-[state=active]:border-border/50',
-                        'hover:bg-background/50 dark:hover:bg-background/30',
-                        isActive && 'dark:bg-background/80 dark:border-border/40'
+                        'flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 relative',
+                        'data-[state=active]:bg-white/10 data-[state=active]:shadow-sm backdrop-blur-sm',
+                        'data-[state=active]:border data-[state=active]:border-border/30',
+                        'hover:bg-white/5 dark:hover:bg-white/5',
+                        isActive && 'dark:bg-white/10 dark:border-border/30'
                       )}
                     >
-                      <div className={cn(
-                        'p-2 rounded-lg transition-colors',
-                        isActive ? tab.bgColor : 'bg-muted/30 dark:bg-muted/20'
-                      )}>
-                        <IconComponent className={cn(
-                          'w-4 h-4 transition-colors',
-                          isActive ? tab.color : 'text-muted-foreground dark:text-muted-foreground/70'
-                        )} />
-                      </div>
-                      <div className="text-center">
+                      <div className="relative">
                         <div className={cn(
-                          'text-sm font-medium transition-colors',
-                          isActive 
-                            ? 'text-foreground dark:text-foreground/95' 
-                            : 'text-muted-foreground dark:text-muted-foreground/70'
+                          'p-2 rounded-lg transition-colors',
+                          isActive ? tab.bgColor : 'bg-transparent'
                         )}>
-                          {tab.title}
+                          <IconComponent className={cn(
+                            'w-4 h-4 transition-colors',
+                            isActive ? tab.color : 'text-gray-700 dark:text-gray-200'
+                          )} />
                         </div>
-                        <Badge 
-                          variant={isActive ? "default" : "secondary"}
-                          className={cn(
-                            'text-xs mt-1',
-                            isActive 
-                              ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary/90' 
-                              : 'bg-muted dark:bg-muted/50'
-                          )}
-                        >
-                          {tab.data.length}
-                        </Badge>
+                        {/* Badge on top of icon */}
+                        {tab.data.length > 0 && (
+                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold text-[10px] shadow-lg animate-pulse">
+                            {tab.data.length}
+                          </span>
+                        )}
+                      </div>
+                      <div className={cn(
+                        'text-xs font-medium transition-colors text-center',
+                        isActive 
+                          ? 'text-gray-800 dark:text-gray-100' 
+                          : 'text-gray-600 dark:text-gray-300'
+                      )}>
+                        {tab.title}
                       </div>
                     </TabsTrigger>
                   );
@@ -239,7 +359,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
             {/* Tab Content */}
             <div className="p-6">
               <AnimatePresence mode="wait">
-                {tabs.map((tab) => (
+                {processedTabs.map((tab) => (
                   <TabsContent key={tab.id} value={tab.id} className="mt-0">
                     {renderTabContent(tab)}
                   </TabsContent>

@@ -78,6 +78,9 @@ export interface Challenge {
   created_at: string;
   updated_at?: string;
 
+  // Rank requirement for open challenges
+  required_rank?: 'all' | 'K' | 'I' | 'H' | 'G' | 'F' | 'E';
+
   // New consistent profile relations
   challenger_profile?: ChallengeProfile;
   opponent_profile?: ChallengeProfile;

@@ -11,6 +11,64 @@ export const useEnhancedChallengesV3 = () => {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
+  // Helper function to check if challenge is expired
+  const isExpiredChallenge = (challenge: Challenge): boolean => {
+    if (challenge.status !== 'pending' || challenge.opponent_id) {
+      return false; // Only check pending challenges without opponent
+    }
+
+    const now = new Date();
+    
+    // Check expires_at first (explicit expiration)
+    if (challenge.expires_at) {
+      return new Date(challenge.expires_at) < now;
+    }
+    
+    // Check scheduled_time (if scheduled time passed without opponent)
+    if (challenge.scheduled_time) {
+      return new Date(challenge.scheduled_time) < now;
+    }
+    
+    // Default: expire after 48 hours if no explicit expiration
+    if (challenge.created_at) {
+      const created = new Date(challenge.created_at);
+      const expiry = new Date(created.getTime() + 48 * 60 * 60 * 1000); // 48 hours
+      return expiry < now;
+    }
+    
+    return false;
+  };
+
+  // Auto-expire challenges function
+  const autoExpireChallenges = async () => {
+    if (!user) return;
+
+    try {
+      const expiredChallenges = challenges.filter(isExpiredChallenge);
+      
+      if (expiredChallenges.length > 0) {
+        console.log(`🗑️ Auto-expiring ${expiredChallenges.length} challenges...`);
+        
+        // Update expired challenges in database
+        const { error } = await supabase
+          .from('challenges')
+          .update({ status: 'expired' })
+          .in('id', expiredChallenges.map(c => c.id))
+          .eq('status', 'pending'); // Only update pending challenges
+
+        if (error) {
+          console.error('Error auto-expiring challenges:', error);
+        } else {
+          console.log('✅ Auto-expired challenges updated');
+          // Refresh data to reflect changes
+          await fetchChallenges();
+        }
+      }
+    } catch (error) {
+      console.error('Error in auto-expire logic:', error);
+    }
+  };
+
   // Fetch all challenges with enhanced data
   const fetchChallenges = async () => {
     if (!user) {
@@ -113,9 +171,13 @@ export const useEnhancedChallengesV3 = () => {
 
   // 🎯 PHASE 1: CENTRALIZED FILTERING LOGIC
   
-  // Community challenges - ALL challenges in system
+  // Community challenges - ALL challenges in system (exclude expired)
   const communityKeo = useMemo(() => 
-    challenges.filter(c => !c.opponent_id && c.status === 'pending'), 
+    challenges.filter(c => 
+      !c.opponent_id && 
+      c.status === 'pending' && 
+      !isExpiredChallenge(c) // Exclude expired challenges
+    ), 
     [challenges]
   );
 
@@ -239,6 +301,25 @@ export const useEnhancedChallengesV3 = () => {
     };
   }, [user]);
 
+  // Auto-expire challenges every 5 minutes
+  useEffect(() => {
+    if (!user || challenges.length === 0) return;
+
+    const interval = setInterval(() => {
+      autoExpireChallenges();
+    }, 5 * 60 * 1000); // 5 minutes
+
+    // Also run once immediately when challenges change
+    const timeoutId = setTimeout(() => {
+      autoExpireChallenges();
+    }, 1000); // 1 second delay to avoid rapid firing
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeoutId);
+    };
+  }, [user, challenges]);
+
   return {
     // Core data
     challenges,
@@ -259,5 +340,8 @@ export const useEnhancedChallengesV3 = () => {
     // Actions
     fetchChallenges,
     acceptChallenge,
+    autoExpireChallenges,
+    // Helper for debugging
+    isExpiredChallenge,
   };
 };

@@ -117,26 +117,6 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
         transition={{ duration: 0.3 }}
         className="space-y-4"
       >
-        {/* Stats Header */}
-        <div className="flex items-center justify-between p-4 bg-muted/30 dark:bg-muted/20 rounded-lg border border-border/50 dark:border-border/30">
-          <div className="flex items-center gap-3">
-            <div className={cn('p-2 rounded-lg', tab.bgColor)}>
-              <IconComponent className={cn('w-5 h-5', tab.color)} />
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground dark:text-foreground/95">
-                {tab.title}
-              </h3>
-              <p className="text-sm text-muted-foreground dark:text-muted-foreground/80">
-                {tab.description}
-              </p>
-            </div>
-          </div>
-          <Badge variant="secondary" className="bg-background/50 dark:bg-card/50">
-            {tab.data.length}
-          </Badge>
-        </div>
-
         {/* Desktop Grid */}
         <div className="hidden md:block">
           <EnhancedChallengeCardGrid 
@@ -166,11 +146,11 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
 
   return (
     <div className="space-y-4">
-      <Card className="border-border/50 dark:border-border/30 bg-card/50 dark:bg-card/80 backdrop-blur-sm">
+      <Card className="border-border/30 dark:border-border/20 bg-white/10 dark:bg-black/20 backdrop-blur-md">
         <CardContent className="p-0">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            {/* Enhanced Tab Navigation */}
-            <div className="border-b border-border/50 dark:border-border/30 bg-muted/20 dark:bg-muted/10">
+            {/* Enhanced Tab Navigation - Compact 2-row layout */}
+            <div className="border-b border-border/30 dark:border-border/20 bg-white/5 dark:bg-black/10 backdrop-blur-sm">
               <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-2 gap-1">
                 {tabs.map((tab) => {
                   const IconComponent = tab.icon;
@@ -181,42 +161,37 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
                       key={tab.id}
                       value={tab.id}
                       className={cn(
-                        'flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-200',
-                        'data-[state=active]:bg-background data-[state=active]:shadow-sm',
-                        'data-[state=active]:border data-[state=active]:border-border/50',
-                        'hover:bg-background/50 dark:hover:bg-background/30',
-                        isActive && 'dark:bg-background/80 dark:border-border/40'
+                        'flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 relative',
+                        'data-[state=active]:bg-white/20 data-[state=active]:shadow-sm backdrop-blur-sm',
+                        'data-[state=active]:border data-[state=active]:border-border/30',
+                        'hover:bg-white/10 dark:hover:bg-black/20',
+                        isActive && 'dark:bg-black/30 dark:border-border/30'
                       )}
                     >
-                      <div className={cn(
-                        'p-2 rounded-lg transition-colors',
-                        isActive ? tab.bgColor : 'bg-muted/30 dark:bg-muted/20'
-                      )}>
-                        <IconComponent className={cn(
-                          'w-4 h-4 transition-colors',
-                          isActive ? tab.color : 'text-muted-foreground dark:text-muted-foreground/70'
-                        )} />
-                      </div>
-                      <div className="text-center">
+                      <div className="relative">
                         <div className={cn(
-                          'text-sm font-medium transition-colors',
-                          isActive 
-                            ? 'text-foreground dark:text-foreground/95' 
-                            : 'text-muted-foreground dark:text-muted-foreground/70'
+                          'p-2 rounded-lg transition-colors',
+                          isActive ? tab.bgColor : 'bg-muted/30 dark:bg-muted/20'
                         )}>
-                          {tab.title}
+                          <IconComponent className={cn(
+                            'w-4 h-4 transition-colors',
+                            isActive ? tab.color : 'text-muted-foreground dark:text-muted-foreground/70'
+                          )} />
                         </div>
-                        <Badge 
-                          variant={isActive ? "default" : "secondary"}
-                          className={cn(
-                            'text-xs mt-1',
-                            isActive 
-                              ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary/90' 
-                              : 'bg-muted dark:bg-muted/50'
-                          )}
-                        >
-                          {tab.data.length}
-                        </Badge>
+                        {/* Badge on top of icon */}
+                        {tab.data.length > 0 && (
+                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold text-[10px] shadow-lg animate-pulse">
+                            {tab.data.length}
+                          </span>
+                        )}
+                      </div>
+                      <div className={cn(
+                        'text-xs font-medium transition-colors text-center',
+                        isActive 
+                          ? 'text-foreground dark:text-foreground/95' 
+                          : 'text-muted-foreground dark:text-muted-foreground/70'
+                      )}>
+                        {tab.title}
                       </div>
                     </TabsTrigger>
                   );

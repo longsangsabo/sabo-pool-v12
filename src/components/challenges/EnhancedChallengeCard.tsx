@@ -11,7 +11,9 @@ import {
   Users,
   MapPin,
   Zap,
-  Play
+  Play,
+  Star,
+  X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Challenge } from '@/types/challenge';
@@ -22,6 +24,7 @@ import StatusBadge from './Enhanced/StatusBadge';
 // Modified props to accept both Challenge and ExtendedChallenge
 interface FlexibleEnhancedChallengeCardProps extends Omit<EnhancedChallengeCardProps, 'challenge'> {
   challenge: Challenge | ExtendedChallenge;
+  currentUserId?: string;
 }
 
 const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
@@ -35,10 +38,14 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   isSelected = false,
   onAction,
   onCardClick,
-  className = ''
+  className = '',
+  currentUserId
 }) => {
   // Convert to ExtendedChallenge for enhanced features
   const challenge = toExtendedChallenge(originalChallenge);
+  
+  // Check if current user is the challenger (creator)
+  const isCreator = currentUserId && challenge.challenger_id === currentUserId;
 
   const formatCurrency = (amount?: number) => {
     if (!amount) return '';
@@ -51,6 +58,58 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   const formatDateTime = (dateTime?: string) => {
     if (!dateTime) return '';
     return new Date(dateTime).toLocaleString('vi-VN');
+  };
+
+  const getExpiryInfo = () => {
+    if (challenge.status !== 'pending' || challenge.opponent_id) {
+      return null; // Only show expiry for pending challenges without opponent
+    }
+
+    const now = new Date();
+    let expiryDate: Date | null = null;
+
+    // Check expires_at first
+    if (challenge.expires_at) {
+      expiryDate = new Date(challenge.expires_at);
+    } else if (challenge.scheduled_time) {
+      expiryDate = new Date(challenge.scheduled_time);
+    } else if (challenge.created_at) {
+      // Default: 48 hours from creation
+      const created = new Date(challenge.created_at);
+      expiryDate = new Date(created.getTime() + 48 * 60 * 60 * 1000);
+    }
+
+    if (!expiryDate) return null;
+
+    const timeLeft = expiryDate.getTime() - now.getTime();
+    
+    if (timeLeft <= 0) {
+      return { expired: true, text: 'Đã hết hạn', color: 'text-red-600 dark:text-red-400' };
+    }
+
+    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (hours < 1) {
+      return { 
+        expired: false, 
+        text: `${minutes}p`, 
+        color: 'text-orange-600 dark:text-orange-400' 
+      };
+    } else if (hours < 24) {
+      return { 
+        expired: false, 
+        text: `${hours}h ${minutes}p`, 
+        color: 'text-yellow-600 dark:text-yellow-400' 
+      };
+    } else {
+      const days = Math.floor(hours / 24);
+      return { 
+        expired: false, 
+        text: `${days} ngày`, 
+        color: 'text-green-600 dark:text-green-400' 
+      };
+    }
   };
 
   const handleCardClick = () => {
@@ -74,15 +133,15 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   const getVariantStyles = () => {
     switch (variant) {
       case 'live': 
-        return 'border-red-200 dark:border-red-800/50 bg-red-50/50 dark:bg-red-950/20 shadow-lg shadow-red-500/10 dark:shadow-red-500/25';
+        return 'border-red-200/30 dark:border-red-800/30 bg-red-50/20 dark:bg-red-950/10 shadow-lg shadow-red-500/5 dark:shadow-red-500/15 backdrop-blur-md';
       case 'completed': 
-        return 'border-green-200 dark:border-green-800/50 bg-green-50/50 dark:bg-green-950/20 shadow-lg shadow-green-500/10 dark:shadow-green-500/25';
+        return 'border-green-200/30 dark:border-green-800/30 bg-green-50/20 dark:bg-green-950/10 shadow-lg shadow-green-500/5 dark:shadow-green-500/15 backdrop-blur-md';
       case 'upcoming': 
-        return 'border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-950/20 shadow-lg shadow-blue-500/10 dark:shadow-blue-500/25';
+        return 'border-blue-200/30 dark:border-blue-800/30 bg-blue-50/20 dark:bg-blue-950/10 shadow-lg shadow-blue-500/5 dark:shadow-blue-500/15 backdrop-blur-md';
       case 'open': 
-        return 'border-yellow-200 dark:border-yellow-800/50 bg-yellow-50/50 dark:bg-yellow-950/20 shadow-lg shadow-yellow-500/10 dark:shadow-yellow-500/25';
+        return 'border-yellow-200/30 dark:border-yellow-800/30 bg-yellow-50/20 dark:bg-yellow-950/10 shadow-lg shadow-yellow-500/5 dark:shadow-yellow-500/15 backdrop-blur-md';
       default: 
-        return 'border-border/50 dark:border-border/30 bg-card/80 dark:bg-card/90 backdrop-blur-sm';
+        return 'border-border/30 dark:border-border/20 bg-transparent backdrop-blur-md';
     }
   };
 
@@ -105,14 +164,14 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
         )}
         onClick={handleCardClick}
       >
-        <CardContent className="p-4 relative overflow-hidden">
+        <CardContent className="p-3 relative overflow-hidden">
           {/* Subtle background pattern for dark mode */}
           <div className="absolute inset-0 opacity-5 dark:opacity-10">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20"></div>
           </div>
 
           {/* Header with enhanced status */}
-          <div className="flex items-center justify-between mb-4 relative z-10">
+          <div className="flex items-center justify-between mb-3 relative z-10">
             <div className="flex items-center gap-2">
               {showBadges && (
                 <StatusBadge 
@@ -133,113 +192,134 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                 </Badge>
               )}
             </div>
-            <div className="text-xs text-muted-foreground/80 dark:text-muted-foreground/60">
-              {formatDateTime(challenge.created_at)}
+            <div className="flex flex-col items-end gap-1">
+              {challenge.scheduled_time && (
+                <div className="text-xs text-blue-600 dark:text-blue-400 font-medium bg-blue-50/50 dark:bg-blue-900/30 px-2 py-1 rounded">
+                  {formatDateTime(challenge.scheduled_time)}
+                </div>
+              )}
+              {(() => {
+                const expiryInfo = getExpiryInfo();
+                if (expiryInfo) {
+                  return (
+                    <div className={`text-xs font-medium px-2 py-1 rounded ${expiryInfo.color} ${
+                      expiryInfo.expired 
+                        ? 'bg-red-50/50 dark:bg-red-900/30' 
+                        : 'bg-gray-50/50 dark:bg-gray-900/30'
+                    }`}>
+                      {expiryInfo.expired ? '⏰' : '⌛'} {expiryInfo.text}
+                    </div>
+                  );
+                }
+                return null;
+              })()}
             </div>
           </div>
           {/* Enhanced Challenge Content */}
-          <div className="space-y-4 relative z-10">
+          <div className="space-y-3 relative z-10">
             {/* Challenge Title and Reward */}
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h3 className="font-semibold text-foreground dark:text-foreground/95 mb-1 line-clamp-2">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-1 line-clamp-2">
                   {challenge.title || challenge.message || 'Thách đấu'}
                 </h3>
                 {challenge.description && size !== 'compact' && (
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground/80 line-clamp-2">
+                  <p className="text-sm text-gray-700 dark:text-gray-200 line-clamp-2">
                     {challenge.description}
                   </p>
                 )}
               </div>
               {challenge.bet_amount && (
-                <div className="text-xs text-yellow-600 dark:text-yellow-400 font-medium">
-                  {challenge.bet_amount.toLocaleString()} Credits
+                <div className="text-xs text-yellow-600 dark:text-yellow-400 font-bold bg-yellow-100/50 dark:bg-yellow-900/30 px-2 py-1 rounded">
+                  {challenge.bet_amount.toLocaleString()} SPA
                 </div>
               )}
             </div>
 
             {/* Enhanced Players Section */}
             <div className="flex items-center justify-between">
-              <AvatarWithStatus
-                profile={challenge.challenger_profile}
-                size={size === 'compact' ? 'sm' : 'md'}
-                showStatus={variant === 'live'}
-                showRank={true}
-                className="flex-1"
-              />
-
-              <div className="mx-4 text-center">
-                <div className="text-muted-foreground dark:text-muted-foreground/80 text-lg font-bold">
-                  vs
+              <div className="flex-1 text-center">
+                <AvatarWithStatus
+                  profile={challenge.challenger_profile}
+                  size={size === 'compact' ? 'sm' : 'md'}
+                  showStatus={variant === 'live'}
+                  showRank={true}
+                  className="mx-auto mb-1"
+                />
+                <div className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
+                  {challenge.challenger_profile?.full_name || challenge.challenger_profile?.username || 'Player 1'}
                 </div>
-                {challenge.bet_amount && (
-                  <div className="text-xs text-yellow-600 dark:text-yellow-400 font-medium">
-                    {challenge.bet_amount.toLocaleString()} Credits
-                  </div>
-                )}
               </div>
 
-              <AvatarWithStatus
-                profile={challenge.opponent_profile}
-                size={size === 'compact' ? 'sm' : 'md'}
-                showStatus={variant === 'live'}
-                showRank={true}
-                className="flex-1"
-              />
+              <div className="mx-4 text-center">
+                <div className="text-gray-600 dark:text-gray-300 text-lg font-bold">
+                  vs
+                </div>
+              </div>
+
+              <div className="flex-1 text-center">
+                <AvatarWithStatus
+                  profile={challenge.opponent_profile}
+                  size={size === 'compact' ? 'sm' : 'md'}
+                  showStatus={variant === 'live'}
+                  showRank={true}
+                  className="mx-auto mb-1"
+                />
+                <div className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
+                  {challenge.opponent_profile?.full_name || challenge.opponent_profile?.username || 'Waiting...'}
+                </div>
+              </div>
             </div>
 
             {/* Enhanced Challenge Details */}
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              {challenge.bet_amount && (
-                <div className="flex items-center gap-2">
-                  <Coins className="w-4 h-4 text-muted-foreground dark:text-muted-foreground/80" />
-                  <span className="text-foreground dark:text-foreground/90">
-                    {challenge.bet_amount.toLocaleString()} Credits
-                  </span>
-                </div>
-              )}
-
+            <div className="grid grid-cols-2 gap-3 text-sm">
               {challenge.race_to && (
                 <div className="flex items-center gap-2">
-                  <Trophy className="w-4 h-4 text-muted-foreground dark:text-muted-foreground/80" />
-                  <span className="text-foreground dark:text-foreground/90">Race to {challenge.race_to}</span>
-                </div>
-              )}
-
-              {challenge.scheduled_time && (
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-muted-foreground dark:text-muted-foreground/80" />
-                  <span className="text-foreground dark:text-foreground/90">
-                    {formatDateTime(challenge.scheduled_time)}
-                  </span>
+                  <Trophy className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                  <span className="text-gray-800 dark:text-gray-100 font-medium">Race to {challenge.race_to}</span>
                 </div>
               )}
 
               {challenge.location && (
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-muted-foreground dark:text-muted-foreground/80" />
-                  <span className="text-foreground dark:text-foreground/90">{challenge.location}</span>
+                  <Users className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                  <span className="text-gray-800 dark:text-gray-100">{challenge.location}</span>
+                </div>
+              )}
+
+              {/* Rank Requirement for Open Challenges */}
+              {variant === 'open' && challenge.required_rank && challenge.required_rank !== 'all' && (
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                  <span className="text-foreground dark:text-foreground/90">
+                    Yêu cầu hạng: {challenge.required_rank === 'K' ? '🔰 K hạng' : 
+                                   challenge.required_rank === 'I' ? '🟦 I hạng' : 
+                                   challenge.required_rank === 'H' ? '🟩 H hạng' : 
+                                   challenge.required_rank === 'G' ? '🟨 G hạng' : 
+                                   challenge.required_rank === 'F' ? '🟧 F hạng' : 
+                                   challenge.required_rank === 'E' ? '� E hạng' : 'Tất cả'}
+                  </span>
                 </div>
               )}
             </div>
 
             {/* Enhanced Score Section */}
             {challenge.status === 'completed' && (challenge.challenger_final_score || challenge.opponent_final_score) && (
-              <div className="flex items-center justify-center gap-4 p-3 bg-muted/50 dark:bg-muted/30 rounded-lg border border-border/50 dark:border-border/30">
+              <div className="flex items-center justify-center gap-4 p-2 bg-transparent rounded-lg border border-border/30 dark:border-border/20 backdrop-blur-sm">
                 <div className="text-center">
-                  <div className="font-bold text-xl text-foreground dark:text-foreground/95">
+                  <div className="font-bold text-xl text-gray-800 dark:text-gray-100">
                     {challenge.challenger_final_score || 0}
                   </div>
-                  <div className="text-xs text-muted-foreground dark:text-muted-foreground/80">
+                  <div className="text-xs text-gray-600 dark:text-gray-300">
                     Challenger
                   </div>
                 </div>
-                <div className="text-muted-foreground dark:text-muted-foreground/80 text-lg">-</div>
+                <div className="text-gray-600 dark:text-gray-300 text-lg">-</div>
                 <div className="text-center">
-                  <div className="font-bold text-xl text-foreground dark:text-foreground/95">
+                  <div className="font-bold text-xl text-gray-800 dark:text-gray-100">
                     {challenge.opponent_final_score || 0}
                   </div>
-                  <div className="text-xs text-muted-foreground dark:text-muted-foreground/80">
+                  <div className="text-xs text-gray-600 dark:text-gray-300">
                     Opponent
                   </div>
                 </div>
@@ -248,19 +328,39 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
 
             {/* Enhanced Actions */}
             {showQuickActions && (
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-1">
                 {challenge.status === 'pending' && (
-                  <Button
-                    size="sm"
-                    className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 dark:from-green-500 dark:to-green-600 dark:hover:from-green-600 dark:hover:to-green-700 text-white border-0"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAction?.(challenge.id, 'join');
-                    }}
-                  >
-                    <Zap className="w-4 h-4 mr-1" />
-                    Tham gia
-                  </Button>
+                  <>
+                    {/* Join button - only show if user is NOT the creator */}
+                    {!isCreator && (
+                      <Button
+                        size="sm"
+                        className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 dark:from-emerald-400 dark:to-green-500 dark:hover:from-emerald-500 dark:hover:to-green-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAction?.(challenge.id, 'join');
+                        }}
+                      >
+                        <Zap className="w-4 h-4 mr-1" />
+                        Tham gia ngay
+                      </Button>
+                    )}
+                    
+                    {/* Cancel button - only show if user IS the creator */}
+                    {isCreator && (
+                      <Button
+                        size="sm"
+                        className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 dark:from-red-400 dark:to-red-500 dark:hover:from-red-500 dark:hover:to-red-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAction?.(challenge.id, 'cancel');
+                        }}
+                      >
+                        <X className="w-4 h-4 mr-1" />
+                        Hủy thách đấu
+                      </Button>
+                    )}
+                  </>
                 )}
                 {challenge.status === 'ongoing' && (
                   <Button
@@ -307,6 +407,7 @@ interface EnhancedChallengeCardGridProps {
   onAction?: FlexibleEnhancedChallengeCardProps['onAction'];
   onCardClick?: FlexibleEnhancedChallengeCardProps['onCardClick'];
   className?: string;
+  currentUserId?: string;
 }
 
 const EnhancedChallengeCardGrid: React.FC<EnhancedChallengeCardGridProps> = ({
@@ -315,7 +416,8 @@ const EnhancedChallengeCardGrid: React.FC<EnhancedChallengeCardGridProps> = ({
   size,
   onAction,
   onCardClick,
-  className
+  className,
+  currentUserId
 }) => {
   return (
     <div className={cn('grid grid-cols-1 md:grid-cols-2 gap-4', className)}>
@@ -327,6 +429,7 @@ const EnhancedChallengeCardGrid: React.FC<EnhancedChallengeCardGridProps> = ({
           size={size}
           onAction={onAction}
           onCardClick={onCardClick}
+          currentUserId={currentUserId}
         />
       ))}
     </div>

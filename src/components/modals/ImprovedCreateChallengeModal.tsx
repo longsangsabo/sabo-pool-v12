@@ -95,6 +95,7 @@ const ImprovedCreateChallengeModal = ({
     is_sabo: true, // 🎯 SABO tự động bật
     handicap_1_rank: 0,
     handicap_05_rank: 0,
+    required_rank: 'all', // Hạng nhận thách đấu
   });
 
   // Lưu đối thủ đã chọn thay cho danh sách players tĩnh
@@ -658,6 +659,53 @@ const ImprovedCreateChallengeModal = ({
                 })}
               </div>
             </div>
+
+            {/* Required Rank for Open Challenges */}
+            {challengeType === 'open' && (
+              <div className={`${sectionCard} space-y-2`}>
+                <Label
+                  className={`label-text ${
+                    isDark ? 'text-slate-300' : 'text-slate-500'
+                  }`}
+                >
+                  Hạng nhận thách đấu
+                </Label>
+                <Select
+                  value={formData.required_rank}
+                  onValueChange={value =>
+                    setFormData(prev => ({ ...prev, required_rank: value }))
+                  }
+                >
+                  <SelectTrigger
+                    className={`h-11 placeholder:text-slate-500 ${
+                      isDark
+                        ? 'bg-slate-800/60 border-slate-700 text-slate-100'
+                        : 'bg-white border-slate-300 text-slate-700'
+                    }`}
+                  >
+                    <SelectValue placeholder='Chọn hạng yêu cầu' />
+                  </SelectTrigger>
+                  <SelectContent
+                    className={
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-slate-100'
+                        : 'bg-white border-slate-200 text-slate-700'
+                    }
+                  >
+                    <SelectItem value="all">Tất cả hạng</SelectItem>
+                    <SelectItem value="K">🔰 K hạng (1000-1199 ELO)</SelectItem>
+                    <SelectItem value="I">🟦 I hạng (1200-1399 ELO)</SelectItem>
+                    <SelectItem value="H">🟩 H hạng (1400-1599 ELO)</SelectItem>
+                    <SelectItem value="G">🟨 G hạng (1600-1799 ELO)</SelectItem>
+                    <SelectItem value="F">🟧 F hạng (1800-1999 ELO)</SelectItem>
+                    <SelectItem value="E">� E hạng (2000+ ELO)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Chỉ người chơi từ hạng này trở lên mới có thể nhận thách đấu
+                </p>
+              </div>
+            )}
 
             {/* Club Selection */}
             <div className={`${sectionCard} space-y-2`}>

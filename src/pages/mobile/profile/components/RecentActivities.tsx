@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,6 +9,8 @@ import {
   User,
   Award,
 } from 'lucide-react';
+import { MilestoneProgress } from './MilestoneProgress';
+import { MilestoneDetailPage } from './MilestoneDetailPage';
 
 interface RecentActivitiesProps {
   theme: 'light' | 'dark';
@@ -69,6 +71,18 @@ const ActivityItem: React.FC<{
 export const RecentActivities: React.FC<RecentActivitiesProps> = ({
   theme,
 }) => {
+  const [showMilestoneDetail, setShowMilestoneDetail] = useState(false);
+
+  // If milestone detail page is shown, render it instead
+  if (showMilestoneDetail) {
+    return (
+      <MilestoneDetailPage 
+        theme={theme} 
+        onBack={() => setShowMilestoneDetail(false)}
+      />
+    );
+  }
+
   const activities = [
     {
       icon: (
@@ -113,57 +127,66 @@ export const RecentActivities: React.FC<RecentActivitiesProps> = ({
   ];
 
   return (
-    <Card
-      className={`overflow-hidden ${
-        theme === 'dark'
-          ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
-          : 'bg-white border-slate-200'
-      }`}
-    >
-      <CardHeader className='pb-4 border-b border-slate-200/10'>
-        <CardTitle
-          className={`text-base font-semibold flex items-center justify-between ${
-            theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
-          }`}
-        >
-          <div className='flex items-center gap-2'>
-            <div
-              className={`w-6 h-6 rounded-lg flex items-center justify-center ${
-                theme === 'dark'
-                  ? 'bg-slate-700/50 border border-slate-600/30'
-                  : 'bg-slate-100 border border-slate-200'
-              }`}
-            >
-              <Activity className='w-3.5 h-3.5 text-slate-400' />
-            </div>
-            Hoạt động gần đây
-          </div>
-          <Button
-            variant='ghost'
-            size='sm'
-            className={`text-xs h-7 px-2 ${
-              theme === 'dark'
-                ? 'text-slate-400 hover:text-slate-300 hover:bg-slate-700/50'
-                : 'text-slate-500 hover:text-slate-600 hover:bg-slate-100'
+    <div className="space-y-6">
+      {/* Milestone Progress Section */}
+      <MilestoneProgress 
+        theme={theme} 
+        onViewAll={() => setShowMilestoneDetail(true)}
+      />
+      
+      {/* Recent Activities Section */}
+      <Card
+        className={`overflow-hidden ${
+          theme === 'dark'
+            ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
+            : 'bg-white border-slate-200'
+        }`}
+      >
+        <CardHeader className='pb-4 border-b border-slate-200/10'>
+          <CardTitle
+            className={`text-base font-semibold flex items-center justify-between ${
+              theme === 'dark' ? 'text-slate-100' : 'text-slate-800'
             }`}
           >
-            Xem tất cả <ChevronRight className='w-3 h-3 ml-1' />
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className='p-5 space-y-4'>
-        {activities.map((activity, index) => (
-          <ActivityItem
-            key={index}
-            icon={activity.icon}
-            title={activity.title}
-            time={activity.time}
-            theme={theme}
-            gradient={activity.gradient}
-            points={activity.points}
-          />
-        ))}
-      </CardContent>
-    </Card>
+            <div className='flex items-center gap-2'>
+              <div
+                className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                  theme === 'dark'
+                    ? 'bg-slate-700/50 border border-slate-600/30'
+                    : 'bg-slate-100 border border-slate-200'
+                }`}
+              >
+                <Activity className='w-3.5 h-3.5 text-slate-400' />
+              </div>
+              Hoạt động gần đây
+            </div>
+            <Button
+              variant='ghost'
+              size='sm'
+              className={`text-xs h-7 px-2 ${
+                theme === 'dark'
+                  ? 'text-slate-400 hover:text-slate-300 hover:bg-slate-700/50'
+                  : 'text-slate-500 hover:text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              Xem tất cả <ChevronRight className='w-3 h-3 ml-1' />
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='p-5 space-y-4'>
+          {activities.map((activity, index) => (
+            <ActivityItem
+              key={index}
+              icon={activity.icon}
+              title={activity.title}
+              time={activity.time}
+              theme={theme}
+              gradient={activity.gradient}
+              points={activity.points}
+            />
+          ))}
+        </CardContent>
+      </Card>
+    </div>
   );
 };

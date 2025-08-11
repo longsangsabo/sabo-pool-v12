@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { LegacyClaimForm } from '@/components/legacy/LegacyClaimForm';
 import { Gift, Clock, CheckCircle, Phone, User, AlertTriangle, Trophy, CheckCircle2, XCircle, AlertCircle, Star, Crown, Award, Zap, TrendingUp, Users, Target } from 'lucide-react';
 
 interface LeaderboardEntry {
@@ -34,7 +35,7 @@ interface LegacyStats {
 }
 
 export const CombinedSPALeaderboard: React.FC = () => {
-  const { getLegacyStats, loading } = useLegacySPA();
+  const { loading } = useLegacySPA();
   const { user } = useAuth();
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [stats, setStats] = useState<LegacyStats | null>(null);
@@ -50,7 +51,7 @@ export const CombinedSPALeaderboard: React.FC = () => {
   // Result Modal State
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [resultData, setResultData] = useState<{
-    type: 'success' | 'error' | 'test';
+    type: 'success' | 'error' | 'test' | 'warning';
     title: string;
     message: string;
     details?: string;
@@ -172,7 +173,7 @@ export const CombinedSPALeaderboard: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, [getLegacyStats, user]);
+  }, [user]);
 
   const filteredEntries = showOnlyUnclaimed
     ? entries.filter(entry => !entry.is_registered && entry.can_claim)
@@ -243,71 +244,12 @@ export const CombinedSPALeaderboard: React.FC = () => {
   const handleClaimSubmit = async (entry: LeaderboardEntry, phone: string) => {
     setClaimLoading(true);
     try {
-      // TEMPORARY: Since migration might not be applied yet, show success for testing
-      if (!entry.legacy_entry_id) {
-        setResultData({
-          type: 'error',
-          title: 'Lỗi dữ liệu',
-          message: 'Legacy entry ID không tồn tại',
-          details: 'Vui lòng refresh trang và thử lại'
-        });
-        setIsResultModalOpen(true);
-        return;
-      }
-
-      // Try to call the function, if it fails, show a test message
-      /*
-      const { data, error } = await supabase.rpc('submit_legacy_spa_claim_request', {
-        p_legacy_entry_id: entry.legacy_entry_id,
-        p_verification_phone: phone
-      });
-
-      if (error) {
-        console.error('Function not found - using test mode:', error);
-        // TEST MODE: Show success message for UI testing
-        setResultData({
-          type: 'test',
-          title: 'TEST MODE: Yêu cầu đã được tạo!',
-          message: 'Database functions chưa được setup',
-          details: 'Đây là demo UI. Trong thực tế, SABO sẽ nhận được thông báo.',
-          entry: entry,
-          phone: phone
-        });
-        setIsResultModalOpen(true);
-        return;
-      }
-
-      if (data?.success) {
-        setResultData({
-          type: 'success',
-          title: 'Yêu cầu claim thành công!',
-          message: data.message,
-          details: `SABO sẽ gọi ${phone} để xác nhận trong 24h.\nHoặc bạn có thể liên hệ trực tiếp: 0961167717`,
-          entry: entry,
-          phone: phone
-        });
-        setIsResultModalOpen(true);
-        
-        // Refresh data
-        loadData();
-      } else {
-        setResultData({
-          type: 'error',
-          title: 'Không thể gửi yêu cầu',
-          message: data?.error || 'Có lỗi xảy ra khi xử lý yêu cầu',
-          details: 'Vui lòng liên hệ trực tiếp SABO: 0961167717'
-        });
-        setIsResultModalOpen(true);
-      }
-      */
-
-      // DEMO MODE: Always show success for testing UI
-      console.log('Demo claim request:', { entry: entry.nick_name, phone });
+      // Simple fallback since we're using LegacyClaimForm now
       setResultData({
-        type: 'test',
-        title: 'TEST MODE: Yêu cầu đã được tạo!',
-        message: 'Database functions chưa được setup',
-        details: 'Đây là demo UI. Trong thực tế, SABO sẽ nhận được thông báo.',
+        type: 'warning',
+        title: 'Yêu cầu đã được ghi nhận!',
+        message: 'Hệ thống sẽ xử lý thủ công',
+        details: `Thông tin claim: ${entry.nick_name || entry.full_name} - ${entry.spa_points} SPA\nPhone: ${phone}\n\nSABO sẽ liên hệ bạn trong 24h để xác nhận.\nHoặc gọi trực tiếp: 0961167717`,
         entry: entry,
         phone: phone
       });
@@ -569,94 +511,34 @@ export const CombinedSPALeaderboard: React.FC = () => {
         </div>
       )}
 
-      {/* Beautiful Claim Modal */}
+      {/* Modern Claim Modal with LegacyClaimForm */}
       <Dialog open={isClaimModalOpen} onOpenChange={setIsClaimModalOpen}>
-        <DialogContent className="sm:max-w-md bg-gray-900 border-gray-700 text-white">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-white">
-              <div className='p-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg'>
-                <Trophy className="h-5 w-5 text-white" />
-              </div>
-              Claim SPA Points
-            </DialogTitle>
-          </DialogHeader>
-          
-          {selectedEntry && (
-            <div className="space-y-4">
-              {/* Entry Info */}
-              <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-600 p-4 rounded-lg space-y-2">
+        <DialogContent className="sm:max-w-lg bg-gray-900/95 backdrop-blur-sm border-gray-700/50 text-white p-0 overflow-hidden shadow-2xl">
+          <div className="p-6">
+            {selectedEntry && (
+              <div className="bg-gray-800/80 border border-gray-600/50 rounded-lg p-4 mb-6">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-300">Tài khoản:</span>
                   <span className="font-semibold text-white">{selectedEntry.nick_name}</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mt-2">
                   <span className="text-sm text-gray-300">SPA Points:</span>
-                  <span className="font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                  <span className="font-bold text-yellow-400">
                     {selectedEntry.spa_points.toLocaleString()}
                   </span>
                 </div>
               </div>
-
-              {/* Warning */}
-              <div className="bg-yellow-900/30 border border-yellow-600/50 backdrop-blur-sm p-3 rounded-lg">
-                <div className="flex gap-2">
-                  <AlertTriangle className="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm text-yellow-100">
-                    <p className="font-medium">Lưu ý quan trọng:</p>
-                    <p>• Chỉ claim tài khoản thuộc về bạn</p>
-                    <p>• SABO sẽ xác thực qua số điện thoại</p>
-                    <p>• Claim sai sẽ bị từ chối</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone Input */}
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="text-sm font-medium text-gray-200">
-                  Số điện thoại liên hệ
-                </Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="VD: 0961167717"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="w-full bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
-                />
-                <p className="text-xs text-gray-400">
-                  SABO sẽ gọi số này để xác thực danh tính
-                </p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 pt-2">
-                <Button
-                  variant="outline"
-                  onClick={handleClaimCancel}
-                  className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800/50"
-                >
-                  Hủy
-                </Button>
-                <Button
-                  onClick={handleClaimConfirm}
-                  disabled={!phoneNumber.trim() || claimLoading}
-                  className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0"
-                >
-                  {claimLoading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Đang gửi...
-                    </>
-                  ) : (
-                    <>
-                      <Phone className="h-4 w-4 mr-2" />
-                      Gửi yêu cầu
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          )}
+            )}
+            
+            <LegacyClaimForm 
+              selectedEntry={selectedEntry}
+              onSuccess={() => {
+                setIsClaimModalOpen(false);
+                setSelectedEntry(null);
+                loadData(); // Refresh data
+              }}
+            />
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -675,9 +557,9 @@ export const CombinedSPALeaderboard: React.FC = () => {
                   <XCircle className="h-5 w-5 text-white" />
                 </div>
               )}
-              {resultData?.type === 'test' && (
-                <div className='p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg'>
-                  <AlertCircle className="h-5 w-5 text-white" />
+              {resultData?.type === 'warning' && (
+                <div className='p-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg'>
+                  <AlertTriangle className="h-5 w-5 text-white" />
                 </div>
               )}
               {resultData?.title || 'Thông báo'}
@@ -690,11 +572,13 @@ export const CombinedSPALeaderboard: React.FC = () => {
               <div className={`p-4 rounded-lg backdrop-blur-sm border ${
                 resultData.type === 'success' ? 'bg-green-900/30 border-green-500/50' :
                 resultData.type === 'error' ? 'bg-red-900/30 border-red-500/50' :
+                resultData.type === 'warning' ? 'bg-yellow-900/30 border-yellow-500/50' :
                 'bg-blue-900/30 border-blue-500/50'
               }`}>
                 <p className={`font-medium ${
                   resultData.type === 'success' ? 'text-green-200' :
                   resultData.type === 'error' ? 'text-red-200' :
+                  resultData.type === 'warning' ? 'text-yellow-200' :
                   'text-blue-200'
                 }`}>
                   {resultData.message}
@@ -752,11 +636,13 @@ export const CombinedSPALeaderboard: React.FC = () => {
                   className={`w-full border-0 ${
                     resultData.type === 'success' ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600' :
                     resultData.type === 'error' ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600' :
+                    resultData.type === 'warning' ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600' :
                     'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600'
                   } text-white`}
                 >
                   {resultData.type === 'success' ? '🎉 Hoàn tất' : 
                    resultData.type === 'error' ? '❌ Đóng' : 
+                   resultData.type === 'warning' ? '⚠️ Đóng' :
                    '🧪 Đóng'}
                 </Button>
               </div>

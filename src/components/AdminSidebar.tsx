@@ -16,6 +16,7 @@ import {
   Bot,
   UserCheck,
   Receipt,
+  Gift,
   Gamepad2,
   Target,
   DollarSign,
@@ -68,6 +69,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ collapsed = false }) => {
       icon: UserCheck,
       href: '/admin/rank-verification',
       description: 'Xác thực hạng người chơi',
+    },
+    {
+      title: 'Legacy Claims',
+      icon: Gift,
+      href: '/admin/legacy-claims',
+      description: 'Xác nhận claim SPA Points legacy',
     },
     {
       title: 'Giao dịch',

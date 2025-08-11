@@ -30,6 +30,7 @@ import '@/utils/testAuth';
 
 // Lazy load components - Public pages
 const HomePage = lazy(() => import('@/pages/Home'));
+const LegacyClaim = lazy(() => import('@/pages/LegacyClaim'));
 // Use enhanced login page with role-based redirect logic
 const EnhancedLoginPage = lazy(() => import('@/pages/EnhancedLoginPage'));
 const EnhancedRegisterPage = lazy(() => import('@/pages/EnhancedRegisterPage'));
@@ -70,6 +71,7 @@ const TestAvatarPage = lazy(() => import('@/pages/test-avatar'));
 
 // Admin components
 const AdminRouter = lazy(() => import('@/router/AdminRouter'));
+const LegacyClaimAdminPage = lazy(() => import('@/pages/LegacyClaimAdminPage'));
 
 // Club components
 const ClubManagementPage = lazy(() => import('@/pages/ClubManagementPage'));
@@ -132,6 +134,7 @@ const AppContent = () => {
         <Routes>
           {/* Public routes - no authentication required */}
           <Route path='/' element={<LandingRoute />} />
+          <Route path='/legacy-claim' element={<LegacyClaim />} />
           <Route path='/about' element={<AboutPage />} />
           <Route path='/contact' element={<ContactPage />} />
           <Route path='/privacy' element={<PrivacyPolicyPage />} />
@@ -222,6 +225,9 @@ const AppContent = () => {
               path='clubs/:id/owner'
               element={<ClubOwnerDashboardPage />}
             />
+            
+            {/* Legacy Claim Admin - Temporarily accessible for testing */}
+            <Route path='legacy-claim-admin' element={<LegacyClaimAdminPage />} />
           </Route>
 
           {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}

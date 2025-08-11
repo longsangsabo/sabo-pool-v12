@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminLayout from '@/components/AdminLayout';
+import AdminLegacyClaims from '@/pages/admin/AdminLegacyClaims'; // Direct import
 import { Loader2 } from 'lucide-react';
 
 // Loading fallback component
@@ -37,6 +38,7 @@ const AdminClubs = lazy(() => import('@/pages/admin/AdminClubs'));
 const AdminRankVerification = lazy(
   () => import('@/pages/admin/AdminRankVerification')
 );
+// AdminLegacyClaims - using direct import instead of lazy
 const AdminTransactions = lazy(() => import('@/pages/admin/AdminTransactions'));
 const AdminGameConfig = lazy(() => import('@/pages/admin/AdminGameConfig'));
 const AdminChallenges = lazy(() => import('@/pages/admin/AdminChallenges'));
@@ -81,6 +83,7 @@ const OptimizedAdminRouter = () => {
           <Route path='tournaments' element={<AdminTournaments />} />
           <Route path='clubs' element={<AdminClubs />} />
           <Route path='rank-verification' element={<AdminRankVerification />} />
+          <Route path='legacy-claims' element={<AdminLegacyClaims />} />
           <Route path='transactions' element={<AdminTransactions />} />
           <Route path='game-config' element={<AdminGameConfig />} />
           <Route path='challenges' element={<AdminChallenges />} />

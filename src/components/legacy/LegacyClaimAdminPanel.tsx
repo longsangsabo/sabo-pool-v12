@@ -12,7 +12,7 @@ import {
   User, 
   Gift,
   AlertCircle,
-  Refresh
+  RotateCcw
 } from 'lucide-react';
 
 interface ClaimRequest {
@@ -30,6 +30,8 @@ interface ClaimRequest {
 }
 
 export const LegacyClaimAdminPanel: React.FC = () => {
+  console.log('🚀 LegacyClaimAdminPanel component mounting...');
+  
   const { user } = useAuth();
   const [claimRequests, setClaimRequests] = useState<ClaimRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,48 +39,56 @@ export const LegacyClaimAdminPanel: React.FC = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
+    console.log('🔄 useEffect [user] triggered. User:', user?.id);
     checkAuthorization();
   }, [user]);
 
   useEffect(() => {
+    console.log('🔄 useEffect [isAuthorized] triggered. isAuthorized:', isAuthorized);
     if (isAuthorized) {
       loadClaimRequests();
     }
   }, [isAuthorized]);
 
-  const checkAuthorization = async () => {
-    if (!user) {
-      setIsAuthorized(false);
-      return;
-    }
-
+    const checkAuthorization = async () => {
     try {
-      // Check if user is admin
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('user_id', user.id)
-        .single();
-
-      if (profile?.is_admin) {
-        setIsAuthorized(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      console.log('🔐 Current user:', user?.id);
+      
+      if (!user) {
+        setIsAuthorized(false);
         return;
       }
 
-      // Check if user is owner of SABO/SBO clubs
-      const { data: clubData } = await supabase
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin, full_name, display_name')
+        .eq('user_id', user.id)
+        .single();
+
+      console.log('👤 User profile:', profile);
+
+      const { data: clubProfiles } = await supabase
         .from('club_profiles')
         .select('club_name, verification_status')
         .eq('user_id', user.id)
         .eq('verification_status', 'approved');
 
-      const isSaboClubOwner = clubData?.some(club => 
-        club.club_name.includes('SABO') || 
-        club.club_name.includes('SBO') || 
-        club.club_name.includes('POOL ARENA')
+      console.log('🏢 Club profiles:', clubProfiles);
+
+      const isSaboClubOwner = clubProfiles?.some(club => 
+        club.club_name.toLowerCase().includes('sabo') ||
+        club.club_name.toLowerCase().includes('sbo') ||
+        club.club_name.toLowerCase().includes('pool arena')
       );
 
-      setIsAuthorized(isSaboClubOwner || false);
+      console.log('🔑 Authorization check:', {
+        isAdmin: profile?.is_admin,
+        isSaboClubOwner,
+        finalAuth: profile?.is_admin || isSaboClubOwner
+      });
+
+      setIsAuthorized(profile?.is_admin || isSaboClubOwner || false);
     } catch (error) {
       console.error('Authorization check error:', error);
       setIsAuthorized(false);
@@ -88,13 +98,19 @@ export const LegacyClaimAdminPanel: React.FC = () => {
   const loadClaimRequests = async () => {
     setLoading(true);
     try {
+      console.log('🔍 Calling get_pending_claim_requests...');
+      // @ts-ignore - Database function not in types yet
       const { data, error } = await supabase.rpc('get_pending_claim_requests');
+      
+      console.log('📊 RPC Response:', { data, error });
       
       if (error) {
         console.error('Error loading claim requests:', error);
         return;
       }
 
+      console.log('✅ Claim requests loaded:', data);
+      // @ts-ignore - Database function return type
       setClaimRequests(data || []);
     } catch (error) {
       console.error('Error loading claim requests:', error);
@@ -111,6 +127,7 @@ export const LegacyClaimAdminPanel: React.FC = () => {
   ) => {
     setProcessing(claimId);
     try {
+      // @ts-ignore - Database function not in types yet
       const { data, error } = await supabase.rpc('review_legacy_spa_claim_request', {
         p_claim_request_id: claimId,
         p_action: action,
@@ -124,10 +141,13 @@ export const LegacyClaimAdminPanel: React.FC = () => {
         return;
       }
 
+      // @ts-ignore - Database function return type
       if (data?.success) {
+        // @ts-ignore - Database function return type
         alert(`✅ ${data.message}`);
         loadClaimRequests(); // Refresh list
       } else {
+        // @ts-ignore - Database function return type
         alert(`❌ ${data?.error || 'Không thể xử lý yêu cầu'}`);
       }
     } catch (error) {
@@ -202,7 +222,7 @@ export const LegacyClaimAdminPanel: React.FC = () => {
           size="sm"
           className="flex items-center gap-2"
         >
-          <Refresh className="w-4 h-4" />
+          <RotateCcw className="w-4 h-4" />
           Refresh
         </Button>
       </div>

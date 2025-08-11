@@ -1,7 +1,7 @@
 import React from 'react';
 import MessageCenter from '@/components/messages/MessageCenter';
 
-export const MessagesPage: React.FC = () => {
+const MessagesPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="space-y-6">
@@ -19,3 +19,5 @@ export const MessagesPage: React.FC = () => {
     </div>
   );
 };
+
+export default MessagesPage;

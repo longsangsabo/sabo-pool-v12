@@ -22,7 +22,7 @@ import MessageList from './MessageList';
 import ComposeMessage from './ComposeMessage';
 import MessageSearch from './MessageSearch';
 import MessageStats from './MessageStats';
-import { NotificationSettings } from './NotificationSettings';
+import NotificationSettings from './NotificationSettings';
 
 const MessageCenter: React.FC = () => {
   const [activeTab, setActiveTab] = useState('inbox');

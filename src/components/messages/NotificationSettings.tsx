@@ -408,4 +408,3 @@ export const NotificationSettingsComponent: React.FC<NotificationSettingsProps> 
 };
 
 export default NotificationSettingsComponent;
-export { NotificationSettingsComponent as NotificationSettings };

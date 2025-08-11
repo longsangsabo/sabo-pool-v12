@@ -69,6 +69,8 @@ const FeedPage = lazy(() => import('@/pages/FeedPage'));
 const MarketplacePage = lazy(() => import('@/pages/EnhancedMarketplacePage'));
 const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'));
 const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
+// Milestones
+const MilestonePage = lazy(() => import('@/pages/MilestonePage'));
 
 // Demo pages
 // const DemoPlayerPage = lazy(() => import('@/pages/DemoPlayerPage'));
@@ -224,6 +226,7 @@ const AppContent = () => {
             <Route path='marketplace' element={<MarketplacePage />} />
             <Route path='notifications' element={<NotificationsPage />} />
             <Route path='messages' element={<MessagesPage />} />
+            <Route path='milestones' element={<MilestonePage />} />
             <Route path='auth-test' element={<AuthTestPage />} />
 
             {/* Public pages accessible through sidebar when logged in */}

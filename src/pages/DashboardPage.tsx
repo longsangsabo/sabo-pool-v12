@@ -15,6 +15,7 @@ import {
 import { DashboardSkeleton } from '@/components/skeleton/DashboardSkeleton';
 import { EnhancedWalletBalance } from '@/components/enhanced/EnhancedWalletBalance';
 import { MilestoneSummaryWidget } from '@/components/milestones/MilestoneSummaryWidget';
+import { RecentMilestoneAwards } from '@/components/milestones/RecentMilestoneAwards';
 import { Link } from 'react-router-dom';
 import PageLayout from '@/components/layout/PageLayout';
 
@@ -138,8 +139,9 @@ const DashboardPage = () => {
           <Suspense fallback={<DashboardSkeleton />}>
             <EnhancedWalletBalance />
           </Suspense>
-          <div className='mt-4'>
+          <div className='mt-4 grid md:grid-cols-2 gap-4'>
             <MilestoneSummaryWidget />
+            <RecentMilestoneAwards compact />
           </div>
         </div>
 

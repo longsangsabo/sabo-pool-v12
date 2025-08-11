@@ -133,6 +133,11 @@ const Navigation = () => {
       href: '/leaderboard',
       current: location.pathname === '/leaderboard',
     },
+    {
+      name: 'Milestones',
+      href: '/milestones',
+      current: location.pathname === '/milestones',
+    },
     { name: 'CLB', href: '/clubs', current: location.pathname === '/clubs' },
     {
       name: 'Về chúng tôi',

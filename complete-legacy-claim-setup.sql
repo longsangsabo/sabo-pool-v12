@@ -1,9 +1,24 @@
--- Function to claim legacy SPA points using claim code
--- This function will be called from the frontend when user enters claim code
+-- COMPLETE LEGACY CLAIM SETUP SQL
+-- Copy và paste toàn bộ SQL này vào Supabase SQL Editor để setup hệ thống claim
 
--- Drop ALL possible versions of the function
+-- 1. Thêm claim_code column nếu chưa có
+ALTER TABLE legacy_spa_points 
+ADD COLUMN IF NOT EXISTS claim_code TEXT;
+
+-- 2. Tạo index cho claim_code
+CREATE INDEX IF NOT EXISTS idx_legacy_spa_points_claim_code 
+ON legacy_spa_points(claim_code);
+
+-- 3. Update record ANH LONG MAGIC với claim code
+UPDATE legacy_spa_points 
+SET claim_code = 'LEGACY-46-ANH'
+WHERE full_name = 'ANH LONG MAGIC' 
+  AND claim_code IS NULL;
+
+-- 4. Drop function cũ nếu có
 DROP FUNCTION IF EXISTS claim_legacy_spa_points CASCADE;
 
+-- 5. Tạo function mới
 CREATE OR REPLACE FUNCTION claim_legacy_spa_points(
   p_claim_code TEXT,
   p_user_id UUID,  
@@ -41,7 +56,7 @@ BEGIN
   END IF;
   
   -- Check if user already claimed this specific entry  
-  IF v_legacy_entry.claimed_by = p_user_email THEN
+  IF v_legacy_entry.claimed_by = p_user_id THEN
     RETURN json_build_object(
       'success', false,
       'message', 'Bạn đã claim mã này rồi'
@@ -49,9 +64,9 @@ BEGIN
   END IF;
   
   -- Get current SPA points of the user
-  SELECT COALESCE(current_spa_points, 0) INTO v_current_spa_points
-  FROM profiles
-  WHERE id = p_user_id;
+  SELECT COALESCE(spa_points, 0) INTO v_current_spa_points
+  FROM player_rankings
+  WHERE player_id = p_user_id;
   
   -- Calculate new SPA points
   v_new_spa_points := v_current_spa_points + v_legacy_entry.spa_points;
@@ -62,7 +77,7 @@ BEGIN
     UPDATE legacy_spa_points
     SET 
       claimed_at = NOW(),
-      claimed_by = p_user_email,
+      claimed_by = p_user_id,
       claimed = true,
       updated_at = NOW()
     WHERE claim_code = p_claim_code
@@ -77,13 +92,30 @@ BEGIN
     END IF;
     
     -- Update user's SPA points
-    UPDATE profiles
-    SET 
-      current_spa_points = v_new_spa_points,
-      updated_at = NOW()
-    WHERE id = p_user_id;
+    IF EXISTS (SELECT 1 FROM player_rankings WHERE player_id = p_user_id) THEN
+      -- Update existing record
+      UPDATE player_rankings
+      SET 
+        spa_points = v_new_spa_points,
+        updated_at = NOW()
+      WHERE player_id = p_user_id;
+    ELSE
+      -- Insert new record
+      INSERT INTO player_rankings (
+        player_id,
+        spa_points,
+        created_at,
+        updated_at
+      ) VALUES (
+        p_user_id,
+        v_new_spa_points,
+        NOW(),
+        NOW()
+      );
+    END IF;
     
-    -- Log the transaction
+    -- Log the transaction (optional - comment out if admin_actions table doesn't exist)
+    /*
     INSERT INTO admin_actions (
       admin_id,
       action_type,
@@ -103,6 +135,7 @@ BEGIN
         'legacy_player_name', v_legacy_entry.full_name
       )
     );
+    */
     
     -- Return success
     RETURN json_build_object(
@@ -125,8 +158,20 @@ BEGIN
 END;
 $$;
 
--- Grant execute permission to authenticated users
+-- 6. Grant permissions
 GRANT EXECUTE ON FUNCTION claim_legacy_spa_points(TEXT, UUID, TEXT) TO authenticated;
 
--- Add comment for documentation
+-- 7. Add comment
 COMMENT ON FUNCTION claim_legacy_spa_points IS 'Claims legacy SPA points using claim code and updates user profile';
+
+-- 8. Verify setup (optional - để kiểm tra)
+SELECT 
+  id,
+  full_name,
+  spa_points,
+  claim_code,
+  claimed,
+  claimed_at,
+  claimed_by
+FROM legacy_spa_points 
+WHERE claim_code IS NOT NULL;

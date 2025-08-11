@@ -244,29 +244,28 @@ export const CombinedSPALeaderboard: React.FC = () => {
       {/* Cách bước - Moved to top */}
       <div className='mb-6 text-xs text-gray-300 bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-600 rounded-xl p-4'>
         <p className='font-semibold mb-3 text-white flex items-center gap-2'>
-          <Zap className='w-4 h-4 text-yellow-400' />
-          Các bước:
+  
+      
         </p>
         <ul className='space-y-2'>
           <li className='flex items-start gap-2'>
             <span className='flex-shrink-0 w-6 h-6 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold'>1</span>
-            <span><strong className='text-orange-300'></strong> Click hộp quà 🟠 bên cạnh tên bạn </span>
+            <span><strong className='text-orange-300'></strong> Click hộp quà 🎁 bên cạnh tên bạn</span>
           </li>
           <li className='flex items-start gap-2'>
             <span className='flex-shrink-0 w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold'>2</span>
-            <span><strong className='text-blue-300'></strong> Nhập SĐT của bạn</span>
+            <span><strong className='text-blue-300'></strong> Nhập mã CODE mà SABO đã gửi cho bạn</span>
           </li>
           <li className='flex items-start gap-2'>
             <span className='flex-shrink-0 w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold'>3</span>
-            <span><strong className='text-green-300'></strong> SABO sẽ gọi xác nhận trong 24h</span>
+            <span><strong className='text-green-300'></strong> Điểm SPA sẽ được cộng ngay lập tức</span>
           </li>
           <li className='flex items-start gap-2'>
-            <span className='flex-shrink-0 w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold'>4</span>
-            <span><strong className='text-purple-300'></strong> Xác nhận thành công → cộng SPA</span>
+            <span className='flex-shrink-0 w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold'>💡</span>
+            <span><strong className='text-purple-300'></strong> SABO sẽ gửi CODE cho các Player có tên trong BXH qua Facebook hoặc player có thể chủ động liên hệ với SABO qua thông tin liên hệ để nhận CODE</span>
           </li>
           <li className='flex items-start gap-2'>
 
-            <span><strong className='text-yellow-300'> Lưu ý:</strong> Chỉ claim điểm thuộc về bạn! Claim sai sẽ bị từ chối.</span>
           </li>
           <li className='flex items-start gap-2'>
             <div>
@@ -362,7 +361,7 @@ export const CombinedSPALeaderboard: React.FC = () => {
                 <th className='px-2 md:px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider w-16'>
                   <div className='flex items-center justify-center gap-1 md:gap-2'>
                     <Gift className='w-3 h-3 md:w-4 md:h-4 text-orange-400' />
-                    <span className='hidden sm:inline'>Action</span>
+                    <span className='hidden sm:inline'></span>
                   </div>
                 </th>
               </tr>

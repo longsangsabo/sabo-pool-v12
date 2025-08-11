@@ -177,8 +177,8 @@ export function LegacyGiftCodeModal({
           <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
             <strong>Lưu ý:</strong>
             <ul className="mt-1 list-disc list-inside space-y-1">
+              <li>SABO sẽ gửi CODE cho các Player có tên trong BXH qua Facebook hoặc player có thể chủ động liên hệ với SABO qua thông tin liên hệ để nhận CODE</li>
               <li>Mỗi mã chỉ có thể sử dụng một lần</li>
-              <li>Mã phải khớp với tên người chơi trong hệ thống</li>
               <li>Điểm SPA sẽ được cộng ngay vào tài khoản</li>
             </ul>
           </div>

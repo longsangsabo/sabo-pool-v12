@@ -1,13 +1,13 @@
 -- Function to claim legacy SPA points using claim code
 -- This function will be called from the frontend when user enters claim code
 
--- Drop existing function if it exists
-DROP FUNCTION IF EXISTS claim_legacy_spa_points(VARCHAR, UUID, VARCHAR);
+-- Drop ALL possible versions of the function
+DROP FUNCTION IF EXISTS claim_legacy_spa_points CASCADE;
 
 CREATE OR REPLACE FUNCTION claim_legacy_spa_points(
-  p_claim_code VARCHAR(50),
-  p_user_id UUID,
-  p_user_email VARCHAR(255)
+  p_claim_code TEXT,
+  p_user_id UUID,  
+  p_user_email TEXT
 )
 RETURNS JSON
 LANGUAGE plpgsql
@@ -126,7 +126,7 @@ END;
 $$;
 
 -- Grant execute permission to authenticated users
-GRANT EXECUTE ON FUNCTION claim_legacy_spa_points(VARCHAR, UUID, VARCHAR) TO authenticated;
+GRANT EXECUTE ON FUNCTION claim_legacy_spa_points(TEXT, UUID, TEXT) TO authenticated;
 
 -- Add comment for documentation
 COMMENT ON FUNCTION claim_legacy_spa_points IS 'Claims legacy SPA points using claim code and updates user profile';

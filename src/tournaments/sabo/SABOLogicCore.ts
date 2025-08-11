@@ -205,7 +205,7 @@ export class SABOLogicCore {
   }
 
   /**
-   * Get SABO tournament progress
+   * Get SABO tournament progress with detailed stage analysis
    */
   static getTournamentProgress(matches: SABOMatch[]): {
     totalMatches: number;
@@ -213,6 +213,13 @@ export class SABOLogicCore {
     progressPercentage: number;
     currentStage: string;
     nextActions: string[];
+    stageBreakdown: {
+      winners: { completed: number; total: number };
+      losersA: { completed: number; total: number };
+      losersB: { completed: number; total: number };
+      semifinals: { completed: number; total: number };
+      final: { completed: number; total: number };
+    };
   } {
     const totalMatches = 27;
     const completedMatches = matches.filter(
@@ -226,21 +233,54 @@ export class SABOLogicCore {
     let currentStage = 'Starting';
     const nextActions: string[] = [];
 
-    // Determine current stage
-    if (this.isRoundComplete(organized.winners, 3)) {
-      if (this.isRoundComplete(organized.semifinals, 250)) {
-        currentStage = 'Final';
-      } else if (
-        this.isRoundComplete(organized.losers_branch_a, 103) &&
-        this.isRoundComplete(organized.losers_branch_b, 202)
-      ) {
-        currentStage = 'Semifinals Ready';
-        nextActions.push('Start Semifinals (4 people → 2 matches)');
-      } else {
-        currentStage = 'Losers Brackets';
+    // Calculate stage breakdown
+    const stageBreakdown = {
+      winners: {
+        completed: organized.winners.filter(m => m.status === 'completed').length,
+        total: organized.winners.length
+      },
+      losersA: {
+        completed: organized.losers_branch_a.filter(m => m.status === 'completed').length,
+        total: organized.losers_branch_a.length
+      },
+      losersB: {
+        completed: organized.losers_branch_b.filter(m => m.status === 'completed').length,
+        total: organized.losers_branch_b.length
+      },
+      semifinals: {
+        completed: organized.semifinals.filter(m => m.status === 'completed').length,
+        total: organized.semifinals.length
+      },
+      final: {
+        completed: organized.final.filter(m => m.status === 'completed').length,
+        total: organized.final.length
+      }
+    };
+
+    // Enhanced stage determination
+    if (stageBreakdown.final.completed === stageBreakdown.final.total) {
+      currentStage = 'Tournament Complete';
+    } else if (stageBreakdown.semifinals.completed === stageBreakdown.semifinals.total) {
+      currentStage = 'Grand Final';
+      nextActions.push('Complete the Grand Final');
+    } else if (
+      stageBreakdown.winners.completed === stageBreakdown.winners.total &&
+      stageBreakdown.losersA.completed === stageBreakdown.losersA.total &&
+      stageBreakdown.losersB.completed === stageBreakdown.losersB.total
+    ) {
+      currentStage = 'Semifinals Ready';
+      nextActions.push('Start Semifinals (4 finalists)');
+    } else if (stageBreakdown.winners.completed === stageBreakdown.winners.total) {
+      currentStage = 'Losers Brackets Active';
+      if (stageBreakdown.losersA.completed < stageBreakdown.losersA.total) {
+        nextActions.push('Complete Losers Branch A');
+      }
+      if (stageBreakdown.losersB.completed < stageBreakdown.losersB.total) {
+        nextActions.push('Complete Losers Branch B');
       }
     } else {
-      currentStage = 'Winners Bracket';
+      currentStage = 'Winners Bracket Active';
+      nextActions.push('Complete Winners Bracket matches');
     }
 
     return {
@@ -249,6 +289,7 @@ export class SABOLogicCore {
       progressPercentage,
       currentStage,
       nextActions,
+      stageBreakdown,
     };
   }
 }

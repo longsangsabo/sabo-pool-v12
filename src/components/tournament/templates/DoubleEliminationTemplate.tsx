@@ -71,44 +71,51 @@ export const DoubleEliminationTemplate: React.FC<
 
     if (
       tournamentId &&
-      (isCompletedTemplate || tournamentData?.status === 'in_progress')
+      (isCompletedTemplate || 
+       (tournamentData?.status === 'in_progress' && tournamentData?.tournament_type === 'double_elimination'))
     ) {
       setIsLoading(true);
       console.log(
-        '📊 [DoubleEliminationTemplate] Loading bracket data for tournament:',
+        '📊 [DoubleEliminationTemplate] Loading SABO bracket data for tournament:',
         tournamentId
       );
       loadTournamentBracketData(tournamentId)
         .then(data => {
           console.log(
-            '🏆 [DoubleEliminationTemplate] Loaded tournament data:',
+            '🏆 [DoubleEliminationTemplate] Loaded SABO tournament data:',
             data
           );
           if (data) {
             setCompletedBracketData(data);
             if (isCompletedTemplate) {
               toast.success(
-                `🏆 Dữ liệu giải đấu Double Elimination đã được tải thành công!`
+                `🏆 SABO Double Elimination data loaded successfully!`
               );
             }
           } else {
             console.warn(
-              '⚠️ [DoubleEliminationTemplate] No bracket data returned'
+              '⚠️ [DoubleEliminationTemplate] No SABO bracket data returned'
             );
+            if (isCompletedTemplate) {
+              toast.warning('No tournament data found for this template');
+            }
           }
           setIsLoading(false);
         })
         .catch(error => {
           console.error(
-            '❌ [DoubleEliminationTemplate] Error loading data:',
+            '❌ [DoubleEliminationTemplate] Error loading SABO data:',
             error
           );
+          if (isCompletedTemplate) {
+            toast.error('Failed to load tournament data');
+          }
           setIsLoading(false);
         });
     } else {
-      console.log('⏭️ [DoubleEliminationTemplate] Skipping bracket data load');
+      console.log('⏭️ [DoubleEliminationTemplate] Skipping bracket data load - not a SABO tournament');
     }
-  }, [tournamentId, isCompletedTemplate, tournamentData?.status]);
+  }, [tournamentId, isCompletedTemplate, tournamentData?.status, tournamentData?.tournament_type]);
 
   // Process matches and participants data for display
   const {

@@ -2,69 +2,98 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Users, Clock, Trophy, Target } from 'lucide-react';
+import { Target, Flame, Clock, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Challenge } from '@/types/challenge';
 import EnhancedChallengeCard, { EnhancedChallengeCardGrid } from '@/components/challenges/EnhancedChallengeCard';
 import { cn } from '@/lib/utils';
 
-interface ClubChallengesTabProps {
-  clubId: string;
-  challenges?: Challenge[];
-  onAction?: (challengeId: string, action: string) => void;
+interface EnhancedCommunityTabProps {
+  keoData: Challenge[];
+  liveData: Challenge[];
+  sapToiData: Challenge[];
+  xongData: Challenge[];
+  currentUserId?: string;
+  onJoinChallenge?: (challengeId: string) => void;
+  isJoining?: boolean;
 }
 
-const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
-  clubId,
-  challenges = [],
-  onAction,
+const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
+  keoData,
+  liveData,
+  sapToiData,
+  xongData,
+  currentUserId,
+  onJoinChallenge,
+  isJoining = false,
 }) => {
-  const [activeTab, setActiveTab] = useState('active');
-
-  // Filter challenges by status
-  const activeChalllenges = challenges.filter(c => c.status === 'ongoing');
-  const upcomingChallenges = challenges.filter(c => c.status === 'pending');
-  const completedChallenges = challenges.filter(c => c.status === 'completed');
+  const [activeTab, setActiveTab] = useState('keo');
 
   const tabs = [
     {
-      id: 'active',
-      title: 'Đang diễn ra',
+      id: 'keo',
+      title: 'Kèo',
       icon: Target,
+      color: 'text-blue-500 dark:text-blue-400',
+      bgColor: 'bg-blue-50 dark:bg-blue-950/30',
+      data: keoData,
+      variant: 'open' as const,
+      description: 'Thách đấu mở chờ đối thủ',
+    },
+    {
+      id: 'live',
+      title: 'Live',
+      icon: Flame,
       color: 'text-red-500 dark:text-red-400',
       bgColor: 'bg-red-50 dark:bg-red-950/30',
-      data: activeChalllenges,
+      data: liveData,
       variant: 'live' as const,
       description: 'Thách đấu đang diễn ra',
     },
     {
-      id: 'upcoming',
-      title: 'Sắp tới',
+      id: 'sap',
+      title: 'Sắp',
       icon: Clock,
-      color: 'text-blue-500 dark:text-blue-400',
-      bgColor: 'bg-blue-50 dark:bg-blue-950/30',
-      data: upcomingChallenges,
+      color: 'text-yellow-500 dark:text-yellow-400',
+      bgColor: 'bg-yellow-50 dark:bg-yellow-950/30',
+      data: sapToiData,
       variant: 'upcoming' as const,
-      description: 'Thách đấu sắp diễn ra',
+      description: 'Thách đấu sắp tới',
     },
     {
-      id: 'completed',
-      title: 'Hoàn thành',
+      id: 'xong',
+      title: 'Xong',
       icon: Trophy,
       color: 'text-green-500 dark:text-green-400',
       bgColor: 'bg-green-50 dark:bg-green-950/30',
-      data: completedChallenges,
+      data: xongData,
       variant: 'completed' as const,
       description: 'Thách đấu đã hoàn thành',
     },
   ];
 
   const handleAction = (challengeId: string, action: string) => {
-    onAction?.(challengeId, action);
+    switch (action) {
+      case 'join':
+        onJoinChallenge?.(challengeId);
+        break;
+      case 'watch':
+        console.log('Watch challenge:', challengeId);
+        break;
+      case 'view':
+        console.log('View challenge:', challengeId);
+        break;
+      case 'score':
+        console.log('Enter score for challenge:', challengeId);
+        break;
+      default:
+        console.log('Unknown action:', action, 'for challenge:', challengeId);
+        break;
+    }
   };
 
   const handleCardClick = (challengeId: string) => {
-    console.log('Club challenge card clicked:', challengeId);
+    console.log('Card clicked:', challengeId);
   };
 
   const renderTabContent = (tab: typeof tabs[0]) => {
@@ -147,18 +176,6 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
     );
   };
 
-  if (!clubId) {
-    return (
-      <Card className="border-border/50 dark:border-border/30">
-        <CardContent className="p-8 text-center">
-          <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <h3 className="text-lg font-semibold mb-2">Chưa có thông tin club</h3>
-          <p className="text-muted-foreground">Vui lòng chọn club để xem thách đấu</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <div className="space-y-4">
       <Card className="border-border/50 dark:border-border/30 bg-card/50 dark:bg-card/80 backdrop-blur-sm">
@@ -166,7 +183,7 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             {/* Enhanced Tab Navigation */}
             <div className="border-b border-border/50 dark:border-border/30 bg-muted/20 dark:bg-muted/10">
-              <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-2 gap-1">
+              <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-2 gap-1">
                 {tabs.map((tab) => {
                   const IconComponent = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -236,5 +253,5 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
   );
 };
 
-export { ClubChallengesTab };
-export default ClubChallengesTab;
+export { EnhancedCommunityTab };
+export default EnhancedCommunityTab;

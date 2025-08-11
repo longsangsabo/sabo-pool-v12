@@ -20,8 +20,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnhancedChallengesV3 } from '@/hooks/useEnhancedChallengesV3';
-import CommunityTab from './components/tabs/CommunityTab';
-import MyTab from './components/tabs/MyTab';
+import { EnhancedCommunityTab } from './components/tabs/EnhancedCommunityTab';
+import { EnhancedMyTab } from './components/tabs/EnhancedMyTab';
 
 const EnhancedChallengesPageV3: React.FC = () => {
   const { user } = useAuth();
@@ -168,7 +168,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent flex items-center justify-center gap-2"
             >
-              🏆 SÀN ĐẤU CAO THỦ V3 🎯
+              🏆 THÁCH ĐẤU 🎯
             </motion.h1>
             <motion.div
               initial={{ opacity: 0 }}
@@ -221,7 +221,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
                 className="rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg"
               >
                 <Target className="w-4 h-4 mr-2" />
-                KHIÊU CHIẾN 🎯
+                Tạo Thách Đấu 🎯
               </Button>
             </motion.div>
           </div>
@@ -235,7 +235,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
             <TabsTrigger value="community" className="relative">
               <span className="flex items-center gap-2">
                 <Users className="w-4 h-4" />
-                Thách đấu Cộng đồng
+                Cộng đồng
               </span>
               {(communityStats.keo + communityStats.live + communityStats.sapToi + communityStats.xong) > 0 && (
                 <Badge className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
@@ -246,7 +246,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
             <TabsTrigger value="my" className="relative">
               <span className="flex items-center gap-2">
                 <Crown className="w-4 h-4" />
-                Thách đấu của tôi
+                Của tôi
               </span>
               {(myStats.doiDoiThu + myStats.sapToi + myStats.hoanThanh) > 0 && (
                 <Badge className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
@@ -257,7 +257,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
           </TabsList>
 
           <TabsContent value="community">
-            <CommunityTab
+            <EnhancedCommunityTab
               keoData={communityKeo}
               liveData={communityLive}
               sapToiData={communitySapToi}
@@ -269,7 +269,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="my">
-            <MyTab
+            <EnhancedMyTab
               doiDoiThuData={myDoiDoiThu}
               sapToiData={mySapToi}
               hoanThanhData={myHoanThanh}

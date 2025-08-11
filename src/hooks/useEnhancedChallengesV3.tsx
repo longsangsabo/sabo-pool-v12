@@ -90,7 +90,7 @@ export const useEnhancedChallengesV3 = () => {
         };
       }) || [];
 
-      setChallenges(enrichedChallenges as Challenge[]);
+      setChallenges(enrichedChallenges as any[]);
       
       console.log('✅ [useEnhancedChallengesV3] Loaded challenges:', {
         total: enrichedChallenges.length,
@@ -121,9 +121,7 @@ export const useEnhancedChallengesV3 = () => {
 
   const communityLive = useMemo(() => 
     challenges.filter(c => 
-      c.status === 'accepted' || 
-      c.status === 'ongoing' ||
-      (c.status === 'accepted' && c.scheduled_time && new Date(c.scheduled_time) <= new Date())
+      c.status === 'pending' && c.opponent_id && c.scheduled_time && new Date(c.scheduled_time) <= new Date()
     ), 
     [challenges]
   );
@@ -224,7 +222,7 @@ export const useEnhancedChallengesV3 = () => {
         },
         payload => {
           // Refresh if profile affects current challenges
-          const updatedUserId = payload.new?.user_id;
+          const updatedUserId = (payload.new as any)?.user_id;
           const hasRelevantChallenge = challenges.some(
             c => c.challenger_id === updatedUserId || c.opponent_id === updatedUserId
           );

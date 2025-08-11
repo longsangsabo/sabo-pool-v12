@@ -3,17 +3,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { User, Crown, Star, Zap } from 'lucide-react';
 import { AvatarSize, avatarSizeConfig } from '@/types/challengeCard';
+import { ExtendedChallengeProfile } from '@/types/enhancedChallenge';
 
 interface EnhancedAvatarProps {
+  // Support both old and new interfaces
   src?: string;
   name?: string;
   rank?: string;
   points?: number;
+  profile?: ExtendedChallengeProfile;
   size?: AvatarSize;
   isOnline?: boolean;
   isWinner?: boolean;
   showBadge?: boolean;
   showRank?: boolean;
+  showOnlineStatus?: boolean;
   className?: string;
   onClick?: () => void;
 }
@@ -23,16 +27,25 @@ const EnhancedAvatar: React.FC<EnhancedAvatarProps> = ({
   name = 'Player',
   rank,
   points,
+  profile,
   size = 'md',
   isOnline = false,
   isWinner = false,
   showBadge = true,
   showRank = true,
+  showOnlineStatus = false,
   className = '',
   onClick
 }) => {
+  // Use profile data if available, otherwise use individual props
+  const avatarSrc = src || profile?.avatar_url;
+  const displayName = name || profile?.full_name || profile?.display_name || 'Player';
+  const displayRank = rank || profile?.rank || profile?.verified_rank || profile?.current_rank;
+  const displayPoints = points || profile?.elo || profile?.ranking_points;
+  const onlineStatus = isOnline || profile?.online_status;
+  
   const sizeConfig = avatarSizeConfig[size];
-  const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
   
   // Determine rank color and icon
   const getRankConfig = (rank?: string, points?: number) => {
@@ -52,8 +65,8 @@ const EnhancedAvatar: React.FC<EnhancedAvatarProps> = ({
     
     return { color: 'bg-gray-500', icon: User, label: rank || 'Tân binh' };
   };
-
-  const rankConfig = getRankConfig(rank, points);
+  
+  const rankConfig = getRankConfig(displayRank, displayPoints);
 
   return (
     <div className={`relative inline-block ${className}`} onClick={onClick}>
@@ -62,11 +75,11 @@ const EnhancedAvatar: React.FC<EnhancedAvatarProps> = ({
         ${sizeConfig.className} 
         ${isWinner ? 'ring-4 ring-yellow-400' : 'ring-2 ring-background'} 
         ${onClick ? 'cursor-pointer hover:ring-primary/50 transition-all' : ''}
-        ${isOnline ? 'ring-green-500' : ''}
+        ${onlineStatus && showOnlineStatus ? 'ring-green-500' : ''}
       `}>
         <AvatarImage 
-          src={src} 
-          alt={name}
+          src={avatarSrc} 
+          alt={displayName}
           className="object-cover"
         />
         <AvatarFallback className={`

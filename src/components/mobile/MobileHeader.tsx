@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Menu,
   Bell,
+  MessageCircle,
   Search,
   Wallet,
   User,
@@ -26,12 +27,14 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTheme } from '@/hooks/useTheme';
 import { useAvatar } from '@/contexts/AvatarContext';
+import { useMessages } from '@/hooks/useMessages';
 
 interface MobileHeaderProps {
   title?: string;
   showSearch?: boolean;
   showProfile?: boolean;
   showNotifications?: boolean;
+  showMessages?: boolean;
   showWallet?: boolean;
   onMenuClick?: () => void;
 }
@@ -41,12 +44,14 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   showSearch = true,
   showProfile = true,
   showNotifications = true,
+  showMessages = true,
   showWallet = false, // Bỏ tab ví theo yêu cầu
   onMenuClick,
 }) => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { avatarUrl: contextAvatar } = useAvatar();
+  const { unreadCount: messageUnreadCount } = useMessages();
 
   // Get current user
   const { data: user } = useQuery({
@@ -192,6 +197,26 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             )}
           </Button>
 
+          {/* Messages */}
+          {showMessages && (
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={() => navigate('/messages')}
+              className='relative hover:bg-muted/50 transition-colors'
+            >
+              <MessageCircle className='w-5 h-5' />
+              {messageUnreadCount && messageUnreadCount > 0 && (
+                <Badge
+                  variant='destructive'
+                  className='absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center animate-pulse'
+                >
+                  {messageUnreadCount > 99 ? '99+' : messageUnreadCount}
+                </Badge>
+              )}
+            </Button>
+          )}
+
           {/* Notifications */}
           {showNotifications && (
             <Button
@@ -259,6 +284,22 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                 >
                   <User className='w-4 h-4 mr-2' />
                   Hồ sơ cá nhân
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() => navigate('/messages')}
+                  className='hover:bg-muted/50 cursor-pointer relative'
+                >
+                  <MessageCircle className='w-4 h-4 mr-2' />
+                  Tin nhắn
+                  {messageUnreadCount && messageUnreadCount > 0 && (
+                    <Badge
+                      variant='destructive'
+                      className='ml-auto w-5 h-5 text-xs p-0 flex items-center justify-center'
+                    >
+                      {messageUnreadCount > 99 ? '99+' : messageUnreadCount}
+                    </Badge>
+                  )}
                 </DropdownMenuItem>
 
                 <DropdownMenuItem

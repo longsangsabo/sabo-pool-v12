@@ -1,6 +1,9 @@
 -- Function to claim legacy SPA points using claim code
 -- This function will be called from the frontend when user enters claim code
 
+-- Drop existing function if it exists
+DROP FUNCTION IF EXISTS claim_legacy_spa_points(VARCHAR, UUID, VARCHAR);
+
 CREATE OR REPLACE FUNCTION claim_legacy_spa_points(
   p_claim_code VARCHAR(50),
   p_user_id UUID,

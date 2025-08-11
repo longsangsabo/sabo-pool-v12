@@ -225,3 +225,18 @@ Thumbs.db
 # Backup files
 *.bak
 *.backup
+
+# Milestone Development Scripts - Temporary debugging files
+check_*.sql
+fix_*.sql
+quick_fix_*.sql
+standardize_*.sql
+naming_convention_*.sql
+run_milestone_migrations.sql
+simple_milestone_test.sql
+test_milestone_*.sql
+verify_milestone_system.sql
+update_milestone_triggers_*.sql
+enable_http_extension.sql
+create_test_user.sh
+test_milestone_http.sh

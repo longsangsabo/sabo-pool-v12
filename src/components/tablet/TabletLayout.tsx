@@ -7,8 +7,7 @@ interface TabletLayoutProps {
   title?: string;
   showSearch?: boolean;
   showProfile?: boolean;
-  showNotifications?: boolean;
-  showWallet?: boolean;
+  showMessages?: boolean;
   showBottomNav?: boolean;
   onMenuClick?: () => void;
 }
@@ -18,7 +17,7 @@ export const TabletLayout: React.FC<TabletLayoutProps> = ({
   title,
   showSearch = true,
   showProfile = true,
-  showNotifications = true,
+  showMessages = true,
   showWallet = true,
   showBottomNav = true,
   onMenuClick,
@@ -30,7 +29,7 @@ export const TabletLayout: React.FC<TabletLayoutProps> = ({
         title={title}
         showSearch={showSearch}
         showProfile={showProfile}
-        showNotifications={showNotifications}
+        showMessages={showMessages}
         showWallet={showWallet}
         onMenuClick={onMenuClick}
       />

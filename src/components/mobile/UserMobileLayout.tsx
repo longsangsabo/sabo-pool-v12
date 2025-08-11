@@ -7,7 +7,7 @@ interface UserMobileLayoutProps {
   title?: string;
   showSearch?: boolean;
   showProfile?: boolean;
-  showNotifications?: boolean;
+  showMessages?: boolean;
   showBottomNav?: boolean;
   onMenuClick?: () => void;
 }
@@ -17,7 +17,7 @@ export const UserMobileLayout: React.FC<UserMobileLayoutProps> = ({
   title,
   showSearch = true,
   showProfile = true,
-  showNotifications = true,
+  showMessages = true,
   showBottomNav = true,
   onMenuClick,
 }) => {
@@ -25,10 +25,10 @@ export const UserMobileLayout: React.FC<UserMobileLayoutProps> = ({
     <div className='min-h-screen bg-background'>
       {/* Social Header with Theme Toggle */}
       <MobileHeader
-        title={title}
+        title={title || 'SABO ARENA'}
         showSearch={showSearch}
         showProfile={showProfile}
-        showNotifications={showNotifications}
+        showMessages={showMessages}
         onMenuClick={onMenuClick}
       />
 

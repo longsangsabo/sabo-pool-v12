@@ -53,8 +53,16 @@ const TournamentPage = lazy(() => import('@/pages/TournamentsPage'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const CommunityPage = lazy(() => import('@/pages/CommunityPage'));
+// Legacy V2 - Keep for fallback
 const EnhancedChallengesPageV2 = lazy(
   () => import('@/pages/EnhancedChallengesPageV2')
+);
+// New V3 - Main implementation
+const EnhancedChallengesPageV3 = lazy(
+  () => import('@/pages/challenges/EnhancedChallengesPageV3')
+);
+const TestChallengesV3 = lazy(
+  () => import('@/pages/challenges/TestChallengesV3')
 );
 const CalendarPage = lazy(() => import('@/pages/CalendarPage'));
 const SettingsPage = lazy(() => import('@/pages/EnhancedSettingsPage'));
@@ -203,7 +211,10 @@ const AppContent = () => {
           >
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='profile' element={<Profile />} />
-            <Route path='challenges' element={<EnhancedChallengesPageV2 />} />
+            <Route path='challenges' element={<EnhancedChallengesPageV3 />} />
+            <Route path='challenges-v2' element={<EnhancedChallengesPageV2 />} />
+            <Route path='challenges-v3' element={<EnhancedChallengesPageV3 />} />
+            <Route path='test-challenges-v3' element={<TestChallengesV3 />} />
             <Route path='community' element={<CommunityPage />} />
             <Route path='calendar' element={<CalendarPage />} />
             <Route path='settings' element={<SettingsPage />} />

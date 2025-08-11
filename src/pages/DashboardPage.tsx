@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { DashboardSkeleton } from '@/components/skeleton/DashboardSkeleton';
 import { EnhancedWalletBalance } from '@/components/enhanced/EnhancedWalletBalance';
+import { MilestoneSummaryWidget } from '@/components/milestones/MilestoneSummaryWidget';
 import { Link } from 'react-router-dom';
 import PageLayout from '@/components/layout/PageLayout';
 
@@ -137,6 +138,9 @@ const DashboardPage = () => {
           <Suspense fallback={<DashboardSkeleton />}>
             <EnhancedWalletBalance />
           </Suspense>
+          <div className='mt-4'>
+            <MilestoneSummaryWidget />
+          </div>
         </div>
 
         {/* Player Stats - Enhanced from Dashboard.tsx + DashboardOverview.tsx mobile design */}

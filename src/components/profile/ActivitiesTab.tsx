@@ -13,7 +13,6 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import MyChallengesTab from '@/components/MyChallengesTab';
-import SPAMilestones from '@/components/SPAMilestones';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { usePlayerActivityStats } from '@/hooks/usePlayerActivityStats';
 
@@ -104,8 +103,7 @@ const ActivitiesTab = () => {
       {/* Challenges Component */}
       <MyChallengesTab />
 
-      {/* SPA Milestones */}
-      <SPAMilestones />
+  {/* SPA Milestones removed in milestone purge */}
     </div>
   );
 };

@@ -24,13 +24,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useQueryClient } from '@tanstack/react-query';
 
-interface SPAMilestone {
-  points: number;
-  title: string;
-  reward: string;
-  completed: boolean;
-}
-
 interface SPATransaction {
   id: string;
   user_id: string;
@@ -43,14 +36,12 @@ interface SPATransaction {
 
 interface SPAPointsCardProps {
   points: number;
-  milestones?: SPAMilestone[];
   weeklyRank?: number;
   monthlyRank?: number;
 }
 
 export const SPAPointsCard: React.FC<SPAPointsCardProps> = ({
   points,
-  milestones = [],
   weeklyRank,
   monthlyRank,
 }) => {
@@ -171,11 +162,7 @@ export const SPAPointsCard: React.FC<SPAPointsCardProps> = ({
     };
   }, [user?.id, queryClient]);
 
-  // Tìm milestone tiếp theo
-  const nextMilestone = milestones.find(m => !m.completed && m.points > points);
-  const progressToNext = nextMilestone
-    ? Math.min(100, (points / nextMilestone.points) * 100)
-    : 100;
+  // Milestone system removed – progress UI disabled
 
   const getTransactionIcon = (type: string) => {
     switch (type) {
@@ -315,39 +302,7 @@ export const SPAPointsCard: React.FC<SPAPointsCardProps> = ({
           </div>
         )}
 
-        {/* Next Milestone Progress */}
-        {nextMilestone && (
-          <div className='space-y-2'>
-            <div className='flex justify-between items-center text-sm'>
-              <span className='text-muted-foreground'>
-                Milestone tiếp theo:
-              </span>
-              <span className='font-medium'>{nextMilestone.title}</span>
-            </div>
-
-            <Progress value={progressToNext} className='h-2' />
-
-            <div className='flex justify-between text-xs text-muted-foreground'>
-              <span>
-                {points.toLocaleString('vi-VN')} /{' '}
-                {nextMilestone.points.toLocaleString('vi-VN')}
-              </span>
-              <span>
-                {(nextMilestone.points - points).toLocaleString('vi-VN')} điểm
-                nữa
-              </span>
-            </div>
-
-            <div className='bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-3'>
-              <div className='flex items-center gap-2'>
-                <GiftIcon className='h-4 w-4 text-yellow-600' />
-                <span className='text-sm text-yellow-800'>
-                  <strong>Phần thưởng:</strong> {nextMilestone.reward}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
+  {/* Milestone progress removed */}
 
         {/* Real-time SPA Changes */}
         <div className='space-y-2'>

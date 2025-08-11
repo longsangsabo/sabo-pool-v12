@@ -55,39 +55,6 @@ const PerformanceTab = () => {
     enabled: !!user?.id,
   });
 
-  // Mock SPA milestones data
-  const spaMilestones = [
-    {
-      points: 100,
-      title: '100 SPA Points',
-      reward: 'Badge "Khởi đầu"',
-      completed: true,
-    },
-    {
-      points: 500,
-      title: '500 SPA Points',
-      reward: 'Voucher giảm giá 10%',
-      completed: true,
-    },
-    {
-      points: 1000,
-      title: '1000 SPA Points',
-      reward: 'Cơ Pool miễn phí 1h',
-      completed: false,
-    },
-    {
-      points: 2500,
-      title: '2500 SPA Points',
-      reward: 'Badge "Cao thủ"',
-      completed: false,
-    },
-    {
-      points: 5000,
-      title: '5000 SPA Points',
-      reward: 'Giải đấu VIP',
-      completed: false,
-    },
-  ];
 
   if (isLoading) {
     return (
@@ -254,7 +221,6 @@ const PerformanceTab = () => {
             <CardContent>
               <SPAPointsCard
                 points={transformedPlayerData.spa_points}
-                milestones={spaMilestones}
                 weeklyRank={transformedPlayerData.weekly_spa_rank}
                 monthlyRank={transformedPlayerData.monthly_spa_rank}
               />

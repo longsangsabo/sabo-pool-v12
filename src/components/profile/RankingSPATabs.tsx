@@ -21,13 +21,12 @@ interface PlayerData {
 interface RankingSPAProps {
   playerData: PlayerData;
   eloHistory?: any[];
-  spaMilestones?: any[];
+  // milestone feature removed
 }
 
 export const RankingSPATabs: React.FC<RankingSPAProps> = ({
   playerData,
   eloHistory = [],
-  spaMilestones = [],
 }) => {
   const navigate = useNavigate();
   const isEligiblePromotion = isEligibleForPromotion(
@@ -80,7 +79,6 @@ export const RankingSPATabs: React.FC<RankingSPAProps> = ({
         <div className='lg:col-span-1'>
           <SPAPointsCard
             points={playerData.spa_points}
-            milestones={spaMilestones}
             weeklyRank={playerData.weekly_spa_rank}
             monthlyRank={playerData.monthly_spa_rank}
           />

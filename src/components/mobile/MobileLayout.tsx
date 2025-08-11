@@ -7,8 +7,7 @@ interface MobileLayoutProps {
   title?: string;
   showSearch?: boolean;
   showProfile?: boolean;
-  showNotifications?: boolean;
-  showWallet?: boolean;
+  showMessages?: boolean;
   showBottomNav?: boolean;
   onMenuClick?: () => void;
 }
@@ -18,8 +17,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
   title,
   showSearch = true,
   showProfile = true,
-  showNotifications = true,
-  showWallet = true,
+  showMessages = true,
   showBottomNav = true,
   onMenuClick,
 }) => {
@@ -30,8 +28,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
         title={title}
         showSearch={showSearch}
         showProfile={showProfile}
-        showNotifications={showNotifications}
-        showWallet={showWallet}
+        showMessages={showMessages}
         onMenuClick={onMenuClick}
       />
 

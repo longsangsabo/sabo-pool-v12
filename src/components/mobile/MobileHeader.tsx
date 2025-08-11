@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
   Menu,
-  Bell,
+  Inbox,
   Search,
   Wallet,
   User,
@@ -26,12 +26,13 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTheme } from '@/hooks/useTheme';
 import { useAvatar } from '@/contexts/AvatarContext';
+import { useMessages } from '@/hooks/useMessages';
 
 interface MobileHeaderProps {
   title?: string;
   showSearch?: boolean;
   showProfile?: boolean;
-  showNotifications?: boolean;
+  showMessages?: boolean;
   showWallet?: boolean;
   onMenuClick?: () => void;
 }
@@ -40,13 +41,14 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   title = 'SABO ARENA',
   showSearch = true,
   showProfile = true,
-  showNotifications = true,
+  showMessages = true,
   showWallet = false, // Bỏ tab ví theo yêu cầu
   onMenuClick,
 }) => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { avatarUrl: contextAvatar } = useAvatar();
+  const { unreadCount: messageUnreadCount } = useMessages();
 
   // Get current user
   const { data: user } = useQuery({
@@ -95,26 +97,6 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
       return data || { balance: 0, points_balance: 0 };
     },
     enabled: !!user?.id,
-  });
-
-  // Get notification count
-  const { data: notificationCount } = useQuery({
-    queryKey: ['notification-count'],
-    queryFn: async () => {
-      if (!user?.id) return 0;
-
-      const { count, error } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .eq('is_read', false)
-        .is('deleted_at', null);
-
-      if (error) throw error;
-      return count || 0;
-    },
-    enabled: !!user?.id,
-    refetchInterval: 30000,
   });
 
   const handleSignOut = async () => {
@@ -192,23 +174,21 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             )}
           </Button>
 
-          {/* Notifications */}
-          {showNotifications && (
+          {/* Messages/Inbox */}
+          {showMessages && (
             <Button
               variant='ghost'
               size='sm'
-              onClick={() => navigate('/notifications')}
+              onClick={() => navigate('/messages')}
               className='relative hover:bg-muted/50 transition-colors'
             >
-              <Bell className='w-5 h-5' />
-              {notificationCount && notificationCount > 0 && (
-                <Badge
-                  variant='destructive'
-                  className='absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center animate-pulse'
-                >
-                  {notificationCount > 99 ? '99+' : notificationCount}
-                </Badge>
-              )}
+              <Inbox className='w-5 h-5' />
+              <Badge
+                variant='secondary'
+                className='absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center bg-blue-500 text-white'
+              >
+                {messageUnreadCount || 0}
+              </Badge>
             </Button>
           )}
 
@@ -259,6 +239,20 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                 >
                   <User className='w-4 h-4 mr-2' />
                   Hồ sơ cá nhân
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() => navigate('/messages')}
+                  className='hover:bg-muted/50 cursor-pointer relative'
+                >
+                  <Inbox className='w-4 h-4 mr-2' />
+                  Tin nhắn
+                  <Badge
+                    variant='secondary'
+                    className='ml-auto w-5 h-5 text-xs p-0 flex items-center justify-center bg-blue-500 text-white'
+                  >
+                    {messageUnreadCount || 0}
+                  </Badge>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem

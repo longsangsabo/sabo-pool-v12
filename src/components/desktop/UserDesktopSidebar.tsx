@@ -21,6 +21,7 @@ import {
   Store,
   Shield,
   User,
+  Mail,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import SPAPointsBadge from '@/components/SPAPointsBadge';
@@ -33,6 +34,7 @@ interface UserDesktopSidebarProps {
 const navigationItems = [
   { name: 'Trang chủ', href: '/dashboard', icon: Home },
   { name: 'Hồ sơ', href: '/profile', icon: User },
+  { name: 'Hộp thư', href: '/messages', icon: Mail },
   { name: 'Giải đấu', href: '/tournaments', icon: Trophy },
   { name: 'Thách đấu', href: '/challenges', icon: Swords },
   // Cộng đồng chuyển sang trang /community thay vì feed

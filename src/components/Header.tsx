@@ -30,13 +30,16 @@ import {
 import { Badge } from './ui/badge';
 import NotificationBadge from './NotificationBadge';
 import SPAPointsBadge from './SPAPointsBadge';
+import SmartNotificationBadge from './SmartNotificationBadge';
 import { supabase } from '@/integrations/supabase/client';
+import { useMessages } from '@/hooks/useMessages';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const { user, signOut } = useAuth();
+  const { unreadMessages, unreadCount: messageUnreadCount } = useMessages();
   const navigate = useNavigate();
   console.log('Header: user:', user?.id, user?.phone);
 
@@ -51,6 +54,7 @@ const Header = () => {
     { name: 'Xếp hạng', href: '/leaderboard', icon: Trophy },
     { name: 'Thách đấu', href: '/challenges', icon: Gamepad2 },
     { name: 'Giải đấu', href: '/tournaments', icon: Calendar },
+    { name: 'Tin nhắn', href: '/messages', icon: MessageSquare },
     { name: 'Cộng đồng', href: '/community', icon: Heart },
     { name: 'Marketplace', href: '/enhanced-marketplace', icon: Store },
     { name: 'CLB', href: '/clubs', icon: Users },
@@ -90,12 +94,14 @@ const Header = () => {
             {navigationItems.map(item => {
               const Icon = item.icon;
               const isActive = isActiveRoute(item.href);
+              const isMessagesItem = item.href === '/messages';
+              const hasUnreadMessages = isMessagesItem && messageUnreadCount > 0;
 
               return (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors relative ${
                     isActive
                       ? 'bg-blue-100 text-blue-700'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -103,6 +109,14 @@ const Header = () => {
                 >
                   <Icon className='w-4 h-4' />
                   <span>{item.name}</span>
+                  {hasUnreadMessages && (
+                    <Badge
+                      variant="destructive"
+                      className="ml-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                    >
+                      {messageUnreadCount > 99 ? '99+' : messageUnreadCount}
+                    </Badge>
+                  )}
                 </Link>
               );
             })}
@@ -113,13 +127,11 @@ const Header = () => {
             {/* SPA Points Badge */}
             {user && <SPAPointsBadge />}
 
-            {/* Notifications */}
+            {/* Smart Notifications with Messages */}
             {user && (
-              <NotificationBadge
-                count={notifications?.length || 0}
-                hasUrgent={
-                  notifications?.some(n => n.priority === 'high') || false
-                }
+              <SmartNotificationBadge
+                systemNotifications={notifications}
+                hasUrgent={notifications?.some(n => n.priority === 'high') || false}
                 onClick={() => {
                   navigate('/notifications');
                 }}
@@ -156,6 +168,22 @@ const Header = () => {
                     <Link to='/dashboard' className='flex items-center'>
                       <BarChart3 className='w-4 h-4 mr-2' />
                       Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to='/messages' className='flex items-center justify-between'>
+                      <div className="flex items-center">
+                        <MessageSquare className='w-4 h-4 mr-2' />
+                        Tin nhắn
+                      </div>
+                      {messageUnreadCount > 0 && (
+                        <Badge
+                          variant="destructive"
+                          className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                        >
+                          {messageUnreadCount > 99 ? '99+' : messageUnreadCount}
+                        </Badge>
+                      )}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -205,12 +233,14 @@ const Header = () => {
               {navigationItems.map(item => {
                 const Icon = item.icon;
                 const isActive = isActiveRoute(item.href);
+                const isMessagesItem = item.href === '/messages';
+                const hasUnreadMessages = isMessagesItem && messageUnreadCount > 0;
 
                 return (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors relative ${
                       isActive
                         ? 'bg-blue-100 text-blue-700'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -218,7 +248,15 @@ const Header = () => {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Icon className='w-5 h-5' />
-                    <span>{item.name}</span>
+                    <span className="flex-1">{item.name}</span>
+                    {hasUnreadMessages && (
+                      <Badge
+                        variant="destructive"
+                        className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                      >
+                        {messageUnreadCount > 99 ? '99+' : messageUnreadCount}
+                      </Badge>
+                    )}
                   </Link>
                 );
               })}

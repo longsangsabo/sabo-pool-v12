@@ -29,7 +29,7 @@ echo "🛠️  Creating properly formatted .env..."
 cat > .env << 'EOF'
 # Supabase Configuration for Development
 VITE_SUPABASE_URL=https://exlqvlbawytbglioqfbc.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTU3NjgzNjEsImV4cCI6MjAzMTM0NDM2MX0.JVY3jDqCQIj_rKGl3eWMQyQv0oInvd_YpGxBAGgZGn8
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODAwODgsImV4cCI6MjA2ODY1NjA4OH0.-WHrBx32yHJwhqXAYUOdW5fytPvpzc4AFttXBl3MykA
 
 # VNPay Configuration
 VITE_VNPAY_TMN_CODE=7F93DNAA

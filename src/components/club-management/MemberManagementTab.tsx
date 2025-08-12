@@ -49,7 +49,6 @@ import {
   Award,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { LegacyClaimAdminPanel } from '../legacy/LegacyClaimAdminPanel';
 import { useAuth } from '@/hooks/useAuth';
 
 interface ClubMember {
@@ -399,23 +398,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
         </Card>
       </div>
 
-      {/* Legacy SPA Claim Admin Panel - Only for SABO admins */}
-      {isAuthorized && (
-        <Card>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <Shield className="w-5 h-5 text-blue-500" />
-              Xác nhận Claim SPA Points (Legacy)
-            </CardTitle>
-            <p className='text-sm text-muted-foreground'>
-              Xử lý yêu cầu claim điểm SPA từ hệ thống cũ
-            </p>
-          </CardHeader>
-          <CardContent>
-            <LegacyClaimAdminPanel />
-          </CardContent>
-        </Card>
-      )}
+      {/* Legacy SPA Claim Admin Panel removed - Now using direct code claim system */}
 
       {/* Search and Add Member */}
       <Card>

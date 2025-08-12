@@ -44,19 +44,7 @@ export const CombinedSPALeaderboard: React.FC = () => {
 
   const loadData = async () => {
     try {
-      // Load pending claim requests for current user
-      /*
-      if (user) {
-        const { data: claimsData } = await supabase
-          .from('legacy_spa_claim_requests')
-          .select('legacy_entry_id')
-          .eq('requester_user_id', user.id)
-          .eq('status', 'pending');
-        
-        const pendingSet = new Set(claimsData?.map(c => c.legacy_entry_id) || []);
-        setPendingClaims(pendingSet);
-      }
-      */
+      // Legacy claim requests system removed - now using direct code claim
 
       // Real legacy data from original system - 47 players
       const mockLegacyData = [

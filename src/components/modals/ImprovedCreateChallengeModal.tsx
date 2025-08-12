@@ -137,12 +137,19 @@ const ImprovedCreateChallengeModal = ({
     const fetchClubs = async () => {
       try {
         const { data, error } = await supabase
-          .from('clubs')
-          .select('id, name, address')
-          .order('name');
+          .from('club_profiles')
+          .select('id, club_name, address')
+          .order('club_name');
 
         if (error) throw error;
-        setClubs(data || []);
+        setClubs(
+          (data || []).map((club: any) => ({
+            id: club.id,
+            name: club.club_name,
+            address: club.address,
+            ...club
+          }))
+        );
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
           // eslint-disable-next-line no-console
@@ -349,13 +356,13 @@ const ImprovedCreateChallengeModal = ({
             className={
               'relative flex-1 overflow-y-auto custom-scrollbar ' +
               (isMobile
-                ? 'px-4 pb-40 pt-4 space-y-5'
-                : 'px-6 pb-6 pt-5 space-y-5')
+                ? 'px-3 pb-32 pt-3 space-y-2'
+                : 'px-5 pb-5 pt-4 space-y-2')
             }
           >
             {/* Challenge Type Selection - Open Challenge First */}
             <div
-              className={`${sectionCard} shadow-inner shadow-slate-900/20 space-y-3`}
+              className={`${sectionCard} shadow-inner shadow-slate-900/20 space-y-1 p-2`}
             >
               <Label
                 className={`label-text ${
@@ -418,7 +425,7 @@ const ImprovedCreateChallengeModal = ({
 
             {/* Opponent Selection for Direct Challenge */}
             {challengeType === 'direct' && (
-              <div className={`${sectionCard} space-y-2`}>
+              <div className={`${sectionCard} space-y-1 p-2`}>
                 <Label
                   className={`label-text ${
                     isDark ? 'text-slate-300' : 'text-slate-500'
@@ -523,7 +530,7 @@ const ImprovedCreateChallengeModal = ({
             )}
 
             {/* SABO Mode - Enhanced UI */}
-            <div className={sectionCard + ' space-y-3'}>
+            <div className={sectionCard + ' space-y-1 p-2'}>
               <div className='rounded-md bg-slate-800/40 border border-slate-700/50 p-3'>
                 <div className='flex items-center justify-between mb-3'>
                   <div className='flex items-center gap-2'>
@@ -594,7 +601,7 @@ const ImprovedCreateChallengeModal = ({
             </div>
 
             {/* Bet Configuration - Compact */}
-            <div className={`${sectionCard} space-y-3`}>
+            <div className={`${sectionCard} space-y-1 p-2`}>
               <Label
                 className={`label-text ${
                   isDark ? 'text-slate-300' : 'text-slate-500'
@@ -662,7 +669,7 @@ const ImprovedCreateChallengeModal = ({
 
             {/* Required Rank for Open Challenges */}
             {challengeType === 'open' && (
-              <div className={`${sectionCard} space-y-2`}>
+              <div className={`${sectionCard} space-y-1 p-2`}>
                 <Label
                   className={`label-text ${
                     isDark ? 'text-slate-300' : 'text-slate-500'
@@ -708,7 +715,7 @@ const ImprovedCreateChallengeModal = ({
             )}
 
             {/* Club Selection */}
-            <div className={`${sectionCard} space-y-2`}>
+            <div className={`${sectionCard} space-y-1 p-2`}>
               <Label
                 htmlFor='club'
                 className={`label-text ${

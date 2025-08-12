@@ -74,12 +74,19 @@ export const CreateChallengeForm: React.FC<CreateChallengeFormProps> = ({
   const fetchClubs = async () => {
     try {
       const { data, error } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .select('*')
         .order('name');
 
       if (error) throw error;
-      setClubs(data || []);
+      setClubs(
+        (data || []).map((club: any) => ({
+          id: club.id,
+          name: club.club_name,
+          address: club.address,
+          ...club
+        }))
+      );
     } catch (err) {
       console.error('Failed to fetch clubs:', err);
     }
@@ -196,18 +203,24 @@ export const CreateChallengeForm: React.FC<CreateChallengeFormProps> = ({
                 setFormData(prev => ({ ...prev, club_id: value }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className='w-full min-w-[220px]'>
                 <SelectValue placeholder='Chọn CLB...' />
               </SelectTrigger>
-              <SelectContent>
-                {clubs.map(club => (
-                  <SelectItem key={club.id} value={club.id}>
-                    <div className='flex items-center gap-2'>
-                      <MapPin className='w-4 h-4' />
-                      <span>{club.name}</span>
-                    </div>
+              <SelectContent className='min-w-[220px]'>
+                {clubs.length === 0 ? (
+                  <SelectItem value='' disabled>
+                    <span className='text-gray-400'>Không có câu lạc bộ nào</span>
                   </SelectItem>
-                ))}
+                ) : (
+                  clubs.map(club => (
+                    <SelectItem key={club.id} value={club.id}>
+                      <div className='flex items-center gap-2'>
+                        <MapPin className='w-4 h-4' />
+                        <span>{club.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
           </div>

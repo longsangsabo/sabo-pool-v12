@@ -553,20 +553,26 @@ const UnifiedCreateChallengeModal: React.FC<
                   setFormData(prev => ({ ...prev, club_id: value }))
                 }
               >
-                <SelectTrigger className='h-10'>
+                <SelectTrigger className='h-10 w-full min-w-[220px]'>
                   <SelectValue placeholder='Chọn câu lạc bộ' />
                 </SelectTrigger>
-                <SelectContent>
-                  {clubs.map(club => (
-                    <SelectItem key={club.id} value={club.id}>
-                      <div>
-                        <div className='font-medium text-sm'>{club.name}</div>
-                        <div className='text-xs text-muted-foreground'>
-                          {club.address}
-                        </div>
-                      </div>
+                <SelectContent className='min-w-[220px]'>
+                  {clubs.length === 0 ? (
+                    <SelectItem value='' disabled>
+                      <span className='text-gray-400'>Không có câu lạc bộ nào</span>
                     </SelectItem>
-                  ))}
+                  ) : (
+                    clubs.map(club => (
+                      <SelectItem key={club.id} value={club.id}>
+                        <div>
+                          <div className='font-medium text-sm'>{club.name}</div>
+                          <div className='text-xs text-muted-foreground'>
+                            {club.address}
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -599,27 +605,52 @@ const UnifiedCreateChallengeModal: React.FC<
               <Textarea
                 id='message'
                 placeholder='Thêm tin nhắn cho thách đấu...'
-                value={formData.message}
+                value={formData.message || ''}
                 onChange={e =>
                   setFormData(prev => ({ ...prev, message: e.target.value }))
                 }
-                rows={2}
-                className='text-sm'
+                className='w-full min-h-[40px]'
               />
             </div>
 
-            {/* Action Buttons - Compact */}
-            <div className='flex gap-2 pt-2'>
-              <Button
-                type='button'
-                variant='outline'
-                onClick={onClose}
-                className='flex-1 h-10'
+            {/* Club Selection - Compact (sửa lại, tách riêng) */}
+            <div className='space-y-2'>
+              <Label htmlFor='club' className='text-sm'>
+                Câu lạc bộ
+              </Label>
+              <Select
+                value={formData.club_id}
+                onValueChange={value =>
+                  setFormData(prev => ({ ...prev, club_id: value }))
+                }
               >
-                Hủy
-              </Button>
+                <SelectTrigger className='h-10 w-full min-w-[220px]'>
+                  <SelectValue placeholder='Chọn câu lạc bộ' />
+                </SelectTrigger>
+                <SelectContent className='min-w-[220px]'>
+                  {clubs.length === 0 ? (
+                    <SelectItem value='' disabled>
+                      <span className='text-gray-400'>Không có câu lạc bộ nào</span>
+                    </SelectItem>
+                  ) : (
+                    clubs.map(club => (
+                      <SelectItem key={club.id} value={club.id}>
+                        <div>
+                          <div className='font-medium'>{club.name}</div>
+                          <div className='text-sm text-gray-500'>
+                            {club.address}
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Button gửi thách đấu */}
+            <div className='flex justify-end mt-4'>
               <Button
-                type='submit'
                 disabled={
                   loading ||
                   (challengeType === 'direct' && !formData.opponent_id) ||

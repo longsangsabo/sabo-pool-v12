@@ -77,6 +77,10 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
   };
 
   const currentAvatar = croppedImage || userAvatar;
+  
+  console.log('🎯 CardAvatar - userAvatar:', userAvatar);
+  console.log('🎯 CardAvatar - croppedImage:', croppedImage);
+  console.log('🎯 CardAvatar - currentAvatar:', currentAvatar);
 
   return (
     <div className={`card-avatar-container ${className}`}>
@@ -90,16 +94,49 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
             className='image-area'
             onClick={() => fileInputRef.current?.click()}
           >
-            {currentAvatar ? (
-              <img src={currentAvatar} alt='Avatar' className='avatar-image' />
-            ) : (
-              <div className='avatar-placeholder'>
-                <div className='placeholder-content'>
-                  <Camera className='w-8 h-8 text-gray-400 mb-2' />
-                  <p className='text-sm text-gray-400 font-medium'>Đổi ảnh</p>
-                </div>
+            {currentAvatar && currentAvatar.trim() !== '' ? (
+              <img 
+                src={currentAvatar} 
+                alt='Avatar' 
+                className='avatar-image'
+                onError={(e) => {
+                  console.error('❌ Avatar load error:', currentAvatar);
+                  // Hide the broken image and show placeholder
+                  const target = e.currentTarget;
+                  target.style.display = 'none';
+                  const placeholder = target.parentElement?.querySelector('.avatar-placeholder');
+                  if (placeholder) {
+                    (placeholder as HTMLElement).style.display = 'flex';
+                  }
+                }}
+                onLoad={() => {
+                  console.log('✅ Avatar loaded successfully:', currentAvatar);
+                }}
+                style={{ 
+                  backgroundColor: 'transparent',
+                  display: 'block',
+                  position: 'relative',
+                  zIndex: 2
+                }}
+              />
+            ) : null}
+            
+            {/* Always render placeholder, but hide it when avatar loads successfully */}
+            <div 
+              className='avatar-placeholder'
+              style={{ 
+                display: (currentAvatar && currentAvatar.trim() !== '') ? 'none' : 'flex',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                zIndex: 1
+              }}
+            >
+              <div className='placeholder-content'>
+                <Camera className='w-8 h-8 text-gray-400 mb-2' />
+                <p className='text-sm text-gray-400 font-medium'>Đổi ảnh</p>
               </div>
-            )}
+            </div>
 
             {/* Nickname Overlay */}
             {currentAvatar && (

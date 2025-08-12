@@ -54,6 +54,10 @@ export function useMobileProfile() {
         verified_rank: data?.verified_rank || null,
         completion_percentage: data?.completion_percentage || 0,
       };
+      
+      console.log('🎯 Profile avatar_url:', profileData.avatar_url);
+      console.log('🎯 Full profile data:', profileData);
+      
       setProfile(profileData);
       setEditingProfile(profileData);
     } catch (e) {
@@ -177,16 +181,27 @@ export function useMobileProfile() {
       const fileExt = 'jpg';
       const fileName = `${user.id}/avatar.${fileExt}`;
       
-      console.log('Uploading avatar:', fileName, 'Size:', croppedFile.size);
+      console.log('🚀 Starting avatar upload...');
+      console.log('📁 File details:', {
+        name: fileName,
+        size: croppedFile.size,
+        type: croppedFile.type,
+        userId: user.id
+      });
+      
+      // Skip bucket validation - proceed directly to upload
+      console.log('🔗 Proceeding with direct upload to avatars bucket...');
       
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, croppedFile, { upsert: true });
         
       if (uploadError) {
-        console.error('Upload error:', uploadError);
+        console.error('❌ Upload error:', uploadError);
         throw uploadError;
       }
+      
+      console.log('✅ Upload successful!');
       
       const { data: urlData } = supabase.storage
         .from('avatars')
@@ -194,7 +209,7 @@ export function useMobileProfile() {
         
       const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
       
-      console.log('Avatar URL:', avatarUrl);
+      console.log('🔗 Generated avatar URL:', avatarUrl);
       
       const { error: updateError } = await supabase
         .from('profiles')

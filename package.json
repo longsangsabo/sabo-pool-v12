@@ -10,7 +10,8 @@
     "npm": ">=8.0.0"
   },
   "scripts": {
-    "dev": "vite",
+    "setup": "node -e \"const fs = require('fs'); if (!fs.existsSync('.env')) { const source = fs.existsSync('.env.template') ? '.env.template' : fs.existsSync('.env.backup.20250809_110350') ? '.env.backup.20250809_110350' : '.env.example'; fs.copyFileSync(source, '.env'); console.log('✅ Created .env from', source); } else { console.log('✅ .env already exists'); }\"",
+    "dev": "npm run setup && vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",

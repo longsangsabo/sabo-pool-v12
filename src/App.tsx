@@ -79,7 +79,6 @@ const TestAvatarPage = lazy(() => import('@/pages/test-avatar'));
 
 // Admin components
 const AdminRouter = lazy(() => import('@/router/AdminRouter'));
-const LegacyClaimAdminPage = lazy(() => import('@/pages/LegacyClaimAdminPage'));
 
 // Club components
 const ClubManagementPage = lazy(() => import('@/pages/ClubManagementPage'));
@@ -240,8 +239,7 @@ const AppContent = () => {
               element={<ClubOwnerDashboardPage />}
             />
             
-            {/* Legacy Claim Admin - Temporarily accessible for testing */}
-            <Route path='legacy-claim-admin' element={<LegacyClaimAdminPage />} />
+            {/* Legacy Claim Admin route removed - now using direct code claim system */}
           </Route>
 
           {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}

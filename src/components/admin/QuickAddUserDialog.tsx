@@ -66,7 +66,7 @@ export const QuickAddUserDialog: React.FC<QuickAddUserDialogProps> = ({
         .from('profiles')
         .select(
           `
-          id, user_id, full_name, display_name, avatar_url, verified_rank, elo
+          id, user_id, full_name, display_name, avatar_url, verified_rank, elo, current_rank
         `
         )
         .limit(200);
@@ -76,24 +76,29 @@ export const QuickAddUserDialog: React.FC<QuickAddUserDialogProps> = ({
         throw usersError;
       }
 
-      // Get existing registrations
-      const { data: registrations, error: regError } = await supabase
+      console.log('✅ Loaded users:', allUsers?.length || 0);
+
+      // Get already registered users for this tournament
+      const { data: registeredUsers, error: regError } = await supabase
         .from('tournament_registrations')
         .select('user_id')
-        .eq('tournament_id', tournament.id);
+        .eq('tournament_id', tournament.id)
+        .in('registration_status', ['pending', 'confirmed']);
 
       if (regError) {
-        console.error('❌ Error loading registrations:', regError);
+        console.error('❌ Error loading registered users:', regError);
         throw regError;
       }
 
       const registeredUserIds = new Set(
-        registrations?.map(r => r.user_id) || []
+        registeredUsers?.map(reg => reg.user_id) || []
       );
+      console.log('📝 Already registered users:', registeredUserIds.size);
 
-      // Filter out already registered users
-      const availableUsers = (allUsers || []).filter(
-        user => !registeredUserIds.has(user.user_id)
+      // Filter out already registered users and users without names
+      const availableUsers = (allUsers || []).filter(user => 
+        (user.full_name || user.display_name) && // Only users with names
+        !registeredUserIds.has(user.user_id) // Not already registered
       );
 
       console.log('✅ Available users for adding:', availableUsers.length);
@@ -150,28 +155,73 @@ export const QuickAddUserDialog: React.FC<QuickAddUserDialogProps> = ({
 
     setAdding(true);
     try {
-      const registrations = Array.from(selectedUsers).map(userId => ({
-        tournament_id: tournament.id,
-        user_id: userId,
-        registration_status: 'confirmed' as const,
-        payment_status: 'paid' as const,
-        created_at: new Date().toISOString(),
-      }));
+      console.log('🚀 Adding participants to tournament:', tournament.id);
+      console.log('Selected user IDs:', Array.from(selectedUsers));
 
-      console.log('🚀 Bulk adding participants:', registrations);
-
-      const { data, error } = await supabase
-        .from('tournament_registrations')
-        .insert(registrations)
-        .select();
-
-      console.log('✅ Bulk insert result:', { data, error });
-
-      if (error) {
-        console.error('❌ Database error:', error);
-        throw error;
+      // Check current user authentication and admin status
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        console.error('❌ Authentication error:', authError);
+        throw new Error('User not authenticated');
+      }
+      
+      console.log('🔍 Current authenticated user:', user.id);
+      
+      // Check if current user is admin
+      const { data: currentUserProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('is_admin, full_name')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (profileError) {
+        console.error('❌ Error checking user profile:', profileError);
+        throw new Error('Could not verify admin permissions');
+      }
+      
+      console.log('👤 Current user profile:', currentUserProfile);
+      
+      if (!currentUserProfile?.is_admin) {
+        console.error('❌ User is not admin:', currentUserProfile);
+        throw new Error('You do not have admin permissions to add participants');
       }
 
+      // Create registration records for selected users
+      const registrationData = Array.from(selectedUsers).map(userId => ({
+        tournament_id: tournament.id,
+        user_id: userId,
+        registration_status: 'confirmed',
+        payment_status: 'paid', // Assuming paid for quick add
+        registration_date: new Date().toISOString(),
+        payment_date: new Date().toISOString(),
+        notes: 'Added by admin via quick add'
+      }));
+
+      console.log('📝 Inserting registration data:', registrationData);
+
+      const { error: insertError } = await supabase
+        .from('tournament_registrations')
+        .insert(registrationData);
+
+      if (insertError) {
+        console.error('❌ Error inserting registrations:', insertError);
+        throw insertError;
+      }
+
+      // Update tournament current_participants count
+      const newParticipantCount = tournament.current_participants + selectedUsers.size;
+      const { error: updateError } = await supabase
+        .from('tournaments')
+        .update({ current_participants: newParticipantCount })
+        .eq('id', tournament.id);
+
+      if (updateError) {
+        console.error('❌ Error updating tournament count:', updateError);
+        // Don't throw here - registrations were successful
+      }
+
+      console.log('✅ Successfully added participants!');
+      
       toast({
         title: 'Thành công',
         description: `Đã thêm ${selectedUsers.size} người tham gia vào giải đấu ${tournament.name}!`,

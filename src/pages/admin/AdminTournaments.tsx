@@ -42,8 +42,8 @@ interface Tournament {
   prize_pool: number;
   registration_start: string;
   registration_end: string;
-  tournament_start: string;
-  tournament_end: string;
+  start_date: string;
+  end_date: string;
   venue_address: string;
   created_by: string;
   created_at: string;
@@ -79,7 +79,7 @@ const AdminTournaments: React.FC = () => {
           `
           id, name, status, max_participants, tournament_type, game_format,
           entry_fee, prize_pool, registration_start, registration_end,
-          tournament_start, tournament_end, venue_address, created_by,
+          start_date, end_date, venue_address, created_by,
           created_at, updated_at
         `
         )
@@ -406,7 +406,7 @@ const AdminTournaments: React.FC = () => {
                   <span className='text-sm'>Thời gian</span>
                 </div>
                 <span className='text-sm'>
-                  {formatDate(tournament.tournament_start)}
+                  {tournament.start_date ? formatDate(tournament.start_date) : 'Chưa xác định'}
                 </span>
               </div>
 

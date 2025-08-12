@@ -437,10 +437,14 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (!tournament?.name) errors.name = 'Tên giải đấu là bắt buộc';
     if (!tournament?.tier_level) errors.tier_level = 'Hạng thi đấu là bắt buộc';
-    if (!tournament?.max_participants)
-      errors.max_participants = 'Số người tham gia là bắt buộc';
-    if (!tournament?.venue_address)
-      errors.venue_address = 'Địa chỉ tổ chức là bắt buộc';
+    if (!tournament?.max_participants) errors.max_participants = 'Số người tham gia là bắt buộc';
+    if (!tournament?.venue_address) errors.venue_address = 'Địa chỉ tổ chức là bắt buộc';
+    if (!tournament?.tournament_type) errors.tournament_type = 'Loại giải là bắt buộc';
+    if (!tournament?.game_format) errors.game_format = 'Thể thức là bắt buộc';
+    if (!tournament?.registration_start) errors.registration_start = 'Thời gian bắt đầu đăng ký là bắt buộc';
+    if (!tournament?.registration_end) errors.registration_end = 'Thời gian kết thúc đăng ký là bắt buộc';
+    if (!tournament?.tournament_start) errors.tournament_start = 'Thời gian bắt đầu giải là bắt buộc';
+    if (!tournament?.tournament_end) errors.tournament_end = 'Thời gian kết thúc giải là bắt buộc';
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -468,38 +472,37 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(true);
       setError(null);
 
-      // Prepare tournament data
+      // Chuẩn bị dữ liệu theo bảng tournaments
+      const now = new Date().toISOString();
       const tournamentData = {
+        // id sẽ được sinh tự động bởi DB
         name: tournament.name,
         description: tournament.description || '',
         tournament_type: tournament.tournament_type || 'double_elimination',
         game_format: tournament.game_format || 'billiards_pool_8',
         tier_level: tournament.tier_level,
         max_participants: tournament.max_participants,
+        current_participants: tournament.current_participants || 0,
         entry_fee: tournament.entry_fee || 0,
         prize_pool: tournament.prize_pool || 0,
-        venue_address: tournament.venue_address,
-        contact_info: tournament.contact_info || '',
-        rules: tournament.rules || '',
-        registration_start:
-          tournament.registration_start || new Date().toISOString(),
-        registration_end:
-          tournament.registration_end ||
-          new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        tournament_start:
-          tournament.tournament_start ||
-          new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString(),
-        tournament_end:
-          tournament.tournament_end ||
-          new Date(Date.now() + 9 * 24 * 60 * 60 * 1000).toISOString(),
-        status: 'registration_open',
+        first_prize: tournament.first_prize || 0,
+        second_prize: tournament.second_prize || 0,
+        third_prize: tournament.third_prize || 0,
+        registration_start: tournament.registration_start || now,
+        registration_end: tournament.registration_end || now,
+        tournament_start: tournament.tournament_start || now,
+        tournament_end: tournament.tournament_end || now,
+        club_id: tournament.club_id || null,
+        venue_address: tournament.venue_address || '',
         created_by: user.id,
-        current_participants: 0,
-        allow_all_ranks: tournament.allow_all_ranks !== false,
-        eligible_ranks: tournament.eligible_ranks || ['K', 'I', 'H', 'G'],
-        requires_approval: tournament.requires_approval || false,
+        organizer_id: tournament.organizer_id || null,
+        status: 'registration_open',
         is_public: tournament.is_public !== false,
-        has_third_place_match: tournament.has_third_place_match || false,
+        requires_approval: tournament.requires_approval || false,
+        rules: tournament.rules || '',
+        contact_info: tournament.contact_info || {}, // jsonb
+        created_at: now,
+        updated_at: now,
       };
 
       // Create tournament in database
@@ -572,13 +575,28 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
         const updateData = {
           name: tournament.name,
           description: tournament.description || '',
+          tournament_type: tournament.tournament_type || 'double_elimination',
+          game_format: tournament.game_format || 'billiards_pool_8',
           tier_level: tournament.tier_level,
           max_participants: tournament.max_participants,
+          current_participants: tournament.current_participants || 0,
           entry_fee: tournament.entry_fee || 0,
           prize_pool: tournament.prize_pool || 0,
-          venue_address: tournament.venue_address,
-          contact_info: tournament.contact_info || '',
+          first_prize: tournament.first_prize || 0,
+          second_prize: tournament.second_prize || 0,
+          third_prize: tournament.third_prize || 0,
+          registration_start: tournament.registration_start,
+          registration_end: tournament.registration_end,
+          tournament_start: tournament.tournament_start,
+          tournament_end: tournament.tournament_end,
+          club_id: tournament.club_id || null,
+          venue_address: tournament.venue_address || '',
+          organizer_id: tournament.organizer_id || null,
+          status: tournament.status || 'registration_open',
+          is_public: tournament.is_public !== false,
+          requires_approval: tournament.requires_approval || false,
           rules: tournament.rules || '',
+          contact_info: tournament.contact_info || {},
           updated_at: new Date().toISOString(),
         };
 

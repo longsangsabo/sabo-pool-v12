@@ -50,7 +50,13 @@ export const ProfileQuickActions: React.FC<ProfileQuickActionsProps> = ({
         ? 'Quản lý câu lạc bộ của bạn'
         : 'Tạo câu lạc bộ mới',
       icon: Building,
-      onClick: onNavigateToClubTab,
+      onClick: () => {
+        if (profile?.role === 'club_owner' || profile?.role === 'both') {
+          navigate('/club-management');
+        } else if (onNavigateToClubTab) {
+          onNavigateToClubTab();
+        }
+      },
       primary: false,
       variant: 'secondary' as const,
     },

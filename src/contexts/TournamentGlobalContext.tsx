@@ -91,7 +91,7 @@ export const TournamentGlobalProvider: React.FC<
           elo_points_config
         `
         )
-        .is('deleted_at', null)
+  // .is('deleted_at', null) // Bảng tournaments không có cột deleted_at
         .in('status', [
           'completed',
           'registration_open',

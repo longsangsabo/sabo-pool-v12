@@ -183,56 +183,24 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
     if (!targetClubId) return;
     
     try {
-      // Get all tournaments with optional registration counts
+      // Simple query without joins to avoid foreign key issues
       const { data, error } = await supabase
         .from('tournaments')
         .select(`
           id, name, status, max_participants, entry_fee, prize_pool,
           registration_start, registration_end, start_date, end_date,
-          tournament_type, created_at, description,
-          tournament_registrations(payment_status)
+          tournament_type, created_at, description, current_participants
         `)
         .eq('club_id', targetClubId)
-        .is('deleted_at', null)
-        .or('is_visible.is.null,is_visible.eq.true')
+        .in('status', ['upcoming', 'registration_open', 'registration_closed', 'ongoing', 'completed'])
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      // Calculate actual participant counts - count all registrations regardless of payment status
-      const tournamentsWithCounts = (data || []).map(tournament => {
-        const allRegistrations = tournament.tournament_registrations?.length || 0;
-        
-        return {
-          ...tournament,
-          current_participants: allRegistrations,
-          tournament_registrations: undefined // Remove from display object
-        };
-      });
-
-      setTournaments(tournamentsWithCounts as any[]);
+      setTournaments((data as any[]) || []);
     } catch (error) {
       console.error('Error loading tournaments:', error);
-      // Fallback to basic query if the join fails
-      try {
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from('tournaments')
-          .select(`
-            id, name, status, max_participants, entry_fee, prize_pool,
-            registration_start, registration_end, start_date, end_date,
-            tournament_type, created_at, description, current_participants
-          `)
-          .eq('club_id', targetClubId)
-          .is('deleted_at', null)
-          .eq('is_visible', true)
-          .order('created_at', { ascending: false });
-
-        if (fallbackError) throw fallbackError;
-        setTournaments((fallbackData as any[]) || []);
-      } catch (fallbackError) {
-        console.error('Fallback query also failed:', fallbackError);
-        toast.error('Không thể tải danh sách giải đấu');
-      }
+      toast.error('Không thể tải danh sách giải đấu');
     }
   };
 

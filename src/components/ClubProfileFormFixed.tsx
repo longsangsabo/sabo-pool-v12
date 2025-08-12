@@ -53,11 +53,11 @@ const ClubProfileForm = () => {
       // Convert club_profiles data to local format
       const clubProfileData = {
         id: clubData.id,
-        club_name: clubData.club_name || clubData.name || '',
+        club_name: clubData.name || '',
         address: clubData.address || '',
-        phone: clubData.phone || clubData.contact_info || '',
+        phone: clubData.contact_info || '',
         operating_hours: clubData.operating_hours || {},
-        number_of_tables: clubData.number_of_tables || clubData.table_count || 1,
+        number_of_tables: clubData.table_count || 1,
         verification_status: clubData.verification_status || 'pending',
         verified_at: clubData.verified_at,
         created_at: clubData.created_at,
@@ -66,10 +66,10 @@ const ClubProfileForm = () => {
       
       setClubProfile(clubProfileData);
       setFormData({
-        club_name: clubData.club_name || clubData.name || '',
+        club_name: clubData.name || '',
         address: clubData.address || '',
-        phone: clubData.phone || clubData.contact_info || '',
-        number_of_tables: clubData.number_of_tables || clubData.table_count || 1,
+        phone: clubData.contact_info || '',
+        number_of_tables: clubData.table_count || 1,
         opening_time: '',
         closing_time: '',
         notes: clubData.description || '',
@@ -93,28 +93,16 @@ const ClubProfileForm = () => {
 
     setSaving(true);
     try {
-      // Try updating with both possible column names
-      const updateData: any = {
-        updated_at: new Date().toISOString(),
-      };
-      
-      // Try club_name first, fallback to name
-      if ('club_name' in clubData) {
-        updateData.club_name = formData.club_name;
-        updateData.address = formData.address;
-        updateData.phone = formData.phone;
-        updateData.number_of_tables = formData.number_of_tables;
-      } else {
-        updateData.name = formData.club_name;
-        updateData.address = formData.address;
-        updateData.contact_info = formData.phone;
-        updateData.table_count = formData.number_of_tables;
-        updateData.description = formData.notes;
-      }
-
       const { error } = await supabase
         .from('club_profiles')
-        .update(updateData)
+        .update({
+          name: formData.club_name,
+          address: formData.address,
+          contact_info: formData.phone,
+          table_count: formData.number_of_tables,
+          description: formData.notes,
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', clubData.id);
 
       if (error) throw error;

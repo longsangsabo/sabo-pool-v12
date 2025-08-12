@@ -51,9 +51,16 @@ const TournamentsPage = () => {
         .select(
           `
           *,
-          club_profiles!tournaments_club_id_fkey(*)
+          club_profiles(*)
         `
         )
+        .in('status', [
+          'completed',
+          'registration_open',
+          'registration_closed',
+          'ongoing',
+          'upcoming',
+        ])
         .order('created_at', { ascending: false });
 
       if (error) {

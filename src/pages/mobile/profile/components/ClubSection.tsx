@@ -40,7 +40,12 @@ export const ClubSection: React.FC<ClubSectionProps> = ({ theme, role }) => {
                 Quản lý câu lạc bộ hiện tại của bạn
               </div>
             </div>
-            <Button variant='outline' size='sm' className='w-full'>
+            <Button 
+              variant='outline' 
+              size='sm' 
+              className='w-full'
+              onClick={() => (window.location.href = '/club-management')}
+            >
               <Building className='w-4 h-4 mr-2' />
               Quản lý CLB hiện tại
             </Button>

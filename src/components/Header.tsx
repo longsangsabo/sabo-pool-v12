@@ -15,9 +15,11 @@ import {
   BarChart3,
   Gamepad2,
   Heart,
+  Building2,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useUnifiedProfile } from '@/contexts/UnifiedProfileContext';
 // Admin check removed - admin links moved to AdminRouter
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
@@ -39,6 +41,7 @@ const Header = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const { user, signOut } = useAuth();
+  const { profile } = useUnifiedProfile();
   const { unreadMessages, unreadCount: messageUnreadCount } = useMessages();
   const navigate = useNavigate();
   console.log('Header: user:', user?.id, user?.phone);
@@ -170,6 +173,15 @@ const Header = () => {
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
+                  {/* Club Management for club owners */}
+                  {(profile?.role === 'club_owner' || profile?.role === 'both') && (
+                    <DropdownMenuItem asChild>
+                      <Link to='/club-management' className='flex items-center'>
+                        <Building2 className='w-4 h-4 mr-2' />
+                        Quản lý CLB
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link to='/messages' className='flex items-center justify-between'>
                       <div className="flex items-center">

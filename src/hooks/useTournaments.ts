@@ -19,15 +19,16 @@ export const useTournaments = () => {
         .select(
           `
           *,
-          club_profiles!tournaments_club_id_fkey(*)
+          club_profiles(*)
         `
         )
-        .is('deleted_at', null) // Filter out soft deleted tournaments
+  // .is('deleted_at', null) // Bảng tournaments không có cột deleted_at
         .in('status', [
           'completed',
           'registration_open',
           'registration_closed',
           'ongoing',
+          'upcoming',
         ]) // Show valid tournament statuses
         .order('created_at', { ascending: false });
 

@@ -213,18 +213,14 @@ export const useClubDashboard = () => {
       const clubId = clubData.id;
       console.log('Club ID:', clubId);
 
-      // Use the new database function for stats
-      const { data: statsData, error: statsError } = await supabase.rpc(
-        'calculate_club_dashboard_stats',
-        {
-          p_club_id: clubId,
-        }
-      );
-
-      if (statsError) throw statsError;
-
-      // Parallel fetch additional data
-      const [verifications, notifications] = await Promise.all([
+      // Use simple queries instead of problematic database function
+      const [
+        verifications,
+        notifications,
+        totalMembers,
+        totalTournaments,
+        totalMatches,
+      ] = await Promise.all([
         // CORRECT: Get PENDING rank verification requests for THIS club only
         supabase
           .from('rank_requests')
@@ -252,12 +248,30 @@ export const useClubDashboard = () => {
           )
           .order('created_at', { ascending: false })
           .limit(10),
+
+        // Get total members count
+        supabase
+          .from('club_members')
+          .select('id', { count: 'exact' })
+          .eq('club_id', clubId)
+          .eq('status', 'active'),
+
+        // Get total tournaments count
+        supabase
+          .from('tournaments')
+          .select('id', { count: 'exact' })
+          .eq('club_id', clubId)
+          .in('status', ['upcoming', 'registration_open', 'registration_closed', 'ongoing', 'completed']),
+
+        // Get total matches count (placeholder for now)
+        Promise.resolve({ count: 0 }),
       ]);
 
       console.log('Dashboard queries results:', {
         verifications: verifications.data?.length,
         notifications: notifications.data?.length,
-        statsData,
+        totalMembers: totalMembers.count,
+        totalTournaments: totalTournaments.count,
       });
 
       const dashboardData: ClubDashboardData = {
@@ -265,18 +279,18 @@ export const useClubDashboard = () => {
         pendingVerifications: verifications.data || [],
         recentNotifications: notifications.data || [],
         memberStats: {
-          total: (statsData as any)?.total_members || 0,
-          verified: (statsData as any)?.active_members || 0,
-          thisMonth: (statsData as any)?.active_members || 0,
+          total: totalMembers.count || 0,
+          verified: totalMembers.count || 0,
+          thisMonth: totalMembers.count || 0,
         },
         matchStats: {
-          total: (statsData as any)?.total_matches || 0,
-          thisMonth: (statsData as any)?.completed_matches || 0,
+          total: totalMatches.count || 0,
+          thisMonth: 0,
           thisWeek: 0,
         },
         tournamentStats: {
-          hosted: (statsData as any)?.total_tournaments || 0,
-          upcoming: (statsData as any)?.active_tournaments || 0,
+          hosted: totalTournaments.count || 0,
+          upcoming: totalTournaments.count || 0,
         },
         trustScore: 80.0,
         systemStatus: {

@@ -1,0 +1,25 @@
+-- Step 1: Create tournaments table
+CREATE TABLE IF NOT EXISTS tournaments (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  tournament_type TEXT NOT NULL DEFAULT 'sabo_double_elimination',
+  status TEXT NOT NULL DEFAULT 'upcoming',
+  start_date TIMESTAMPTZ NOT NULL,
+  end_date TIMESTAMPTZ,
+  registration_start TIMESTAMPTZ,
+  registration_end TIMESTAMPTZ,
+  max_participants INTEGER DEFAULT 32,
+  current_participants INTEGER DEFAULT 0,
+  entry_fee DECIMAL(10,2) DEFAULT 0.00,
+  prize_pool DECIMAL(12,2) DEFAULT 0.00,
+  is_sabo_tournament BOOLEAN DEFAULT false,
+  race_to INTEGER DEFAULT 7,
+  club_id UUID,
+  organizer_id UUID,
+  rules JSONB DEFAULT '{}',
+  settings JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  created_by UUID
+);

@@ -3,6 +3,11 @@
 -- Comprehensive testing and validation functions
 -- ================================
 
+-- 0. DROP EXISTING FUNCTIONS TO AVOID CONFLICTS
+DROP FUNCTION IF EXISTS public.sabo_system_health_check CASCADE;
+DROP FUNCTION IF EXISTS public.validate_sabo_tournament_structure_enhanced CASCADE;
+DROP FUNCTION IF EXISTS public.test_sabo_tournament_flow CASCADE;
+
 -- 1. Enhanced Structure Validation with Detailed Analysis
 CREATE OR REPLACE FUNCTION validate_sabo_tournament_structure_enhanced(
   p_tournament_id UUID

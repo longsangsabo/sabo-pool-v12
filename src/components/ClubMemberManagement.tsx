@@ -37,7 +37,7 @@ export const useClubMembers = (clubId: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ SIMPLE APPROACH: Single query using verified_rank
+  // ✅ CORRECT APPROACH: Query users who are actually club members
   const fetchClubMembers = async () => {
     try {
       setLoading(true);
@@ -48,46 +48,54 @@ export const useClubMembers = (clubId: string) => {
         return;
       }
 
-      // ✅ For now, check if we have a clubId parameter
-      if (!clubId) {
+      // ✅ First get club members
+      const { data: clubMembersData, error: clubMembersError } = await supabase
+        .from('club_members')
+        .select('user_id, join_date, status')
+        .eq('club_id', clubId)
+        .or('status.is.null,status.neq.removed');
+
+      if (clubMembersError) throw clubMembersError;
+
+      if (!clubMembersData || clubMembersData.length === 0) {
         setMembers([]);
         return;
       }
 
-      // ✅ Simple approach: get all profiles for demonstration
+      // ✅ Get user IDs from club members
+      const userIds = clubMembersData.map(cm => cm.user_id);
+
+      // ✅ Then get profiles for those users
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
-        .select(
-          `
+        .select(`
           user_id,
           full_name,
           display_name,
           verified_rank,
           elo,
           avatar_url,
+          phone,
           updated_at
-        `
-        )
-        .limit(10);
+        `)
+        .in('user_id', userIds);
 
       if (profilesError) throw profilesError;
 
-      // ✅ Map profiles to club members format
+      // ✅ Map club members with their profile data
       const membersWithVerification =
         profilesData?.map(profile => {
+          const clubMemberInfo = clubMembersData.find(cm => cm.user_id === profile.user_id);
           return {
             id: profile.user_id,
             username: profile.display_name || profile.full_name || 'Unknown',
-            display_name:
-              profile.full_name || profile.display_name || 'Unknown',
+            display_name: profile.full_name || profile.display_name || 'Unknown',
             verified_rank: profile.verified_rank,
             current_elo: profile.elo || 1000,
-            phone: '',
+            phone: profile.phone || '',
             avatar_url: profile.avatar_url,
-            verification_date: profile.updated_at,
-            verification_status: profile.verified_rank
-              ? 'verified'
-              : 'unverified',
+            verification_date: clubMemberInfo?.join_date || profile.updated_at,
+            verification_status: profile.verified_rank ? 'verified' : 'unverified',
             total_matches: 0,
             wins: 0,
             trust_score: 50.0, // Default trust score
@@ -95,6 +103,7 @@ export const useClubMembers = (clubId: string) => {
         }) || [];
 
       setMembers(membersWithVerification);
+      console.log(`✅ Loaded ${membersWithVerification.length} club members`);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to fetch club members';
@@ -281,9 +290,9 @@ const ClubMemberManagement = () => {
       if (!user) return;
 
       const { data: clubData } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .select('id')
-        .eq('owner_id', user.id)
+        .eq('user_id', user.id)
         .single();
 
       if (clubData) {

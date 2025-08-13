@@ -29,7 +29,6 @@ import TableBookingForm from '@/components/TableBookingForm';
 import { Club } from '@/types/common';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import ClubProfileMobile from '@/components/club/mobile/ClubProfileMobile';
-import MobileDebugInfo from '@/components/debug/MobileDebugInfo';
 import MobilePlayerLayout from '@/components/mobile/MobilePlayerLayout';
 
 interface Member {
@@ -74,7 +73,7 @@ const ClubDetailPage = () => {
     try {
       // Fetch club info
       const { data: clubData, error: clubError } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .select('*')
         .eq('id', id)
         .single();
@@ -116,7 +115,10 @@ const ClubDetailPage = () => {
         },
       ];
 
-      setClub(clubData);
+      setClub({
+        ...clubData,
+        name: clubData.club_name, // Map club_name to name
+      });
       setMembers(mockMembers);
       setTournaments(mockTournaments);
       setMemberCount(mockMembers.length);
@@ -286,9 +288,6 @@ const ClubDetailPage = () => {
   // Desktop view (original code)
   return (
     <div className='min-h-screen bg-gray-50 pt-16'>
-      {/* Debug info for mobile testing - remove in production */}
-      <MobileDebugInfo />
-
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {/* Club Header */}
         <Card className='mb-6 overflow-hidden'>

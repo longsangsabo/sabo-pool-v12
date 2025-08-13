@@ -133,9 +133,9 @@ const ClubRegistrationMultiStepForm = () => {
 
     try {
       const { data, error } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .select('*')
-        .eq('owner_id', user.id)
+        .eq('user_id', user.id)
         .single();
 
       if (error && error.code !== 'PGRST116') {
@@ -144,9 +144,9 @@ const ClubRegistrationMultiStepForm = () => {
       }
 
       if (data) {
-        setExistingRegistration(data);
+        setExistingRegistration({ ...data, name: data.club_name });
         setFormData({
-          club_name: data.name || '',
+          club_name: data.club_name || '',
           address: data.address || '',
           district: '',
           city: '',
@@ -169,7 +169,7 @@ const ClubRegistrationMultiStepForm = () => {
           manager_phone: '',
           email: '',
           status:
-            (data.status as 'draft' | 'pending' | 'approved' | 'rejected') ||
+            (data.verification_status as 'draft' | 'pending' | 'approved' | 'rejected') ||
             'draft',
         });
       }
@@ -185,13 +185,13 @@ const ClubRegistrationMultiStepForm = () => {
 
     setSaving(true);
     try {
-      const { error } = await supabase.from('clubs').upsert({
-        owner_id: user.id,
-        name: formData.club_name,
+      const { error } = await supabase.from('club_profiles').upsert({
+        user_id: user.id,
+        club_name: formData.club_name,
         address: formData.address,
-        contact_info: formData.phone,
+        phone: formData.phone,
         description: '',
-        status: 'active',
+        verification_status: 'draft',
       });
 
       if (error) throw error;
@@ -211,13 +211,13 @@ const ClubRegistrationMultiStepForm = () => {
 
     setSaving(true);
     try {
-      const { error } = await supabase.from('clubs').upsert({
-        owner_id: user.id,
-        name: formData.club_name,
+      const { error } = await supabase.from('club_profiles').upsert({
+        user_id: user.id,
+        club_name: formData.club_name,
         address: formData.address,
-        contact_info: formData.phone,
+        phone: formData.phone,
         description: '',
-        status: 'active',
+        verification_status: 'pending',
       });
 
       if (error) throw error;
@@ -242,11 +242,11 @@ const ClubRegistrationMultiStepForm = () => {
     setSaving(true);
     try {
       const { error } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .update({
-          status: 'active',
+          verification_status: 'pending',
         })
-        .eq('owner_id', user.id);
+        .eq('user_id', user.id);
 
       if (error) throw error;
 

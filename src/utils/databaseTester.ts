@@ -103,7 +103,7 @@ class DatabaseTester {
     tests.push(
       await this.runTest('Clubs SELECT', async () => {
         const { data, error } = await supabase
-          .from('clubs')
+          .from('club_profiles')
           .select('*')
           .limit(5);
         if (error) throw error;

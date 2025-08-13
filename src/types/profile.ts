@@ -54,16 +54,16 @@ export const SKILL_LEVELS = {
 } as const;
 
 export const RANK_OPTIONS = [
-  { value: '1000', label: '1000 - K' },
-  { value: '1100', label: '1100 - K+' },
-  { value: '1200', label: '1200 - I' },
-  { value: '1300', label: '1300 - I+' },
-  { value: '1400', label: '1400 - H' },
-  { value: '1500', label: '1500 - H+' },
-  { value: '1600', label: '1600 - G' },
-  { value: '1700', label: '1700 - G+' },
-  { value: '1800', label: '1800 - F' },
-  { value: '1900', label: '1900 - F+' },
-  { value: '2000', label: '2000 - E' },
-  { value: '2100', label: '2100 - E+' },
+  { value: 'K', label: '1000 ELO - K (Người mới tập)' },
+  { value: 'K+', label: '1100 ELO - K+ (Biết luật, kẻ cơ dũng)' },
+  { value: 'I', label: '1200 ELO - I (Người chơi cơ bản)' },
+  { value: 'I+', label: '1300 ELO - I+ (Tận bình tiến bộ)' },
+  { value: 'H', label: '1400 ELO - H (Trung bình)' },
+  { value: 'H+', label: '1500 ELO - H+ (Chuẩn bị lên G)' },
+  { value: 'G', label: '1600 ELO - G (Khó)' },
+  { value: 'G+', label: '1700 ELO - G+ (Trình phòng trào "ngon")' },
+  { value: 'F', label: '1800 ELO - F (Giỏi)' },
+  { value: 'F+', label: '1900 ELO - F+ (Cao nhất nhóm trung cấp)' },
+  { value: 'E', label: '2000 ELO - E (Xuất sắc)' },
+  { value: 'E+', label: '2100 ELO - E+ (Cao thủ)' },
 ] as const;

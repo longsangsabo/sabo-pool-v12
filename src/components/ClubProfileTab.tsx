@@ -187,11 +187,11 @@ const ClubProfileTab = ({ user, profile, onUpdate }: ClubProfileTabProps) => {
   const fetchExistingClubs = async () => {
     try {
       const { data } = await supabase
-        .from('clubs')
-        .select('id, name, address')
-        .eq('status', 'active')
-        .order('name');
-      setClubs(data || []);
+        .from('club_profiles')
+        .select('id, club_name, address')
+        .eq('verification_status', 'approved')
+        .order('club_name');
+      setClubs(data?.map(club => ({ ...club, name: club.club_name })) || []);
     } catch (error) {
       console.error('Error fetching clubs:', error);
     }
@@ -265,14 +265,14 @@ const ClubProfileTab = ({ user, profile, onUpdate }: ClubProfileTabProps) => {
 
       // Create a club entry instead
       const { data, error } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .insert([
           {
-            name: registrationData.club_name,
+            club_name: registrationData.club_name,
             address: registrationData.address,
-            contact_info: registrationData.phone,
-            owner_id: user.id,
-            status: 'pending',
+            phone: registrationData.phone,
+            user_id: user.id,
+            verification_status: 'pending',
           },
         ])
         .select()

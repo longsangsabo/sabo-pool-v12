@@ -145,9 +145,9 @@ const ClubTournamentManagement = forwardRef<ClubTournamentManagementRef>(
 
       try {
         const { data, error } = await supabase
-          .from('clubs')
+          .from('club_profiles')
           .select('id')
-          .eq('owner_id', user?.id)
+          .eq('user_id', user?.id)
           .single();
 
         if (error) {

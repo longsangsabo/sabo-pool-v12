@@ -20,7 +20,7 @@ export const fetchClubProfile = async (
   clubId: string
 ): Promise<ClubProfileData | null> => {
   const { data, error } = await supabase
-    .from('clubs')
+    .from('club_profiles')
     .select('*')
     .eq('id', clubId)
     .maybeSingle();
@@ -28,17 +28,17 @@ export const fetchClubProfile = async (
   if (!data) return null;
   return {
     id: data.id,
-    name: data.name,
-    logo_url: data.logo_url,
+    name: data.club_name,
+    logo_url: undefined, // Not available in club_profiles
     address: data.address,
-    member_count: data.member_count,
-    trust_score: data.trust_score,
-    verified: data.status === 'active',
+    member_count: undefined, // Not available in club_profiles
+    trust_score: data.priority_score, // Use priority_score as trust_score
+    verified: data.verification_status === 'approved',
     description: data.description,
-    phone: data.contact_info,
+    phone: data.phone,
     created_at: data.created_at,
-    total_matches: data.total_matches,
-    total_tournaments: data.total_tournaments,
+    total_matches: undefined, // Not available in club_profiles
+    total_tournaments: undefined, // Not available in club_profiles
   };
 };
 

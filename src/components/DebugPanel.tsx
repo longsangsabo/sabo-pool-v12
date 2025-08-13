@@ -28,7 +28,7 @@ const DebugPanel = () => {
     try {
       const results = {
         profiles: await supabase.from('profiles').select('count'),
-        clubs: await supabase.from('clubs').select('count'),
+        clubs: await supabase.from('club_profiles').select('count'),
         tournaments: await supabase.from('tournaments').select('count'),
         challenges: await supabase.from('challenges').select('count'),
         memberships: await (supabase as any)

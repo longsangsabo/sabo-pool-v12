@@ -20,20 +20,41 @@ export const useClubs = (limit = 50) => {
       setError(null);
       try {
         const { data, error } = await supabase
-          .from('clubs')
-          .select('id, name, address, status')
-          .eq('status', 'active')
+          .from('club_profiles')
+          .select('id, club_name, address, verification_status')
+          .eq('verification_status', 'approved')
           .limit(limit);
-        if (error) throw error;
-        if (!cancelled) {
-          setClubs(
-            (data as any[])?.map(c => ({
-              id: c.id,
-              name: c.name || c.club_name || 'CLB',
-              address: c.address,
-              status: c.status,
-            }))
-          );
+        
+        if (error) {
+          console.log('No approved clubs, trying all club profiles...');
+          const { data: allClubs, error: allError } = await supabase
+            .from('club_profiles')
+            .select('id, club_name, address, verification_status')
+            .limit(limit);
+          
+          if (allError) throw allError;
+          
+          if (!cancelled) {
+            setClubs(
+              (allClubs as any[])?.map(c => ({
+                id: c.id,
+                name: c.club_name,
+                address: c.address,
+                status: c.verification_status,
+              })) || []
+            );
+          }
+        } else {
+          if (!cancelled) {
+            setClubs(
+              (data as any[])?.map(c => ({
+                id: c.id,
+                name: c.club_name,
+                address: c.address,
+                status: c.verification_status,
+              })) || []
+            );
+          }
         }
       } catch (e: any) {
         if (!cancelled) setError(e.message || 'Load clubs failed');

@@ -80,12 +80,12 @@ const RankingPage = () => {
   const fetchClubs = async () => {
     try {
       const { data, error } = await supabase
-        .from('clubs')
-        .select('id, name')
-        .eq('status', 'active');
+        .from('club_profiles')
+        .select('id, club_name')
+        .eq('verification_status', 'approved');
 
       if (error) throw error;
-      setClubs(data || []);
+      setClubs(data?.map(club => ({ id: club.id, name: club.club_name })) || []);
     } catch (error) {
       console.error('Error fetching clubs:', error);
     }

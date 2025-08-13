@@ -88,13 +88,23 @@ const RankRegistrationForm = ({ onSuccess }: RankRegistrationFormProps) => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('clubs')
-        .select('id, name, address, status')
-        .eq('status', 'active')
+        .from('club_profiles')
+        .select('id, club_name, address, verification_status')
+        .eq('verification_status', 'approved')
         .order('club_name');
 
-      if (error) throw error;
-      setClubs((data as any) || []);
+      if (error) {
+        console.log('No verified clubs, trying all club profiles...');
+        const { data: allClubs, error: allError } = await supabase
+          .from('club_profiles')
+          .select('id, club_name, address, verification_status')
+          .order('club_name');
+        
+        if (allError) throw allError;
+        setClubs((allClubs as any) || []);
+      } else {
+        setClubs((data as any) || []);
+      }
     } catch (error) {
       console.error('Error fetching clubs:', error);
       toast.error('Lỗi khi tải danh sách CLB');
@@ -124,8 +134,8 @@ const RankRegistrationForm = ({ onSuccess }: RankRegistrationFormProps) => {
       // Get club data separately
       const clubIds = [...new Set(requests.map(req => req.club_id))];
       const { data: clubs, error: clubsError } = await supabase
-        .from('clubs')
-        .select('id, name, address')
+        .from('club_profiles')
+        .select('id, club_name, address')
         .in('id', clubIds);
 
       if (clubsError) throw clubsError;
@@ -134,11 +144,11 @@ const RankRegistrationForm = ({ onSuccess }: RankRegistrationFormProps) => {
         ...req,
         club: {
           name:
-            clubs?.find(club => (club as any).id === (req as any).user_id)
-              ?.name || 'Unknown Club',
+            clubs?.find(club => (club as any).id === (req as any).club_id)
+              ?.club_name || 'Unknown Club',
           address:
-            clubs?.find(club => (club as any).id === (req as any).user_id)
-              ?.address || '',
+            clubs?.find(club => (club as any).id === (req as any).club_id)
+              ?.address || 'Unknown Address',
         },
       }));
 
@@ -321,7 +331,7 @@ const RankRegistrationForm = ({ onSuccess }: RankRegistrationFormProps) => {
                     <SelectItem key={club.id} value={club.id}>
                       <div className='flex flex-col'>
                         <span className='font-medium'>
-                          {(club as any).name}
+                          {(club as any).club_name}
                         </span>
                         <span className='text-sm text-gray-500'>
                           {club.address}

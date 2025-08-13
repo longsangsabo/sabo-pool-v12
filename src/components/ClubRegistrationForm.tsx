@@ -61,36 +61,36 @@ const ClubRegistrationForm = () => {
     try {
       // Check if user owns a club
       const { data: clubData, error: clubError } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .select('*')
-        .eq('owner_id', user.id)
+        .eq('user_id', user.id)
         .single();
 
       if (clubData) {
         setFormData({
-          club_name: clubData.name || '',
+          club_name: clubData.club_name || '',
           address: clubData.address || '',
           city: 'TP. Hồ Chí Minh',
           district: '',
-          phone: clubData.contact_info || '',
+          phone: clubData.phone || '',
           opening_time: '08:00',
           closing_time: '23:00',
-          table_count: 1,
+          table_count: clubData.available_tables || 1,
           table_types: ['Pool'],
-          basic_price: 0,
+          basic_price: clubData.hourly_rate || 0,
           email: '',
           manager_name: '',
           manager_phone: '',
         });
         setClubProfile({
           id: clubData.id,
-          club_name: clubData.name || '',
+          club_name: clubData.club_name || '',
           address: clubData.address || '',
-          phone: clubData.contact_info || '',
+          phone: clubData.phone || '',
           operating_hours: {},
-          number_of_tables: 1,
-          verification_status: clubData.status || 'pending',
-          verification_notes: null,
+          number_of_tables: clubData.available_tables || 1,
+          verification_status: clubData.verification_status || 'pending',
+          verification_notes: clubData.description,
           created_at: clubData.created_at,
         });
       } else {
@@ -126,14 +126,16 @@ const ClubRegistrationForm = () => {
     try {
       // Create new club
       const { data, error } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .insert([
           {
-            name: formData.club_name,
+            club_name: formData.club_name,
             address: formData.address,
-            contact_info: formData.phone,
-            owner_id: user.id,
-            status: 'pending',
+            phone: formData.phone,
+            user_id: user.id,
+            verification_status: 'pending',
+            available_tables: formData.table_count,
+            hourly_rate: formData.basic_price,
           },
         ])
         .select()

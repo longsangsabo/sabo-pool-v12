@@ -20,6 +20,7 @@ import { ProfileTabsMobile } from './mobile/profile/components/ProfileTabsMobile
 import { ClubSection } from './mobile/profile/components/ClubSection';
 import { RankSection } from './mobile/profile/components/RankSection';
 import { usePlayerStats } from '@/hooks/usePlayerStats';
+import { usePlayerRanking } from '@/hooks/usePlayerRanking';
 import { useMobilePageTitle } from '@/hooks/useMobilePageTitle';
 import { MOBILE_PAGE_TITLES } from '@/components/mobile/MobilePlayerLayout';
 
@@ -42,6 +43,7 @@ const OptimizedMobileProfile: React.FC = () => {
     originalImageForCrop,
   } = useMobileProfile();
   const { stats: playerStats, loading: statsLoading } = usePlayerStats();
+  const { ranking: playerRanking, loading: rankingLoading } = usePlayerRanking();
   const [activeTab, setActiveTab] = useState('activities');
   const [showScrollTop, setShowScrollTop] = useState(false);
   const { clubs: clubsForRank } = useClubs();
@@ -88,7 +90,7 @@ const OptimizedMobileProfile: React.FC = () => {
             rank={profile.verified_rank || 'K'}
             elo={playerStats?.elo || 1000}
             spa={playerStats?.spa || 0}
-            ranking={0}
+            ranking={playerRanking?.ranking_position || 0}
             matches={playerStats?.total_matches || 0}
             size='md'
             className='mb-8'
@@ -102,7 +104,7 @@ const OptimizedMobileProfile: React.FC = () => {
             rank={profile.verified_rank || 'K'}
             elo={playerStats?.elo || 1000}
             spa={playerStats?.spa || 0}
-            ranking={0}
+            ranking={playerRanking?.ranking_position || 0}
             matches={playerStats?.total_matches || 0}
             size='md'
             className='mb-8'

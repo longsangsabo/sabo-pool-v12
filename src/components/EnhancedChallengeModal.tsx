@@ -77,13 +77,13 @@ const EnhancedChallengeModal = ({
   const fetchNearbyClubs = async () => {
     try {
       const { data, error } = await (supabase as any)
-        .from('clubs')
-        .select('id, name, address')
-        .eq('verified', true)
+        .from('club_profiles')
+        .select('id, club_name, address')
+        .eq('verification_status', 'approved')
         .limit(10);
 
       if (error) throw error;
-      setClubs(data || []);
+      setClubs(data?.map(club => ({ ...club, name: club.club_name })) || []);
     } catch (error) {
       console.error('Error fetching clubs:', error);
     }

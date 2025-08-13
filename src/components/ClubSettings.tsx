@@ -58,9 +58,9 @@ const ClubSettings = () => {
 
     try {
       const { data, error } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .select('*')
-        .eq('owner_id', user.id)
+        .eq('user_id', user.id)
         .single();
 
       if (error && error.code !== 'PGRST116') {
@@ -70,11 +70,11 @@ const ClubSettings = () => {
       if (data) {
         setClubSettings({
           id: data.id,
-          club_name: data.name,
+          club_name: data.club_name,
           address: data.address,
-          phone: data.contact_info,
+          phone: data.phone,
           operating_hours: {},
-          number_of_tables: 10,
+          number_of_tables: data.available_tables || 10,
           verification_notes: data.description,
         });
       }
@@ -92,12 +92,13 @@ const ClubSettings = () => {
     setSaving(true);
     try {
       const { error } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .update({
-          name: clubSettings.club_name,
+          club_name: clubSettings.club_name,
           address: clubSettings.address,
-          contact_info: clubSettings.phone,
+          phone: clubSettings.phone,
           description: clubSettings.verification_notes,
+          available_tables: clubSettings.number_of_tables,
           updated_at: new Date().toISOString(),
         })
         .eq('id', clubSettings.id);

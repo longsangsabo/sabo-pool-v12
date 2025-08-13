@@ -85,9 +85,9 @@ const ClubStatsDashboard = () => {
     try {
       // Check if user owns a club
       const { data: clubData, error: clubError } = await supabase
-        .from('clubs')
+        .from('club_profiles')
         .select('*')
-        .eq('owner_id', user.id)
+        .eq('user_id', user.id)
         .single();
 
       if (clubError || !clubData) {
@@ -95,7 +95,7 @@ const ClubStatsDashboard = () => {
         return;
       }
 
-      setClubInfo(clubData);
+      setClubInfo({ ...clubData, name: clubData.club_name });
       await Promise.all([
         fetchClubStats(clubData.id),
         fetchClubMembers(clubData.id),

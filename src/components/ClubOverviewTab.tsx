@@ -5,7 +5,6 @@ import ClubDashboardOverview from '@/components/ClubDashboardOverview';
 import ClubStatsDashboard from '@/components/ClubStatsDashboard';
 import TrustScoreDisplay from '@/components/TrustScoreDisplay';
 import RankingWorkflowTest from '@/components/test/RankingWorkflowTest';
-import RankRequestDebugger from '@/components/debug/RankRequestDebugger';
 import TestCopyTemplate from '@/components/test/TestCopyTemplate';
 
 const ClubOverviewTab = () => {
@@ -53,7 +52,6 @@ const ClubOverviewTab = () => {
         <TabsContent value='test'>
           <div className='space-y-6'>
             <TestCopyTemplate />
-            <RankRequestDebugger />
             <RankingWorkflowTest />
           </div>
         </TabsContent>

@@ -103,8 +103,8 @@ class DatabaseConnectionTester {
   async testClubsAccess(): Promise<ConnectionTestResult> {
     return this.runTest('Clubs Access', async () => {
       const { data, error } = await supabase
-        .from('clubs')
-        .select('id, name, address')
+        .from('club_profiles')
+        .select('id, club_name, address')
         .limit(5);
 
       if (error) throw error;

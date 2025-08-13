@@ -59,8 +59,8 @@ const Navigation = () => {
         // Run both checks in parallel to improve performance
         const [clubResult, adminResult] = await Promise.allSettled([
           // Check club owner status
-          // Check club owner status using clubs table
-          supabase.from('clubs').select('id').eq('owner_id', user.id).single(),
+          // Check club owner status using club_profiles table
+          supabase.from('club_profiles').select('id').eq('user_id', user.id).single(),
           // Check admin status using profile table directly
           supabase
             .from('profiles')

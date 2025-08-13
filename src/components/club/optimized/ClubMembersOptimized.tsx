@@ -313,96 +313,59 @@ const ClubMembersOptimized: React.FC = () => {
         clubProfile?.id
       );
 
-      // Update rank request status
-      const { error: requestError } = await supabase
-        .from('rank_requests')
-        .update({
-          status: 'approved',
-          updated_at: new Date().toISOString(),
-          approved_by: user?.id,
-          approved_at: new Date().toISOString(),
-        })
-        .eq('id', requestId);
-
-      if (requestError) {
-        console.error('Error updating rank request:', requestError);
-        throw requestError;
-      }
-      console.log('✅ Rank request updated successfully');
-
-      // Update user's verified rank
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ verified_rank: requestedRank })
-        .eq('user_id', userId);
-
-      if (profileError) {
-        console.error('Error updating profile:', profileError);
-        throw profileError;
-      }
-      console.log('✅ Profile verified_rank updated successfully');
-
-      // Add user to club members if not already a member
-      const { data: existingMember, error: checkError } = await supabase
-        .from('club_members')
-        .select('id, status')
-        .eq('club_id', clubProfile?.id)
-        .eq('user_id', userId)
-        .single();
-
-      if (checkError && checkError.code !== 'PGRST116') {
-        console.error('Error checking existing member:', checkError);
+      // Verify user permissions first
+      if (!user?.id) {
+        throw new Error('Bạn chưa đăng nhập');
       }
 
-      console.log('Existing member check result:', existingMember);
+      if (!clubProfile?.id) {
+        throw new Error('Không tìm thấy thông tin club');
+      }
 
-      if (!existingMember) {
-        console.log('User is not a member yet, adding to club_members...');
-        const { error: memberError, data: newMember } = await supabase
-          .from('club_members')
-          .insert({
-            club_id: clubProfile?.id || '',
-            user_id: userId,
-            status: 'approved',
-            join_date: new Date().toISOString(),
-            membership_type: 'verified_member',
-          })
-          .select()
-          .single();
-
-        if (memberError) {
-          console.error('Error adding user to club members:', memberError);
-          // Don't throw error here, rank verification was successful
-        } else {
-          console.log('✅ User added to club_members successfully:', newMember);
+      // Use the database function to approve the request
+      console.log('🔧 Calling approve_rank_request function...');
+      const { data: result, error: functionError } = await supabase.rpc(
+        'approve_rank_request' as any,
+        {
+          request_id: requestId,
+          approver_id: user.id,
+          club_id: clubProfile.id
         }
-      } else {
-        console.log('User is already a member, updating status...');
-        // Update existing member status to approved if it wasn't
-        const { error: updateMemberError, data: updatedMember } = await supabase
-          .from('club_members')
-          .update({
-            status: 'approved',
-            membership_type: 'verified_member',
-          })
-          .eq('id', existingMember.id)
-          .select()
-          .single();
-
-        if (updateMemberError) {
-          console.error('Error updating member status:', updateMemberError);
-        } else {
-          console.log('✅ Member status updated successfully:', updatedMember);
-        }
-      }
-
-      toast.success(
-        'Đã duyệt yêu cầu xác thực hạng và thêm vào danh sách thành viên'
       );
-      await loadAllData(); // Reload all data
+
+      if (functionError) {
+        console.error('❌ Database function error:', functionError);
+        throw new Error('Lỗi khi gọi function database: ' + functionError.message);
+      }
+
+      const approvalResult = result as any;
+      if (!approvalResult?.success) {
+        console.error('❌ Function returned error:', approvalResult);
+        throw new Error(approvalResult?.error || 'Lỗi không xác định từ database function');
+      }
+
+      console.log('✅ Rank request approved successfully:', approvalResult);
+
+      // Refresh data
+      await loadAllData();
+
+      toast.success(`Đã duyệt yêu cầu xác thực hạng ${requestedRank} cho user`);
+      
     } catch (error) {
-      console.error('Error approving request:', error);
-      toast.error('Lỗi khi duyệt yêu cầu');
+      console.error('❌ Error in handleApproveRequest:', error);
+      
+      let errorMessage = 'Có lỗi xảy ra khi duyệt yêu cầu';
+      if (error instanceof Error) {
+        if (error.message.includes('row-level security') || error.message.includes('policy')) {
+          errorMessage = 'Lỗi quyền truy cập database. Vui lòng thử lại hoặc liên hệ admin.';
+        } else if (error.message.includes('Insufficient permissions')) {
+          errorMessage = 'Bạn không có quyền duyệt yêu cầu này.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setProcessing(null);
     }

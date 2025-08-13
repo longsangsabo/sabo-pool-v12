@@ -144,9 +144,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
     try {
       const { data, error } = await (supabase as any)
-        .from('clubs')
-        .select('id, status')
-        .eq('owner_id', user.id)
+        .from('club_profiles')
+        .select('id, verification_status')
+        .eq('user_id', user.id)
         .single();
 
       if (error && error.code !== 'PGRST116') {

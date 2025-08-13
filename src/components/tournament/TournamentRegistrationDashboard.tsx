@@ -81,46 +81,53 @@ export const TournamentRegistrationDashboard: React.FC<
   const fetchRegistrations = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // Load registrations first
+      const { data: registrationsData, error: registrationsError } = await supabase
         .from('tournament_registrations')
-        .select(
-          `
-          *,
-          profiles!tournament_registrations_user_id_fkey (
-            id, user_id, full_name, display_name, avatar_url, verified_rank
-          )
-        `
-        )
+        .select('*')
         .eq('tournament_id', tournament.id);
 
-      if (error) throw error;
+      if (registrationsError) throw registrationsError;
 
-      // Transform the data to match our interface
-      const transformedRegistrations = (data || []).map((reg: any) => ({
-        id: reg.id,
-        user_id: reg.user_id,
-        registration_date: reg.registration_date,
-        status:
-          (reg.status as
-            | 'registered'
-            | 'confirmed'
-            | 'cancelled'
-            | 'withdrawn') || 'registered',
-        payment_status:
-          (reg.payment_status as 'pending' | 'paid' | 'refunded') || 'pending',
-        notes: reg.notes,
-        user_profile:
-          typeof reg.user_profile === 'object'
-            ? reg.user_profile
-            : {
-                user_id: reg.user_id,
-                full_name: 'Unknown',
-                display_name: 'Unknown',
-                avatar_url: undefined,
-                verified_rank: undefined,
-                current_rank: undefined,
-              },
-      }));
+      // Load profiles separately
+      let transformedRegistrations: any[] = [];
+      if (registrationsData && registrationsData.length > 0) {
+        const userIds = registrationsData.map(r => r.user_id);
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, user_id, full_name, display_name, avatar_url, verified_rank')
+          .in('user_id', userIds);
+
+        if (profilesError) {
+          console.error('Error loading profiles:', profilesError);
+        }
+
+        // Transform the data to match our interface
+        transformedRegistrations = (registrationsData || []).map((reg: any) => ({
+          id: reg.id,
+        tournament_id: reg.tournament_id,
+          user_id: reg.user_id,
+          registration_date: reg.registration_date,
+          status:
+            (reg.status as
+              | 'registered'
+              | 'confirmed'
+              | 'cancelled'
+              | 'withdrawn') || 'registered',
+          payment_status:
+            (reg.payment_status as 'pending' | 'paid' | 'refunded') || 'pending',
+          notes: reg.notes,
+          user_profile: profilesData?.find(p => p.user_id === reg.user_id) || {
+            user_id: reg.user_id,
+            full_name: 'Unknown',
+            display_name: 'Unknown',
+            avatar_url: undefined,
+            verified_rank: undefined,
+            current_rank: undefined,
+          },
+        }));
+      }
 
       setRegistrations(transformedRegistrations);
     } catch (error) {

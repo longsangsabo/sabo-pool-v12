@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { Tournament } from '@/types/tournament-management';
-import { FastTournamentCard } from './FastTournamentCard';
+import OptimizedTournamentCard from './OptimizedTournamentCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Filter } from 'lucide-react';
@@ -47,11 +47,10 @@ export const VirtualTournamentList: React.FC<VirtualTournamentListProps> = ({
 
       return (
         <div style={style} className='px-2 py-1'>
-          <FastTournamentCard
+          <OptimizedTournamentCard
             tournament={tournament}
-            onView={onView}
-            onEdit={onEdit}
-            onGenerateBracket={onGenerateBracket}
+            onViewDetails={() => onView(tournament)}
+            showActions={true}
           />
         </div>
       );

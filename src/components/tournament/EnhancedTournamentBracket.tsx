@@ -211,30 +211,34 @@ export const EnhancedTournamentBracket: React.FC<
 
       setMatches(transformedMatches as any[]);
 
-      // Fetch participants first
+      // Fetch participants - separate queries approach
       const { data: participantsData, error: participantsError } =
         await supabase
           .from('tournament_registrations')
-          .select(
-            `
-          *,
-          profiles!tournament_registrations_user_id_fkey(*)
-        `
-          )
+          .select('*')
           .eq('tournament_id', tournamentId)
           .order('seed_number', { ascending: true });
 
       if (participantsError) throw participantsError;
 
-      // Get unique user IDs from participants
-      const participantUserIds =
-        participantsData?.map(p => p.user_id).filter(Boolean) || [];
+      // Get profiles separately
+      let participantProfiles: any[] = [];
+      if (participantsData && participantsData.length > 0) {
+        const participantUserIds = participantsData.map(p => p.user_id).filter(Boolean);
+        
+        if (participantUserIds.length > 0) {
+          const { data: profilesData, error: profilesError } = await supabase
+            .from('profiles')
+            .select('*')
+            .in('user_id', participantUserIds);
 
-      // Fetch profiles for participants
-      const { data: participantProfiles } = await supabase
-        .from('profiles')
-        .select('user_id, display_name, avatar_url, verified_rank, elo')
-        .in('user_id', participantUserIds);
+          if (profilesError) {
+            console.error('Error loading profiles:', profilesError);
+          } else {
+            participantProfiles = profilesData || [];
+          }
+        }
+      }
 
       // Create participant profiles lookup
       const participantProfilesMap = new Map();

@@ -697,15 +697,64 @@ const TournamentParticipantsView = ({
   const loadRegistrations = async () => {
     try {
       setLoading(true);
-      // Mock data since tournament_registrations table doesn't exist
-      const data = [];
-      const error = null;
+      console.log('🔄 Loading registrations for tournament:', tournament.id);
 
-      if (error) throw error;
-      setRegistrations(data || []);
-    } catch (error) {
-      console.error('Error loading registrations:', error);
-      toast.error('Không thể tải danh sách đăng ký');
+      // Load tournament registrations first
+      const { data: registrationsData, error: registrationsError } = await supabase
+        .from('tournament_registrations')
+        .select(`
+          id,
+          tournament_id,
+          user_id,
+          registration_status,
+          payment_status,
+          notes,
+          created_at,
+          updated_at
+        `)
+        .eq('tournament_id', tournament.id)
+        .order('created_at', { ascending: false });
+
+      if (registrationsError) {
+        console.error('❌ Error loading registrations:', registrationsError);
+        throw registrationsError;
+      }
+
+      // Get user profiles separately to avoid relationship issues
+      const userIds = registrationsData?.map(r => r.user_id).filter(Boolean) || [];
+      let profilesData: any[] = [];
+      
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select(`
+            user_id,
+            full_name,
+            display_name,
+            avatar_url,
+            verified_rank,
+            elo
+          `)
+          .in('user_id', userIds);
+
+        if (profilesError) {
+          console.error('❌ Error loading profiles:', profilesError);
+        } else {
+          profilesData = profiles || [];
+        }
+      }
+
+      // Combine registrations with profiles
+      const combinedData = registrationsData?.map(reg => ({
+        ...reg,
+        profiles: profilesData.find(p => p.user_id === reg.user_id)
+      })) || [];
+
+      console.log('✅ Loaded registrations:', combinedData);
+      setRegistrations(combinedData);
+    } catch (error: any) {
+      console.error('❌ Error loading registrations:', error);
+      toast.error(`Lỗi khi tải danh sách thành viên: ${error.message}`);
     } finally {
       setLoading(false);
     }

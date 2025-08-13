@@ -27,12 +27,13 @@ import { vi } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
 import TournamentResults from '@/components/tournament/TournamentResults';
 import { TournamentBracket } from '@/components/tournament/TournamentBracket';
-import { TournamentDetailsModal } from '@/components/tournament/TournamentDetailsModal';
+import { EnhancedTournamentDetailsModal } from '@/components/tournament/EnhancedTournamentDetailsModal';
 import { EnhancedMatchCard } from '@/components/tournament/EnhancedMatchCard';
 import { EditTournamentModal } from '@/components/tournament/EditTournamentModal';
 import { TournamentAdapter } from '@/utils/tournamentAdapter';
 import { Tournament as TournamentType } from '@/types/tournament';
 import { BracketGenerator } from '@/components/tournament/BracketGenerator';
+import { UnifiedBracketGenerator } from '@/components/tournaments/UnifiedBracketGenerator';
 import { TournamentBracketFlow } from '@/components/tournament/TournamentBracketFlow';
 import { useBracketGeneration } from '@/hooks/useBracketGeneration';
 
@@ -250,23 +251,40 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
     
     // Load tournament participants
     try {
-      const { data: participants, error } = await supabase
+      // Load registrations first
+      const { data: registrationsData, error: registrationsError } = await supabase
         .from('tournament_registrations')
         .select(`
-          user_id,
-          profiles!tournament_registrations_user_id_fkey(
+          user_id
+        `)
+        .eq('tournament_id', tournament.id)
+        .eq('registration_status', 'confirmed');
+
+      if (registrationsError) throw registrationsError;
+
+      let participants: any[] = [];
+      if (registrationsData && registrationsData.length > 0) {
+        const userIds = registrationsData.map(r => r.user_id);
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select(`
             user_id,
             full_name,
             display_name,
             avatar_url,
             elo,
             verified_rank
-          )
-        `)
-        .eq('tournament_id', tournament.id)
-        .eq('registration_status', 'confirmed');
+          `)
+          .in('user_id', userIds);
 
-      if (error) throw error;
+        if (profilesError) throw profilesError;
+
+        // Combine data
+        participants = registrationsData.map(reg => ({
+          ...reg,
+          profiles: profilesData?.find(p => p.user_id === reg.user_id)
+        }));
+      }
 
       const formattedPlayers = participants?.map(participant => ({
         id: participant.user_id,
@@ -567,7 +585,8 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
         return;
       }
 
-      const { data: participants, error } = await supabase
+      // Load registrations first
+      const { data: registrationsData, error: registrationsError } = await supabase
         .from('tournament_registrations')
         .select(`
           id,
@@ -576,10 +595,25 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
           registration_date,
           payment_status,
           notes,
-          tournaments!tournament_registrations_tournament_id_fkey (
-            entry_fee
-          ),
-          profiles!tournament_registrations_user_id_fkey (
+          tournament_id
+        `)
+        .eq('tournament_id', tournament.id)
+        .order('registration_date', { ascending: false });
+
+      if (registrationsError) {
+        console.error('Supabase error:', registrationsError);
+        throw registrationsError;
+      }
+
+      // Load profiles and tournament info separately
+      let participants: any[] = [];
+      if (registrationsData && registrationsData.length > 0) {
+        const userIds = registrationsData.map(r => r.user_id);
+        
+        // Load profiles
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select(`
             user_id,
             full_name,
             display_name,
@@ -588,14 +622,30 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
             email,
             elo,
             verified_rank
-          )
-        `)
-        .eq('tournament_id', tournament.id)
-        .order('registration_date', { ascending: false });
+          `)
+          .in('user_id', userIds);
 
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
+        if (profilesError) {
+          console.error('Error loading profiles:', profilesError);
+        }
+
+        // Load tournament info
+        const { data: tournamentData, error: tournamentError } = await supabase
+          .from('tournaments')
+          .select('entry_fee')
+          .eq('id', tournament.id)
+          .single();
+
+        if (tournamentError) {
+          console.error('Error loading tournament:', tournamentError);
+        }
+
+        // Combine data
+        participants = registrationsData.map(reg => ({
+          ...reg,
+          tournaments: tournamentData,
+          profiles: profilesData?.find(p => p.user_id === reg.user_id)
+        }));
       }
       
       console.log('🔥 Participants loaded:', participants);
@@ -722,126 +772,23 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
     return newArray;
   };
 
+  
+  // ===== DEPRECATED FUNCTIONS - MOVED TO TournamentBracketGenerator =====
+  // These functions are now handled by the consolidated TournamentBracketGenerator component
+  
+  /*
   const generateRandomBracket = () => {
-    if (selectedPlayers.length < 2) {
-      toast.error('Cần ít nhất 2 người chơi để tạo bảng đấu');
-      return;
-    }
-
-    try {
-      const shuffledPlayers = shuffleArray(selectedPlayers);
-      const nextPowerOf2 = Math.pow(2, Math.ceil(Math.log2(shuffledPlayers.length)));
-      
-      while (shuffledPlayers.length < nextPowerOf2) {
-        shuffledPlayers.push(null);
-      }
-
-      const matches: BracketMatch[] = [];
-      for (let i = 0; i < shuffledPlayers.length; i += 2) {
-        matches.push({
-          round: 1,
-          match_number: Math.floor(i / 2) + 1,
-          player1: shuffledPlayers[i],
-          player2: shuffledPlayers[i + 1]
-        });
-      }
-
-      setGeneratedBracket(matches);
-      toast.success('Đã tạo bảng đấu ngẫu nhiên thành công!');
-    } catch (error) {
-      console.error('Error generating bracket:', error);
-      toast.error('Lỗi khi tạo bảng đấu');
-    }
+    // Logic moved to TournamentBracketGenerator.tsx
   };
 
   const generateSeededBracket = () => {
-    if (selectedPlayers.length < 2) {
-      toast.error('Cần ít nhất 2 người chơi để tạo bảng đấu');
-      return;
-    }
-
-    try {
-      const sortedPlayers = [...selectedPlayers].sort((a, b) => b.elo - a.elo);
-      const seededPlayers = [];
-      const totalPlayers = Math.pow(2, Math.ceil(Math.log2(sortedPlayers.length)));
-      
-      for (let i = 0; i < totalPlayers / 2; i++) {
-        seededPlayers.push(sortedPlayers[i] || null);
-        seededPlayers.push(sortedPlayers[totalPlayers - 1 - i] || null);
-      }
-
-      const matches: BracketMatch[] = [];
-      for (let i = 0; i < seededPlayers.length; i += 2) {
-        matches.push({
-          round: 1,
-          match_number: Math.floor(i / 2) + 1,
-          player1: seededPlayers[i],
-          player2: seededPlayers[i + 1]
-        });
-      }
-
-      setGeneratedBracket(matches);
-      toast.success('Đã tạo bảng đấu theo seeding thành công!');
-    } catch (error) {
-      console.error('Error generating seeded bracket:', error);
-      toast.error('Lỗi khi tạo bảng đấu theo seeding');
-    }
+    // Logic moved to TournamentBracketGenerator.tsx  
   };
 
   const saveBracketToTournament = async () => {
-    if (!selectedTournament || generatedBracket.length === 0) {
-      toast.error('Vui lòng chọn giải đấu và tạo bảng đấu trước');
-      return;
-    }
-
-    setBracketLoading(true);
-    try {
-      const matchesToInsert = generatedBracket.map((match) => ({
-        tournament_id: selectedTournament.id,
-        round_number: match.round,
-        match_number: match.match_number,
-        player1_id: match.player1?.id || null,
-        player2_id: match.player2?.id || null,
-        status: 'scheduled',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }));
-
-      // First, delete existing matches for this tournament
-      const { error: deleteError } = await supabase
-        .from('tournament_matches')
-        .delete()
-        .eq('tournament_id', selectedTournament.id);
-
-      if (deleteError) throw deleteError;
-
-      // Then insert new matches
-      const { error: matchError } = await supabase
-        .from('tournament_matches')
-        .insert(matchesToInsert);
-
-      if (matchError) throw matchError;
-
-      const { error: updateError } = await supabase
-        .from('tournaments')
-        .update({ 
-          status: 'registration_closed',
-          current_participants: selectedPlayers.length 
-        })
-        .eq('id', selectedTournament.id);
-
-      if (updateError) throw updateError;
-
-      toast.success('Đã lưu bảng đấu vào giải đấu thành công!');
-      setCurrentView('bracket-viewer');
-      
-    } catch (error) {
-      console.error('Error saving bracket:', error);
-      toast.error('Lỗi khi lưu bảng đấu');
-    } finally {
-      setBracketLoading(false);
-    }
+    // Logic moved to TournamentBracketGenerator.tsx
   };
+  */
 
   // Helper functions for player data
   const getPlayerName = (playerId: string | null) => {
@@ -1268,46 +1215,23 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
               </div>
             </div>
 
-            {/* Generation Actions */}
-            <div className="flex gap-4">
-              <Button 
-                onClick={generateRandomBracket}
-                disabled={selectedPlayers.length < 2}
-                className="flex-1"
-              >
-                <Shuffle className="w-4 h-4 mr-2" />
-                Tạo bảng đấu ngẫu nhiên
-              </Button>
-              <Button 
-                onClick={generateSeededBracket}
-                disabled={selectedPlayers.length < 2}
-                variant="outline"
-                className="flex-1"
-              >
-                <Target className="w-4 h-4 mr-2" />
-                Tạo bảng đấu theo ELO
-              </Button>
-            </div>
-
-            {/* Generated Bracket Preview */}
-            {generatedBracket.length > 0 && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Bảng đấu đã tạo (Vòng 1)</Label>
-                  <Button 
-                    onClick={saveBracketToTournament}
-                    disabled={bracketLoading}
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    {bracketLoading ? 'Đang lưu...' : 'Lưu bảng đấu'}
-                  </Button>
-                </div>
-                
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {generatedBracket.map((match, index) => (
-                    <MatchCard key={index} match={match} />
-                  ))}
-                </div>
+            {/* Use Unified Bracket Generator */}
+            {selectedTournament && (
+              <div className="mt-6">
+                <UnifiedBracketGenerator
+                  tournamentId={selectedTournament.id}
+                  defaultTournamentType={bracketType}
+                  participantCount={selectedPlayers.length}
+                  onBracketGenerated={() => {
+                    toast.success('Bracket generated successfully!');
+                    setSelectedPlayers([]);
+                    setGeneratedBracket([]);
+                    fetchTournaments();
+                  }}
+                  selectedPlayers={selectedPlayers}
+                  enableManualBracketGeneration={true}
+                  enableTournamentTypeSwitch={true}
+                />
               </div>
             )}
           </CardContent>
@@ -1560,30 +1484,47 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                                        // Set generating state for this specific tournament
                                        setGeneratingTournaments(prev => new Set(prev).add(tournamentId));
                                        
-                                       // Call edge function directly instead of hook
-                                       const { data: result, error } = await supabase.functions.invoke(
-                                         'generate-tournament-bracket',
-                                         {
-                                           body: {
-                                             tournament_id: tournamentId,
-                                             generation_type: 'elo_based'
+                                       // Try edge function first, then fallback
+                                       let result;
+                                       let error;
+                                       
+                                       try {
+                                         const edgeResponse = await supabase.functions.invoke(
+                                           'generate-tournament-bracket',
+                                           {
+                                             body: {
+                                               tournament_id: tournamentId,
+                                               generation_type: 'elo_based'
+                                             }
                                            }
-                                         }
-                                       );
+                                         );
+                                         result = edgeResponse.data;
+                                         error = edgeResponse.error;
+                                       } catch (edgeError) {
+                                         console.log('Edge function failed, using fallback:', edgeError);
+                                         // Use fallback function
+                                         const { generateBracketFallback } = await import('@/utils/bracketFallback');
+                                         result = await generateBracketFallback(tournamentId, 'elo_based');
+                                         error = null;
+                                       }
                                        
                                        if (error) {
                                          console.error('Edge function error:', error);
-                                         toast.error('Lỗi khi gọi API tạo bảng đấu');
-                                         return;
+                                         // Try fallback
+                                         console.log('Trying fallback bracket generation...');
+                                         const { generateBracketFallback } = await import('@/utils/bracketFallback');
+                                         result = await generateBracketFallback(tournamentId, 'elo_based');
                                        }
                                        
                                        if (result?.error) {
                                          console.error('Bracket generation error:', result.error);
-                                         toast.error(result.error);
+                                         toast.error(`Lỗi tạo bảng đấu: ${result.error}`);
                                          return;
                                        }
                                        
                                        if (result?.success) {
+                                         const message = result.message || `Tạo bảng đấu thành công! ${result.matches_created || 0} trận đấu`;
+                                         toast.success(message);
                                          toast.success('Tạo bảng đấu Double Elimination thành công!');
                                          setSelectedTournament(tournament);
                                          setCurrentView('bracket-viewer');
@@ -2152,14 +2093,16 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
         </DialogContent>
       </Dialog>
 
-      {/* Tournament Details Modal - Auto-sync with real-time updates */}
+      {/* Enhanced Tournament Details Modal - Auto-sync with real-time updates */}
       {selectedTournamentForDetails && (
-        <TournamentDetailsModal
+        <EnhancedTournamentDetailsModal
           tournament={selectedTournamentForDetails as any}
-          isOpen={detailsModalOpen}
-          onClose={() => {
-            setDetailsModalOpen(false);
-            setSelectedTournamentForDetails(null);
+          open={detailsModalOpen}
+          onOpenChange={(open) => {
+            setDetailsModalOpen(open);
+            if (!open) {
+              setSelectedTournamentForDetails(null);
+            }
           }}
         />
       )}

@@ -7,6 +7,7 @@ import {
   getFunctionForTournamentType,
 } from '@/services/tournament/TournamentFunctionResolver';
 import { TournamentAtomicOperations } from '@/services/tournament/TournamentTransactionService';
+import { ClientSideDoubleElimination } from '@/services/ClientSideDoubleElimination';
 
 export interface BracketValidation {
   valid: boolean;
@@ -91,58 +92,188 @@ export const useBracketGeneration = () => {
           return { error: tournamentError.message };
         }
 
-        // Use SABO double elimination function with proper initialization
-        if (tournament.tournament_type === 'double_elimination') {
+        // Use SABO double elimination function 
+        if (tournament.tournament_type === 'double_elimination' || tournament.tournament_type === 'sabo_double_elimination') {
           // Get confirmed participants for SABO initialization
           const { data: registrations, error: regError } = await supabase
             .from('tournament_registrations')
             .select('user_id')
             .eq('tournament_id', tournamentId)
-            .eq('payment_status', 'paid')
+            .eq('registration_status', 'confirmed')
             .limit(16);
 
           if (regError || !registrations || registrations.length !== 16) {
             toast.error(
-              `SABO Double Elimination cần đúng 16 người chơi đã thanh toán. Hiện có: ${registrations?.length || 0}`
+              `SABO Double Elimination cần đúng 16 người chơi đã xác nhận. Hiện có: ${registrations?.length || 0}`
             );
             return { error: 'Insufficient participants' };
           }
 
+          // Use the correct SABO function
+          try {
+            const { data: result, error: bracketError } = await supabase.rpc(
+              'generate_sabo_tournament_bracket',
+              { 
+                p_tournament_id: tournamentId,
+                p_seeding_method: 'registration_order'
+              }
+            );
+
+            if (bracketError) {
+              console.error('SABO bracket generation error:', bracketError);
+              console.log('🔄 SABO function failed, trying client-side fallback...');
+              
+              // Fallback to client-side generation
+              try {
+                const clientSideGenerator = new ClientSideDoubleElimination(tournamentId);
+                const fallbackResult = await clientSideGenerator.generateBracket();
+                
+                if (fallbackResult.success) {
+                  toast.success('Tạo bảng đấu thành công (client-side)');
+                  return { success: true };
+                } else {
+                  toast.error(`Lỗi fallback: ${fallbackResult.error}`);
+                  return { error: fallbackResult.error || 'Client-side generation failed' };
+                }
+              } catch (fallbackError) {
+                console.error('Client-side fallback failed:', fallbackError);
+                toast.error(`Lỗi tạo bảng đấu SABO: ${bracketError.message}`);
+                return { error: bracketError.message };
+              }
+            }
+
+            const saboResult = result as { success?: boolean; error?: string };
+            if (!saboResult?.success) {
+              console.error('SABO function returned error:', result);
+              console.log('🔄 SABO function failed, trying client-side fallback...');
+              
+              // Fallback to client-side generation
+              try {
+                const clientSideGenerator = new ClientSideDoubleElimination(tournamentId);
+                const fallbackResult = await clientSideGenerator.generateBracket();
+                
+                if (fallbackResult.success) {
+                  toast.success('Tạo bảng đấu thành công (client-side)');
+                  return { success: true };
+                } else {
+                  toast.error(`Lỗi fallback: ${fallbackResult.error}`);
+                  return { error: fallbackResult.error || 'Client-side generation failed' };
+                }
+              } catch (fallbackError) {
+                console.error('Client-side fallback failed:', fallbackError);
+                toast.error(`Lỗi SABO: ${saboResult?.error || 'Unknown error'}`);
+                return { error: saboResult?.error || 'Unknown error' };
+              }
+            }
+
+            toast.success('Tạo bảng đấu SABO thành công');
+            return { success: true };
+          } catch (error) {
+            console.error('Exception calling SABO function:', error);
+            console.log('🔄 SABO function exception, trying client-side fallback...');
+            
+            // Fallback to client-side generation
+            try {
+              const clientSideGenerator = new ClientSideDoubleElimination(tournamentId);
+              const fallbackResult = await clientSideGenerator.generateBracket();
+              
+              if (fallbackResult.success) {
+                toast.success('Tạo bảng đấu thành công (client-side)');
+                return { success: true };
+              } else {
+                toast.error(`Lỗi fallback: ${fallbackResult.error}`);
+                return { error: fallbackResult.error || 'Client-side generation failed' };
+              }
+            } catch (fallbackError) {
+              console.error('Client-side fallback failed:', fallbackError);
+              toast.error('Lỗi khi gọi function SABO');
+              return { error: 'Function call failed' };
+            }
+          }
+        }
+
+        // For legacy double elimination types, get participants and try fallback functions
+        if (tournament.tournament_type === 'double_elimination') {
+          const { data: registrations, error: regError } = await supabase
+            .from('tournament_registrations')
+            .select('user_id')
+            .eq('tournament_id', tournamentId)
+            .eq('registration_status', 'confirmed')
+            .limit(16);
+
+          if (regError || !registrations) {
+            toast.error('Không thể lấy danh sách người chơi');
+            return { error: 'Failed to get participants' };
+          }
+
           const playerIds = registrations.map(r => r.user_id);
 
-          const { data, error } = await supabase.rpc(
+          // Try multiple double elimination functions in order of preference
+          const doubleFunctions = [
             'initialize_sabo_tournament',
-            {
-              p_tournament_id: tournamentId,
-              p_player_ids: playerIds,
-            }
-          );
+            'generate_double_elimination_bracket_complete_v8',
+            'generate_double_elimination_bracket_complete',
+            'generate_complete_tournament_bracket'
+          ];
 
-          if (error) {
-            console.error('Error initializing SABO tournament:', error);
-            toast.error('Không thể khởi tạo giải đấu SABO');
-            return { error: error.message };
-          }
-
-          const resultData = data as any;
-          if (resultData?.success) {
-            const successMessage = `Đã khởi tạo giải đấu SABO thành công! ${resultData.matches_created || 27} trận đấu được tạo.`;
-            toast.success(successMessage);
-
-            // Send notification
+          let lastError = null;
+          for (const funcName of doubleFunctions) {
             try {
-              await supabase.rpc('send_enhanced_notification', {
-                p_user_id: user.id,
-                p_title: 'Giải đấu SABO đã được khởi tạo',
-                p_message: `Giải đấu SABO với 27 trận đấu đã được khởi tạo thành công`,
-                p_type: 'tournament',
-              });
-            } catch (notificationError) {
-              console.error('Notification error:', notificationError);
+              console.log(`🧪 Trying double elimination function: ${funcName}`);
+              
+              let params;
+              if (funcName === 'initialize_sabo_tournament') {
+                params = {
+                  p_tournament_id: tournamentId,
+                  p_player_ids: playerIds,
+                };
+              } else {
+                params = {
+                  p_tournament_id: tournamentId,
+                };
+              }
+
+              const { data, error } = await supabase.rpc(funcName as any, params);
+
+              if (error) {
+                console.warn(`❌ ${funcName} failed:`, error.message);
+                lastError = error;
+                continue;
+              }
+
+              const resultData = data as any;
+              if (resultData?.success || resultData?.matches_created || data) {
+                const successMessage = `Đã khởi tạo giải đấu Double Elimination thành công! ${resultData.matches_created || resultData.total_matches || '27'} trận đấu được tạo với function: ${funcName}`;
+                toast.success(successMessage);
+
+                // Send notification
+                try {
+                  await supabase.rpc('send_enhanced_notification', {
+                    p_user_id: user.id,
+                    p_title: 'Giải đấu Double Elimination đã được khởi tạo',
+                    p_message: `Giải đấu với ${resultData.matches_created || resultData.total_matches || '27'} trận đấu đã được khởi tạo thành công bằng ${funcName}`,
+                    p_type: 'tournament',
+                  });
+                } catch (notificationError) {
+                  console.error('Notification error:', notificationError);
+                }
+
+                return resultData as BracketGenerationResult;
+              } else {
+                console.warn(`⚠️ ${funcName} returned unexpected result:`, resultData);
+                lastError = new Error(`${funcName} returned unexpected result`);
+              }
+            } catch (funcError) {
+              console.warn(`❌ ${funcName} exception:`, funcError);
+              lastError = funcError;
+              continue;
             }
           }
 
-          return resultData as BracketGenerationResult;
+          // If all functions failed
+          console.error('All double elimination functions failed:', lastError);
+          toast.error(`Không thể tạo bảng đấu Double Elimination: ${lastError?.message || 'Tất cả functions đều thất bại'}`);
+          return { error: lastError?.message || 'All double elimination functions failed' };
         } else {
           // Use atomic operations for single elimination
           const result = await TournamentAtomicOperations.generateBracket(

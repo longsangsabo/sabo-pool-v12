@@ -291,18 +291,35 @@ export const AdminBracketViewer: React.FC<AdminBracketViewerProps> = ({
     try {
       console.log('🏆 Generating bracket for tournament:', tournamentId);
 
-      // Use the edge function instead of RPC
-      const { data: result, error } = await supabase.functions.invoke(
-        'generate-tournament-bracket',
-        {
-          body: {
-            tournament_id: tournamentId,
-            seeding_method: 'elo_ranking',
-          },
-        }
-      );
+      // Try edge function first, then fallback
+      let result;
+      let error;
+      
+      try {
+        const edgeResponse = await supabase.functions.invoke(
+          'generate-tournament-bracket',
+          {
+            body: {
+              tournament_id: tournamentId,
+              seeding_method: 'elo_ranking',
+            },
+          }
+        );
+        result = edgeResponse.data;
+        error = edgeResponse.error;
+      } catch (edgeError) {
+        console.log('Edge function failed, using fallback:', edgeError);
+        // Use fallback function
+        const { generateBracketFallback } = await import('@/utils/bracketFallback');
+        result = await generateBracketFallback(tournamentId, 'elo_based');
+        error = null;
+      }
 
-      if (error) throw error;
+      if (error) {
+        console.log('Trying fallback bracket generation...');
+        const { generateBracketFallback } = await import('@/utils/bracketFallback');
+        result = await generateBracketFallback(tournamentId, 'elo_based');
+      }
 
       const bracketResult = result as any;
       if (!bracketResult?.success) {

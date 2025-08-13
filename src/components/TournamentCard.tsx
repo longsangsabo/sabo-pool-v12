@@ -12,7 +12,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { EnhancedTournament } from '@/types/tournament-extended';
-import TournamentDetailsInfoModal from './tournament/TournamentDetailsInfoModal';
+import { EnhancedTournamentDetailsModal } from './tournament/EnhancedTournamentDetailsModal';
 import { calculateTotalPrizePool, formatCurrency } from '@/utils/prizeUtils';
 import { formatSafeDate } from '@/utils/dateUtils';
 
@@ -203,7 +203,7 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
       </Card>
 
       {/* Details Modal */}
-      <TournamentDetailsInfoModal
+      <EnhancedTournamentDetailsModal
         tournament={
           {
             ...tournament,
@@ -218,8 +218,8 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
               : 0,
           } as any
         }
-        isOpen={showDetailsModal}
-        onClose={() => setShowDetailsModal(false)}
+        open={showDetailsModal}
+        onOpenChange={(open) => setShowDetailsModal(open)}
       />
     </>
   );

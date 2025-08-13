@@ -37,8 +37,8 @@ export const useTournamentRegistrations = (tournamentId: string) => {
     try {
       setLoading(true);
 
-      // Fetch tournament registrations with enhanced player data
-      const { data, error } = await supabase
+      // Fetch tournament registrations first
+      const { data: registrationsData, error: registrationsError } = await supabase
         .from('tournament_registrations')
         .select(
           `
@@ -47,8 +47,28 @@ export const useTournamentRegistrations = (tournamentId: string) => {
           user_id,
           registration_status,
           created_at,
-          priority_order,
-          profiles!tournament_registrations_user_id_fkey (
+          priority_order
+        `
+        )
+        .eq('tournament_id', tournamentId)
+        .order('priority_order', { ascending: true, nullsLast: true })
+        .order('created_at', { ascending: true });
+
+      if (registrationsError) {
+        console.error('Error fetching tournament registrations:', registrationsError);
+        setRegistrations([]);
+        return;
+      }
+
+      // Get user profiles separately to avoid relationship issues
+      const userIds = registrationsData?.map(r => r.user_id).filter(Boolean) || [];
+      let profilesData: any[] = [];
+      
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select(
+            `
             id,
             user_id,
             full_name,
@@ -57,39 +77,41 @@ export const useTournamentRegistrations = (tournamentId: string) => {
             current_rank,
             verified_rank,
             elo
+          `
           )
-        `
-        )
-        .eq('tournament_id', tournamentId)
-        .order('priority_order', { ascending: true, nullsLast: true })
-        .order('created_at', { ascending: true });
+          .in('user_id', userIds);
 
-      if (error) {
-        console.error('Error fetching tournament registrations:', error);
-        setRegistrations([]);
-      } else {
-        // Transform the data to match our interface
-        const transformedData = (data || []).map(
-          reg =>
-            ({
-              ...reg,
-              player: reg.profiles
-                ? {
-                    id: reg.profiles.id,
-                    user_id: reg.profiles.user_id,
-                    full_name: reg.profiles.full_name,
-                    display_name: reg.profiles.display_name,
-                    avatar_url: reg.profiles.avatar_url,
-                    current_rank: reg.profiles.current_rank,
-                    verified_rank: reg.profiles.verified_rank,
-                    elo: reg.profiles.elo || 1000,
-                  }
-                : undefined,
-            }) as Registration
-        );
-
-        setRegistrations(transformedData);
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+        } else {
+          profilesData = profiles || [];
+        }
       }
+
+      // Transform the data to match our interface
+      const transformedData = (registrationsData || []).map(
+        reg => {
+          const profile = profilesData.find(p => p.user_id === reg.user_id);
+          return {
+            ...reg,
+            profiles: profile,
+            player: profile
+              ? {
+                  id: profile.id,
+                  user_id: profile.user_id,
+                  full_name: profile.full_name,
+                  display_name: profile.display_name,
+                  avatar_url: profile.avatar_url,
+                  current_rank: profile.current_rank,
+                  verified_rank: profile.verified_rank,
+                  elo: profile.elo || 1000,
+                }
+              : undefined,
+          } as Registration;
+        }
+      );
+
+      setRegistrations(transformedData);
     } catch (error) {
       console.error('Error in fetchRegistrations:', error);
       setRegistrations([]);

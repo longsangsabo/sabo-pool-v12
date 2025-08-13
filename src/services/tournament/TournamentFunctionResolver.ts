@@ -8,10 +8,16 @@ import { supabase } from '@/integrations/supabase/client';
 
 // Tournament function name constants - UPDATED WITH ACTUALLY EXISTING FUNCTIONS
 export const TOURNAMENT_FUNCTIONS = {
+  // SABO Double Elimination (✅ VERIFIED EXISTING)
+  SABO_BRACKET: 'generate_sabo_tournament_bracket',
+  SABO_ADVANCE: 'advance_sabo_tournament',
+  SABO_SCORE: 'submit_sabo_match_score',
+  
   // Double Elimination Functions (✅ VERIFIED EXISTING)
-  DOUBLE_ELIMINATION_BRACKET: 'generate_complete_tournament_bracket',
-  DOUBLE_ELIMINATION_ENHANCED: 'create_double_elimination_bracket_enhanced',
+  DOUBLE_ELIMINATION_BRACKET: 'generate_double_elimination_bracket_complete_v8',
+  DOUBLE_ELIMINATION_ENHANCED: 'generate_double_elimination_bracket_complete',
   ADVANCED_BRACKET: 'generate_advanced_tournament_bracket',
+  SABO_TOURNAMENT: 'initialize_sabo_tournament',
 
   // Winner Advancement (✅ VERIFIED EXISTING)
   ADVANCE_WINNER: 'advance_winner_to_next_round',

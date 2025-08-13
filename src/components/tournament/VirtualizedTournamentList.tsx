@@ -12,7 +12,7 @@ import { Tournament } from '@/types/tournament';
 import { TournamentAdapter } from '@/utils/tournamentAdapter';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { performanceMonitor } from '@/utils/performance';
-import { EnhancedTournamentCard } from './EnhancedTournamentCard';
+import OptimizedTournamentCard from './OptimizedTournamentCard';
 
 interface VirtualizedTournamentListProps {
   tournaments: Tournament[];
@@ -25,7 +25,7 @@ interface VirtualizedTournamentListProps {
   height?: number;
 }
 
-// Enhanced Tournament List Item using new EnhancedTournamentCard
+// Optimized Tournament List Item using OptimizedTournamentCard
 const TournamentListItem = memo<{
   index: number;
   style: React.CSSProperties;
@@ -59,12 +59,11 @@ const TournamentListItem = memo<{
 
   return (
     <div style={style} className="p-2">
-      <EnhancedTournamentCard
-        tournament={TournamentAdapter.toEnhanced(tournament)}
-        onTournamentClick={onTournamentClick}
-        onRegister={onRegister}
-        isRegistered={isRegistered}
-        className="h-full"
+      <OptimizedTournamentCard
+        tournament={tournament}
+        onViewDetails={() => onTournamentClick?.(tournament.id)}
+        onRegister={() => onRegister?.(tournament.id)}
+        showActions={true}
       />
     </div>
   );
@@ -149,7 +148,7 @@ export const VirtualizedTournamentList = memo<VirtualizedTournamentListProps>(({
               ref={ref}
               height={height}
               itemCount={itemCount}
-              itemSize={320} // Height adjusted for EnhancedTournamentCard + padding
+              itemSize={320} // Height adjusted for OptimizedTournamentCard + padding
               itemData={itemData}
               onItemsRendered={onItemsRendered}
               overscanCount={2} // Render 2 extra items outside visible area

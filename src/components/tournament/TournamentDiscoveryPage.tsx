@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useTournamentRecommendations } from '@/hooks/useTournamentRecommendations';
 import { useTournaments } from '@/hooks/useTournaments';
-import { TournamentRecommendationCard } from './TournamentRecommendationCard';
+import OptimizedTournamentCard from './OptimizedTournamentCard';
 import { TournamentSkeleton } from './TournamentSkeleton';
 
 const TournamentDiscoveryPage = () => {
@@ -129,12 +129,12 @@ const TournamentDiscoveryPage = () => {
           <TournamentSkeleton />
         ) : displayTournaments.length > 0 ? (
           displayTournaments.map(tournament => (
-            <TournamentRecommendationCard
+            <OptimizedTournamentCard
               key={tournament.id}
               tournament={tournament}
-              onJoin={handleJoinTournament}
-              showRecommendationScore={filter === 'recommended'}
-              isJoining={joinTournament.isPending}
+              onRegister={() => handleJoinTournament({ tournamentId: tournament.id })}
+              onViewDetails={() => {/* Handle view details */}}
+              showActions={true}
             />
           ))
         ) : (

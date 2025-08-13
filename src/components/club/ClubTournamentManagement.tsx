@@ -24,7 +24,6 @@ import { MobileCard } from '@/components/ui/mobile-card';
 import TournamentManagementHub from '@/components/tournament/TournamentManagementHub';
 import { TournamentManagementHubRef } from '@/types/tournament-management';
 import { EnhancedTournamentForm } from '@/components/tournament/EnhancedTournamentForm';
-import EnhancedTableManager from '@/components/tournament/EnhancedTableManager';
 import TournamentPaymentManager from '@/components/TournamentPaymentManager';
 import { SingleEliminationTemplate } from '@/components/tournament/templates/SingleEliminationTemplate';
 import { DoubleEliminationTemplate } from '@/components/tournament/templates/DoubleEliminationTemplate';

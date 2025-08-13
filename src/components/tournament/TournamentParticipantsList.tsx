@@ -45,42 +45,65 @@ export const TournamentParticipantsList: React.FC<
   const fetchParticipants = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // Fetch tournament registrations first
+      const { data: registrationsData, error: registrationsError } = await supabase
         .from('tournament_registrations')
         .select(
           `
           id,
           user_id,
           registration_date,
-          registration_status,
-          profiles:user_id (
-            user_id,
-            full_name,
-            display_name,
-            avatar_url,
-            verified_rank
-          )
+          registration_status
         `
         )
         .eq('tournament_id', tournamentId)
         .order('registration_date');
 
-      if (error) throw error;
+      if (registrationsError) throw registrationsError;
 
-      const transformedParticipants = (data || []).map((reg: any) => ({
-        id: reg.id,
-        user_id: reg.user_id,
-        registration_date: reg.registration_date,
-        status: reg.registration_status || 'confirmed',
-        payment_status: 'paid', // Default for now
-        user_profile: reg.profiles || {
+      // Get user profiles separately to avoid relationship issues
+      const userIds = registrationsData?.map(r => r.user_id).filter(Boolean) || [];
+      let profilesData: any[] = [];
+      
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select(
+            `
+            user_id,
+            full_name,
+            display_name,
+            avatar_url,
+            verified_rank
+          `
+          )
+          .in('user_id', userIds);
+
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+        } else {
+          profilesData = profiles || [];
+        }
+      }
+
+      const transformedParticipants = (registrationsData || []).map((reg: any) => {
+        const profile = profilesData.find(p => p.user_id === reg.user_id);
+        return {
+          id: reg.id,
           user_id: reg.user_id,
-          full_name: 'Unknown',
-          display_name: 'Unknown',
-          avatar_url: undefined,
-          verified_rank: undefined,
-        },
-      }));
+          registration_date: reg.registration_date,
+          status: reg.registration_status || 'confirmed',
+          payment_status: 'paid', // Default for now
+          user_profile: profile || {
+            user_id: reg.user_id,
+            full_name: 'Unknown',
+            display_name: 'Unknown',
+            avatar_url: undefined,
+            verified_rank: undefined,
+          },
+        };
+      });
 
       setParticipants(transformedParticipants);
     } catch (error) {

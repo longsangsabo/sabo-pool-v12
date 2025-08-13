@@ -143,27 +143,60 @@ export const useRankRequests = (clubId?: string) => {
 
   const createRankRequest = async (data: CreateRankRequestData) => {
     try {
-      console.log('[createRankRequest] payload', data);
+      console.log('🔍 [DEBUG] Starting createRankRequest with data:', data);
+      console.log('🔍 [DEBUG] Environment check:', {
+        isDev: window.location.hostname === 'localhost',
+        hostname: window.location.hostname,
+        supabaseUrl: import.meta.env.VITE_SUPABASE_URL
+      });
+      
       const userId = data.user_id;
-      if (!userId) throw new Error('User ID is required');
+      console.log('🔍 [DEBUG] User ID from data:', userId);
+      
+      if (!userId) {
+        const errorMsg = 'User ID is required';
+        console.error('🚨 [ERROR] Missing user ID:', errorMsg);
+        throw new Error(errorMsg);
+      }
+
+      // Check current user authentication
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      console.log('🔍 [DEBUG] Auth check:', { 
+        authUser: user?.id, 
+        dataUserId: userId, 
+        authError: authError?.message 
+      });
+      
+      if (authError) {
+        console.error('🚨 [ERROR] Auth error:', authError);
+        throw new Error('Authentication error: ' + authError.message);
+      }
+      
+      if (!user) {
+        const errorMsg = 'Bạn cần đăng nhập để gửi yêu cầu rank';
+        console.error('🚨 [ERROR] No authenticated user');
+        throw new Error(errorMsg);
+      }
 
       const existingRequest = await checkExistingPendingRequest(
         userId,
         data.club_id
       );
       if (existingRequest) {
-        throw new Error(
-          'Bạn đã có yêu cầu rank đang chờ xét duyệt tại CLB này. Vui lòng chờ CLB xét duyệt trước khi gửi yêu cầu mới.'
-        );
+        const errorMsg = 'Bạn đã có yêu cầu rank đang chờ xét duyệt tại CLB này. Vui lòng chờ CLB xét duyệt trước khi gửi yêu cầu mới.';
+        console.log('🔍 [DEBUG] Existing request found:', existingRequest);
+        throw new Error(errorMsg);
       }
 
       // Base payload with only guaranteed columns
       const basePayload: any = {
         user_id: userId,
         club_id: data.club_id,
-        requested_rank: parseInt(data.requested_rank, 10), // ensure integer for DB
+        requested_rank: data.requested_rank, // Keep as string/text for rank letters (K, I, H, G, F, E)
         status: 'pending',
       };
+      
+      console.log('🔍 [DEBUG] Base payload prepared:', basePayload);
 
       // Try first insert WITH evidence_files if provided
       let firstError: any = null;
@@ -173,7 +206,7 @@ export const useRankRequests = (clubId?: string) => {
           ...basePayload,
           evidence_files: data.evidence_files,
         };
-        console.log('[createRankRequest] trying insert with evidence_files');
+        console.log('🔍 [DEBUG] trying insert with evidence_files:', insertPayload);
         const { data: insData, error } = await supabase
           .from('rank_requests')
           .insert(insertPayload)
@@ -181,38 +214,39 @@ export const useRankRequests = (clubId?: string) => {
           .single();
         if (error) {
           firstError = error;
-          console.warn('[createRankRequest] first insert failed', error);
+          console.warn('⚠️ [WARNING] first insert failed:', error);
         } else {
           newRequest = insData;
+          console.log('✅ [SUCCESS] inserted with evidence_files:', newRequest);
         }
       }
 
       // If first failed due to missing column, retry WITHOUT evidence_files
       if (!newRequest) {
         if (firstError && firstError.message?.includes("'evidence_files'")) {
-          console.log('[createRankRequest] retry without evidence_files');
+          console.log('🔄 [RETRY] without evidence_files');
           const { data: insData2, error: retryErr } = await supabase
             .from('rank_requests')
             .insert(basePayload)
             .select()
             .single();
           if (retryErr) {
-            console.error('[createRankRequest] retry insert error', retryErr);
+            console.error('🚨 [ERROR] retry insert error:', retryErr);
             throw retryErr;
           }
           newRequest = insData2;
+          console.log('✅ [SUCCESS] retry insert succeeded:', newRequest);
         } else if (!data.evidence_files?.length) {
           // No evidence provided originally; perform single insert
+          console.log('🔍 [DEBUG] inserting without evidence (original):', basePayload);
           const { data: insData3, error: err3 } = await supabase
             .from('rank_requests')
             .insert(basePayload)
             .select()
             .single();
           if (err3) {
-            console.error(
-              '[createRankRequest] insert (no evidence) error',
-              err3
-            );
+            console.error('🚨 [ERROR] insert (no evidence) error:', err3);
+            console.error('🚨 [ERROR] Full error details:', JSON.stringify(err3, null, 2));
             throw err3;
           }
           newRequest = insData3;

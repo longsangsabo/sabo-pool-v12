@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 RANK REQUEST DEBUG TOOL</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background: #f8fff9; }
+        .error { border-color: #dc3545; background: #fff8f8; }
+        .warning { border-color: #ffc107; background: #fffbf0; }
+        .info { border-color: #17a2b8; background: #f0f9ff; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.online { background: #28a745; color: white; }
+        .status.offline { background: #dc3545; color: white; }
+        .status.loading { background: #ffc107; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 RANK REQUEST DEBUG TOOL</h1>
+        <p><strong>Dành cho:</strong> So sánh production vs dev environment</p>
+        
+        <div class="section info">
+            <h3>📊 Environment Status</h3>
+            <div id="envStatus">
+                <div>🌐 <strong>Current URL:</strong> <span id="currentUrl"></span></div>
+                <div>🏠 <strong>Environment:</strong> <span id="envType" class="status loading">Checking...</span></div>
+                <div>🔑 <strong>Supabase URL:</strong> <span id="supabaseUrl"></span></div>
+                <div>🎯 <strong>API Key Status:</strong> <span id="apiKeyStatus" class="status loading">Checking...</span></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔐 Authentication Test</h3>
+            <button onclick="testAuth()">Test Authentication</button>
+            <div id="authResult"></div>
+        </div>
+
+        <div class="section">
+            <h3>🏢 Club Data Test</h3>
+            <button onclick="testClubData()">Load Clubs</button>
+            <div id="clubResult"></div>
+            <select id="clubSelect" style="display:none;">
+                <option value="">Chọn CLB để test...</option>
+            </select>
+        </div>
+
+        <div class="section">
+            <h3>📝 Rank Request Test</h3>
+            <div>
+                <label>Requested Rank:</label>
+                <select id="rankSelect">
+                    <option value="H">H (1000-1099)</option>
+                    <option value="G">G (1100-1199)</option>
+                    <option value="F">F (1200-1299)</option>
+                    <option value="E">E (1300-1399)</option>
+                </select>
+            </div>
+            <button onclick="testRankRequest()" id="testRankBtn" disabled>Test Rank Request</button>
+            <div id="rankRequestResult"></div>
+        </div>
+
+        <div class="section">
+            <h3>🔍 Console Logs</h3>
+            <div id="consoleLogs" style="max-height: 300px; overflow-y: auto; background: #f8f9fa; padding: 10px;"></div>
+            <button onclick="clearLogs()">Clear Logs</button>
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Globals
+        let supabase;
+        let currentUser = null;
+        let clubs = [];
+        
+        // Logger
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn
+        };
+        
+        function addLog(type, message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logDiv = document.getElementById('consoleLogs');
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<strong>[${timestamp}] ${type.toUpperCase()}:</strong> ${message}`;
+            if (data) {
+                logEntry.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+            logDiv.appendChild(logEntry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            
+            // Also log to actual console
+            originalConsole[type] ? originalConsole[type](message, data) : originalConsole.log(message, data);
+        }
+        
+        // Override console methods
+        console.log = (msg, data) => addLog('log', msg, data);
+        console.error = (msg, data) => addLog('error', msg, data);
+        console.warn = (msg, data) => addLog('warn', msg, data);
+
+        // Initialize
+        async function init() {
+            // Detect environment
+            const currentUrl = window.location.href;
+            document.getElementById('currentUrl').textContent = currentUrl;
+            
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const envType = isLocalhost ? 'DEVELOPMENT' : 'PRODUCTION';
+            const envElement = document.getElementById('envType');
+            envElement.textContent = envType;
+            envElement.className = `status ${isLocalhost ? 'online' : 'offline'}`;
+            
+            // Initialize Supabase
+            let supabaseUrl, supabaseKey;
+            if (isLocalhost) {
+                // Dev environment - try to get from window or use defaults
+                supabaseUrl = 'https://exlqvlbawytbglioqfbc.supabase.co';
+                supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODAwODgsImV4cCI6MjA2ODY1NjA4OH0.-WHrBx32yHJwhqXAYUOdW5fytPvpzc4AFttXBl3MykA';
+            } else {
+                // Production environment - these should be available
+                supabaseUrl = window.VITE_SUPABASE_URL || 'https://exlqvlbawytbglioqfbc.supabase.co';
+                supabaseKey = window.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODAwODgsImV4cCI6MjA2ODY1NjA4OH0.-WHrBx32yHJwhqXAYUOdW5fytPvpzc4AFttXBl3MykA';
+            }
+            
+            document.getElementById('supabaseUrl').textContent = supabaseUrl;
+            
+            try {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                document.getElementById('apiKeyStatus').textContent = 'CONNECTED';
+                document.getElementById('apiKeyStatus').className = 'status online';
+                console.log('✅ Supabase initialized successfully');
+            } catch (error) {
+                document.getElementById('apiKeyStatus').textContent = 'ERROR';
+                document.getElementById('apiKeyStatus').className = 'status offline';
+                console.error('❌ Supabase initialization failed:', error);
+            }
+        }
+        
+        async function testAuth() {
+            try {
+                const { data: { user }, error } = await supabase.auth.getUser();
+                
+                if (error) {
+                    document.getElementById('authResult').innerHTML = `<div class="error">❌ Auth Error: ${error.message}</div>`;
+                    console.error('Auth error:', error);
+                    return;
+                }
+                
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('authResult').innerHTML = `
+                        <div class="success">
+                            ✅ <strong>Authenticated</strong><br>
+                            👤 User ID: ${user.id}<br>
+                            📧 Email: ${user.email}<br>
+                            🕐 Last Sign In: ${new Date(user.last_sign_in_at).toLocaleString()}
+                        </div>
+                    `;
+                    document.getElementById('testRankBtn').disabled = false;
+                    console.log('✅ User authenticated:', user);
+                } else {
+                    document.getElementById('authResult').innerHTML = `<div class="warning">⚠️ Not logged in. Please login first.</div>`;
+                    console.warn('⚠️ No authenticated user');
+                }
+            } catch (error) {
+                document.getElementById('authResult').innerHTML = `<div class="error">❌ Exception: ${error.message}</div>`;
+                console.error('Auth test exception:', error);
+            }
+        }
+        
+        async function testClubData() {
+            try {
+                const { data: clubData, error } = await supabase
+                    .from('club_profiles')
+                    .select('id, club_name, address')
+                    .limit(10);
+                
+                if (error) {
+                    document.getElementById('clubResult').innerHTML = `<div class="error">❌ Club Data Error: ${error.message}</div>`;
+                    console.error('Club data error:', error);
+                    return;
+                }
+                
+                clubs = clubData || [];
+                const clubSelect = document.getElementById('clubSelect');
+                clubSelect.innerHTML = '<option value="">Chọn CLB để test...</option>';
+                
+                clubs.forEach(club => {
+                    const option = document.createElement('option');
+                    option.value = club.id;
+                    option.textContent = `${club.club_name} (${club.address})`;
+                    clubSelect.appendChild(option);
+                });
+                
+                clubSelect.style.display = 'block';
+                
+                document.getElementById('clubResult').innerHTML = `
+                    <div class="success">
+                        ✅ <strong>Loaded ${clubs.length} clubs</strong><br>
+                        📊 Select a club below to test rank request
+                    </div>
+                `;
+                console.log('✅ Clubs loaded:', clubs);
+                
+            } catch (error) {
+                document.getElementById('clubResult').innerHTML = `<div class="error">❌ Exception: ${error.message}</div>`;
+                console.error('Club test exception:', error);
+            }
+        }
+        
+        async function testRankRequest() {
+            const clubId = document.getElementById('clubSelect').value;
+            const requestedRank = document.getElementById('rankSelect').value;
+            
+            if (!clubId) {
+                alert('Vui lòng chọn CLB trước');
+                return;
+            }
+            
+            if (!currentUser) {
+                alert('Vui lòng test authentication trước');
+                return;
+            }
+            
+            try {
+                console.log('🔍 Starting rank request test...');
+                
+                // Check existing requests first
+                const { data: existingRequests, error: checkError } = await supabase
+                    .from('rank_requests')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .eq('club_id', clubId)
+                    .eq('status', 'pending');
+                
+                if (checkError) {
+                    throw new Error(`Check existing error: ${checkError.message}`);
+                }
+                
+                if (existingRequests && existingRequests.length > 0) {
+                    document.getElementById('rankRequestResult').innerHTML = `
+                        <div class="warning">
+                            ⚠️ <strong>Existing Request Found</strong><br>
+                            📝 You already have a pending request at this club<br>
+                            🆔 Request ID: ${existingRequests[0].id}
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Prepare payload
+                const payload = {
+                    user_id: currentUser.id,
+                    club_id: clubId,
+                    requested_rank: requestedRank,
+                    status: 'pending'
+                };
+                
+                console.log('🔍 Rank request payload:', payload);
+                
+                // Attempt insert
+                const { data: newRequest, error: insertError } = await supabase
+                    .from('rank_requests')
+                    .insert(payload)
+                    .select()
+                    .single();
+                
+                if (insertError) {
+                    throw insertError;
+                }
+                
+                document.getElementById('rankRequestResult').innerHTML = `
+                    <div class="success">
+                        ✅ <strong>Rank Request Created Successfully!</strong><br>
+                        🆔 Request ID: ${newRequest.id}<br>
+                        📝 Requested Rank: ${newRequest.requested_rank}<br>
+                        📅 Created: ${new Date(newRequest.created_at).toLocaleString()}
+                    </div>
+                `;
+                
+                console.log('✅ Rank request created:', newRequest);
+                
+            } catch (error) {
+                document.getElementById('rankRequestResult').innerHTML = `
+                    <div class="error">
+                        ❌ <strong>Rank Request Failed</strong><br>
+                        🚨 Error: ${error.message}<br>
+                        📋 Code: ${error.code || 'Unknown'}<br>
+                        📝 Details: ${error.details || 'No additional details'}
+                    </div>
+                `;
+                console.error('❌ Rank request failed:', error);
+            }
+        }
+        
+        function clearLogs() {
+            document.getElementById('consoleLogs').innerHTML = '';
+        }
+        
+        // Initialize on load
+        window.onload = init;
+    </script>
+</body>
+</html>

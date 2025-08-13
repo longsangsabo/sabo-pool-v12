@@ -23,6 +23,9 @@ import StatusBadge from './Enhanced/StatusBadge';
 import CurrentUserInfo from './CurrentUserInfo';
 import { formatVietnamTime } from '@/utils/timezone';
 import { getRankOrder, extractRankFromProfile } from '@/lib/rankUtils';
+import { formatHandicapForDisplay, calculateSaboHandicapPrecise } from '@/utils/saboHandicapCalculator';
+import { SaboRank } from '@/utils/saboHandicap';
+import ScoreSubmissionCard from './ScoreSubmissionCard';
 
 // Modified props to accept both Challenge and ExtendedChallenge
 interface FlexibleEnhancedChallengeCardProps extends Omit<EnhancedChallengeCardProps, 'challenge'> {
@@ -91,6 +94,44 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   };
 
   const currentUserChallengeProfile = getCurrentUserProfile();
+
+  // Calculate handicap in real-time if not available or to verify stored data
+  const calculateLiveHandicap = () => {
+    try {
+      const challengerRank = challenge.challenger_profile?.current_rank || challenge.challenger_profile?.verified_rank;
+      const opponentRank = challenge.opponent_profile?.current_rank || challenge.opponent_profile?.verified_rank;
+      const betAmount = challenge.bet_amount || 100;
+
+      if (challengerRank && opponentRank) {
+        const result = calculateSaboHandicapPrecise(
+          challengerRank as SaboRank,
+          opponentRank as SaboRank, 
+          betAmount
+        );
+
+        console.log('🎯 Live Handicap Calculation:', {
+          challengeId: challenge.id,
+          challengerRank,
+          opponentRank,
+          betAmount,
+          result
+        });
+
+        return result;
+      } else {
+        console.warn('Missing rank data for handicap calculation:', {
+          challengeId: challenge.id,
+          challengerRank,
+          opponentRank
+        });
+      }
+    } catch (error) {
+      console.warn('Error calculating live handicap:', error);
+    }
+    return null;
+  };
+
+  const liveHandicap = calculateLiveHandicap();
 
   const formatCurrency = (amount?: number) => {
     if (!amount) return '';
@@ -315,20 +356,42 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                 <div className="text-gray-600 dark:text-gray-300 text-lg font-bold">
                   vs
                 </div>
-                {/* Handicap Display */}
-                {challenge.handicap_data && (
-                  <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                {/* Enhanced Handicap Display */}
+                {(challenge.handicap_data || liveHandicap) && (
+                  <div className="text-xs mt-1">
                     {(() => {
-                      const handicapData = typeof challenge.handicap_data === 'string' 
-                        ? JSON.parse(challenge.handicap_data) 
-                        : challenge.handicap_data;
+                      // Ưu tiên sử dụng live calculation, fallback to stored data
+                      let handicapDataToUse = null;
                       
-                      if (handicapData?.handicap_challenger > 0) {
-                        return `+${handicapData.handicap_challenger}`;
-                      } else if (handicapData?.handicap_opponent > 0) {
-                        return `+${handicapData.handicap_opponent}`;
+                      if (liveHandicap && liveHandicap.isValid) {
+                        handicapDataToUse = {
+                          handicap_challenger: liveHandicap.handicapChallenger,
+                          handicap_opponent: liveHandicap.handicapOpponent,
+                          explanation: liveHandicap.explanation
+                        };
+                      } else if (challenge.handicap_data) {
+                        handicapDataToUse = typeof challenge.handicap_data === 'string' 
+                          ? JSON.parse(challenge.handicap_data) 
+                          : challenge.handicap_data;
                       }
-                      return 'Cân bằng';
+
+                      if (!handicapDataToUse) return null;
+                      
+                      const handicapDisplay = formatHandicapForDisplay(handicapDataToUse);
+                      
+                      return (
+                        <div className={`
+                          px-2 py-1 rounded-full border font-medium
+                          ${handicapDisplay.color === 'blue' ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300' : ''}
+                          ${handicapDisplay.color === 'green' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700 text-green-700 dark:text-green-300' : ''}
+                          ${handicapDisplay.color === 'gray' ? 'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300' : ''}
+                        `}>
+                          {handicapDisplay.icon} {handicapDisplay.shortText}
+                          {liveHandicap && (
+                            <span className="ml-1 text-xs opacity-60" title="Live calculated">⚡</span>
+                          )}
+                        </div>
+                      );
                     })()}
                   </div>
                 )}
@@ -411,24 +474,57 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                 </div>
               )}
 
-              {/* Handicap Summary */}
-              {challenge.handicap_data && (
-                <div className="flex items-center gap-2 col-span-2">
-                  <Zap className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                  <span className="text-gray-800 dark:text-gray-100 text-sm">
+              {/* Enhanced Handicap Summary */}
+              {(challenge.handicap_data || liveHandicap) && (
+                <div className="flex items-start gap-2 col-span-2">
+                  <Zap className="w-4 h-4 text-purple-600 dark:text-purple-400 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
                     {(() => {
-                      const handicapData = typeof challenge.handicap_data === 'string' 
-                        ? JSON.parse(challenge.handicap_data) 
-                        : challenge.handicap_data;
+                      // Ưu tiên sử dụng live calculation
+                      let handicapDataToUse = null;
                       
-                      if (handicapData?.handicap_challenger > 0) {
-                        return `${challenge.challenger_profile?.full_name || 'Challenger'} được cộng ${handicapData.handicap_challenger} bàn`;
-                      } else if (handicapData?.handicap_opponent > 0) {
-                        return `${challenge.opponent_profile?.full_name || 'Opponent'} được cộng ${handicapData.handicap_opponent} bàn`;
+                      if (liveHandicap && liveHandicap.isValid) {
+                        handicapDataToUse = {
+                          handicap_challenger: liveHandicap.handicapChallenger,
+                          handicap_opponent: liveHandicap.handicapOpponent,
+                          explanation: liveHandicap.explanation
+                        };
+                      } else if (challenge.handicap_data) {
+                        handicapDataToUse = typeof challenge.handicap_data === 'string' 
+                          ? JSON.parse(challenge.handicap_data) 
+                          : challenge.handicap_data;
                       }
-                      return 'Trận đấu cân bằng - không chấp';
+
+                      if (!handicapDataToUse) return null;
+                      
+                      const handicapDisplay = formatHandicapForDisplay(handicapDataToUse);
+                      
+                      return (
+                        <div className={`
+                          p-2 rounded-lg border text-sm
+                          ${handicapDisplay.color === 'blue' ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200/50 dark:border-blue-700/30' : ''}
+                          ${handicapDisplay.color === 'green' ? 'bg-green-50/50 dark:bg-green-900/20 border-green-200/50 dark:border-green-700/30' : ''}
+                          ${handicapDisplay.color === 'gray' ? 'bg-gray-50/50 dark:bg-gray-900/20 border-gray-200/50 dark:border-gray-700/30' : ''}
+                        `}>
+                          <span className="font-medium text-gray-900 dark:text-gray-100">
+                            {handicapDisplay.icon} Chấp bàn:
+                          </span>
+                          <span className={`ml-1 font-semibold
+                            ${handicapDisplay.color === 'blue' ? 'text-blue-700 dark:text-blue-300' : ''}
+                            ${handicapDisplay.color === 'green' ? 'text-green-700 dark:text-green-300' : ''}
+                            ${handicapDisplay.color === 'gray' ? 'text-gray-700 dark:text-gray-300' : ''}
+                          `}>
+                            {handicapDisplay.displayText}
+                            {liveHandicap && (
+                              <span className="ml-2 text-xs opacity-60 font-normal" title="Calculated in real-time">
+                                ⚡ Live
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      );
                     })()}
-                  </span>
+                  </div>
                 </div>
               )}
             </div>
@@ -547,6 +643,44 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
           </div>
         </CardContent>
       </Card>
+
+      {/* Score Submission Card - Only show for active/ongoing challenges */}
+      {(challenge.status === 'accepted' || challenge.status === 'ongoing') && 
+       challenge.challenger_profile && 
+       challenge.opponent_profile && (
+        <div className="mt-4">
+          <ScoreSubmissionCard
+            challenge={{
+              id: challenge.id,
+              challenger_id: challenge.challenger_id,
+              opponent_id: challenge.opponent_id || '',
+              challenger_score: challenge.challenger_score,
+              opponent_score: challenge.opponent_score,
+              status: challenge.status,
+              response_message: challenge.message, // Using message field
+              bet_points: challenge.bet_points,
+              race_to: challenge.race_to,
+              handicap_data: challenge.handicap_data
+            }}
+            challengerProfile={{
+              id: challenge.challenger_profile.id || challenge.challenger_profile.user_id,
+              display_name: challenge.challenger_profile.display_name || challenge.challenger_profile.full_name,
+              spa_rank: challenge.challenger_profile.verified_rank || challenge.challenger_profile.current_rank,
+              spa_points: challenge.challenger_profile.spa_points
+            }}
+            opponentProfile={{
+              id: challenge.opponent_profile.id || challenge.opponent_profile.user_id,
+              display_name: challenge.opponent_profile.display_name || challenge.opponent_profile.full_name,
+              spa_rank: challenge.opponent_profile.verified_rank || challenge.opponent_profile.current_rank,
+              spa_points: challenge.opponent_profile.spa_points
+            }}
+            onScoreSubmitted={() => {
+              // Refresh challenge data if needed
+              console.log('Score submitted for challenge:', challenge.id);
+            }}
+          />
+        </div>
+      )}
     </motion.div>
   );
 };

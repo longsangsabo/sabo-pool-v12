@@ -27,6 +27,9 @@ import '@/utils/debugTournamentRefresh';
 // 🔧 Test auth functionality in development
 import '@/utils/testAuth';
 
+// 🎯 Test score submission functionality in development
+import '@/utils/testScoreSubmission';
+
 // Lazy load components - Public pages
 const HomePage = lazy(() => import('@/pages/Home'));
 const LegacyClaim = lazy(() => import('@/pages/LegacyClaim'));
@@ -61,6 +64,8 @@ const EnhancedChallengesPageV3 = lazy(
 // Debug component
 const ChallengeTabsDebug = lazy(() => import('@/pages/ChallengeTabsDebug'));
 const ChallengeTabsStabilityTest = lazy(() => import('@/pages/ChallengeTabsStabilityTest'));
+const HandicapDebugger = lazy(() => import('@/components/debug/HandicapDebugger'));
+const ScoreSubmissionDemo = lazy(() => import('@/pages/ScoreSubmissionDemo'));
 const CalendarPage = lazy(() => import('@/pages/CalendarPage'));
 const SettingsPage = lazy(() => import('@/pages/EnhancedSettingsPage'));
 const WalletPage = lazy(() => import('@/pages/PaymentPage'));
@@ -154,6 +159,8 @@ const AppContent = () => {
           <Route path='/test-avatar' element={<TestAvatarPage />} />
           <Route path='/test-rank' element={<RankTestPage />} />
           <Route path='/test-sabo-style' element={<SABOStyleTestPage />} />
+          <Route path='/debug-handicap' element={<HandicapDebugger />} />
+          <Route path='/demo-score-submission' element={<ScoreSubmissionDemo />} />
 
           {/* Auth routes - only accessible when NOT logged in */}
           <Route

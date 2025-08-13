@@ -269,6 +269,7 @@ const ImprovedCreateChallengeModal = ({
 
       const challengeData = {
         challenger_id: user.id,
+        challenger_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Unknown Player',
         opponent_id: challengeType === 'direct' ? formData.opponent_id : null,
         bet_points: formData.bet_points,
         race_to: formData.race_to,

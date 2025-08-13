@@ -336,23 +336,50 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
               </div>
             </div>
 
-            {/* Location Display */}
-            {challenge.location && (
-              <div className="flex items-start gap-2 p-3 bg-green-50/50 dark:bg-green-900/20 rounded-lg border border-green-200/50 dark:border-green-700/30">
-                <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-800 dark:text-gray-100 font-medium text-sm leading-relaxed">
-                  {challenge.location}
-                </span>
-              </div>
-            )}
+            {/* Club and Rank Information Section */}
+            {(challenge.location || (challenge.required_rank && challenge.required_rank !== 'all')) && (
+              <div className="space-y-2">
+                {/* DEBUG: Log data to console */}
+                {console.log('🔍 Challenge Data Debug:', {
+                  id: challenge.id,
+                  location: challenge.location,
+                  required_rank: challenge.required_rank,
+                  challenger_name: challenge.challenger_profile?.full_name,
+                  hasLocation: !!challenge.location,
+                  hasRequiredRank: !!(challenge.required_rank && challenge.required_rank !== 'all')
+                })}
+                
+                {/* Club Location */}
+                {challenge.location && (
+                  <div className="flex items-start gap-2 p-3 bg-green-50/50 dark:bg-green-900/20 rounded-lg border border-green-200/50 dark:border-green-700/30">
+                    <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <span className="text-gray-600 dark:text-gray-400 text-xs font-medium block">CLB thi đấu</span>
+                      <span className="text-gray-800 dark:text-gray-100 font-semibold text-sm leading-relaxed">
+                        {challenge.location}
+                      </span>
+                    </div>
+                  </div>
+                )}
 
-            {/* Required Rank Display for Open Challenges */}
-            {challenge.required_rank && challenge.required_rank !== 'all' && (
-              <div className="flex items-start gap-2 p-2 bg-blue-50/50 dark:bg-blue-900/20 rounded-lg border border-blue-200/50 dark:border-blue-700/30">
-                <Star className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  Yêu cầu hạng {challenge.required_rank} trở lên
-                </span>
+                {/* Required Rank */}
+                {challenge.required_rank && challenge.required_rank !== 'all' && (
+                  <div className="flex items-start gap-2 p-3 bg-blue-50/50 dark:bg-blue-900/20 rounded-lg border border-blue-200/50 dark:border-blue-700/30">
+                    <Star className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <span className="text-gray-600 dark:text-gray-400 text-xs font-medium block">Yêu cầu hạng</span>
+                      <span className="text-gray-800 dark:text-gray-100 font-semibold text-sm">
+                        {challenge.required_rank === 'K' ? '🔰 K hạng trở lên' : 
+                         challenge.required_rank === 'I' ? '🟦 I hạng trở lên' : 
+                         challenge.required_rank === 'H' ? '🟩 H hạng trở lên' : 
+                         challenge.required_rank === 'G' ? '🟨 G hạng trở lên' : 
+                         challenge.required_rank === 'F' ? '🟧 F hạng trở lên' : 
+                         challenge.required_rank === 'E' ? '🔴 E hạng trở lên' : 
+                         `${challenge.required_rank} hạng trở lên`}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -382,21 +409,6 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                       }
                       return 'Trận đấu cân bằng - không chấp';
                     })()}
-                  </span>
-                </div>
-              )}
-
-              {/* Rank Requirement for Open Challenges */}
-              {variant === 'open' && challenge.required_rank && challenge.required_rank !== 'all' && (
-                <div className="flex items-center gap-2 col-span-2">
-                  <Star className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-                  <span className="text-foreground dark:text-foreground/90">
-                    Yêu cầu hạng: {challenge.required_rank === 'K' ? '🔰 K hạng' : 
-                                   challenge.required_rank === 'I' ? '🟦 I hạng' : 
-                                   challenge.required_rank === 'H' ? '🟩 H hạng' : 
-                                   challenge.required_rank === 'G' ? '🟨 G hạng' : 
-                                   challenge.required_rank === 'F' ? '🟧 F hạng' : 
-                                   challenge.required_rank === 'E' ? '🔴 E hạng' : 'Tất cả'}
                   </span>
                 </div>
               )}

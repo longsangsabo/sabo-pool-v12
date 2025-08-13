@@ -73,6 +73,10 @@ const PolaroidFrame: React.FC<PolaroidFrameProps> = ({
     canvas.width = 400;
     canvas.height = 400;
 
+    // Set white background to prevent transparency/black issues
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, 400, 400);
 
     const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
@@ -137,6 +141,10 @@ const PolaroidFrame: React.FC<PolaroidFrameProps> = ({
 
                     canvas.width = 150;
                     canvas.height = 150;
+
+                    // Set white background to prevent transparency/black issues
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                     ctx.drawImage(
                       img,

@@ -308,6 +308,10 @@ const ClubRegistrationMultiStepForm = () => {
         canvas.width = targetSize;
         canvas.height = targetSize;
 
+        // Set white background to prevent transparency/black issues
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         // Calculate crop dimensions (center crop to square)
         const { width, height } = img;
         const size = Math.min(width, height);

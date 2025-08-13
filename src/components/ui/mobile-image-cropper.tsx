@@ -280,8 +280,9 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
       canvas.width = 400;
       canvas.height = 400;
       
-      // Clear canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Set white background to prevent transparency issues
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       // Apply transformations
       ctx.save();

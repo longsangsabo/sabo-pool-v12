@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { useBracketGeneration } from '@/hooks/useBracketGeneration';
+import { TournamentDebugPanel } from '@/components/debug/TournamentDebugPanel';
 import {
   Loader2,
   GitBranch,
@@ -66,7 +67,7 @@ export function SABOBracketGenerator({
     }
 
     try {
-      const result = await generateBracket(tournamentId, 'double_elimination', {
+      const result = await generateBracket(tournamentId, {
         method: seedingMethod,
         forceRegenerate: false,
       });
@@ -274,6 +275,11 @@ export function SABOBracketGenerator({
               </Alert>
             </div>
           </>
+        )}
+
+        {/* Debug Panel - only show when there are issues */}
+        {(!isValidParticipantCount || validationResult?.error) && (
+          <TournamentDebugPanel tournamentId={tournamentId} />
         )}
       </CardContent>
     </Card>

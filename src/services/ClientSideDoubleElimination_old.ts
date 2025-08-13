@@ -1,11 +1,11 @@
 /**
- * CLIENT-SIDE SABO DOUBLE ELIMINATION BRACKET GENERATOR
- * Based on SABO tournament structure: 27 matches total
+ * CLIENT-SIDE DOUBLE ELIMINATION BRACKET GENERATOR
+ * Fallback solution when database functions fail
  */
 
 import { supabase } from '@/integrations/supabase/client';
 import { supabaseService } from '@/integrations/supabase/service';
-import { SABOMatchHandler } from './SABOMatchHandler';
+import { TournamentMatchDBHandler } from './TournamentMatchDBHandler';
 
 interface Player {
   user_id: string;
@@ -24,6 +24,8 @@ interface Match {
   winner_id: string | null;
   status: 'pending' | 'in_progress' | 'completed';
   bracket_type: 'winner' | 'loser';
+  next_winner_match?: number | null;
+  next_loser_match?: number | null;
 }
 
 export class ClientSideDoubleElimination {
@@ -57,17 +59,17 @@ export class ClientSideDoubleElimination {
       // Step 2: Seed players
       this.seedPlayers();
 
-      // Step 3: Generate SABO bracket structure (27 matches)
-      this.generateSABOWinnerBracket();    // 14 matches
-      this.generateSABOLoserBrackets();    // 10 matches
-      this.generateSABOFinals();           // 3 matches
+      // Step 3: Generate bracket structure
+      this.generateWinnerBracket();
+      this.generateLoserBracket();
+      this.generateSABOFinals();
 
       console.log(`✅ Generated ${this.matches.length} matches for ${this.players.length} players`);
 
-      // Step 4: Save to SABO matches table
-      const savedCount = await SABOMatchHandler.saveMatches(
-        this.matches,
-        this.tournamentId
+      // Step 4: Save to database
+      const savedCount = await TournamentMatchDBHandler.saveMatchesSafely(
+        this.tournamentId,
+        this.matches
       );
 
       if (savedCount === this.matches.length) {
@@ -98,95 +100,29 @@ export class ClientSideDoubleElimination {
   private async loadPlayers(): Promise<boolean> {
     try {
       console.log('🔍 Loading players for tournament:', this.tournamentId);
-      console.log('🔍 Tournament ID type:', typeof this.tournamentId);
-      console.log('🔍 Tournament ID length:', this.tournamentId?.length);
 
-      // Try multiple approaches to avoid schema cache issues
-      let registrations: any[] = [];
-      let regError: any = null;
+      // Get tournament registrations
+      const { data: registrations, error: regError } = await supabase
+        .from('tournament_registrations')
+        .select('user_id')
+        .eq('tournament_id', this.tournamentId)
+        .eq('registration_status', 'confirmed')
+        .limit(16);
 
-      // Approach 1: Try the standard query
-      console.log('🔍 Approach 1: Standard query...');
-      try {
-        const result = await supabase
-          .from('tournament_registrations')
-          .select('user_id')
-          .eq('tournament_id', this.tournamentId)
-          .eq('registration_status', 'confirmed')
-          .limit(16);
-          
-        if (result.error) {
-          console.warn('⚠️ Standard query failed:', result.error);
-          regError = result.error;
-        } else {
-          registrations = result.data || [];
-          console.log('✅ Standard query success:', registrations.length);
-        }
-      } catch (error) {
-        console.warn('⚠️ Standard query exception:', error);
-        regError = error;
-      }
-
-      // Approach 2: If standard failed, try simplified query
-      if (regError && registrations.length === 0) {
-        console.log('� Approach 2: Simplified query (no status filter)...');
-        try {
-          const result = await supabase
-            .from('tournament_registrations')
-            .select('user_id')
-            .eq('tournament_id', this.tournamentId)
-            .limit(16);
-            
-          if (result.error) {
-            console.warn('⚠️ Simplified query failed:', result.error);
-          } else {
-            registrations = result.data || [];
-            console.log('✅ Simplified query success:', registrations.length);
-            regError = null; // Clear the error since we got results
-          }
-        } catch (error) {
-          console.warn('⚠️ Simplified query exception:', error);
-        }
-      }
-
-      // Approach 3: If still failed, try with explicit select
-      if (regError && registrations.length === 0) {
-        console.log('� Approach 3: Explicit column query...');
-        try {
-          const result = await supabase
-            .from('tournament_registrations')
-            .select('user_id, registration_status')
-            .eq('tournament_id', this.tournamentId);
-            
-          if (result.error) {
-            console.error('❌ All query approaches failed. Final error:', result.error);
-            return false;
-          } else {
-            // Filter confirmed manually
-            const allRegs = result.data || [];
-            registrations = allRegs
-              .filter(r => r.registration_status === 'confirmed')
-              .slice(0, 16);
-            console.log('✅ Explicit query success, filtered to:', registrations.length);
-            regError = null;
-          }
-        } catch (error) {
-          console.error('❌ All approaches failed. Final exception:', error);
-          return false;
-        }
-      }
-
-      if (registrations.length === 0) {
-        console.log('⚠️ No registrations found after all approaches');
+      if (regError) {
+        console.error('❌ Registration query error:', regError);
         return false;
       }
 
-      console.log(`📋 Final registration count: ${registrations.length}`);
+      if (!registrations || registrations.length === 0) {
+        console.log('⚠️ No confirmed registrations found');
+        return false;
+      }
 
-      // Get player profiles with the user IDs we found
+      console.log(`📋 Found ${registrations.length} registrations`);
+
+      // Get player profiles
       const userIds = registrations.map(r => r.user_id);
-      console.log('🔍 Querying profiles for user IDs:', userIds.slice(0, 3));
-      
       const { data: profiles, error: profileError } = await supabase
         .from('profiles')
         .select('user_id, display_name, avatar_url, full_name, elo')
@@ -249,9 +185,10 @@ export class ClientSideDoubleElimination {
     });
   }
 
-  private generateSABOWinnerBracket(): void {
-    console.log('🏆 Generating SABO Winner Bracket (14 matches)...');
+  private generateWinnerBracket(): void {
+    console.log('🏆 Generating Winner Bracket (SABO Structure)...');
     
+    // SABO Winners: Round 1-3 only (stops at 2 finalists, no WB Finals)
     // Round 1: 8 matches (16 -> 8)
     for (let i = 0; i < 8; i++) {
       const player1 = this.players[i];
@@ -297,13 +234,14 @@ export class ClientSideDoubleElimination {
       });
     }
 
-    console.log('✅ Winner bracket: 14 matches (8+4+2, stops at 2 finalists)');
+    console.log('✅ Winners bracket: 14 matches (8+4+2, stops at 2 finalists)');
+  }
   }
 
-  private generateSABOLoserBrackets(): void {
-    console.log('🥈 Generating SABO Loser Brackets (10 matches)...');
+  private generateLoserBracket(): void {
+    console.log('🥈 Generating Loser Bracket (SABO Structure)...');
     
-    // Losers Branch A: 7 matches (4+2+1)
+    // SABO Losers Branch A: 7 matches (4+2+1)
     // Round 101: 4 matches (losers from WB R1)
     for (let i = 0; i < 4; i++) {
       this.matches.push({
@@ -344,7 +282,7 @@ export class ClientSideDoubleElimination {
       bracket_type: 'loser'
     });
 
-    // Losers Branch B: 3 matches (2+1)
+    // SABO Losers Branch B: 3 matches (2+1)
     // Round 201: 2 matches (losers from WB R2)
     for (let i = 0; i < 2; i++) {
       this.matches.push({
@@ -371,13 +309,13 @@ export class ClientSideDoubleElimination {
       bracket_type: 'loser'
     });
 
-    console.log('✅ Loser brackets: 10 matches (Branch A: 7, Branch B: 3)');
+    console.log('✅ Losers bracket: 10 matches (Branch A: 7, Branch B: 3)');
   }
 
   private generateSABOFinals(): void {
-    console.log('🏅 Generating SABO Finals (3 matches)...');
+    console.log('🏅 Generating SABO Finals (4-person knockout)...');
     
-    // SABO Finals: 4-person knockout (2 from WB + 1 from LA + 1 from LB)
+    // SABO Finals: 3 matches total
     // Semifinals: 2 matches (4 people -> 2)
     for (let i = 0; i < 2; i++) {
       this.matches.push({
@@ -405,5 +343,6 @@ export class ClientSideDoubleElimination {
     });
 
     console.log('✅ Finals: 3 matches (2 semifinals + 1 final)');
+  }
   }
 }

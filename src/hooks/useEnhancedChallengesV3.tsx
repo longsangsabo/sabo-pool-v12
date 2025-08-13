@@ -276,31 +276,65 @@ export const useEnhancedChallengesV3 = () => {
   );
 
   // My challenges - Only user's challenges
-  const myDoiDoiThu = useMemo(() => 
-    challenges.filter(c => 
+  const myDoiDoiThu = useMemo(() => {
+    const filtered = challenges.filter(c => 
       c.challenger_id === user?.id && 
       !c.opponent_id && 
-      c.status === 'pending'
-    ), 
-    [challenges, user?.id]
-  );
+      (c.status === 'pending' || c.status === 'open') // ✅ Added 'open' status support
+    );
+    
+    console.log('🔍 [useEnhancedChallengesV3] myDoiDoiThu filtering:', {
+      total: challenges.length,
+      userId: user?.id,
+      userChallenges: challenges.filter(c => c.challenger_id === user?.id).length,
+      noOpponent: challenges.filter(c => c.challenger_id === user?.id && !c.opponent_id).length,
+      pendingStatus: challenges.filter(c => c.challenger_id === user?.id && !c.opponent_id && c.status === 'pending').length,
+      openStatus: challenges.filter(c => c.challenger_id === user?.id && !c.opponent_id && c.status === 'open').length,
+      filtered: filtered.length,
+      filteredDetails: filtered.map(c => ({ id: c.id, status: c.status, opponent_id: c.opponent_id }))
+    });
+    
+    return filtered;
+  }, [challenges, user?.id]);
 
-  const mySapToi = useMemo(() => 
-    challenges.filter(c => 
+  const mySapToi = useMemo(() => {
+    const filtered = challenges.filter(c => 
       (c.challenger_id === user?.id || c.opponent_id === user?.id) && 
-      c.status === 'accepted' && 
+      (c.status === 'accepted' || c.status === 'ongoing') && // ✅ Added 'ongoing' status
       c.opponent_id
-    ), 
-    [challenges, user?.id]
-  );
+    );
+    
+    console.log('🔍 [useEnhancedChallengesV3] mySapToi filtering:', {
+      total: challenges.length,
+      userId: user?.id,
+      involvingUser: challenges.filter(c => c.challenger_id === user?.id || c.opponent_id === user?.id).length,
+      withOpponent: challenges.filter(c => (c.challenger_id === user?.id || c.opponent_id === user?.id) && c.opponent_id).length,
+      acceptedStatus: challenges.filter(c => (c.challenger_id === user?.id || c.opponent_id === user?.id) && c.status === 'accepted' && c.opponent_id).length,
+      ongoingStatus: challenges.filter(c => (c.challenger_id === user?.id || c.opponent_id === user?.id) && c.status === 'ongoing' && c.opponent_id).length,
+      filtered: filtered.length,
+      filteredDetails: filtered.map(c => ({ id: c.id, status: c.status, opponent_id: c.opponent_id }))
+    });
+    
+    return filtered;
+  }, [challenges, user?.id]);
 
-  const myHoanThanh = useMemo(() => 
-    challenges.filter(c => 
+  const myHoanThanh = useMemo(() => {
+    const filtered = challenges.filter(c => 
       (c.challenger_id === user?.id || c.opponent_id === user?.id) && 
       c.status === 'completed'
-    ), 
-    [challenges, user?.id]
-  );
+    );
+    
+    console.log('🔍 [useEnhancedChallengesV3] myHoanThanh filtering:', {
+      total: challenges.length,
+      userId: user?.id,
+      involvingUser: challenges.filter(c => c.challenger_id === user?.id || c.opponent_id === user?.id).length,
+      completedStatus: challenges.filter(c => (c.challenger_id === user?.id || c.opponent_id === user?.id) && c.status === 'completed').length,
+      filtered: filtered.length,
+      filteredDetails: filtered.map(c => ({ id: c.id, status: c.status, opponent_id: c.opponent_id }))
+    });
+    
+    return filtered;
+  }, [challenges, user?.id]);
 
   // Accept challenge function with confirmation
   const acceptChallengeWithConfirmation = async (challengeId: string, onSuccess?: () => void) => {

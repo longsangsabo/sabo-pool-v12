@@ -16,6 +16,11 @@ interface EnhancedCommunityTabProps {
   sapToiData: Challenge[];
   xongData: Challenge[];
   currentUserId?: string;
+  currentUserProfile?: {
+    verified_rank?: string;
+    current_rank?: string;
+    rank?: string;
+  } | null;
   onJoinChallenge?: (challengeId: string) => void;
   onCancelChallenge?: (challengeId: string) => void;
   isJoining?: boolean;
@@ -27,6 +32,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
   sapToiData,
   xongData,
   currentUserId,
+  currentUserProfile,
   onJoinChallenge,
   onCancelChallenge,
   isJoining = false,
@@ -247,6 +253,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
             onAction={handleAction}
             onCardClick={handleCardClick}
             currentUserId={currentUserId}
+            currentUserProfile={currentUserProfile}
           />
         </div>
 
@@ -261,6 +268,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
               onAction={handleAction}
               onCardClick={handleCardClick}
               currentUserId={currentUserId}
+              currentUserProfile={currentUserProfile}
             />
           ))}
         </div>

@@ -22,11 +22,17 @@ import AvatarWithStatus from './Enhanced/AvatarWithStatus';
 import StatusBadge from './Enhanced/StatusBadge';
 import CurrentUserInfo from './CurrentUserInfo';
 import { formatVietnamTime } from '@/utils/timezone';
+import { getRankOrder, extractRankFromProfile } from '@/lib/rankUtils';
 
 // Modified props to accept both Challenge and ExtendedChallenge
 interface FlexibleEnhancedChallengeCardProps extends Omit<EnhancedChallengeCardProps, 'challenge'> {
   challenge: Challenge | ExtendedChallenge;
   currentUserId?: string;
+  currentUserProfile?: {
+    verified_rank?: string;
+    current_rank?: string;
+    rank?: string;
+  } | null;
 }
 
 const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
@@ -41,13 +47,36 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   onAction,
   onCardClick,
   className = '',
-  currentUserId
+  currentUserId,
+  currentUserProfile
 }) => {
   // Convert to ExtendedChallenge for enhanced features
   const challenge = toExtendedChallenge(originalChallenge);
   
   // Check if current user is the challenger (creator)
   const isCreator = currentUserId && challenge.challenger_id === currentUserId;
+  
+  // Check rank eligibility for joining
+  const isRankEligible = () => {
+    if (!challenge.required_rank || challenge.required_rank === 'all' || !currentUserProfile) {
+      return true; // No rank requirement or no profile to check
+    }
+    
+    const currentUserRank = extractRankFromProfile(currentUserProfile);
+    const requiredRankOrder = getRankOrder(challenge.required_rank);
+    const currentRankOrder = getRankOrder(currentUserRank);
+    
+    console.log('🔍 [EnhancedChallengeCard] Rank eligibility check:', {
+      challengeId: challenge.id,
+      required_rank: challenge.required_rank,
+      requiredRankOrder,
+      currentUserRank,
+      currentRankOrder,
+      isEligible: currentRankOrder >= requiredRankOrder
+    });
+    
+    return currentRankOrder >= requiredRankOrder;
+  };
   
   // Get current user profile information
   const getCurrentUserProfile = () => {
@@ -61,7 +90,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
     return null;
   };
 
-  const currentUserProfile = getCurrentUserProfile();
+  const currentUserChallengeProfile = getCurrentUserProfile();
 
   const formatCurrency = (amount?: number) => {
     if (!amount) return '';
@@ -438,10 +467,10 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
             {/* Enhanced Actions */}
             {showQuickActions && (
               <div className="flex gap-2 pt-1">
-                {challenge.status === 'pending' && (
+                {(challenge.status === 'pending' || challenge.status === 'open') && (
                   <>
-                    {/* Join button - only show if user is NOT the creator */}
-                    {!isCreator && (
+                    {/* Join button - only show if user is NOT the creator AND has required rank */}
+                    {!isCreator && isRankEligible() && (
                       <Button
                         size="sm"
                         className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 dark:from-emerald-400 dark:to-green-500 dark:hover:from-emerald-500 dark:hover:to-green-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
@@ -452,6 +481,20 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                       >
                         <Zap className="w-4 h-4 mr-1" />
                         Tham gia ngay
+                      </Button>
+                    )}
+                    
+                    {/* Rank insufficient button - show if user is NOT the creator but doesn't have required rank */}
+                    {!isCreator && !isRankEligible() && challenge.required_rank && challenge.required_rank !== 'all' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled
+                        className="border-amber-500/50 text-amber-600 dark:border-amber-400/50 dark:text-amber-400 cursor-not-allowed opacity-60"
+                        title={`Cần hạng ${challenge.required_rank} trở lên để tham gia`}
+                      >
+                        <Star className="w-4 h-4 mr-1" />
+                        Cần hạng {challenge.required_rank}+
                       </Button>
                     )}
                     
@@ -517,6 +560,7 @@ interface EnhancedChallengeCardGridProps {
   onCardClick?: FlexibleEnhancedChallengeCardProps['onCardClick'];
   className?: string;
   currentUserId?: string;
+  currentUserProfile?: FlexibleEnhancedChallengeCardProps['currentUserProfile'];
 }
 
 const EnhancedChallengeCardGrid: React.FC<EnhancedChallengeCardGridProps> = ({
@@ -526,7 +570,8 @@ const EnhancedChallengeCardGrid: React.FC<EnhancedChallengeCardGridProps> = ({
   onAction,
   onCardClick,
   className,
-  currentUserId
+  currentUserId,
+  currentUserProfile
 }) => {
   return (
     <div className={cn('grid grid-cols-1 md:grid-cols-2 gap-4', className)}>
@@ -539,6 +584,7 @@ const EnhancedChallengeCardGrid: React.FC<EnhancedChallengeCardGridProps> = ({
           onAction={onAction}
           onCardClick={onCardClick}
           currentUserId={currentUserId}
+          currentUserProfile={currentUserProfile}
         />
       ))}
     </div>

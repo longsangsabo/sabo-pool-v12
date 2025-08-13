@@ -44,6 +44,9 @@ const EnhancedChallengesPageV3: React.FC = () => {
     mySapToi,
     myHoanThanh,
     
+    // User profile data
+    currentUserProfile,
+    
     // Actions
     fetchChallenges,
     acceptChallenge,
@@ -322,6 +325,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
               sapToiData={communitySapToi}
               xongData={communityXong}
               currentUserId={user.id}
+              currentUserProfile={currentUserProfile}
               onJoinChallenge={handleJoinChallenge}
               onCancelChallenge={handleCancelChallenge}
               isJoining={isJoining}

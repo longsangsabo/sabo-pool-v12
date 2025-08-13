@@ -311,10 +311,10 @@ const ImprovedCreateChallengeModal = ({
     }
   };
 
-  // Base card style (subtle, no "tech" border)
+  // Base card style (subtle, no "tech" border) - Enhanced for better visibility
   const sectionCard = isDark
-    ? 'rounded-xl bg-slate-900/55 border border-slate-800/50 backdrop-blur-sm p-4'
-    : 'rounded-xl bg-white border border-slate-200 p-4 shadow-sm';
+    ? 'rounded-xl bg-slate-800/80 border border-slate-700/80 backdrop-blur-sm p-4 shadow-lg shadow-slate-900/40'
+    : 'rounded-xl bg-white/90 border border-slate-300/80 backdrop-blur-sm p-4 shadow-lg shadow-slate-200/40';
 
   return (
     <>
@@ -322,8 +322,16 @@ const ImprovedCreateChallengeModal = ({
         <DialogContent
           className={
             isMobile
-              ? 'w-screen h-[100dvh] max-w-none m-0 p-0 rounded-none bg-gradient-to-br from-slate-950/95 via-slate-900/90 to-slate-950/95 backdrop-blur-xl border border-slate-800/70 flex flex-col shadow-[0_0_40px_-10px_rgba(0,0,0,0.8)]'
-              : 'max-w-xl max-h-[92vh] overflow-hidden p-0 bg-slate-950/90 backdrop-blur-xl border-slate-800/70 shadow-2xl'
+              ? `w-screen h-[100dvh] max-w-none m-0 p-0 rounded-none backdrop-blur-xl border flex flex-col shadow-[0_0_40px_-10px_rgba(0,0,0,0.8)] ${
+                  isDark 
+                    ? 'bg-gradient-to-br from-slate-950/98 via-slate-900/95 to-slate-950/98 border-slate-700/90' 
+                    : 'bg-gradient-to-br from-white/98 via-slate-50/95 to-white/98 border-slate-300/90'
+                }`
+              : `max-w-xl max-h-[92vh] overflow-hidden p-0 backdrop-blur-xl shadow-2xl ${
+                  isDark 
+                    ? 'bg-slate-950/95 border-slate-700/90' 
+                    : 'bg-white/95 border-slate-300/90'
+                }`
           }
         >
           {/* Sticky Header for Mobile */}
@@ -331,11 +339,23 @@ const ImprovedCreateChallengeModal = ({
             className={
               'relative overflow-hidden ' +
               (isMobile
-                ? 'px-4 pt-5 pb-4 border-b border-slate-800/70 bg-slate-900/60 backdrop-blur-md shadow-[0_2px_8px_-2px_rgba(0,0,0,0.6)]'
-                : 'px-6 pt-6 pb-4 border-b border-slate-800/60 bg-slate-900/50 backdrop-blur-md')
+                ? `px-4 pt-5 pb-4 border-b backdrop-blur-md shadow-[0_2px_8px_-2px_rgba(0,0,0,0.6)] ${
+                    isDark 
+                      ? 'border-slate-800/70 bg-slate-900/60' 
+                      : 'border-slate-200/70 bg-slate-100/60'
+                  }`
+                : `px-6 pt-6 pb-4 border-b backdrop-blur-md ${
+                    isDark 
+                      ? 'border-slate-800/60 bg-slate-900/50' 
+                      : 'border-slate-200/60 bg-slate-100/50'
+                  }`)
             }
           >
-            <div className='absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.15),transparent_60%)]' />
+            <div className={`absolute inset-0 pointer-events-none ${
+              isDark 
+                ? 'bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.15),transparent_60%)]' 
+                : 'bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.08),transparent_60%)]'
+            }`} />
             <DialogTitle
               className={`relative flex items-center gap-2 heading-secondary uppercase tracking-wide ${
                 isDark ? 'text-slate-100' : 'text-slate-800'
@@ -350,7 +370,9 @@ const ImprovedCreateChallengeModal = ({
               >
                 <Trophy className='w-5 h-5 text-primary' />
               </span>
-              <span className='uppercase'>Tạo thách đấu SABO</span>
+              <span className='uppercase'>
+                Tạo thách đấu SABO {isDark ? '🌙' : '☀️'}
+              </span>
             </DialogTitle>
             <p
               className={`relative mt-2 body-small max-w-sm ${
@@ -386,11 +408,13 @@ const ImprovedCreateChallengeModal = ({
           >
             {/* Challenge Type Selection - Open Challenge First */}
             <div
-              className={`${sectionCard} shadow-inner shadow-slate-900/20 space-y-1 p-2`}
+              className={`${sectionCard} shadow-inner space-y-1 p-2 ${
+                isDark ? 'shadow-slate-900/20' : 'shadow-slate-200/20'
+              }`}
             >
               <Label
-                className={`label-text ${
-                  isDark ? 'text-slate-300' : 'text-slate-500'
+                className={`label-text font-medium ${
+                  isDark ? 'text-slate-200' : 'text-slate-700'
                 }`}
               >
                 Loại thách đấu
@@ -403,11 +427,11 @@ const ImprovedCreateChallengeModal = ({
                   className={`h-14 text-[11px] font-semibold flex flex-col items-center justify-center gap-1 border transition ${
                     challengeType === 'open'
                       ? isDark
-                        ? 'bg-slate-800/80 border-slate-600 shadow-md shadow-slate-900/50'
-                        : 'bg-slate-100 border-slate-300'
+                        ? 'bg-slate-700/90 border-slate-500/80 shadow-md shadow-slate-900/60 text-slate-100 ring-2 ring-blue-500/50'
+                        : 'bg-blue-100/80 border-blue-300/80 shadow-md shadow-blue-200/50 text-blue-800 ring-2 ring-blue-400/40'
                       : isDark
-                        ? 'bg-slate-800/40 border-slate-700 hover:bg-slate-800/60'
-                        : 'bg-white border-slate-300 hover:bg-slate-50'
+                        ? 'bg-slate-800/60 border-slate-600/70 hover:bg-slate-700/80 text-slate-400'
+                        : 'bg-white/80 border-slate-300/70 hover:bg-slate-100/80 text-slate-600'
                   }`}
                   size='sm'
                 >
@@ -421,11 +445,11 @@ const ImprovedCreateChallengeModal = ({
                   className={`h-14 text-[11px] font-semibold flex flex-col items-center justify-center gap-1 border transition ${
                     challengeType === 'direct'
                       ? isDark
-                        ? 'bg-slate-800/80 border-slate-600 shadow-md shadow-slate-900/50'
-                        : 'bg-slate-100 border-slate-300'
+                        ? 'bg-slate-700/90 border-slate-500/80 shadow-md shadow-slate-900/60 text-slate-100 ring-2 ring-blue-500/50'
+                        : 'bg-blue-100/80 border-blue-300/80 shadow-md shadow-blue-200/50 text-blue-800 ring-2 ring-blue-400/40'
                       : isDark
-                        ? 'bg-slate-800/40 border-slate-700 hover:bg-slate-800/60'
-                        : 'bg-white border-slate-300 hover:bg-slate-50'
+                        ? 'bg-slate-800/60 border-slate-600/70 hover:bg-slate-700/80 text-slate-400'
+                        : 'bg-white/80 border-slate-300/70 hover:bg-slate-100/80 text-slate-600'
                   }`}
                   size='sm'
                 >
@@ -438,7 +462,7 @@ const ImprovedCreateChallengeModal = ({
                 className={`body-small p-2 rounded-md border shadow-sm ${
                   isDark
                     ? 'text-slate-400/90 bg-slate-800/60 border-slate-700'
-                    : 'text-slate-500 bg-slate-100 border-slate-200'
+                    : 'text-slate-500 bg-slate-100/60 border-slate-200'
                 }`}
               >
                 {challengeType === 'open'
@@ -480,7 +504,7 @@ const ImprovedCreateChallengeModal = ({
                     className={`max-h-48 overflow-y-auto rounded-lg shadow-inner border ${
                       isDark
                         ? 'bg-slate-900/80 border-slate-700'
-                        : 'bg-white border-slate-200'
+                        : 'bg-white/80 border-slate-200'
                     }`}
                   >
                     {searchResults.map(player => (
@@ -525,7 +549,7 @@ const ImprovedCreateChallengeModal = ({
                     className={`p-3 rounded-lg border shadow-sm flex items-center gap-3 ${
                       isDark
                         ? 'bg-slate-800/70 border-slate-700'
-                        : 'bg-slate-100 border-slate-200'
+                        : 'bg-slate-100/70 border-slate-200'
                     }`}
                   >
                     <Avatar className='w-10 h-10'>
@@ -555,83 +579,32 @@ const ImprovedCreateChallengeModal = ({
 
             {/* SABO Mode - Always Active Info Display */}
             <div className={sectionCard + ' space-y-1 p-2'}>
-              <div className='rounded-md bg-slate-800/40 border border-slate-700/50 p-3'>
-                <div className='flex items-center gap-2 mb-3'>
-                  <Star className='w-5 h-5 text-primary drop-shadow-[0_0_6px_rgba(56,189,248,0.6)]' />
-                  <div className='flex-1'>
-                    <div className='heading-tertiary text-slate-100 flex items-center gap-2'>
-                      Chế độ SABO
-                      <span className='px-2 py-1 bg-primary/20 text-primary text-xs rounded-full border border-primary/30'>
-                        Luôn bật
-                      </span>
-                    </div>
-                    <p className='timestamp text-slate-400 mt-1'>
-                      Tự động cân bằng trận đấu dựa trên hạng của người chơi
-                    </p>
-                  </div>
-                  <Button
-                    type='button'
-                    variant='ghost'
-                    size='sm'
-                    onClick={() => setShowSaboInfo(true)}
-                    className='h-8 w-8 p-0 text-slate-400 hover:text-slate-200'
-                  >
-                    <HelpCircle className='w-4 h-4' />
-                  </Button>
-                </div>
-
-                <div className='flex items-center gap-2 p-2 bg-primary/10 rounded-md border border-primary/20'>
-                  <CheckCircle className='w-4 h-4 text-primary flex-shrink-0' />
-                  <span className='timestamp text-slate-300'>
-                    Handicap được tính tự động để đảm bảo trận đấu công bằng
+              <div className={`flex items-center gap-3 p-3 rounded-md border ${
+                isDark 
+                  ? 'bg-blue-900/30 border-blue-700/60 shadow-lg shadow-blue-900/20' 
+                  : 'bg-blue-50/80 border-blue-200/80 shadow-lg shadow-blue-200/20'
+              }`}>
+                <Star className='w-5 h-5 text-primary drop-shadow-[0_0_6px_rgba(56,189,248,0.6)]' />
+                <div className='flex-1'>
+                  <span className={`label-text ${
+                    isDark ? 'text-slate-200' : 'text-slate-700'
+                  }`}>
+                    Chế độ SABO: Handicap được tính tự động để đảm bảo trận đấu công bằng
                   </span>
                 </div>
-
-                {/* Auto Handicap Preview */}
-                <div className='mt-3 p-3 bg-slate-800/50 rounded border border-slate-700/50'>
-                  <div className='flex items-center gap-2 mb-2'>
-                    <Calculator className='w-4 h-4 text-primary' />
-                    <span className='label-text text-slate-200'>
-                      Dự tính handicap
-                    </span>
-                  </div>
-                  {handicapInfo && selectedOpponent ? (
-                    <div className='space-y-1 timestamp text-slate-300'>
-                      <div className='flex items-center justify-between'>
-                        <span>Rank của bạn:</span>
-                        <span className='font-medium text-primary/90'>
-                          {currentUserProfile?.current_rank || 'K'}
-                        </span>
-                      </div>
-                      <div className='flex items-center justify-between'>
-                        <span>Rank đối thủ:</span>
-                        <span className='font-medium text-primary/90'>
-                          {selectedOpponent.current_rank || 'K'}
-                        </span>
-                      </div>
-                      <div className='border-t border-slate-600/50 pt-2 mt-2'>
-                        <div className='flex items-center justify-between body-small font-medium'>
-                          <span>Handicap của bạn:</span>
-                          <span className='text-primary'>+{handicapInfo.handicapChallenger}</span>
-                        </div>
-                        <div className='flex items-center justify-between body-small font-medium'>
-                          <span>Handicap đối thủ:</span>
-                          <span className='text-primary'>+{handicapInfo.handicapOpponent}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ) : challengeType === 'open' ? (
-                    <div className='timestamp text-slate-400 flex items-center gap-2'>
-                      <Globe className='w-4 h-4' />
-                      Handicap sẽ được tính khi có người nhận thách đấu
-                    </div>
-                  ) : (
-                    <div className='timestamp text-slate-400 flex items-center gap-2'>
-                      <Target className='w-4 h-4' />
-                      Chọn đối thủ để xem dự tính handicap
-                    </div>
-                  )}
-                </div>
+                <Button
+                  type='button'
+                  variant='ghost'
+                  size='sm'
+                  onClick={() => setShowSaboInfo(true)}
+                  className={`h-8 w-8 p-0 ${
+                    isDark 
+                      ? 'text-slate-400 hover:text-slate-200' 
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  <HelpCircle className='w-4 h-4' />
+                </Button>
               </div>
             </div>
 
@@ -671,10 +644,10 @@ const ImprovedCreateChallengeModal = ({
                         active
                           ? isDark
                             ? 'bg-gradient-to-br from-indigo-700/25 via-sky-600/10 to-fuchsia-600/20 border-indigo-400/40 ring-1 ring-indigo-400/40 shadow-[0_0_8px_-2px_rgba(99,102,241,0.35)]'
-                            : 'bg-gradient-to-br from-indigo-400/20 via-sky-300/15 to-fuchsia-400/20 border-indigo-300 ring-1 ring-indigo-300/40'
+                            : 'bg-gradient-to-br from-indigo-400/15 via-sky-300/10 to-fuchsia-400/15 border-indigo-300/60 ring-1 ring-indigo-300/40 shadow-[0_0_6px_-1px_rgba(99,102,241,0.25)]'
                           : isDark
-                            ? 'bg-slate-900/50 border-slate-700 hover:bg-slate-900/70'
-                            : 'bg-white border-slate-300 hover:bg-slate-50'
+                            ? 'bg-slate-900/50 border-slate-700 hover:bg-slate-900/70 text-slate-300'
+                            : 'bg-white/70 border-slate-300 hover:bg-slate-50 text-slate-600'
                       }`}
                       size='sm'
                     >
@@ -687,13 +660,25 @@ const ImprovedCreateChallengeModal = ({
                       <span
                         className={`bet-points relative drop-shadow-sm ${
                           active
-                            ? 'text-indigo-200 dark:text-indigo-200'
-                            : 'text-slate-100'
+                            ? isDark 
+                              ? 'text-indigo-200' 
+                              : 'text-indigo-700'
+                            : isDark
+                              ? 'text-slate-100'
+                              : 'text-slate-700'
                         }`}
                       >
                         {config.points} điểm
                       </span>
-                      <span className='bet-points-sub relative text-slate-400'>
+                      <span className={`bet-points-sub relative ${
+                        active
+                          ? isDark 
+                            ? 'text-slate-300' 
+                            : 'text-slate-600'
+                          : isDark
+                            ? 'text-slate-400'
+                            : 'text-slate-500'
+                      }`}>
                         Race to {config.raceTO}
                       </span>
                     </Button>
@@ -837,21 +822,31 @@ const ImprovedCreateChallengeModal = ({
             <div className='h-1' />
           </form>
           {/* Fixed Bottom Action Bar */}
-          <div className='absolute inset-x-0 bottom-0 pt-4 pb-5 px-4 border-t border-slate-800/70 bg-gradient-to-t from-slate-950/95 via-slate-950/90 to-slate-950/40 backdrop-blur-xl'>
+          <div className={`absolute inset-x-0 bottom-0 pt-4 pb-5 px-4 border-t backdrop-blur-xl ${
+            isDark 
+              ? 'border-slate-700/90 bg-gradient-to-t from-slate-950/98 via-slate-950/95 to-slate-950/60' 
+              : 'border-slate-300/90 bg-gradient-to-t from-white/98 via-white/95 to-white/60'
+          }`}>
             <div className='flex gap-3'>
               <Button
                 type='button'
                 variant='outline'
                 onClick={onClose}
-                className='flex-1 h-12 border-slate-600 text-slate-300 hover:text-white hover:bg-slate-800 button-text uppercase tracking-wide'
+                className={`flex-1 h-12 button-text uppercase tracking-wide transition-all ${
+                  isDark 
+                    ? 'border-slate-600/80 bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-700' 
+                    : 'border-slate-400/80 bg-white/80 text-slate-600 hover:text-slate-800 hover:bg-slate-200'
+                }`}
               >
-                Hủy
+                Hủy {isDark ? '🌙' : '☀️'}
               </Button>
               <Button
                 type='submit'
                 form=''
                 disabled={loading}
-                className='flex-1 h-12 button-text uppercase shadow-[0_0_10px_rgba(56,189,248,0.4)]'
+                className={`flex-1 h-12 button-text uppercase shadow-[0_0_10px_rgba(56,189,248,0.4)] ${
+                  isDark ? 'bg-blue-600 hover:bg-blue-500' : 'bg-blue-500 hover:bg-blue-600 shadow-[0_0_8px_rgba(56,189,248,0.3)]'
+                }`}
                 onClick={e => {
                   // ensure form submit when button outside form scope
                   e.preventDefault();

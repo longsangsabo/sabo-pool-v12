@@ -53,6 +53,8 @@ const EnhancedChallengesPageV3: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [showCreateChallengeModal, setShowCreateChallengeModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("community");
+  const [myTabActiveSubTab, setMyTabActiveSubTab] = useState("doi-doi-thu");
   const [userStats, setUserStats] = useState({
     totalChallenges: 0,
     winStreak: 0,
@@ -86,7 +88,11 @@ const EnhancedChallengesPageV3: React.FC = () => {
   const handleJoinChallenge = async (challengeId: string) => {
     setIsJoining(true);
     try {
-      await acceptChallenge(challengeId);
+      await acceptChallenge(challengeId, () => {
+        // Auto switch to "My" tab and "Sắp tới" sub-tab to see the accepted challenge
+        setActiveTab("my");
+        setMyTabActiveSubTab("sap-toi");
+      });
       toast.success('🎯 Kèo ngon đã sẵn sàng! Chuẩn bị đối đầu nào! 🔥');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Lỗi khi tham gia thách đấu';
@@ -283,7 +289,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
 
       {/* Main Content */}
       <div ref={scrollRef} className="p-4">
-        <Tabs defaultValue="community" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6 bg-black/60 dark:bg-black/80 backdrop-blur-sm border border-gray-600/50 dark:border-gray-500/20">
             <TabsTrigger value="community" className="relative group">
               <span className="flex items-center gap-2">
@@ -329,6 +335,8 @@ const EnhancedChallengesPageV3: React.FC = () => {
               hoanThanhData={myHoanThanh}
               currentUserId={user.id}
               onCancelChallenge={handleCancelChallenge}
+              activeSubTab={myTabActiveSubTab}
+              onSubTabChange={setMyTabActiveSubTab}
             />
           </TabsContent>
         </Tabs>

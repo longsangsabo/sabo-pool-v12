@@ -7,6 +7,7 @@ import { Target, Flame, Clock, Trophy, Filter, Calendar, Star } from 'lucide-rea
 import { motion, AnimatePresence } from 'framer-motion';
 import { Challenge } from '@/types/challenge';
 import EnhancedChallengeCard, { EnhancedChallengeCardGrid } from '@/components/challenges/EnhancedChallengeCard';
+import JoinChallengeConfirmDialog from '@/components/modals/JoinChallengeConfirmDialog';
 import { cn } from '@/lib/utils';
 
 interface EnhancedCommunityTabProps {
@@ -34,6 +35,12 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
   const [sortBy, setSortBy] = useState<'time' | 'rank' | 'amount'>('time');
   const [filterRank, setFilterRank] = useState<'all' | 'K' | 'I' | 'H' | 'G' | 'F' | 'E'>('all');
   const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'tomorrow' | 'week'>('all');
+  
+  // Confirmation dialog state
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean;
+    challenge: Challenge | null;
+  }>({ open: false, challenge: null });
 
   // Helper function to get rank from points/elo (SABO Pool Arena System)
   const getRankFromPoints = (points?: number) => {
@@ -163,7 +170,12 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
   const handleAction = (challengeId: string, action: string) => {
     switch (action) {
       case 'join':
-        onJoinChallenge?.(challengeId);
+        // Show confirmation dialog before joining
+        const challengeToJoin = [...keoData, ...liveData, ...sapToiData, ...xongData]
+          .find(c => c.id === challengeId);
+        if (challengeToJoin) {
+          setConfirmDialog({ open: true, challenge: challengeToJoin });
+        }
         break;
       case 'cancel':
         onCancelChallenge?.(challengeId);
@@ -180,6 +192,13 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
       default:
         console.log('Unknown action:', action, 'for challenge:', challengeId);
         break;
+    }
+  };
+
+  const handleConfirmJoin = () => {
+    if (confirmDialog.challenge) {
+      onJoinChallenge?.(confirmDialog.challenge.id);
+      setConfirmDialog({ open: false, challenge: null });
     }
   };
 
@@ -369,6 +388,15 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
           </Tabs>
         </CardContent>
       </Card>
+      
+      {/* Join Challenge Confirmation Dialog */}
+      <JoinChallengeConfirmDialog
+        open={confirmDialog.open}
+        onOpenChange={(open) => setConfirmDialog({ open, challenge: null })}
+        challenge={confirmDialog.challenge}
+        onConfirm={handleConfirmJoin}
+        loading={isJoining}
+      />
     </div>
   );
 };

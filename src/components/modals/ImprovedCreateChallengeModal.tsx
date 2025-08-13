@@ -38,6 +38,7 @@ import { calculateSaboHandicap, type SaboRank } from '@/utils/saboHandicap';
 import SaboInfoDialog from '@/components/sabo/SaboInfoDialog';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { useTheme } from '@/hooks/useTheme';
+import { convertVietnamToUTC } from '@/utils/timezone';
 // Removed TechCard usage to simplify border style
 
 interface ImprovedCreateChallengeModalProps {
@@ -253,6 +254,17 @@ const ImprovedCreateChallengeModal = ({
 
     setLoading(true);
     try {
+      // Fix timezone: Convert datetime-local to UTC properly
+      let scheduledTimeUTC = null;
+      if (formData.scheduled_time) {
+        scheduledTimeUTC = convertVietnamToUTC(formData.scheduled_time);
+        
+        console.log('🕐 Timezone conversion:', {
+          userInput: formData.scheduled_time,
+          convertedUTC: scheduledTimeUTC
+        });
+      }
+
       const challengeData = {
         challenger_id: user.id,
         opponent_id: challengeType === 'direct' ? formData.opponent_id : null,
@@ -260,7 +272,7 @@ const ImprovedCreateChallengeModal = ({
         race_to: formData.race_to,
         message: formData.message,
         club_id: formData.club_id,
-        scheduled_time: formData.scheduled_time || null,
+        scheduled_time: scheduledTimeUTC,
         is_sabo: formData.is_sabo,
         handicap_1_rank: handicapInfo?.handicapChallenger || 0,
         handicap_05_rank: handicapInfo?.handicapOpponent || 0,

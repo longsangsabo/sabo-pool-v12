@@ -15,6 +15,8 @@ interface EnhancedMyTabProps {
   currentUserId?: string;
   onCancelChallenge?: (challengeId: string) => void;
   isCanceling?: boolean;
+  activeSubTab?: string;
+  onSubTabChange?: (tabId: string) => void;
 }
 
 const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
@@ -24,8 +26,20 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
   currentUserId,
   onCancelChallenge,
   isCanceling = false,
+  activeSubTab = 'doi-doi-thu',
+  onSubTabChange,
 }) => {
-  const [activeTab, setActiveTab] = useState('doi-doi-thu');
+  const [localActiveTab, setLocalActiveTab] = useState('doi-doi-thu');
+  
+  // Use controlled or uncontrolled mode
+  const currentActiveTab = activeSubTab || localActiveTab;
+  const handleTabChange = (tabId: string) => {
+    if (onSubTabChange) {
+      onSubTabChange(tabId);
+    } else {
+      setLocalActiveTab(tabId);
+    }
+  };
 
   const tabs = [
     {
@@ -148,13 +162,13 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
     <div className="space-y-4">
       <Card className="border-border/30 dark:border-border/20 bg-white/10 dark:bg-black/20 backdrop-blur-md">
         <CardContent className="p-0">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs value={currentActiveTab} onValueChange={handleTabChange} className="w-full">
             {/* Enhanced Tab Navigation - Compact 2-row layout */}
             <div className="border-b border-border/30 dark:border-border/20 bg-white/5 dark:bg-black/10 backdrop-blur-sm">
               <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-2 gap-1">
                 {tabs.map((tab) => {
                   const IconComponent = tab.icon;
-                  const isActive = activeTab === tab.id;
+                  const isActive = currentActiveTab === tab.id;
                   
                   return (
                     <TabsTrigger

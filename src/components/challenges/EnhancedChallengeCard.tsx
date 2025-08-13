@@ -20,6 +20,7 @@ import { Challenge } from '@/types/challenge';
 import { EnhancedChallengeCardProps, ExtendedChallenge, toExtendedChallenge } from '@/types/enhancedChallenge';
 import AvatarWithStatus from './Enhanced/AvatarWithStatus';
 import StatusBadge from './Enhanced/StatusBadge';
+import { formatVietnamTime } from '@/utils/timezone';
 
 // Modified props to accept both Challenge and ExtendedChallenge
 interface FlexibleEnhancedChallengeCardProps extends Omit<EnhancedChallengeCardProps, 'challenge'> {
@@ -57,7 +58,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
 
   const formatDateTime = (dateTime?: string) => {
     if (!dateTime) return '';
-    return new Date(dateTime).toLocaleString('vi-VN');
+    return formatVietnamTime(dateTime);
   };
 
   const getExpiryInfo = () => {

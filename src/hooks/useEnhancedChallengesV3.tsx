@@ -9,6 +9,7 @@ export const useEnhancedChallengesV3 = () => {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUserProfile, setCurrentUserProfile] = useState<any>(null);
   const { user } = useAuth();
 
   // Helper function to check if challenge is expired
@@ -118,13 +119,41 @@ export const useEnhancedChallengesV3 = () => {
       const profileMap = new Map();
       const rankingMap = new Map();
 
+      let tempCurrentUserProfile = null;
+      
       profiles.forEach(profile => {
         profileMap.set(profile.user_id, profile);
+        
+        // Save current user profile
+        if (profile.user_id === user?.id) {
+          console.log('✅ Found current user profile:', {
+            user_id: profile.user_id,
+            display_name: profile.display_name
+          });
+          tempCurrentUserProfile = profile;
+        }
       });
 
       rankings.forEach(ranking => {
         rankingMap.set(ranking.user_id, ranking);
+        
+        // Update current user profile with ranking data
+        if (ranking.user_id === user?.id && tempCurrentUserProfile) {
+          tempCurrentUserProfile = {
+            ...tempCurrentUserProfile,
+            spa_points: ranking.spa_points || 0
+          };
+          console.log('✅ Updated current user with SPA:', {
+            user_id: ranking.user_id,
+            spa_points: ranking.spa_points
+          });
+        }
       });
+      
+      // Set the final profile with SPA data
+      if (tempCurrentUserProfile) {
+        setCurrentUserProfile(tempCurrentUserProfile);
+      }
 
       // Enrich challenges with profile data
       const enrichedChallenges = challengesData?.map(challenge => {
@@ -171,19 +200,23 @@ export const useEnhancedChallengesV3 = () => {
 
   // 🎯 PHASE 1: CENTRALIZED FILTERING LOGIC
   
-  // Community challenges - ALL challenges in system (exclude expired)
+  // Community challenges - Available challenges (exclude user's own and already joined)
   const communityKeo = useMemo(() => 
     challenges.filter(c => 
       !c.opponent_id && 
       c.status === 'pending' && 
+      c.challenger_id !== user?.id && // Exclude user's own challenges
       !isExpiredChallenge(c) // Exclude expired challenges
     ), 
-    [challenges]
+    [challenges, user?.id]
   );
 
   const communityLive = useMemo(() => 
     challenges.filter(c => 
-      c.status === 'pending' && c.opponent_id && c.scheduled_time && new Date(c.scheduled_time) <= new Date()
+      (c.status === 'accepted' || c.status === 'ongoing') && 
+      c.opponent_id && 
+      c.scheduled_time && 
+      new Date(c.scheduled_time) <= new Date()
     ), 
     [challenges]
   );
@@ -192,8 +225,7 @@ export const useEnhancedChallengesV3 = () => {
     challenges.filter(c => 
       c.status === 'accepted' && 
       c.opponent_id && 
-      c.scheduled_time && 
-      new Date(c.scheduled_time) > new Date()
+      (!c.scheduled_time || new Date(c.scheduled_time) > new Date())
     ), 
     [challenges]
   );
@@ -230,10 +262,45 @@ export const useEnhancedChallengesV3 = () => {
     [challenges, user?.id]
   );
 
-  // Accept challenge function
-  const acceptChallenge = async (challengeId: string) => {
+  // Accept challenge function with confirmation
+  const acceptChallengeWithConfirmation = async (challengeId: string, onSuccess?: () => void) => {
+    return new Promise<void>((resolve, reject) => {
+      // This will be handled by the component that shows confirmation dialog
+      // Component will call the actual acceptChallenge function after confirmation
+      resolve();
+    });
+  };
+
+  // Internal accept challenge function (called after confirmation)
+  const acceptChallenge = async (challengeId: string, onSuccess?: () => void) => {
     if (!user) {
       throw new Error('Bạn cần đăng nhập để tham gia thách đấu');
+    }
+
+    // Find the challenge to get bet_points
+    const challenge = challenges.find(c => c.id === challengeId);
+    if (!challenge) {
+      throw new Error('Không tìm thấy thách đấu');
+    }
+
+    const requiredSpa = challenge.bet_points || 0;
+    const userSpa = currentUserProfile?.spa_points || 0;
+
+    // Debug: Log current user profile and SPA
+    console.log('🔍 SPA Validation Debug:', {
+      currentUserProfile,
+      userSpa,
+      requiredSpa,
+      userId: user.id
+    });
+
+    // Frontend validation - check SPA before API call
+    if (requiredSpa > 0 && userSpa < requiredSpa) {
+      // If we don't have profile data, don't show fake numbers
+      if (!currentUserProfile) {
+        throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa} SPA)`);
+      }
+      throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa}, có ${userSpa})`);
     }
 
     try {
@@ -246,9 +313,36 @@ export const useEnhancedChallengesV3 = () => {
         throw new Error(`Không thể tham gia thách đấu: ${error.message}`);
       }
 
-      toast.success('Tham gia thách đấu thành công! Trận đấu đã được lên lịch.');
-      await fetchChallenges(); // Refresh data
-      return result;
+      // Cast result to expected type with SPA validation info
+      const response = result as { 
+        success: boolean; 
+        error?: string; 
+        required_spa?: number;
+        user_spa?: number;
+        shortage?: number;
+      };
+      
+      if (response?.success) {
+        toast.success('Tham gia thách đấu thành công! Trận đấu đã được lên lịch.');
+        
+        // Force refresh data immediately
+        await fetchChallenges();
+        
+        // Call success callback (e.g., switch to "Sắp diễn ra" tab)
+        onSuccess?.();
+        
+        return result;
+      } else {
+        // Handle SPA-specific errors with better messaging
+        if (response?.error?.includes('không đủ SPA')) {
+          const requiredSpa = response.required_spa || 0;
+          const userSpa = response.user_spa || 0;
+          
+          throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa}, có ${userSpa})`);
+        }
+        
+        throw new Error(response?.error || 'Không thể tham gia thách đấu');
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Không thể tham gia thách đấu';
       throw new Error(errorMessage);
@@ -337,9 +431,13 @@ export const useEnhancedChallengesV3 = () => {
     mySapToi,
     myHoanThanh,
     
+    // User profile data
+    currentUserProfile,
+    
     // Actions
     fetchChallenges,
     acceptChallenge,
+    acceptChallengeWithConfirmation,
     autoExpireChallenges,
     // Helper for debugging
     isExpiredChallenge,

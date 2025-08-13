@@ -358,35 +358,35 @@ const RankRegistrationForm = ({ onSuccess }: RankRegistrationFormProps) => {
                   <SelectValue placeholder='Chọn rank bạn muốn đăng ký' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='1000'>
-                    1000 ELO - K (Người mới tập)
+                  <SelectItem value='K'>
+                    K - 1000 ELO (Người mới tập)
                   </SelectItem>
-                  <SelectItem value='1100'>
-                    1100 ELO - K+ (Biết luật, kê cơ đúng)
+                  <SelectItem value='K+'>
+                    K+ - 1100 ELO (Biết luật, kê cơ đúng)
                   </SelectItem>
-                  <SelectItem value='1200'>
-                    1200 ELO - I (Người chơi cơ bản)
+                  <SelectItem value='I'>
+                    I - 1200 ELO (Người chơi cơ bản)
                   </SelectItem>
-                  <SelectItem value='1300'>
-                    1300 ELO - I+ (Tân binh tiến bộ)
+                  <SelectItem value='I+'>
+                    I+ - 1300 ELO (Tân binh tiến bộ)
                   </SelectItem>
-                  <SelectItem value='1400'>
-                    1400 ELO - H (Trung bình)
+                  <SelectItem value='H'>
+                    H - 1400 ELO (Trung bình)
                   </SelectItem>
-                  <SelectItem value='1500'>
-                    1500 ELO - H+ (Chuẩn bị lên G)
+                  <SelectItem value='H+'>
+                    H+ - 1500 ELO (Chuẩn bị lên G)
                   </SelectItem>
-                  <SelectItem value='1600'>1600 ELO - G (Khá)</SelectItem>
-                  <SelectItem value='1700'>
-                    1700 ELO - G+ (Trình phong trào "ngon")
+                  <SelectItem value='G'>G - 1600 ELO (Khá)</SelectItem>
+                  <SelectItem value='G+'>
+                    G+ - 1700 ELO (Trình phong trào "ngon")
                   </SelectItem>
-                  <SelectItem value='1800'>1800 ELO - F (Giỏi)</SelectItem>
-                  <SelectItem value='1900'>
-                    1900 ELO - F+ (Cao nhất nhóm trung cấp)
+                  <SelectItem value='F'>F - 1800 ELO (Giỏi)</SelectItem>
+                  <SelectItem value='F+'>
+                    F+ - 1900 ELO (Cao nhất nhóm trung cấp)
                   </SelectItem>
-                  <SelectItem value='2000'>2000 ELO - E (Xuất sắc)</SelectItem>
-                  <SelectItem value='2100'>
-                    2100 ELO - E+ (Sát ngưỡng lên D)
+                  <SelectItem value='E'>E - 2000 ELO (Xuất sắc)</SelectItem>
+                  <SelectItem value='E+'>
+                    E+ - 2100 ELO (Sát ngưỡng lên D)
                   </SelectItem>
                 </SelectContent>
               </Select>

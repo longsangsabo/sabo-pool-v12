@@ -41,18 +41,18 @@ const RankRegistration: React.FC = () => {
   const [selectedClub, setSelectedClub] = useState('');
 
   const ranks = [
-    { value: '1', label: 'Hạng K' },
-    { value: '2', label: 'Hạng K+' },
-    { value: '3', label: 'Hạng I' },
-    { value: '4', label: 'Hạng I+' },
-    { value: '5', label: 'Hạng H' },
-    { value: '6', label: 'Hạng H+' },
-    { value: '7', label: 'Hạng G' },
-    { value: '8', label: 'Hạng G+' },
-    { value: '9', label: 'Hạng F' },
-    { value: '10', label: 'Hạng F+' },
-    { value: '11', label: 'Hạng E' },
-    { value: '12', label: 'Hạng E+' },
+    { value: 'K', label: 'Hạng K (1000 ELO)' },
+    { value: 'K+', label: 'Hạng K+ (1100 ELO)' },
+    { value: 'I', label: 'Hạng I (1200 ELO)' },
+    { value: 'I+', label: 'Hạng I+ (1300 ELO)' },
+    { value: 'H', label: 'Hạng H (1400 ELO)' },
+    { value: 'H+', label: 'Hạng H+ (1500 ELO)' },
+    { value: 'G', label: 'Hạng G (1600 ELO)' },
+    { value: 'G+', label: 'Hạng G+ (1700 ELO)' },
+    { value: 'F', label: 'Hạng F (1800 ELO)' },
+    { value: 'F+', label: 'Hạng F+ (1900 ELO)' },
+    { value: 'E', label: 'Hạng E (2000 ELO)' },
+    { value: 'E+', label: 'Hạng E+ (2100 ELO)' },
   ];
 
   const fetchClubs = async () => {

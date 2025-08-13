@@ -78,15 +78,19 @@ const MyChallengesTab = () => {
     if (!user) return;
 
     try {
+      console.log('🔄 [MyChallengesTab] Fetching challenges for user:', user.id);
+      
       // Fetch incoming challenges with challenger profile
       const { data: incoming, error: incomingError } = await (supabase as any)
         .from('challenges')
         .select('*')
         .eq('opponent_id', user.id)
-        .in('status', ['pending'])
+        .in('status', ['pending', 'open'])
         .order('created_at', { ascending: false });
 
       if (incomingError) throw incomingError;
+
+      console.log('📥 [MyChallengesTab] Incoming challenges raw:', incoming);
 
       // Fetch challenger profiles for incoming challenges
       const incomingWithProfiles = await Promise.all(
@@ -121,6 +125,8 @@ const MyChallengesTab = () => {
 
       if (outgoingError) throw outgoingError;
 
+      console.log('📤 [MyChallengesTab] Outgoing challenges raw:', outgoing);
+
       const outgoingWithProfiles = await Promise.all(
         (outgoing || []).map(async challenge => {
           const { data: profile } = await supabase
@@ -147,6 +153,11 @@ const MyChallengesTab = () => {
       // Mock data for upcoming and past matches since these tables don't exist yet
       const upcomingWithProfiles: Match[] = [];
       const pastWithProfiles: Match[] = [];
+
+      console.log('✅ [MyChallengesTab] Final results:', {
+        incoming: incomingWithProfiles.length,
+        outgoing: outgoingWithProfiles.length
+      });
 
       setIncomingChallenges(incomingWithProfiles as any);
       setOutgoingChallenges(outgoingWithProfiles as any);
@@ -374,18 +385,22 @@ const MyChallengesTab = () => {
                       className={
                         challenge.status === 'pending'
                           ? 'bg-yellow-100 text-yellow-800'
-                          : challenge.status === 'accepted'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
+                          : challenge.status === 'open'
+                            ? 'bg-blue-100 text-blue-800'
+                            : challenge.status === 'accepted'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-red-100 text-red-800'
                       }
                     >
                       {challenge.status === 'pending'
                         ? 'Chờ phản hồi'
-                        : challenge.status === 'accepted'
-                          ? 'Đã chấp nhận'
-                          : challenge.status === 'declined'
-                            ? 'Đã từ chối'
-                            : challenge.status}
+                        : challenge.status === 'open'
+                          ? 'Mở'
+                          : challenge.status === 'accepted'
+                            ? 'Đã chấp nhận'
+                            : challenge.status === 'declined'
+                              ? 'Đã từ chối'
+                              : challenge.status}
                     </Badge>
                   </div>
                 </CardHeader>

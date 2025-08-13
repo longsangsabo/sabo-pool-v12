@@ -40,7 +40,7 @@ export const useEnhancedChallengesV3 = () => {
     return false;
   };
 
-  // Auto-expire challenges function
+  // Auto-expire challenges function - OPTIMIZED
   const autoExpireChallenges = async () => {
     if (!user) return;
 
@@ -61,8 +61,12 @@ export const useEnhancedChallengesV3 = () => {
           console.error('Error auto-expiring challenges:', error);
         } else {
           console.log('✅ Auto-expired challenges updated');
-          // Refresh data to reflect changes
-          await fetchChallenges();
+          // Update local state instead of full refresh
+          setChallenges(prev => prev.map(c => 
+            expiredChallenges.some(exp => exp.id === c.id) 
+              ? { ...c, status: 'expired' as any } 
+              : c
+          ));
         }
       }
     } catch (error) {
@@ -349,11 +353,23 @@ export const useEnhancedChallengesV3 = () => {
     }
   };
 
-  // Real-time subscription
+  // Real-time subscription - THROTTLED to prevent infinite loop
   useEffect(() => {
     if (!user) return;
 
     fetchChallenges();
+
+    let refreshTimer: NodeJS.Timeout | null = null;
+    
+    const throttledRefresh = () => {
+      if (refreshTimer) {
+        clearTimeout(refreshTimer);
+      }
+      refreshTimer = setTimeout(() => {
+        fetchChallenges();
+        refreshTimer = null;
+      }, 2000); // Wait 2 seconds before refreshing
+    };
 
     const challengesSubscription = supabase
       .channel('enhanced_challenges_v3_realtime')
@@ -365,54 +381,35 @@ export const useEnhancedChallengesV3 = () => {
           table: 'challenges',
         },
         payload => {
-          console.log('🔄 Real-time challenge update:', payload);
-          setTimeout(() => fetchChallenges(), 100);
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'profiles',
-        },
-        payload => {
-          // Refresh if profile affects current challenges
-          const updatedUserId = (payload.new as any)?.user_id;
-          const hasRelevantChallenge = challenges.some(
-            c => c.challenger_id === updatedUserId || c.opponent_id === updatedUserId
-          );
-
-          if (hasRelevantChallenge) {
-            setTimeout(() => fetchChallenges(), 100);
-          }
+          console.log('🔄 Real-time challenge update (throttled):', payload);
+          throttledRefresh();
         }
       )
       .subscribe();
 
     return () => {
       challengesSubscription.unsubscribe();
+      if (refreshTimer) {
+        clearTimeout(refreshTimer);
+      }
     };
-  }, [user]);
+  }, [user]); // Remove challenges dependency
 
-  // Auto-expire challenges every 5 minutes
+  // Auto-expire challenges - OPTIMIZED (only run when needed)
   useEffect(() => {
     if (!user || challenges.length === 0) return;
+
+    const hasPendingChallenges = challenges.some(c => c.status === 'pending' && !c.opponent_id);
+    if (!hasPendingChallenges) return; // Skip if no pending challenges
 
     const interval = setInterval(() => {
       autoExpireChallenges();
     }, 5 * 60 * 1000); // 5 minutes
 
-    // Also run once immediately when challenges change
-    const timeoutId = setTimeout(() => {
-      autoExpireChallenges();
-    }, 1000); // 1 second delay to avoid rapid firing
-
     return () => {
       clearInterval(interval);
-      clearTimeout(timeoutId);
     };
-  }, [user, challenges]);
+  }, [user, challenges.length]); // Only depend on count, not full array
 
   return {
     // Core data

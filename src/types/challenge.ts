@@ -26,7 +26,6 @@ export interface Challenge {
   club_id?: string;
   bet_points?: number;
   stake_amount?: number; // For SABO challenges compatibility
-  location?: string;
   race_to?: number;
   handicap_1_rank?: number;
   handicap_05_rank?: number;
@@ -219,7 +218,6 @@ export interface CreateChallengeRequest {
   bet_points: number;
   scheduled_time?: string;
   message?: string;
-  location?: string; // Add location field
 }
 
 export interface CreateChallengeData {
@@ -234,7 +232,6 @@ export interface CreateChallengeData {
   message?: string;
   club_id?: string;
   scheduled_time?: string;
-  location?: string; // Add location field
 }
 
 export interface AcceptChallengeRequest {

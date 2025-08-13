@@ -275,6 +275,7 @@ const ImprovedCreateChallengeModal = ({
         message: formData.message,
         club_id: formData.club_id,
         location: clubs.find(club => club.id === formData.club_id)?.name || '',
+        required_rank: challengeType === 'open' ? formData.required_rank : null,
         scheduled_time: scheduledTimeUTC,
         is_sabo: formData.is_sabo,
         handicap_1_rank: handicapInfo?.handicapChallenger || 0,

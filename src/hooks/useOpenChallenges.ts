@@ -25,8 +25,6 @@ export const useOpenChallenges = () => {
 
       if (error) throw error;
 
-      console.log('🔍 Debug challengesData:', challengesData?.slice(0, 2)); // Debug first 2 challenges
-
       // Fetch challenger profiles
       const challengerIds =
         challengesData?.map(c => c.challenger_id).filter(Boolean) || [];

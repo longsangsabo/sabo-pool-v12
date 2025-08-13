@@ -336,12 +336,22 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
               </div>
             </div>
 
-            {/* Location Display - Simple */}
+            {/* Location Display */}
             {challenge.location && (
               <div className="flex items-start gap-2 p-3 bg-green-50/50 dark:bg-green-900/20 rounded-lg border border-green-200/50 dark:border-green-700/30">
                 <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-800 dark:text-gray-100 font-medium text-sm leading-relaxed">
                   {challenge.location}
+                </span>
+              </div>
+            )}
+
+            {/* Required Rank Display for Open Challenges */}
+            {challenge.required_rank && challenge.required_rank !== 'all' && (
+              <div className="flex items-start gap-2 p-2 bg-blue-50/50 dark:bg-blue-900/20 rounded-lg border border-blue-200/50 dark:border-blue-700/30">
+                <Star className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-800 dark:text-gray-100 font-medium text-sm">
+                  Yêu cầu hạng {challenge.required_rank} trở lên
                 </span>
               </div>
             )}

@@ -280,7 +280,7 @@ const ImprovedCreateChallengeModal = ({
         is_sabo: formData.is_sabo,
         handicap_1_rank: handicapInfo?.handicapChallenger || 0,
         handicap_05_rank: handicapInfo?.handicapOpponent || 0,
-        status: challengeType === 'open' ? 'open' : 'pending',
+        status: 'pending', // Always use 'pending' status for consistency
       };
 
       console.log('🚀 [ImprovedCreateChallengeModal] Sending challenge data:', {

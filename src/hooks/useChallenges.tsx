@@ -257,7 +257,7 @@ export const useChallenges = () => {
         required_rank: challengeData.required_rank,
         challenger_name: challengeData.challenger_name,
         is_sabo: challengeData.is_sabo,
-        status: isOpenChallenge ? 'open' : 'pending',
+        status: 'pending', // Always use 'pending' status for consistency
         expires_at: expiresAt.toISOString(),
         is_open_challenge: isOpenChallenge,
       };

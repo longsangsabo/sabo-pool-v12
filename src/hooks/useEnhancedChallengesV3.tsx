@@ -378,10 +378,27 @@ export const useEnhancedChallengesV3 = () => {
     }
 
     try {
+      console.log('🎯 Calling accept_open_challenge with:', {
+        challengeId,
+        userId: user.id,
+        timestamp: new Date().toISOString()
+      });
+
+      // First, let's check the challenge status before calling the function
+      const { data: challengeCheck } = await supabase
+        .from('challenges')
+        .select('id, status, opponent_id, challenger_id, expires_at, bet_points')
+        .eq('id', challengeId)
+        .single();
+      
+      console.log('🔍 Pre-validation challenge data:', challengeCheck);
+
       const { data: result, error } = await supabase.rpc('accept_open_challenge', {
         p_challenge_id: challengeId,
         p_user_id: user.id,
       });
+
+      console.log('🎯 accept_open_challenge result:', { result, error });
 
       if (error) {
         throw new Error(`Không thể tham gia thách đấu: ${error.message}`);

@@ -198,9 +198,20 @@ export interface Challenge {
 }
 
 export interface CreateChallengeData {
-  opponent_id: string;
+  opponent_id?: string;
+  challenger_id?: string;
+  challenger_name?: string;
   bet_points: number;
+  race_to?: number;
   message?: string;
+  club_id?: string;
+  scheduled_time?: string;
+  location?: string;
+  required_rank?: string;
+  is_sabo?: boolean;
+  handicap_1_rank?: number;
+  handicap_05_rank?: number;
+  status?: string;
   proposed_datetime?: string;
 }
 

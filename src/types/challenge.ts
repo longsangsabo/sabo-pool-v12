@@ -224,7 +224,9 @@ export interface CreateChallengeRequest {
 }
 
 export interface CreateChallengeData {
-  opponent_id: string;
+  opponent_id?: string;
+  challenger_id?: string;
+  challenger_name?: string;
   challenge_type?: 'standard' | 'ranked';
   stake_amount?: number;
   bet_points: number;
@@ -235,6 +237,10 @@ export interface CreateChallengeData {
   message?: string;
   club_id?: string;
   scheduled_time?: string;
+  location?: string;
+  required_rank?: string;
+  is_sabo?: boolean;
+  status?: string;
 }
 
 export interface AcceptChallengeRequest {

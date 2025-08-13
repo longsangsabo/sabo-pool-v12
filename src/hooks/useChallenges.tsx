@@ -252,10 +252,21 @@ export const useChallenges = () => {
         handicap_05_rank: challengeData.handicap_05_rank?.toString() || null,
         message: challengeData.message,
         scheduled_time: challengeData.scheduled_time,
-        status: 'pending' as const,
+        club_id: challengeData.club_id,
+        location: challengeData.location,
+        required_rank: challengeData.required_rank,
+        challenger_name: challengeData.challenger_name,
+        is_sabo: challengeData.is_sabo,
+        status: isOpenChallenge ? 'open' : 'pending',
         expires_at: expiresAt.toISOString(),
         is_open_challenge: isOpenChallenge,
       };
+
+      console.log('💾 [useChallenges] Inserting challenge to DB:', {
+        ...newChallenge,
+        location_check: newChallenge.location ? '✅ Has location' : '❌ Missing location',
+        required_rank_check: newChallenge.required_rank ? '✅ Has required_rank' : '❌ Missing required_rank'
+      });
 
       const { data, error: insertError } = await supabase
         .from('challenges')
@@ -266,6 +277,16 @@ export const useChallenges = () => {
       if (insertError) {
         throw new Error(`Failed to create challenge: ${insertError.message}`);
       }
+
+      console.log('✅ [useChallenges] Challenge inserted successfully:', {
+        id: data.id,
+        location: (data as any).location,
+        required_rank: (data as any).required_rank,
+        challenger_name: (data as any).challenger_name,
+        is_sabo: (data as any).is_sabo,
+        location_saved: (data as any).location ? '✅ Location saved in DB' : '❌ Location NULL in DB',
+        required_rank_saved: (data as any).required_rank ? '✅ Required_rank saved in DB' : '❌ Required_rank NULL in DB'
+      });
 
       // Fetch profile data separately for consistency
       const { data: challengerProfile } = await supabase

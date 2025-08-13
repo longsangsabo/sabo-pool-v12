@@ -284,6 +284,15 @@ const ImprovedCreateChallengeModal = ({
         status: challengeType === 'open' ? 'open' : 'pending',
       };
 
+      console.log('🚀 [ImprovedCreateChallengeModal] Sending challenge data:', {
+        ...challengeData,
+        location_check: challengeData.location ? '✅ Has location' : '❌ Missing location',
+        required_rank_check: challengeData.required_rank ? '✅ Has required_rank' : '❌ Missing required_rank',
+        form_club_id: formData.club_id,
+        form_required_rank: formData.required_rank,
+        challenge_type: challengeType
+      });
+
       await createChallenge(challengeData);
       toast.success(
         challengeType === 'open'

@@ -89,6 +89,7 @@ export interface Challenge {
   message?: string;
   status:
     | 'pending'
+    | 'open'      // ✅ Added missing 'open' status from database
     | 'accepted'
     | 'declined'
     | 'ongoing'

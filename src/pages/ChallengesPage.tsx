@@ -1,11 +1,11 @@
 import React from 'react';
-import EnhancedChallengesPageV2 from './EnhancedChallengesPageV2';
+import EnhancedChallengesPageV3 from './challenges/EnhancedChallengesPageV3';
 
 const ChallengesPage: React.FC = () => {
   try {
-    return <EnhancedChallengesPageV2 />;
+    return <EnhancedChallengesPageV3 />;
   } catch (error) {
-    console.error('Error loading EnhancedChallengesPageV2:', error);
+    console.error('Error loading EnhancedChallengesPageV3:', error);
     return (
       <div className='container mx-auto p-6'>
         <div className='text-center'>

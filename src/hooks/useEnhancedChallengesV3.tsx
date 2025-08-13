@@ -189,7 +189,16 @@ export const useEnhancedChallengesV3 = () => {
           pending: enrichedChallenges.filter(c => c.status === 'pending').length,
           accepted: enrichedChallenges.filter(c => c.status === 'accepted').length,
           completed: enrichedChallenges.filter(c => c.status === 'completed').length,
-        }
+        },
+        rawChallengesData: challengesData?.length || 0,
+        firstFewChallenges: challengesData?.slice(0, 3).map(c => ({
+          id: c.id,
+          challenger_id: c.challenger_id,
+          opponent_id: c.opponent_id,
+          status: c.status,
+          created_at: c.created_at
+        })),
+        currentUserId: user?.id
       });
 
     } catch (err) {
@@ -205,15 +214,28 @@ export const useEnhancedChallengesV3 = () => {
   // 🎯 PHASE 1: CENTRALIZED FILTERING LOGIC
   
   // Community challenges - Available challenges (exclude user's own and already joined)
-  const communityKeo = useMemo(() => 
-    challenges.filter(c => 
+  const communityKeo = useMemo(() => {
+    const filtered = challenges.filter(c => 
       !c.opponent_id && 
-      c.status === 'pending' && 
+      (c.status === 'pending' || c.status === 'open') && // ✅ FIXED: Include both 'pending' and 'open' status
       c.challenger_id !== user?.id && // Exclude user's own challenges
       !isExpiredChallenge(c) // Exclude expired challenges
-    ), 
-    [challenges, user?.id]
-  );
+    );
+    
+    console.log('🎯 [communityKeo] Filtered challenges:', {
+      total: challenges.length,
+      filtered: filtered.length,
+      userId: user?.id,
+      noOpponent: challenges.filter(c => !c.opponent_id).length,
+      pending: challenges.filter(c => c.status === 'pending').length,
+      open: challenges.filter(c => c.status === 'open').length, // ✅ Added open status check
+      notMyChallenge: challenges.filter(c => c.challenger_id !== user?.id).length,
+      notExpired: challenges.filter(c => !isExpiredChallenge(c)).length,
+      finalFiltered: filtered.map(c => ({ id: c.id, challenger_id: c.challenger_id, status: c.status }))
+    });
+    
+    return filtered;
+  }, [challenges, user?.id]);
 
   const communityLive = useMemo(() => 
     challenges.filter(c => 

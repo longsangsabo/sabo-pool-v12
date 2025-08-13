@@ -75,6 +75,7 @@ const EnhancedChallengesList = () => {
   const getChallengeStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
+      case 'open':        // ✅ Added 'open' status styling
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'accepted':
         return 'bg-green-100 text-green-800 border-green-200';
@@ -93,6 +94,8 @@ const EnhancedChallengesList = () => {
     switch (status) {
       case 'pending':
         return 'Chờ phản hồi';
+      case 'open':         // ✅ Added 'open' status text
+        return 'Mở';
       case 'accepted':
         return 'Đã chấp nhận';
       case 'ongoing':

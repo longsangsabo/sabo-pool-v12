@@ -15,7 +15,7 @@ export const isValidChallenge = (data: any): data is Challenge => {
     typeof data.challenger_id === 'string' &&
     typeof data.opponent_id === 'string' &&
     typeof data.status === 'string' &&
-    ['pending', 'accepted', 'declined', 'ongoing', 'completed', 'cancelled', 'expired'].includes(data.status)
+    ['pending', 'open', 'accepted', 'declined', 'ongoing', 'completed', 'cancelled', 'expired'].includes(data.status)
   );
 };
 

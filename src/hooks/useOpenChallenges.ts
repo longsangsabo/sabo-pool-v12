@@ -17,14 +17,7 @@ export const useOpenChallenges = () => {
       // Fetch open challenges (opponent_id is null and status is pending)
       const { data: challengesData, error } = await supabase
         .from('challenges')
-        .select(`
-          *,
-          club_profiles!challenges_club_id_fkey(
-            id,
-            club_name,
-            address
-          )
-        `)
+        .select('*')
         .is('opponent_id', null)
         .eq('status', 'pending')
         .gt('expires_at', new Date().toISOString())
@@ -32,11 +25,7 @@ export const useOpenChallenges = () => {
 
       if (error) throw error;
 
-      console.log('🎯 DEBUG - Raw challenges data:', challengesData);
-      console.log('🎯 DEBUG - First challenge club_profiles:', challengesData?.[0]?.club_profiles);
-
       console.log('🔍 Debug challengesData:', challengesData?.slice(0, 2)); // Debug first 2 challenges
-      console.log('🔍 Club profiles in first challenge:', challengesData?.[0]?.club_profiles);
 
       // Fetch challenger profiles
       const challengerIds =
@@ -78,7 +67,7 @@ export const useOpenChallenges = () => {
           const challengerProfile = profileMap.get(challenge.challenger_id);
           const challengerRanking = rankingMap.get(challenge.challenger_id);
 
-          const enrichedChallenge = {
+          return {
             ...challenge,
             challenger_profile: challengerProfile
               ? {
@@ -87,21 +76,7 @@ export const useOpenChallenges = () => {
                   elo_points: challengerRanking?.elo_points || 1000,
                 }
               : null,
-            // Map club_profiles to club for consistent naming
-            club: challenge.club_profiles ? {
-              id: challenge.club_profiles.id,
-              name: challenge.club_profiles.club_name,
-              address: challenge.club_profiles.address
-            } : null,
           };
-          
-          console.log('🎯 DEBUG - Mapped challenge:', {
-            id: challenge.id,
-            club_profiles: challenge.club_profiles,
-            mapped_club: enrichedChallenge.club
-          });
-
-          return enrichedChallenge;
         }) || [];
 
       setOpenChallenges(enrichedChallenges as unknown as Challenge[]);

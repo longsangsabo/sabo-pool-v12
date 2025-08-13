@@ -46,15 +46,6 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   // Convert to ExtendedChallenge for enhanced features
   const challenge = toExtendedChallenge(originalChallenge);
   
-  // Debug location data
-  console.log('🔍 Challenge location debug:', {
-    id: challenge.id,
-    club: challenge.club,
-    clubName: challenge.club?.name,
-    clubAddress: challenge.club?.address,
-    displayLocation: challenge.club?.name || challenge.club?.address || 'Không xác định'
-  });
-  
   // Check if current user is the challenger (creator)
   const isCreator = currentUserId && challenge.challenger_id === currentUserId;
   
@@ -345,18 +336,18 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
               </div>
             </div>
 
-            {/* Location Display - Prominent */}
-            {(challenge.club?.name || challenge.club?.address) && (
+            {/* Location Display - Simple */}
+            {challenge.location && (
               <div className="flex items-start gap-2 p-3 bg-green-50/50 dark:bg-green-900/20 rounded-lg border border-green-200/50 dark:border-green-700/30">
                 <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-800 dark:text-gray-100 font-medium text-sm leading-relaxed">
-                  {challenge.club?.name || challenge.club?.address || 'Địa điểm chưa xác định'}
+                  {challenge.location}
                 </span>
               </div>
             )}
 
-            {/* Debug: Always show location info if not present */}
-            {(!challenge.club?.name && !challenge.club?.address) && (
+            {/* Fallback for challenges without location */}
+            {!challenge.location && (
               <div className="flex items-start gap-2 p-3 bg-yellow-50/50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200/50 dark:border-yellow-700/30">
                 <MapPin className="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-800 dark:text-gray-100 font-medium text-sm leading-relaxed">

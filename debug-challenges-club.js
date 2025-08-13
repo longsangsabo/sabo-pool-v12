@@ -1,8 +1,8 @@
 // Debug script để kiểm tra dữ liệu challenges và club_profiles
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://yfjtjljbzjdhiqkklhqj.supabase.co';
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmanRqbGpiempkaGlxa2tsaHFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE5ODIxOTIsImV4cCI6MjAzNzU1ODE5Mn0.wJgdOJHGjZCdqV6J32_65qjhCUIZwZn5D6abrOGPGc8';
+const supabaseUrl = 'https://exlqvlbawytbglioqfbc.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODAwODgsImV4cCI6MjA2ODY1NjA4OH0.-WHrBx32yHJwhqXAYUOdW5fytPvpzc4AFttXBl3MykA';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 

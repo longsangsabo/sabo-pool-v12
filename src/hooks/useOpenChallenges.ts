@@ -19,7 +19,7 @@ export const useOpenChallenges = () => {
         .from('challenges')
         .select(`
           *,
-          club_profiles(
+          club_profiles!challenges_club_id_fkey(
             id,
             club_name,
             address
@@ -78,7 +78,7 @@ export const useOpenChallenges = () => {
           const challengerProfile = profileMap.get(challenge.challenger_id);
           const challengerRanking = rankingMap.get(challenge.challenger_id);
 
-          return {
+          const enrichedChallenge = {
             ...challenge,
             challenger_profile: challengerProfile
               ? {
@@ -98,12 +98,10 @@ export const useOpenChallenges = () => {
           console.log('🎯 DEBUG - Mapped challenge:', {
             id: challenge.id,
             club_profiles: challenge.club_profiles,
-            mapped_club: challenge.club_profiles ? {
-              id: challenge.club_profiles.id,
-              name: challenge.club_profiles.club_name,
-              address: challenge.club_profiles.address
-            } : null
+            mapped_club: enrichedChallenge.club
           });
+
+          return enrichedChallenge;
         }) || [];
 
       setOpenChallenges(enrichedChallenges as unknown as Challenge[]);

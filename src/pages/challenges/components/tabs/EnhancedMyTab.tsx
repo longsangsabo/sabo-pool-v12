@@ -138,6 +138,7 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
             variant={tab.variant}
             onAction={handleAction}
             onCardClick={handleCardClick}
+            currentUserId={currentUserId}
           />
         </div>
 
@@ -151,6 +152,7 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
               size="compact"
               onAction={handleAction}
               onCardClick={handleCardClick}
+              currentUserId={currentUserId}
             />
           ))}
         </div>

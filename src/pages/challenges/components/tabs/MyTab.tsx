@@ -122,6 +122,7 @@ const MyTab: React.FC<MyTabProps> = ({
               variant={section.variant}
               onAction={handleAction}
               onCardClick={handleCardClick}
+              currentUserId={currentUserId}
             />
           </div>
 
@@ -135,6 +136,7 @@ const MyTab: React.FC<MyTabProps> = ({
                   size="compact"
                   onAction={handleAction}
                   onCardClick={handleCardClick}
+                  currentUserId={currentUserId}
                 />
               ))}
             </div>

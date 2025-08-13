@@ -356,16 +356,6 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
               </div>
             )}
 
-            {/* Fallback for challenges without location */}
-            {!challenge.location && (
-              <div className="flex items-start gap-2 p-3 bg-yellow-50/50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200/50 dark:border-yellow-700/30">
-                <MapPin className="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-800 dark:text-gray-100 font-medium text-sm leading-relaxed">
-                  Địa điểm sẽ được cập nhật sau
-                </span>
-              </div>
-            )}
-
             {/* Enhanced Challenge Details */}
             <div className="grid grid-cols-2 gap-3 text-sm">
               {challenge.race_to && (

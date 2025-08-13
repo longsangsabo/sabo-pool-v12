@@ -34,7 +34,6 @@ import {
   X,
   MapPin,
 } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
 import { calculateSaboHandicap, type SaboRank } from '@/utils/saboHandicap';
 import SaboInfoDialog from '@/components/sabo/SaboInfoDialog';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
@@ -95,7 +94,7 @@ const ImprovedCreateChallengeModal = ({
     club_id: '',
     scheduled_time: '',
     location: '', // Add location field
-    is_sabo: true, // 🎯 SABO tự động bật
+    is_sabo: true, // 🎯 SABO luôn luôn bật - không thể tắt
     handicap_1_rank: 0,
     handicap_05_rank: 0,
     required_rank: 'all', // Hạng nhận thách đấu
@@ -351,15 +350,14 @@ const ImprovedCreateChallengeModal = ({
               >
                 <Trophy className='w-5 h-5 text-primary' />
               </span>
-              <span className='uppercase'>Tạo thách đấu mới</span>
+              <span className='uppercase'>Tạo thách đấu SABO</span>
             </DialogTitle>
             <p
               className={`relative mt-2 body-small max-w-sm ${
                 isDark ? 'text-slate-400' : 'text-slate-500'
               }`}
             >
-              Thiết lập nhanh thách đấu với chế độ SABO để hệ thống tự động cân
-              bằng.
+              Hệ thống tự động tính handicap cho trận đấu công bằng
             </p>
             <Button
               type='button'
@@ -444,8 +442,8 @@ const ImprovedCreateChallengeModal = ({
                 }`}
               >
                 {challengeType === 'open'
-                  ? '🌟 Thách đấu mở: Mọi người có thể nhận'
-                  : '🎯 Thách đấu trực tiếp: Gửi đến 1 người cụ thể'}
+                  ? '🌟 Thách đấu mở: Mọi người có thể nhận (SABO tự động)'
+                  : '🎯 Thách đấu trực tiếp: Gửi đến 1 người cụ thể (SABO tự động)'}
               </div>
             </div>
 
@@ -555,74 +553,85 @@ const ImprovedCreateChallengeModal = ({
               </div>
             )}
 
-            {/* SABO Mode - Enhanced UI */}
+            {/* SABO Mode - Always Active Info Display */}
             <div className={sectionCard + ' space-y-1 p-2'}>
               <div className='rounded-md bg-slate-800/40 border border-slate-700/50 p-3'>
-                <div className='flex items-center justify-between mb-3'>
-                  <div className='flex items-center gap-2'>
-                    <Star className='w-5 h-5 text-primary drop-shadow-[0_0_6px_rgba(56,189,248,0.6)]' />
-                    <Label
-                      htmlFor='sabo-mode'
-                      className='heading-tertiary text-slate-100'
-                    >
-                      Chế độ SABO{' '}
-                      <span className='text-primary/70'>(Khuyến nghị)</span>
-                    </Label>
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='sm'
-                      onClick={() => setShowSaboInfo(true)}
-                      className='h-6 w-6 p-0 text-slate-400 hover:text-slate-200'
-                    >
-                      <HelpCircle className='w-4 h-4' />
-                    </Button>
-                  </div>
-                  <Switch
-                    id='sabo-mode'
-                    checked={formData.is_sabo}
-                    onCheckedChange={checked =>
-                      setFormData(prev => ({ ...prev, is_sabo: checked }))
-                    }
-                  />
-                </div>
-
-                <p className='timestamp text-slate-400 mb-3 flex items-center gap-1'>
-                  <span className='text-primary'>✨</span> Tự động tính handicap
-                  dựa trên rank để trận đấu công bằng
-                </p>
-
-                {/* Auto Handicap Preview */}
-                {formData.is_sabo && (
-                  <div className='p-3 bg-slate-800/50 rounded border border-slate-700/50'>
-                    <div className='flex items-center gap-2 mb-2'>
-                      <Calculator className='w-4 h-4 text-primary' />
-                      <span className='label-text text-slate-200'>
-                        Tính handicap tự động
+                <div className='flex items-center gap-2 mb-3'>
+                  <Star className='w-5 h-5 text-primary drop-shadow-[0_0_6px_rgba(56,189,248,0.6)]' />
+                  <div className='flex-1'>
+                    <div className='heading-tertiary text-slate-100 flex items-center gap-2'>
+                      Chế độ SABO
+                      <span className='px-2 py-1 bg-primary/20 text-primary text-xs rounded-full border border-primary/30'>
+                        Luôn bật
                       </span>
                     </div>
-                    {handicapInfo && selectedOpponent ? (
-                      <div className='space-y-1 timestamp text-slate-300'>
-                        <div>
-                          Rank: {currentUserProfile?.current_rank || 'K'} vs{' '}
-                          {selectedOpponent.current_rank || 'K'}
-                        </div>
-                        <div className='body-small font-medium text-primary/90'>
-                          Challenger: {handicapInfo.handicapChallenger} |
-                          Opponent: {handicapInfo.handicapOpponent}
-                        </div>
-                      </div>
-                    ) : challengeType === 'open' ? (
-                      <div className='timestamp text-slate-400'>
-                        Handicap sẽ được tính khi có người nhận thách đấu
-                      </div>
-                    ) : (
-                      <div className='timestamp text-slate-400'>
-                        Chọn đối thủ để xem handicap
-                      </div>
-                    )}
+                    <p className='timestamp text-slate-400 mt-1'>
+                      Tự động cân bằng trận đấu dựa trên hạng của người chơi
+                    </p>
                   </div>
-                )}
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='sm'
+                    onClick={() => setShowSaboInfo(true)}
+                    className='h-8 w-8 p-0 text-slate-400 hover:text-slate-200'
+                  >
+                    <HelpCircle className='w-4 h-4' />
+                  </Button>
+                </div>
+
+                <div className='flex items-center gap-2 p-2 bg-primary/10 rounded-md border border-primary/20'>
+                  <CheckCircle className='w-4 h-4 text-primary flex-shrink-0' />
+                  <span className='timestamp text-slate-300'>
+                    Handicap được tính tự động để đảm bảo trận đấu công bằng
+                  </span>
+                </div>
+
+                {/* Auto Handicap Preview */}
+                <div className='mt-3 p-3 bg-slate-800/50 rounded border border-slate-700/50'>
+                  <div className='flex items-center gap-2 mb-2'>
+                    <Calculator className='w-4 h-4 text-primary' />
+                    <span className='label-text text-slate-200'>
+                      Dự tính handicap
+                    </span>
+                  </div>
+                  {handicapInfo && selectedOpponent ? (
+                    <div className='space-y-1 timestamp text-slate-300'>
+                      <div className='flex items-center justify-between'>
+                        <span>Rank của bạn:</span>
+                        <span className='font-medium text-primary/90'>
+                          {currentUserProfile?.current_rank || 'K'}
+                        </span>
+                      </div>
+                      <div className='flex items-center justify-between'>
+                        <span>Rank đối thủ:</span>
+                        <span className='font-medium text-primary/90'>
+                          {selectedOpponent.current_rank || 'K'}
+                        </span>
+                      </div>
+                      <div className='border-t border-slate-600/50 pt-2 mt-2'>
+                        <div className='flex items-center justify-between body-small font-medium'>
+                          <span>Handicap của bạn:</span>
+                          <span className='text-primary'>+{handicapInfo.handicapChallenger}</span>
+                        </div>
+                        <div className='flex items-center justify-between body-small font-medium'>
+                          <span>Handicap đối thủ:</span>
+                          <span className='text-primary'>+{handicapInfo.handicapOpponent}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : challengeType === 'open' ? (
+                    <div className='timestamp text-slate-400 flex items-center gap-2'>
+                      <Globe className='w-4 h-4' />
+                      Handicap sẽ được tính khi có người nhận thách đấu
+                    </div>
+                  ) : (
+                    <div className='timestamp text-slate-400 flex items-center gap-2'>
+                      <Target className='w-4 h-4' />
+                      Chọn đối thủ để xem dự tính handicap
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -857,8 +866,8 @@ const ImprovedCreateChallengeModal = ({
               >
                 {loading && <Loader2 className='w-4 h-4 mr-2 animate-spin' />}
                 {challengeType === 'open'
-                  ? 'Tạo thách đấu mở'
-                  : 'Gửi thách đấu'}
+                  ? 'Tạo thách đấu SABO'
+                  : 'Gửi thách đấu SABO'}
               </Button>
             </div>
           </div>

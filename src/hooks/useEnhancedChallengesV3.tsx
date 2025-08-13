@@ -40,33 +40,47 @@ export const useEnhancedChallengesV3 = () => {
     return false;
   };
 
-  // Auto-expire challenges function - OPTIMIZED
+  // Auto-expire challenges function - ENHANCED to handle 'open' status
   const autoExpireChallenges = async () => {
     if (!user) return;
 
     try {
-      const expiredChallenges = challenges.filter(isExpiredChallenge);
+      // Filter expired challenges that are still active (pending or open)
+      const expiredChallenges = challenges.filter(challenge => 
+        isExpiredChallenge(challenge) && 
+        (challenge.status === 'pending' || challenge.status === 'open')
+      );
       
       if (expiredChallenges.length > 0) {
-        console.log(`🗑️ Auto-expiring ${expiredChallenges.length} challenges...`);
+        console.log(`🗑️ Auto-expiring ${expiredChallenges.length} challenges (pending + open)...`, {
+          expiredIds: expiredChallenges.map(c => c.id),
+          expiredStatuses: expiredChallenges.map(c => ({ id: c.id, status: c.status, expires_at: c.expires_at }))
+        });
         
-        // Update expired challenges in database
+        // Update expired challenges in database - include both 'pending' and 'open'
         const { error } = await supabase
           .from('challenges')
-          .update({ status: 'expired' })
+          .update({ 
+            status: 'expired',
+            updated_at: new Date().toISOString()
+          })
           .in('id', expiredChallenges.map(c => c.id))
-          .eq('status', 'pending'); // Only update pending challenges
+          .in('status', ['pending', 'open']); // Include both pending and open challenges
 
         if (error) {
-          console.error('Error auto-expiring challenges:', error);
+          console.error('❌ Error auto-expiring challenges:', error);
         } else {
-          console.log('✅ Auto-expired challenges updated');
-          // Update local state instead of full refresh
-          setChallenges(prev => prev.map(c => 
-            expiredChallenges.some(exp => exp.id === c.id) 
-              ? { ...c, status: 'expired' as any } 
-              : c
+          console.log('✅ Auto-expired challenges updated in database');
+          
+          // Update local state to remove expired challenges from UI
+          setChallenges(prev => prev.filter(c => 
+            !expiredChallenges.some(exp => exp.id === c.id)
           ));
+          
+          // Show console notification about cleanup
+          if (expiredChallenges.length > 0) {
+            console.log(`🧹 Cleaned up ${expiredChallenges.length} expired challenge(s)`);
+          }
         }
       }
     } catch (error) {

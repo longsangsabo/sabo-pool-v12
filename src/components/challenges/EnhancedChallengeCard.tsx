@@ -20,6 +20,7 @@ import { Challenge } from '@/types/challenge';
 import { EnhancedChallengeCardProps, ExtendedChallenge, toExtendedChallenge } from '@/types/enhancedChallenge';
 import AvatarWithStatus from './Enhanced/AvatarWithStatus';
 import StatusBadge from './Enhanced/StatusBadge';
+import CurrentUserInfo from './CurrentUserInfo';
 import { formatVietnamTime } from '@/utils/timezone';
 
 // Modified props to accept both Challenge and ExtendedChallenge
@@ -45,8 +46,31 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   // Convert to ExtendedChallenge for enhanced features
   const challenge = toExtendedChallenge(originalChallenge);
   
+  // Debug location data
+  console.log('🔍 Challenge location debug:', {
+    id: challenge.id,
+    club: challenge.club,
+    clubName: challenge.club?.name,
+    clubAddress: challenge.club?.address,
+    displayLocation: challenge.club?.name || challenge.club?.address || 'Không xác định'
+  });
+  
   // Check if current user is the challenger (creator)
   const isCreator = currentUserId && challenge.challenger_id === currentUserId;
+  
+  // Get current user profile information
+  const getCurrentUserProfile = () => {
+    if (!currentUserId) return null;
+    
+    if (currentUserId === challenge.challenger_id) {
+      return challenge.challenger_profile;
+    } else if (currentUserId === challenge.opponent_id) {
+      return challenge.opponent_profile;
+    }
+    return null;
+  };
+
+  const currentUserProfile = getCurrentUserProfile();
 
   const formatCurrency = (amount?: number) => {
     if (!amount) return '';
@@ -250,12 +274,44 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
                   {challenge.challenger_profile?.full_name || challenge.challenger_profile?.username || 'Player 1'}
                 </div>
+                {/* Player Info */}
+                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 space-y-0.5">
+                  {challenge.challenger_profile?.verified_rank && (
+                    <div className="flex items-center justify-center gap-1">
+                      <Trophy className="w-3 h-3" />
+                      <span>{challenge.challenger_profile.verified_rank}</span>
+                    </div>
+                  )}
+                  {challenge.challenger_profile?.spa_points !== undefined && (
+                    <div className="flex items-center justify-center gap-1">
+                      <Coins className="w-3 h-3" />
+                      <span>{challenge.challenger_profile.spa_points} SPA</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="mx-4 text-center">
                 <div className="text-gray-600 dark:text-gray-300 text-lg font-bold">
                   vs
                 </div>
+                {/* Handicap Display */}
+                {challenge.handicap_data && (
+                  <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                    {(() => {
+                      const handicapData = typeof challenge.handicap_data === 'string' 
+                        ? JSON.parse(challenge.handicap_data) 
+                        : challenge.handicap_data;
+                      
+                      if (handicapData?.handicap_challenger > 0) {
+                        return `+${handicapData.handicap_challenger}`;
+                      } else if (handicapData?.handicap_opponent > 0) {
+                        return `+${handicapData.handicap_opponent}`;
+                      }
+                      return 'Cân bằng';
+                    })()}
+                  </div>
+                )}
               </div>
 
               <div className="flex-1 text-center">
@@ -269,8 +325,45 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
                   {challenge.opponent_profile?.full_name || challenge.opponent_profile?.username || 'Waiting...'}
                 </div>
+                {/* Player Info */}
+                {challenge.opponent_profile && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 space-y-0.5">
+                    {challenge.opponent_profile?.verified_rank && (
+                      <div className="flex items-center justify-center gap-1">
+                        <Trophy className="w-3 h-3" />
+                        <span>{challenge.opponent_profile.verified_rank}</span>
+                      </div>
+                    )}
+                    {challenge.opponent_profile?.spa_points !== undefined && (
+                      <div className="flex items-center justify-center gap-1">
+                        <Coins className="w-3 h-3" />
+                        <span>{challenge.opponent_profile.spa_points} SPA</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Location Display - Prominent */}
+            {(challenge.club?.name || challenge.club?.address) && (
+              <div className="flex items-start gap-2 p-3 bg-green-50/50 dark:bg-green-900/20 rounded-lg border border-green-200/50 dark:border-green-700/30">
+                <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-800 dark:text-gray-100 font-medium text-sm leading-relaxed">
+                  {challenge.club?.name || challenge.club?.address || 'Địa điểm chưa xác định'}
+                </span>
+              </div>
+            )}
+
+            {/* Debug: Always show location info if not present */}
+            {(!challenge.club?.name && !challenge.club?.address) && (
+              <div className="flex items-start gap-2 p-3 bg-yellow-50/50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200/50 dark:border-yellow-700/30">
+                <MapPin className="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-800 dark:text-gray-100 font-medium text-sm leading-relaxed">
+                  Địa điểm sẽ được cập nhật sau
+                </span>
+              </div>
+            )}
 
             {/* Enhanced Challenge Details */}
             <div className="grid grid-cols-2 gap-3 text-sm">
@@ -281,16 +374,30 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                 </div>
               )}
 
-              {challenge.location && (
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-                  <span className="text-gray-800 dark:text-gray-100">{challenge.location}</span>
+              {/* Handicap Summary */}
+              {challenge.handicap_data && (
+                <div className="flex items-center gap-2 col-span-2">
+                  <Zap className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  <span className="text-gray-800 dark:text-gray-100 text-sm">
+                    {(() => {
+                      const handicapData = typeof challenge.handicap_data === 'string' 
+                        ? JSON.parse(challenge.handicap_data) 
+                        : challenge.handicap_data;
+                      
+                      if (handicapData?.handicap_challenger > 0) {
+                        return `${challenge.challenger_profile?.full_name || 'Challenger'} được cộng ${handicapData.handicap_challenger} bàn`;
+                      } else if (handicapData?.handicap_opponent > 0) {
+                        return `${challenge.opponent_profile?.full_name || 'Opponent'} được cộng ${handicapData.handicap_opponent} bàn`;
+                      }
+                      return 'Trận đấu cân bằng - không chấp';
+                    })()}
+                  </span>
                 </div>
               )}
 
               {/* Rank Requirement for Open Challenges */}
               {variant === 'open' && challenge.required_rank && challenge.required_rank !== 'all' && (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 col-span-2">
                   <Star className="w-4 h-4 text-amber-500 dark:text-amber-400" />
                   <span className="text-foreground dark:text-foreground/90">
                     Yêu cầu hạng: {challenge.required_rank === 'K' ? '🔰 K hạng' : 
@@ -298,11 +405,19 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                                    challenge.required_rank === 'H' ? '🟩 H hạng' : 
                                    challenge.required_rank === 'G' ? '🟨 G hạng' : 
                                    challenge.required_rank === 'F' ? '🟧 F hạng' : 
-                                   challenge.required_rank === 'E' ? '� E hạng' : 'Tất cả'}
+                                   challenge.required_rank === 'E' ? '🔴 E hạng' : 'Tất cả'}
                   </span>
                 </div>
               )}
             </div>
+
+            {/* Current User Info */}
+            <CurrentUserInfo
+              currentUserId={currentUserId}
+              challengerId={challenge.challenger_id}
+              opponentId={challenge.opponent_id}
+              userProfile={currentUserProfile}
+            />
 
             {/* Enhanced Score Section */}
             {challenge.status === 'completed' && (challenge.challenger_final_score || challenge.opponent_final_score) && (

@@ -17,13 +17,26 @@ export const useOpenChallenges = () => {
       // Fetch open challenges (opponent_id is null and status is pending)
       const { data: challengesData, error } = await supabase
         .from('challenges')
-        .select('*')
+        .select(`
+          *,
+          club_profiles(
+            id,
+            club_name,
+            address
+          )
+        `)
         .is('opponent_id', null)
         .eq('status', 'pending')
         .gt('expires_at', new Date().toISOString())
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+
+      console.log('🎯 DEBUG - Raw challenges data:', challengesData);
+      console.log('🎯 DEBUG - First challenge club_profiles:', challengesData?.[0]?.club_profiles);
+
+      console.log('🔍 Debug challengesData:', challengesData?.slice(0, 2)); // Debug first 2 challenges
+      console.log('🔍 Club profiles in first challenge:', challengesData?.[0]?.club_profiles);
 
       // Fetch challenger profiles
       const challengerIds =
@@ -74,7 +87,23 @@ export const useOpenChallenges = () => {
                   elo_points: challengerRanking?.elo_points || 1000,
                 }
               : null,
+            // Map club_profiles to club for consistent naming
+            club: challenge.club_profiles ? {
+              id: challenge.club_profiles.id,
+              name: challenge.club_profiles.club_name,
+              address: challenge.club_profiles.address
+            } : null,
           };
+          
+          console.log('🎯 DEBUG - Mapped challenge:', {
+            id: challenge.id,
+            club_profiles: challenge.club_profiles,
+            mapped_club: challenge.club_profiles ? {
+              id: challenge.club_profiles.id,
+              name: challenge.club_profiles.club_name,
+              address: challenge.club_profiles.address
+            } : null
+          });
         }) || [];
 
       setOpenChallenges(enrichedChallenges as unknown as Challenge[]);

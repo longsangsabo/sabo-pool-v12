@@ -32,6 +32,7 @@ import {
   Star,
   CheckCircle,
   X,
+  MapPin,
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { calculateSaboHandicap, type SaboRank } from '@/utils/saboHandicap';
@@ -93,6 +94,7 @@ const ImprovedCreateChallengeModal = ({
     message: '',
     club_id: '',
     scheduled_time: '',
+    location: '', // Add location field
     is_sabo: true, // 🎯 SABO tự động bật
     handicap_1_rank: 0,
     handicap_05_rank: 0,

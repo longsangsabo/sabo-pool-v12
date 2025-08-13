@@ -219,6 +219,7 @@ export interface CreateChallengeRequest {
   bet_points: number;
   scheduled_time?: string;
   message?: string;
+  location?: string; // Add location field
 }
 
 export interface CreateChallengeData {
@@ -233,6 +234,7 @@ export interface CreateChallengeData {
   message?: string;
   club_id?: string;
   scheduled_time?: string;
+  location?: string; // Add location field
 }
 
 export interface AcceptChallengeRequest {

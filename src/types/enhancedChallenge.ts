@@ -27,6 +27,10 @@ export interface ExtendedChallenge extends Challenge {
   winner_id?: string;
   loser_id?: string;
   
+  // SABO specific properties
+  handicap_data?: any; // JSON data for handicap information
+  location?: string;   // Challenge location/venue
+  
   // Enhanced profile properties
   challenger_profile?: ExtendedChallengeProfile;
   opponent_profile?: ExtendedChallengeProfile;

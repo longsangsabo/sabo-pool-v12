@@ -31,6 +31,11 @@ export const useCompletedChallenges = () => {
             user_id,
             full_name,
             avatar_url
+          ),
+          club:club_profiles(
+            id,
+            club_name,
+            address
           )
         `
         )

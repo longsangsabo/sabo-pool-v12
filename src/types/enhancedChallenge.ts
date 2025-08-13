@@ -1,5 +1,25 @@
 import { Challenge, ChallengeProfile } from './challenge';
-import { StandardChallengeCardProps, ChallengeCardVariant, ChallengeAction } from './challengeCard';
+
+// Action types for enhanced challenge cards
+export type ChallengeAction = 
+  | 'join' 
+  | 'accept' 
+  | 'decline' 
+  | 'cancel' 
+  | 'view' 
+  | 'watch'
+  | 'score'
+  | 'share'
+  | 'notify';
+
+// Card variant types  
+export type ChallengeCardVariant = 
+  | 'open'      // Open challenges waiting for opponents
+  | 'live'      // Live matches in progress
+  | 'upcoming'  // Scheduled matches
+  | 'completed' // Finished matches
+  | 'pending'   // Awaiting response
+  | 'default';  // Default view
 
 // Extended Challenge interface with additional properties for Enhanced components
 export interface ExtendedChallenge extends Challenge {
@@ -47,9 +67,29 @@ export interface ExtendedChallengeProfile extends ChallengeProfile {
 }
 
 // Enhanced Card Props interface
-export interface EnhancedChallengeCardProps extends Omit<StandardChallengeCardProps, 'challenge'> {
+export interface EnhancedChallengeCardProps {
   challenge: ExtendedChallenge;
+  variant: ChallengeCardVariant;
+  currentUserId?: string;
+  
+  // Action handlers
+  onAction?: (challengeId: string, action: ChallengeAction) => void;
+  onJoin?: (challengeId: string) => Promise<void>;
+  onSubmitScore?: (challengeId: string, challengerScore: number, opponentScore: number) => Promise<void>;
+  
+  // State management
+  isLoading?: boolean;
+  isJoining?: boolean;
+  isSubmittingScore?: boolean;
+  
+  // Layout options
+  compact?: boolean;
+  showActions?: boolean;
+  showDetails?: boolean;
+  showAvatar?: boolean;
   size?: 'compact' | 'default' | 'large';
+  
+  // Enhanced features
   showQuickActions?: boolean;
   showStats?: boolean;
   showBadges?: boolean;
@@ -58,6 +98,16 @@ export interface EnhancedChallengeCardProps extends Omit<StandardChallengeCardPr
   isSelected?: boolean;
   enableBookmark?: boolean;
   enableShare?: boolean;
+  
+  // Highlighting
+  highlighted?: boolean;
+  urgent?: boolean;
+  
+  // Animation
+  animationDelay?: number;
+  disableAnimation?: boolean;
+  
+  // Events
   onCardClick?: (challengeId: string) => void;
   className?: string;
 }

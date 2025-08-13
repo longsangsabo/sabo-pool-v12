@@ -6,10 +6,8 @@ import SectionHeader from './SectionHeader';
 import LiveMatchCard from './LiveMatchCard';
 import UpcomingMatchCard from './UpcomingMatchCard';
 import RecentResultCard from './RecentResultCard';
-import { CompletedChallengeCard } from './CompletedChallengeCard';
 import { ActiveChallengeHighlight } from './ActiveChallengeHighlight';
-import { OpenChallengeCard } from './OpenChallengeCard';
-import UnifiedChallengeCard from './UnifiedChallengeCard';
+import EnhancedChallengeCard from './EnhancedChallengeCard';
 import { useOptimizedMatches } from '@/hooks/useOptimizedMatches';
 import { useCompletedChallenges } from '@/hooks/useCompletedChallenges';
 import { useOpenChallenges } from '@/hooks/useOpenChallenges';
@@ -229,12 +227,17 @@ const LiveActivityFeed: React.FC<LiveActivityFeedProps> = ({
           ) : openChallenges.length > 0 ? (
             <div className='grid gap-3'>
               {openChallenges.slice(0, 6).map(challenge => (
-                <OpenChallengeCard
+                <EnhancedChallengeCard
                   key={challenge.id}
-                  challenge={challenge}
-                  currentUser={user}
-                  onJoin={externalOnJoinChallenge || joinChallenge}
-                  isJoining={joining === challenge.id}
+                  variant="open"
+                  challenge={challenge as any}
+                  currentUserId={user?.id}
+                  onAction={(challengeId, action) => {
+                    if (action === 'join') {
+                      const joinFn = externalOnJoinChallenge || joinChallenge;
+                      joinFn(challengeId);
+                    }
+                  }}
                 />
               ))}
             </div>
@@ -271,10 +274,16 @@ const LiveActivityFeed: React.FC<LiveActivityFeedProps> = ({
           ) : completedChallenges.length > 0 ? (
             <div className='grid gap-3'>
               {completedChallenges.map(challenge => (
-                <CompletedChallengeCard
+                <EnhancedChallengeCard
                   key={challenge.id}
-                  challenge={challenge}
-                  onView={() => handleViewResult(challenge.id)}
+                  variant="completed"
+                  challenge={challenge as any}
+                  currentUserId={user?.id}
+                  onAction={(challengeId, action) => {
+                    if (action === 'view') {
+                      handleViewResult(challengeId);
+                    }
+                  }}
                 />
               ))}
             </div>

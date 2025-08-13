@@ -339,16 +339,6 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
             {/* Club and Rank Information Section */}
             {(challenge.location || (challenge.required_rank && challenge.required_rank !== 'all')) && (
               <div className="space-y-2">
-                {/* DEBUG: Log data to console */}
-                {console.log('🔍 Challenge Data Debug:', {
-                  id: challenge.id,
-                  location: challenge.location,
-                  required_rank: challenge.required_rank,
-                  challenger_name: challenge.challenger_profile?.full_name,
-                  hasLocation: !!challenge.location,
-                  hasRequiredRank: !!(challenge.required_rank && challenge.required_rank !== 'all')
-                })}
-                
                 {/* Club Location */}
                 {challenge.location && (
                   <div className="flex items-start gap-2 p-3 bg-green-50/50 dark:bg-green-900/20 rounded-lg border border-green-200/50 dark:border-green-700/30">

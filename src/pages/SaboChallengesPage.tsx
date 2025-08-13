@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Trophy } from 'lucide-react';
-import UnifiedChallengeCard from '@/components/challenges/UnifiedChallengeCard';
+import EnhancedChallengeCard from '@/components/challenges/EnhancedChallengeCard';
 import type { SaboChallenge } from '@/types/sabo-challenge';
 
 // Mock data based on SABO challenge system
@@ -267,8 +267,9 @@ export default function SaboChallengesPage() {
 
       <div className='grid gap-6 md:grid-cols-2 xl:grid-cols-3'>
         {challenges.map(challenge => (
-          <UnifiedChallengeCard
+          <EnhancedChallengeCard
             key={challenge.id}
+            variant="open"
             challenge={
               {
                 id: challenge.id,
@@ -284,7 +285,6 @@ export default function SaboChallengesPage() {
                 winner_id: challenge.winner_id,
               } as any
             }
-            variant='default'
           />
         ))}
       </div>

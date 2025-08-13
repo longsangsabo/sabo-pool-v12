@@ -80,6 +80,9 @@ export interface Challenge {
   // Rank requirement for open challenges
   required_rank?: 'all' | 'K' | 'I' | 'H' | 'G' | 'F' | 'E';
 
+  // Club location where challenge takes place
+  location?: string;
+
   // New consistent profile relations
   challenger_profile?: ChallengeProfile;
   opponent_profile?: ChallengeProfile;

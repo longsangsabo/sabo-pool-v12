@@ -86,9 +86,7 @@ export const TournamentGlobalProvider: React.FC<
         .select(
           `
           *,
-          club:club_profiles(*),
-          spa_points_config,
-          elo_points_config
+          club:club_profiles(*)
         `
         )
   // .is('deleted_at', null) // Bảng tournaments không có cột deleted_at

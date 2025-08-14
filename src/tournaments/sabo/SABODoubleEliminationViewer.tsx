@@ -73,6 +73,27 @@ export const SABODoubleEliminationViewer: React.FC<
   const currentUserId = user?.id;
   const isOwnerOrAdmin = isClubOwner || adminMode;
 
+  console.log('🎯 SABODoubleEliminationViewer DEBUG:', {
+    tournamentId,
+    matchesCount: matches?.length || 0,
+    matchesLoading: isLoading,
+    matches: matches?.slice(0, 5)?.map(m => ({
+      id: m.id,
+      round: m.round_number,
+      match: m.match_number,
+      bracket: m.bracket_type,
+      status: m.status
+    })) || []
+  });
+
+  // Add visual debug info directly to UI
+  const debugInfo = {
+    tournamentId,
+    matchesCount: matches?.length || 0,
+    matchesLoading: isLoading,
+    timestamp: new Date().toLocaleTimeString()
+  };
+
   if (isLoading) {
     return (
       <div className='flex items-center justify-center py-8'>
@@ -99,6 +120,16 @@ export const SABODoubleEliminationViewer: React.FC<
   const saboValidation = SABOLogicCore.validateSABOStructure(matches);
   const saboProgress = SABOLogicCore.getTournamentProgress(matches);
 
+  console.log('🏆 SABOLogicCore ORGANIZED:', {
+    total: matches?.length || 0,
+    winners: organizedMatches.winners?.length || 0,
+    losersA: organizedMatches.losers_branch_a?.length || 0,
+    losersB: organizedMatches.losers_branch_b?.length || 0,
+    semifinals: organizedMatches.semifinals?.length || 0,
+    final: organizedMatches.final?.length || 0,
+    validation: saboValidation
+  });
+
   const handleScoreSubmit = async (
     matchId: string,
     scores: { player1: number; player2: number }
@@ -115,6 +146,20 @@ export const SABODoubleEliminationViewer: React.FC<
 
   return (
     <div className='sabo-tournament-container space-y-6'>
+      {/* Debug Info Card - Always visible */}
+      <Card className='bg-blue-50 border-blue-200'>
+        <CardHeader className='pb-2'>
+          <CardTitle className='text-sm text-blue-700'>🔍 Debug Info</CardTitle>
+        </CardHeader>
+        <CardContent className='text-xs space-y-1'>
+          <div>Tournament ID: <code className='bg-blue-100 px-1 rounded'>{debugInfo.tournamentId}</code></div>
+          <div>Matches Count: <span className='font-bold text-blue-700'>{debugInfo.matchesCount}</span></div>
+          <div>Loading: <span className={debugInfo.matchesLoading ? 'text-orange-600' : 'text-green-600'}>{debugInfo.matchesLoading ? 'Yes' : 'No'}</span></div>
+          <div>Last Update: {debugInfo.timestamp}</div>
+          <div className='text-blue-600'>Organized: W:{organizedMatches.winners?.length || 0} | LA:{organizedMatches.losers_branch_a?.length || 0} | LB:{organizedMatches.losers_branch_b?.length || 0} | S:{organizedMatches.semifinals?.length || 0} | F:{organizedMatches.final?.length || 0}</div>
+        </CardContent>
+      </Card>
+
       {/* Tournament Progress Header */}
       <Card className='bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20'>
         <CardHeader>

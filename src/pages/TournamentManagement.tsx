@@ -288,7 +288,7 @@ export default function TournamentManagement() {
         />
       )}
 
-      {hasBracket && tournament.tournament_type === 'double_elimination' && (
+      {hasBracket && (tournament.tournament_type === 'double_elimination' || tournament.tournament_type === 'sabo_double_elimination') && (
         <DoubleBracketVisualization
           tournamentId={tournamentId}
           isClubOwner={true} // For now, assume club owner access

@@ -56,7 +56,7 @@ export const useTournamentRegistrations = (tournamentId: string) => {
           payment_status,
           created_at,
           notes,
-          profiles!tournament_registrations_user_id_fkey (
+          profiles (
             id,
             user_id,
             full_name,

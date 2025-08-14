@@ -430,6 +430,8 @@ export const EnhancedMatchCard: React.FC<EnhancedMatchCardProps> = ({
                   const { supabase } = await import(
                     '@/integrations/supabase/client'
                   );
+                  // ⚠️ DEPRECATED: Direct RPC call replaced by SABOTournamentEngine
+                  // This component should be updated to use useSABOScoreSubmission hook
                   const { data, error } = await supabase.rpc(
                     'submit_sabo_match_score',
                     {

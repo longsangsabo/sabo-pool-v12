@@ -434,6 +434,10 @@ export const DoubleEliminationMatchCard: React.FC<
                     );
                   }
 
+                  // ⚠️ DEPRECATED: Direct RPC call replaced by SABOTournamentEngine
+                  // This component should be updated to use useSABOScoreSubmission hook
+                  // for proper integration with the new SABO Tournament Engine
+                  
                   const { data, error } = await supabase.rpc(
                     'submit_sabo_match_score',
                     {

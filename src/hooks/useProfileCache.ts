@@ -63,6 +63,20 @@ export const useProfileCache = () => {
         return null;
       }
 
+      // Ensure display_name fallback to full_name
+      if (data) {
+        const profile = {
+          ...data,
+          display_name: data.display_name || data.full_name || 'Unknown Player'
+        };
+        console.log(`🔧 Profile cache fix for ${userId}:`, {
+          original_display_name: data.display_name,
+          original_full_name: data.full_name,
+          fixed_display_name: profile.display_name
+        });
+        return profile;
+      }
+
       return data;
     } catch (error) {
       console.error('Error in fetchProfile:', error);

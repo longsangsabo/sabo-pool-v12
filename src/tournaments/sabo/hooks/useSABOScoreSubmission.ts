@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { SABOTournamentEngine } from '@/services/tournament/SABOTournamentManager';
 
 interface MatchScore {
   player1: number;
@@ -18,11 +19,13 @@ export const useSABOScoreSubmission = (
     mutationFn: async ({
       matchId,
       scores,
+      matchData,
     }: {
       matchId: string;
       scores: MatchScore;
+      matchData: any;
     }) => {
-      console.log('🎯 Submitting SABO match score:', { matchId, scores });
+      console.log('🎯 Submitting SABO match score with new SABO Manager:', { matchId, scores, matchData });
 
       // Get current user for submitted_by parameter
       const {
@@ -32,30 +35,41 @@ export const useSABOScoreSubmission = (
         throw new Error('User must be authenticated to submit scores');
       }
 
-      // Use the new SABO score submission function
-      console.log('🔍 CALLING submit_sabo_match_score with params:', {
-        p_match_id: matchId,
-        p_player1_score: scores.player1,
-        p_player2_score: scores.player2,
-        p_submitted_by: user.id,
+      // Determine winner and loser
+      const player1Score = scores.player1;
+      const player2Score = scores.player2;
+      
+      if (player1Score === player2Score) {
+        throw new Error('Scores cannot be tied in SABO tournament');
+      }
+      
+      const winnerId = player1Score > player2Score ? matchData.player1_id : matchData.player2_id;
+      const loserId = player1Score > player2Score ? matchData.player2_id : matchData.player1_id;
+      const winnerScore = Math.max(player1Score, player2Score);
+      const loserScore = Math.min(player1Score, player2Score);
+
+      console.log('🔍 Using SABO Manager to submit score and advance tournament');
+
+      // Use SABO Tournament Engine for score submission and advancement
+      const result = await SABOTournamentEngine.submitScoreAndProcessAdvancement(tournamentId, {
+        match_id: matchId,
+        winner_id: winnerId,
+        loser_id: loserId,
+        winner_score: winnerScore,
+        loser_score: loserScore,
+        match_number: matchData.match_number,
+        round_number: matchData.round_number,
+        bracket_type: matchData.bracket_type,
+        player1_id: matchData.player1_id,
+        player2_id: matchData.player2_id
       });
 
-      const { data, error } = await supabase.rpc('submit_sabo_match_score', {
-        p_match_id: matchId,
-        p_player1_score: scores.player1,
-        p_player2_score: scores.player2,
-        p_submitted_by: user.id,
-      });
-
-      console.log('🔍 RPC Response:', { data, error });
-
-      if (error) {
-        console.error('❌ SABO score submission failed:', error);
-        throw error;
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to submit score');
       }
 
-      console.log('✅ SABO score submitted successfully:', data);
-      return data;
+      console.log('✅ SABO Manager completed successfully:', result);
+      return result;
     },
     onSuccess: (data, variables) => {
       console.log('✅ SABO score submission successful:', data);
@@ -109,8 +123,22 @@ export const useSABOScoreSubmission = (
   });
 
   const submitScore = useCallback(
-    async (matchId: string, scores: MatchScore) => {
-      return submitScoreMutation.mutateAsync({ matchId, scores });
+    async (matchId: string, scores: MatchScore, matchData?: any) => {
+      if (!matchData) {
+        // Get match data if not provided
+        const { data: match, error } = await supabase
+          .from('tournament_matches')
+          .select('*')
+          .eq('id', matchId)
+          .single();
+          
+        if (error || !match) {
+          throw new Error('Could not retrieve match data');
+        }
+        matchData = match;
+      }
+      
+      return submitScoreMutation.mutateAsync({ matchId, scores, matchData });
     },
     [submitScoreMutation]
   );

@@ -1,17 +1,37 @@
 /**
- * SMART TOURNAMENT SYSTEM - FUNCTION RESOLVER
- * Enterprise-grade function mapping and validation service
- * Prevents function mismatch errors and provides intelligent fallbacks
+ * SABO TOURNAMENT SYSTEM v2.0 - FUNCTION RESOLVER
+ * Official SABO Functions Integration - Replaces legacy functions
+ * Uses 10 working SABO functions for tournament management
  */
 
 import { supabase } from '@/integrations/supabase/client';
 
-// Tournament function name constants - UPDATED WITH ACTUALLY EXISTING FUNCTIONS
+// Official SABO Functions (✅ VERIFIED WORKING)
+export const SABO_OFFICIAL_FUNCTIONS = {
+  // Core Score Submission (Still used internally)
+  SCORE_SUBMIT: 'submit_sabo_match_score',
+  
+  // Official SABO Round Processors (✅ ALL WORKING)
+  WINNERS_R2: 'process_winners_round2_completion',
+  WINNERS_R3: 'process_winners_round3_completion',
+  LOSERS_R101: 'process_losers_r101_completion', 
+  LOSERS_R102: 'process_losers_r102_completion',
+  LOSERS_R103: 'process_losers_r103_completion',
+  LOSERS_R201: 'process_losers_r201_completion',
+  LOSERS_R202: 'process_losers_r202_completion',
+  SEMIFINALS: 'process_semifinals_completion',
+  GRAND_FINAL: 'process_grand_final_completion',
+  SETUP_SEMIFINALS: 'setup_semifinals_pairings',
+  
+  // Legacy Functions (❌ DEPRECATED - Do not use)
+  // SABO_ADVANCE: 'advance_sabo_tournament', // REPLACED by SABOTournamentEngine
+  // ASSIGN_PARTICIPANT: 'assign_participant_to_next_match', // REPLACED by SABOTournamentEngine
+};
+
+// Tournament function name constants - LEGACY SUPPORT ONLY
 export const TOURNAMENT_FUNCTIONS = {
-  // SABO Double Elimination (✅ VERIFIED EXISTING)
+  // SABO Double Elimination (⚠️ LEGACY - USE SABOTournamentEngine INSTEAD)
   SABO_BRACKET: 'generate_sabo_tournament_bracket',
-  SABO_ADVANCE: 'advance_sabo_tournament',
-  SABO_SCORE: 'submit_sabo_match_score',
   
   // Double Elimination Functions (✅ VERIFIED EXISTING)
   DOUBLE_ELIMINATION_BRACKET: 'generate_double_elimination_bracket_complete_v8',

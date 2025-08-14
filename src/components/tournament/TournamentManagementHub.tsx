@@ -6,12 +6,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   Trophy, Calendar, Users, Settings, Eye, ArrowLeft, RefreshCw, 
   Play, Target, Clock, Shuffle, Save, User, Hash, Gavel, Medal, 
-  Star, Crown, Plus, Check, MapPin, X, Edit, Loader2, Wrench, CreditCard
+  Star, Crown, Plus, Check, MapPin, X, Edit, Loader2, Wrench, CreditCard,
+  ChevronDown
 } from 'lucide-react';
 import TournamentCompletionButton from './TournamentCompletionButton';
 import ForceStartTournamentButton from './ForceStartTournamentButton';
@@ -19,6 +27,7 @@ import RepairBracketButton from './RepairBracketButton';
 import UserAvatar from '@/components/UserAvatar';
 import TableAssignmentDisplay from './TableAssignmentDisplay';
 import TournamentPlayerAvatar from './TournamentPlayerAvatar';
+import { SABODoubleEliminationViewer } from '@/components/tournaments/sabo/SABODoubleEliminationViewer';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -29,6 +38,7 @@ import TournamentResults from '@/components/tournament/TournamentResults';
 import { TournamentBracket } from '@/components/tournament/TournamentBracket';
 import { EnhancedTournamentDetailsModal } from '@/components/tournament/EnhancedTournamentDetailsModal';
 import { EnhancedMatchCard } from '@/components/tournament/EnhancedMatchCard';
+import { SABOTournamentEngine } from '@/services/tournament/SABOTournamentManager';
 import { EditTournamentModal } from '@/components/tournament/EditTournamentModal';
 import { TournamentAdapter } from '@/utils/tournamentAdapter';
 import { Tournament as TournamentType } from '@/types/tournament';
@@ -520,21 +530,29 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
 
       toast.success('Tỷ số đã được xác nhận');
       
-      // Advance tournament winner if needed
+      // Advance tournament winner using SABO Manager if SABO tournament
       try {
-        const { error: advanceError } = await supabase
-          .rpc('submit_sabo_match_score', {
-            p_match_id: matchId,
-            p_player1_score: 1,
-            p_player2_score: 0,
-            p_submitted_by: winnerId
-          });
-        
-        if (advanceError) {
-          console.error('Error advancing tournament winner:', advanceError);
+        if (selectedTournament?.tournament_type === 'double_elimination') {
+          console.log('🎯 Using SABO Tournament Engine for advancement');
+          
+          // Get match data for the advancement
+          const { data: matchData } = await supabase
+            .from('tournament_matches')
+            .select('*')
+            .eq('id', matchId)
+            .single();
+          
+          if (matchData) {
+            const result = await SABOTournamentEngine.processAutomaticAdvancement(selectedTournament.id, matchData);
+            if (result.success) {
+              console.log('✅ SABO Tournament Engine advanced successfully:', result);
+            } else {
+              console.log('⚠️ SABO Tournament Engine advancement issues:', result.message);
+            }
+          }
         }
       } catch (error) {
-        console.error('Error in tournament advancement:', error);
+        console.error('Error in SABO tournament advancement:', error);
       }
       
       // Refresh matches
@@ -934,111 +952,88 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
         </div>
         
         <div className="flex gap-2 flex-wrap">
-          {/* Edit Tournament Button for Missing Data */}
-          {(!tournament.tournament_start || !tournament.tournament_end) && (
-            <Button 
-              size="sm" 
-              variant="outline"
-              className="border-orange-500 text-orange-600 hover:bg-orange-50"
-              onClick={() => setEditingTournament(tournament)}
-            >
-              <Edit className="w-3 h-3 mr-1" />
-              Cập nhật thời gian
-            </Button>
-          )}
-          {tournament.status === 'upcoming' && (
-            <Button 
-              size="sm" 
-              variant="default"
-              onClick={() => openRegistration(tournament)}
-              className="bg-green-600 hover:bg-green-700 text-white border-green-600"
-            >
-              <Play className="w-4 h-4 mr-2" />
-              Mở đăng ký
-            </Button>
-          )}
-          {tournament.status === 'registration_open' && (
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={() => closeRegistration(tournament)}
-              className="border-orange-300 text-orange-600 hover:bg-orange-50"
-            >
-              <X className="w-4 h-4 mr-2" />
-              Đóng đăng ký
-            </Button>
-          )}
-          {/* View Details Button - Smart rendering based on tournament data */}
-          <Button 
-            size="sm" 
-            variant="outline"
-            onClick={() => handleShowDetails(tournament)}
-            className="hover:bg-primary/10"
-            onMouseEnter={() => {
-              // Auto-preload tournament details on hover for better UX
-              console.log('Preloading tournament details for:', tournament.id);
-            }}
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            Xem chi tiết
-          </Button>
+          {/* Compact Button Layout - Multi-function buttons */}
+          <div className="flex gap-2 flex-1">
+            
+            {/* Smart Primary Action - Tournament/Bracket Management */}
+            {existingMatches.length > 0 ? (
+              <Button 
+                size="sm" 
+                variant="default"
+                onClick={() => {
+                  setSelectedTournament(tournament);
+                  setCurrentView('bracket-viewer');
+                  setTimeout(() => setDetailActiveTab('bracket'), 10);
+                }}
+                className="flex-1 bg-primary hover:bg-primary/90"
+              >
+                <Target className="w-4 h-4 mr-2" />
+                Xem sơ đồ
+              </Button>
+            ) : (
+              <Button 
+                size="sm" 
+                variant="default"
+                onClick={() => handleGenerateBracket(tournament)}
+                disabled={tournament.status === 'completed'}
+                className="flex-1 bg-green-600 hover:bg-green-700"
+              >
+                <Shuffle className="w-4 h-4 mr-2" />
+                Tạo bảng đấu
+              </Button>
+            )}
 
-          <Button 
-            size="sm" 
-            variant="outline"
-            onClick={() => handleGenerateBracket(tournament)}
-            disabled={tournament.status === 'completed'}
-          >
-            <Shuffle className="w-4 h-4 mr-2" />
-            Tạo bảng đấu
-          </Button>
-          <Button 
-            size="sm" 
-            variant="outline"
-            onClick={() => handleViewBracket(tournament)}
-          >
-            <Target className="w-4 h-4 mr-2" />
-            Xem bảng đấu
-          </Button>
-          <Button 
-            size="sm" 
-            variant="outline"
-            onClick={() => handleViewParticipants(tournament)}
-          >
-            <Users className="w-4 h-4 mr-2" />
-            Xem thành viên
-          </Button>
-          
-          {/* Force Start Tournament Button */}
-          <ForceStartTournamentButton 
-            tournamentId={tournament.id}
-            tournamentName={tournament.name}
-            currentStatus={tournament.status}
-            onStatusChanged={() => {
-              fetchTournaments();
-            }}
-          />
-          
-          {/* Tournament Completion Button - fallback for completed status */}
-          <TournamentCompletionButton 
-            tournamentId={tournament.id}
-            tournamentName={tournament.name}
-            tournamentStatus={tournament.status}
-            onCompleted={() => {
-              fetchTournaments();
-            }}
-          />
-          
-          {/* Repair Bracket Button - for fixing double elimination tournament progression issues */}
-          <RepairBracketButton 
-            tournamentId={tournament.id}
-            tournamentName={tournament.name}
-            tournamentStatus={tournament.status}
-            tournamentType={tournament.tournament_type}
-            onRepaired={() => {
-              fetchTournaments();
-            }}
-          />
+            {/* Tournament Management Button */}
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => {
+                setSelectedTournament(tournament);
+                setCurrentView('bracket-viewer');
+                setDetailActiveTab('bracket'); // Set to show management content
+              }}
+              className="flex-1"
+            >
+              <Trophy className="w-4 h-4 mr-2" />
+              Quản lý
+            </Button>
+
+            {/* Participants Button */}
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => handleViewParticipants(tournament)}
+              className="flex-1"
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Thành viên
+            </Button>
+          </div>
+
+          {/* Compact Special Actions */}
+          <div className="flex gap-1">
+            <ForceStartTournamentButton 
+              tournamentId={tournament.id}
+              tournamentName={tournament.name}
+              currentStatus={tournament.status}
+              onStatusChanged={fetchTournaments}
+            />
+            
+            <TournamentCompletionButton 
+              tournamentId={tournament.id}
+              tournamentName={tournament.name}
+              tournamentStatus={tournament.status}
+              onCompleted={fetchTournaments}
+            />
+            
+            <RepairBracketButton 
+              tournamentId={tournament.id}
+              tournamentName={tournament.name}
+              tournamentStatus={tournament.status}
+              tournamentType={tournament.tournament_type}
+              onRepaired={fetchTournaments}
+            />
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -1227,6 +1222,13 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                     setSelectedPlayers([]);
                     setGeneratedBracket([]);
                     fetchTournaments();
+                    
+                    // 🎯 Auto-navigate to bracket viewer after generation
+                    setTimeout(() => {
+                      setCurrentView('bracket-viewer');
+                      setDetailActiveTab('bracket');
+                      toast.info('🎉 Đã tự động chuyển đến tab sơ đồ giải đấu!');
+                    }, 1000); // Small delay to ensure data is loaded
                   }}
                   selectedPlayers={selectedPlayers}
                   enableManualBracketGeneration={true}
@@ -1668,195 +1670,145 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
           </div>
         </div>
 
-        {/* Tournament Header */}
+        {/* Compact Tournament Header */}
         <Card className="bg-gradient-primary text-primary-foreground">
-          <CardContent className="p-8 text-center">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Trophy className="w-8 h-8" />
-              <h1 className="text-3xl font-bold">{selectedTournament.name}</h1>
+          <CardContent className="p-4 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Trophy className="w-6 h-6" />
+              <h1 className="text-2xl font-bold">{selectedTournament.name}</h1>
             </div>
-            <p className="text-lg opacity-90">{selectedTournament.max_participants} Người chơi - {getTournamentTypeLabel(selectedTournament.tournament_type)}</p>
+            <p className="text-sm opacity-90">{selectedTournament.max_participants} Người chơi - {getTournamentTypeLabel(selectedTournament.tournament_type)}</p>
           </CardContent>
         </Card>
 
-        {/* Tabbed Interface */}
-        <Tabs value={detailActiveTab} onValueChange={setDetailActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview" className="flex items-center gap-2 px-3 py-2">
-              <Trophy className="w-4 h-4" />
-              🏆 Quản lý Giải đấu
-            </TabsTrigger>
-            <TabsTrigger value="generate" className="flex items-center gap-2 px-3 py-2">
-              <Target className="w-4 h-4" />
-              Tạo & Sửa
-            </TabsTrigger>
-            <TabsTrigger value="automation" className="flex items-center gap-2 px-3 py-2">
-              <Settings className="w-4 h-4" />
-              Automation
-            </TabsTrigger>
-            <TabsTrigger value="bracket" className="flex items-center gap-2 px-3 py-2">
-              <Trophy className="w-4 h-4" />
-              Sơ đồ giải đấu
-            </TabsTrigger>
-            <TabsTrigger value="results" className="flex items-center gap-2 px-3 py-2">
-              <Medal className="w-4 h-4" />
-              Kết quả giải đấu
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Tournament Management Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            {/* Tournament Info */}
+        {/* Tournament Management - Main Content */}
+        <div className="space-y-4">
+            {/* Compact Tournament Info */}
             <Card className="border-primary/20">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                  <Trophy className="w-5 h-5 text-primary" />
-                  🏆 Quản lý Giải đấu
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-gradient-subtle border-border rounded-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <Users className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="text-sm text-muted-foreground">Số người chơi</div>
-                        <div className="font-semibold text-foreground">{selectedTournament.current_participants}/{selectedTournament.max_participants}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gradient-subtle border-border rounded-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <Target className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="text-sm text-muted-foreground">Loại giải</div>
-                        <div className="font-semibold text-foreground">{getTournamentTypeLabel(selectedTournament.tournament_type)}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gradient-subtle border-border rounded-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <Hash className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="text-sm text-muted-foreground">Tổng số trận</div>
-                        <div className="font-semibold text-foreground">{existingMatches.length}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gradient-subtle border-border rounded-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <Trophy className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="text-sm text-muted-foreground">Trạng thái</div>
-                        <div className="font-semibold text-foreground">{getStatusBadge(selectedTournament.status)}</div>
-                      </div>
-                    </div>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-primary" />
+                    🏆 Quản lý Giải đấu
+                  </h3>
+                  <div className="text-sm text-muted-foreground">
+                    {selectedTournament.current_participants}/{selectedTournament.max_participants} người chơi
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Table Assignment Display */}
-            {clubId && (
-              <div className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <span>Quản lý phân bàn</span>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Target className="w-4 h-4 text-primary" />
+                    <span className="text-muted-foreground">Loại:</span>
+                    <span className="font-medium">{getTournamentTypeLabel(selectedTournament.tournament_type)}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Hash className="w-4 h-4 text-primary" />
+                    <span className="text-muted-foreground">Trận:</span>
+                    <span className="font-medium">{existingMatches.length}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Trophy className="w-4 h-4 text-primary" />
+                    <span className="text-muted-foreground">Trạng thái:</span>
+                    {getStatusBadge(selectedTournament.status)}
+                  </div>
+                  {clubId && (
+                    <div className="flex items-center gap-2">
                       <Button
                         onClick={() => handleAutoAssignTables(selectedTournament.id)}
                         variant="outline"
                         size="sm"
                         disabled={autoAssigning}
+                        className="h-7 text-xs"
                       >
                         {autoAssigning ? (
                           <>
-                            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                            Đang phân bàn...
+                            <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
+                            Phân bàn...
                           </>
                         ) : (
                           <>
-                            <Shuffle className="w-4 h-4 mr-2" />
-                            Tự động phân bàn
+                            <Shuffle className="w-3 h-3 mr-1" />
+                            Phân bàn
                           </>
                         )}
                       </Button>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Nested Tabs for Tournament-specific functions */}
+            <Tabs value={detailActiveTab === 'overview' || detailActiveTab === 'generate' || detailActiveTab === 'automation' ? 'bracket' : detailActiveTab} 
+                  onValueChange={setDetailActiveTab} className="space-y-3">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="bracket" className="flex items-center gap-2 px-3 py-2 text-sm">
+                  <Target className="w-4 h-4" />
+                  📊 Sơ đồ giải đấu
+                </TabsTrigger>
+                <TabsTrigger value="results" className="flex items-center gap-2 px-3 py-2 text-sm">
+                  <Medal className="w-4 h-4" />
+                  🏆 Kết quả giải đấu
+                </TabsTrigger>
+                {clubId && (
+                  <TabsTrigger value="tables" className="flex items-center gap-2 px-3 py-2 text-sm">
+                    <Settings className="w-4 h-4" />
+                    🎯 Quản lý bàn
+                  </TabsTrigger>
+                )}
+              </TabsList>
+
+              {/* Tournament Bracket Tab */}
+              <TabsContent value="bracket" className="space-y-4">
+                <div className="text-center py-2">
+                  <h3 className="text-lg font-semibold mb-2">Sơ đồ giải đấu</h3>
+                </div>
+                {(selectedTournament.tournament_type === 'double_elimination' || 
+                  selectedTournament.tournament_type === 'sabo_double_elimination' || 
+                  selectedTournament.tournament_type === 'sabo_round_robin_double_elimination') && (
+                  <SABODoubleEliminationViewer
+                    tournamentId={selectedTournament.id}
+                    adminMode={true}
+                  />
+                )}
+                {(selectedTournament.tournament_type === 'single_elimination' || selectedTournament.tournament_type === 'pool_to_single') && (
+                  <TournamentBracket
+                    tournamentId={selectedTournament.id}
+                  />
+                )}
+              </TabsContent>
+
+              {/* Tournament Results Tab */}
+              <TabsContent value="results" className="space-y-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <Medal className="w-5 h-5" />
+                      🏆 Kết quả giải đấu
                     </CardTitle>
                   </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-6 text-muted-foreground">
+                      <Medal className="w-10 h-10 mx-auto mb-3" />
+                      <p>Kết quả và thống kê giải đấu</p>
+                      <p className="text-sm">Sẽ được triển khai sớm</p>
+                    </div>
+                  </CardContent>
                 </Card>
-                
-                <TableAssignmentDisplay 
-                  clubId={clubId} 
-                  tournamentId={selectedTournament.id}
-                  showManagement={true}
-                />
-              </div>
-            )}
-          </TabsContent>
+              </TabsContent>
 
-          {/* Create & Edit Tab */}
-          <TabsContent value="generate" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5" />
-                  Tạo & Sửa Bảng đấu
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  <Target className="w-12 h-12 mx-auto mb-4" />
-                  <p>Tính năng tạo và chỉnh sửa bảng đấu chi tiết</p>
-                  <p className="text-sm">Sẽ được triển khai sớm</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Automation Tab */}
-          <TabsContent value="automation" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5" />
-                  Automation - Tự động hóa
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  <Settings className="w-12 h-12 mx-auto mb-4" />
-                  <p>Tính năng tự động hóa quản lý giải đấu</p>
-                  <p className="text-sm">Sẽ được triển khai sớm</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Tournament Bracket Tab */}
-          <TabsContent value="bracket" className="space-y-6">
-            <TournamentBracket 
-              tournamentId={selectedTournament.id}
-              adminMode={true}
-            />
-          </TabsContent>
-
-          {/* Results Tab */}
-          <TabsContent value="results" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Medal className="w-5 h-5" />
-                  Kết quả giải đấu
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  <Medal className="w-12 h-12 mx-auto mb-4" />
-                  <p>Kết quả và thống kê giải đấu</p>
-                  <p className="text-sm">Sẽ được triển khai sớm</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              {/* Table Management Tab */}
+              {clubId && (
+                <TabsContent value="tables" className="space-y-4">
+                  <TableAssignmentDisplay 
+                    clubId={clubId} 
+                    tournamentId={selectedTournament.id}
+                    showManagement={true}
+                  />
+                </TabsContent>
+              )}
+            </Tabs>
+        </div>
       </div>
     );
   }
@@ -1870,19 +1822,6 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
           <p className="text-muted-foreground">
             Quản lý giải đấu, tạo bảng đấu và theo dõi kết quả trong một nơi
           </p>
-        </div>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline"
-            onClick={() => setCurrentView('bracket-manager')}
-          >
-            <Trophy className="w-4 h-4 mr-2" />
-            Quản lý Bảng đấu
-          </Button>
-          <Button onClick={handleCreateTournament}>
-            <Plus className="w-4 h-4 mr-2" />
-            Tạo giải đấu mới
-          </Button>
         </div>
       </div>
 

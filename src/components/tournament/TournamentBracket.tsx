@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTournaments } from '@/hooks/useTournaments';
 import { SingleEliminationBracket } from '../tournaments/SingleEliminationBracket';
-import { OptimizedTournamentBracket } from '../tournaments/OptimizedTournamentBracket';
 
 import { SABODoubleEliminationViewer } from '@/components/tournaments/sabo';
 import { Card, CardContent } from '@/components/ui/card';
@@ -79,11 +78,11 @@ export const TournamentBracket: React.FC<TournamentBracketProps> = ({
     tournamentType === 'single_elimination'
   ) {
     console.log(
-      '✅ Rendering Enhanced Single Elimination Bracket for:',
+      '✅ Rendering Single Elimination Bracket for:',
       tournament.name
     );
     return (
-      <OptimizedTournamentBracket
+      <SingleEliminationBracket
         tournamentId={tournamentId}
         isClubOwner={isClubOwner || adminMode}
         adminMode={adminMode}
@@ -111,7 +110,7 @@ export const TournamentBracket: React.FC<TournamentBracketProps> = ({
       tournament.name
     );
     return (
-      <OptimizedTournamentBracket
+      <SingleEliminationBracket
         tournamentId={tournamentId}
         isClubOwner={isClubOwner || adminMode}
         adminMode={adminMode}

@@ -28,7 +28,6 @@ import { ValidationService } from '@/services/ValidationService';
 import { RewardsService } from '@/services/RewardsService';
 import { GameFormat } from '@/types/tournament-enums';
 import { TournamentSettingsSection } from './TournamentSettingsSection';
-import { AdvancedSettingsSection } from './simplified-steps/AdvancedSettingsSection';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -760,7 +759,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                       CÀI ĐẶT & QUY ĐỊNH
                     </span>
                   </div>
-                  <AdvancedSettingsSection form={form} />
+                  {/* Advanced settings moved inline - removing AdvancedSettingsSection */}
                 </div>
               </div>
 

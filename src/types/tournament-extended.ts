@@ -8,12 +8,21 @@ import {
 } from './tournament-enums';
 import type { RankCode } from '@/utils/eloConstants';
 
-// Simplified tournament rewards - removed complex logic
+// Import prize types from service
+import type { 
+  TournamentPrize, 
+  CreateTournamentPrizeInput, 
+  TournamentPrizeWithDetails 
+} from '@/services/tournament-prizes.service';
+
+// Export prize types for convenience
+export type { TournamentPrize, CreateTournamentPrizeInput, TournamentPrizeWithDetails };
+
+// Legacy: Simplified tournament rewards - kept for backwards compatibility
 export interface TournamentRewards {
   totalPrize: number;
   showPrizes: boolean;
   positions: RewardPosition[];
-  specialAwards: SpecialAward[];
 }
 
 export interface RewardPosition {
@@ -29,22 +38,13 @@ export interface RewardPosition {
 // Alias for backwards compatibility
 export type PositionReward = RewardPosition;
 
-export interface SpecialAward {
-  id: string;
-  name: string;
-  description?: string;
-  cashPrize: number;
-  criteria?: string;
-}
-
-// Enhanced Tournament interface extending the existing one
+// Enhanced Tournament interface extending the existing one - simplified
 export interface EnhancedTournament {
   id: string;
   name: string;
   description?: string;
   tournament_type: TournamentType;
   game_format: GameFormat;
-  tier_level: TournamentTier;
   max_participants: number;
   current_participants: number;
   registration_start: string;
@@ -67,12 +67,8 @@ export interface EnhancedTournament {
 
   // Extended fields
   rewards: TournamentRewards;
-  eligible_ranks: RankCode[];
-  allow_all_ranks: boolean;
-  min_rank_requirement?: RankCode;
-  max_rank_requirement?: RankCode;
-  requires_approval: boolean;
-  is_public: boolean;
+  min_rank_requirement?: string;
+  max_rank_requirement?: string;
 
   // Calculated fields
   available_slots: number;
@@ -116,12 +112,11 @@ export interface TournamentRegistration {
   };
 }
 
-// Form data interface for tournament creation
+// Form data interface for tournament creation - simplified
 export interface TournamentFormData {
   // Basic info
   name: string;
   description?: string;
-  tier_level: TournamentTier;
   tournament_start: string;
   tournament_end: string;
   venue_address: string;
@@ -141,12 +136,8 @@ export interface TournamentFormData {
   contact_info?: string;
 
   // Rank eligibility
-  eligible_ranks: RankCode[];
-  allow_all_ranks: boolean;
-  min_rank_requirement?: RankCode;
-  max_rank_requirement?: RankCode;
-  requires_approval: boolean;
-  is_public: boolean;
+  min_rank_requirement?: string;
+  max_rank_requirement?: string;
 
   // Rewards (optional for form, will be calculated)
   rewards?: TournamentRewards;

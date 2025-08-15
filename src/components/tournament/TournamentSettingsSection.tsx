@@ -9,8 +9,8 @@ import {
   PARTICIPANT_SLOTS,
   TOURNAMENT_FORMATS,
   GAME_FORMATS,
+  AVAILABLE_RANKS,
 } from '@/schemas/tournamentSchema';
-import { RANK_ELO } from '@/utils/eloConstants';
 
 interface TournamentSettingsSectionProps {
   form: UseFormReturn<TournamentFormData>;
@@ -125,7 +125,7 @@ export const TournamentSettingsSection: React.FC<
                 className='w-full h-8 px-2 text-sm border border-border rounded bg-background hover:bg-muted/50 focus:border-primary focus:outline-none'
               >
                 <option value=''>Không giới hạn</option>
-                {Object.keys(RANK_ELO).map(rank => (
+                {AVAILABLE_RANKS.map(rank => (
                   <option key={rank} value={rank}>
                     {rank}
                   </option>
@@ -147,7 +147,7 @@ export const TournamentSettingsSection: React.FC<
                 className='w-full h-8 px-2 text-sm border border-border rounded bg-background hover:bg-muted/50 focus:border-primary focus:outline-none'
               >
                 <option value=''>Không giới hạn</option>
-                {Object.keys(RANK_ELO).map(rank => (
+                {AVAILABLE_RANKS.map(rank => (
                   <option key={rank} value={rank}>
                     {rank}
                   </option>

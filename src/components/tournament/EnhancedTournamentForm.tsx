@@ -48,8 +48,6 @@ import {
   Shield,
 } from 'lucide-react';
 import { DateTimePicker } from '@/components/ui/date-picker';
-import { TournamentTierSelector } from '@/components/TournamentTierSelector';
-import { RankSelector } from '@/components/tournament/RankSelector';
 import { useProfileContext } from '@/contexts/ProfileContext';
 import {
   Tooltip,
@@ -58,12 +56,14 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { OptimizedRewardsSection } from './OptimizedRewardsSection';
+import { TournamentPrizesManager } from './TournamentPrizesManager';
 import { RewardsEditModal } from './RewardsEditModal';
 import { TournamentTemplateDropdown } from './TournamentTemplateDropdown';
 
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { QuickRewardAllocation } from './QuickRewardAllocation';
+import { TournamentPrizesService, type TournamentPrize } from '@/services/tournament-prizes.service';
 
 interface EnhancedTournamentFormProps {
   mode?: 'create' | 'edit';
@@ -102,6 +102,15 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
   const [showRewardsModal, setShowRewardsModal] = useState(false);
   const [showQuickAllocation, setShowQuickAllocation] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [tournamentPrizes, setTournamentPrizes] = useState<TournamentPrize[]>([]); // Store current prizes
+
+  // Debug: Log when tournamentPrizes state changes
+  useEffect(() => {
+    console.log('🏆 [EnhancedTournamentForm] tournamentPrizes state changed:', tournamentPrizes.length, 'prizes');
+    if (tournamentPrizes.length > 0) {
+      console.log('🏆 [EnhancedTournamentForm] First prize:', tournamentPrizes[0]);
+    }
+  }, [tournamentPrizes]);
 
   const form = useForm<TournamentFormData>({
     resolver: zodResolver(tournamentSchema),
@@ -158,10 +167,11 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
       'venue_address',
       'tournament_start',
       'tournament_end',
+      'registration_start',
+      'registration_end',
       'max_participants',
       'tournament_type',
       'game_format',
-      'tier_level',
     ];
 
     const completedFields = requiredFields.filter(
@@ -184,6 +194,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
       formErrors: form.formState.errors,
     });
     console.log('🎯 handleSubmit called with data:', data);
+    console.log('🏆 Tournament prizes in state:', tournamentPrizes.length, 'prizes');
     console.log('⏳ Starting form submission...');
 
     // Prevent default form submission
@@ -225,7 +236,26 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
         result = await updateExistingTournament(tournamentId);
       } else {
         console.log('🆕 Creating new tournament...');
+        
+        console.log('🆕 Creating new tournament with FULL prize data...');
         result = await createTournament();
+
+        // 🎉 Tournament đã được tạo với ĐẦY ĐỦ 16 vị trí giải thưởng trong bảng tournaments!
+        if (result) {
+          console.log('✅ Tournament created with full prize distribution:', {
+            id: result.id,
+            name: result.name,
+            prize_pool: result.prize_pool,
+            first_prize: result.first_prize,
+            second_prize: result.second_prize,
+            third_prize: result.third_prize,
+            total_positions: result.prize_distribution?.total_positions || 'N/A',
+            positions_count: result.prize_distribution?.positions?.length || 'N/A'
+          });
+          
+          toast.success(`🏆 Giải đấu "${result.name}" đã được tạo thành công với đầy đủ 16 vị trí giải thưởng!`);
+        }
+        console.log('✅ Tournament created with embedded prize data!');
 
         // 🎯 Create tournament results template after successful creation
         if (result && result.id) {
@@ -407,17 +437,20 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
             tournament.name &&
               tournament.venue_address &&
               tournament.tournament_start &&
-              tournament.tier_level &&
+              tournament.tournament_end &&
+              tournament.registration_start &&
+              tournament.registration_end &&
               tournament.max_participants &&
               tournament.tournament_type &&
-              tournament.game_format &&
-              tournament.registration_start
+              tournament.game_format
           ),
           hasData: Boolean(
             tournament.name ||
               tournament.venue_address ||
               tournament.rules ||
-              tournament.contact_info
+              tournament.contact_info ||
+              tournament.min_rank_requirement ||
+              tournament.max_rank_requirement
           ),
         };
       case 'financial':
@@ -459,10 +492,6 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                   // Reset form with template data
                   const normalized = {
                     ...templateData,
-                    // Normalize tier_level: ensure number (DB expects integer)
-                    tier_level: typeof (templateData as any).tier_level === 'number'
-                      ? (templateData as any).tier_level
-                      : 1,
                   };
                   form.reset(normalized);
                   // Update context
@@ -645,6 +674,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                   </div>
 
                   {/* Tournament Schedule */}
+                                    {/* Tournament Schedule */}
                   <div className='grid grid-cols-2 gap-3'>
                     <div className='space-y-1'>
                       <Label
@@ -653,7 +683,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                       >
                         <Calendar className='h-3 w-3 text-blue-600' />
                         <span className='w-1 h-1 bg-destructive rounded-full'></span>
-                        Bắt đầu
+                        Bắt đầu thi đấu
                       </Label>
                       <DateTimePicker
                         date={
@@ -668,7 +698,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                           });
                           updateTournament({ tournament_start: isoString });
                         }}
-                        placeholder='Chọn ngày bắt đầu'
+                        placeholder='Chọn ngày bắt đầu thi đấu'
                         className={`${formErrors.tournament_start ? 'border-destructive' : ''}`}
                       />
                       {formErrors.tournament_start && (
@@ -685,7 +715,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                       >
                         <Calendar className='h-3 w-3 text-blue-600' />
                         <span className='w-1 h-1 bg-destructive rounded-full'></span>
-                        Kết thúc
+                        Kết thúc thi đấu
                       </Label>
                       <DateTimePicker
                         date={
@@ -700,12 +730,79 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                           });
                           updateTournament({ tournament_end: isoString });
                         }}
-                        placeholder='Chọn ngày kết thúc'
+                        placeholder='Chọn ngày kết thúc thi đấu'
                         className={`${formErrors.tournament_end ? 'border-destructive' : ''}`}
                       />
                       {formErrors.tournament_end && (
                         <p className='text-xs text-destructive'>
                           {String(formErrors.tournament_end.message)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Registration Schedule */}
+                  <div className='grid grid-cols-2 gap-3'>
+                    <div className='space-y-1'>
+                      <Label
+                        htmlFor='registration_start'
+                        className='text-sm font-medium flex items-center gap-1'
+                      >
+                        <Clock className='h-3 w-3 text-green-600' />
+                        <span className='w-1 h-1 bg-destructive rounded-full'></span>
+                        Bắt đầu đăng ký
+                      </Label>
+                      <DateTimePicker
+                        date={
+                          form.watch('registration_start')
+                            ? new Date(form.watch('registration_start'))
+                            : undefined
+                        }
+                        onSelect={date => {
+                          const isoString = date ? date.toISOString() : '';
+                          setValue('registration_start', isoString, {
+                            shouldValidate: true,
+                          });
+                          updateTournament({ registration_start: isoString });
+                        }}
+                        placeholder='Chọn ngày bắt đầu đăng ký'
+                        className={`${formErrors.registration_start ? 'border-destructive' : ''}`}
+                      />
+                      {formErrors.registration_start && (
+                        <p className='text-xs text-destructive'>
+                          {String(formErrors.registration_start.message)}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className='space-y-1'>
+                      <Label
+                        htmlFor='registration_end'
+                        className='text-sm font-medium flex items-center gap-1'
+                      >
+                        <Clock className='h-3 w-3 text-green-600' />
+                        <span className='w-1 h-1 bg-destructive rounded-full'></span>
+                        Kết thúc đăng ký
+                      </Label>
+                      <DateTimePicker
+                        date={
+                          form.watch('registration_end')
+                            ? new Date(form.watch('registration_end'))
+                            : undefined
+                        }
+                        onSelect={date => {
+                          const isoString = date ? date.toISOString() : '';
+                          setValue('registration_end', isoString, {
+                            shouldValidate: true,
+                          });
+                          updateTournament({ registration_end: isoString });
+                        }}
+                        placeholder='Chọn ngày kết thúc đăng ký'
+                        className={`${formErrors.registration_end ? 'border-destructive' : ''}`}
+                      />
+                      {formErrors.registration_end && (
+                        <p className='text-xs text-destructive'>
+                          {String(formErrors.registration_end.message)}
                         </p>
                       )}
                     </div>
@@ -880,12 +977,12 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                     </div>
                   )}
 
-                {/* Rewards Table */}
+                  {/* Rewards Table */}
                 <div className='border border-emerald-200 rounded-lg bg-white p-4'>
                   <div className='flex items-center justify-between mb-4'>
                     <div className='flex items-center gap-3'>
                       <h4 className='font-medium'>
-                        Phân bố phần thưởng (Hệ thống hiện tại)
+                        Phân bố phần thưởng
                       </h4>
                       {tournament?.max_rank_requirement && (
                         <Badge
@@ -907,97 +1004,17 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                         <Zap className='w-3 h-3 mr-1' />
                         Phân bổ nhanh
                       </Button>
-                      <Button
-                        type='button'
-                        variant='outline'
-                        size='sm'
-                        onClick={() => {
-                          // Debug: Log current tournament data
-                          console.log('🔍 Debug - Current tournament data:', {
-                            max_rank_requirement:
-                              tournament?.max_rank_requirement,
-                            tier_level: tournament?.tier_level,
-                            entry_fee: tournament?.entry_fee,
-                            max_participants: tournament?.max_participants,
-                            game_format: tournament?.game_format,
-                            recalculateOnChange,
-                          });
-
-                          // Temporarily disable auto-recalculation to prevent override
-                          const wasRecalculateOn = recalculateOnChange;
-                          if (wasRecalculateOn) {
-                            setRecalculateOnChange(false);
-                          }
-
-                          // Simple rewards calculation fallback
-                          const newRewards = {
-                            positions: [],
-                            specialAwards: [],
-                            totalPrize: tournament?.entry_fee || 0,
-                            showPrizes: true,
-                          };
-
-                          console.log(
-                            '🔍 Debug - New rewards calculated with max rank:',
-                            newRewards
-                          );
-                          console.log(
-                            '🔍 Debug - Max rank used in calculation:',
-                            tournament?.max_rank_requirement
-                          );
-                          updateRewards(newRewards);
-
-                          // Re-enable auto-recalculation after a delay
-                          setTimeout(() => {
-                            if (wasRecalculateOn) {
-                              setRecalculateOnChange(true);
-                            }
-                          }, 500);
-
-                          toast.success(
-                            '✅ Đã cập nhật SPA bonus theo rank tối đa: ' +
-                              (tournament?.max_rank_requirement || 'K')
-                          );
-                        }}
-                        className='text-xs h-8'
-                        title='Cập nhật SPA bonus theo rank tối đa đã chọn'
-                      >
-                        <RefreshCw className='w-3 h-3 mr-1' />
-                        Update Rewards
-                      </Button>
                     </div>
                   </div>
-                  <OptimizedRewardsSection
-                    isEditable={true}
-                    rewards={tournament?.rewards}
-                    showAsTemplate={!tournamentId}
-                    maxParticipants={tournament?.max_participants || 16}
-                    entryFee={tournament?.entry_fee || 0}
-                    tournamentId={tournamentId}
-                    maxRankRequirement={form.getValues().max_rank_requirement}
-                    onRewardsUpdated={updatedRewards => {
-                      console.log(
-                        '🔄 [EnhancedTournamentForm] Rewards updated:',
-                        updatedRewards
-                      );
-                      // Update tournament context with new rewards immediately
-                      updateRewards(updatedRewards);
-
-                      // Force refresh if it's an existing tournament
-                      if (tournamentId) {
-                        // The hook will automatically refresh via invalidation
-                        console.log(
-                          '✅ [EnhancedTournamentForm] Tournament/Draft exists, hook will refresh data'
-                        );
-                      }
-                    }}
-                    onUseTemplate={templateRewards => {
-                      console.log(
-                        '📝 [EnhancedTournamentForm] Template applied:',
-                        templateRewards
-                      );
-                      // Apply template rewards
-                      updateRewards(templateRewards);
+                  {/* Tournament Prizes Manager - New Table-Based System */}
+                  <TournamentPrizesManager
+                    tournamentId={tournamentId || 'preview-mode'}
+                    initialPrizePool={tournament?.prize_pool || 0}
+                    isPreviewMode={!tournamentId}
+                    onPrizesChange={(prizes) => {
+                      console.log('🏆 [EnhancedTournamentForm] Prizes updated:', prizes);
+                      console.log('🏆 [EnhancedTournamentForm] Number of prizes:', prizes.length);
+                      setTournamentPrizes(prizes); // Save prizes to state
                     }}
                   />
                 </div>
@@ -1123,28 +1140,8 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                         tournament_type:
                           formData.tournament_type || 'single_elimination',
                         game_format: formData.game_format || '9_ball',
-                        // Normalize tier_level to numeric (DB expects integer)
-                        tier_level: (() => {
-                          const raw: any = (formData as any).tier_level;
-                          if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
-                          if (typeof raw === 'string') {
-                            // Common textual mappings (fallback to 1)
-                            const map: Record<string, number> = {
-                              beginner: 1,
-                              intermediate: 2,
-                              advanced: 3,
-                              pro: 4,
-                            };
-                            if (map[raw.toLowerCase()]) return map[raw.toLowerCase()];
-                            const parsed = parseInt(raw, 10);
-                            return Number.isFinite(parsed) ? parsed : 1;
-                          }
-                          return 1;
-                        })(),
                         entry_fee: formData.entry_fee || 0,
                         prize_pool: formData.prize_pool || 0, // ADD MISSING PRIZE_POOL FIELD
-                        is_public: formData.is_public !== false,
-                        requires_approval: formData.requires_approval || false,
                         status: 'upcoming',
                         created_by: user.id,
                         club_id: clubProfile.id, // Set the club_id
@@ -1208,7 +1205,6 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                 items: alloc.items,
                 isVisible: true,
               })),
-              specialAwards: tournament.rewards?.specialAwards || [],
             };
             updateRewards(rewardsFormat);
             setShowQuickAllocation(false);
@@ -1259,7 +1255,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                 rewards
               );
 
-              // Save to database
+        // Save to database
               const { error } = await supabase
                 .from('tournaments')
                 .update({
@@ -1289,7 +1285,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
               toast.error('Lỗi khi lưu phần thưởng');
             }
           }}
-          maxRankRequirement={form.getValues().max_rank_requirement}
+          maxRankRequirement={form.getValues().max_rank_requirement as any}
         />
       )}
     </div>

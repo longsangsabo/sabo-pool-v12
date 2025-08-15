@@ -95,7 +95,7 @@
     "d3": "^7.9.0",
     "date-fns": "^3.6.0",
     "dompurify": "^3.2.6",
-    "dotenv": "^17.0.0",
+    "dotenv": "^17.2.1",
     "embla-carousel-react": "^8.3.0",
     "express": "^5.1.0",
     "framer-motion": "^12.19.2",

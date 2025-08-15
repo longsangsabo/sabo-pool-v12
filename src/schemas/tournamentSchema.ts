@@ -40,10 +40,10 @@ export const AVAILABLE_RANKS = [
   'E+',
 ] as const;
 
-// Validation schema - using tier_level instead of hardcoded tiers
+// Validation schema - simplified without tier, approval, and public settings
 export const tournamentSchema = z
   .object({
-    // Basic info (Step 1)
+    // Basic info
     name: z
       .string()
       .min(3, 'Tên giải đấu phải có ít nhất 3 ký tự')
@@ -52,25 +52,21 @@ export const tournamentSchema = z
     description: z
       .string()
       .min(10, 'Mô tả phải có ít nhất 10 ký tự')
-      .max(1000, 'Mô tả không được vượt quá 1000 ký tự'),
+      .max(1000, 'Mô tả không được vượt quá 1000 ký tự')
+      .optional(),
 
-    tier_level: z
-      .number()
-      .min(1, 'Vui lòng chọn hạng giải')
-      .max(4, 'Hạng giải không hợp lệ'),
-
-    start_date: z
+    tournament_start: z
       .string()
       .min(1, 'Vui lòng chọn thời gian bắt đầu')
       .refine(date => new Date(date) > new Date(), {
         message: 'Thời gian bắt đầu phải sau thời điểm hiện tại',
       }),
 
-    end_date: z.string().min(1, 'Vui lòng chọn thời gian kết thúc'),
+    tournament_end: z.string().min(1, 'Vui lòng chọn thời gian kết thúc'),
 
     venue_address: z.string().min(5, 'Địa điểm phải có ít nhất 5 ký tự'),
 
-    // Tournament settings (Step 2) - CRITICAL FIX HERE
+    // Tournament settings
     max_participants: z
       .number()
       .min(4, 'Tối thiểu 4 người tham gia')
@@ -79,7 +75,6 @@ export const tournamentSchema = z
         message: 'Số lượng tham gia phải là 4, 6, 8, 12, 16, 24 hoặc 32',
       }),
 
-    // FIXED: Ensure tournament_type is properly validated with enum values
     tournament_type: z.enum(
       ['single_elimination', 'double_elimination', 'round_robin', 'swiss'],
       {
@@ -98,7 +93,7 @@ export const tournamentSchema = z
 
     has_third_place_match: z.boolean().optional().default(true),
 
-    // Registration settings (Step 3)
+    // Registration settings
     registration_start: z.string().min(1, 'Vui lòng chọn thời gian mở đăng ký'),
 
     registration_end: z.string().min(1, 'Vui lòng chọn thời gian đóng đăng ký'),
@@ -114,70 +109,31 @@ export const tournamentSchema = z
       .optional(),
 
     // Rank eligibility
-    eligible_ranks: z
-      .array(
-        z.enum([
-          'K',
-          'K+',
-          'I',
-          'I+',
-          'H',
-          'H+',
-          'G',
-          'G+',
-          'F',
-          'F+',
-          'E',
-          'E+',
-        ])
-      )
-      .optional(),
-
-    allow_all_ranks: z.boolean().default(false),
-
     min_rank_requirement: z.string().optional(),
     max_rank_requirement: z.string().optional(),
-    requires_approval: z.boolean().default(false),
-    is_public: z.boolean().default(true),
   })
   .refine(
     data => {
-      return new Date(data.end_date) > new Date(data.start_date);
+      return new Date(data.tournament_end) > new Date(data.tournament_start);
     },
     {
       message: 'Thời gian kết thúc phải sau thời gian bắt đầu',
-      path: ['end_date'],
+      path: ['tournament_end'],
     }
   )
   .refine(
     data => {
-      return new Date(data.registration_end) <= new Date(data.start_date);
+      return new Date(data.registration_end) <= new Date(data.tournament_start);
     },
     {
       message: 'Thời gian đóng đăng ký phải trước khi giải đấu bắt đầu',
       path: ['registration_end'],
     }
-  )
-  .refine(
-    data => {
-      // Validate rank eligibility
-      if (
-        !data.allow_all_ranks &&
-        (!data.eligible_ranks || data.eligible_ranks.length === 0)
-      ) {
-        return false;
-      }
-      return true;
-    },
-    {
-      message: 'Vui lòng chọn ít nhất một hạng hoặc cho phép tất cả hạng',
-      path: ['eligible_ranks'],
-    }
   );
 
 export type TournamentFormData = z.infer<typeof tournamentSchema>;
 
-// Default values - FIXED: Use enum values consistently
+// Default values - simplified
 export const getDefaultTournamentData = (): Partial<TournamentFormData> => {
   const now = new Date();
   const tomorrow = new Date(now);
@@ -187,19 +143,14 @@ export const getDefaultTournamentData = (): Partial<TournamentFormData> => {
   nextWeek.setDate(nextWeek.getDate() + 7);
 
   return {
-    tier_level: TournamentTier.K,
     max_participants: 16,
-    tournament_type: 'single_elimination', // FIXED: Use string literal instead of enum
+    tournament_type: 'single_elimination',
     game_format: GameFormat.NINE_BALL,
     entry_fee: 100000,
     prize_pool: 0,
     registration_start: now.toISOString().slice(0, 16),
     registration_end: tomorrow.toISOString().slice(0, 16),
-    start_date: nextWeek.toISOString().slice(0, 16),
-    end_date: nextWeek.toISOString().slice(0, 16),
-    eligible_ranks: [],
-    allow_all_ranks: true,
-    requires_approval: false,
-    is_public: true,
+    tournament_start: nextWeek.toISOString().slice(0, 16),
+    tournament_end: nextWeek.toISOString().slice(0, 16),
   };
 };

@@ -109,9 +109,20 @@ GRANT EXECUTE ON FUNCTION handle_club_confirmation TO authenticated;
 DROP VIEW IF EXISTS pending_approvals;
 CREATE VIEW pending_approvals AS
 SELECT 
-  c.*,
-  cp_challenger.full_name as challenger_name,
-  cp_opponent.full_name as opponent_name,
+  c.id,
+  c.status,
+  c.challenger_id,
+  c.opponent_id,
+  c.club_id,
+  c.challenger_score,
+  c.opponent_score,
+  c.club_confirmed,
+  c.created_at,
+  c.scheduled_time,
+  c.bet_points,
+  c.race_to,
+  cp_challenger.full_name as challenger_full_name,
+  cp_opponent.full_name as opponent_full_name,
   club.name as club_name
 FROM challenges c
 LEFT JOIN profiles cp_challenger ON c.challenger_id = cp_challenger.user_id

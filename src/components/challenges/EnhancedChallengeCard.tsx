@@ -544,28 +544,59 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
               userProfile={currentUserProfile}
             />
 
-            {/* Enhanced Score Section */}
-            {challenge.status === 'completed' && (challenge.challenger_final_score || challenge.opponent_final_score) && (
-              <div className="flex items-center justify-center gap-4 p-2 bg-transparent rounded-lg border border-border/30 dark:border-border/20 backdrop-blur-sm">
-                <div className="text-center">
-                  <div className="font-bold text-xl text-gray-800 dark:text-gray-100">
-                    {challenge.challenger_final_score || 0}
+            {/* Enhanced Score Section - Show for all challenges with scores */}
+            {(() => {
+              // Get scores from multiple possible fields
+              const challengerScore = challenge.challenger_final_score ?? 
+                                     challenge.challenger_score ?? 
+                                     (challenge as any).score_challenger ?? 
+                                     (challenge as any).final_score_challenger;
+              
+              const opponentScore = challenge.opponent_final_score ?? 
+                                   challenge.opponent_score ?? 
+                                   (challenge as any).score_opponent ?? 
+                                   (challenge as any).final_score_opponent;
+
+              if (challengerScore !== null && challengerScore !== undefined && 
+                  opponentScore !== null && opponentScore !== undefined) {
+                return (
+                  <div className={`flex items-center justify-center gap-4 p-3 rounded-lg border-2 ${
+                    challenge.status === 'completed' 
+                      ? 'bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-700 text-green-800 dark:text-green-200' 
+                      : 'bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-700 text-blue-800 dark:text-blue-200'
+                  } backdrop-blur-sm`}>
+                    <div className="text-center flex-1">
+                      <div className="font-bold text-2xl">
+                        {challengerScore}
+                      </div>
+                      <div className="text-xs opacity-75 font-medium truncate">
+                        {challenge.challenger_profile?.full_name || 'Player 1'}
+                      </div>
+                    </div>
+                    <div className="text-2xl font-bold opacity-60">-</div>
+                    <div className="text-center flex-1">
+                      <div className="font-bold text-2xl">
+                        {opponentScore}
+                      </div>
+                      <div className="text-xs opacity-75 font-medium truncate">
+                        {challenge.opponent_profile?.full_name || 'Player 2'}
+                      </div>
+                    </div>
+                    {challenge.status === 'completed' && (
+                      <div className="absolute top-1 right-2 text-xs opacity-60">
+                        ✅ Hoàn thành
+                      </div>
+                    )}
+                    {challenge.status === 'ongoing' && (
+                      <div className="absolute top-1 right-2 text-xs opacity-60">
+                        🔴 Đang diễn ra
+                      </div>
+                    )}
                   </div>
-                  <div className="text-xs text-gray-600 dark:text-gray-300">
-                    Challenger
-                  </div>
-                </div>
-                <div className="text-gray-600 dark:text-gray-300 text-lg">-</div>
-                <div className="text-center">
-                  <div className="font-bold text-xl text-gray-800 dark:text-gray-100">
-                    {challenge.opponent_final_score || 0}
-                  </div>
-                  <div className="text-xs text-gray-600 dark:text-gray-300">
-                    Opponent
-                  </div>
-                </div>
-              </div>
-            )}
+                );
+              }
+              return null;
+            })()}
 
             {/* Enhanced Actions */}
             {showQuickActions && (

@@ -32,13 +32,8 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
   // Fetch challenges for this club with full user profile data
   useEffect(() => {
     const fetchClubChallenges = async () => {
-      if (!clubId) {
-        setLoading(false);
-        return;
-      }
-
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from('challenges')
           .select(`
             *,
@@ -59,21 +54,23 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
               current_rank,
               elo_rating,
               spa_points
-            ),
-            club_profiles!challenges_club_id_fkey(
-              id,
-              name,
-              logo_url
             )
           `)
-          .eq('club_id', clubId)
           .order('created_at', { ascending: false });
+
+        // If clubId is provided, filter by club, otherwise get all challenges
+        if (clubId) {
+          query = query.eq('club_id', clubId);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
           console.error('Error fetching club challenges:', error);
           return;
         }
 
+        console.log('Fetched challenges:', data?.length || 0, 'for clubId:', clubId);
         setClubChallenges(data as any[] || []);
       } catch (error) {
         console.error('Error fetching club challenges:', error);

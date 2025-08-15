@@ -16,7 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ClubOverviewTab from '@/components/ClubOverviewTab';
 import ClubSettingsTab from '@/components/ClubSettingsTab';
 import ClubRankVerificationTab from '@/components/club/ClubRankVerificationTab';
-import ClubChallengesTab from '@/pages/challenges/components/tabs/ClubChallengesTab';
+import CleanChallengesTab from '@/components/CleanChallengesTab';
 import ClubTournamentManagement from '@/components/club/ClubTournamentManagement';
 import ClubMembersAndNotifications from '@/components/club/optimized/ClubMembersAndNotifications';
 import ClubManagementAudit from '@/components/club/testing/ClubManagementAudit';
@@ -173,7 +173,7 @@ const ClubManagementPage = () => {
         </TabsContent>
 
         <TabsContent value='challenges'>
-          <ClubChallengesTab clubId={clubProfile?.id || ''} />
+          <CleanChallengesTab clubId={clubProfile?.id || ''} />
         </TabsContent>
 
         <TabsContent value='members'>

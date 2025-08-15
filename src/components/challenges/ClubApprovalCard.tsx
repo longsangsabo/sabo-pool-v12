@@ -68,9 +68,9 @@ export const ClubApprovalCard: React.FC<ClubApprovalCardProps> = ({
   const [adminNote, setAdminNote] = useState('');
   const [approvalAction, setApprovalAction] = useState<'approve' | 'reject' | null>(null);
 
-  // Only show for club admins and challenges in pending_approval status
+  // Only show for club admins and challenges in ongoing status with scores
   const hasConfirmedScores = challenge.challenger_score != null && challenge.opponent_score != null;
-  const isReadyForApproval = challenge.status === 'pending_approval';
+  const isReadyForApproval = challenge.status === 'ongoing';  // Changed from pending_approval to ongoing
   
   if (!isClubAdmin || !hasConfirmedScores || !isReadyForApproval) {
     return null;

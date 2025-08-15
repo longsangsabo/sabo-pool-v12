@@ -80,11 +80,11 @@ export const useConfirmScore = () => {
   return useMutation({
     mutationFn: async ({ challengeId, confirm }: ScoreConfirmationData) => {
       if (confirm) {
-        // When both players confirm scores, change status to pending_approval
+        // When both players confirm scores, change status to ongoing (waiting club approval)
         const { error } = await supabase
           .from('challenges')
           .update({
-            status: 'pending_approval',  // Move to pending club approval
+            status: 'ongoing',  // Keep as ongoing while waiting for club approval
             response_message: 'Score confirmed by both players - awaiting club approval',
             club_confirmed: false  // Reset club confirmation
           })
@@ -129,14 +129,14 @@ export const useConfirmScore = () => {
   });
 };
 
-// Hook for club approval
+// Hook for club approval - simplified version that relies on database trigger
 export const useClubApproval = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
     mutationFn: async ({ challengeId, approve, adminNote }: ClubApprovalData) => {
-      // Direct update until PostgreSQL function is deployed
-      const { data, error } = await supabase
+      // Simple database update - trigger will handle SPA transfer automatically
+      const { error } = await supabase
         .from('challenges')
         .update({
           club_confirmed: approve,
@@ -146,19 +146,13 @@ export const useClubApproval = () => {
           completed_at: approve ? new Date().toISOString() : null
         })
         .eq('id', challengeId)
-        .eq('status', 'pending_approval')  // Only update if in pending_approval status
-        .select()
-        .single();
+        .eq('status', 'ongoing');  // Only update if in ongoing status
 
       if (error) {
         throw new Error(error.message || 'Failed to process approval');
       }
 
-      if (!data) {
-        throw new Error('Challenge not found or not in pending_approval status');
-      }
-
-      return { success: true, message: approve ? 'Result approved' : 'Result rejected' };
+      return { success: true, message: approve ? 'Result approved - SPA transferred automatically' : 'Result rejected' };
     },
     onSuccess: (data, variables) => {
       if (variables.approve) {

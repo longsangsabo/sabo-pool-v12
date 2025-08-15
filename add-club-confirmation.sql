@@ -1,6 +1,28 @@
 -- Add club confirmation columns to challenges table
 -- Run this in Supabase SQL Editor
 
+-- 0. First, check and update status constraints to include new statuses
+-- Add pending_approval and rejected to allowed status values
+DO $$
+BEGIN
+  -- Check if constraint exists and update it
+  IF EXISTS (
+    SELECT 1 FROM information_schema.table_constraints 
+    WHERE constraint_name LIKE '%status%' 
+    AND table_name = 'challenges'
+  ) THEN
+    -- Drop existing constraint
+    ALTER TABLE challenges DROP CONSTRAINT IF EXISTS challenges_status_check;
+  END IF;
+  
+  -- Add new constraint with all statuses including pending_approval and rejected
+  ALTER TABLE challenges ADD CONSTRAINT challenges_status_check 
+  CHECK (status IN (
+    'pending', 'open', 'accepted', 'declined', 'ongoing', 
+    'pending_approval', 'completed', 'rejected', 'cancelled', 'expired'
+  ));
+END $$;
+
 -- 1. Add club confirmation fields
 ALTER TABLE challenges 
 ADD COLUMN IF NOT EXISTS club_confirmed BOOLEAN DEFAULT FALSE,
@@ -14,7 +36,9 @@ CREATE INDEX IF NOT EXISTS idx_challenges_status_scores ON challenges(status, ch
 WHERE challenger_score IS NOT NULL AND opponent_score IS NOT NULL;
 
 -- 3. Add RLS policies for club confirmation
-CREATE POLICY IF NOT EXISTS "Club owners can confirm challenges" ON challenges
+-- Drop existing policy if exists, then create new one
+DROP POLICY IF EXISTS "Club owners can confirm challenges" ON challenges;
+CREATE POLICY "Club owners can confirm challenges" ON challenges
 FOR UPDATE USING (
   EXISTS (
     SELECT 1 FROM club_profiles 
@@ -72,7 +96,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 GRANT EXECUTE ON FUNCTION handle_club_confirmation TO authenticated;
 
 -- 8. Create view for pending approvals (optional, for easier querying)
-CREATE OR REPLACE VIEW pending_approvals AS
+-- Drop existing view if exists, then create new one
+DROP VIEW IF EXISTS pending_approvals;
+CREATE VIEW pending_approvals AS
 SELECT 
   c.*,
   cp_challenger.full_name as challenger_name,

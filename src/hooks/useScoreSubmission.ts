@@ -117,12 +117,12 @@ export const useClubApproval = () => {
   
   return useMutation({
     mutationFn: async ({ challengeId, approve, adminNote }: ClubApprovalData) => {
-      // Simple implementation for now
+      // Use completed status for both approve/reject since 'disputed' may not be allowed
       const { error } = await supabase
         .from('challenges')
         .update({
-          status: approve ? 'completed' : 'disputed',
-          response_message: `Club ${approve ? 'approved' : 'disputed'} result${adminNote ? `: ${adminNote}` : ''}`
+          status: 'completed',
+          response_message: `Club ${approve ? 'approved' : 'rejected'} result${adminNote ? `: ${adminNote}` : ''}`
         })
         .eq('id', challengeId);
 
@@ -130,13 +130,13 @@ export const useClubApproval = () => {
         throw new Error(error.message || 'Failed to process approval');
       }
 
-      return { success: true, message: approve ? 'Result approved' : 'Result disputed' };
+      return { success: true, message: approve ? 'Result approved' : 'Result rejected' };
     },
     onSuccess: (data, variables) => {
       if (variables.approve) {
         toast.success('Kết quả trận đấu đã được phê duyệt và SPA đã được chuyển!');
       } else {
-        toast.warning('Kết quả trận đấu bị tranh chấp');
+        toast.warning('Kết quả trận đấu bị từ chối');
       }
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: ['challenges'] });

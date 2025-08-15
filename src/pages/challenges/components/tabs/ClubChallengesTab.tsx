@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Users, Clock, Trophy, Target } from 'lucide-react';
+import { Users, Clock, Trophy, Target, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Challenge } from '@/types/challenge';
 import EnhancedChallengeCard, { EnhancedChallengeCardGrid } from '@/components/challenges/EnhancedChallengeCard';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ClubChallengesTabProps {
   clubId: string;
@@ -19,14 +20,63 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
   challenges = [],
   onAction,
 }) => {
-  const [activeTab, setActiveTab] = useState('active');
+  const [activeTab, setActiveTab] = useState('completed'); // Default to completed to show existing challenge
+  const [clubChallenges, setClubChallenges] = useState<Challenge[]>(challenges);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch challenges for this club if not provided via props
+  useEffect(() => {
+    if (challenges.length === 0 && clubId) {
+      fetchClubChallenges();
+    } else {
+      setClubChallenges(challenges);
+    }
+  }, [clubId, challenges]);
+
+  const fetchClubChallenges = async () => {
+    if (!clubId) return;
+    
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('challenges')
+        .select('*')
+        .eq('club_id', clubId);
+
+      if (error) {
+        return;
+      }
+
+      setClubChallenges((data as unknown as Challenge[]) || []);
+      
+    } catch (error) {
+      // Silent error
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filter challenges by status
-  const activeChalllenges = challenges.filter(c => c.status === 'ongoing');
-  const upcomingChallenges = challenges.filter(c => c.status === 'pending');
-  const completedChallenges = challenges.filter(c => c.status === 'completed');
+  const activeChalllenges = clubChallenges.filter(c => c.status === 'ongoing');
+  const upcomingChallenges = clubChallenges.filter(c => c.status === 'pending');
+  const completedChallenges = clubChallenges.filter(c => c.status === 'completed');
+  const pendingApprovals = clubChallenges.filter(c => 
+    c.status === 'accepted' && 
+    c.challenger_score != null && 
+    c.opponent_score != null
+  );
 
   const tabs = [
+    {
+      id: 'pending',
+      title: 'Chờ phê duyệt',
+      icon: Shield,
+      color: 'text-purple-500 dark:text-purple-400',
+      bgColor: 'bg-purple-50 dark:bg-purple-950/30',
+      data: pendingApprovals,
+      variant: 'live' as const, // Use existing variant
+      description: 'Kết quả cần phê duyệt',
+    },
     {
       id: 'active',
       title: 'Đang diễn ra',

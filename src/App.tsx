@@ -66,6 +66,9 @@ const ChallengeTabsDebug = lazy(() => import('@/pages/ChallengeTabsDebug'));
 const ChallengeTabsStabilityTest = lazy(() => import('@/pages/ChallengeTabsStabilityTest'));
 const HandicapDebugger = lazy(() => import('@/components/debug/HandicapDebugger'));
 const ScoreSubmissionDemo = lazy(() => import('@/pages/ScoreSubmissionDemo'));
+const ClubApprovalDemo = lazy(() => import('@/pages/ClubApprovalDemo'));
+const ClubApprovalManagement = lazy(() => import('@/pages/ClubApprovalManagement'));
+const IntegratedScoreSystemDemo = lazy(() => import('@/pages/IntegratedScoreSystemDemo'));
 const CalendarPage = lazy(() => import('@/pages/CalendarPage'));
 const SettingsPage = lazy(() => import('@/pages/EnhancedSettingsPage'));
 const WalletPage = lazy(() => import('@/pages/PaymentPage'));
@@ -161,6 +164,9 @@ const AppContent = () => {
           <Route path='/test-sabo-style' element={<SABOStyleTestPage />} />
           <Route path='/debug-handicap' element={<HandicapDebugger />} />
           <Route path='/demo-score-submission' element={<ScoreSubmissionDemo />} />
+          <Route path='/demo-club-approval' element={<ClubApprovalDemo />} />
+          <Route path='/club-approvals' element={<ClubApprovalManagement />} />
+          <Route path='/demo-integrated-score' element={<IntegratedScoreSystemDemo />} />
 
           {/* Auth routes - only accessible when NOT logged in */}
           <Route

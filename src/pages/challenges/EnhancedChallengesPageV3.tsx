@@ -20,13 +20,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnhancedChallengesV3 } from '@/hooks/useEnhancedChallengesV3';
+import { useAutoUpdateChallengeStatus } from '@/hooks/useAutoUpdateChallengeStatus';
 import { EnhancedCommunityTab } from './components/tabs/EnhancedCommunityTab';
 import { EnhancedMyTab } from './components/tabs/EnhancedMyTab';
 import ImprovedCreateChallengeModal from '@/components/modals/ImprovedCreateChallengeModal';
 import { supabase } from '@/integrations/supabase/client';
+import { useAutoTransitionChallenges } from '@/hooks/useAutoTransitionChallenges';
 
 const EnhancedChallengesPageV3: React.FC = () => {
   const { user } = useAuth();
+  
+  // Auto-update challenge status from accepted to ongoing
+  useAutoUpdateChallengeStatus();
+  
   const {
     // Core data
     challenges,
@@ -52,6 +58,9 @@ const EnhancedChallengesPageV3: React.FC = () => {
     acceptChallenge,
     autoExpireChallenges,
   } = useEnhancedChallengesV3();
+
+  // Auto transition challenges from accepted to ongoing
+  useAutoTransitionChallenges();
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isJoining, setIsJoining] = useState(false);

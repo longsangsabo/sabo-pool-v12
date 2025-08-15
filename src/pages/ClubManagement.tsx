@@ -8,10 +8,12 @@ import {
   Settings,
   Users,
   Calculator,
+  Swords,
 } from 'lucide-react';
 import RankVerificationTab from '@/components/club-management/RankVerificationTab';
 import MemberManagementTab from '@/components/club-management/MemberManagementTab';
 import ScheduleManagementTab from '@/components/club-management/ScheduleManagementTab';
+import ClubChallengesTab from '@/pages/challenges/components/tabs/ClubChallengesTab';
 import AdminTournamentResults from '@/components/tournament/AdminTournamentResults';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect } from 'react';
@@ -87,14 +89,18 @@ const ClubManagement = () => {
         </p>
       </div>
 
-      <Tabs defaultValue='verification' className='space-y-6'>
-        <TabsList className='grid w-full grid-cols-6'>
+      <Tabs defaultValue='challenges' className='space-y-6'>
+        <TabsList className='grid w-full grid-cols-7'>
           <TabsTrigger
             value='verification'
             className='flex items-center space-x-2'
           >
             <Trophy className='w-4 h-4' />
             <span className='hidden sm:inline'>Xác thực hạng</span>
+          </TabsTrigger>
+          <TabsTrigger value='challenges' className='flex items-center space-x-2'>
+            <Swords className='w-4 h-4' />
+            <span className='hidden sm:inline'>Challenges</span>
           </TabsTrigger>
           <TabsTrigger value='members' className='flex items-center space-x-2'>
             <Users className='w-4 h-4' />
@@ -126,6 +132,10 @@ const ClubManagement = () => {
 
         <TabsContent value='verification' className='space-y-6'>
           <RankVerificationTab clubId={clubId} />
+        </TabsContent>
+
+        <TabsContent value='challenges' className='space-y-6'>
+          <ClubChallengesTab clubId={clubId} />
         </TabsContent>
 
         <TabsContent value='members' className='space-y-6'>

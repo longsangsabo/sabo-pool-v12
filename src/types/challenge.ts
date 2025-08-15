@@ -27,8 +27,8 @@ export interface Challenge {
   bet_points?: number;
   stake_amount?: number; // For SABO challenges compatibility
   race_to?: number;
-  handicap_1_rank?: number;
-  handicap_05_rank?: number;
+  handicap_1_rank?: string;
+  handicap_05_rank?: string;
   message?: string;
   status:
     | 'pending'
@@ -232,8 +232,8 @@ export interface CreateChallengeData {
   stake_amount?: number;
   bet_points: number;
   race_to?: number;
-  handicap_1_rank?: number;
-  handicap_05_rank?: number;
+  handicap_1_rank?: string;
+  handicap_05_rank?: string;
   handicap?: number;
   message?: string;
   club_id?: string;

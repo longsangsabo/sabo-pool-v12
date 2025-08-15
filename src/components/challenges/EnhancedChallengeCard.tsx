@@ -26,6 +26,8 @@ import { getRankOrder, extractRankFromProfile } from '@/lib/rankUtils';
 import { formatHandicapForDisplay, calculateSaboHandicapPrecise } from '@/utils/saboHandicapCalculator';
 import { SaboRank } from '@/utils/saboHandicap';
 import ScoreSubmissionCard from './ScoreSubmissionCard';
+import ClubApprovalCard from './ClubApprovalCard';
+import { useClubAdminCheck } from '@/hooks/useClubAdminCheck';
 
 // Modified props to accept both Challenge and ExtendedChallenge
 interface FlexibleEnhancedChallengeCardProps extends Omit<EnhancedChallengeCardProps, 'challenge'> {
@@ -58,6 +60,11 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   
   // Check if current user is the challenger (creator)
   const isCreator = currentUserId && challenge.challenger_id === currentUserId;
+  
+  // Check if current user is a club admin for this challenge's club
+  const { isClubAdmin, loading: clubAdminLoading } = useClubAdminCheck({
+    challengeClubId: challenge.club_id
+  });
   
   // Check rank eligibility for joining
   const isRankEligible = () => {
@@ -677,6 +684,50 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
             onScoreSubmitted={() => {
               // Refresh challenge data if needed
               console.log('Score submitted for challenge:', challenge.id);
+            }}
+          />
+        </div>
+      )}
+
+      {/* Club Approval Card - Only show for club admins when score is confirmed */}
+      {challenge.status === 'ongoing' && 
+       challenge.challenger_profile && 
+       challenge.opponent_profile && 
+       challenge.challenger_score !== null &&
+       challenge.opponent_score !== null &&
+       isClubAdmin && (
+        <div className="mt-4">
+          <ClubApprovalCard
+            challenge={{
+              id: challenge.id,
+              challenger_id: challenge.challenger_id,
+              opponent_id: challenge.opponent_id || '',
+              challenger_score: challenge.challenger_score,
+              opponent_score: challenge.opponent_score,
+              status: challenge.status,
+              response_message: challenge.message,
+              bet_points: challenge.bet_points,
+              race_to: challenge.race_to,
+              club_id: challenge.club_id,
+              created_at: challenge.created_at,
+              scheduled_time: challenge.scheduled_time
+            }}
+            challengerProfile={{
+              id: challenge.challenger_profile.id || challenge.challenger_profile.user_id,
+              display_name: challenge.challenger_profile.display_name || challenge.challenger_profile.full_name,
+              spa_rank: challenge.challenger_profile.verified_rank || challenge.challenger_profile.current_rank,
+              spa_points: challenge.challenger_profile.spa_points
+            }}
+            opponentProfile={{
+              id: challenge.opponent_profile.id || challenge.opponent_profile.user_id,
+              display_name: challenge.opponent_profile.display_name || challenge.opponent_profile.full_name,
+              spa_rank: challenge.opponent_profile.verified_rank || challenge.opponent_profile.current_rank,
+              spa_points: challenge.opponent_profile.spa_points
+            }}
+            isClubAdmin={isClubAdmin}
+            onApprovalComplete={() => {
+              console.log('Club approval completed for challenge:', challenge.id);
+              // Refresh challenge data if needed
             }}
           />
         </div>

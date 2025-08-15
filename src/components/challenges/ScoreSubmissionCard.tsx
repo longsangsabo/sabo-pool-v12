@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { 
   Trophy, 
   Target, 
@@ -19,7 +20,12 @@ import {
   Users,
   Gamepad2,
   Calculator,
-  Send
+  Send,
+  Eye,
+  CheckCircle,
+  Timer,
+  ArrowRight,
+  User
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { 
@@ -85,8 +91,28 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
   const isOpponent = user?.id === challenge.opponent_id;
   const isParticipant = isChallenger || isOpponent;
   const canSubmitScore = isParticipant && (challenge.status === 'accepted' || challenge.status === 'ongoing');
-  const hasSubmittedScore = challenge.challenger_score !== null && challenge.opponent_score !== null;
+  
+  // Fix: Check if scores have been actually submitted (not just initialized to 0)
+  // A score is considered submitted when it's not null AND not the initial 0-0 state
+  const hasRealScore = (challenge.challenger_score !== null && challenge.opponent_score !== null) && 
+                       (challenge.challenger_score !== 0 || challenge.opponent_score !== 0 || 
+                        challenge.response_message?.includes('Score submitted'));
+  
+  const hasSubmittedScore = hasRealScore;
   const needsConfirmation = hasSubmittedScore && challenge.status !== 'completed';
+
+  // Debug log
+  console.log('🎯 ScoreSubmissionCard Debug:', {
+    challengeId: challenge.id,
+    challenger_score: challenge.challenger_score,
+    opponent_score: challenge.opponent_score,
+    response_message: challenge.response_message,
+    hasRealScore,
+    hasSubmittedScore,
+    canSubmitScore,
+    needsConfirmation,
+    status: challenge.status
+  });
 
   if (!isParticipant) {
     return null; // Don't show to non-participants
@@ -127,40 +153,72 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
   };
 
   const renderScoreStatus = () => {
+    // Determine workflow step and who can take action
+    const submittedBy = challenge.response_message?.includes('challenger') ? 'challenger' : 
+                       challenge.response_message?.includes('opponent') ? 'opponent' : null;
+    const whoSubmitted = submittedBy === 'challenger' ? challengerProfile.display_name : 
+                        submittedBy === 'opponent' ? opponentProfile.display_name : 'Someone';
+    
+    const needsMyConfirmation = hasSubmittedScore && 
+      ((isChallenger && submittedBy === 'opponent') || (isOpponent && submittedBy === 'challenger'));
+
     if (!hasSubmittedScore) {
       return (
-        <div className="flex items-center gap-2 text-amber-600">
-          <Clock className="w-4 h-4" />
-          <span className="text-sm">Chờ nhập tỷ số</span>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-amber-600">
+            <Timer className="w-4 h-4" />
+            <span className="text-sm font-medium">Bước 1: Chờ nhập tỷ số</span>
+          </div>
+          <Progress value={20} className="h-2" />
+          <div className="text-xs text-gray-500">Một trong hai người chơi cần nhập tỷ số</div>
         </div>
       );
     }
 
     if (needsConfirmation) {
       return (
-        <div className="flex items-center gap-2 text-blue-600">
-          <AlertCircle className="w-4 h-4" />
-          <span className="text-sm">Chờ xác nhận tỷ số</span>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-blue-600">
+            <Eye className="w-4 h-4" />
+            <span className="text-sm font-medium">
+              {needsMyConfirmation ? 'Bước 2: Bạn cần xác nhận' : 'Bước 2: Chờ đối thủ xác nhận'}
+            </span>
+          </div>
+          <Progress value={60} className="h-2" />
+          <div className="text-xs text-gray-500">
+            {whoSubmitted} đã nhập tỷ số, {needsMyConfirmation ? 'bạn' : 'đối thủ'} cần xác nhận
+          </div>
         </div>
       );
     }
 
     return (
-      <div className="flex items-center gap-2 text-green-600">
-        <Check className="w-4 h-4" />
-        <span className="text-sm">Tỷ số đã xác nhận</span>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-purple-600">
+          <CheckCircle className="w-4 h-4" />
+          <span className="text-sm font-medium">Bước 3: Chờ CLB phê duyệt</span>
+        </div>
+        <Progress value={90} className="h-2" />
+        <div className="text-xs text-gray-500">Tỷ số đã xác nhận, chờ CLB phê duyệt và chuyển điểm SPA</div>
       </div>
     );
   };
 
   return (
-    <Card className="border-l-4 border-l-blue-500">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Gamepad2 className="w-5 h-5" />
-            Nhập Tỷ Số Trận Đấu
-          </CardTitle>
+    <Card className="border-l-4 border-l-gradient-to-b from-blue-500 to-purple-500 shadow-lg">
+      <CardHeader className="pb-4 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-900/20 dark:to-purple-900/20">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Gamepad2 className="w-5 h-5 text-blue-600" />
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Quản Lý Tỷ Số
+              </span>
+            </CardTitle>
+            <Badge variant="outline" className="text-xs">
+              {challenge.race_to ? `Race to ${challenge.race_to}` : 'Pool'}
+            </Badge>
+          </div>
           {renderScoreStatus()}
         </div>
       </CardHeader>
@@ -278,76 +336,226 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
           </div>
         )}
 
-        {/* Score Confirmation */}
+        {/* Enhanced Score Confirmation */}
         {hasSubmittedScore && needsConfirmation && (
-          <div className="space-y-3 p-4 border border-amber-200 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-            <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
-              <AlertCircle className="w-4 h-4" />
-              <span className="font-medium">Xác nhận tỷ số</span>
-            </div>
-            
-            <p className="text-sm text-amber-700 dark:text-amber-300">
-              Tỷ số đã được gửi: <strong>{challenge.challenger_score} - {challenge.opponent_score}</strong>
-            </p>
-            
-            {challenge.response_message && (
-              <p className="text-xs text-gray-600 dark:text-gray-400">
-                {challenge.response_message}
-              </p>
-            )}
+          <div className="space-y-4 p-5 border-2 border-blue-200 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-sm">
+            {(() => {
+              const submittedBy = challenge.response_message?.includes('challenger') ? 'challenger' : 'opponent';
+              const whoSubmitted = submittedBy === 'challenger' ? challengerProfile.display_name : opponentProfile.display_name;
+              const needsMyConfirmation = (isChallenger && submittedBy === 'opponent') || (isOpponent && submittedBy === 'challenger');
+              
+              return (
+                <>
+                  {/* Header */}
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                      <Eye className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-blue-800 dark:text-blue-200">
+                        {needsMyConfirmation ? 'Bạn cần xác nhận tỷ số' : 'Chờ đối thủ xác nhận'}
+                      </h4>
+                      <p className="text-sm text-blue-700 dark:text-blue-300">
+                        {whoSubmitted} đã nhập tỷ số. {needsMyConfirmation ? 'Hãy kiểm tra và xác nhận.' : 'Đang chờ xác nhận từ đối thủ.'}
+                      </p>
+                    </div>
+                  </div>
 
-            {!showConfirmation ? (
-              <Button 
-                onClick={() => setShowConfirmation(true)}
-                size="sm"
-                variant="outline"
-                className="w-full"
-              >
-                Xác nhận tỷ số
-              </Button>
-            ) : (
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => handleConfirmScore(true)}
-                  disabled={confirmScore.isPending}
-                  size="sm"
-                  className="flex-1"
-                >
-                  <Check className="w-4 h-4 mr-2" />
-                  Xác nhận
-                </Button>
-                <Button
-                  onClick={() => handleConfirmScore(false)}
-                  disabled={confirmScore.isPending}
-                  variant="destructive"
-                  size="sm"
-                  className="flex-1"
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Từ chối
-                </Button>
-              </div>
-            )}
+                  {/* Score Display */}
+                  <div className="bg-white dark:bg-gray-800/50 rounded-lg p-4 border border-blue-100 dark:border-blue-800">
+                    <div className="grid grid-cols-3 items-center gap-4">
+                      <div className="text-center">
+                        <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                          {challengerProfile.display_name}
+                        </div>
+                        <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                          {challenge.challenger_score}
+                        </div>
+                        {submittedBy === 'challenger' && (
+                          <Badge variant="secondary" className="text-xs mt-1">
+                            <User className="w-3 h-3 mr-1" />
+                            Đã nhập
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-gray-400">vs</div>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                          {opponentProfile.display_name}
+                        </div>
+                        <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                          {challenge.opponent_score}
+                        </div>
+                        {submittedBy === 'opponent' && (
+                          <Badge variant="secondary" className="text-xs mt-1">
+                            <User className="w-3 h-3 mr-1" />
+                            Đã nhập
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  {needsMyConfirmation && (
+                    <div className="space-y-3">
+                      {!showConfirmation ? (
+                        <Button 
+                          onClick={() => setShowConfirmation(true)}
+                          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          Kiểm tra và xác nhận tỷ số
+                        </Button>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+                            <div className="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2">
+                              ⚠️ Xác nhận cuối cùng
+                            </div>
+                            <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                              Sau khi xác nhận, tỷ số sẽ được gửi cho CLB phê duyệt và không thể thay đổi.
+                            </p>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-3">
+                            <Button
+                              onClick={() => handleConfirmScore(true)}
+                              disabled={confirmScore.isPending}
+                              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                            >
+                              <Check className="w-4 h-4 mr-2" />
+                              {confirmScore.isPending ? 'Đang xác nhận...' : 'Xác nhận đúng'}
+                            </Button>
+                            <Button
+                              onClick={() => handleConfirmScore(false)}
+                              disabled={confirmScore.isPending}
+                              variant="destructive"
+                              className="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700"
+                            >
+                              <X className="w-4 h-4 mr-2" />
+                              Tỷ số sai
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Waiting for other player */}
+                  {!needsMyConfirmation && (
+                    <div className="flex items-center justify-center gap-2 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                      <Timer className="w-4 h-4 text-gray-500 animate-pulse" />
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Chờ {isChallenger ? opponentProfile.display_name : challengerProfile.display_name} xác nhận...
+                      </span>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </div>
         )}
 
-        {/* Completed Status */}
+        {/* Enhanced Completed Status */}
         {challenge.status === 'completed' && (
-          <div className="p-4 border border-green-200 bg-green-50 dark:bg-green-900/20 rounded-lg">
-            <div className="flex items-center gap-2 text-green-700 dark:text-green-300 mb-2">
-              <Trophy className="w-4 h-4" />
-              <span className="font-medium">Trận đấu đã hoàn thành</span>
+          <div className="p-5 border-2 border-green-200 bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl shadow-sm">
+            <div className="space-y-4">
+              {/* Header */}
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                  <Trophy className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-green-800 dark:text-green-200">
+                    🎉 Trận đấu đã hoàn thành
+                  </h4>
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    CLB đã phê duyệt kết quả và xử lý điểm SPA
+                  </p>
+                </div>
+                <Badge className="bg-green-100 text-green-800 border-green-200">
+                  <CheckCircle className="w-3 h-3 mr-1" />
+                  Hoàn thành
+                </Badge>
+              </div>
+
+              {/* Final Score Display */}
+              <div className="bg-white dark:bg-gray-800/50 rounded-lg p-4 border border-green-100 dark:border-green-800">
+                <div className="text-center mb-3">
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Kết quả cuối cùng</div>
+                </div>
+                
+                <div className="grid grid-cols-3 items-center gap-4">
+                  <div className="text-center">
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                      {challengerProfile.display_name}
+                    </div>
+                    <div className={`text-4xl font-bold mb-2 ${
+                      (challenge.challenger_score || 0) > (challenge.opponent_score || 0) 
+                        ? 'text-yellow-500' : 'text-gray-500'
+                    }`}>
+                      {challenge.challenger_score || 0}
+                    </div>
+                    {(challenge.challenger_score || 0) > (challenge.opponent_score || 0) && (
+                      <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                        <Trophy className="w-3 h-3 mr-1" />
+                        Thắng
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-400">vs</div>
+                    <div className="text-xs text-gray-500 mt-1">Race to {challenge.race_to || 'N/A'}</div>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                      {opponentProfile.display_name}
+                    </div>
+                    <div className={`text-4xl font-bold mb-2 ${
+                      (challenge.opponent_score || 0) > (challenge.challenger_score || 0) 
+                        ? 'text-yellow-500' : 'text-gray-500'
+                    }`}>
+                      {challenge.opponent_score || 0}
+                    </div>
+                    {(challenge.opponent_score || 0) > (challenge.challenger_score || 0) && (
+                      <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                        <Trophy className="w-3 h-3 mr-1" />
+                        Thắng
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* SPA Transfer Info */}
+              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <ArrowRight className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                    Chuyển điểm SPA
+                  </span>
+                </div>
+                <Badge variant="secondary">
+                  {challenge.bet_points || 0} SPA
+                </Badge>
+              </div>
+              
+              {challenge.response_message && (
+                <div className="p-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <div className="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Ghi chú CLB:</div>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    {challenge.response_message}
+                  </p>
+                </div>
+              )}
             </div>
-            
-            <div className="text-sm text-green-700 dark:text-green-300">
-              Kết quả cuối: <strong>{challenge.challenger_score} - {challenge.opponent_score}</strong>
-            </div>
-            
-            {challenge.response_message && (
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                {challenge.response_message}
-              </p>
-            )}
           </div>
         )}
       </CardContent>

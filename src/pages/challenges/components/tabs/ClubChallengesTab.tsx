@@ -6,8 +6,10 @@ import { Users, Clock, Trophy, Target, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Challenge } from '@/types/challenge';
 import EnhancedChallengeCard, { EnhancedChallengeCardGrid } from '@/components/challenges/EnhancedChallengeCard';
-import { cn } from '@/lib/utils';
+import ClubApprovalCard from '@/components/challenges/ClubApprovalCard';
+import { useClubAdminCheck } from '@/hooks/useClubAdminCheck';
 import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
 
 interface ClubChallengesTabProps {
   clubId: string;
@@ -20,50 +22,79 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
   challenges = [],
   onAction,
 }) => {
-  const [activeTab, setActiveTab] = useState('completed'); // Default to completed to show existing challenge
-  const [clubChallenges, setClubChallenges] = useState<Challenge[]>(challenges);
-  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('pending'); // Default to pending approvals
+  const [clubChallenges, setClubChallenges] = useState<Challenge[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Check if current user is club admin
+  const { isClubAdmin } = useClubAdminCheck({ challengeClubId: clubId });
 
-  // Fetch challenges for this club if not provided via props
+  // Fetch challenges for this club with full user profile data
   useEffect(() => {
-    if (challenges.length === 0 && clubId) {
-      fetchClubChallenges();
-    } else {
-      setClubChallenges(challenges);
-    }
-  }, [clubId, challenges]);
-
-  const fetchClubChallenges = async () => {
-    if (!clubId) return;
-    
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('challenges')
-        .select('*')
-        .eq('club_id', clubId);
-
-      if (error) {
+    const fetchClubChallenges = async () => {
+      if (!clubId) {
+        setLoading(false);
         return;
       }
 
-      setClubChallenges((data as unknown as Challenge[]) || []);
-      
-    } catch (error) {
-      // Silent error
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        const { data, error } = await supabase
+          .from('challenges')
+          .select(`
+            *,
+            challenger_profile:profiles!challenges_challenger_id_fkey(
+              id,
+              user_id,
+              full_name,
+              avatar_url,
+              current_rank,
+              elo_rating,
+              spa_points
+            ),
+            opponent_profile:profiles!challenges_opponent_id_fkey(
+              id,
+              user_id,
+              full_name,
+              avatar_url,
+              current_rank,
+              elo_rating,
+              spa_points
+            ),
+            club_profiles!challenges_club_id_fkey(
+              id,
+              name,
+              logo_url
+            )
+          `)
+          .eq('club_id', clubId)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching club challenges:', error);
+          return;
+        }
+
+        setClubChallenges(data as any[] || []);
+      } catch (error) {
+        console.error('Error fetching club challenges:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClubChallenges();
+  }, [clubId]);
+
+  // Use fetched data if available, otherwise use prop data
+  const displayChallenges = clubChallenges.length > 0 ? clubChallenges : challenges;
 
   // Filter challenges by status
-  const activeChalllenges = clubChallenges.filter(c => c.status === 'ongoing');
-  const upcomingChallenges = clubChallenges.filter(c => c.status === 'pending');
-  const completedChallenges = clubChallenges.filter(c => c.status === 'completed');
-  const pendingApprovals = clubChallenges.filter(c => 
-    c.status === 'accepted' && 
-    c.challenger_score != null && 
-    c.opponent_score != null
+  const activeChalllenges = displayChallenges.filter(c => c.status === 'ongoing');
+  const upcomingChallenges = displayChallenges.filter(c => c.status === 'pending' || c.status === 'accepted');
+  const completedChallenges = displayChallenges.filter(c => c.status === 'completed');
+  // New filter for challenges needing approval: pending_approval status (scores confirmed, waiting club approval)
+  const pendingApprovals = displayChallenges.filter(c => 
+    c.status === 'pending_approval'
   );
 
   const tabs = [
@@ -172,26 +203,83 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
 
         {/* Desktop Grid */}
         <div className="hidden md:block">
-          <EnhancedChallengeCardGrid 
-            challenges={tab.data} 
-            variant={tab.variant}
-            onAction={handleAction}
-            onCardClick={handleCardClick}
-          />
+          {tab.id === 'pending' && isClubAdmin ? (
+            // Show ClubApprovalCards in grid for pending approvals
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {tab.data.map((challenge) => {
+                if (challenge.challenger_profile && challenge.opponent_profile) {
+                  return (
+                    <ClubApprovalCard
+                      key={challenge.id}
+                      challenge={challenge}
+                      challengerProfile={{
+                        id: challenge.challenger_profile.id,
+                        display_name: challenge.challenger_profile.full_name || 'Unknown',
+                        spa_rank: challenge.challenger_profile.current_rank,
+                        spa_points: challenge.challenger_profile.spa_points
+                      }}
+                      opponentProfile={{
+                        id: challenge.opponent_profile.id,
+                        display_name: challenge.opponent_profile.full_name || 'Unknown',
+                        spa_rank: challenge.opponent_profile.current_rank,
+                        spa_points: challenge.opponent_profile.spa_points
+                      }}
+                      isClubAdmin={isClubAdmin}
+                    />
+                  );
+                }
+                return null;
+              })}
+            </div>
+          ) : (
+            // Show regular EnhancedChallengeCardGrid for other tabs
+            <EnhancedChallengeCardGrid 
+              challenges={tab.data} 
+              variant={tab.variant}
+              onAction={handleAction}
+              onCardClick={handleCardClick}
+            />
+          )}
         </div>
 
         {/* Mobile List */}
         <div className="md:hidden space-y-3">
-          {tab.data.map((challenge) => (
-            <EnhancedChallengeCard
-              key={challenge.id}
-              challenge={challenge}
-              variant={tab.variant}
-              size="compact"
-              onAction={handleAction}
-              onCardClick={handleCardClick}
-            />
-          ))}
+          {tab.data.map((challenge) => {
+            // For pending approvals, show ClubApprovalCard if user is club admin
+            if (tab.id === 'pending' && isClubAdmin && challenge.challenger_profile && challenge.opponent_profile) {
+              return (
+                <ClubApprovalCard
+                  key={challenge.id}
+                  challenge={challenge}
+                  challengerProfile={{
+                    id: challenge.challenger_profile.id,
+                    display_name: challenge.challenger_profile.full_name || 'Unknown',
+                    spa_rank: challenge.challenger_profile.current_rank,
+                    spa_points: challenge.challenger_profile.spa_points
+                  }}
+                  opponentProfile={{
+                    id: challenge.opponent_profile.id,
+                    display_name: challenge.opponent_profile.full_name || 'Unknown',
+                    spa_rank: challenge.opponent_profile.current_rank,
+                    spa_points: challenge.opponent_profile.spa_points
+                  }}
+                  isClubAdmin={isClubAdmin}
+                />
+              );
+            }
+            
+            // Otherwise show regular EnhancedChallengeCard
+            return (
+              <EnhancedChallengeCard
+                key={challenge.id}
+                challenge={challenge}
+                variant={tab.variant}
+                size="compact"
+                onAction={handleAction}
+                onCardClick={handleCardClick}
+              />
+            );
+          })}
         </div>
       </motion.div>
     );
@@ -204,6 +292,20 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
           <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-lg font-semibold mb-2">Chưa có thông tin club</h3>
           <p className="text-muted-foreground">Vui lòng chọn club để xem thách đấu</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (loading) {
+    return (
+      <Card className="border-border/50 dark:border-border/30">
+        <CardContent className="p-8 text-center">
+          <div className="animate-pulse">
+            <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <h3 className="text-lg font-semibold mb-2">Đang tải...</h3>
+            <p className="text-muted-foreground">Vui lòng chờ trong giây lát</p>
+          </div>
         </CardContent>
       </Card>
     );

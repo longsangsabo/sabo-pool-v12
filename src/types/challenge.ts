@@ -27,8 +27,8 @@ export interface Challenge {
   bet_points?: number;
   stake_amount?: number; // For SABO challenges compatibility
   race_to?: number;
-  handicap_1_rank?: string;
-  handicap_05_rank?: string;
+  handicap_1_rank?: number;
+  handicap_05_rank?: number;
   message?: string;
   status:
     | 'pending'
@@ -36,7 +36,9 @@ export interface Challenge {
     | 'accepted'
     | 'declined'
     | 'ongoing'
+    | 'pending_approval'  // ✅ New status for challenges waiting club confirmation
     | 'completed'
+    | 'rejected'  // ✅ New status for club-rejected challenges
     | 'cancelled'
     | 'expired';
   scheduled_time?: string;
@@ -54,6 +56,7 @@ export interface Challenge {
   club_confirmed?: boolean;
   club_confirmed_by?: string;
   club_confirmed_at?: string;
+  club_note?: string;  // ✅ Added club admin note field
   score_confirmation_status?:
     | 'pending'
     | 'waiting_confirmation'
@@ -232,8 +235,8 @@ export interface CreateChallengeData {
   stake_amount?: number;
   bet_points: number;
   race_to?: number;
-  handicap_1_rank?: string;
-  handicap_05_rank?: string;
+  handicap_1_rank?: number;
+  handicap_05_rank?: number;
   handicap?: number;
   message?: string;
   club_id?: string;

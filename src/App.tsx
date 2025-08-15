@@ -17,18 +17,18 @@ import { useAuth } from '@/hooks/useAuth';
 import { PublicRoute } from '@/components/auth/PublicRoute';
 import { AdminRoute } from '@/components/auth/AdminRoute';
 import MainLayout from '@/components/MainLayout';
-import { useRealtimeNotifications } from '@/hooks/useRealtimeNotifications';
+import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
 import { OfflineIndicator } from '@/components/pwa/OfflineIndicator';
 import { ReAuthModal } from '@/components/auth/ReAuthModal';
 
 // ✅ Import debug utilities for tournament refresh
 import '@/utils/debugTournamentRefresh';
 
-// 🔧 Test auth functionality in development
-import '@/utils/testAuth';
+// 🔧 Test auth functionality in development - DISABLED FOR PRODUCTION
+// import '@/utils/testAuth';
 
-// 🎯 Test score submission functionality in development
-import '@/utils/testScoreSubmission';
+// 🎯 Test score submission functionality in development - DISABLED FOR PRODUCTION
+// import '@/utils/testScoreSubmission';
 
 // Lazy load components - Public pages
 const HomePage = lazy(() => import('@/pages/Home'));
@@ -75,8 +75,8 @@ const WalletPage = lazy(() => import('@/pages/PaymentPage'));
 const ClubRegistrationPage = lazy(() => import('@/pages/ClubRegistrationPage'));
 const FeedPage = lazy(() => import('@/pages/FeedPage'));
 const MarketplacePage = lazy(() => import('@/pages/EnhancedMarketplacePage'));
-const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'));
 const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
+const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'));
 // Milestones
 const MilestonePage = lazy(() => import('@/pages/MilestonePage'));
 
@@ -115,8 +115,8 @@ const queryClient = new QueryClient({
 
 // Component để sử dụng hooks bên trong providers
 const AppContent = () => {
-  // ✅ Initialize realtime notifications (now inside AuthProvider)
-  const { PopupComponent } = useRealtimeNotifications();
+  // ✅ Initialize unified messages system
+  const { isConnected } = useUnifiedMessages();
 
   // Inline component to protect club management routes by owner role
   const ClubOwnerRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -237,8 +237,8 @@ const AppContent = () => {
             />
             <Route path='feed' element={<FeedPage />} />
             <Route path='marketplace' element={<MarketplacePage />} />
-            <Route path='notifications' element={<NotificationsPage />} />
             <Route path='messages' element={<MessagesPage />} />
+            <Route path='notifications' element={<NotificationsPage />} />
             <Route path='milestones' element={<MilestonePage />} />
             <Route path='auth-test' element={<AuthTestPage />} />
 
@@ -281,8 +281,12 @@ const AppContent = () => {
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </Suspense>
-      {/* ✅ Render notification popup */}
-      <PopupComponent />
+      {/* ✅ Connection indicator for unified messages */}
+      {!isConnected && (
+        <div className="fixed bottom-4 right-4 bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-2 rounded-md text-sm">
+          🔄 Đang kết nối lại...
+        </div>
+      )}
       <OfflineIndicator />
     </div>
   );

@@ -115,7 +115,7 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({
           <Button
             variant='ghost'
             size='icon'
-            onClick={() => navigate('/notifications')}
+            onClick={() => navigate('/messages')}
             className='relative hover:bg-muted/50'
           >
             <Bell className='w-5 h-5' />

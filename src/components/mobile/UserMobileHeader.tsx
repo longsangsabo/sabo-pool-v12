@@ -25,7 +25,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTheme } from '@/hooks/useTheme';
-import { useMessages } from '@/hooks/useMessages';
+import { useUnifiedNotifications } from '@/hooks/useUnifiedNotifications';
 
 interface MobileHeaderProps {
   title?: string;
@@ -46,7 +46,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 }) => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  const { unreadCount: messageUnreadCount } = useMessages();
+  const { stats } = useUnifiedNotifications();
 
   // Get current user
   const { data: user } = useQuery({
@@ -185,7 +185,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                 variant='secondary'
                 className='absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center bg-blue-500 text-white'
               >
-                {messageUnreadCount || 0}
+                {stats.unread || 0}
               </Badge>
             </Button>
           )}

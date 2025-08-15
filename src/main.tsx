@@ -5,9 +5,9 @@ import './index.css';
 import './styles/rainbow-avatar.css';
 // Removed Sentry to improve loading speed
 
-// Import test utilities in development
+// Import test utilities in development - DISABLED FOR PRODUCTION
 if (import.meta.env.DEV) {
-  import('./utils/testTournamentQuery');
+  // import('./utils/testTournamentQuery');
 }
 
 console.log('🚀 Starting application...');

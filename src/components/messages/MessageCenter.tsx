@@ -45,6 +45,12 @@ const MessageCenter: React.FC = () => {
     fetchDeletedMessages
   } = useMessages();
 
+  // Add safe defaults to prevent undefined errors
+  const safeMessages = messages || [];
+  const safeSentMessages = sentMessages || [];
+  const safeArchivedMessages = archivedMessages || [];
+  const safeDeletedMessages = deletedMessages || [];
+
   // Handle refresh
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -70,16 +76,16 @@ const MessageCenter: React.FC = () => {
   useEffect(() => {
     switch (activeTab) {
       case 'sent':
-        if (sentMessages.length === 0) fetchSentMessages();
+        if (safeSentMessages.length === 0) fetchSentMessages();
         break;
       case 'archive':
-        if (archivedMessages.length === 0) fetchArchivedMessages();
+        if (safeArchivedMessages.length === 0) fetchArchivedMessages();
         break;
       case 'trash':
-        if (deletedMessages.length === 0) fetchDeletedMessages();
+        if (safeDeletedMessages.length === 0) fetchDeletedMessages();
         break;
     }
-  }, [activeTab, sentMessages.length, archivedMessages.length, deletedMessages.length, fetchSentMessages, fetchArchivedMessages, fetchDeletedMessages]);
+  }, [activeTab, safeSentMessages.length, safeArchivedMessages.length, safeDeletedMessages.length, fetchSentMessages, fetchArchivedMessages, fetchDeletedMessages]);
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -225,7 +231,7 @@ const MessageCenter: React.FC = () => {
               <CardTitle className="flex items-center gap-2">
                 <Mail className="h-5 w-5" />
                 Hộp thư đến
-                <Badge variant="secondary">{messages.length}</Badge>
+                <Badge variant="secondary">{safeMessages.length}</Badge>
                 {unreadCount > 0 && (
                   <Badge variant="destructive">{unreadCount} chưa đọc</Badge>
                 )}
@@ -233,7 +239,7 @@ const MessageCenter: React.FC = () => {
             </CardHeader>
             <CardContent>
               <MessageList 
-                messages={messages} 
+                messages={safeMessages} 
                 isLoading={isLoading}
                 onRefresh={handleRefresh}
                 type="inbox"
@@ -249,12 +255,12 @@ const MessageCenter: React.FC = () => {
               <CardTitle className="flex items-center gap-2">
                 <Send className="h-5 w-5" />
                 Tin đã gửi
-                <Badge variant="secondary">{sentMessages.length}</Badge>
+                <Badge variant="secondary">{safeSentMessages.length}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <MessageList 
-                messages={sentMessages} 
+                messages={safeSentMessages} 
                 isLoading={isLoading}
                 type="sent"
               />
@@ -274,18 +280,18 @@ const MessageCenter: React.FC = () => {
               <CardTitle className="flex items-center gap-2">
                 <Archive className="h-5 w-5" />
                 Tin đã lưu trữ
-                <Badge variant="secondary">{archivedMessages.length}</Badge>
+                <Badge variant="secondary">{safeArchivedMessages.length}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {archivedMessages.length === 0 ? (
+              {safeArchivedMessages.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <Archive className="h-16 w-16 mx-auto mb-4 opacity-50" />
                   <p>Chưa có tin nhắn được lưu trữ</p>
                 </div>
               ) : (
                 <MessageList 
-                  messages={archivedMessages} 
+                  messages={safeArchivedMessages} 
                   isLoading={isLoading}
                   type="archive"
                 />
@@ -301,18 +307,18 @@ const MessageCenter: React.FC = () => {
               <CardTitle className="flex items-center gap-2">
                 <Trash2 className="h-5 w-5" />
                 Thùng rác
-                <Badge variant="secondary">{deletedMessages.length}</Badge>
+                <Badge variant="secondary">{safeDeletedMessages.length}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {deletedMessages.length === 0 ? (
+              {safeDeletedMessages.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <Trash2 className="h-16 w-16 mx-auto mb-4 opacity-50" />
                   <p>Thùng rác trống</p>
                 </div>
               ) : (
                 <MessageList 
-                  messages={deletedMessages} 
+                  messages={safeDeletedMessages} 
                   isLoading={isLoading}
                   type="trash"
                 />

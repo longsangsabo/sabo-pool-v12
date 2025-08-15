@@ -21,7 +21,7 @@ import {
   Bell,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useNotifications } from '@/hooks/useNotifications';
+import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
 import { checkUserAdminStatus } from '@/utils/adminHelpers';
 import { supabase } from '@/integrations/supabase/client';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -38,7 +38,7 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 const Navigation = () => {
   const { user, signOut } = useAuth();
-  const { getUnreadCount } = useNotifications();
+  const { unreadCount } = useUnifiedMessages();
   // Admin check removed for performance - admin functionality separated
   const navigate = useNavigate();
   const location = useLocation();
@@ -108,8 +108,6 @@ const Navigation = () => {
       clearTimeout(timeoutId);
     });
   }, [user]);
-
-  const unreadCount = getUnreadCount();
 
   const handleLogout = async () => {
     await signOut();

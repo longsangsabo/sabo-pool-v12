@@ -1,290 +1,370 @@
-import React, { useState } from 'react';
-import { useEnhancedNotifications } from '@/hooks/useEnhancedNotifications';
+import React, { useState, useEffect } from 'react';
+import { Bell, Filter, CheckCircle, ChevronDown, RefreshCw, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
-  Bell,
-  Check,
-  CheckCheck,
-  Trash2,
-  Filter,
-  Zap,
-  Trophy,
-  Users,
-  Calendar,
-  Star,
-  AlertCircle,
-} from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import { useChallengeNotifications } from '@/hooks/useChallengeNotifications';
+import { NotificationCard, NotificationBell } from '@/components/notifications/ChallengeNotificationComponents';
+import { ChallengeNotificationType } from '@/types/challengeNotification';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
-const NotificationsPage = () => {
-  const { notifications, isLoading, markAsRead, markAllAsRead, unreadCount } =
-    useEnhancedNotifications();
-  const [activeTab, setActiveTab] = useState('all');
+interface FilterState {
+  read: 'all' | 'read' | 'unread';
+  priority: 'all' | 'low' | 'medium' | 'high' | 'urgent';
+  type: 'all' | ChallengeNotificationType;
+}
+
+const NotificationsPage: React.FC = () => {
   const navigate = useNavigate();
+  
+  const {
+    notifications,
+    unreadCount,
+    stats,
+    loading,
+    error,
+    fetchNotifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    refreshUnreadCount,
+    hasMore,
+    totalCount
+  } = useChallengeNotifications();
 
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'challenge_received':
-      case 'challenge_accepted':
-      case 'challenge_rejected':
-        return <Zap className='h-4 w-4 text-blue-600' />;
-      case 'tournament_invite':
-        return <Trophy className='h-4 w-4 text-yellow-600' />;
-      case 'match_reminder':
-      case 'match_result_request':
-        return <Calendar className='h-4 w-4 text-green-600' />;
-      case 'rank_verification_approved':
-      case 'rank_verification_rejected':
-        return <Star className='h-4 w-4 text-purple-600' />;
-      case 'trust_score_warning':
-      case 'penalty_received':
-        return <AlertCircle className='h-4 w-4 text-red-600' />;
-      default:
-        return <Bell className='h-4 w-4 text-gray-600' />;
+  const [filters, setFilters] = useState<FilterState>({
+    read: 'all',
+    priority: 'all',
+    type: 'all'
+  });
+
+  const [selectedNotifications, setSelectedNotifications] = useState<string[]>([]);
+
+  // Fetch notifications when component mounts or filters change
+  useEffect(() => {
+    const filterOptions = {
+      isRead: filters.read === 'read' ? true : filters.read === 'unread' ? false : undefined,
+      priority: filters.priority !== 'all' ? filters.priority : undefined,
+      type: filters.type !== 'all' ? filters.type : undefined
+    };
+    
+    fetchNotifications(filterOptions, { page: 1, limit: 20 });
+  }, [filters]);
+
+  const handleMarkAsRead = async (notificationId: string) => {
+    try {
+      await markAsRead(notificationId);
+      toast.success('Đã đánh dấu là đã đọc');
+    } catch (err) {
+      toast.error('Không thể đánh dấu thông báo');
     }
   };
 
-  const getNotificationColor = (type: string) => {
-    switch (type) {
-      case 'challenge_received':
-      case 'challenge_accepted':
-      case 'challenge_rejected':
-        return 'bg-blue-50 border-blue-200';
-      case 'tournament_invite':
-        return 'bg-yellow-50 border-yellow-200';
-      case 'match_reminder':
-      case 'match_result_request':
-        return 'bg-green-50 border-green-200';
-      case 'rank_verification_approved':
-      case 'rank_verification_rejected':
-        return 'bg-purple-50 border-purple-200';
-      case 'trust_score_warning':
-      case 'penalty_received':
-        return 'bg-red-50 border-red-200';
-      default:
-        return 'bg-gray-50 border-gray-200';
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAllAsRead();
+      toast.success('Đã đánh dấu tất cả là đã đọc');
+    } catch (err) {
+      toast.error('Không thể đánh dấu tất cả thông báo');
     }
   };
 
-  const getPriorityBadge = (priority: string) => {
-    switch (priority) {
-      case 'urgent':
-        return (
-          <Badge variant='destructive' className='text-xs animate-pulse'>
-            Khẩn cấp
-          </Badge>
-        );
-      case 'high':
-        return (
-          <Badge
-            variant='secondary'
-            className='text-xs bg-orange-100 text-orange-800'
-          >
-            Quan trọng
-          </Badge>
-        );
-      default:
-        return null;
+  const handleDeleteNotification = async (notificationId: string) => {
+    try {
+      await deleteNotification(notificationId);
+      setSelectedNotifications(prev => prev.filter(id => id !== notificationId));
+      toast.success('Đã xóa thông báo');
+    } catch (err) {
+      toast.error('Không thể xóa thông báo');
     }
   };
 
-  const handleNotificationClick = (notification: any) => {
-    if (!notification.is_read) {
-      markAsRead.mutate(notification.id);
+  const handleBulkDelete = async () => {
+    if (selectedNotifications.length === 0) return;
+    
+    try {
+      await Promise.all(selectedNotifications.map(id => deleteNotification(id)));
+      setSelectedNotifications([]);
+      toast.success(`Đã xóa ${selectedNotifications.length} thông báo`);
+    } catch (err) {
+      toast.error('Không thể xóa một số thông báo');
     }
+  };
 
-    if (notification.action_url) {
-      navigate(notification.action_url);
-    }
+  const handleRefresh = () => {
+    fetchNotifications(undefined, { page: 1, limit: 20 });
+    refreshUnreadCount();
+  };
+
+  const toggleSelectNotification = (notificationId: string) => {
+    setSelectedNotifications(prev => 
+      prev.includes(notificationId)
+        ? prev.filter(id => id !== notificationId)
+        : [...prev, notificationId]
+    );
+  };
+
+  const selectAllVisibleNotifications = () => {
+    const visibleIds = notifications.map(n => n.id);
+    setSelectedNotifications(visibleIds);
+  };
+
+  const clearSelection = () => {
+    setSelectedNotifications([]);
   };
 
   const filteredNotifications = notifications.filter(notification => {
-    if (activeTab === 'all') return true;
-    if (activeTab === 'unread') return !notification.is_read;
-    return notification.type.includes(activeTab);
+    if (filters.read === 'read' && !notification.isRead) return false;
+    if (filters.read === 'unread' && notification.isRead) return false;
+    if (filters.priority !== 'all' && notification.priority !== filters.priority) return false;
+    if (filters.type !== 'all' && notification.type !== filters.type) return false;
+    return true;
   });
 
-  if (isLoading) {
+  const getFilterLabel = (filterType: string, value: string): string => {
+    const labels = {
+      read: {
+        all: 'Tất cả',
+        read: 'Đã đọc',
+        unread: 'Chưa đọc'
+      },
+      priority: {
+        all: 'Tất cả',
+        urgent: 'Khẩn cấp',
+        high: 'Cao',
+        medium: 'Trung bình',
+        low: 'Thấp'
+      },
+      type: {
+        all: 'Tất cả loại'
+      }
+    };
+
+    return labels[filterType]?.[value] || value;
+  };
+
+  if (loading && notifications.length === 0) {
     return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500'></div>
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-4xl mx-auto">
+          <Card>
+            <CardContent className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span className="ml-3 text-gray-600">Đang tải thông báo...</span>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className='min-h-screen bg-gray-50 py-8'>
-      <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
-        <div className='mb-8'>
-          <h1 className='text-3xl font-bold text-gray-900 mb-2'>Thông báo</h1>
-          <p className='text-gray-600'>
-            Quản lý và theo dõi tất cả thông báo của bạn
-          </p>
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex items-center gap-3">
+            <NotificationBell count={unreadCount} />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Thông báo</h1>
+              <p className="text-gray-600">
+                {totalCount} thông báo • {unreadCount} chưa đọc
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline" 
+              size="sm"
+              onClick={handleRefresh}
+              disabled={loading}
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Làm mới
+            </Button>
+            
+            {unreadCount > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleMarkAllAsRead}
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Đánh dấu tất cả
+              </Button>
+            )}
+          </div>
         </div>
 
+        {/* Filters */}
         <Card>
-          <CardHeader className='border-b'>
-            <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
-              <CardTitle className='flex items-center gap-2'>
-                <Bell className='h-5 w-5' />
-                Thông báo
-                {unreadCount > 0 && (
-                  <Badge className='bg-red-500 text-white'>{unreadCount}</Badge>
-                )}
-              </CardTitle>
-
-              <div className='flex items-center gap-2'>
-                {unreadCount > 0 && (
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    onClick={() => markAllAsRead.mutate()}
-                    disabled={markAllAsRead.isPending}
-                  >
-                    <CheckCheck className='h-4 w-4 mr-2' />
-                    Đọc tất cả
+          <CardContent className="p-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <Filter className="w-4 h-4 text-gray-500" />
+              <span className="text-sm text-gray-600">Lọc:</span>
+              
+              {/* Read Status Filter */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    {getFilterLabel('read', filters.read)}
+                    <ChevronDown className="w-4 h-4 ml-2" />
                   </Button>
-                )}
-                <Button variant='outline' size='sm'>
-                  <Filter className='h-4 w-4 mr-2' />
-                  Lọc
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className='p-0'>
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <div className='border-b'>
-                <TabsList className='grid w-full grid-cols-4 rounded-none h-12'>
-                  <TabsTrigger value='all' className='rounded-none'>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setFilters(prev => ({ ...prev, read: 'all' }))}>
                     Tất cả
-                  </TabsTrigger>
-                  <TabsTrigger value='unread' className='rounded-none'>
-                    Chưa đọc ({unreadCount})
-                  </TabsTrigger>
-                  <TabsTrigger value='challenge' className='rounded-none'>
-                    Thách đấu
-                  </TabsTrigger>
-                  <TabsTrigger value='tournament' className='rounded-none'>
-                    Giải đấu
-                  </TabsTrigger>
-                </TabsList>
-              </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilters(prev => ({ ...prev, read: 'unread' }))}>
+                    Chưa đọc
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilters(prev => ({ ...prev, read: 'read' }))}>
+                    Đã đọc
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-              <TabsContent value={activeTab} className='mt-0'>
-                <ScrollArea className='h-[600px]'>
-                  {filteredNotifications.length > 0 ? (
-                    <div className='divide-y'>
-                      {filteredNotifications.map(notification => (
-                        <div
-                          key={notification.id}
-                          className={`p-4 transition-colors cursor-pointer hover:bg-gray-50 ${
-                            !notification.is_read
-                              ? 'bg-blue-50 border-l-4 border-l-blue-500'
-                              : ''
-                          }`}
-                          onClick={() => handleNotificationClick(notification)}
-                        >
-                          <div className='flex items-start gap-3'>
-                            <div className='flex-shrink-0 mt-1'>
-                              {getNotificationIcon(notification.type)}
-                            </div>
+              {/* Priority Filter */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    {getFilterLabel('priority', filters.priority)}
+                    <ChevronDown className="w-4 h-4 ml-2" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setFilters(prev => ({ ...prev, priority: 'all' }))}>
+                    Tất cả mức độ
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setFilters(prev => ({ ...prev, priority: 'urgent' }))}>
+                    🚨 Khẩn cấp
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilters(prev => ({ ...prev, priority: 'high' }))}>
+                    ⚠️ Cao
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilters(prev => ({ ...prev, priority: 'medium' }))}>
+                    🔔 Trung bình
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilters(prev => ({ ...prev, priority: 'low' }))}>
+                    ℹ️ Thấp
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-                            <div className='flex-1 min-w-0'>
-                              <div className='flex items-start justify-between gap-2 mb-1'>
-                                <div className='flex items-center gap-2'>
-                                  <h4 className='font-medium text-sm text-gray-900'>
-                                    {notification.title}
-                                  </h4>
-                                  {!notification.is_read && (
-                                    <div className='w-2 h-2 bg-blue-500 rounded-full'></div>
-                                  )}
-                                </div>
-                                {getPriorityBadge(notification.priority)}
-                              </div>
-
-                              <p className='text-sm text-gray-600 mb-2 line-clamp-2'>
-                                {notification.message}
-                              </p>
-
-                              <div className='flex items-center justify-between'>
-                                <span className='text-xs text-gray-500'>
-                                  {formatDistanceToNow(
-                                    new Date(notification.created_at),
-                                    {
-                                      addSuffix: true,
-                                      locale: vi,
-                                    }
-                                  )}
-                                </span>
-
-                                <div className='flex items-center gap-1'>
-                                  {!notification.is_read && (
-                                    <Button
-                                      variant='ghost'
-                                      size='sm'
-                                      onClick={e => {
-                                        e.stopPropagation();
-                                        markAsRead.mutate(notification.id);
-                                      }}
-                                      className='h-8 w-8 p-0'
-                                    >
-                                      <Check className='h-3 w-3' />
-                                    </Button>
-                                  )}
-                                  <Button
-                                    variant='ghost'
-                                    size='sm'
-                                    onClick={e => {
-                                      e.stopPropagation();
-                                      // TODO: Add delete functionality
-                                    }}
-                                    className='h-8 w-8 p-0 text-red-500 hover:text-red-700'
-                                  >
-                                    <Trash2 className='h-3 w-3' />
-                                  </Button>
-                                </div>
-                              </div>
-
-                              {notification.action_url && (
-                                <Button
-                                  variant='link'
-                                  size='sm'
-                                  className='p-0 h-auto text-xs mt-2 text-blue-600'
-                                >
-                                  Xem chi tiết →
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className='text-center py-12'>
-                      <Bell className='h-12 w-12 mx-auto mb-4 text-gray-300' />
-                      <h3 className='text-lg font-medium text-gray-900 mb-2'>
-                        Không có thông báo
-                      </h3>
-                      <p className='text-gray-500'>
-                        {activeTab === 'unread'
-                          ? 'Bạn đã đọc hết tất cả thông báo'
-                          : 'Chưa có thông báo nào trong danh mục này'}
-                      </p>
-                    </div>
-                  )}
-                </ScrollArea>
-              </TabsContent>
-            </Tabs>
+              {/* Selection Actions */}
+              {selectedNotifications.length > 0 && (
+                <>
+                  <div className="h-4 w-px bg-gray-300" />
+                  <span className="text-sm text-gray-600">
+                    {selectedNotifications.length} đã chọn
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleBulkDelete}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Xóa
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSelection}
+                  >
+                    Bỏ chọn
+                  </Button>
+                </>
+              )}
+              
+              {notifications.length > 0 && selectedNotifications.length === 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={selectAllVisibleNotifications}
+                >
+                  Chọn tất cả
+                </Button>
+              )}
+            </div>
           </CardContent>
         </Card>
+
+        {/* Notifications List */}
+        <div className="space-y-3">
+          {filteredNotifications.length === 0 ? (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <Bell className="w-12 h-12 text-gray-300 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Không có thông báo
+                </h3>
+                <p className="text-gray-500 text-center">
+                  {filters.read !== 'all' || filters.priority !== 'all' || filters.type !== 'all' 
+                    ? 'Không có thông báo phù hợp với bộ lọc hiện tại'
+                    : 'Bạn chưa có thông báo nào'
+                  }
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            filteredNotifications.map((notification) => (
+              <div key={notification.id} className="relative">
+                {/* Selection Checkbox */}
+                <input
+                  type="checkbox"
+                  className="absolute top-4 left-4 z-10 rounded border-gray-300"
+                  checked={selectedNotifications.includes(notification.id)}
+                  onChange={() => toggleSelectNotification(notification.id)}
+                />
+                
+                {/* Notification Card */}
+                <div className="ml-8">
+                  <NotificationCard
+                    notification={notification}
+                    onMarkAsRead={() => handleMarkAsRead(notification.id)}
+                    onDelete={() => handleDeleteNotification(notification.id)}
+                    onClick={() => {
+                      if (notification.actionUrl) {
+                        navigate(notification.actionUrl);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Load More */}
+        {hasMore && (
+          <div className="text-center">
+            <Button 
+              variant="outline" 
+              onClick={() => fetchNotifications(undefined, { page: Math.floor(notifications.length / 20) + 1, limit: 20 })}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Đang tải...
+                </>
+              ) : (
+                'Tải thêm'
+              )}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

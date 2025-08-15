@@ -12,6 +12,7 @@ import {
   LogOut,
   Sun,
   Moon,
+  MessageCircle,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -26,7 +27,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTheme } from '@/hooks/useTheme';
 import { useAvatar } from '@/contexts/AvatarContext';
-import { useMessages } from '@/hooks/useMessages';
+import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
+import { NotificationBell } from '@/components/notifications/ChallengeNotificationComponents';
 
 interface MobileHeaderProps {
   title?: string;
@@ -48,7 +50,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { avatarUrl: contextAvatar } = useAvatar();
-  const { unreadCount: messageUnreadCount } = useMessages();
+  const { unreadCount: messageUnreadCount } = useUnifiedMessages();
 
   // Get current user
   const { data: user } = useQuery({
@@ -174,23 +176,22 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             )}
           </Button>
 
-          {/* Messages/Inbox */}
+          {/* Messages Button */}
           {showMessages && (
             <Button
               variant='ghost'
               size='sm'
               onClick={() => navigate('/messages')}
-              className='relative hover:bg-muted/50 transition-colors'
+              className='hover:bg-muted/50 transition-colors'
             >
-              <Inbox className='w-5 h-5' />
-              <Badge
-                variant='secondary'
-                className='absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center bg-blue-500 text-white'
-              >
-                {messageUnreadCount || 0}
-              </Badge>
+              <MessageCircle className='w-5 h-5' />
             </Button>
           )}
+
+          {/* Challenge Notifications */}
+          <NotificationBell 
+            className="hover:bg-muted/50 transition-colors"
+          />
 
           {/* Profile Menu */}
           {showProfile && user && (

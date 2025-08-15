@@ -4,10 +4,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Bell, Menu, Search, Settings, User, LogOut } from 'lucide-react';
+import { Bell, Menu, Search, Settings, User, LogOut, MessageCircle } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { ClubRoleSwitch } from '@/components/club/ClubRoleSwitch';
-import NotificationBadge from '@/components/NotificationBadge';
+import { NotificationBell } from '@/components/notifications/ChallengeNotificationComponents';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,13 +75,20 @@ export const UserDesktopHeader: React.FC<UserDesktopHeaderProps> = ({
             />
           </div>
 
-          {/* Notifications */}
-          <NotificationBadge
-            count={0}
-            hasUrgent={false}
-            onClick={() => {
-              navigate('/notifications');
-            }}
+          {/* Messages Button */}
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => navigate('/messages')}
+            className='hover:bg-muted relative'
+          >
+            <MessageCircle className='h-5 w-5' />
+            <span className='hidden md:block ml-2'>Messages</span>
+          </Button>
+
+          {/* Challenge Notifications */}
+          <NotificationBell 
+            className="hover:bg-muted"
           />
 
           {/* Theme Toggle */}
@@ -118,7 +125,7 @@ export const UserDesktopHeader: React.FC<UserDesktopHeaderProps> = ({
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to='/notifications' className='flex items-center'>
+                  <Link to='/messages' className='flex items-center'>
                     <Bell className='w-4 h-4 mr-2' />
                     Thông báo
                   </Link>

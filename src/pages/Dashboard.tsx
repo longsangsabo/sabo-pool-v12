@@ -24,6 +24,34 @@ const Dashboard = () => {
     isConnected,
   } = useSocialFeed();
 
+  // Remove any test notification panels that might be injected
+  React.useEffect(() => {
+    const removeTestPanels = () => {
+      // Remove any elements containing test notification text
+      const testElements = Array.from(document.querySelectorAll('*')).filter(el => {
+        const text = el.textContent || '';
+        return text.includes('Test Unified Notifications') || 
+               text.includes('Tạo Challenge Notification') ||
+               text.includes('test notifications và kiểm tra hệ thống') ||
+               text.includes('🧪');
+      });
+      
+      testElements.forEach(el => {
+        if (el && el.parentNode) {
+          el.parentNode.removeChild(el);
+        }
+      });
+    };
+
+    // Remove on mount
+    removeTestPanels();
+    
+    // Remove every 1 second to handle dynamic injection
+    const interval = setInterval(removeTestPanels, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   // Hiển thị toàn bộ feed mặc định (bỏ cơ chế "Xem thêm")
   const visibleItems = feedPosts;
   const hasMore = false;

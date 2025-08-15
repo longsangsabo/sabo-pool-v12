@@ -14,15 +14,32 @@ export class MessageService {
     return process.env.SMOKE_TEST_MILESTONES === '1';
   }
   
-  // Send a new message
-  static async sendMessage(messageData: SendMessageData): Promise<Message | null> {
+  // Enhanced send message with multi-channel support
+  static async sendMessage(messageData: SendMessageData & {
+    channels?: ('in_app' | 'email' | 'sms' | 'push')[];
+    template_key?: string;
+    variables?: Record<string, string>;
+    scheduled_at?: string;
+    auto_popup?: boolean;
+  }): Promise<Message | null> {
   if (this.isSmokeBypass()) return null;
   try {
+      const currentUser = (await supabase.auth.getUser()).data.user;
+      
       const { data, error } = await supabase
         .from('messages')
         .insert([{
-          sender_id: (await supabase.auth.getUser()).data.user?.id,
-          ...messageData
+          sender_id: currentUser?.id,
+          ...messageData,
+          // Store enhanced metadata
+          metadata: {
+            ...messageData.metadata,
+            channels: messageData.channels || ['in_app'],
+            template_key: messageData.template_key,
+            variables: messageData.variables,
+            scheduled_at: messageData.scheduled_at,
+            auto_popup: messageData.auto_popup || false
+          }
         }])
         .select(`
           *,
@@ -34,6 +51,12 @@ export class MessageService {
       if (error) {
         console.error('Error sending message:', error);
         throw error;
+      }
+
+      // If high priority and external channels requested, trigger multi-channel notification
+      if ((messageData.priority === 'high' || messageData.priority === 'urgent') && 
+          messageData.channels && messageData.channels.length > 1) {
+        await this.triggerMultiChannelNotification(data);
       }
 
       // Send real-time notification
@@ -279,12 +302,17 @@ export class MessageService {
     }
   }
 
-  // Send system message
+  // Enhanced send system message with notification features
   static async sendSystemMessage(
     recipientId: string, 
     subject: string, 
     content: string, 
-    metadata?: any
+    metadata?: any & {
+      priority?: 'low' | 'normal' | 'high' | 'urgent';
+      auto_popup?: boolean;
+      channels?: ('in_app' | 'email' | 'push')[];
+      template_key?: string;
+    }
   ): Promise<string | null> {
   if (this.isSmokeBypass()) return [];
   try {
@@ -293,14 +321,83 @@ export class MessageService {
           recipient_uuid: recipientId,
           message_subject: subject,
           message_content: content,
-          message_metadata: metadata || {}
+          message_metadata: {
+            ...metadata,
+            priority: metadata?.priority || 'normal',
+            auto_popup: metadata?.auto_popup || false,
+            channels: metadata?.channels || ['in_app'],
+            created_at: new Date().toISOString()
+          }
         });
 
       if (error) throw error;
+
+      // If high priority and external channels requested, trigger notification
+      if ((metadata?.priority === 'high' || metadata?.priority === 'urgent') && 
+          metadata?.channels && metadata.channels.length > 1) {
+        await this.triggerSystemNotification(recipientId, subject, content, metadata);
+      }
+
       return data;
     } catch (error) {
       console.error('Error sending system message:', error);
       return null;
+    }
+  }
+
+  // Trigger multi-channel notification for high priority messages
+  private static async triggerMultiChannelNotification(message: Message): Promise<void> {
+    try {
+      // Call the multi-channel notification function
+      const { error } = await supabase.functions.invoke('multi-channel-notification', {
+        body: {
+          notification_id: `msg_${message.id}`,
+          user_id: message.recipient_id,
+          channels: message.metadata?.channels || ['in_app'],
+          title: message.subject || 'Tin nhắn mới',
+          message: message.content,
+          priority: message.priority,
+          category: 'message',
+          metadata: {
+            message_id: message.id,
+            message_type: message.message_type,
+            sender_id: message.sender_id
+          }
+        }
+      });
+
+      if (error) {
+        console.error('Error triggering multi-channel notification:', error);
+      }
+    } catch (error) {
+      console.error('Error in triggerMultiChannelNotification:', error);
+    }
+  }
+
+  // Trigger system notification
+  private static async triggerSystemNotification(
+    userId: string, 
+    title: string, 
+    message: string, 
+    metadata: any
+  ): Promise<void> {
+    try {
+      const { error } = await supabase.functions.invoke('send-notification', {
+        body: {
+          user_id: userId,
+          type: 'system',
+          title,
+          message,
+          priority: metadata.priority,
+          template_key: metadata.template_key
+        }
+      });
+
+      if (error) {
+        console.error('Error triggering system notification:', error);
+      }
+    } catch (error) {
+      console.error('Error in triggerSystemNotification:', error);
     }
   }
 

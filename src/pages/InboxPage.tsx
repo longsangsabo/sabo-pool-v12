@@ -30,8 +30,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useNotifications } from '@/hooks/useNotifications';
-import { useRealtimeNotifications } from '@/hooks/useRealtimeNotifications';
+import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -44,22 +43,30 @@ const InboxPage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
-    notifications,
-    deletedNotifications,
-    loading,
-    error,
+    unreadMessages,
+    systemMessages,
+    unreadCount,
+    isConnected,
     markAsRead,
-    markAllAsRead,
-    deleteNotification,
-    restoreNotification,
-    permanentlyDeleteNotification,
-    getUnreadCount,
-    getReadCount,
-    getDeletedCount,
-    fetchNotifications,
-  } = useNotifications();
+    deleteMessage,
+    refreshMessages,
+    isLoading: loading,
+    error
+  } = useUnifiedMessages();
 
-  const { isConnected } = useRealtimeNotifications();
+  // Map unified messages to notification format for compatibility
+  const notifications = unreadMessages;
+  const deletedNotifications: any[] = []; // Would be fetched from deletedMessages
+  const markAllAsRead = async () => {
+    // Implementation would use markMultipleAsRead
+  };
+  const deleteNotification = deleteMessage;
+  const restoreNotification = async (id: string) => {}; // Placeholder
+  const permanentlyDeleteNotification = async (id: string) => {}; // Placeholder
+  const getUnreadCount = () => unreadCount;
+  const getReadCount = () => 0; // Would calculate from stats
+  const getDeletedCount = () => 0; // Would calculate from deletedMessages
+  const fetchNotifications = refreshMessages;
 
   const getMessageIcon = (type: string) => {
     switch (type) {

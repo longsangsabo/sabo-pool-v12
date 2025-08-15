@@ -7,6 +7,7 @@ import {
   CreateChallengeData,
   AcceptChallengeRequest,
 } from '@/types/challenge';
+import { challengeNotificationEventHandler } from '@/services/challengeNotificationEventHandler';
 
 export const useChallenges = () => {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
@@ -317,6 +318,30 @@ export const useChallenges = () => {
         enrichedChallenge as unknown as Challenge,
         ...prev,
       ]);
+      
+      // 🔔 NOTIFICATION: Handle challenge created event
+      try {
+        await challengeNotificationEventHandler.handleChallengeCreated({
+          challenge: {
+            id: data.id,
+            challengerId: data.challenger_id,
+            opponentId: data.opponent_id || undefined,
+            gameFormat: `Race to ${data.race_to}`,
+            scheduledTime: data.scheduled_time ? new Date(data.scheduled_time) : undefined
+          },
+          challenger: {
+            id: user.id,
+            name: challengerProfile?.full_name || user.email || 'Player'
+          },
+          opponent: data.opponent_id && opponentProfile ? {
+            id: data.opponent_id,
+            name: opponentProfile.full_name || 'Opponent'
+          } : undefined
+        });
+      } catch (notificationError) {
+        console.warn('Failed to create challenge notification:', notificationError);
+      }
+      
       toast.success('Challenge created successfully!');
 
       return enrichedChallenge;
@@ -374,6 +399,38 @@ export const useChallenges = () => {
       toast.success(
         'Tham gia thách đấu thành công! Trận đấu đã được lên lịch.'
       );
+
+      // 🔔 NOTIFICATION: Handle challenge accepted event
+      try {
+        // Get challenge data for notification
+        const { data: challengeData, error: fetchError } = await supabase
+          .from('challenges')
+          .select(`
+            *,
+            challenger_profile:profiles!challenger_id(user_id, full_name),
+            opponent_profile:profiles!opponent_id(user_id, full_name)
+          `)
+          .eq('id', challengeId)
+          .single();
+
+        if (!fetchError && challengeData) {
+          await challengeNotificationEventHandler.handleChallengeStatusChanged({
+            challenge: {
+              id: challengeData.id,
+              status: 'accepted',
+              previousStatus: 'pending'
+            },
+            participants: {
+              challengerId: challengeData.challenger_id,
+              opponentId: challengeData.opponent_id || user.id,
+              challengerName: challengeData.challenger_profile?.full_name || 'Player',
+              opponentName: challengeData.opponent_profile?.full_name || user.email || 'Player'
+            }
+          });
+        }
+      } catch (notificationError) {
+        console.warn('Failed to create challenge accepted notification:', notificationError);
+      }
 
       // Update local state to remove the challenge from open challenges
       setChallenges(prev => prev.filter(c => c.id !== challengeId));
@@ -578,6 +635,40 @@ export const useChallenges = () => {
 
       if (!data) {
         throw new Error('Challenge not found or already processed');
+      }
+
+      // 🔔 NOTIFICATION: Handle challenge declined event
+      try {
+        // Get challenger profile for notification
+        const { data: challengerProfile } = await supabase
+          .from('profiles')
+          .select('user_id, full_name')
+          .eq('user_id', data.challenger_id)
+          .single();
+
+        const { data: opponentProfile } = await supabase
+          .from('profiles')
+          .select('user_id, full_name')
+          .eq('user_id', user.id)
+          .single();
+
+        if (challengerProfile) {
+          await challengeNotificationEventHandler.handleChallengeStatusChanged({
+            challenge: {
+              id: data.id,
+              status: 'declined',
+              previousStatus: 'pending'
+            },
+            participants: {
+              challengerId: data.challenger_id,
+              opponentId: user.id,
+              challengerName: challengerProfile.full_name || 'Player',
+              opponentName: opponentProfile?.full_name || user.email || 'Player'
+            }
+          });
+        }
+      } catch (notificationError) {
+        console.warn('Failed to create challenge declined notification:', notificationError);
       }
 
       // Update local state

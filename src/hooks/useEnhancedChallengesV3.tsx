@@ -12,60 +12,86 @@ export const useEnhancedChallengesV3 = () => {
   const [currentUserProfile, setCurrentUserProfile] = useState<any>(null);
   const { user } = useAuth();
 
-  // Helper function to check if challenge is expired
+  // Helper function to check if challenge is expired - ENHANCED
   const isExpiredChallenge = (challenge: Challenge): boolean => {
-    if (challenge.status !== 'pending' || challenge.opponent_id) {
-      return false; // Only check pending challenges without opponent
+    // Skip if already expired, completed, or cancelled
+    if (['expired', 'completed', 'cancelled'].includes(challenge.status)) {
+      return false;
     }
-
+    
     const now = new Date();
     
-    // Check expires_at first (explicit expiration)
-    if (challenge.expires_at) {
-      return new Date(challenge.expires_at) < now;
+    // CASE 1: Pending challenges without opponent - check multiple expiry conditions
+    if (challenge.status === 'pending' && !challenge.opponent_id) {
+      // Check expires_at first (explicit expiration)
+      if (challenge.expires_at) {
+        return new Date(challenge.expires_at) < now;
+      }
+      
+      // Check scheduled_time (if scheduled time passed without opponent)
+      if (challenge.scheduled_time) {
+        return new Date(challenge.scheduled_time) < now;
+      }
+      
+      // Default: expire after 48 hours if no explicit expiration
+      if (challenge.created_at) {
+        const created = new Date(challenge.created_at);
+        const expiry = new Date(created.getTime() + 48 * 60 * 60 * 1000); // 48 hours
+        return expiry < now;
+      }
     }
     
-    // Check scheduled_time (if scheduled time passed without opponent)
-    if (challenge.scheduled_time) {
-      return new Date(challenge.scheduled_time) < now;
+    // CASE 2: Open challenges without opponent - check if scheduled time has passed
+    if (challenge.status === 'open' && !challenge.opponent_id && challenge.scheduled_time) {
+      const scheduledTime = new Date(challenge.scheduled_time);
+      // Allow 15 minutes grace period after scheduled time
+      const graceTime = new Date(scheduledTime.getTime() + 15 * 60 * 1000);
+      return now > graceTime;
     }
     
-    // Default: expire after 48 hours if no explicit expiration
-    if (challenge.created_at) {
-      const created = new Date(challenge.created_at);
-      const expiry = new Date(created.getTime() + 48 * 60 * 60 * 1000); // 48 hours
-      return expiry < now;
+    // CASE 3: Accepted challenges that should have started (scheduled time passed)
+    if (challenge.status === 'accepted' && challenge.scheduled_time && challenge.opponent_id) {
+      const scheduledTime = new Date(challenge.scheduled_time);
+      // Allow 30 minutes grace period for accepted challenges
+      const graceTime = new Date(scheduledTime.getTime() + 30 * 60 * 1000);
+      return now > graceTime;
     }
     
     return false;
   };
 
-  // Auto-expire challenges function - ENHANCED to handle 'open' status
+  // Auto-expire challenges function - ENHANCED with comprehensive expiry logic
   const autoExpireChallenges = async () => {
     if (!user) return;
 
     try {
-      // Filter expired challenges that are still active (pending or open)
+      // Filter expired challenges that are still active
       const expiredChallenges = challenges.filter(challenge => 
         isExpiredChallenge(challenge) && 
-        (challenge.status === 'pending' || challenge.status === 'open')
+        !['expired', 'completed', 'cancelled'].includes(challenge.status)
       );
       
       if (expiredChallenges.length > 0) {
-        console.log(`🗑️ Auto-expiring ${expiredChallenges.length} challenges (pending + open)...`, {
+        console.log(`🗑️ Auto-expiring ${expiredChallenges.length} challenges...`, {
           expiredIds: expiredChallenges.map(c => c.id),
-          expiredStatuses: expiredChallenges.map(c => ({ id: c.id, status: c.status, expires_at: c.expires_at }))
+          expiredData: expiredChallenges.map(c => ({ 
+            id: c.id, 
+            status: c.status, 
+            expires_at: c.expires_at,
+            scheduled_time: c.scheduled_time,
+            has_opponent: !!c.opponent_id,
+            reason: getExpiryReason(c)
+          }))
         });
         
-        // Update expired challenges in database - include both 'pending' and 'open'
+        // Update expired challenges in database
         const { error } = await supabase
           .from('challenges')
           .update({ 
             status: 'expired',
             updated_at: new Date().toISOString()
           })
-          .in('id', expiredChallenges.map(c => c.id))
-          .in('status', ['pending', 'open']); // Include both pending and open challenges
+          .in('id', expiredChallenges.map(c => c.id));
 
         if (error) {
           console.error('❌ Error auto-expiring challenges:', error);
@@ -77,15 +103,42 @@ export const useEnhancedChallengesV3 = () => {
             !expiredChallenges.some(exp => exp.id === c.id)
           ));
           
-          // Show console notification about cleanup
+          // Show user-friendly notification for cleanup
           if (expiredChallenges.length > 0) {
             console.log(`🧹 Cleaned up ${expiredChallenges.length} expired challenge(s)`);
+            // Optional: Show toast notification to user
+            // toast.info(`Đã ẩn ${expiredChallenges.length} thách đấu hết hạn`);
           }
         }
       }
     } catch (error) {
       console.error('Error in auto-expire logic:', error);
     }
+  };
+
+  // Helper function to get expiry reason for debugging
+  const getExpiryReason = (challenge: Challenge): string => {
+    const now = new Date();
+    
+    if (challenge.status === 'pending' && !challenge.opponent_id) {
+      if (challenge.expires_at && new Date(challenge.expires_at) < now) {
+        return 'explicit_expiry';
+      }
+      if (challenge.scheduled_time && new Date(challenge.scheduled_time) < now) {
+        return 'scheduled_time_passed';
+      }
+      return 'default_48h_expiry';
+    }
+    
+    if (challenge.status === 'open' && !challenge.opponent_id && challenge.scheduled_time) {
+      return 'open_scheduled_time_passed';
+    }
+    
+    if (challenge.status === 'accepted' && challenge.scheduled_time && challenge.opponent_id) {
+      return 'accepted_grace_period_exceeded';
+    }
+    
+    return 'unknown';
   };
 
   // Fetch all challenges with enhanced data
@@ -215,6 +268,11 @@ export const useEnhancedChallengesV3 = () => {
         currentUserId: user?.id
       });
 
+      // 🚀 Auto-expire challenges immediately after loading
+      setTimeout(() => {
+        autoExpireChallenges();
+      }, 1000); // Small delay to ensure state is updated
+
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
@@ -256,7 +314,8 @@ export const useEnhancedChallengesV3 = () => {
       (c.status === 'accepted' || c.status === 'ongoing') && 
       c.opponent_id && 
       c.scheduled_time && 
-      new Date(c.scheduled_time) <= new Date()
+      new Date(c.scheduled_time) <= new Date() &&
+      !isExpiredChallenge(c) // Exclude expired challenges
     ), 
     [challenges]
   );
@@ -265,7 +324,8 @@ export const useEnhancedChallengesV3 = () => {
     challenges.filter(c => 
       c.status === 'accepted' && 
       c.opponent_id && 
-      (!c.scheduled_time || new Date(c.scheduled_time) > new Date())
+      (!c.scheduled_time || new Date(c.scheduled_time) > new Date()) &&
+      !isExpiredChallenge(c) // Exclude expired challenges
     ), 
     [challenges]
   );
@@ -275,12 +335,13 @@ export const useEnhancedChallengesV3 = () => {
     [challenges]
   );
 
-  // My challenges - Only user's challenges
+  // My challenges - Only user's challenges WITH EXPIRY FILTERING
   const myDoiDoiThu = useMemo(() => {
     const filtered = challenges.filter(c => 
       c.challenger_id === user?.id && 
       !c.opponent_id && 
-      (c.status === 'pending' || c.status === 'open') // ✅ Added 'open' status support
+      (c.status === 'pending' || c.status === 'open') && // ✅ Added 'open' status support
+      !isExpiredChallenge(c) // ✅ ENHANCED: Exclude expired challenges
     );
     
     console.log('🔍 [useEnhancedChallengesV3] myDoiDoiThu filtering:', {
@@ -290,8 +351,9 @@ export const useEnhancedChallengesV3 = () => {
       noOpponent: challenges.filter(c => c.challenger_id === user?.id && !c.opponent_id).length,
       pendingStatus: challenges.filter(c => c.challenger_id === user?.id && !c.opponent_id && c.status === 'pending').length,
       openStatus: challenges.filter(c => c.challenger_id === user?.id && !c.opponent_id && c.status === 'open').length,
+      notExpired: challenges.filter(c => c.challenger_id === user?.id && !c.opponent_id && (c.status === 'pending' || c.status === 'open') && !isExpiredChallenge(c)).length,
       filtered: filtered.length,
-      filteredDetails: filtered.map(c => ({ id: c.id, status: c.status, opponent_id: c.opponent_id }))
+      filteredDetails: filtered.map(c => ({ id: c.id, status: c.status, opponent_id: c.opponent_id, expired: isExpiredChallenge(c) }))
     });
     
     return filtered;
@@ -301,7 +363,8 @@ export const useEnhancedChallengesV3 = () => {
     const filtered = challenges.filter(c => 
       (c.challenger_id === user?.id || c.opponent_id === user?.id) && 
       (c.status === 'accepted' || c.status === 'ongoing') && // ✅ Added 'ongoing' status
-      c.opponent_id
+      c.opponent_id &&
+      !isExpiredChallenge(c) // ✅ ENHANCED: Exclude expired challenges
     );
     
     console.log('🔍 [useEnhancedChallengesV3] mySapToi filtering:', {
@@ -311,8 +374,9 @@ export const useEnhancedChallengesV3 = () => {
       withOpponent: challenges.filter(c => (c.challenger_id === user?.id || c.opponent_id === user?.id) && c.opponent_id).length,
       acceptedStatus: challenges.filter(c => (c.challenger_id === user?.id || c.opponent_id === user?.id) && c.status === 'accepted' && c.opponent_id).length,
       ongoingStatus: challenges.filter(c => (c.challenger_id === user?.id || c.opponent_id === user?.id) && c.status === 'ongoing' && c.opponent_id).length,
+      notExpired: challenges.filter(c => (c.challenger_id === user?.id || c.opponent_id === user?.id) && (c.status === 'accepted' || c.status === 'ongoing') && c.opponent_id && !isExpiredChallenge(c)).length,
       filtered: filtered.length,
-      filteredDetails: filtered.map(c => ({ id: c.id, status: c.status, opponent_id: c.opponent_id }))
+      filteredDetails: filtered.map(c => ({ id: c.id, status: c.status, opponent_id: c.opponent_id, expired: isExpiredChallenge(c) }))
     });
     
     return filtered;
@@ -482,21 +546,43 @@ export const useEnhancedChallengesV3 = () => {
     };
   }, [user]); // Remove challenges dependency
 
-  // Auto-expire challenges - OPTIMIZED (only run when needed)
+  // Auto-expire challenges - ENHANCED with more frequent checks
   useEffect(() => {
     if (!user || challenges.length === 0) return;
 
-    const hasPendingChallenges = challenges.some(c => c.status === 'pending' && !c.opponent_id);
-    if (!hasPendingChallenges) return; // Skip if no pending challenges
+    // Check if there are any challenges that might need expiring
+    const hasExpiringChallenges = challenges.some(c => 
+      !['expired', 'completed', 'cancelled'].includes(c.status) && 
+      (
+        (c.status === 'pending' && !c.opponent_id) ||
+        (c.status === 'open' && !c.opponent_id && c.scheduled_time) ||
+        (c.status === 'accepted' && c.scheduled_time && c.opponent_id)
+      )
+    );
+    
+    if (!hasExpiringChallenges) return; // Skip if no challenges need checking
 
+    // Run initial check after 3 seconds
+    const initialCheck = setTimeout(() => {
+      autoExpireChallenges();
+    }, 3000);
+
+    // Run periodic checks every 2 minutes for more responsive cleanup
     const interval = setInterval(() => {
       autoExpireChallenges();
-    }, 5 * 60 * 1000); // 5 minutes
+    }, 2 * 60 * 1000); // 2 minutes for faster response
+
+    console.log('🔄 [useEnhancedChallengesV3] Started auto-expire monitoring', {
+      challengesCount: challenges.length,
+      hasExpiringChallenges,
+      checkInterval: '2 minutes'
+    });
 
     return () => {
+      clearTimeout(initialCheck);
       clearInterval(interval);
     };
-  }, [user, challenges.length]); // Only depend on count, not full array
+  }, [user, challenges.length, challenges.map(c => c.status).join('-')]); // React to status changes
 
   return {
     // Core data

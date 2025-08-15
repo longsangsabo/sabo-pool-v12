@@ -1,7 +1,16 @@
 -- Add club confirmation columns to challenges table
 -- Run this in Supabase SQL Editor
 
--- 0. First, check and update status constraints to include new statuses
+-- 0. First, add missing columns to club_profiles table
+ALTER TABLE club_profiles 
+ADD COLUMN IF NOT EXISTS name TEXT;
+
+-- Update existing club_profiles with default name if empty
+UPDATE club_profiles 
+SET name = 'Club ' || id::text 
+WHERE name IS NULL OR name = '';
+
+-- 1. Check and update status constraints to include new statuses
 -- Add pending_approval and rejected to allowed status values
 DO $$
 BEGIN

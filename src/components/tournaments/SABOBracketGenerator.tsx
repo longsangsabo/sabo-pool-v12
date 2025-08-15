@@ -7,7 +7,6 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { useBracketGeneration } from '@/hooks/useBracketGeneration';
-import { TournamentDebugPanel } from '@/components/debug/TournamentDebugPanel';
 import {
   Loader2,
   GitBranch,
@@ -277,9 +276,11 @@ export function SABOBracketGenerator({
           </>
         )}
 
-        {/* Debug Panel - only show when there are issues */}
+        {/* Debug Panel - removed TournamentDebugPanel as it's been deleted */}
         {(!isValidParticipantCount || validationResult?.error) && (
-          <TournamentDebugPanel tournamentId={tournamentId} />
+          <div className="p-4 bg-red-50 rounded-lg">
+            <p className="text-sm text-red-600">Debug information temporarily unavailable</p>
+          </div>
         )}
       </CardContent>
     </Card>

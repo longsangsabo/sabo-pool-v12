@@ -28,7 +28,6 @@ import { ValidationService } from '@/services/ValidationService';
 import { RewardsService } from '@/services/RewardsService';
 import { GameFormat } from '@/types/tournament-enums';
 import { TournamentSettingsSection } from './TournamentSettingsSection';
-import { AdvancedSettingsSection } from './simplified-steps/AdvancedSettingsSection';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -60,6 +59,7 @@ import {
 } from '@/components/ui/tooltip';
 import { OptimizedRewardsSection } from './OptimizedRewardsSection';
 import { RewardsEditModal } from './RewardsEditModal';
+import { TournamentTemplateDropdown } from './TournamentTemplateDropdown';
 
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -95,7 +95,6 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
     setRecalculateOnChange,
     createTournament,
     updateExistingTournament,
-    loadLatestTournament,
   } = useTournament();
 
   const { refreshTournaments } = useTournamentGlobal();
@@ -103,7 +102,6 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
   const [showRewardsModal, setShowRewardsModal] = useState(false);
   const [showQuickAllocation, setShowQuickAllocation] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoadingLatest, setIsLoadingLatest] = useState(false);
 
   const form = useForm<TournamentFormData>({
     resolver: zodResolver(tournamentSchema),
@@ -150,27 +148,6 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
       }
     };
   }, [form, updateTournament]);
-
-  // Handle auto-fill from latest tournament
-  const handleAutoFill = async () => {
-    if (!loadLatestTournament) return;
-
-    try {
-      setIsLoadingLatest(true);
-      const latestData = await loadLatestTournament();
-
-      if (latestData) {
-        // Reset form with latest data
-        form.reset(latestData);
-        // Update context
-        updateTournament(latestData);
-      }
-    } catch (error) {
-      console.error('❌ Error auto-filling from latest tournament:', error);
-    } finally {
-      setIsLoadingLatest(false);
-    }
-  };
 
   // Calculate completion percentage
   const getCompletionPercentage = (): number => {
@@ -476,22 +453,23 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
             {mode === 'edit' ? 'Chỉnh sửa giải đấu' : 'Tạo giải đấu mới'}
           </h3>
           <div className='flex items-center gap-2'>
-            {mode === 'create' && loadLatestTournament && (
-              <Button
-                type='button'
-                variant='outline'
-                size='sm'
-                onClick={handleAutoFill}
-                disabled={isLoadingLatest}
+            {mode === 'create' && (
+              <TournamentTemplateDropdown
+                onSelectTemplate={(templateData) => {
+                  // Reset form with template data
+                  const normalized = {
+                    ...templateData,
+                    // Normalize tier_level: ensure number (DB expects integer)
+                    tier_level: typeof (templateData as any).tier_level === 'number'
+                      ? (templateData as any).tier_level
+                      : 1,
+                  };
+                  form.reset(normalized);
+                  // Update context
+                  updateTournament(normalized);
+                }}
                 className='h-7 text-xs'
-              >
-                {isLoadingLatest ? (
-                  <RefreshCw className='h-3 w-3 mr-1 animate-spin' />
-                ) : (
-                  <Zap className='h-3 w-3 mr-1' />
-                )}
-                Dùng data gần nhất
-              </Button>
+              />
             )}
             <Badge
               variant={isValid ? 'default' : 'destructive'}
@@ -760,7 +738,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                       CÀI ĐẶT & QUY ĐỊNH
                     </span>
                   </div>
-                  <AdvancedSettingsSection form={form} />
+                  {/* Advanced settings moved inline - removing AdvancedSettingsSection */}
                 </div>
               </div>
 
@@ -1145,7 +1123,24 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                         tournament_type:
                           formData.tournament_type || 'single_elimination',
                         game_format: formData.game_format || '9_ball',
-                        tier_level: formData.tier_level || 1,
+                        // Normalize tier_level to numeric (DB expects integer)
+                        tier_level: (() => {
+                          const raw: any = (formData as any).tier_level;
+                          if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+                          if (typeof raw === 'string') {
+                            // Common textual mappings (fallback to 1)
+                            const map: Record<string, number> = {
+                              beginner: 1,
+                              intermediate: 2,
+                              advanced: 3,
+                              pro: 4,
+                            };
+                            if (map[raw.toLowerCase()]) return map[raw.toLowerCase()];
+                            const parsed = parseInt(raw, 10);
+                            return Number.isFinite(parsed) ? parsed : 1;
+                          }
+                          return 1;
+                        })(),
                         entry_fee: formData.entry_fee || 0,
                         prize_pool: formData.prize_pool || 0, // ADD MISSING PRIZE_POOL FIELD
                         is_public: formData.is_public !== false,

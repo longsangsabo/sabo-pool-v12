@@ -76,7 +76,7 @@ const ClubRegistrationPage = lazy(() => import('@/pages/ClubRegistrationPage'));
 const FeedPage = lazy(() => import('@/pages/FeedPage'));
 const MarketplacePage = lazy(() => import('@/pages/EnhancedMarketplacePage'));
 const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
-const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'));
+const NotificationsPage = lazy(() => import('@/pages/NotificationsFullPage'));
 // Milestones
 const MilestonePage = lazy(() => import('@/pages/MilestonePage'));
 

@@ -28,7 +28,7 @@ import { toast } from 'sonner';
 import { useTheme } from '@/hooks/useTheme';
 import { useAvatar } from '@/contexts/AvatarContext';
 import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
-import { NotificationBell } from '@/components/notifications/ChallengeNotificationComponents';
+import { UnifiedNotificationBell } from '@/components/notifications/UnifiedNotificationBell';
 
 interface MobileHeaderProps {
   title?: string;
@@ -189,8 +189,10 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           )}
 
           {/* Challenge Notifications */}
-          <NotificationBell 
+          <UnifiedNotificationBell 
+            variant="mobile"
             className="hover:bg-muted/50 transition-colors"
+            onClick={() => navigate('/notifications')}
           />
 
           {/* Profile Menu */}

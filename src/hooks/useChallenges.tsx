@@ -338,8 +338,10 @@ export const useChallenges = () => {
             name: opponentProfile.full_name || 'Opponent'
           } : undefined
         });
+        console.log('✅ Challenge notification created successfully');
       } catch (notificationError) {
         console.warn('Failed to create challenge notification:', notificationError);
+        // Don't throw error - challenge creation should still succeed
       }
       
       toast.success('Challenge created successfully!');
@@ -427,6 +429,7 @@ export const useChallenges = () => {
               opponentName: challengeData.opponent_profile?.full_name || user.email || 'Player'
             }
           });
+          console.log('✅ Challenge accepted notification created successfully');
         }
       } catch (notificationError) {
         console.warn('Failed to create challenge accepted notification:', notificationError);
@@ -666,6 +669,7 @@ export const useChallenges = () => {
               opponentName: opponentProfile?.full_name || user.email || 'Player'
             }
           });
+          console.log('✅ Challenge declined notification created successfully');
         }
       } catch (notificationError) {
         console.warn('Failed to create challenge declined notification:', notificationError);

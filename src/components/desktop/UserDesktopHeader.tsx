@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Bell, Menu, Search, Settings, User, LogOut, MessageCircle } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { ClubRoleSwitch } from '@/components/club/ClubRoleSwitch';
-import { NotificationBell } from '@/components/notifications/ChallengeNotificationComponents';
+import { UnifiedNotificationBell } from '@/components/notifications/UnifiedNotificationBell';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -87,8 +87,9 @@ export const UserDesktopHeader: React.FC<UserDesktopHeaderProps> = ({
           </Button>
 
           {/* Challenge Notifications */}
-          <NotificationBell 
-            className="hover:bg-muted"
+          <UnifiedNotificationBell 
+            variant="desktop" 
+            onClick={() => navigate('/notifications')}
           />
 
           {/* Theme Toggle */}

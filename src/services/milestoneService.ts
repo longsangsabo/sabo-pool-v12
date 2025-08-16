@@ -106,13 +106,22 @@ class MilestoneService {
           milestone.milestone_type,
           milestone.id
         );
-        await supabase.from('notifications').insert({
-          user_id: playerId,
-          type: 'milestone_completed',
-          title: 'Hoàn thành mốc',
-          message: `${milestone.name} +${milestone.spa_reward} SPA`,
-          priority: 'low',
-          metadata: { milestone_id: milestone.id, milestone_type: milestone.milestone_type }
+        await supabase.rpc('create_challenge_notification', {
+          p_type: 'milestone_completed',
+          p_user_id: playerId,
+          p_title: '🏆 Hoàn thành milestone!',
+          p_message: `🎉 ${milestone.name} - Nhận ${milestone.spa_reward} SPA!`,
+          p_icon: 'trophy',
+          p_priority: 'high',
+          p_action_text: 'Xem thưởng',
+          p_action_url: '/milestones',
+          p_metadata: JSON.stringify({ 
+            milestone_id: milestone.id, 
+            milestone_type: milestone.milestone_type,
+            spa_reward: milestone.spa_reward,
+            badge_name: milestone.badge_name || 'Achievement',
+            celebration: true
+          })
         });
       }
     }

@@ -7,6 +7,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
+import { useMilestoneEvents } from '@/hooks/useMilestoneEvents';
+import { supabase } from '@/integrations/supabase/client';
 import {
   EnhancedAuthTabs,
   PhoneTabContent,
@@ -48,7 +50,8 @@ const EnhancedRegisterPage = () => {
 
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  const { signUpWithPhone, signUpWithEmail, verifyPhoneOtp } = useAuth();
+  const { signUpWithPhone, signUpWithEmail, verifyPhoneOtp, user } = useAuth();
+  const { triggerAccountCreation } = useMilestoneEvents();
   const [searchParams] = useSearchParams();
   const referralCode = searchParams.get('ref');
 
@@ -126,6 +129,21 @@ const EnhancedRegisterPage = () => {
         );
         setOtpOpen(false);
         setPendingPhoneData(null);
+        
+        // Trigger account creation milestone
+        setTimeout(async () => {
+          try {
+            // Wait a bit for auth state to be ready, then trigger milestone
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user?.id) {
+              console.log('🏆 Triggering account creation milestone for user:', user.id);
+              await triggerAccountCreation(user.id);
+            }
+          } catch (milestoneError) {
+            console.error('Error triggering account creation milestone:', milestoneError);
+          }
+        }, 2000);
+        
         navigate('/dashboard');
       }
     } catch (error) {
@@ -197,6 +215,11 @@ const EnhancedRegisterPage = () => {
             ? 'Đăng ký thành công! Bạn và người giới thiệu đều nhận được 100 SPA! Vui lòng kiểm tra email để xác thực tài khoản.'
             : 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.'
         );
+        
+        // Trigger account creation milestone for email signup
+        // Note: For email signup, milestone will be triggered when email is confirmed
+        // which happens in the auth state change handler
+        
         navigate('/auth/login');
       }
     } catch (error) {

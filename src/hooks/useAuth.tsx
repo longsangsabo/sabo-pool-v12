@@ -9,9 +9,10 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { setupAuthMonitoring } from '@/utils/authRecovery';
+import { milestoneService } from '@/services/milestoneService';
 import { useTokenRefresh } from '@/hooks/useTokenRefresh';
 import { formatPhoneToE164 } from '@/utils/phone';
-import { authConfig, getAuthRedirectUrl } from '@/utils/authConfig';
+import { AUTH_REDIRECTS, getAuthRedirectUrl } from '@/utils/authConfig';
 
 interface AuthError extends Error {
   code?: string;
@@ -247,6 +248,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         sessionStorage.clear();
       } else if (event === 'SIGNED_IN' && session?.user) {
         console.log('🔧 Auth: User signed in:', session.user.id);
+        
+        // Trigger milestone for new account creation
+        if (session.user) {
+          // Check if this is a new user by checking if they have any milestone progress
+          milestoneService.getPlayerMilestoneProgress(session.user.id)
+            .then(progress => {
+              // If no milestone progress exists, this is likely a new account
+              if (progress.length === 0) {
+                console.log('🏆 Triggering account_creation milestone for new user');
+                // Initialize milestones first
+                return milestoneService.initializePlayerMilestones(session.user.id)
+                  .then(() => milestoneService.checkAndAwardMilestone(
+                    session.user.id, 
+                    'account_creation', 
+                    1
+                  ));
+              }
+            })
+            .catch(error => {
+              console.error('🔧 Error handling milestone for new user:', error);
+            });
+        }
       } else if (event === 'TOKEN_REFRESHED') {
         console.log('🔧 Auth: Token refreshed for user:', session?.user?.id);
       }

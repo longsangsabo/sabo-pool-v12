@@ -52,6 +52,30 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
     }
   }, [hasError]);
 
+  // Force refresh mechanism to fix badge sync issues
+  const forceRefresh = async () => {
+    console.log('🔄 Force refreshing notification state...');
+    
+    // Clear all local state
+    setNotifications([]);
+    setUnreadCount(0);
+    setHasError(false);
+    setIsOpen(false);
+    
+    // Force re-fetch from database
+    if (user) {
+      await fetchNotifications(true);
+    }
+  };
+
+  // Add force refresh on component mount to ensure fresh data
+  useEffect(() => {
+    if (user) {
+      console.log('🎯 UnifiedNotificationBell mounted, force refreshing...');
+      forceRefresh();
+    }
+  }, [user?.id]); // Only trigger when user changes
+
   // Error handler wrapper
   const withErrorHandling = (fn: Function) => {
     return (...args: any[]) => {
@@ -104,12 +128,32 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
     };
   }, []);
 
-  // Fetch notifications
-  const fetchNotifications = async () => {
+  // Fetch notifications with better error handling and caching prevention
+  const fetchNotifications = async (forceRefresh = false) => {
     if (!user?.id) return;
 
     try {
       setLoading(true);
+      
+      if (forceRefresh) {
+        console.log('🧹 Force refresh: Clearing all cached state...');
+        
+        // Clear any localStorage cache that might exist
+        try {
+          localStorage.removeItem('notifications_cache');
+          localStorage.removeItem('notification_count');
+          localStorage.removeItem(`notifications_${user.id}`);
+        } catch (e) {
+          console.log('Note: localStorage clear failed (no cache found)');
+        }
+        
+        // Reset component state
+        setNotifications([]);
+        setUnreadCount(0);
+        setHasError(false);
+      }
+      
+      // Create fresh query to prevent caching
       const { data, error } = await supabase
         .from('challenge_notifications' as any)
         .select('*')
@@ -119,21 +163,56 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
 
       if (error) {
         console.error('Error fetching notifications:', error);
-        return;
+        
+        if (forceRefresh) {
+          console.log('🔧 Force refresh detected error - checking auth state...');
+          // Check if user is properly authenticated
+          const { data: authData } = await supabase.auth.getUser();
+          if (!authData.user) {
+            console.log('⚠️  User not authenticated - clearing badge');
+            setNotifications([]);
+            setUnreadCount(0);
+            return;
+          }
+        }
       }
 
-      setNotifications((data as unknown as Notification[]) || []);
-      setUnreadCount(((data as unknown as Notification[]) || []).filter(n => !n.is_read).length);
+      const notificationData = (data as unknown as Notification[]) || [];
+      setNotifications(notificationData);
+      
+      // Calculate unread count more reliably
+      const unreadNotifications = notificationData.filter(n => !n.is_read);
+      const newUnreadCount = unreadNotifications.length;
+      
+      console.log(`📊 Notification fetch: Total=${notificationData.length}, Unread=${newUnreadCount}`, 
+        forceRefresh ? '(FORCED REFRESH)' : '');
+      setUnreadCount(newUnreadCount);
+      
     } catch (error) {
       console.error('Error fetching notifications:', error);
+      
+      if (forceRefresh) {
+        console.log('🔧 Force refresh caught error - resetting state');
+        setNotifications([]);
+        setUnreadCount(0);
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // Mark notification as read
+  // Mark notification as read with immediate state update
   const markAsRead = async (notificationId: string) => {
     try {
+      // Optimistically update UI first
+      setNotifications(prev =>
+        prev.map(n =>
+          n.id === notificationId ? { ...n, is_read: true } : n
+        )
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
+
+      // Then update database
       const { error } = await supabase
         .from('challenge_notifications' as any)
         .update({ is_read: true })
@@ -142,24 +221,27 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
 
       if (error) {
         console.error('Error marking notification as read:', error);
+        // Revert optimistic update on error
+        await fetchNotifications(true);
         return;
       }
 
-      // Update local state
-      setNotifications(prev =>
-        prev.map(n =>
-          n.id === notificationId ? { ...n, is_read: true } : n
-        )
-      );
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      console.log(`✅ Marked notification ${notificationId.slice(0,8)}... as read`);
     } catch (error) {
       console.error('Error marking notification as read:', error);
+      // Revert by refetching
+      await fetchNotifications(true);
     }
   };
 
-  // Mark all as read with safety
+  // Mark all as read with optimistic updates and safety
   const markAllAsRead = async () => {
     try {
+      // Optimistically update UI first
+      const unreadNotifications = notifications.filter(n => !n.is_read);
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      setUnreadCount(0);
+
       const { error } = await supabase
         .from('challenge_notifications' as any)
         .update({ is_read: true })
@@ -168,14 +250,18 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
 
       if (error) {
         console.error('Error marking all notifications as read:', error);
+        // Revert optimistic update
+        await fetchNotifications(true);
+        toast.error('Có lỗi xảy ra khi đánh dấu thông báo');
         return;
       }
 
-      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-      setUnreadCount(0);
+      console.log(`✅ Marked ${unreadNotifications.length} notifications as read`);
       toast.success('Đã đánh dấu tất cả thông báo là đã đọc');
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
+      // Revert by refetching
+      await fetchNotifications(true);
       toast.error('Có lỗi xảy ra khi đánh dấu thông báo');
     }
   };
@@ -240,7 +326,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
       try {
         await fetchNotifications();
 
-        // Subscribe to real-time notifications
+        // Subscribe to real-time notifications for both INSERT and UPDATE
         subscription = supabase
           .channel('unified_notifications_realtime')
           .on(
@@ -270,6 +356,41 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
               }
             }
           )
+          .on(
+            'postgres_changes',
+            {
+              event: 'UPDATE',
+              schema: 'public',
+              table: 'challenge_notifications',
+              filter: `user_id=eq.${user.id}`,
+            },
+            (payload) => {
+              try {
+                console.log('Notification updated:', payload);
+                const updatedNotification = payload.new as Notification;
+                
+                // Update local state
+                setNotifications(prev => 
+                  prev.map(n => 
+                    n.id === updatedNotification.id ? updatedNotification : n
+                  )
+                );
+                
+                // Recalculate unread count from updated notifications
+                setNotifications(prev => {
+                  const unreadCountNew = prev.filter(n => 
+                    n.id === updatedNotification.id ? !updatedNotification.is_read : !n.is_read
+                  ).length;
+                  setUnreadCount(unreadCountNew);
+                  return prev.map(n => 
+                    n.id === updatedNotification.id ? updatedNotification : n
+                  );
+                });
+              } catch (error) {
+                console.error('Error handling notification update:', error);
+              }
+            }
+          )
           .subscribe();
       } catch (error) {
         console.error('Error setting up notification subscription:', error);
@@ -287,6 +408,43 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
         console.error('Error unsubscribing:', error);
       }
     };
+  }, [user?.id]);
+
+  // Add window focus listener to refresh notifications with force refresh
+  useEffect(() => {
+    const handleWindowFocus = () => {
+      if (user?.id) {
+        console.log('🔄 Window focused - force refreshing notifications');
+        fetchNotifications(true); // Force refresh on window focus
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user?.id) {
+        console.log('🔄 Page became visible - force refreshing notifications');
+        fetchNotifications(true); // Force refresh when page becomes visible
+      }
+    };
+
+    window.addEventListener('focus', handleWindowFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      window.removeEventListener('focus', handleWindowFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [user?.id]);
+
+  // Add periodic refresh to ensure data consistency with force refresh
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const refreshInterval = setInterval(() => {
+      console.log('⏰ Periodic refresh - force refreshing notifications');
+      fetchNotifications(true); // Force refresh every interval
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(refreshInterval);
   }, [user?.id]);
 
   if (!user) return null;
@@ -335,6 +493,15 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
           <div className="flex items-center justify-between">
             <h3 className={`font-semibold text-gray-900 dark:text-white ${isCompact ? 'text-sm' : ''}`}>Thông báo</h3>
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={forceRefresh}
+                className="text-xs h-6 px-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                title="Force refresh notifications"
+              >
+                🔄
+              </Button>
               {unreadCount > 0 && (
                 <Button
                   variant="ghost"

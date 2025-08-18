@@ -19,6 +19,7 @@ import { RankRequestModal } from './mobile/profile/components/RankRequestModal';
 import { ProfileTabsMobile } from './mobile/profile/components/ProfileTabsMobile';
 import { ClubSection } from './mobile/profile/components/ClubSection';
 import { RankSection } from './mobile/profile/components/RankSection';
+import SpaHistoryTab from './mobile/profile/components/SpaHistoryTab';
 import { usePlayerStats } from '@/hooks/usePlayerStats';
 import { usePlayerRanking } from '@/hooks/usePlayerRanking';
 import { useMobilePageTitle } from '@/hooks/useMobilePageTitle';
@@ -151,6 +152,9 @@ const OptimizedMobileProfile: React.FC = () => {
                 onOpenRequest={() => rankModal.setOpen(true)}
               />
             </div>
+          )}
+          {activeTab === 'spa-history' && (
+            <SpaHistoryTab theme={theme as 'light' | 'dark'} />
           )}
           {activeTab === 'club' && (
             <ClubSection

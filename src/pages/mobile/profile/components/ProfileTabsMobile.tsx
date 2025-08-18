@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, UserCircle, Award, Star } from 'lucide-react';
+import { Activity, UserCircle, Award, Star, DollarSign } from 'lucide-react';
 
 interface ProfileTabsMobileProps {
   activeTab: string;
@@ -25,6 +25,12 @@ const TABS = [
     label: 'Đăng ký hạng',
     Icon: Award,
     color: { light: 'purple', dark: 'purple' },
+  },
+  {
+    key: 'spa-history',
+    label: 'SPA',
+    Icon: DollarSign,
+    color: { light: 'amber', dark: 'amber' },
   },
   {
     key: 'club',

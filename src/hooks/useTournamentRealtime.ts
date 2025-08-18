@@ -74,7 +74,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
           profiles: profiles?.find(p => p.user_id === reg.user_id),
         })) || [];
 
-      // Count only paid registrations for current_participants (fix 17/16 issue)
+      // Count both confirmed and paid registrations for current_participants
       const confirmed = participantList.filter(
         r => r.registration_status === 'confirmed'
       ).length;
@@ -87,7 +87,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
 
       setParticipants(participantList);
       setStats({
-        current_participants: paid, // Use paid count instead of confirmed
+        current_participants: confirmed + paid, // Count both confirmed and paid
         confirmed,
         pending,
         last_updated: new Date(),
@@ -95,7 +95,9 @@ export const useTournamentRealtime = (tournamentId: string) => {
 
       console.log('📊 Initial stats loaded:', {
         confirmed,
+        paid,
         pending,
+        current_participants: confirmed + paid,
         total: participantList.length,
       });
     } catch (error) {
@@ -143,11 +145,11 @@ export const useTournamentRealtime = (tournamentId: string) => {
 
     setParticipants(prev => [...prev, newParticipant]);
 
-    // Update stats (fix to count paid registrations only)
+    // Update stats - count both confirmed and paid for current_participants
     setStats(prev => ({
       ...prev,
       current_participants:
-        registration.registration_status === 'paid'
+        ['confirmed', 'paid'].includes(registration.registration_status)
           ? prev.current_participants + 1
           : prev.current_participants,
       confirmed:
@@ -171,7 +173,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
       prev.map(p => (p.id === registration.id ? { ...p, ...registration } : p))
     );
 
-    // Recalculate stats (fix to count paid registrations only)
+    // Recalculate stats - count both confirmed and paid for current_participants
     setParticipants(prev => {
       const confirmed = prev.filter(
         r => r.registration_status === 'confirmed'
@@ -183,7 +185,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
 
       setStats(prevStats => ({
         ...prevStats,
-        current_participants: paid, // Use paid count instead of confirmed
+        current_participants: confirmed + paid, // Count both confirmed and paid
         confirmed,
         pending,
         last_updated: new Date(),
@@ -201,7 +203,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
     setStats(prev => ({
       ...prev,
       current_participants:
-        registration.registration_status === 'paid'
+        ['confirmed', 'paid'].includes(registration.registration_status)
           ? prev.current_participants - 1
           : prev.current_participants,
       confirmed:

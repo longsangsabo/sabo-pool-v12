@@ -10,9 +10,14 @@ import {
   applyHandicapToChallenge,
   formatHandicapForDisplay
 } from '@/utils/saboHandicapCalculator';
-import { createClient } from '@supabase/supabase-js';
-// Note: Replace with your actual toast implementation
+import { supabase } from '@/integrations/supabase/client';
 // import { toast } from 'react-hot-toast';
+
+// Temporary mock toast for this file
+const toast = {
+  error: (msg: string) => console.warn('Toast Error:', msg),
+  success: (msg: string) => console.log('Toast Success:', msg)
+};
 
 export interface UseHandicapOptions {
   challengerRank?: SaboRank;

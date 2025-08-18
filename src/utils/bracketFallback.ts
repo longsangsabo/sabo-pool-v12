@@ -1,10 +1,7 @@
 // Emergency fallback bracket generation function
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
 export async function generateBracketFallback(tournamentId, generationType = 'elo_based') {
-  const supabaseUrl = 'https://exlqvlbawytbglioqfbc.supabase.co';
-  const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODAwODgsImV4cCI6MjA2ODY1NjA4OH0.-WHrBx32yHJwhqXAYUOdW5fytPvpzc4AFttXBl3MykA';
-  const supabase = createClient(supabaseUrl, anonKey);
   
   try {
     console.log('🛠️ Starting fallback bracket generation for tournament:', tournamentId);

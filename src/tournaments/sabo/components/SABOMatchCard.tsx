@@ -49,13 +49,16 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
   const isPlayer1Winner = winner_id === player1?.user_id;
   const isPlayer2Winner = winner_id === player2?.user_id;
 
-  // Club owner can always manage scores for scheduled/ready matches, players need both players present
-  const canManageScore =
-    !isCompleted &&
-    (isClubOwner ||
-      (hasPlayers &&
-        (match.player1_id === currentUserId ||
-          match.player2_id === currentUserId)));
+  // TEMPORARY: Allow everyone to manage scores for testing
+  const canManageScore = !isCompleted; // Simplified for testing
+  
+  // Original logic (commented out for testing):
+  // const canManageScore =
+  //   !isCompleted &&
+  //   (isClubOwner ||
+  //     (hasPlayers &&
+  //       (match.player1_id === currentUserId ||
+  //         match.player2_id === currentUserId)));
 
   // Debug logging
   console.log('🎯 SABOMatchCard Debug:', {

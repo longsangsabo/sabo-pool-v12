@@ -13,12 +13,15 @@ if (!supabaseServiceKey) {
 }
 
 // Service client bypasses RLS - use carefully!
-export const supabaseService = createClient(supabaseUrl, supabaseServiceKey || '', {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
+// Only create service client if we have the service key
+export const supabaseService = supabaseServiceKey 
+  ? createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+  : null;
 
 // Regular client for normal operations
 export { supabase } from '@/integrations/supabase/client';

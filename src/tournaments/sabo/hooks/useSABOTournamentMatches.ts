@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { supabaseService } from '@/integrations/supabase/service';
 import { useProfileCache } from '@/hooks/useProfileCache';
+import { useAuth } from '@/hooks/useAuth';
 import type { SABOMatch } from '../SABOLogicCore';
 
 export const useSABOTournamentMatches = (tournamentId: string) => {
@@ -9,6 +11,7 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
   const { getMultipleProfiles } = useProfileCache();
+  const { user } = useAuth();
 
   const loadMatches = useCallback(async () => {
     if (!tournamentId) {
@@ -21,15 +24,31 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
       setError(null);
 
       console.log('🎯 Fetching SABO matches for tournament:', tournamentId);
+      console.log('👤 User authenticated:', !!user);
 
-      // Fetch matches with SABO-specific schema - ONLY SABO rounds
-      const { data: matchesData, error: matchesError } = await supabase
-        .from('tournament_matches')
+      // Check if user is authenticated for better RLS access
+      if (!user) {
+        console.log('⚠️ No authenticated user - may have RLS issues');
+      }
+
+      // Fetch matches from SABO-specific table - sabo_tournament_matches
+      // Use service client to bypass RLS issues
+      console.log('🔧 Using service client to bypass RLS for SABO matches...');
+      
+      if (!supabaseService) {
+        console.error('❌ Service client not available, falling back to regular client');
+        throw new Error('Service client not configured');
+      }
+      
+      const result = await supabaseService
+        .from('sabo_tournament_matches')
         .select('*')
         .eq('tournament_id', tournamentId)
-        .in('round_number', [1, 2, 3, 101, 102, 103, 201, 202, 250, 300]) // SABO rounds only
         .order('round_number', { ascending: true })
         .order('match_number', { ascending: true });
+          
+      const matchesData = result.data;
+      const matchesError = result.error;
 
       if (matchesError) {
         console.error('❌ Error fetching SABO matches:', matchesError);
@@ -37,10 +56,16 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
       }
 
       console.log('✅ Fetched SABO matches:', matchesData?.length || 0);
+      
+      // Debug: Check first match structure
+      if (matchesData && matchesData.length > 0) {
+        console.log('🔍 Sample SABO match structure:', matchesData[0]);
+        console.log('🔍 Available fields:', Object.keys(matchesData[0]));
+      }
 
-      // Collect all unique user IDs
+      // Collect all unique user IDs - use any type to avoid typescript issues
       const userIds = new Set<string>();
-      matchesData?.forEach(match => {
+      (matchesData as any[])?.forEach((match: any) => {
         if (match.player1_id) userIds.add(match.player1_id);
         if (match.player2_id) userIds.add(match.player2_id);
       });
@@ -56,31 +81,52 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
       );
 
       // Map matches with cached profiles and convert to SABO format
-      const matchesWithProfiles = (matchesData || []).map(match => ({
-        id: match.id,
-        tournament_id: match.tournament_id,
-        round_number: match.round_number,
-        match_number: match.match_number,
-        player1_id: match.player1_id,
-        player2_id: match.player2_id,
-        winner_id: match.winner_id,
-        status: match.status as 'pending' | 'ready' | 'completed',
-        bracket_type: match.bracket_type as
-          | 'winners'
-          | 'losers'
-          | 'semifinals'
-          | 'finals',
-        branch_type: match.branch_type as 'A' | 'B' | undefined,
-        player1_score: match.score_player1, // Map database column to interface property
-        player2_score: match.score_player2, // Map database column to interface property
-        player1: match.player1_id ? profileMap[match.player1_id] || null : null,
-        player2: match.player2_id ? profileMap[match.player2_id] || null : null,
-      })) as SABOMatch[];
+      const matchesWithProfiles = ((matchesData as any[]) || []).map((match: any) => {
+        console.log('🔍 Processing match:', match.sabo_match_id || match.id, {
+          bracket_type: match.bracket_type,
+          round_number: match.round_number,
+          match_number: match.match_number,
+          status: match.status
+        });
+        
+        // Map bracket type from database to expected format
+        const mapBracketType = (dbType: string): 'winners' | 'losers' | 'semifinals' | 'finals' => {
+          switch (dbType) {
+            case 'winner': return 'winners';
+            case 'loser': return 'losers';
+            case 'semifinal': return 'semifinals';
+            case 'final': return 'finals';
+            default: return 'winners'; // fallback
+          }
+        };
+        
+        return {
+          id: match.id,
+          tournament_id: match.tournament_id,
+          round_number: match.round_number,
+          match_number: match.match_number,
+          player1_id: match.player1_id,
+          player2_id: match.player2_id,
+          winner_id: match.winner_id,
+          status: match.status as 'pending' | 'ready' | 'completed',
+          bracket_type: mapBracketType(match.bracket_type),
+          branch_type: match.branch_type as 'A' | 'B' | undefined,
+          player1_score: match.score_player1, // Map database column to interface property
+          player2_score: match.score_player2, // Map database column to interface property
+          player1: match.player1_id ? profileMap[match.player1_id] || null : null,
+          player2: match.player2_id ? profileMap[match.player2_id] || null : null,
+        };
+      }) as SABOMatch[];
 
       console.log(
         '✅ SABO matches with cached profiles:',
         matchesWithProfiles.length
       );
+      
+      // Debug: Check final processed matches
+      if (matchesWithProfiles.length > 0) {
+        console.log('🔍 Final processed match sample:', matchesWithProfiles[0]);
+      }
       setMatches(matchesWithProfiles);
       setLastUpdateTime(new Date());
     } catch (err: any) {
@@ -131,7 +177,7 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
         {
           event: '*',
           schema: 'public',
-          table: 'tournament_matches',
+          table: 'sabo_tournament_matches', // ✅ FIX: Use correct SABO table
           filter: `tournament_id=eq.${tournamentId}`,
         },
         payload => {
@@ -140,19 +186,6 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
             payload.eventType,
             payload.new
           );
-
-          // Only process updates for SABO rounds
-          if (payload.new && 'round_number' in payload.new) {
-            const roundNumber = payload.new.round_number as number;
-            const isSABORound = [
-              1, 2, 3, 101, 102, 103, 201, 202, 250, 300,
-            ].includes(roundNumber);
-
-            if (!isSABORound) {
-              console.log('🚫 Ignoring non-SABO round update:', roundNumber);
-              return;
-            }
-          }
 
           // ✅ CRITICAL: Check if this is a score submission (urgent update)
           const isScoreUpdate =

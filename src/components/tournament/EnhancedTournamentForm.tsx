@@ -55,15 +55,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { OptimizedRewardsSection } from './OptimizedRewardsSection';
-import { TournamentPrizesManager } from './TournamentPrizesManager';
-import { RewardsEditModal } from './RewardsEditModal';
+import { UnifiedPrizesManager } from './UnifiedPrizesManager';
 import { TournamentTemplateDropdown } from './TournamentTemplateDropdown';
 
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { QuickRewardAllocation } from './QuickRewardAllocation';
-import { TournamentPrizesService, type TournamentPrize } from '@/services/tournament-prizes.service';
+import { RewardsEditModal } from './RewardsEditModal';
 
 interface EnhancedTournamentFormProps {
   mode?: 'create' | 'edit';
@@ -100,9 +97,8 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
   const { refreshTournaments } = useTournamentGlobal();
   const [activeTab, setActiveTab] = useState('basic-info');
   const [showRewardsModal, setShowRewardsModal] = useState(false);
-  const [showQuickAllocation, setShowQuickAllocation] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [tournamentPrizes, setTournamentPrizes] = useState<TournamentPrize[]>([]); // Store current prizes
+  const [tournamentPrizes, setTournamentPrizes] = useState<any[]>([]); // Store current prizes
 
   // Debug: Log when tournamentPrizes state changes
   useEffect(() => {
@@ -194,6 +190,20 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
       formErrors: form.formState.errors,
     });
     console.log('🎯 handleSubmit called with data:', data);
+    console.log('🔍 DEBUG Form Data:', {
+      tournament_start: data.tournament_start,
+      tournament_end: data.tournament_end,
+      registration_start: data.registration_start,
+      registration_end: data.registration_end,
+      name: data.name
+    });
+    console.log('🔍 DEBUG Tournament State:', {
+      tournament_start: tournament?.tournament_start,
+      tournament_end: tournament?.tournament_end,
+      registration_start: tournament?.registration_start,
+      registration_end: tournament?.registration_end,
+      name: tournament?.name
+    });
     console.log('🏆 Tournament prizes in state:', tournamentPrizes.length, 'prizes');
     console.log('⏳ Starting form submission...');
 
@@ -331,73 +341,6 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
             console.error('❌ Error saving rewards:', rewardsError);
             toast.warning(
               'Giải đấu đã tạo thành công nhưng không thể lưu phần thưởng tự động'
-            );
-          }
-        }
-
-        // 🎯 Auto-generate bracket for tournaments after creation
-        if (result && mode === 'create') {
-          console.log(
-            '🏆 Auto-generating bracket for new tournament...',
-            result.tournament_type
-          );
-
-          try {
-            let bracketData;
-
-            if (result.tournament_type === 'double_elimination') {
-              // Use Double1 template cloning system
-              console.log('🎯 Using Double1 template cloning system...');
-
-              // Generate dummy player IDs for now (will be replaced with real registrations)
-              const dummyPlayerIds = Array.from(
-                { length: 16 },
-                () => 'dummy-player-' + Math.random().toString(36).substr(2, 9)
-              );
-
-              // Skip template cloning for now
-              console.log('🎯 Template cloning disabled temporarily');
-
-              // Template cloning logic removed for now
-            } else if (result.tournament_type === 'single_elimination') {
-              // Auto-generate single elimination bracket
-              const { data: seData, error: seError } = await supabase.rpc(
-                'generate_single_elimination_bracket',
-                {
-                  p_tournament_id: result.id,
-                }
-              );
-
-              if (seError) {
-                console.error(
-                  '❌ Failed to auto-generate SE bracket:',
-                  seError
-                );
-                toast.warning(
-                  'Giải đấu đã tạo thành công nhưng không thể tự động tạo bracket. Hãy tạo thủ công.'
-                );
-              } else {
-                console.log(
-                  '✅ Auto-generated single elimination bracket:',
-                  seData
-                );
-                toast.success(
-                  '🎯 Đã tự động tạo bracket cho giải đấu loại trực tiếp!'
-                );
-                bracketData = seData;
-              }
-            }
-
-            if (bracketData) {
-              // Small delay to show success message
-              setTimeout(() => {
-                toast.info('Bracket đã sẵn sàng! Có thể bắt đầu nhận đăng ký.');
-              }, 1500);
-            }
-          } catch (autoError) {
-            console.error('❌ Auto-bracket generation failed:', autoError);
-            toast.warning(
-              'Giải đấu đã tạo thành công. Hãy tạo bracket thủ công.'
             );
           }
         }
@@ -993,29 +936,32 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                         </Badge>
                       )}
                     </div>
-                    <div className='flex items-center gap-2'>
-                      <Button
-                        type='button'
-                        variant='outline'
-                        size='sm'
-                        onClick={() => setShowQuickAllocation(true)}
-                        className='bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-none hover:from-yellow-500 hover:to-orange-600 text-xs h-8'
-                      >
-                        <Zap className='w-3 h-3 mr-1' />
-                        Phân bổ nhanh
-                      </Button>
-                    </div>
                   </div>
-                  {/* Tournament Prizes Manager - New Table-Based System */}
-                  <TournamentPrizesManager
-                    tournamentId={tournamentId || 'preview-mode'}
+                  {/* Unified Prizes Manager - Tích hợp 2 hệ thống cũ */}
+                  <UnifiedPrizesManager
+                    mode={mode}
+                    tournamentId={tournamentId}
                     initialPrizePool={tournament?.prize_pool || 0}
-                    isPreviewMode={!tournamentId}
                     onPrizesChange={(prizes) => {
-                      console.log('🏆 [EnhancedTournamentForm] Prizes updated:', prizes);
-                      console.log('🏆 [EnhancedTournamentForm] Number of prizes:', prizes.length);
-                      setTournamentPrizes(prizes); // Save prizes to state
+                      console.log('🏆 [UnifiedPrizesManager] Prizes updated:', prizes.length, 'prizes');
+                      // Convert để tương thích với hệ thống cũ nếu cần
+                      const convertedPrizes = prizes.map(prize => ({
+                        id: prize.id,
+                        tournament_id: tournamentId || 'preview',
+                        position: prize.position,
+                        position_name: prize.name,
+                        cash_amount: prize.cashAmount,
+                        elo_points: prize.eloPoints,
+                        spa_points: prize.spaPoints,
+                        physical_items: prize.items || [],
+                        color_theme: prize.theme,
+                        is_visible: prize.isVisible,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString(),
+                      }));
+                      setTournamentPrizes(convertedPrizes);
                     }}
+                    isEditable={true}
                   />
                 </div>
               </div>
@@ -1118,33 +1064,19 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                       {
                         name: formData.name || 'Test Tournament',
                         description: formData.description || 'Test Description',
-                        venue_address:
-                          formData.venue_address || 'Test Location',
-                        start_date:
-                          formData.tournament_start ||
-                          new Date(
-                            Date.now() + 24 * 60 * 60 * 1000
-                          ).toISOString(),
-                        end_date:
-                          formData.tournament_end ||
-                          new Date(
-                            Date.now() + 48 * 60 * 60 * 1000
-                          ).toISOString(),
-                        registration_start:
-                          formData.registration_start ||
-                          new Date().toISOString(),
-                        registration_end: new Date(
-                          Date.now() + 12 * 60 * 60 * 1000
-                        ).toISOString(),
+                        venue_address: formData.venue_address || 'Test Location', // Keep venue_address (exists in DB)
+                        tournament_start: formData.tournament_start || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // FIX: start_date → tournament_start
+                        tournament_end: formData.tournament_end || new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(), // FIX: end_date → tournament_end
+                        registration_start: formData.registration_start || new Date().toISOString(),
+                        registration_end: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
                         max_participants: formData.max_participants || 16,
-                        tournament_type:
-                          formData.tournament_type || 'single_elimination',
-                        game_format: formData.game_format || '9_ball',
+                        tournament_type: formData.tournament_type || 'single_elimination',
+                        // Remove game_format - not in DB schema
                         entry_fee: formData.entry_fee || 0,
-                        prize_pool: formData.prize_pool || 0, // ADD MISSING PRIZE_POOL FIELD
-                        status: 'upcoming',
+                        prize_pool: formData.prize_pool || 0,
+                        status: 'registration_open', // FIX: upcoming → registration_open 
                         created_by: user.id,
-                        club_id: clubProfile.id, // Set the club_id
+                        club_id: clubProfile.id,
                       },
                     ])
                     .select();
@@ -1180,38 +1112,6 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
           </div>
         </div>
       </form>
-
-      {/* Quick Allocation Modal */}
-      {showQuickAllocation && tournament && (
-        <QuickRewardAllocation
-          isOpen={showQuickAllocation}
-          onClose={() => setShowQuickAllocation(false)}
-          totalPrizePool={
-            tournament.prize_pool ||
-            tournament.entry_fee * tournament.max_participants ||
-            0
-          }
-          currentAllocations={tournament.rewards?.positions || []}
-          onApply={allocations => {
-            const rewardsFormat = {
-              totalPrize: tournament.prize_pool || 0,
-              showPrizes: true,
-              positions: allocations.map(alloc => ({
-                position: alloc.position,
-                name: alloc.name,
-                eloPoints: alloc.eloPoints,
-                spaPoints: alloc.spaPoints,
-                cashPrize: alloc.cashAmount,
-                items: alloc.items,
-                isVisible: true,
-              })),
-            };
-            updateRewards(rewardsFormat);
-            setShowQuickAllocation(false);
-            toast.success('Đã áp dụng phân bổ nhanh!');
-          }}
-        />
-      )}
 
       {/* Rewards Edit Modal */}
       {showRewardsModal && tournament && (

@@ -21,82 +21,51 @@ async function testTournamentCreation() {
   console.log('🎯 Testing tournament creation with full data...\n');
 
   // Simulate form data (exactly like TournamentContext.createTournament)
-  const tournamentData = {
-    name: 'JS Test Tournament - Complete',
-    description: 'Testing complete tournament creation with all fields',
-    tournament_type: 'double_elimination',
-    status: 'upcoming',
+    const basicTournamentData = {
+    // ===== THÔNG TIN CƠ BẢN =====
+    name: 'Test Tournament ' + new Date().toISOString(),
+    description: 'Test tournament for debugging',
+    tournament_type: 'single_elimination',
+    
+    // ===== THÔNG TIN THAM GIA =====
     max_participants: 16,
-    tournament_start: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    tournament_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-    registration_start: new Date().toISOString(),
-    registration_end: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString(),
+    current_participants: 0,
+    
+    // ===== THÔNG TIN TÀI CHÍNH =====
+    entry_fee: 0,
     prize_pool: 1000000,
-    entry_fee: 50000,
     
-    // New columns
-    venue_name: 'JavaScript Test Venue',
-    is_public: true,
-    requires_approval: false,
-    tier_level: 1,
-    allow_all_ranks: true,
-    eligible_ranks: ["K", "K+", "I"],
-    organizer_id: null,
-    banner_image: 'https://example.com/banner.jpg',
-    registration_fee: 50000,
-    tournament_format_details: 'Standard double elimination format',
-    special_rules: 'No special rules',
-    contact_person: 'JS Test Organizer',
-    contact_phone: '0123456789',
-    live_stream_url: 'https://youtube.com/live',
-    sponsor_info: { main_sponsor: 'JS Test Sponsor' },
-    spa_points_config: { "1": 1500, "2": 1100, "3": 900 },
-    elo_points_config: { "1": 100, "2": 50, "3": 25 },
+    // ===== THÔNG TIN THỜI GIAN =====
+    registration_start: new Date().toISOString(),
+    registration_end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    tournament_start: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    tournament_end: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
     
-    // CRITICAL: Full 16-position prize distribution
-    prize_distribution: {
-      total_positions: 16,
-      total_prize_pool: 1000000,
-      positions: [
-        { position: 1, name: "Vô địch", cash_amount: 400000, elo_points: 100, spa_points: 1500 },
-        { position: 2, name: "Á quân", cash_amount: 240000, elo_points: 50, spa_points: 1100 },
-        { position: 3, name: "Hạng 3", cash_amount: 160000, elo_points: 25, spa_points: 900 },
-        { position: 4, name: "Hạng 4", cash_amount: 80000, elo_points: 12, spa_points: 650 },
-        { position: 5, name: "Hạng 5-6", cash_amount: 40000, elo_points: 5, spa_points: 320 },
-        { position: 6, name: "Hạng 5-6", cash_amount: 40000, elo_points: 5, spa_points: 320 },
-        { position: 7, name: "Hạng 7-8", cash_amount: 20000, elo_points: 5, spa_points: 320 },
-        { position: 8, name: "Hạng 7-8", cash_amount: 20000, elo_points: 5, spa_points: 320 },
-        { position: 9, name: "Hạng 9-12", cash_amount: 11250, elo_points: 5, spa_points: 320 },
-        { position: 10, name: "Hạng 9-12", cash_amount: 11250, elo_points: 5, spa_points: 320 },
-        { position: 11, name: "Hạng 9-12", cash_amount: 11250, elo_points: 5, spa_points: 320 },
-        { position: 12, name: "Hạng 9-12", cash_amount: 11250, elo_points: 5, spa_points: 320 },
-        { position: 13, name: "Hạng 13-16", cash_amount: 5625, elo_points: 5, spa_points: 320 },
-        { position: 14, name: "Hạng 13-16", cash_amount: 5625, elo_points: 5, spa_points: 320 },
-        { position: 15, name: "Hạng 13-16", cash_amount: 5625, elo_points: 5, spa_points: 320 },
-        { position: 16, name: "Hạng 13-16", cash_amount: 5625, elo_points: 5, spa_points: 320 }
-      ],
-      prize_summary: {
-        position_1: 400000,
-        position_2: 240000,
-        position_3: 160000,
-        position_4: 80000
-      }
-    }
+    // ===== THÔNG TIN ĐỊA ĐIỂM =====
+    location: 'Test Location',
+    rules: 'Test rules',
+    
+    // ===== THÔNG TIN TỔ CHỨC =====
+    club_id: null,
+    status: 'registration_open',
+    is_visible: true,
+    
+    // ===== TIMESTAMPS =====
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
 
-  console.log('📋 Tournament data prepared with', Object.keys(tournamentData).length, 'fields');
-  console.log('🏆 Prize distribution has', tournamentData.prize_distribution.positions.length, 'positions');
+  console.log('📋 Tournament data prepared with', Object.keys(basicTournamentData).length, 'fields');
+  console.log('🏆 Basic tournament data ready');
 
   try {
     // Test INSERT
     console.log('\n🚀 Inserting tournament...');
-    const { data: result, error } = await supabase
-      .from('tournaments')
-      .insert([tournamentData])
-      .select()
-      .single();
-
-    if (error) {
+  const { data: result, error } = await supabase
+    .from('tournaments')
+    .insert([basicTournamentData])
+    .select('*')
+    .single();    if (error) {
       console.error('❌ INSERT Error:', error);
       return;
     }

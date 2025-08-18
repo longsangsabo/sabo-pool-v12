@@ -24,7 +24,6 @@ import {
   Trash2,
   Zap,
 } from 'lucide-react';
-import { QuickRewardAllocation } from './QuickRewardAllocation';
 
 import {
   Form,
@@ -139,7 +138,6 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
   const [prizeTiers, setPrizeTiers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('details');
-  const [showQuickAllocation, setShowQuickAllocation] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -323,43 +321,33 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
     }
   };
 
-  const handleQuickAllocation = async (allocations: any[]) => {
-    try {
-      // Delete existing prize tiers
-      await supabase
-        .from('tournament_prize_tiers')
-        .delete()
-        .eq('tournament_id', tournament.id);
-
-      // Insert new allocations
-      const newTiers = allocations.map(allocation => ({
-        tournament_id: tournament.id,
-        position: allocation.position,
-        position_name: allocation.name,
-        cash_amount: allocation.cashAmount,
-        elo_points: allocation.eloPoints,
-        spa_points: allocation.spaPoints,
-        items: allocation.items,
-        is_visible: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }));
-
-      const { error } = await supabase
-        .from('tournament_prize_tiers')
-        .insert(newTiers);
-
-      if (error) throw error;
-
-      // Refresh prize tiers
-      await fetchPrizeTiers();
-
-      toast.success('Phân bổ phần thưởng thành công!');
-    } catch (error) {
-      console.error('Error applying quick allocation:', error);
-      toast.error('Lỗi khi phân bổ phần thưởng');
+  useEffect(() => {
+    if (isOpen && tournament) {
+      // Set form data when modal opens
+      const newFormData = {
+        title: tournament.title,
+        description: tournament.description || '',
+        format: tournament.format,
+        max_participants: tournament.max_participants,
+        entry_fee: tournament.entry_fee || 0,
+        prize_pool: tournament.prize_pool || 0,
+        start_date: new Date(tournament.start_date).toISOString().slice(0, 16),
+        registration_deadline: tournament.registration_deadline 
+          ? new Date(tournament.registration_deadline).toISOString().slice(0, 16)
+          : '',
+        venue: tournament.venue || '',
+        rules: tournament.rules || '',
+        requires_approval: tournament.requires_approval || false,
+        is_public: tournament.is_public || true,
+      };
+      
+      setFormData(newFormData);
+      form.reset(newFormData);
+      
+      // Fetch prize tiers
+      fetchPrizeTiers();
     }
-  };
+  }, [isOpen, tournament, form]);
 
   return (
     <>
@@ -706,15 +694,6 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
                   Chỉnh sửa phần thưởng giải đấu
                 </h3>
                 <div className='flex gap-2'>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    onClick={() => setShowQuickAllocation(true)}
-                    className='bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-none hover:from-yellow-500 hover:to-orange-600'
-                  >
-                    <Zap className='w-4 h-4 mr-2' />
-                    Phân bổ nhanh
-                  </Button>
                   <Button variant='outline' size='sm' onClick={addNewTier}>
                     <Plus className='w-4 h-4 mr-2' />
                     Thêm vị trí
@@ -793,14 +772,6 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
           </div>
         </DialogContent>
       </Dialog>
-
-      <QuickRewardAllocation
-        isOpen={showQuickAllocation}
-        onClose={() => setShowQuickAllocation(false)}
-        onApply={handleQuickAllocation}
-        totalPrizePool={formData.prize_pool || 0}
-        currentAllocations={prizeTiers}
-      />
     </>
   );
 };

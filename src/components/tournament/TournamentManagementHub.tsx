@@ -971,16 +971,61 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                 Xem sơ đồ
               </Button>
             ) : (
-              <Button 
-                size="sm" 
-                variant="default"
-                onClick={() => handleGenerateBracket(tournament)}
-                disabled={tournament.status === 'completed'}
-                className="flex-1 bg-green-600 hover:bg-green-700"
-              >
-                <Shuffle className="w-4 h-4 mr-2" />
-                Tạo bảng đấu
-              </Button>
+              <>
+                {tournament.tournament_type === 'double_elimination' ? (
+                  <Button 
+                    size="sm" 
+                    variant="default"
+                    onClick={async () => {
+                      // Direct SABO bracket generation for double elimination
+                      if (!tournament.id) return;
+                      
+                      try {
+                        const result = await generateBracket(tournament.id, {
+                          method: 'elo_ranking',
+                          forceRegenerate: false
+                        });
+                        
+                        if (result?.success) {
+                          toast.success('🎯 SABO Double Elimination bracket tạo thành công!');
+                          // Auto navigate to bracket viewer
+                          setSelectedTournament(tournament);
+                          setCurrentView('bracket-viewer');
+                          setTimeout(() => setDetailActiveTab('bracket'), 10);
+                          fetchTournaments(); // Refresh data
+                        } else {
+                          // Fallback to generator form
+                          handleGenerateBracket(tournament);
+                        }
+                      } catch (error) {
+                        console.error('Direct bracket generation failed:', error);
+                        // Fallback to generator form
+                        handleGenerateBracket(tournament);
+                      }
+                    }}
+                    disabled={tournament.status === 'completed' || isGenerating}
+                    className="flex-1 bg-purple-600 hover:bg-purple-700"
+                  >
+                    {isGenerating ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Crown className="w-4 h-4 mr-2" />
+                    )}
+                    {isGenerating ? 'Đang tạo...' : 'Tạo SABO Bracket'}
+                  </Button>
+                ) : (
+                  <Button 
+                    size="sm" 
+                    variant="default"
+                    onClick={() => handleGenerateBracket(tournament)}
+                    disabled={tournament.status === 'completed'}
+                    className="flex-1 bg-green-600 hover:bg-green-700"
+                  >
+                    <Shuffle className="w-4 h-4 mr-2" />
+                    Tạo bảng đấu
+                  </Button>
+                )}
+              </>
             )}
 
             {/* Tournament Management Button */}
@@ -1218,7 +1263,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                   defaultTournamentType={bracketType}
                   participantCount={selectedPlayers.length}
                   onBracketGenerated={() => {
-                    toast.success('Bracket generated successfully!');
+                    toast.success('🎯 Bracket tạo thành công!');
                     setSelectedPlayers([]);
                     setGeneratedBracket([]);
                     fetchTournaments();

@@ -38,7 +38,8 @@ export const SABODoubleEliminationViewer: React.FC<
     tournamentId,
     isLoading,
     matchesCount: matches?.length || 0,
-    matches: matches?.slice(0, 3) // First 3 matches for debug
+    matches: matches?.slice(0, 3), // First 3 matches for debug
+    matchesStructure: matches?.length > 0 ? Object.keys(matches[0]) : 'no matches'
   });
 
   // Scroll position preservation

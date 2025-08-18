@@ -587,129 +587,93 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
       
       // Chuẩn bị dữ liệu theo bảng tournaments với ĐẦY ĐỦ thông tin giải thưởng
       const now = new Date().toISOString();
+      
+      // 🔍 DEBUG: Kiểm tra tournament state trước khi tạo
+      console.log('🔍 [DEBUG] Tournament state before creation:', {
+        tournament_start: tournament.tournament_start,
+        tournament_end: tournament.tournament_end,
+        registration_start: tournament.registration_start,
+        registration_end: tournament.registration_end,
+        name: tournament.name,
+        fullTournament: tournament
+      });
+      
+      // 🔥 CRITICAL: Get authenticated user for RLS compliance
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !user) {
+        console.error('❌ Authentication required for tournament creation:', authError);
+        setLoading(false);
+        throw new Error('Bạn cần đăng nhập để tạo giải đấu');
+      }
+
+      console.log('🔍 [DEBUG] Tournament object received:', {
+        name: tournament?.name,
+        tournament_start: tournament?.tournament_start,
+        start_date: tournament?.start_date,
+        venue_address: tournament?.venue_address,
+        keys: tournament ? Object.keys(tournament) : 'null'
+      });
+
       const tournamentData = {
         // ===== THÔNG TIN CƠ BẢN =====
         name: tournament.name,
         description: tournament.description || '',
         tournament_type: tournament.tournament_type || 'double_elimination',
-        game_format: tournament.game_format || 'billiards_pool_8',
-        tier_level: tournament.tier_level || null,
+        
+        // ===== THÔNG TIN THAM GIA =====
         max_participants: tournament.max_participants || 16,
         current_participants: tournament.current_participants || 0,
         
         // ===== THÔNG TIN TÀI CHÍNH =====
         entry_fee: tournament.entry_fee || 0,
         prize_pool: tournament.prize_pool || 0,
-        registration_fee: tournament.registration_fee || 0, // Trường mới
-        
-        // ===== THÔNG TIN GIẢI THƯỞNG LEGACY (tương thích) =====
-        first_prize: prizeTemplate.find(p => p.prize_position === 1)?.cash_amount || 0,
-        second_prize: prizeTemplate.find(p => p.prize_position === 2)?.cash_amount || 0,
-        third_prize: prizeTemplate.find(p => p.prize_position === 3)?.cash_amount || 0,
         
         // ===== THÔNG TIN THỜI GIAN =====
-        registration_start: tournament.registration_start || now,
-        registration_end: tournament.registration_end || now,
-        tournament_start: tournament.tournament_start || now,
-        tournament_end: tournament.tournament_end || now,
-        start_date: tournament.tournament_start || now, // Tương thích
-        end_date: tournament.tournament_end || now, // Tương thích
+        registration_start: tournament.registration_start || new Date().toISOString(),
+        registration_end: tournament.registration_end || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // +7 days
+        tournament_start: tournament.tournament_start || tournament.start_date || new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // +14 days  
+        tournament_end: tournament.tournament_end || tournament.end_date || new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(), // +15 days
         
-        // ===== THÔNG TIN ĐỊA ĐIỂM =====
-        venue_address: tournament.venue_address || '',
-        venue_name: tournament.venue_name || null, // Trường mới
+                // ===== THÔNG TIN ĐỊA ĐIỂM =====
+        venue_address: tournament.venue_address || '', // Use venue_address (exists in latest migration)
+        rules: tournament.rules || '',
         
         // ===== THÔNG TIN TỔ CHỨC =====
         club_id: tournament.club_id || null,
         created_by: user.id,
-        organizer_id: tournament.organizer_id || user.id,
         status: tournament.status || 'registration_open',
-        management_status: tournament.management_status || 'open',
-        
-                // ===== CẤU HÌNH GIẢI ĐẤU =====
-        is_public: tournament.is_public !== undefined ? tournament.is_public : true, // Explicit default true
-        requires_approval: tournament.requires_approval !== undefined ? tournament.requires_approval : false, // Explicit default false
-        
-        // ===== RANK & ĐIỀU KIỆN =====
-        min_rank_requirement: tournament.min_rank_requirement || null,
-        max_rank_requirement: tournament.max_rank_requirement || null,
-        eligible_ranks: tournament.eligible_ranks || [], // Default empty array, not null
-        allow_all_ranks: tournament.allow_all_ranks !== undefined ? tournament.allow_all_ranks : true, // Explicit default true
-        
-        // ===== CÀI ĐẶT TOURNAMENT =====
-        has_third_place_match: tournament.has_third_place_match !== false, // Mặc định true
-        tournament_format_details: tournament.tournament_format_details || {}, // JSONB
-        special_rules: tournament.special_rules || {}, // JSONB
-        
-        // ===== THÔNG TIN LIÊN HỆ =====
-        rules: tournament.rules || '',
-        contact_info: tournament.contact_info || {},
-        contact_person: tournament.contact_person || null, // Trường mới
-        contact_phone: tournament.contact_phone || null, // Trường mới
-        
-        // ===== MEDIA & BRANDING =====
-        banner_image: tournament.banner_image || null,
-        live_stream_url: tournament.live_stream_url || null, // Trường mới
-        
-        // ===== SPONSORS & REWARDS =====
-        sponsor_info: tournament.sponsor_info || {}, // JSONB
-        comprehensive_rewards: tournament.comprehensive_rewards || {}, // Legacy
-        physical_prizes: tournament.physical_prizes || [], // JSONB array
-        spa_points_config: tournament.spa_points_config || {}, // JSONB
-        elo_points_config: tournament.elo_points_config || {}, // JSONB
-        // 🏆 TRƯỜNG PRIZE_DISTRIBUTION CHỦ YẾU - ĐẦY ĐỦ 16 VỊ TRÍ
-        prize_distribution: {
-          total_positions: 16,
-          total_prize_pool: tournament.prize_pool || 1000000,
-          positions: prizeTemplate.map(prize => ({
-            position: prize.prize_position,
-            name: prize.position_name,
-            cash_amount: prize.cash_amount,
-            elo_points: prize.elo_points,
-            spa_points: prize.spa_points,
-            physical_items: prize.physical_items || [],
-            color_theme: prize.color_theme,
-            is_visible: prize.is_visible,
-            is_guaranteed: prize.is_guaranteed
-          })),
-          created_at: now,
-          prize_summary: {
-            position_1: prizeTemplate.find(p => p.prize_position === 1)?.cash_amount || 0,
-            position_2: prizeTemplate.find(p => p.prize_position === 2)?.cash_amount || 0,
-            position_3: prizeTemplate.find(p => p.prize_position === 3)?.cash_amount || 0,
-            position_4: prizeTemplate.find(p => p.prize_position === 4)?.cash_amount || 0,
-            position_5: prizeTemplate.find(p => p.prize_position === 5)?.cash_amount || 0,
-            position_6: prizeTemplate.find(p => p.prize_position === 6)?.cash_amount || 0,
-            position_7: prizeTemplate.find(p => p.prize_position === 7)?.cash_amount || 0,
-            position_8: prizeTemplate.find(p => p.prize_position === 8)?.cash_amount || 0,
-            position_9: prizeTemplate.find(p => p.prize_position === 9)?.cash_amount || 0,
-            position_10: prizeTemplate.find(p => p.prize_position === 10)?.cash_amount || 0,
-            position_11: prizeTemplate.find(p => p.prize_position === 11)?.cash_amount || 0,
-            position_12: prizeTemplate.find(p => p.prize_position === 12)?.cash_amount || 0,
-            position_13: prizeTemplate.find(p => p.prize_position === 13)?.cash_amount || 0,
-            position_14: prizeTemplate.find(p => p.prize_position === 14)?.cash_amount || 0,
-            position_15: prizeTemplate.find(p => p.prize_position === 15)?.cash_amount || 0,
-            position_16: prizeTemplate.find(p => p.prize_position === 16)?.cash_amount || 0,
-            total_cash_distributed: prizeTemplate.reduce((sum, p) => sum + (p.cash_amount || 0), 0),
-            total_elo_points: prizeTemplate.reduce((sum, p) => sum + (p.elo_points || 0), 0),
-            total_spa_points: prizeTemplate.reduce((sum, p) => sum + (p.spa_points || 0), 0)
-          }
-        },
+        is_visible: tournament.is_visible !== false, // DB field exists
         
         // ===== TIMESTAMPS =====
-        created_at: now,
-        updated_at: now,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
       
-      console.log('🎯 [DEBUG] Prize distribution in tournamentData:', JSON.stringify(tournamentData.prize_distribution, null, 2));
-      console.log('🎯 [DEBUG] Prize positions count:', tournamentData.prize_distribution.positions.length);
+      console.log('🎯 [DEBUG] Tournament data prepared for DB insert');
+      console.log('🎯 [DEBUG] Fields count:', Object.keys(tournamentData).length);
       
-      console.log('🏆 Tournament data with FULL prize info:', {
-        total_positions: tournamentData.prize_distribution.total_positions,
-        total_prize_pool: tournamentData.prize_distribution.total_prize_pool,
-        positions_count: tournamentData.prize_distribution.positions.length,
-        first_prize: tournamentData.first_prize,
-        total_cash_distributed: tournamentData.prize_distribution.prize_summary.total_cash_distributed
+      // 🔍 CRITICAL: Validate required fields before DB insert
+      console.log('🔍 [VALIDATION] Critical fields check:', {
+        name: tournamentData.name,
+        tournament_start: tournamentData.tournament_start,
+        tournament_end: tournamentData.tournament_end,
+        created_by: tournamentData.created_by
+      });
+      
+      // Ensure tournament_start is not null/undefined
+      if (!tournamentData.tournament_start) {
+        console.error('❌ [ERROR] tournament_start is null/undefined!');
+        tournamentData.tournament_start = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+        console.log('🔧 [FIX] Set tournament_start to:', tournamentData.tournament_start);
+      }
+      
+      console.log('🏆 Tournament data prepared for DB:', {
+        name: tournamentData.name,
+        tournament_type: tournamentData.tournament_type,
+        max_participants: tournamentData.max_participants,
+        prize_pool: tournamentData.prize_pool,
+        tournament_start: tournamentData.tournament_start
       });
 
       // 🔍 DEBUG: Log toàn bộ tournamentData để kiểm tra
@@ -806,8 +770,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
           tournament_start: tournament.tournament_start,
           tournament_end: tournament.tournament_end,
           club_id: tournament.club_id || null,
-          venue_address: tournament.venue_address || '',
-          organizer_id: tournament.organizer_id || null,
+          venue_address: tournament.venue_address || '', // Keep venue_address
           status: tournament.status || 'registration_open',
           is_public: tournament.is_public !== false,
           requires_approval: tournament.requires_approval || false,

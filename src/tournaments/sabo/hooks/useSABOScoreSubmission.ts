@@ -125,6 +125,7 @@ export const useSABOScoreSubmission = (
   const submitScore = useCallback(
     async (matchId: string, scores: MatchScore, matchData?: any) => {
       if (!matchData) {
+        console.log('🔍 Match data not provided, attempting to fetch from database...');
         // Get match data if not provided
         const { data: match, error } = await supabase
           .from('tournament_matches')
@@ -133,9 +134,13 @@ export const useSABOScoreSubmission = (
           .single();
           
         if (error || !match) {
-          throw new Error('Could not retrieve match data');
+          console.error('❌ Could not retrieve match data from database:', error);
+          throw new Error(`Could not retrieve match data: ${error?.message || 'Match not found'}`);
         }
         matchData = match;
+        console.log('✅ Successfully fetched match data from database');
+      } else {
+        console.log('✅ Using provided match data');
       }
       
       return submitScoreMutation.mutateAsync({ matchId, scores, matchData });

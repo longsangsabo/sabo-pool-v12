@@ -57,11 +57,12 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
     const checkRegistrationAndParticipants = async () => {
       setCheckingRegistration(true);
       try {
-        // Get total participants count - count all registrations regardless of status
+        // Get total participants count - count only CONFIRMED registrations
         const { data: allRegistrations, error: countError } = await supabase
           .from('tournament_registrations')
           .select('user_id, registration_status')
-          .eq('tournament_id', tournament.id);
+          .eq('tournament_id', tournament.id)
+          .eq('registration_status', 'confirmed'); // Only count confirmed registrations
 
         if (countError) {
           console.error('Error getting participant count:', countError);

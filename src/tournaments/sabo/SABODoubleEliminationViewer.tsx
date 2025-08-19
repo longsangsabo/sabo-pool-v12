@@ -72,7 +72,8 @@ export const SABODoubleEliminationViewer: React.FC<
 
   const { user } = useAuth();
   const currentUserId = user?.id;
-  const isOwnerOrAdmin = isClubOwner || adminMode;
+  // Tournament permissions belong ONLY to club owner, NOT admin
+  const canManageTournament = isClubOwner;
 
   console.log('🎯 SABODoubleEliminationViewer DEBUG:', {
     tournamentId,
@@ -230,7 +231,7 @@ export const SABODoubleEliminationViewer: React.FC<
               )}
             </CardTitle>
             <div className='flex items-center gap-2'>
-              {isOwnerOrAdmin && !isTemplate && (
+              {canManageTournament && !isTemplate && (
                 <Button
                   variant='outline'
                   size='sm'
@@ -321,7 +322,7 @@ export const SABODoubleEliminationViewer: React.FC<
         <SABOWinnersBracket
           matches={organizedMatches.winners}
           onScoreSubmit={handleScoreSubmit}
-          isClubOwner={isOwnerOrAdmin}
+          isClubOwner={isClubOwner}
           tournamentId={tournamentId}
           currentUserId={currentUserId}
         />
@@ -344,7 +345,7 @@ export const SABODoubleEliminationViewer: React.FC<
             <SABOLosersBranchA
               matches={organizedMatches.losers_branch_a}
               onScoreSubmit={handleScoreSubmit}
-              isClubOwner={isOwnerOrAdmin}
+              isClubOwner={isClubOwner}
               tournamentId={tournamentId}
               currentUserId={currentUserId}
             />
@@ -354,7 +355,7 @@ export const SABODoubleEliminationViewer: React.FC<
             <SABOLosersBranchB
               matches={organizedMatches.losers_branch_b}
               onScoreSubmit={handleScoreSubmit}
-              isClubOwner={isOwnerOrAdmin}
+              isClubOwner={isClubOwner}
               tournamentId={tournamentId}
               currentUserId={currentUserId}
             />
@@ -379,7 +380,7 @@ export const SABODoubleEliminationViewer: React.FC<
           <SABOSemifinals
             matches={organizedMatches.semifinals}
             onScoreSubmit={handleScoreSubmit}
-            isClubOwner={isOwnerOrAdmin}
+            isClubOwner={isClubOwner}
             tournamentId={tournamentId}
             currentUserId={currentUserId}
           />
@@ -390,7 +391,7 @@ export const SABODoubleEliminationViewer: React.FC<
           <SABOFinal
             match={organizedMatches.final[0]}
             onScoreSubmit={handleScoreSubmit}
-            isClubOwner={isOwnerOrAdmin}
+            isClubOwner={isClubOwner}
             tournamentId={tournamentId}
             currentUserId={currentUserId}
           />

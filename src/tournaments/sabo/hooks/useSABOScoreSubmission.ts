@@ -57,6 +57,7 @@ export const useSABOScoreSubmission = (
         loser_id: loserId,
         winner_score: winnerScore,
         loser_score: loserScore,
+        submitted_by: user.id,
         match_number: matchData.match_number,
         round_number: matchData.round_number,
         bracket_type: matchData.bracket_type,
@@ -77,6 +78,7 @@ export const useSABOScoreSubmission = (
       // ✅ AGGRESSIVE CACHE INVALIDATION - Force refresh all tournament data
       queryClient.invalidateQueries({ queryKey: ['tournament-matches'] });
       queryClient.invalidateQueries({ queryKey: ['sabo-tournament'] });
+      queryClient.invalidateQueries({ queryKey: ['sabo-tournament-matches'] });
       queryClient.invalidateQueries({ queryKey: ['tournaments'] });
       queryClient.invalidateQueries({ queryKey: ['tournament'] }); // Additional key
 
@@ -126,9 +128,9 @@ export const useSABOScoreSubmission = (
     async (matchId: string, scores: MatchScore, matchData?: any) => {
       if (!matchData) {
         console.log('🔍 Match data not provided, attempting to fetch from database...');
-        // Get match data if not provided
+        // Get match data if not provided - USE SABO SPECIFIC TABLE
         const { data: match, error } = await supabase
-          .from('tournament_matches')
+          .from('sabo_tournament_matches')
           .select('*')
           .eq('id', matchId)
           .single();

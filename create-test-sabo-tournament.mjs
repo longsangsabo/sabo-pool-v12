@@ -66,7 +66,7 @@ async function createTestSABOTournament() {
     ];
     
     const { data: matches, error: matchError } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .insert(testMatches)
       .select();
       
@@ -95,7 +95,7 @@ async function createTestSABOTournament() {
       
       // Kiểm tra match đã update chưa
       const { data: updatedMatch } = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select('score_player1, score_player2, status, winner_id')
         .eq('id', testMatch.id)
         .single();

@@ -30,9 +30,9 @@ async function checkBothTables() {
   }
   
   // Check SABO-specific table  
-  console.log('\n2. Checking sabo_tournament_matches table:');
+  console.log('\n2. Checking tournament_matches table:');
   const { data: saboMatches, error: saboError } = await supabase
-    .from('sabo_tournament_matches')
+    .from('tournament_matches')
     .select('id, tournament_id, player1_name, player2_name, round_number, status, score_player1, score_player2')
     .order('created_at', { ascending: false })
     .limit(10);
@@ -40,7 +40,7 @@ async function checkBothTables() {
   if (saboError) {
     console.log('❌ Error:', saboError.message);
   } else {
-    console.log('📊 Found', saboMatches?.length || 0, 'matches in sabo_tournament_matches');
+    console.log('📊 Found', saboMatches?.length || 0, 'matches in tournament_matches');
     if (saboMatches && saboMatches.length > 0) {
       saboMatches.forEach((m, i) => {
         console.log(`  ${i+1}. ${m.player1_name || 'TBD'} vs ${m.player2_name || 'TBD'} (R${m.round_number}, ${m.status})`);
@@ -56,8 +56,8 @@ async function checkBothTables() {
   const hasSABOData = saboMatches && saboMatches.length > 0;
   
   if (hasRegularData && !hasSABOData) {
-    console.log('❌ ISSUE FOUND: Data exists in tournament_matches but NOT in sabo_tournament_matches');
-    console.log('💡 UI showing data from tournament_matches, but our function works on sabo_tournament_matches');
+    console.log('❌ ISSUE FOUND: Data exists in tournament_matches but NOT in tournament_matches');
+    console.log('💡 UI showing data from tournament_matches, but our function works on tournament_matches');
     console.log('🔧 SOLUTION: Either migrate data OR check if UI reads from wrong table');
     
     // Check if any match has Vietnamese names
@@ -73,7 +73,7 @@ async function checkBothTables() {
       console.log('   Tournament ID:', vietnameseMatch.tournament_id);
     }
   } else if (hasSABOData) {
-    console.log('✅ Data exists in sabo_tournament_matches');
+    console.log('✅ Data exists in tournament_matches');
     console.log('💡 Backend should work, might be frontend cache/real-time issue');
   } else {
     console.log('❌ NO DATA in either table');

@@ -15,7 +15,7 @@ async function testSABOScoreSubmission() {
   // 1. Get a test match
   console.log('\n1. Getting test match...');
   const { data: matches, error: matchError } = await supabase
-    .from('sabo_tournament_matches')
+    .from('tournament_matches')
     .select('id, score_player1, score_player2, status, player1_id, player2_id')
     .limit(1);
     
@@ -46,7 +46,7 @@ async function testSABOScoreSubmission() {
   // 3. Check if scores were updated
   console.log('\n3. Checking if scores were updated...');
   const { data: updatedMatch, error: checkError } = await supabase
-    .from('sabo_tournament_matches')
+    .from('tournament_matches')
     .select('id, score_player1, score_player2, status, winner_id')
     .eq('id', testMatch.id)
     .single();
@@ -73,7 +73,7 @@ async function testSABOScoreSubmission() {
   console.log('\n📋 SUMMARY:');
   console.log('='.repeat(50));
   console.log('✅ Fixed issues:');
-  console.log('  1. Function now uses correct table: sabo_tournament_matches');
+  console.log('  1. Function now uses correct table: tournament_matches');
   console.log('  2. Function now uses correct columns: score_player1, score_player2');
   console.log('  3. Frontend now reads correct columns');
   console.log('  4. TypeScript interface updated');

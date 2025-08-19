@@ -66,7 +66,7 @@ async function createTestTournamentWithMatches() {
     
     // Match 1: Player 1 vs Player 2
     const match1 = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .insert({
         tournament_id: tournament.id,
         player1_id: participants[0].user_id,
@@ -81,7 +81,7 @@ async function createTestTournamentWithMatches() {
       
     // Match 2: Player 3 vs Player 4  
     const match2 = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .insert({
         tournament_id: tournament.id,
         player1_id: participants[2].user_id,
@@ -120,7 +120,7 @@ async function createTestTournamentWithMatches() {
       
       // Verify update
       const { data: updatedMatch } = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select('*')
         .eq('id', testMatch.id)
         .single();

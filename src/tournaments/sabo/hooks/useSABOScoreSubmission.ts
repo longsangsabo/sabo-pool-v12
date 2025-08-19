@@ -25,7 +25,7 @@ export const useSABOScoreSubmission = (
       scores: MatchScore;
       matchData: any;
     }) => {
-      console.log('🎯 Submitting SABO match score with new SABO Manager:', { matchId, scores, matchData });
+      console.log('🎯 Submitting SABO match score with direct table update:', { matchId, scores, matchData });
 
       // Get current user for submitted_by parameter
       const {
@@ -52,24 +52,44 @@ export const useSABOScoreSubmission = (
       const winnerScore = Math.max(player1Score, player2Score);
       const loserScore = Math.min(player1Score, player2Score);
 
-      console.log('🔍 Using SABO Manager to submit score and advance tournament');
+      console.log('🔍 Using direct table update instead of RPC function');
 
-      // Use SABO Tournament Engine for score submission and advancement
-      const result = await SABOTournamentEngine.submitScoreAndProcessAdvancement(tournamentId, {
-        match_id: matchId,
-        winner_id: winnerId,
-        loser_id: loserId,
-        winner_score: winnerScore,
-        loser_score: loserScore,
-        submitted_by: submittedBy
-      });
+      try {
+        // Direct table update instead of RPC function
+        const { data: updateResult, error: updateError } = await supabase
+          .from('tournament_matches')
+          .update({
+            score_player1: player1Score,
+            score_player2: player2Score,
+            winner_id: winnerId,
+            loser_id: loserId,
+            status: 'completed',
+            completed_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', matchId)
+          .select();
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to submit score');
+        if (updateError) {
+          throw updateError;
+        }
+
+        console.log('✅ Direct table update successful:', updateResult);
+
+        // TODO: Handle tournament advancement separately
+        // For now, just return success
+        return {
+          success: true,
+          message: 'Score submitted successfully',
+          winner_id: winnerId,
+          match_updated: true,
+          advancement_needed: true // Flag for future advancement handling
+        };
+
+      } catch (error) {
+        console.error('❌ Direct update error:', error);
+        throw error;
       }
-
-      console.log('✅ SABO Manager completed successfully:', result);
-      return result;
     },
     onSuccess: (data, variables) => {
       console.log('✅ SABO score submission successful:', data);

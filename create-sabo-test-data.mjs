@@ -44,14 +44,14 @@ async function createTestData() {
     
     console.log('✅ Tournament created:', tournament.name, '- ID:', tournament.id);
     
-    // 2. Tạo matches trong sabo_tournament_matches
+    // 2. Tạo matches trong tournament_matches
     console.log('\n📋 Tạo test matches...');
     
     const matches = [];
     
     // Match 1: Test Player 1 vs Test Player 2
     const match1 = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .insert({
         tournament_id: tournament.id,
         player1_id: 'test-player-1',
@@ -70,7 +70,7 @@ async function createTestData() {
       
     // Match 2: Test Player 3 vs Test Player 4  
     const match2 = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .insert({
         tournament_id: tournament.id,
         player1_id: 'test-player-3',
@@ -89,7 +89,7 @@ async function createTestData() {
       
     // Match 3: Một match đã có score để test display
     const match3 = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .insert({
         tournament_id: tournament.id,
         player1_id: 'test-player-5',
@@ -151,7 +151,7 @@ async function createTestData() {
           
           // Verify database update
           const { data: updatedMatch } = await supabase
-            .from('sabo_tournament_matches')
+            .from('tournament_matches')
             .select('player1_name, player2_name, score_player1, score_player2, status, winner_id')
             .eq('id', testMatch.id)
             .single();

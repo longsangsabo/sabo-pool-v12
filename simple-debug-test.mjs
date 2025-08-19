@@ -33,7 +33,7 @@ async function simpleDebugTest() {
       console.log('\n2. Checking for any existing SABO matches...');
       
       const { data: allMatches } = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select('*')
         .limit(10);
         
@@ -58,7 +58,7 @@ async function simpleDebugTest() {
           
           // Verify update
           const { data: updated } = await supabase
-            .from('sabo_tournament_matches')
+            .from('tournament_matches')
             .select('score_player1, score_player2, status, winner_id')
             .eq('id', existingMatch.id)
             .single();

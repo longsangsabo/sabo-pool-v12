@@ -1,53 +1,58 @@
 const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
+const fs = require('fs');
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_ANON_KEY
-);
+const envContent = fs.readFileSync('.env', 'utf8');
+const getEnvValue = (key) => {
+  const match = envContent.match(new RegExp(`${key}=(.+)`));
+  return match ? match[1].trim() : '';
+};
 
-async function checkSchema() {
-  console.log('🔍 Checking actual tournament table schema...');
-  
-  // Try to get a sample tournament to see available columns
-  const { data: sample, error } = await supabase
-    .from('tournaments')
-    .select('*')
-    .limit(1);
-  
-  if (error) {
-    console.error('❌ Error fetching tournaments:', error);
-  } else if (sample && sample.length > 0) {
-    console.log('📋 Available columns from existing data:', Object.keys(sample[0]));
-  } else {
-    console.log('📋 No existing tournaments found');
+const supabaseUrl = getEnvValue('VITE_SUPABASE_URL');
+const serviceKey = getEnvValue('SUPABASE_SERVICE_ROLE_KEY');
+
+const supabase = createClient(supabaseUrl, serviceKey);
+
+async function checkTableSchema() {
+  try {
+    console.log('🔍 Checking tournament_matches table schema...');
     
-    // Try to insert minimal test to see what columns are actually available
-    const testData = {
-      name: 'Schema Test ' + Date.now(),
-      tournament_start: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-    };
-    
-    const { data: insertTest, error: insertError } = await supabase
-      .from('tournaments')
-      .insert([testData])
-      .select('*');
-    
-    if (insertError) {
-      console.error('❌ Insert test failed:', insertError.message);
+    // Get sample data to see columns
+    const { data: testData, error } = await supabase
+      .from('tournament_matches')
+      .select('*')
+      .limit(1);
       
-      if (insertError.message.includes('location')) {
-        console.log('🚨 CONFIRMED: location column does not exist');
-      }
-      if (insertError.message.includes('venue_address')) {
-        console.log('🚨 MAYBE: venue_address column exists');
-      }
-    } else {
-      console.log('✅ Insert successful, columns:', Object.keys(insertTest[0]));
-      // Cleanup
-      await supabase.from('tournaments').delete().eq('id', insertTest[0].id);
+    if (error) {
+      throw error;
     }
+    
+    if (testData && testData.length > 0) {
+      const availableColumns = Object.keys(testData[0]);
+      console.log('✅ Available columns:');
+      console.log(availableColumns.join(', '));
+      
+      console.log('\n🎯 Column check:');
+      const expectedColumns = [
+        'id', 'tournament_id', 'round_number', 'match_number',
+        'player1_id', 'player2_id', 'winner_id', 'status',
+        'player1_score', 'player2_score', 'bracket_type',
+        'score_input_by', 'score_submitted_at', 'completed_at', 'updated_at'
+      ];
+      
+      expectedColumns.forEach(col => {
+        const exists = availableColumns.includes(col);
+        console.log(`  ${exists ? '✅' : '❌'} ${col}`);
+      });
+      
+      console.log('\n📋 Sample record:');
+      console.log(testData[0]);
+    } else {
+      console.log('❌ No data found in tournament_matches table');
+    }
+    
+  } catch (error) {
+    console.error('❌ Schema check error:', error.message);
   }
 }
 
-checkSchema();
+checkTableSchema();

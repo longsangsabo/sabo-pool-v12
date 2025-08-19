@@ -4,7 +4,7 @@
 
 ### 1. Database Function Issues ❌ ➜ ✅
 - **Old function**: Used wrong table `tournament_matches`
-- **Fixed**: Updated to use `sabo_tournament_matches` table
+- **Fixed**: Updated to use `tournament_matches` table
 - **Old columns**: `player1_score`, `player2_score` 
 - **Fixed**: Uses correct `score_player1`, `score_player2`
 

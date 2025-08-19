@@ -61,7 +61,7 @@ async function testSABOFunctions() {
   // Check current tournament status
   console.log('📊 Current tournament match status:');
   const { data: matches, error: matchError } = await supabase
-    .from('sabo_tournament_matches')
+    .from('tournament_matches')
     .select('id, round_number, match_number, player1_id, player2_id, status, bracket_type, branch_type')
     .eq('tournament_id', tournamentId)
     .order('round_number')

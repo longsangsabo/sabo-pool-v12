@@ -111,8 +111,10 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
           status: match.status as 'pending' | 'ready' | 'completed',
           bracket_type: mapBracketType(match.bracket_type),
           branch_type: match.branch_type as 'A' | 'B' | undefined,
-          player1_score: match.player1_score, // Correct mapping - database already uses player1_score
-          player2_score: match.player2_score, // Correct mapping - database already uses player2_score
+          player1_score: match.score_player1, // ✅ FIX: Map from correct database field
+          player2_score: match.score_player2, // ✅ FIX: Map from correct database field
+          score_player1: match.score_player1, // ✅ Also provide new field names for compatibility
+          score_player2: match.score_player2, // ✅ Also provide new field names for compatibility
           player1: match.player1_id ? profileMap[match.player1_id] || null : null,
           player2: match.player2_id ? profileMap[match.player2_id] || null : null,
         };

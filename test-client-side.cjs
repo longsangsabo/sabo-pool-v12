@@ -18,7 +18,7 @@ async function testClientSide() {
     console.log('🔧 Testing như trong hook với anon key...');
     
     const result = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('*')
       .eq('tournament_id', tournamentId)
       .order('round_number', { ascending: true })
@@ -35,7 +35,7 @@ async function testClientSide() {
       // Test INSERT để xem có lỗi RLS không
       console.log('🧪 Testing INSERT permission...');
       const insertTest = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .insert({
           tournament_id: tournamentId,
           bracket_type: 'winner',
@@ -53,7 +53,7 @@ async function testClientSide() {
       if (!insertTest.error) {
         // Xóa test data
         await supabase
-          .from('sabo_tournament_matches')
+          .from('tournament_matches')
           .delete()
           .eq('sabo_match_id', 'TEST999');
       }
@@ -61,14 +61,14 @@ async function testClientSide() {
       // Test UPDATE permission
       console.log('🧪 Testing UPDATE permission...');
       const firstMatch = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select('id')
         .eq('tournament_id', tournamentId)
         .limit(1);
         
       if (firstMatch.data && firstMatch.data.length > 0) {
         const updateTest = await supabase
-          .from('sabo_tournament_matches')
+          .from('tournament_matches')
           .update({ notes: 'test update' })
           .eq('id', firstMatch.data[0].id);
           

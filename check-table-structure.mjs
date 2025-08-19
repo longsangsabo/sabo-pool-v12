@@ -12,8 +12,8 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 async function checkTableStructure() {
   console.log('🔍 Checking table structures...');
   
-  // Check sabo_tournament_matches structure by trying different column names
-  console.log('\n1. Testing sabo_tournament_matches columns...');
+  // Check tournament_matches structure by trying different column names
+  console.log('\n1. Testing tournament_matches columns...');
   
   const possibleColumns = [
     'id, status, tournament_id, round_number, match_number',
@@ -27,7 +27,7 @@ async function checkTableStructure() {
   for (const columns of possibleColumns) {
     try {
       const { data, error } = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select(columns)
         .limit(1);
         
@@ -68,10 +68,10 @@ async function checkTableStructure() {
   }
   
   // Try to get all columns with *
-  console.log('\n3. Getting all sabo_tournament_matches columns...');
+  console.log('\n3. Getting all tournament_matches columns...');
   try {
     const { data, error } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('*')
       .limit(1);
       

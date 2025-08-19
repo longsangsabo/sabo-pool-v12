@@ -1,7 +1,7 @@
 /**
  * SABO TOURNAMENT MATCH HANDLER
  * Handles SABO-specific tournament matches with proper bracket structure
- * Uses unified tournament_matches table (renamed from sabo_tournament_matches)
+ * Uses unified tournament_matches table (renamed from tournament_matches)
  */
 
 import { supabaseService } from '@/integrations/supabase/service';

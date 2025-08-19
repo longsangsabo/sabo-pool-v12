@@ -23,8 +23,8 @@ DECLARE
   v_advancement_result jsonb;
   v_tournament_id UUID;
 BEGIN
-  -- Get match details from SABO table
-  SELECT * INTO v_match FROM sabo_tournament_matches WHERE id = p_match_id;
+  -- Get match details from tournament_matches table
+  SELECT * INTO v_match FROM tournament_matches WHERE id = p_match_id;
   
   IF NOT FOUND THEN
     RETURN jsonb_build_object('success', false, 'error', 'Match not found');
@@ -52,8 +52,8 @@ BEGIN
     ELSE v_match.player2_id
   END;
   
-  -- Update match with scores in SABO table with correct column names
-  UPDATE sabo_tournament_matches 
+  -- Update match with scores in tournament_matches table with correct column names
+  UPDATE tournament_matches 
   SET 
     player1_score = p_player1_score,
     player2_score = p_player2_score,
@@ -65,7 +65,7 @@ BEGIN
     updated_at = NOW()
   WHERE id = p_match_id;
   
-  -- Trigger SABO advancement (this function should also be updated to use sabo_tournament_matches)
+  -- Trigger SABO advancement (this function should also be updated to use tournament_matches)
   SELECT advance_sabo_tournament(p_match_id, v_winner_id) INTO v_advancement_result;
   
   -- Create match results log if match_results table exists
@@ -101,4 +101,4 @@ $$;
 GRANT EXECUTE ON FUNCTION submit_sabo_match_score TO authenticated;
 
 -- Add comment
-COMMENT ON FUNCTION submit_sabo_match_score IS 'Submit SABO match score and process advancement - Fixed to use sabo_tournament_matches table';
+COMMENT ON FUNCTION submit_sabo_match_score IS 'Submit SABO match score and process advancement - Uses tournament_matches table';

@@ -17,7 +17,7 @@ async function checkAdvancementIssue() {
   try {
     // Get tournament ID from completed Round 1 matches
     const { data: round1Matches, error: r1Error } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('*')
       .eq('round_number', 1)
       .eq('status', 'completed')
@@ -33,7 +33,7 @@ async function checkAdvancementIssue() {
     
     // Check Round 2 matches
     const { data: round2Matches, error: r2Error } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('*')
       .eq('tournament_id', tournamentId)
       .eq('round_number', 2)
@@ -56,7 +56,7 @@ async function checkAdvancementIssue() {
     
     // Check Losers Branch A (Round 101)
     const { data: losersA, error: laError } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('*')
       .eq('tournament_id', tournamentId)
       .eq('round_number', 101)
@@ -79,7 +79,7 @@ async function checkAdvancementIssue() {
     
     // Count completed R1 matches
     const { data: allR1, error: allR1Error } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('*')
       .eq('tournament_id', tournamentId)
       .eq('round_number', 1);

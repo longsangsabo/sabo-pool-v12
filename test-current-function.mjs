@@ -28,7 +28,7 @@ async function updateSABOFunction() {
   
   // Get a test match
   const { data: matches, error: matchError } = await supabase
-    .from('sabo_tournament_matches')
+    .from('tournament_matches')
     .select('*')
     .limit(1);
     
@@ -69,7 +69,7 @@ async function updateSABOFunction() {
     
     // Check if data was actually updated
     const { data: checkMatch, error: checkError } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('score_player1, score_player2, status')
       .eq('id', testMatch.id)
       .single();

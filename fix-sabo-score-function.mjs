@@ -31,7 +31,7 @@ DECLARE
   v_tournament_id UUID;
 BEGIN
   -- Get match details from SABO table
-  SELECT * INTO v_match FROM sabo_tournament_matches WHERE id = p_match_id;
+  SELECT * INTO v_match FROM tournament_matches WHERE id = p_match_id;
   
   IF NOT FOUND THEN
     RETURN jsonb_build_object('success', false, 'error', 'Match not found');
@@ -60,7 +60,7 @@ BEGIN
   END;
   
   -- Update match with scores in SABO table with correct column names
-  UPDATE sabo_tournament_matches 
+  UPDATE tournament_matches 
   SET 
     player1_score = p_player1_score,
     player2_score = p_player2_score,
@@ -74,7 +74,7 @@ BEGIN
   
   RETURN jsonb_build_object(
     'success', true,
-    'message', 'Score submitted successfully - function updated to use sabo_tournament_matches',
+    'message', 'Score submitted successfully - function updated to use tournament_matches',
     'scores_updated', true,
     'winner_id', v_winner_id,
     'match_completed', true,
@@ -117,7 +117,7 @@ async function testFunction() {
   
   // Get a test match first
   const { data: matches, error: matchError } = await supabase
-    .from('sabo_tournament_matches')
+    .from('tournament_matches')
     .select('*')
     .limit(1);
     

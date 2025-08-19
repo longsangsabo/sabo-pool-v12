@@ -12,12 +12,12 @@ if (!supabaseUrl || !supabaseServiceKey) {
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 async function analyzeSABOTournament() {
-  console.log('🔍 Analyzing ACTUAL sabo_tournament_matches data...');
+  console.log('🔍 Analyzing ACTUAL tournament_matches data...');
   
   try {
     // Get all tournaments in the table
     const { data: allMatches, error } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('tournament_id, bracket_type, round_number, match_number, status, player1_id, player2_id, winner_id, player1_score, player2_score')
       .order('tournament_id')
       .order('round_number')
@@ -29,7 +29,7 @@ async function analyzeSABOTournament() {
     }
     
     if (!allMatches || allMatches.length === 0) {
-      console.log('⚠️ No matches found in sabo_tournament_matches table');
+      console.log('⚠️ No matches found in tournament_matches table');
       return;
     }
     
@@ -42,7 +42,7 @@ async function analyzeSABOTournament() {
       tournamentGroups[match.tournament_id].push(match);
     });
     
-    console.log(`\n📊 Found ${Object.keys(tournamentGroups).length} tournament(s) in sabo_tournament_matches:`);
+    console.log(`\n📊 Found ${Object.keys(tournamentGroups).length} tournament(s) in tournament_matches:`);
     
     Object.entries(tournamentGroups).forEach(([tournamentId, matches]) => {
       console.log(`\n🏆 Tournament: ${tournamentId}`);

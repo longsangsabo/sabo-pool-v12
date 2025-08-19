@@ -265,7 +265,7 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
                     : 'text-gray-500 dark:text-gray-400'
                 )}
               >
-                {match.player1_score ?? 0}
+                {match.score_player1 ?? 0}
               </div>
             </div>
 
@@ -324,14 +324,14 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
                     : 'text-gray-500 dark:text-gray-400'
                 )}
               >
-                {match.player2_score ?? 0}
+                {match.score_player2 ?? 0}
               </div>
             </div>
 
             {/* Match Result Summary */}
             <div className='mt-3 p-2 bg-gray-50 dark:bg-gray-800/20 rounded text-center'>
               <span className='text-sm text-gray-600 dark:text-gray-400'>
-                Final: {match.player1_score ?? 0} - {match.player2_score ?? 0}
+                Final: {match.score_player1 ?? 0} - {match.score_player2 ?? 0}
               </span>
             </div>
           </div>

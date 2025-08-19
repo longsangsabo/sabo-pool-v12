@@ -48,9 +48,9 @@ export class ClientSideDoubleElimination {
       // ✅ Step 0: Thử gọi RPC server-side (ưu tiên) nếu đã tạo function trên DB
       // =============================================================
       try {
-        console.log('🔌 Trying server-side RPC: generate_sabo_tournament_matches');
+        console.log('🔌 Trying server-side RPC: generate_tournament_matches');
         const { data: rpcData, error: rpcError } = await supabase
-          .rpc('generate_sabo_tournament_matches' as any, { p_tournament_id: this.tournamentId });
+          .rpc('generate_tournament_matches' as any, { p_tournament_id: this.tournamentId });
         if (!rpcError && rpcData && (rpcData as any).success) {
           console.log('✅ Server-side generation success:', rpcData);
           // Load matches vừa tạo
@@ -67,7 +67,7 @@ export class ClientSideDoubleElimination {
             matchCount: (rpcData as any).match_count || ((createdMatches as any)?.length || 27)
           };
         } else if (rpcError) {
-          console.warn('⚠️ RPC generate_sabo_tournament_matches failed, fallback to client generator:', rpcError.message);
+          console.warn('⚠️ RPC generate_tournament_matches failed, fallback to client generator:', rpcError.message);
         } else {
           console.warn('⚠️ RPC did not return success flag, fallback to client generator');
         }

@@ -15,7 +15,7 @@ async function checkSABOMatches() {
     // Test basic table access
     console.log('1️⃣ Testing basic table access...');
     const { data: basicTest, error: basicError } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('count');
       
     if (basicError) {
@@ -28,7 +28,7 @@ async function checkSABOMatches() {
     // Try to get any records from table
     console.log('2️⃣ Getting any records from table...');
     const { data: anyRecords, error: anyError } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('*')
       .limit(3);
       
@@ -45,7 +45,7 @@ async function checkSABOMatches() {
     // Check specifically for our tournament
     console.log('3️⃣ Checking for tournament matches...');
     const { data: tournamentMatches, error: tournamentError } = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('*')
       .eq('tournament_id', tournamentId);
       
@@ -68,7 +68,7 @@ async function checkSABOMatches() {
       // Check if matches exist but with different tournament ID
       console.log('4️⃣ Checking if matches exist with any tournament ID...');
       const { data: allMatches, error: allError } = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select('tournament_id, count()')
         .not('tournament_id', 'is', null);
         

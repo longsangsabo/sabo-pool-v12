@@ -16,7 +16,7 @@ async function disableRLSDirectly() {
     const anonSupabase = createClient(supabaseUrl, process.env.VITE_SUPABASE_ANON_KEY);
     
     const anonResult = await anonSupabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('id')
       .eq('tournament_id', 'c41300b2-02f2-456a-9d6f-679b59177e8f')
       .limit(1);
@@ -29,7 +29,7 @@ async function disableRLSDirectly() {
     // Test với service key
     console.log('🧪 Testing with service key...');
     const serviceResult = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('id')
       .eq('tournament_id', 'c41300b2-02f2-456a-9d6f-679b59177e8f')
       .limit(1);
@@ -42,7 +42,7 @@ async function disableRLSDirectly() {
     // Nếu service key work, thử count toàn bộ
     if (!serviceResult.error && serviceResult.data) {
       const allMatches = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select('*')
         .eq('tournament_id', 'c41300b2-02f2-456a-9d6f-679b59177e8f');
         

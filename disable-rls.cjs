@@ -17,21 +17,21 @@ async function disableRLS() {
   try {
     console.log('🔧 Disabling RLS for SABO tables...');
     
-    // Disable RLS for sabo_tournament_matches
+    // Disable RLS for tournament_matches
     const { error } = await supabase.rpc('exec_sql', {
-      sql: 'ALTER TABLE sabo_tournament_matches DISABLE ROW LEVEL SECURITY;'
+      sql: 'ALTER TABLE tournament_matches DISABLE ROW LEVEL SECURITY;'
     });
     
     if (error) {
       console.error('❌ Error disabling RLS:', error);
     } else {
-      console.log('✅ Successfully disabled RLS for sabo_tournament_matches');
+      console.log('✅ Successfully disabled RLS for tournament_matches');
     }
     
     // Test query after disabling RLS
     console.log('🧪 Testing query after disabling RLS...');
     const testResult = await supabase
-      .from('sabo_tournament_matches')
+      .from('tournament_matches')
       .select('count(*)', { count: 'exact' });
       
     console.log('✅ Test query result:', testResult);

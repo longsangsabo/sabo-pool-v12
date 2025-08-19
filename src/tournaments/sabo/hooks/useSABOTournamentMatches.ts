@@ -31,7 +31,7 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
         console.log('⚠️ No authenticated user - may have RLS issues');
       }
 
-      // Fetch matches from SABO-specific table - sabo_tournament_matches
+      // Fetch matches from tournament_matches table (renamed from sabo_tournament_matches)
       // Use service client to bypass RLS issues
       console.log('🔧 Using service client to bypass RLS for SABO matches...');
       
@@ -41,7 +41,7 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
       }
       
       const result = await supabaseService
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select('*')
         .eq('tournament_id', tournamentId)
         .order('round_number', { ascending: true })
@@ -111,11 +111,37 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
           status: match.status as 'pending' | 'ready' | 'completed',
           bracket_type: mapBracketType(match.bracket_type),
           branch_type: match.branch_type as 'A' | 'B' | undefined,
-          player1_score: match.score_player1, // Map database column to interface property
-          player2_score: match.score_player2, // Map database column to interface property
+          player1_score: match.player1_score, // Correct mapping - database already uses player1_score
+          player2_score: match.player2_score, // Correct mapping - database already uses player2_score
           player1: match.player1_id ? profileMap[match.player1_id] || null : null,
           player2: match.player2_id ? profileMap[match.player2_id] || null : null,
         };
+        
+        // 🔍 DEBUG: Log score mapping để debug tỷ số
+        if (match.status === 'completed' && (match.player1_score || match.player2_score)) {
+          console.log('🔍 [useSABOTournamentMatches] Score mapping CORRECTED:', {
+            id: match.id,
+            raw_player1_score: match.player1_score,
+            raw_player2_score: match.player2_score,
+            mapped_player1_score: match.player1_score,
+            mapped_player2_score: match.player2_score,
+            status: match.status,
+            winner_id: match.winner_id
+          });
+        }
+        
+        // 🔍 DEBUG: Log score mapping để debug tỷ số
+        if (match.status === 'completed' && (match.score_player1 || match.score_player2)) {
+          console.log('🔍 [useSABOTournamentMatches] Score mapping:', {
+            id: match.id,
+            raw_score_player1: match.score_player1,
+            raw_score_player2: match.score_player2,
+            final_score_player1: match.score_player1,
+            final_score_player2: match.score_player2,
+            status: match.status,
+            winner_id: match.winner_id
+          });
+        }
       }) as SABOMatch[];
 
       console.log(
@@ -177,7 +203,7 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
         {
           event: '*',
           schema: 'public',
-          table: 'sabo_tournament_matches', // ✅ FIX: Use correct SABO table
+          table: 'tournament_matches', // ✅ FIX: Use correct table after rename
           filter: `tournament_id=eq.${tournamentId}`,
         },
         payload => {
@@ -191,8 +217,8 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
           const isScoreUpdate =
             payload.eventType === 'UPDATE' &&
             payload.new &&
-            ('score_player1' in payload.new ||
-              'score_player2' in payload.new ||
+            ('player1_score' in payload.new ||
+              'player2_score' in payload.new ||
               'winner_id' in payload.new ||
               'status' in payload.new);
 
@@ -216,12 +242,12 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
                     status:
                       payload.new.status || updatedMatches[matchIndex].status,
                     player1_score:
-                      payload.new.score_player1 !== undefined
-                        ? payload.new.score_player1
+                      payload.new.player1_score !== undefined
+                        ? payload.new.player1_score
                         : updatedMatches[matchIndex].player1_score,
                     player2_score:
-                      payload.new.score_player2 !== undefined
-                        ? payload.new.score_player2
+                      payload.new.player2_score !== undefined
+                        ? payload.new.player2_score
                         : updatedMatches[matchIndex].player2_score,
                     winner_id:
                       payload.new.winner_id !== undefined

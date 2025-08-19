@@ -1,7 +1,7 @@
 /**
  * SABO TOURNAMENT MATCH HANDLER
  * Handles SABO-specific tournament matches with proper bracket structure
- * Uses dedicated sabo_tournament_matches table
+ * Uses unified tournament_matches table (renamed from sabo_tournament_matches)
  */
 
 import { supabaseService } from '@/integrations/supabase/service';
@@ -9,6 +9,7 @@ import { supabaseService } from '@/integrations/supabase/service';
 interface SABOMatch {
   id?: string;
   tournament_id: string;
+  club_id?: string | null;
   bracket_type: 'winner' | 'loser' | 'finals';
   branch_type?: 'A' | 'B' | null;
   round_number: number;
@@ -30,17 +31,32 @@ interface SABOMatch {
 }
 
 export class SABOMatchHandler {
-  private static readonly TABLE_NAME = 'sabo_tournament_matches';
+  private static readonly TABLE_NAME = 'tournament_matches';
+
+  // Columns actually existing in unified tournament_matches schema
+  private static readonly ALLOWED_COLUMNS = new Set([
+    'tournament_id',
+    'club_id',
+    'round_number',
+    'match_number',
+    'bracket_type',
+    'branch_type',
+    'sabo_match_id',
+    'player1_id',
+    'player2_id',
+    'winner_id',
+    'score_player1',
+    'score_player2',
+    'status'
+  ]);
 
   /**
    * Check if SABO matches table exists and is accessible
    */
   static async checkTableAccess(): Promise<boolean> {
     try {
-      const { error } = await supabaseService
-        .from(this.TABLE_NAME)
-        .select('id')
-        .limit(1);
+  const client: any = supabaseService || (await import('@/integrations/supabase/client')).supabase;
+  const { error } = await client.from(this.TABLE_NAME).select('id').limit(1);
 
       if (error) {
         console.error('❌ SABO matches table not accessible:', error.message);
@@ -85,7 +101,7 @@ export class SABOMatchHandler {
   /**
    * Convert generic match to SABO match format
    */
-  static convertToSABOMatch(match: any, tournamentId: string): SABOMatch {
+  static convertToSABOMatch(match: any, tournamentId: string, clubId?: string): SABOMatch {
     // Determine bracket structure from match properties
     let bracketType: 'winner' | 'loser' | 'finals' = 'winner';
     let branchType: 'A' | 'B' | null = null;
@@ -118,6 +134,7 @@ export class SABOMatchHandler {
 
     return {
       tournament_id: tournamentId,
+      club_id: clubId || null,
       bracket_type: bracketType,
       branch_type: branchType,
       round_number: roundNumber,
@@ -145,11 +162,8 @@ export class SABOMatchHandler {
   static async clearExistingMatches(tournamentId: string): Promise<boolean> {
     try {
       console.log('🗑️ Clearing existing SABO matches...');
-      
-      const { error } = await supabaseService
-        .from(this.TABLE_NAME)
-        .delete()
-        .eq('tournament_id', tournamentId);
+  const client: any = supabaseService || (await import('@/integrations/supabase/client')).supabase;
+  const { error } = await client.from(this.TABLE_NAME).delete().eq('tournament_id', tournamentId);
 
       if (error) {
         console.error('❌ Clear SABO matches failed:', error.message);
@@ -184,49 +198,75 @@ export class SABOMatchHandler {
     // 2. Clear existing matches
     await this.clearExistingMatches(tournamentId);
 
-    // 3. Convert to SABO format
+    // 3. Get club_id from tournament
+    const client: any = supabaseService || (await import('@/integrations/supabase/client')).supabase;
+    const { data: tournament, error: tournamentError } = await client
+      .from('tournaments')
+      .select('club_id')
+      .eq('id', tournamentId)
+      .single();
+
+    if (tournamentError || !tournament) {
+      console.error('❌ Could not fetch tournament club_id:', tournamentError?.message);
+      return 0;
+    }
+
+    const clubId = tournament.club_id;
+    console.log('🏢 Using club_id:', clubId);
+
+    // 4. Convert to SABO format
     const saboMatches = matches.map(match => 
-      this.convertToSABOMatch(match, tournamentId)
+      this.convertToSABOMatch(match, tournamentId, clubId)
     );
 
     console.log(`📝 Converted ${saboMatches.length} matches to SABO format`);
 
-    // 4. Validate SABO structure
+    // 5. Validate SABO structure
     const brackets = this.validateSABOStructure(saboMatches);
     console.log('🎯 SABO bracket validation:', brackets);
 
-    // 5. Save in batches
+    // 6. Sanitize matches to only allowed columns (remove sabo_match_id, notes, etc.)
+    const sanitized = saboMatches.map(raw => {
+      const obj: Record<string, any> = {};
+      for (const k of Object.keys(raw)) {
+        if (this.ALLOWED_COLUMNS.has(k) && raw[k] !== undefined) obj[k] = raw[k];
+      }
+      return obj;
+    });
+
+    // 7. Save in batches
     let savedCount = 0;
     const batchSize = 5; // Smaller batches for complex data
 
-    for (let i = 0; i < saboMatches.length; i += batchSize) {
-      const batch = saboMatches.slice(i, i + batchSize);
+    for (let i = 0; i < sanitized.length; i += batchSize) {
+      const batch = sanitized.slice(i, i + batchSize);
       const batchNumber = Math.floor(i / batchSize) + 1;
-      const totalBatches = Math.ceil(saboMatches.length / batchSize);
+      const totalBatches = Math.ceil(sanitized.length / batchSize);
 
       console.log(`📤 SABO Batch ${batchNumber}/${totalBatches} (${batch.length} matches)`);
 
       try {
-        const { data, error } = await supabaseService
+        const { data, error } = await client
           .from(this.TABLE_NAME)
           .insert(batch)
-          .select('id, sabo_match_id');
+          .select('id');
 
         if (error) {
           console.error(`❌ SABO Batch ${batchNumber} failed:`, error.message);
+          console.error('🧪 First row of failed batch:', batch[0]);
           
           // Try individual saves for failed batch
           for (const match of batch) {
             try {
-              const { error: individualError } = await supabaseService
+              const { error: individualError } = await client
                 .from(this.TABLE_NAME)
                 .insert([match]);
                 
               if (individualError) {
-                console.error(`❌ Individual SABO save failed for ${match.sabo_match_id}:`, individualError.message);
+                console.error(`❌ Individual SABO save failed (match_number=${match.match_number}, round=${match.round_number}):`, individualError.message);
               } else {
                 savedCount++;
-                console.log(`✅ Individual SABO save: ${match.sabo_match_id}`);
+                console.log(`✅ Individual SABO save: round ${match.round_number} match ${match.match_number}`);
               }
             } catch (individualException) {
               console.error(`💥 Individual SABO exception:`, individualException);
@@ -235,7 +275,6 @@ export class SABOMatchHandler {
         } else {
           savedCount += data.length;
           console.log(`✅ SABO Batch saved: ${data.length} matches`);
-          console.log(`📋 Saved IDs: ${data.map(m => m.sabo_match_id).join(', ')}`);
         }
       } catch (batchError) {
         console.error(`💥 SABO Batch ${batchNumber} exception:`, batchError);
@@ -243,6 +282,9 @@ export class SABOMatchHandler {
     }
 
     console.log(`✅ SABO Total saved: ${savedCount}/${matches.length} matches`);
+    if (savedCount !== matches.length) {
+      console.warn('⚠️ Some matches failed to save. Verify table schema or RLS policies.');
+    }
     return savedCount;
   }
 

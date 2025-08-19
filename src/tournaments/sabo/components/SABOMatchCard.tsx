@@ -48,6 +48,20 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
   const hasPlayers = player1 && player2;
   const isPlayer1Winner = winner_id === player1?.user_id;
   const isPlayer2Winner = winner_id === player2?.user_id;
+  
+  // 🔍 DEBUG: Log match data để debug tỷ số
+  React.useEffect(() => {
+    if (isCompleted) {
+      console.log('🎯 [SABOMatchCard] Match completed data:', {
+        id: match.id,
+        score_player1: match.score_player1,
+        score_player2: match.score_player2,
+        status: match.status,
+        winner_id: match.winner_id,
+        full_match: match
+      });
+    }
+  }, [match, isCompleted]);
 
   // Tournament score management permissions:
   // 1. Club Owner: Full control over all matches
@@ -251,7 +265,7 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
                     : 'text-gray-500 dark:text-gray-400'
                 )}
               >
-                {match.score_player1 ?? 0}
+                {match.player1_score ?? 0}
               </div>
             </div>
 
@@ -310,7 +324,7 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
                     : 'text-gray-500 dark:text-gray-400'
                 )}
               >
-                {match.score_player2 ?? 0}
+                {match.player2_score ?? 0}
               </div>
             </div>
 

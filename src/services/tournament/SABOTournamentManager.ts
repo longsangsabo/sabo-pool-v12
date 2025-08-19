@@ -47,7 +47,7 @@ export class SABOTournamentEngine {
 
       // Lấy thông tin match để xác định players
       const { data: matchInfo, error: matchError } = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select('player1_id, player2_id')
         .eq('id', matchData.match_id)
         .single();
@@ -98,12 +98,12 @@ export class SABOTournamentEngine {
       const advancementResult = await this.processAutomaticAdvancement(
         tournamentId, 
         matchData.match_id,
-        data.winner_id
+        (data as any)?.winner_id
       );
 
       return {
         success: true,
-        winner_id: data.winner_id,
+        winner_id: (data as any)?.winner_id,
         advancement: advancementResult
       };
 
@@ -137,7 +137,7 @@ export class SABOTournamentEngine {
 
       // Lấy thông tin match để xác định round
       const { data: matchData, error: matchError } = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select('round_number, match_number, bracket_type')
         .eq('id', completedMatchId)
         .single();
@@ -227,7 +227,7 @@ export class SABOTournamentEngine {
     try {
       console.log(`🎯 Calling ${functionName} for tournament ${tournamentId}`);
       
-      const { data, error } = await supabase.rpc(functionName, {
+  const { data, error } = await supabase.rpc(functionName as any, {
         tournament_id: tournamentId
       });
 
@@ -252,11 +252,11 @@ export class SABOTournamentEngine {
   static async getTournamentBracket(tournamentId: string): Promise<any> {
     try {
       const { data, error } = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select(`
           *,
-          player1:profiles!sabo_tournament_matches_player1_id_fkey(id, username, full_name),
-          player2:profiles!sabo_tournament_matches_player2_id_fkey(id, username, full_name)
+          player1:profiles!tournament_matches_player1_id_fkey(id, username, full_name),
+          player2:profiles!tournament_matches_player2_id_fkey(id, username, full_name)
         `)
         .eq('tournament_id', tournamentId)
         .order('round_number')
@@ -282,11 +282,11 @@ export class SABOTournamentEngine {
   static async getPlayableMatches(tournamentId: string): Promise<any[]> {
     try {
       const { data, error } = await supabase
-        .from('sabo_tournament_matches')
+        .from('tournament_matches')
         .select(`
           *,
-          player1:profiles!sabo_tournament_matches_player1_id_fkey(id, username, full_name),
-          player2:profiles!sabo_tournament_matches_player2_id_fkey(id, username, full_name)
+          player1:profiles!tournament_matches_player1_id_fkey(id, username, full_name),
+          player2:profiles!tournament_matches_player2_id_fkey(id, username, full_name)
         `)
         .eq('tournament_id', tournamentId)
         .eq('status', 'ready')

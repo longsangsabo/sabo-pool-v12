@@ -36,8 +36,8 @@ export interface SABOMatch {
   winner_id?: string;
   status: 'pending' | 'ready' | 'completed';
   tournament_id: string;
-  score_player1?: number;
-  score_player2?: number;
+  player1_score?: number;
+  player2_score?: number;
   player1?: {
     user_id: string;
     full_name: string;

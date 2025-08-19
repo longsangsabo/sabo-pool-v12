@@ -19,11 +19,13 @@ interface Match {
   tournament_id: string;
   round_number: number;
   match_number: number;
+  sabo_match_id: string;
   player1_id: string | null;
   player2_id: string | null;
   winner_id: string | null;
   status: 'pending' | 'in_progress' | 'completed';
   bracket_type: 'winner' | 'loser';
+  club_id?: string; // Optional for flexibility
 }
 
 export class ClientSideDoubleElimination {
@@ -291,6 +293,7 @@ export class ClientSideDoubleElimination {
         tournament_id: this.tournamentId,
         round_number: 1,
         match_number: i + 1,
+        sabo_match_id: `WR1M${i + 1}`,
         player1_id: player1.user_id,
         player2_id: player2.user_id,
         winner_id: null,
@@ -305,6 +308,7 @@ export class ClientSideDoubleElimination {
         tournament_id: this.tournamentId,
         round_number: 2,
         match_number: i + 1,
+        sabo_match_id: `WR2M${i + 1}`,
         player1_id: null, // TBD from previous round
         player2_id: null,
         winner_id: null,
@@ -319,6 +323,7 @@ export class ClientSideDoubleElimination {
         tournament_id: this.tournamentId,
         round_number: 3,
         match_number: i + 1,
+        sabo_match_id: `WR3M${i + 1}`,
         player1_id: null,
         player2_id: null,
         winner_id: null,
@@ -340,6 +345,7 @@ export class ClientSideDoubleElimination {
         tournament_id: this.tournamentId,
         round_number: 101,
         match_number: i + 1,
+        sabo_match_id: `LAR101M${i + 1}`,
         player1_id: null,
         player2_id: null,
         winner_id: null,
@@ -354,6 +360,7 @@ export class ClientSideDoubleElimination {
         tournament_id: this.tournamentId,
         round_number: 102,
         match_number: i + 1,
+        sabo_match_id: `LAR102M${i + 1}`,
         player1_id: null,
         player2_id: null,
         winner_id: null,
@@ -367,6 +374,7 @@ export class ClientSideDoubleElimination {
       tournament_id: this.tournamentId,
       round_number: 103,
       match_number: 1,
+      sabo_match_id: `LAR103M1`,
       player1_id: null,
       player2_id: null,
       winner_id: null,
@@ -381,6 +389,7 @@ export class ClientSideDoubleElimination {
         tournament_id: this.tournamentId,
         round_number: 201,
         match_number: i + 1,
+        sabo_match_id: `LBR201M${i + 1}`,
         player1_id: null,
         player2_id: null,
         winner_id: null,
@@ -394,6 +403,7 @@ export class ClientSideDoubleElimination {
       tournament_id: this.tournamentId,
       round_number: 202,
       match_number: 1,
+      sabo_match_id: `LBR202M1`,
       player1_id: null,
       player2_id: null,
       winner_id: null,
@@ -414,6 +424,7 @@ export class ClientSideDoubleElimination {
         tournament_id: this.tournamentId,
         round_number: 250, // Semifinal round
         match_number: i + 1,
+        sabo_match_id: `SEMI${i + 1}`,
         player1_id: null, // 2 from WB + 1 from LA + 1 from LB
         player2_id: null,
         winner_id: null,
@@ -427,6 +438,7 @@ export class ClientSideDoubleElimination {
       tournament_id: this.tournamentId,
       round_number: 300, // Final round
       match_number: 1,
+      sabo_match_id: `FINAL1`,
       player1_id: null,
       player2_id: null,
       winner_id: null,

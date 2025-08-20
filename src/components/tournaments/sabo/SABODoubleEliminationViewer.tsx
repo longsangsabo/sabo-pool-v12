@@ -1,9 +1,11 @@
 import React, { useRef, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Trophy, Target } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Trophy, Target, Wrench } from 'lucide-react';
 import { SABOLogicCore } from '@/tournaments/sabo/SABOLogicCore';
 import { useSABOTournamentMatches } from '@/tournaments/sabo/hooks/useSABOTournamentMatches';
 import { useSABOScoreSubmission } from '@/tournaments/sabo/hooks/useSABOScoreSubmission';
+import { useSABOSemifinalsFix } from '@/tournaments/sabo/hooks/useSABOSemifinalsFix';
 import { SABOWinnersBracket } from '@/tournaments/sabo/components/SABOWinnersBracket';
 import { SABOLosersBranchA } from '@/tournaments/sabo/components/SABOLosersBranchA';
 import { SABOLosersBranchB } from '@/tournaments/sabo/components/SABOLosersBranchB';
@@ -58,6 +60,12 @@ export const SABODoubleEliminationViewer: React.FC<
   }, [refresh]);
 
   const { submitScore } = useSABOScoreSubmission(
+    tournamentId,
+    refreshWithScrollPreservation
+  );
+
+  // Hook for fixing semifinals
+  const { fixSemifinals, isFixing } = useSABOSemifinalsFix(
     tournamentId,
     refreshWithScrollPreservation
   );
@@ -152,11 +160,25 @@ export const SABODoubleEliminationViewer: React.FC<
 
       {/* Finals Stage */}
       <section className='finals-stage'>
-        <div className='mb-4'>
+        <div className='mb-4 flex items-center justify-between'>
           <h2 className='text-xl font-bold flex items-center gap-2'>
             <Trophy className='h-5 w-5 text-purple-500' />
             Finals Stage (4→2→1)
           </h2>
+          
+          {/* Fix Semifinals Button - Only show for club owners/admins */}
+          {isOwnerOrAdmin && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fixSemifinals}
+              disabled={isFixing}
+              className="ml-4 text-orange-600 border-orange-300 hover:bg-orange-50"
+            >
+              <Wrench className="h-4 w-4 mr-2" />
+              {isFixing ? 'Đang sửa...' : 'Sửa Bán Kết'}
+            </Button>
+          )}
         </div>
 
         {/* Semifinals */}

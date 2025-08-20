@@ -1825,21 +1825,98 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
 
               {/* Tournament Results Tab */}
               <TabsContent value="results" className="space-y-4">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Medal className="w-5 h-5" />
-                      🏆 Kết quả giải đấu
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center py-6 text-muted-foreground">
-                      <Medal className="w-10 h-10 mx-auto mb-3" />
-                      <p>Kết quả và thống kê giải đấu</p>
-                      <p className="text-sm">Sẽ được triển khai sớm</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="space-y-4">
+                  {/* Tournament Overview Stats */}
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <Trophy className="w-5 h-5" />
+                        Thống kê giải đấu
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="text-center p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                          <div className="text-2xl font-bold text-yellow-600">
+                            {selectedTournament.current_participants}
+                          </div>
+                          <div className="text-sm text-muted-foreground">Tổng người chơi</div>
+                        </div>
+                        <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                          <div className="text-2xl font-bold text-blue-600">
+                            {selectedTournament.tournament_type === 'double_elimination' || 
+                             selectedTournament.tournament_type === 'sabo_double_elimination' ? '27' : 
+                             selectedTournament.tournament_type === 'single_elimination' ? 
+                             (selectedTournament.current_participants * 2 - 1) : 'N/A'}
+                          </div>
+                          <div className="text-sm text-muted-foreground">Tổng số trận</div>
+                        </div>
+                        <div className="text-center p-3 bg-green-50 rounded-lg border border-green-200">
+                          <div className="text-2xl font-bold text-green-600">
+                            {selectedTournament.status === 'completed' || selectedTournament.status === 'finished' ? '100' : '0'}%
+                          </div>
+                          <div className="text-sm text-muted-foreground">Hoàn thành</div>
+                        </div>
+                        <div className="text-center p-3 bg-purple-50 rounded-lg border border-purple-200">
+                          <div className="text-2xl font-bold text-purple-600">
+                            {format(new Date(selectedTournament.created_at), 'dd/MM/yyyy', { locale: vi })}
+                          </div>
+                          <div className="text-sm text-muted-foreground">Ngày tạo</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Admin Actions for Results */}
+                  {(selectedTournament.status === 'completed' || selectedTournament.status === 'finished') && (
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center justify-between">
+                          <span className="flex items-center gap-2 text-lg">
+                            <Settings className="w-5 h-5" />
+                            Quản lý kết quả
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                              try {
+                                const { data, error } = await supabase.rpc('calculate_tournament_results', {
+                                  p_tournament_id: selectedTournament.id
+                                });
+                                
+                                if (error) throw error;
+                                
+                                toast.success('Đã tính toán lại kết quả giải đấu');
+                                // Refresh the current view
+                                window.location.reload();
+                              } catch (error: any) {
+                                toast.error('Lỗi khi tính toán kết quả: ' + error.message);
+                              }
+                            }}
+                            className="text-blue-600 border-blue-300 hover:bg-blue-50"
+                          >
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            Tính lại kết quả
+                          </Button>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-sm text-muted-foreground">
+                          <p>• Tính toán lại vị trí cuối cùng của tất cả người chơi</p>
+                          <p>• Cập nhật SPA Points và ELO Points</p>
+                          <p>• Áp dụng hệ thống thưởng mới nhất</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                  
+                  {/* Main Results Display */}
+                  <TournamentResults 
+                    tournamentId={selectedTournament.id}
+                    showTitle={true}
+                  />
+                </div>
               </TabsContent>
 
               {/* Table Management Tab */}

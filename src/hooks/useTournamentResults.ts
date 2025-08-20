@@ -25,7 +25,7 @@ export const useTournamentResults = (tournamentId?: string) => {
         .select(
           `
           *,
-          profiles!tournament_results_user_id_fkey (
+          profiles!inner (
             user_id,
             full_name,
             display_name,

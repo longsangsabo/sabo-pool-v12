@@ -41,6 +41,9 @@ interface TournamentContextType {
   createTournament?: () => Promise<any>;
   updateExistingTournament?: (id: string) => Promise<any>;
   loadLatestTournament?: () => Promise<any>;
+  saveTournamentPrizes?: (tournamentId: string, prizes: any[]) => Promise<void>;
+  tournamentPrizes?: any[];
+  setTournamentPrizes?: (prizes: any[]) => void;
 }
 
 const TournamentContext = createContext<TournamentContextType | undefined>(
@@ -50,14 +53,16 @@ const TournamentContext = createContext<TournamentContextType | undefined>(
 export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { user } = useAuth();
   const [tournament, setTournament] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rewards, setRewards] = useState<TournamentRewards | null>(null);
+  const [tournamentPrizes, setTournamentPrizes] = useState<any[]>([]);
+  const [persistedPrizes, setPersistedPrizes] = useState<any[]>([]); // State để lưu phần thưởng khi chuyển tab
   const [recalculateOnChange, setRecalculateOnChange] = useState(false);
   const [validationErrors, setValidationErrors] = useState<any>({});
 
-  const { user } = useAuth();
   const { templates, convertTemplatesToRewards, copyTemplateToTournament } =
     useRewardTemplates();
 
@@ -65,11 +70,6 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
   const loadRewardsFromDatabase = useCallback(
     async (tournament: any, rank: RankCode = getDefaultRank()) => {
       try {
-        console.log(
-          '🔍 Loading rewards from database for tournament:',
-          tournament.id
-        );
-
         // Use tournament prize_pool or fallback to entry_fee calculation
         const finalTotalPrize =
           tournament.prize_pool ||
@@ -87,10 +87,8 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
             },
             rank
           );
-          console.log('📝 Calculating rewards from tournament data');
         }
 
-        console.log('✅ Loaded rewards:', rewards);
         return (
           rewards || {
             totalPrize: 0,
@@ -394,22 +392,31 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [user]);
 
-  // Update tournament data
+  // Update tournament data - improved persistence
   const updateTournament = useCallback(
     (data: Partial<any>) => {
       setTournament(prev => {
-        const updated = { ...prev, ...data };
+        // Merge carefully to preserve existing data
+        const updated = { 
+          ...prev, 
+          ...data,
+          // Preserve existing rewards unless explicitly being updated
+          rewards: data.rewards ? data.rewards : prev?.rewards,
+        };
 
-        // Auto-calculate rewards if enabled
+        // Auto-calculate rewards if enabled and relevant fields changed
         if (
           recalculateOnChange &&
+          (data.tier_level || data.max_participants || data.prize_pool) &&
           updated.tier_level &&
           updated.max_participants
         ) {
           const newRewards = calculateRewardsInternal();
           setRewards(newRewards);
+          updated.rewards = newRewards;
         }
 
+        // console.log('🔄 TournamentContext: Tournament updated', { updated, changedFields: Object.keys(data) });
         return updated;
       });
     },
@@ -455,6 +462,70 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   // Create tournament
+  // Save tournament prizes to tournament_prizes table
+  const saveTournamentPrizes = useCallback(async (tournamentId: string, prizes: any[]) => {
+    try {
+      console.log('🏆 Saving tournament prizes:', prizes.length, 'prizes for tournament:', tournamentId);
+      
+      if (!prizes || prizes.length === 0) {
+        console.log('📝 No prizes to save, skipping...');
+        return;
+      }
+
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        console.warn('⚠️ No authenticated session, skipping prize save');
+        return;
+      }
+
+      // Prepare all prize data for batch insert
+      const prizesData = prizes.map(prize => ({
+        tournament_id: tournamentId,
+        prize_position: prize.prize_position || prize.position,
+        position_name: prize.position_name || prize.name || `Hạng ${prize.position}`,
+        position_description: prize.position_description || prize.description || '',
+        cash_amount: prize.cash_amount || prize.cashAmount || 0,
+        cash_currency: 'VND',
+        elo_points: prize.elo_points || prize.eloPoints || 0,
+        spa_points: prize.spa_points || prize.spaPoints || 0,
+        physical_items: prize.physical_items || prize.items || [],
+        color_theme: prize.color_theme || prize.theme || 'gray',
+        is_visible: prize.is_visible !== false,
+        is_guaranteed: true,
+        display_order: prize.display_order || prize.position,
+        created_by: session.user.id
+      }));
+
+      // Use REST API to batch insert
+      const supabaseUrl = 'https://exlqvlbawytbglioqfbc.supabase.co';
+      const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODAwODgsImV4cCI6MjA2ODY1NjA4OH0.jJoRnBFxmQsGKM2TFfXYr3F6LgXSW3qE6vLzG5rfRWo';
+      
+      const response = await fetch(`${supabaseUrl}/rest/v1/tournament_prizes`, {
+        method: 'POST',
+        headers: {
+          'apikey': anonKey,
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(prizesData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Failed to save prizes:', response.status, errorText);
+        throw new Error(`Failed to save prizes: ${response.status} ${errorText}`);
+      }
+
+      console.log('✅ Tournament prizes saved successfully:', prizes.length, 'entries');
+    } catch (error) {
+      console.error('❌ Error in saveTournamentPrizes:', error);
+      // Don't throw error - prizes are not critical for tournament creation
+      console.log('⚠️ Continuing without saving prizes to tournament_prizes table');
+    }
+  }, []);
+
   const createTournament = useCallback(async () => {
     try {
       if (!user) {
@@ -599,9 +670,9 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
       });
       
       // 🔥 CRITICAL: Get authenticated user for RLS compliance
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
       
-      if (authError || !user) {
+      if (authError || !authUser) {
         console.error('❌ Authentication required for tournament creation:', authError);
         setLoading(false);
         throw new Error('Bạn cần đăng nhập để tạo giải đấu');
@@ -628,6 +699,9 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
         // ===== THÔNG TIN TÀI CHÍNH =====
         entry_fee: tournament.entry_fee || 0,
         prize_pool: tournament.prize_pool || 0,
+        first_prize: tournament.first_prize || 0,
+        second_prize: tournament.second_prize || 0,
+        third_prize: tournament.third_prize || 0,
         
         // ===== THÔNG TIN THỜI GIAN =====
         registration_start: tournament.registration_start || new Date().toISOString(),
@@ -641,7 +715,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
         
         // ===== THÔNG TIN TỔ CHỨC =====
         club_id: tournament.club_id || null,
-        created_by: user.id,
+        created_by: authUser.id,
         status: tournament.status || 'registration_open',
         is_visible: tournament.is_visible !== false, // DB field exists
         
@@ -715,6 +789,16 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // Update local state
       setTournament(newTournament);
+
+      // 🏆 Save tournament prizes to tournament_prizes table
+      console.log('🏆 Saving tournament prizes to tournament_prizes table...');
+      try {
+        await saveTournamentPrizes(newTournament.id, prizeTemplate);
+        console.log('✅ Tournament prizes saved successfully');
+      } catch (prizeError) {
+        console.error('⚠️ Failed to save tournament prizes:', prizeError);
+        // Non-critical error - tournament is already created
+      }
 
       toast.success('Tạo giải đấu thành công!');
       return newTournament;
@@ -830,6 +914,9 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
     setRecalculateOnChange,
     createTournament,
     updateExistingTournament,
+    saveTournamentPrizes,
+    tournamentPrizes,
+    setTournamentPrizes,
   };
 
   return (

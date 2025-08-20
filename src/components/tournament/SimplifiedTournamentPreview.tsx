@@ -32,9 +32,9 @@ export const SimplifiedTournamentPreview: React.FC<
   };
 
   const calculatePrizeDistribution = (total: number) => ({
-    first: Math.floor(total * 0.5),
-    second: Math.floor(total * 0.3),
-    third: Math.floor(total * 0.2),
+    first: Math.floor(total * 0.4),   // Fixed: 40% (was 50%)
+    second: Math.floor(total * 0.24), // Fixed: 24% (was 30%)
+    third: Math.floor(total * 0.16),  // Fixed: 16% (was 20%)
   });
 
   const prizeDistribution = calculatePrizeDistribution(data.prize_pool || 0);

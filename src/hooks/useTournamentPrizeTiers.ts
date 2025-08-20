@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+// DEPRECATED: Use tournament_prizes table instead of tournament_prize_tiers
+// This hook is maintained for backward compatibility but should not be used
 export interface TournamentPrizeTier {
   id: string;
   tournament_id: string;
@@ -15,8 +17,8 @@ export interface TournamentPrizeTier {
 
 export const useTournamentPrizeTiers = (tournamentId?: string) => {
   const [prizeTiers, setPrizeTiers] = useState<TournamentPrizeTier[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false); // Set to false to avoid loading
+  const [error, setError] = useState<string | null>('DEPRECATED: Use tournament_prizes table instead');
 
   const fetchPrizeTiers = async () => {
     if (!tournamentId) {
@@ -25,32 +27,12 @@ export const useTournamentPrizeTiers = (tournamentId?: string) => {
       return;
     }
 
-    try {
-      setLoading(true);
-      setError(null);
-
-      console.log('🏆 Fetching tournament prize tiers for:', tournamentId);
-
-      const { data, error: fetchError } = await supabase
-        .from('tournament_prize_tiers')
-        .select('*')
-        .eq('tournament_id', tournamentId)
-        .order('position', { ascending: true });
-
-      if (fetchError) {
-        console.error('❌ Error fetching tournament prize tiers:', fetchError);
-        throw fetchError;
-      }
-
-      console.log('✅ Tournament prize tiers fetched:', data?.length || 0);
-
-      setPrizeTiers(data || []);
-    } catch (err: any) {
-      console.error('❌ Error in fetchPrizeTiers:', err);
-      setError(err.message || 'Failed to fetch tournament prize tiers');
-    } finally {
-      setLoading(false);
-    }
+    // DEPRECATED: Return empty data and warning
+    console.warn('⚠️ useTournamentPrizeTiers is DEPRECATED. Use tournament_prizes table instead.');
+    setError('DEPRECATED: tournament_prize_tiers table does not exist. Use tournament_prizes table instead.');
+    setPrizeTiers([]);
+    setLoading(false);
+    return;
   };
 
   useEffect(() => {

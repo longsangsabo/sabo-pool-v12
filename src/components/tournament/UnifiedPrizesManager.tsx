@@ -99,28 +99,75 @@ export const UnifiedPrizesManager: React.FC<UnifiedPrizesManagerProps> = ({
   const [loading, setLoading] = useState(false);
   const [totalPrizePool, setTotalPrizePool] = useState(0);
   const [showQuickAllocation, setShowQuickAllocation] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false); // Thêm flag để track initialization
+  const [lastCallbackTime, setLastCallbackTime] = useState(0); // Prevent rapid callbacks
 
-  // Initialize với template mặc định
+  // Initialize với template mặc định - LUÔN LUÔN khởi tạo default prizes
   useEffect(() => {
-    if (prizes.length === 0) {
+    if (!isInitialized && prizes.length === 0) {
       loadDefaultTemplate();
+      setIsInitialized(true); // Đánh dấu đã initialize
     }
-  }, []);
+  }, [isInitialized, prizes.length]); // BỎ điều kiện initialPrizePool > 0
 
-  // Tính tổng khi prizes thay đổi
+  // Tính tổng khi prizes thay đổi - với throttling để tránh infinite loop
   useEffect(() => {
-    const total = prizes.reduce((sum, prize) => sum + prize.cashAmount, 0);
-    setTotalPrizePool(total);
-    onPrizesChange?.(prizes);
-  }, [prizes, onPrizesChange]);
+    if (prizes.length > 0) {
+      const now = Date.now();
+      // Throttle callbacks to prevent infinite loops (maximum 1 call per 100ms)
+      if (now - lastCallbackTime > 100) {
+        const total = prizes.reduce((sum, prize) => sum + prize.cashAmount, 0);
+        setTotalPrizePool(total);
+        onPrizesChange?.(prizes);
+        setLastCallbackTime(now);
+      }
+    }
+  }, [prizes, onPrizesChange, lastCallbackTime]);
+
+  // Cập nhật cash amounts khi initialPrizePool thay đổi - với safeguards
+  useEffect(() => {
+    if (prizes.length > 0 && initialPrizePool !== totalPrizePool && initialPrizePool > 0) {
+      // Chỉ update nếu sự khác biệt đáng kể (> 1% hoặc > 10000 VND)
+      const diff = Math.abs(initialPrizePool - totalPrizePool);
+      if (diff > Math.max(initialPrizePool * 0.01, 10000)) {
+        updateCashAmounts(initialPrizePool);
+      }
+    }
+  }, [initialPrizePool]);
+
+  const updateCashAmounts = (newPrizePool: number) => {
+    const template = SIMPLE_TEMPLATES.standard;
+    const updatedPrizes = prizes.map(prize => {
+      // Tìm percentage từ template
+      let cashPercent = 0;
+      const templatePos = template.positions.find(p => p.position === prize.position);
+      if (templatePos) {
+        cashPercent = templatePos.cashPercent;
+      } else {
+        // Cho positions 5-16
+        if (prize.position <= 6) cashPercent = 4;
+        else if (prize.position <= 8) cashPercent = 2;
+        else if (prize.position <= 12) cashPercent = 1.125;
+        else cashPercent = 0.5625;
+      }
+      
+      return {
+        ...prize,
+        cashAmount: Math.floor((newPrizePool * cashPercent) / 100)
+      };
+    });
+    
+    setPrizes(updatedPrizes);
+  };
 
   const loadDefaultTemplate = () => {
     const template = SIMPLE_TEMPLATES.standard;
+    const prizePool = initialPrizePool || 0; // Dùng 0 nếu chưa có prize pool
     const generatedPrizes: SimplePrize[] = template.positions.map(pos => ({
       id: `prize-${pos.position}`,
       position: pos.position,
       name: pos.name,
-      cashAmount: Math.floor((initialPrizePool * pos.cashPercent) / 100),
+      cashAmount: Math.floor((prizePool * pos.cashPercent) / 100), // Sẽ = 0 nếu prizePool = 0
       eloPoints: pos.elo,
       spaPoints: pos.spa,
       theme: pos.theme,
@@ -162,7 +209,7 @@ export const UnifiedPrizesManager: React.FC<UnifiedPrizesManagerProps> = ({
           id: `prize-${i}`,
           position: i,
           name,
-          cashAmount: Math.floor((initialPrizePool * cashPercent) / 100),
+          cashAmount: Math.floor((prizePool * cashPercent) / 100), // Dùng prizePool thay vì initialPrizePool
           eloPoints: elo,
           spaPoints: spa,
           theme: i <= 8 ? 'blue' : 'gray',
@@ -172,6 +219,11 @@ export const UnifiedPrizesManager: React.FC<UnifiedPrizesManagerProps> = ({
     }
 
     setPrizes(generatedPrizes);
+    
+    // FORCE IMMEDIATE CALLBACK - không đợi useEffect với throttling
+    setTimeout(() => {
+      onPrizesChange?.(generatedPrizes);
+    }, 50); // Small delay để đảm bảo state đã được set
   };
 
   const applyTemplate = (templateKey: keyof typeof SIMPLE_TEMPLATES) => {

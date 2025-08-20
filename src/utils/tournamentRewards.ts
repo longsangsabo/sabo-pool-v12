@@ -121,24 +121,24 @@ export const calculateRewards = (
 
   const playerSpaPoints = spaPointsMap[playerRank] || spaPointsMap['K'];
 
-  // Calculate cash prizes for all 16 positions - FIXED to total exactly 100%
+  // Calculate cash prizes for all 16 positions - Updated to match tournament_prizes table
   const prizeDistribution16 = {
-    1: Math.floor(totalPrize * 0.375), // 37.5% for 1st place
-    2: Math.floor(totalPrize * 0.225), // 22.5% for 2nd place  
-    3: Math.floor(totalPrize * 0.15), // 15% for 3rd place
-    4: Math.floor(totalPrize * 0.075), // 7.5% for 4th place
-    5: Math.floor(totalPrize * 0.0375), // 3.75% for 5th-6th place
-    6: Math.floor(totalPrize * 0.0375), // 3.75% for 5th-6th place
-    7: Math.floor(totalPrize * 0.01875), // 1.875% for 7th-8th place
-    8: Math.floor(totalPrize * 0.01875), // 1.875% for 7th-8th place
-    9: Math.floor(totalPrize * 0.0106), // 1.06% for 9th-12th place
-    10: Math.floor(totalPrize * 0.0106), // 1.06% for 9th-12th place
-    11: Math.floor(totalPrize * 0.0106), // 1.06% for 9th-12th place
-    12: Math.floor(totalPrize * 0.0106), // 1.06% for 9th-12th place
-    13: Math.floor(totalPrize * 0.0053), // 0.53% for 13th-16th place
-    14: Math.floor(totalPrize * 0.0053), // 0.53% for 13th-16th place
-    15: Math.floor(totalPrize * 0.0053), // 0.53% for 13th-16th place
-    16: Math.floor(totalPrize * 0.0053), // 0.53% for 13th-16th place
+    1: Math.floor(totalPrize * 0.4), // 40% for 1st place (consistent with UnifiedPrizesManager)
+    2: Math.floor(totalPrize * 0.24), // 24% for 2nd place
+    3: Math.floor(totalPrize * 0.16), // 16% for 3rd place
+    4: Math.floor(totalPrize * 0.08), // 8% for 4th place
+    5: Math.floor(totalPrize * 0.04), // 4% for 5th-6th place
+    6: Math.floor(totalPrize * 0.04), // 4% for 5th-6th place
+    7: Math.floor(totalPrize * 0.02), // 2% for 7th-8th place
+    8: Math.floor(totalPrize * 0.02), // 2% for 7th-8th place
+    9: Math.floor(totalPrize * 0.01125), // 1.125% for 9th-12th place
+    10: Math.floor(totalPrize * 0.01125), // 1.125% for 9th-12th place
+    11: Math.floor(totalPrize * 0.01125), // 1.125% for 9th-12th place
+    12: Math.floor(totalPrize * 0.01125), // 1.125% for 9th-12th place
+    13: Math.floor(totalPrize * 0.005625), // 0.5625% for 13th-16th place
+    14: Math.floor(totalPrize * 0.005625), // 0.5625% for 13th-16th place
+    15: Math.floor(totalPrize * 0.005625), // 0.5625% for 13th-16th place
+    16: Math.floor(totalPrize * 0.005625), // 0.5625% for 13th-16th place
   };
 
   const positions = [

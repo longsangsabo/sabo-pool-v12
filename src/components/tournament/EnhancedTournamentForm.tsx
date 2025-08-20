@@ -25,7 +25,6 @@ import { TournamentFormData } from '@/types/tournament-extended';
 import { useTournament } from '@/contexts/TournamentContext';
 import { useTournamentGlobal } from '@/contexts/TournamentGlobalContext';
 import { ValidationService } from '@/services/ValidationService';
-import { RewardsService } from '@/services/RewardsService';
 import { GameFormat } from '@/types/tournament-enums';
 import { TournamentSettingsSection } from './TournamentSettingsSection';
 import { Textarea } from '@/components/ui/textarea';
@@ -60,7 +59,6 @@ import { TournamentTemplateDropdown } from './TournamentTemplateDropdown';
 
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { RewardsEditModal } from './RewardsEditModal';
 
 interface EnhancedTournamentFormProps {
   mode?: 'create' | 'edit';
@@ -77,36 +75,31 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
   onSuccess,
   onCancel,
 }) => {
-  console.log('🎯 EnhancedTournamentForm rendering...');
+  // console.log('🎯 EnhancedTournamentForm rendering...');
   const navigate = useNavigate();
   const {
     tournament,
     updateTournament,
-    updateRewards,
     validateTournament,
     resetTournament,
     isValid,
     validationErrors,
-    calculateRewards,
-    recalculateOnChange,
-    setRecalculateOnChange,
     createTournament,
     updateExistingTournament,
   } = useTournament();
 
   const { refreshTournaments } = useTournamentGlobal();
   const [activeTab, setActiveTab] = useState('basic-info');
-  const [showRewardsModal, setShowRewardsModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tournamentPrizes, setTournamentPrizes] = useState<any[]>([]); // Store current prizes
 
   // Debug: Log when tournamentPrizes state changes
-  useEffect(() => {
-    console.log('🏆 [EnhancedTournamentForm] tournamentPrizes state changed:', tournamentPrizes.length, 'prizes');
-    if (tournamentPrizes.length > 0) {
-      console.log('🏆 [EnhancedTournamentForm] First prize:', tournamentPrizes[0]);
-    }
-  }, [tournamentPrizes]);
+  // useEffect(() => {
+  //   console.log('🏆 [EnhancedTournamentForm] tournamentPrizes state changed:', tournamentPrizes.length, 'prizes');
+  //   if (tournamentPrizes.length > 0) {
+  //     console.log('🏆 [EnhancedTournamentForm] First prize:', tournamentPrizes[0]);
+  //   }
+  // }, [tournamentPrizes]);
 
   const form = useForm<TournamentFormData>({
     resolver: zodResolver(tournamentSchema),
@@ -121,19 +114,43 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
     getValues,
   } = form;
 
-  // Sync form with context
-  useEffect(() => {
-    if (tournament) {
-      form.reset(tournament);
-    }
-  }, [tournament, form]);
+  // Add form state persistence
+  const [formInitialized, setFormInitialized] = useState(false);
+  const [formDraft, setFormDraft] = useState<any>(null); // Store draft data
 
-  // Sync form data with context
+  // Load draft from localStorage on component mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('tournament-form-draft');
+    if (savedDraft && !tournament) {
+      try {
+        const draftData = JSON.parse(savedDraft);
+        setFormDraft(draftData);
+        console.log('📋 Restored form draft from localStorage');
+      } catch (err) {
+        console.error('❌ Error parsing saved draft:', err);
+        localStorage.removeItem('tournament-form-draft');
+      }
+    }
+  }, [tournament]);
+
+  // Initialize form only once with tournament data or draft
+  useEffect(() => {
+    if (!formInitialized) {
+      const initialData = tournament || formDraft;
+      if (initialData) {
+        form.reset(initialData);
+        setFormInitialized(true);
+        console.log('🏁 Form initialized with:', initialData ? 'data' : 'empty');
+      }
+    }
+  }, [tournament, formDraft, form, formInitialized]);
+
+  // Sync form data with context - improved to prevent resets
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
     const subscription = form.watch(data => {
-      if (data && Object.keys(data).length > 0) {
+      if (data && Object.keys(data).length > 0 && formInitialized) {
         // Clear previous timeout
         if (timeoutId) {
           clearTimeout(timeoutId);
@@ -142,6 +159,11 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
         // Debounce the update to prevent infinite loops
         timeoutId = setTimeout(() => {
           updateTournament(data as Partial<TournamentFormData>);
+          
+          // Auto-save draft to localStorage (only in create mode)
+          if (mode === 'create') {
+            localStorage.setItem('tournament-form-draft', JSON.stringify(data));
+          }
         }, 300);
       }
     });
@@ -152,7 +174,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
         clearTimeout(timeoutId);
       }
     };
-  }, [form, updateTournament]);
+  }, [form, updateTournament, formInitialized, mode]);
 
   // Calculate completion percentage
   const getCompletionPercentage = (): number => {
@@ -182,30 +204,30 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
     data: TournamentFormData,
     e?: React.FormEvent
   ) => {
-    console.log('🔥 SUBMIT BUTTON CLICKED');
-    console.log('📊 Form State:', {
-      isSubmitting,
-      formSubmitting,
-      formValues: form.getValues(),
-      formErrors: form.formState.errors,
-    });
-    console.log('🎯 handleSubmit called with data:', data);
-    console.log('🔍 DEBUG Form Data:', {
-      tournament_start: data.tournament_start,
-      tournament_end: data.tournament_end,
-      registration_start: data.registration_start,
-      registration_end: data.registration_end,
-      name: data.name
-    });
-    console.log('🔍 DEBUG Tournament State:', {
-      tournament_start: tournament?.tournament_start,
-      tournament_end: tournament?.tournament_end,
-      registration_start: tournament?.registration_start,
-      registration_end: tournament?.registration_end,
-      name: tournament?.name
-    });
-    console.log('🏆 Tournament prizes in state:', tournamentPrizes.length, 'prizes');
-    console.log('⏳ Starting form submission...');
+    // console.log('🔥 SUBMIT BUTTON CLICKED');
+    // console.log('📊 Form State:', {
+    //   isSubmitting,
+    //   formSubmitting,
+    //   formValues: form.getValues(),
+    //   formErrors: form.formState.errors,
+    // });
+    // console.log('🎯 handleSubmit called with data:', data);
+    // console.log('🔍 DEBUG Form Data:', {
+    //   tournament_start: data.tournament_start,
+    //   tournament_end: data.tournament_end,
+    //   registration_start: data.registration_start,
+    //   registration_end: data.registration_end,
+    //   name: data.name
+    // });
+    // console.log('🔍 DEBUG Tournament State:', {
+    //   tournament_start: tournament?.tournament_start,
+    //   tournament_end: tournament?.tournament_end,
+    //   registration_start: tournament?.registration_start,
+    //   registration_end: tournament?.registration_end,
+    //   name: tournament?.name
+    // });
+    // console.log('🏆 Tournament prizes in state:', tournamentPrizes.length, 'prizes');
+    // console.log('⏳ Starting form submission...');
 
     // Prevent default form submission
     if (e) {
@@ -306,43 +328,10 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
       if (result) {
         console.log('✅ Tournament created:', result);
 
-        // Auto-save default rewards to tournament_prize_tiers
-        if (mode === 'create' && tournament?.rewards?.positions?.length > 0) {
-          console.log('🏆 Auto-saving tournament rewards...');
-          try {
-            // Convert rewards to prize tiers format
-            const prizeTiers = tournament.rewards.positions.map(position => ({
-              tournament_id: result.id,
-              position: position.position,
-              position_name: position.name,
-              cash_amount: position.cashPrize || 0,
-              elo_points: position.eloPoints || 0,
-              spa_points: position.spaPoints || 0,
-              is_visible: position.isVisible !== false,
-              physical_items: (position.items || []).filter(
-                item => item && item.trim()
-              ),
-            }));
-
-            const { error: rewardsError } = await supabase
-              .from('tournament_prize_tiers')
-              .insert(prizeTiers);
-
-            if (rewardsError) {
-              console.error('❌ Failed to save rewards:', rewardsError);
-              toast.warning(
-                'Giải đấu đã tạo thành công nhưng không thể lưu phần thưởng tự động'
-              );
-            } else {
-              console.log('✅ Tournament rewards saved successfully');
-              toast.success('🏆 Phần thưởng đã được lưu tự động!');
-            }
-          } catch (rewardsError) {
-            console.error('❌ Error saving rewards:', rewardsError);
-            toast.warning(
-              'Giải đấu đã tạo thành công nhưng không thể lưu phần thưởng tự động'
-            );
-          }
+        // Clear draft from localStorage on successful creation
+        if (mode === 'create') {
+          localStorage.removeItem('tournament-form-draft');
+          console.log('🗑️ Cleared form draft from localStorage');
         }
 
         toast.success(
@@ -443,6 +432,18 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                 className='h-7 text-xs'
               />
             )}
+            
+            {/* Draft status indicator */}
+            {mode === 'create' && formDraft && (
+              <Badge
+                variant='outline'
+                className='text-xs h-6 bg-orange-50 text-orange-700 border-orange-300'
+              >
+                <Save className='w-3 h-3 mr-1' />
+                Có bản nháp
+              </Badge>
+            )}
+            
             <Badge
               variant={isValid ? 'default' : 'destructive'}
               className='text-xs h-6'
@@ -937,32 +938,43 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                       )}
                     </div>
                   </div>
-                  {/* Unified Prizes Manager - Tích hợp 2 hệ thống cũ */}
+                  {/* Unified Prizes Manager - COMPONENT DUY NHẤT XỬ LÝ PRIZES */}
                   <UnifiedPrizesManager
                     mode={mode}
                     tournamentId={tournamentId}
-                    initialPrizePool={tournament?.prize_pool || 0}
-                    onPrizesChange={(prizes) => {
-                      console.log('🏆 [UnifiedPrizesManager] Prizes updated:', prizes.length, 'prizes');
-                      // Convert để tương thích với hệ thống cũ nếu cần
-                      const convertedPrizes = prizes.map(prize => ({
-                        id: prize.id,
-                        tournament_id: tournamentId || 'preview',
-                        position: prize.position,
-                        position_name: prize.name,
-                        cash_amount: prize.cashAmount,
-                        elo_points: prize.eloPoints,
-                        spa_points: prize.spaPoints,
-                        physical_items: prize.items || [],
-                        color_theme: prize.theme,
-                        is_visible: prize.isVisible,
-                        created_at: new Date().toISOString(),
-                        updated_at: new Date().toISOString(),
-                      }));
-                      setTournamentPrizes(convertedPrizes);
-                    }}
-                    isEditable={true}
-                  />
+                    initialPrizePool={form.watch('prize_pool') || tournament?.prize_pool || 0}
+                      onPrizesChange={(prizes) => {
+                        // Extract first, second, third prizes for tournament fields (backward compatibility)
+                        const firstPrize = prizes.find(p => p.position === 1)?.cashAmount || 0;
+                        const secondPrize = prizes.find(p => p.position === 2)?.cashAmount || 0;
+                        const thirdPrize = prizes.find(p => p.position === 3)?.cashAmount || 0;
+                        
+                        // Update tournament object with prize values (backward compatibility)
+                        updateTournament({
+                          first_prize: firstPrize,
+                          second_prize: secondPrize,
+                          third_prize: thirdPrize
+                        });
+                        
+                        // Convert để tương thích với hệ thống cũ nếu cần
+                        const convertedPrizes = prizes.map(prize => ({
+                          id: prize.id,
+                          tournament_id: tournamentId || 'preview',
+                          position: prize.position,
+                          position_name: prize.name,
+                          cash_amount: prize.cashAmount,
+                          elo_points: prize.eloPoints,
+                          spa_points: prize.spaPoints,
+                          physical_items: prize.items || [],
+                          color_theme: prize.theme,
+                          is_visible: prize.isVisible,
+                          created_at: new Date().toISOString(),
+                          updated_at: new Date().toISOString(),
+                        }));
+                        setTournamentPrizes(convertedPrizes);
+                      }}
+                      isEditable={true}
+                    />
                 </div>
               </div>
             </div>
@@ -978,12 +990,31 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
               size='sm'
               onClick={() => {
                 resetTournament();
-                toast.success('Đã đặt lại form');
+                form.reset();
+                setFormInitialized(false);
+                localStorage.removeItem('tournament-form-draft');
+                toast.success('Đã đặt lại form và xóa bản nháp');
               }}
               className='h-8 text-xs'
             >
               Đặt lại
             </Button>
+            
+            {mode === 'create' && formDraft && (
+              <Button
+                type='button'
+                variant='outline'
+                size='sm'
+                onClick={() => {
+                  localStorage.removeItem('tournament-form-draft');
+                  setFormDraft(null);
+                  toast.success('Đã xóa bản nháp');
+                }}
+                className='h-8 text-xs text-orange-600 border-orange-300'
+              >
+                Xóa bản nháp
+              </Button>
+            )}
           </div>
 
           <div className='flex items-center gap-2'>
@@ -1005,30 +1036,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                 console.log('🚀 TẠO NGAY BUTTON CLICKED');
                 const formData = form.getValues();
                 console.log('📊 Form data:', formData);
-                console.log('🔍 DETAILED FORM VALUES:');
-                console.log('- name:', formData.name);
-                console.log(
-                  '- entry_fee:',
-                  formData.entry_fee,
-                  typeof formData.entry_fee
-                );
-                console.log(
-                  '- prize_pool:',
-                  formData.prize_pool,
-                  typeof formData.prize_pool
-                );
-                console.log(
-                  '- max_participants:',
-                  formData.max_participants,
-                  typeof formData.max_participants
-                );
-
-                // Debug form state
-                const allFormValues = form.getValues();
-                console.log(
-                  '🎯 ALL FORM VALUES:',
-                  JSON.stringify(allFormValues, null, 2)
-                );
+                console.log('🏆 Current tournamentPrizes state:', tournamentPrizes.length, 'prizes');
 
                 try {
                   // Get current user
@@ -1053,53 +1061,146 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                     return;
                   }
 
-                  // Tạo trực tiếp không qua validation phức tạp
-                  console.log(
-                    '🔍 PRIZE_POOL DEBUG - formData.prize_pool:',
-                    formData.prize_pool
-                  );
+                  // 1. TẠO TOURNAMENT TRƯỚC
+                  console.log('🏆 Creating tournament...');
                   const { data, error } = await supabase
                     .from('tournaments')
                     .insert([
                       {
                         name: formData.name || 'Test Tournament',
                         description: formData.description || 'Test Description',
-                        venue_address: formData.venue_address || 'Test Location', // Keep venue_address (exists in DB)
-                        tournament_start: formData.tournament_start || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // FIX: start_date → tournament_start
-                        tournament_end: formData.tournament_end || new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(), // FIX: end_date → tournament_end
+                        venue_address: formData.venue_address || 'Test Location',
+                        tournament_start: formData.tournament_start || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                        tournament_end: formData.tournament_end || new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
                         registration_start: formData.registration_start || new Date().toISOString(),
                         registration_end: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
                         max_participants: formData.max_participants || 16,
                         tournament_type: formData.tournament_type || 'single_elimination',
-                        // Remove game_format - not in DB schema
                         entry_fee: formData.entry_fee || 0,
                         prize_pool: formData.prize_pool || 0,
-                        status: 'registration_open', // FIX: upcoming → registration_open 
+                        status: 'registration_open',
                         created_by: user.id,
                         club_id: clubProfile.id,
                       },
                     ])
                     .select();
 
-                  console.log('✅ Direct creation result:', { data, error });
-
                   if (error) {
-                    console.error('❌ Direct creation error:', error);
+                    console.error('❌ Tournament creation error:', error);
                     toast.error('Lỗi tạo giải đấu: ' + error.message);
-                  } else {
-                    console.log('🎉 Tournament created successfully:', data);
-                    toast.success('Thành công! Giải đấu đã được tạo.', {
-                      description:
-                        'Bạn sẽ được chuyển đến trang giải đấu trong giây lát...',
-                      duration: 3000,
-                    });
-
-                    // Navigation with delay for better UX
-                    setTimeout(() => {
-                      console.log('🔄 Redirecting to /tournaments...');
-                      navigate('/tournaments');
-                    }, 1500);
+                    return;
                   }
+
+                  if (!data || !data[0]) {
+                    console.error('❌ No tournament data returned');
+                    toast.error('Không thể tạo giải đấu');
+                    return;
+                  }
+
+                  const createdTournament = data[0];
+                  console.log('✅ Tournament created:', createdTournament.id);
+
+                  // 2. TẠO TOURNAMENT PRIZES từ state hoặc fallback
+                  console.log('🏆 Creating tournament prizes for:', createdTournament.id);
+                  
+                  let defaultPrizes = [];
+                  
+                  // PRIORITY 1: Sử dụng data từ UnifiedPrizesManager nếu có
+                  if (tournamentPrizes && tournamentPrizes.length > 0) {
+                    console.log('✅ Using data from UnifiedPrizesManager:', tournamentPrizes.length, 'prizes');
+                    defaultPrizes = tournamentPrizes.map(prize => ({
+                      tournament_id: createdTournament.id,
+                      prize_position: prize.position,
+                      position_name: prize.position_name,
+                      position_description: `Giải ${prize.position_name}`,
+                      cash_amount: prize.cash_amount || 0,
+                      elo_points: prize.elo_points || 0,
+                      spa_points: prize.spa_points || 0,
+                      physical_items: prize.physical_items || [],
+                      color_theme: prize.color_theme || 'gray',
+                      is_visible: prize.is_visible !== false,
+                      is_guaranteed: true,
+                      display_order: prize.position
+                    }));
+                  } else {
+                    // FALLBACK: Tạo data mặc định nếu không có
+                    console.log('⚠️ No prize data from UnifiedPrizesManager, using fallback');
+                    const prizePool = formData.prize_pool || 0;
+                    const distribution = [
+                      { position: 1, name: 'Vô địch', percent: 40, elo: 100, spa: 1000, theme: 'gold' },
+                      { position: 2, name: 'Á quân', percent: 24, elo: 75, spa: 800, theme: 'silver' },
+                      { position: 3, name: 'Hạng 3', percent: 16, elo: 50, spa: 600, theme: 'bronze' },
+                      { position: 4, name: 'Hạng 4', percent: 8, elo: 40, spa: 400, theme: 'blue' },
+                      { position: 5, name: 'Hạng 5-6', percent: 4, elo: 30, spa: 300, theme: 'blue' },
+                      { position: 6, name: 'Hạng 5-6', percent: 4, elo: 30, spa: 300, theme: 'blue' },
+                      { position: 7, name: 'Hạng 7-8', percent: 2, elo: 25, spa: 250, theme: 'gray' },
+                      { position: 8, name: 'Hạng 7-8', percent: 2, elo: 25, spa: 250, theme: 'gray' },
+                    ];
+                    
+                    for (let i = 9; i <= 16; i++) {
+                      distribution.push({
+                        position: i,
+                        name: i <= 12 ? 'Hạng 9-12' : 'Hạng 13-16',
+                        percent: 0,
+                        elo: i <= 12 ? 20 : 15,
+                        spa: i <= 12 ? 200 : 150,
+                        theme: 'gray'
+                      });
+                    }
+                    
+                    for (const prize of distribution) {
+                      defaultPrizes.push({
+                        tournament_id: createdTournament.id,
+                        prize_position: prize.position,
+                        position_name: prize.name,
+                        position_description: `Giải ${prize.name}`,
+                        cash_amount: Math.floor((prizePool * prize.percent) / 100),
+                        elo_points: prize.elo,
+                        spa_points: prize.spa,
+                        physical_items: prize.position <= 3 ? [`Cúp ${prize.name}`] : [],
+                        color_theme: prize.theme,
+                        is_visible: true,
+                        is_guaranteed: true,
+                        display_order: prize.position
+                      });
+                    }
+                  }
+                  
+                  console.log('🏆 Inserting', defaultPrizes.length, 'prize records...');
+                  
+                  // Insert using SERVICE ROLE to bypass RLS
+                  const response = await fetch('https://exlqvlbawytbglioqfbc.supabase.co/rest/v1/tournament_prizes', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzA4MDA4OCwiZXhwIjoyMDY4NjU2MDg4fQ.8oZlR-lyaDdGZ_mvvyH2wJsJbsD0P6MT9ZkiyASqLcQ',
+                      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzA4MDA4OCwiZXhwIjoyMDY4NjU2MDQ4fQ.8oZlR-lyaDdGZ_mvvyH2wJsJbsD0P6MT9ZkiyASqLcQ',
+                      'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(defaultPrizes)
+                  });
+                  
+                  console.log('🔍 Prize creation response status:', response.status);
+                  
+                  if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Prize creation failed:', errorText);
+                    toast.warning(`Giải đấu đã tạo nhưng có lỗi khi tạo phần thưởng: ${errorText}`);
+                  } else {
+                    const resultData = await response.json();
+                    console.log('✅ Tournament prizes created successfully:', resultData.length, 'records');
+                    toast.success('✨ Đã tạo đầy đủ phần thưởng cho 16 vị trí!');
+                  }
+
+                  // Clear draft and show success
+                  localStorage.removeItem('tournament-form-draft');
+                  toast.success('🏆 Giải đấu đã được tạo thành công!');
+
+                  // Navigate after delay
+                  setTimeout(() => {
+                    navigate('/tournaments');
+                  }, 1500);
+
                 } catch (err) {
                   console.error('❌ Unexpected error:', err);
                   toast.error('Lỗi không mong muốn: ' + (err as Error).message);
@@ -1112,82 +1213,6 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
           </div>
         </div>
       </form>
-
-      {/* Rewards Edit Modal */}
-      {showRewardsModal && tournament && (
-        <RewardsEditModal
-          isOpen={true}
-          onClose={() => setShowRewardsModal(false)}
-          rewards={(() => {
-            // ✅ FIXED: Use latest form data instead of stale tournament.rewards
-            const currentFormData = form.getValues();
-            console.log(
-              '🔍 [EnhancedTournamentForm] Current form data for RewardsModal:',
-              {
-                entry_fee: currentFormData.entry_fee,
-                prize_pool: currentFormData.prize_pool,
-                max_participants: currentFormData.max_participants,
-              }
-            );
-
-            // If tournament has rewards data, prioritize it but update totalPrize from form
-            if (
-              tournament?.rewards &&
-              tournament.rewards.positions.length > 0
-            ) {
-              return {
-                ...tournament.rewards,
-                totalPrize:
-                  currentFormData.prize_pool ||
-                  tournament.rewards.totalPrize ||
-                  0,
-              };
-            }
-
-            // Otherwise calculate new rewards with current form data
-            return calculateRewards();
-          })()}
-          onSave={async rewards => {
-            try {
-              console.log(
-                '💾 [EnhancedTournamentForm] Saving rewards for tournament:',
-                tournamentId,
-                rewards
-              );
-
-        // Save to database
-              const { error } = await supabase
-                .from('tournaments')
-                .update({
-                  prize_distribution: rewards as any,
-                  updated_at: new Date().toISOString(),
-                })
-                .eq('id', tournamentId);
-
-              if (error) {
-                console.error(
-                  '❌ [EnhancedTournamentForm] Database save error:',
-                  error
-                );
-                toast.error('Lỗi khi lưu vào cơ sở dữ liệu');
-                throw error;
-              }
-
-              console.log(
-                '✅ [EnhancedTournamentForm] Rewards saved to database successfully'
-              );
-              toast.success('Đã cập nhật phần thưởng thành công!');
-            } catch (error) {
-              console.error(
-                '❌ [EnhancedTournamentForm] Failed to save rewards:',
-                error
-              );
-              toast.error('Lỗi khi lưu phần thưởng');
-            }
-          }}
-          maxRankRequirement={form.getValues().max_rank_requirement as any}
-        />
-      )}
     </div>
   );
 };

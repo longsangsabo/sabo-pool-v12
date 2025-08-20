@@ -110,20 +110,20 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
         let physicalPrizesList: string[] = [];
         let prizeTiersList: any[] = [];
 
-        // Always fetch prize tiers for detailed breakdown
-        const { data: prizeTiers, error: prizeError } = await supabase
-          .from('tournament_prize_tiers')
+        // First try to fetch from tournament_prizes table (correct table)
+        const { data: tournamentPrizes, error: prizesError } = await supabase
+          .from('tournament_prizes')
           .select('*')
           .eq('tournament_id', tournament.id)
           .eq('is_visible', true)
-          .order('position');
+          .order('prize_position');
 
-        if (prizeTiers && !prizeError) {
-          prizeTiersList = prizeTiers;
-          // Calculate total cash prize from prize tiers if not set
+        if (tournamentPrizes && !prizesError && tournamentPrizes.length > 0) {
+          prizeTiersList = tournamentPrizes;
+          // Calculate total cash prize from tournament_prizes if not set
           if (totalCashPrize === 0) {
-            totalCashPrize = prizeTiers.reduce(
-              (sum, tier) => sum + (tier.cash_amount || 0),
+            totalCashPrize = tournamentPrizes.reduce(
+              (sum, prize) => sum + (prize.cash_amount || 0),
               0
             );
           }

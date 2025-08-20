@@ -546,7 +546,7 @@ export const useTournaments = (userId?: string) => {
   const getMyTournaments = useCallback(() => {
     if (!user?.id) return [];
     return tournaments.filter(
-      tournament => tournament.organizer_id === user.id
+      tournament => tournament.created_by === user.id
     );
   }, [tournaments, user?.id]);
 
@@ -650,7 +650,7 @@ export const useTournamentById = (id: string) => {
         third_prize: 200000,
         status: 'registration_open' as const,
         rules: 'Mock tournament rules',
-        organizer_id: 'mock_user',
+        created_by: 'mock_user',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         clubs: {

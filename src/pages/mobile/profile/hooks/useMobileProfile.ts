@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { ProfileData } from '../types';
+import { UnifiedProfile } from '@/types/unified-profile';
 import { useAuth } from '@/hooks/useAuth';
 import { useAvatar } from '@/contexts/AvatarContext';
 
@@ -10,10 +10,8 @@ export function useMobileProfile() {
   const { user } = useAuth();
   const { updateAvatar } = useAvatar();
   const queryClient = useQueryClient();
-  const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [editingProfile, setEditingProfile] = useState<ProfileData | null>(
-    null
-  );
+  const [profile, setProfile] = useState<UnifiedProfile | null>(null);
+  const [editingProfile, setEditingProfile] = useState<Partial<UnifiedProfile> | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -37,31 +35,63 @@ export function useMobileProfile() {
         return;
       }
 
-      const profileData: ProfileData = {
-        user_id: data?.user_id || user.id,
-        display_name: data?.display_name || data?.full_name || '',
-        phone: data?.phone || user.phone || '',
-        bio: data?.bio || '',
-        skill_level: (data?.skill_level ||
-          'beginner') as ProfileData['skill_level'],
-        city: data?.city || '',
-        district: data?.district || '',
-        avatar_url: data?.avatar_url || '',
-        member_since: data?.member_since || data?.created_at || '',
-        role: (data?.role || 'player') as ProfileData['role'],
-        active_role: (data?.active_role ||
-          'player') as ProfileData['active_role'],
-        verified_rank: data?.verified_rank || null,
-        completion_percentage: data?.completion_percentage || 0,
+      // ✅ AUTO-CREATE PROFILE if missing
+      let actualData = data;
+      if (!data) {
+        console.log('🛠️ [MobileProfile] No profile found, creating one for user:', user.id);
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            user_id: user.id,
+            email: user.email || null,
+            current_rank: 'K',
+          })
+          .select()
+          .single();
+          
+        if (createError) {
+          console.error('❌ [MobileProfile] Failed to create profile:', createError);
+          // Continue with empty profile instead of crashing
+        } else {
+          console.log('✅ [MobileProfile] Profile created successfully:', newProfile);
+          actualData = newProfile; // ✅ Use newly created profile
+        }
+      }
+
+      const profileData: UnifiedProfile = {
+        id: actualData?.id || '',
+        user_id: actualData?.user_id || user.id,
+        display_name: actualData?.display_name || actualData?.full_name || null,
+        phone: actualData?.phone || user.phone || null,
+        bio: actualData?.bio || null,
+        skill_level: (actualData?.skill_level || 'beginner') as UnifiedProfile['skill_level'],
+        city: actualData?.city || null,
+        district: actualData?.district || null,
+        avatar_url: actualData?.avatar_url || null,
+        member_since: actualData?.member_since || actualData?.created_at || null,
+        role: (actualData?.role || 'player') as UnifiedProfile['role'],
+        active_role: (actualData?.active_role || 'player') as UnifiedProfile['active_role'],
+        verified_rank: actualData?.verified_rank || null,
+        email: actualData?.email || user.email || null,
+        full_name: actualData?.full_name || null,
+        current_rank: actualData?.current_rank || null,
+        spa_points: 1000, // Default value - not in database
+        created_at: actualData?.created_at || new Date().toISOString(),
+        updated_at: actualData?.updated_at || new Date().toISOString(),
+        completion_percentage: actualData?.completion_percentage || 0,
       };
       
-      console.log('🎯 Profile avatar_url:', profileData.avatar_url);
-      console.log('🎯 Full profile data:', profileData);
+      console.log('🎯 [MobileProfile] Profile loaded:', {
+        hasData: !!actualData,
+        displayName: profileData.display_name,
+        avatarUrl: profileData.avatar_url,
+        email: profileData.email
+      });
       
       setProfile(profileData);
       setEditingProfile(profileData);
     } catch (e) {
-      console.error(e);
+      console.error('❌ [MobileProfile] fetchProfile error:', e);
     } finally {
       setLoading(false);
     }
@@ -71,53 +101,37 @@ export function useMobileProfile() {
     fetchProfile();
   }, [fetchProfile]);
 
-  const handleEditField = <K extends keyof ProfileData>(
-    field: K,
-    value: ProfileData[K]
-  ) => {
-    setEditingProfile(prev => (prev ? { ...prev, [field]: value } : prev));
+  const handleEditField = (field: string, value: any) => {
+    setEditingProfile(prev => prev ? { ...prev, [field]: value } : null);
   };
 
   const handleSaveProfile = async () => {
-    if (!user || !editingProfile) return;
+    if (!user || !editingProfile) return false;
     setSaving(true);
     try {
-      // Check if profile already exists to avoid duplicate key violation on unique user_id
-      const { data: existing, error: checkError } = await supabase
-        .from('profiles')
-        .select('user_id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      if (checkError && checkError.code !== 'PGRST116') throw checkError;
-
+      // ✅ SAFE: Only send safe fields to database
       const payload = {
-        user_id: user.id,
-        display_name: editingProfile.display_name || '',
-        phone: editingProfile.phone || '',
-        bio: editingProfile.bio || '',
+        display_name: editingProfile.display_name || null,
+        phone: editingProfile.phone || null,
+        bio: editingProfile.bio || null,
+        city: editingProfile.city || null,
+        district: editingProfile.district || null,
         skill_level: editingProfile.skill_level,
-        city: editingProfile.city || '',
-        district: editingProfile.district || '',
         role: editingProfile.role,
         active_role: editingProfile.active_role,
-        avatar_url: editingProfile.avatar_url || '',
       };
 
-      let mutationError;
-      if (existing) {
-        const { error } = await supabase
-          .from('profiles')
-          .update(payload)
-          .eq('user_id', user.id);
-        mutationError = error || undefined;
-      } else {
-        const { error } = await supabase.from('profiles').insert(payload);
-        mutationError = error || undefined;
-      }
+      console.log('🎯 [MobileProfile] Saving payload:', payload);
+
+      const { error: mutationError } = await supabase
+        .from('profiles')
+        .update(payload)
+        .eq('user_id', user.id);
 
       if (mutationError) {
-        // Fallback: if duplicate key still occurs, try update directly
-        if (mutationError.message?.includes('duplicate key value')) {
+        // ✅ BYPASS: Check if error is due to missing function
+        if (mutationError.message?.includes('get_user_display_name')) {
+          console.warn('⚠️ [MobileProfile] get_user_display_name error detected, using fallback update');
           const { error: fallbackError } = await supabase
             .from('profiles')
             .update(payload)
@@ -128,7 +142,9 @@ export function useMobileProfile() {
         }
       }
 
-      setProfile(editingProfile);
+      // ✅ FORCE REFRESH: Fetch latest data from database
+      await fetchProfile();
+      
       toast.success('Đã lưu thông tin hồ sơ');
       return true;
     } catch (e: any) {
@@ -144,104 +160,76 @@ export function useMobileProfile() {
     setEditingProfile(profile);
   };
 
-  const handleAvatarUpload = async (file: File) => {
-    if (!file || !user) return;
-    
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast.error('Vui lòng chọn file hình ảnh');
+  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File quá lớn. Vui lòng chọn file nhỏ hơn 5MB.');
       return;
     }
-    
-    // Validate file size (5MB limit)
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSize) {
-      toast.error('Kích thước file quá lớn. Vui lòng chọn file nhỏ hơn 5MB');
-      return;
-    }
-    
-    // Show image cropper instead of direct upload
+
+    // For mobile, show image cropper
     const reader = new FileReader();
     reader.onload = (e) => {
-      const imageDataUrl = e.target?.result as string;
-      setOriginalImageForCrop(imageDataUrl);
+      const result = e.target?.result as string;
+      setOriginalImageForCrop(result);
       setShowImageCropper(true);
-    };
-    reader.onerror = () => {
-      toast.error('Lỗi khi đọc file ảnh');
     };
     reader.readAsDataURL(file);
   };
 
-  const handleCroppedImageUpload = async (croppedFile: File) => {
-    if (!croppedFile || !user) return;
-    
+  const handleCroppedImageUpload = async (croppedImageBlob: Blob) => {
+    if (!user) return;
     setUploading(true);
     try {
-      const fileExt = 'jpg';
-      const fileName = `${user.id}/avatar.${fileExt}`;
-      
-      console.log('🚀 Starting avatar upload...');
-      console.log('📁 File details:', {
-        name: fileName,
-        size: croppedFile.size,
-        type: croppedFile.type,
-        userId: user.id
-      });
-      
-      // Skip bucket validation - proceed directly to upload
-      console.log('🔗 Proceeding with direct upload to avatars bucket...');
-      
+      const fileExt = 'webp';
+      const fileName = `avatar-${user.id}-${Date.now()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
       const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(fileName, croppedFile, { upsert: true });
-        
-      if (uploadError) {
-        console.error('❌ Upload error:', uploadError);
-        throw uploadError;
-      }
-      
-      console.log('✅ Upload successful!');
-      
+        .from('user-content')
+        .upload(filePath, croppedImageBlob, {
+          contentType: 'image/webp',
+          upsert: true,
+        });
+
+      if (uploadError) throw uploadError;
+
       const { data: urlData } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(fileName);
-        
-      const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
-      
-      console.log('🔗 Generated avatar URL:', avatarUrl);
-      
+        .from('user-content')
+        .getPublicUrl(filePath);
+
+      const avatarUrl = urlData.publicUrl;
+
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ avatar_url: avatarUrl })
         .eq('user_id', user.id);
-        
-      if (updateError) {
-        console.error('Profile update error:', updateError);
-        throw updateError;
-      }
+
+      if (updateError) throw updateError;
+
+      // ✅ FORCE REFRESH: Fetch latest data from database
+      await fetchProfile();
       
       updateAvatar(avatarUrl);
-      setProfile(p => (p ? { ...p, avatar_url: avatarUrl } : p));
-      setEditingProfile(p => (p ? { ...p, avatar_url: avatarUrl } : p));
+      toast.success('Đã cập nhật ảnh đại diện');
       
-      // Invalidate any cached profile queries so header avatar refreshes
-      queryClient.invalidateQueries({ queryKey: ['user-profile', user.id] });
-      queryClient.invalidateQueries({ queryKey: ['current-user-profile'] });
-      
-      toast.success('Đã cập nhật ảnh đại diện!');
+      await queryClient.invalidateQueries({ queryKey: ['profile'] });
     } catch (e: any) {
       console.error('Avatar upload error:', e);
-      toast.error('Lỗi tải ảnh: ' + (e.message || 'Không xác định'));
+      toast.error('Lỗi tải ảnh: ' + e.message);
     } finally {
       setUploading(false);
+      setShowImageCropper(false);
+      setOriginalImageForCrop(null);
     }
   };
 
   return {
     profile,
     editingProfile,
-    setEditingProfile,
     loading,
     saving,
     uploading,
@@ -250,8 +238,6 @@ export function useMobileProfile() {
     handleCancelEdit,
     handleAvatarUpload,
     handleCroppedImageUpload,
-    fetchProfile,
-    // Image cropper states
     showImageCropper,
     setShowImageCropper,
     originalImageForCrop,

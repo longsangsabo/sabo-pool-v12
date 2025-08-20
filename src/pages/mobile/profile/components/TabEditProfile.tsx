@@ -1,14 +1,11 @@
 import React from 'react';
-import { ProfileData } from '../types';
+import { UnifiedProfile } from '@/types/unified-profile'; // ✅ Use unified profile
 import { Button } from '@/components/ui/button';
 
 interface Props {
-  editingProfile: ProfileData | null;
+  editingProfile: Partial<UnifiedProfile> | null;
   saving: boolean;
-  onChange: <K extends keyof ProfileData>(
-    field: K,
-    value: ProfileData[K]
-  ) => void;
+  onChange: (field: string, value: any) => void;
   onSave: () => void;
   onCancel: () => void;
   theme: string;

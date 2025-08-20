@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useUnifiedProfile } from '@/hooks/useUnifiedProfile';
 import { useTheme } from '@/hooks/useTheme';
+import { UnifiedProfile } from '@/types/unified-profile'; // ✅ Use unified type
 // Loại bỏ avatar/cover cũ: dùng CardAvatar/DarkCardAvatar thống nhất với mobile
 // import { ProfileHeader } from './responsive/ProfileHeader';
 import DesktopProfileContent from './DesktopProfileContent';
@@ -38,7 +39,7 @@ const DesktopProfilePage: React.FC = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState('basic');
-  const [editingProfile, setEditingProfile] = useState<any | null>(null);
+  const [editingProfile, setEditingProfile] = useState<Partial<UnifiedProfile> | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showRankRequestModal, setShowRankRequestModal] = useState(false);
@@ -155,8 +156,8 @@ const DesktopProfilePage: React.FC = () => {
         district: profile.district || '',
         bio: profile.bio || '',
         skill_level: (profile as any).skill_level || 'beginner',
-        role: profile.role || 'player',
-        active_role: profile.active_role || 'player',
+        role: (profile.role as UnifiedProfile['role']) || 'player',
+        active_role: (profile.active_role as UnifiedProfile['active_role']) || 'player',
       });
     }
   }, [profile]);
@@ -171,27 +172,38 @@ const DesktopProfilePage: React.FC = () => {
     if (!user || !editingProfile) return;
     setSaving(true);
     try {
-      const payload = {
-        display_name: editingProfile.display_name || '',
-        phone: editingProfile.phone || '',
-        bio: editingProfile.bio || '',
-        city: editingProfile.city || '',
-        district: editingProfile.district || '',
-        role: editingProfile.role,
-        active_role: editingProfile.active_role,
-        skill_level: editingProfile.skill_level,
+      // ✅ SAFE: Only include fields that exist and are safe
+      const payload: Partial<UnifiedProfile> = {
+        display_name: editingProfile.display_name || null, // Allow null
+        phone: editingProfile.phone || null,
+        bio: editingProfile.bio || null,
+        city: editingProfile.city || null,
+        district: editingProfile.district || null,
       };
+      
+      // ✅ Add enum fields safely if they exist
+      if (editingProfile.role) {
+        payload.role = editingProfile.role;
+      }
+      if (editingProfile.active_role) {
+        payload.active_role = editingProfile.active_role;
+      }
+      if (editingProfile.skill_level) {
+        payload.skill_level = editingProfile.skill_level;
+      }
+      
       const { error: updateError } = await supabase
         .from('profiles')
-        .update(payload as any)
+        .update(payload)
         .eq('user_id', user.id);
+        
       if (updateError) throw updateError;
       toast.success('Đã lưu thông tin hồ sơ');
       await refetch();
       setActiveTab('basic');
     } catch (e: any) {
-      console.error(e);
-      toast.error('Lỗi lưu hồ sơ');
+      console.error('❌ [DesktopProfile] Save error:', e);
+      toast.error(`Lỗi lưu hồ sơ: ${e.message}`);
     } finally {
       setSaving(false);
     }
@@ -216,12 +228,11 @@ const DesktopProfilePage: React.FC = () => {
       district: profile.district || '',
       bio: profile.bio || '',
       skill_level: (profile as any).skill_level || 'beginner',
-      role: profile.role || 'player',
-      active_role: profile.active_role || 'player',
+      role: (profile.role as UnifiedProfile['role']) || 'player',
+      active_role: (profile.active_role as UnifiedProfile['active_role']) || 'player',
     });
-  };
-
-  if (isLoading) {
+    setActiveTab('basic');
+  };  if (isLoading) {
     return (
       <div className='relative min-h-screen'>
         <DesktopProfileBackground />

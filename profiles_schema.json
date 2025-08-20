@@ -1,0 +1,158 @@
+{
+  "required": [
+    "id",
+    "user_id",
+    "created_at",
+    "updated_at",
+    "spa_points"
+  ],
+  "properties": {
+    "id": {
+      "default": "gen_random_uuid()",
+      "description": "Note:\nThis is a Primary Key.<pk/>",
+      "format": "uuid",
+      "type": "string"
+    },
+    "user_id": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "full_name": {
+      "format": "text",
+      "type": "string"
+    },
+    "display_name": {
+      "format": "text",
+      "type": "string"
+    },
+    "avatar_url": {
+      "format": "text",
+      "type": "string"
+    },
+    "bio": {
+      "format": "text",
+      "type": "string"
+    },
+    "verified_rank": {
+      "format": "text",
+      "type": "string"
+    },
+    "elo": {
+      "default": 1000,
+      "format": "integer",
+      "type": "integer"
+    },
+    "created_at": {
+      "default": "now()",
+      "format": "timestamp with time zone",
+      "type": "string"
+    },
+    "updated_at": {
+      "default": "now()",
+      "format": "timestamp with time zone",
+      "type": "string"
+    },
+    "is_admin": {
+      "default": false,
+      "format": "boolean",
+      "type": "boolean"
+    },
+    "phone": {
+      "format": "text",
+      "type": "string"
+    },
+    "skill_level": {
+      "default": "beginner",
+      "format": "text",
+      "type": "string"
+    },
+    "active_role": {
+      "default": "player",
+      "format": "text",
+      "type": "string"
+    },
+    "role": {
+      "default": "player",
+      "format": "text",
+      "type": "string"
+    },
+    "nickname": {
+      "format": "text",
+      "type": "string"
+    },
+    "email": {
+      "format": "text",
+      "type": "string"
+    },
+    "city": {
+      "format": "text",
+      "type": "string"
+    },
+    "district": {
+      "format": "text",
+      "type": "string"
+    },
+    "member_since": {
+      "default": "now()",
+      "format": "timestamp with time zone",
+      "type": "string"
+    },
+    "completion_percentage": {
+      "default": 0,
+      "format": "numeric",
+      "type": "number"
+    },
+    "is_demo_user": {
+      "default": false,
+      "format": "boolean",
+      "type": "boolean"
+    },
+    "ban_status": {
+      "default": "active",
+      "format": "text",
+      "type": "string"
+    },
+    "ban_reason": {
+      "format": "text",
+      "type": "string"
+    },
+    "banned_at": {
+      "format": "timestamp with time zone",
+      "type": "string"
+    },
+    "banned_by": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "cover_image_url": {
+      "format": "text",
+      "type": "string"
+    },
+    "current_rank": {
+      "default": "K",
+      "enum": [
+        "K",
+        "K+",
+        "I",
+        "I+",
+        "H",
+        "H+",
+        "G",
+        "G+",
+        "F",
+        "F+",
+        "E",
+        "E+"
+      ],
+      "format": "public.sabo_rank",
+      "type": "string"
+    },
+    "spa_points": {
+      "default": 0,
+      "description": "SPA Points earned by user from tournaments and legacy claims",
+      "format": "integer",
+      "type": "integer"
+    }
+  },
+  "type": "object"
+}

@@ -24,6 +24,7 @@ import { usePlayerStats } from '@/hooks/usePlayerStats';
 import { usePlayerRanking } from '@/hooks/usePlayerRanking';
 import { useMobilePageTitle } from '@/hooks/useMobilePageTitle';
 import { MOBILE_PAGE_TITLES } from '@/components/mobile/MobilePlayerLayout';
+import { getDisplayName } from '@/types/unified-profile'; // ✅ Import utility
 
 const OptimizedMobileProfile: React.FC = () => {
   const { user } = useAuth();
@@ -84,10 +85,10 @@ const OptimizedMobileProfile: React.FC = () => {
       <div className='relative flex flex-col items-center justify-start pt-0'>
         {theme === 'dark' ? (
           <DarkCardAvatar
-            userAvatar={profile.avatar_url}
+            userAvatar={profile.avatar_url || ''}
             onAvatarChange={handleAvatarUpload}
             uploading={uploading}
-            nickname={profile.display_name || 'Chưa đặt tên'}
+            nickname={getDisplayName(profile)} // ✅ Use utility function
             rank={profile.verified_rank || 'K'}
             elo={playerStats?.elo || 1000}
             spa={playerStats?.spa || 0}
@@ -98,10 +99,10 @@ const OptimizedMobileProfile: React.FC = () => {
           />
         ) : (
           <CardAvatar
-            userAvatar={profile.avatar_url}
+            userAvatar={profile.avatar_url || ''}
             onAvatarChange={handleAvatarUpload}
             uploading={uploading}
-            nickname={profile.display_name || 'Chưa đặt tên'}
+            nickname={getDisplayName(profile)} // ✅ Use utility function
             rank={profile.verified_rank || 'K'}
             elo={playerStats?.elo || 1000}
             spa={playerStats?.spa || 0}

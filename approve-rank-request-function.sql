@@ -1,5 +1,8 @@
--- SQL Script to create approve_rank_request function
+-- SQL Script to create approve_rank_request function (SAFE VERSION)
 -- Run this in Supabase Dashboard > SQL Editor
+
+-- Drop existing function first
+DROP FUNCTION IF EXISTS approve_rank_request(UUID, UUID, UUID);
 
 CREATE OR REPLACE FUNCTION approve_rank_request(
   request_id UUID,
@@ -9,6 +12,9 @@ CREATE OR REPLACE FUNCTION approve_rank_request(
 RETURNS JSONB AS $$
 DECLARE
   request_record RECORD;
+  v_user_id UUID;
+  v_member_exists BOOLEAN := false;
+  v_player_ranking_exists BOOLEAN := false;
 BEGIN
   -- Check if request exists and is pending
   SELECT * INTO request_record 
@@ -19,7 +25,7 @@ BEGIN
     RETURN jsonb_build_object('success', false, 'error', 'Request not found or already processed');
   END IF;
   
-  -- Skip permission check - if user can access club-management, they are owner
+  v_user_id := request_record.user_id;
   
   -- Update rank request
   UPDATE rank_requests 
@@ -30,27 +36,56 @@ BEGIN
     updated_at = NOW()
   WHERE id = request_id;
   
-  -- Ensure player_rankings record exists
-  INSERT INTO player_rankings (user_id, updated_at)
-  VALUES (request_record.user_id, NOW())
-  ON CONFLICT (user_id) DO UPDATE SET updated_at = NOW();
+  -- Check if player_rankings record exists (SAFE: no ON CONFLICT)
+  SELECT EXISTS(
+    SELECT 1 FROM player_rankings WHERE user_id = v_user_id
+  ) INTO v_player_ranking_exists;
+  
+  IF NOT v_player_ranking_exists THEN
+    INSERT INTO player_rankings (user_id, updated_at, created_at)
+    VALUES (v_user_id, NOW(), NOW());
+  ELSE
+    UPDATE player_rankings 
+    SET updated_at = NOW()
+    WHERE user_id = v_user_id;
+  END IF;
   
   -- Update user's verified rank
   UPDATE profiles 
-  SET verified_rank = request_record.requested_rank
-  WHERE user_id = request_record.user_id;
+  SET verified_rank = request_record.requested_rank,
+      updated_at = NOW()
+  WHERE user_id = v_user_id;
   
-  -- Add user to club_members (status can be null, that's fine)
-  INSERT INTO club_members (club_id, user_id, join_date, status)
-  VALUES (club_id, request_record.user_id, NOW(), 'active')
-  ON CONFLICT (club_id, user_id) DO UPDATE SET 
-    status = 'active',
-    updated_at = NOW();
+  -- Check if club member exists (SAFE: no ON CONFLICT)
+  SELECT EXISTS(
+    SELECT 1 FROM club_members 
+    WHERE club_id = approve_rank_request.club_id AND user_id = v_user_id
+  ) INTO v_member_exists;
   
-  RETURN jsonb_build_object('success', true, 'message', 'Rank request approved successfully');
+  -- Add or update club member safely
+  IF NOT v_member_exists THEN
+    INSERT INTO club_members (club_id, user_id, join_date, status, created_at)
+    VALUES (club_id, v_user_id, NOW(), 'active', NOW());
+  ELSE
+    UPDATE club_members 
+    SET status = 'active', 
+        updated_at = NOW()
+    WHERE club_id = approve_rank_request.club_id AND user_id = v_user_id;
+  END IF;
+  
+  RETURN jsonb_build_object(
+    'success', true, 
+    'message', 'Rank request approved successfully',
+    'user_id', v_user_id,
+    'approved_rank', request_record.requested_rank
+  );
   
 EXCEPTION WHEN OTHERS THEN
-  RETURN jsonb_build_object('success', false, 'error', SQLERRM);
+  RETURN jsonb_build_object(
+    'success', false, 
+    'error', SQLERRM,
+    'error_detail', SQLSTATE
+  );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 

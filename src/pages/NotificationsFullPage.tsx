@@ -75,7 +75,7 @@ export const NotificationsFullPage: React.FC = () => {
       console.log('🔍 Fetching notifications for user:', user.id);
       
       const { data, error } = await supabase
-        .from('challenge_notifications' as any)
+        .from('notifications')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -100,7 +100,7 @@ export const NotificationsFullPage: React.FC = () => {
   const markAsRead = async (notificationId: string) => {
     try {
       const { error } = await supabase
-        .from('challenge_notifications' as any)
+        .from('notifications')
         .update({ is_read: true })
         .eq('id', notificationId)
         .eq('user_id', user?.id);
@@ -124,7 +124,7 @@ export const NotificationsFullPage: React.FC = () => {
   const markAllAsRead = async () => {
     try {
       const { error } = await supabase
-        .from('challenge_notifications' as any)
+        .from('notifications')
         .update({ is_read: true })
         .eq('user_id', user?.id)
         .eq('is_read', false);
@@ -147,7 +147,7 @@ export const NotificationsFullPage: React.FC = () => {
   const deleteNotification = async (notificationId: string) => {
     try {
       const { error } = await supabase
-        .from('challenge_notifications' as any)
+        .from('notifications')
         .delete()
         .eq('id', notificationId)
         .eq('user_id', user?.id);
@@ -173,7 +173,7 @@ export const NotificationsFullPage: React.FC = () => {
 
     try {
       const { error } = await supabase
-        .from('challenge_notifications' as any)
+        .from('notifications')
         .delete()
         .in('id', selectedNotifications)
         .eq('user_id', user?.id);
@@ -311,7 +311,7 @@ export const NotificationsFullPage: React.FC = () => {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'challenge_notifications',
+          table: 'notifications',
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
@@ -568,7 +568,7 @@ export const NotificationsFullPage: React.FC = () => {
                         };
                         
                         const { error } = await supabase
-                          .from('challenge_notifications' as any)
+                          .from('notifications')
                           .insert([testNotification]);
                         
                         if (error) {

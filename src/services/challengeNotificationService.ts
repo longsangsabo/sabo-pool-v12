@@ -40,7 +40,7 @@ export class ChallengeNotificationService {
       console.log('🔔 Creating notification:', data);
 
       const { data: notification, error } = await supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .insert({
           type: data.type,
           challenge_id: data.challengeId,
@@ -138,7 +138,7 @@ export class ChallengeNotificationService {
       }));
 
       const { error } = await supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .insert(notifications);
 
       if (error) {
@@ -187,7 +187,7 @@ export class ChallengeNotificationService {
   ): Promise<{ notifications: ChallengeNotification[], total: number }> {
     try {
       let query = supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .select('*', { count: 'exact' })
         .eq('user_id', userId);
 
@@ -244,7 +244,7 @@ export class ChallengeNotificationService {
   async getUnreadCount(userId: string): Promise<number> {
     try {
       const { count, error } = await supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId)
         .eq('is_read', false);
@@ -266,24 +266,59 @@ export class ChallengeNotificationService {
    */
   async getUserNotificationStats(userId: string): Promise<NotificationStats | null> {
     try {
-      const { data, error } = await supabase
-        .from('challenge_notification_stats')
-        .select('*')
+      // Get total count
+      const { count: totalCount, error: totalError } = await supabase
+        .from('notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+
+      if (totalError) throw totalError;
+
+      // Get unread count
+      const { count: unreadCount, error: unreadError } = await supabase
+        .from('notifications')
+        .select('*', { count: 'exact', head: true })
         .eq('user_id', userId)
+        .eq('is_read', false);
+
+      if (unreadError) throw unreadError;
+
+      // Get urgent count
+      const { count: urgentCount, error: urgentError } = await supabase
+        .from('notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('is_read', false)
+        .eq('priority', 'urgent');
+
+      if (urgentError) throw urgentError;
+
+      // Get high priority count
+      const { count: highPriorityCount, error: highError } = await supabase
+        .from('notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('is_read', false)
+        .eq('priority', 'high');
+
+      if (highError) throw highError;
+
+      // Get latest notification
+      const { data: latestNotif, error: latestError } = await supabase
+        .from('notifications')
+        .select('created_at')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
         .single();
 
-      if (error) {
-        console.error('❌ Error getting notification stats:', error);
-        return null;
-      }
-
       return {
-        userId: data.user_id,
-        totalNotifications: data.total_notifications,
-        unreadCount: data.unread_count,
-        urgentCount: data.urgent_count,
-        highPriorityCount: data.high_priority_count,
-        lastNotificationAt: data.last_notification_at ? new Date(data.last_notification_at) : null
+        userId: userId,
+        totalNotifications: totalCount || 0,
+        unreadCount: unreadCount || 0,
+        urgentCount: urgentCount || 0,
+        highPriorityCount: highPriorityCount || 0,
+        lastNotificationAt: latestNotif?.created_at ? new Date(latestNotif.created_at) : null
       };
     } catch (error) {
       console.error('❌ Exception getting notification stats:', error);
@@ -299,7 +334,7 @@ export class ChallengeNotificationService {
   async markAsRead(notificationId: string, userId: string): Promise<boolean> {
     try {
       const { error } = await supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .update({ is_read: true })
         .eq('id', notificationId)
         .eq('user_id', userId);
@@ -322,7 +357,7 @@ export class ChallengeNotificationService {
   async markAllAsRead(userId: string): Promise<boolean> {
     try {
       const { error } = await supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .update({ is_read: true })
         .eq('user_id', userId)
         .eq('is_read', false);
@@ -345,7 +380,7 @@ export class ChallengeNotificationService {
   async deleteNotification(notificationId: string, userId: string): Promise<boolean> {
     try {
       const { error } = await supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .delete()
         .eq('id', notificationId)
         .eq('user_id', userId);
@@ -380,7 +415,7 @@ export class ChallengeNotificationService {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'challenge_notifications',
+          table: 'notifications',
           filter: `user_id=eq.${userId}`
         },
         (payload: RealtimeNotificationPayload) => {

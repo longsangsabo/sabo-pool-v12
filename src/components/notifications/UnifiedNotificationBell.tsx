@@ -155,7 +155,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
       
       // Create fresh query to prevent caching
       const { data, error } = await supabase
-        .from('challenge_notifications' as any)
+        .from('notifications')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
@@ -214,7 +214,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
 
       // Then update database
       const { error } = await supabase
-        .from('challenge_notifications' as any)
+        .from('notifications')
         .update({ is_read: true })
         .eq('id', notificationId)
         .eq('user_id', user?.id);
@@ -243,7 +243,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
       setUnreadCount(0);
 
       const { error } = await supabase
-        .from('challenge_notifications' as any)
+        .from('notifications')
         .update({ is_read: true })
         .eq('user_id', user?.id)
         .eq('is_read', false);
@@ -334,7 +334,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
             {
               event: 'INSERT',
               schema: 'public',
-              table: 'challenge_notifications',
+              table: 'notifications',
               filter: `user_id=eq.${user.id}`,
             },
             (payload) => {
@@ -361,7 +361,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
             {
               event: 'UPDATE',
               schema: 'public',
-              table: 'challenge_notifications',
+              table: 'notifications',
               filter: `user_id=eq.${user.id}`,
             },
             (payload) => {

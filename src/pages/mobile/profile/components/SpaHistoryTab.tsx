@@ -49,44 +49,72 @@ interface SourceTypeConfig {
 
 const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
   const { user } = useAuth();
+  const [currentBalance, setCurrentBalance] = useState(0);
   const [transactions, setTransactions] = useState<SpaTransaction[]>([]);
-  const [currentBalance, setCurrentBalance] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [filterType, setFilterType] = useState<string>('all');
-  const [transactionTypeFilter, setTransactionTypeFilter] = useState<string>('all');
+  const [filterType, setFilterType] = useState('all');
+  const [transactionTypeFilter, setTransactionTypeFilter] = useState('all');
   const [showBalance, setShowBalance] = useState(true);
+  
+  // Enhanced transaction details state
+  const [transactionDetails, setTransactionDetails] = useState<{[key: string]: any}>({});
 
-  const sourceTypeConfig: SourceTypeConfig = {
-    milestone: {
-      label: 'Mốc thành tích',
+  // Enhanced source type configuration
+    const sourceTypeConfig: SourceTypeConfig = {
+    milestone_reward: {
+      label: 'Thưởng Milestone',
       icon: Trophy,
-      color: 'text-purple-600',
-      darkColor: 'text-purple-400'
+      color: 'text-yellow-600',
+      darkColor: 'text-yellow-400'
     },
-    rank_verification: {
-      label: 'Xác thực hạng',
+    milestone: {
+      label: 'Hoàn thành Milestone',
+      icon: Trophy,
+      color: 'text-yellow-600',
+      darkColor: 'text-yellow-400'
+    },
+    challenge_win: {
+      label: 'Thắng thách đấu',
       icon: Target,
       color: 'text-blue-600',
       darkColor: 'text-blue-400'
     },
-    challenge: {
-      label: 'Thách đấu',
-      icon: Target,
-      color: 'text-orange-600',
-      darkColor: 'text-orange-400'
-    },
-    tournament: {
-      label: 'Giải đấu',
-      icon: Trophy,
+    daily_bonus: {
+      label: 'Thưởng hàng ngày',
+      icon: Plus,
       color: 'text-green-600',
       darkColor: 'text-green-400'
     },
-    bonus: {
-      label: 'Thưởng',
+    weekly_bonus: {
+      label: 'Thưởng hàng tuần',
       icon: Plus,
-      color: 'text-emerald-600',
-      darkColor: 'text-emerald-400'
+      color: 'text-green-600',
+      darkColor: 'text-green-400'
+    },
+    rank_bonus: {
+      label: 'Thưởng thăng hạng',
+      icon: TrendingUp,
+      color: 'text-purple-600',
+      darkColor: 'text-purple-400'
+    },
+    tournament_reward: {
+      label: 'Thưởng giải đấu',
+      icon: Trophy,
+      color: 'text-yellow-600',
+      darkColor: 'text-yellow-400'
+    },
+    bonus: {
+      label: 'Thưởng thêm',
+      icon: Plus,
+      color: 'text-green-600',
+      darkColor: 'text-green-400'
+    },
+    special_event: {
+      label: 'Sự kiện đặc biệt',
+      icon: Trophy,
+      color: 'text-purple-600',
+      darkColor: 'text-purple-400'
     },
     penalty: {
       label: 'Phạt',
@@ -100,11 +128,126 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
       color: 'text-gray-600',
       darkColor: 'text-gray-400'
     },
-    other: {
-      label: 'Khác',
-      icon: DollarSign,
+    legacy: {
+      label: 'Lịch sử cũ',
+      icon: Calendar,
       color: 'text-gray-600',
       darkColor: 'text-gray-400'
+    },
+    legacy_award: {
+      label: 'Lịch sử cũ',
+      icon: Calendar,
+      color: 'text-gray-600',
+      darkColor: 'text-gray-400'
+    },
+    account_creation: {
+      label: 'Tạo tài khoản',
+      icon: Plus,
+      color: 'text-green-600',
+      darkColor: 'text-green-400'
+    }
+  };
+
+  // Function to get detailed transaction information
+  const getTransactionDetails = async (transaction: SpaTransaction) => {
+    if (!transaction.reference_id) return null;
+    
+    try {
+      let details = null;
+      
+      // Get milestone details
+      if (transaction.source_type === 'milestone_reward' || transaction.source_type === 'milestone') {
+        const { data: milestone } = await supabase
+          .from('milestones')
+          .select('name, description, spa_reward, category')
+          .eq('id', transaction.reference_id)
+          .single();
+          
+        if (milestone) {
+          details = {
+            type: 'milestone',
+            title: milestone.name,
+            description: milestone.description,
+            category: milestone.category,
+            reward: milestone.spa_reward
+          };
+        }
+      }
+      
+      // Get rank verification details
+      else if (transaction.source_type === 'rank_verification') {
+        const { data: rankRequest } = await supabase
+          .from('rank_requests')
+          .select('requested_rank, status, verification_notes')
+          .eq('id', transaction.reference_id)
+          .single();
+          
+        if (rankRequest) {
+          details = {
+            type: 'rank_verification',
+            title: `Xác thực hạng ${rankRequest.requested_rank}`,
+            description: `Thưởng xác thực hạng ${rankRequest.requested_rank}`,
+            status: rankRequest.status,
+            notes: rankRequest.verification_notes
+          };
+        }
+      }
+      
+      // Get tournament details
+      else if (transaction.source_type === 'tournament_prize') {
+        const { data: tournament } = await supabase
+          .from('tournaments')
+          .select('name, description, prizes')
+          .eq('id', transaction.reference_id)
+          .single();
+          
+        if (tournament) {
+          details = {
+            type: 'tournament',
+            title: tournament.name,
+            description: `Giải thưởng từ giải đấu ${tournament.name}`,
+            prizes: tournament.prizes
+          };
+        }
+      }
+      
+      // Get challenge details
+      else if (transaction.source_type === 'challenge_reward') {
+        const { data: challenge } = await supabase
+          .from('challenges')
+          .select(`
+            id,
+            challenger_id,
+            challenged_id,
+            challenger_spa_reward,
+            challenged_spa_reward,
+            status,
+            profiles_challenger:profiles!challenges_challenger_id_fkey(display_name),
+            profiles_challenged:profiles!challenges_challenged_id_fkey(display_name)
+          `)
+          .eq('id', transaction.reference_id)
+          .single();
+          
+        if (challenge) {
+          const isChallenger = challenge.challenger_id === transaction.user_id;
+          const opponent = isChallenger 
+            ? challenge.profiles_challenged?.display_name 
+            : challenge.profiles_challenger?.display_name;
+            
+          details = {
+            type: 'challenge',
+            title: `Thắng thách đấu vs ${opponent || 'Đối thủ'}`,
+            description: `Thưởng ${transaction.amount} SPA từ thách đấu`,
+            opponent: opponent,
+            isChallenger: isChallenger
+          };
+        }
+      }
+      
+      return details;
+    } catch (error) {
+      console.error('Error getting transaction details:', error);
+      return null;
     }
   };
 
@@ -127,19 +270,85 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
 
       setCurrentBalance(rankingData?.spa_points || 0);
 
-      // Fetch transaction history
+      // Fetch transaction history from multiple sources
+      console.log('🔍 Fetching SPA history from multiple tables...');
+      
+      // 1. Fetch from spa_points_log (most detailed)
+      const { data: pointsLogData, error: pointsLogError } = await supabase
+        .from('spa_points_log')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      // 2. Fetch from spa_transactions (legacy/fallback)
       const { data: transactionData, error } = await supabase
         .from('spa_transactions')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching SPA transactions:', error);
+      if (error || pointsLogError) {
+        console.error('Error fetching SPA data:', { error, pointsLogError });
         return;
       }
 
-      setTransactions(transactionData || []);
+      // Convert and merge data sources into unified format
+      const allTransactions: SpaTransaction[] = [];
+
+      // 1. Process spa_points_log (primary source - most detailed)
+      if (pointsLogData && pointsLogData.length > 0) {
+        pointsLogData.forEach(log => {
+          allTransactions.push({
+            id: `log_${log.id}`,
+            user_id: log.user_id,
+            amount: log.points,
+            source_type: log.category || 'milestone',
+            transaction_type: 'credit',
+            description: log.description || `+${log.points} SPA`,
+            reference_id: log.reference_id,
+            status: 'completed',
+            metadata: { source: 'spa_points_log', original: log },
+            created_at: log.created_at
+          });
+        });
+      }
+
+      // 2. Process spa_transactions (only if no detailed records found)
+      if (transactionData && allTransactions.length === 0) {
+        transactionData.forEach(tx => {
+          allTransactions.push({
+            id: tx.id,
+            user_id: tx.user_id,
+            amount: tx.amount,
+            source_type: tx.source_type || 'legacy',
+            transaction_type: tx.transaction_type || 'credit',
+            description: tx.description,
+            reference_id: tx.reference_id,
+            status: tx.status,
+            metadata: { source: 'spa_transactions', original: tx },
+            created_at: tx.created_at
+          });
+        });
+      }
+
+      // Sort by created_at desc
+      allTransactions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      console.log(`✅ Found ${allTransactions.length} total SPA transactions`);
+      console.log(`📊 Primary source: ${allTransactions.length > 0 ? allTransactions[0].metadata?.source : 'none'}`);
+      setTransactions(allTransactions);
+      
+      // Fetch detailed information for transactions with reference_id
+      const detailsMap: {[key: string]: any} = {};
+      for (const transaction of transactionData || []) {
+        if (transaction.reference_id) {
+          const details = await getTransactionDetails(transaction);
+          if (details) {
+            detailsMap[transaction.id] = details;
+          }
+        }
+      }
+      setTransactionDetails(detailsMap);
     } catch (error) {
       console.error('Error fetching SPA data:', error);
     } finally {
@@ -171,7 +380,62 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
   const getSourceConfig = (sourceType: string) => {
-    return sourceTypeConfig[sourceType] || sourceTypeConfig.other;
+    return sourceTypeConfig[sourceType] || {
+      label: 'Giao dịch khác',
+      icon: DollarSign,
+      color: 'text-gray-600',
+      darkColor: 'text-gray-400'
+    };
+  };
+
+  // Get enhanced transaction description
+  const getTransactionDescription = (transaction: SpaTransaction) => {
+    const details = transactionDetails[transaction.id];
+    
+    if (details) {
+      return details.title || details.description;
+    }
+    
+    // Fallback to original description or enhanced description based on source_type
+    if (transaction.description) {
+      return transaction.description;
+    }
+    
+    // Generate description based on source_type and metadata
+    const config = getSourceConfig(transaction.source_type);
+    return `${config.label} (+${transaction.amount} SPA)`;
+  };
+
+  // Get transaction subtitle/additional info
+  const getTransactionSubtitle = (transaction: SpaTransaction) => {
+    const details = transactionDetails[transaction.id];
+    
+    if (details) {
+      switch (details.type) {
+        case 'milestone':
+          return `${details.category || 'Milestone'} • ${details.description || ''}`;
+        case 'rank_verification':
+          return `Hạng được xác thực • ${details.status || ''}`;
+        case 'tournament':
+          return `Giải đấu • ${details.description || ''}`;
+        case 'challenge':
+          return `Thách đấu • ${details.opponent ? `vs ${details.opponent}` : ''}`;
+        default:
+          return details.description || '';
+      }
+    }
+    
+    // Fallback for transactions without detailed info
+    if (transaction.metadata) {
+      if (transaction.metadata.milestone_type) {
+        return `Loại: ${transaction.metadata.milestone_type}`;
+      }
+      if (transaction.metadata.created_reason) {
+        return transaction.metadata.created_reason;
+      }
+    }
+    
+    return `Giao dịch ${transaction.source_type || 'SPA'}`;
   };
 
   const handleRefresh = () => {
@@ -380,7 +644,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-medium text-sm">
-                            {sourceConfig.label}
+                            {getTransactionDescription(transaction)}
                           </span>
                           {transaction.status === 'pending' && (
                             <span className={`text-xs px-2 py-1 rounded-full ${
@@ -412,7 +676,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
                         </div>
                         
                         <div className="text-xs text-muted-foreground mb-2">
-                          {transaction.description || 'Giao dịch SPA'}
+                          {getTransactionSubtitle(transaction)}
                         </div>
 
                         {transaction.reference_id && (

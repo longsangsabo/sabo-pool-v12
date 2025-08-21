@@ -42,7 +42,7 @@ export const ChallengeNotificationBell: React.FC = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
@@ -66,7 +66,7 @@ export const ChallengeNotificationBell: React.FC = () => {
   const markAsRead = async (notificationId: string) => {
     try {
       const { error } = await supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .update({ is_read: true })
         .eq('id', notificationId)
         .eq('user_id', user?.id);
@@ -92,7 +92,7 @@ export const ChallengeNotificationBell: React.FC = () => {
   const markAllAsRead = async () => {
     try {
       const { error } = await supabase
-        .from('challenge_notifications')
+        .from('notifications')
         .update({ is_read: true })
         .eq('user_id', user?.id)
         .eq('is_read', false);
@@ -158,13 +158,13 @@ export const ChallengeNotificationBell: React.FC = () => {
 
     // Subscribe to real-time notifications
     const subscription = supabase
-      .channel('challenge_notifications_realtime')
+      .channel('notifications_realtime')
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'challenge_notifications',
+          table: 'notifications',
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {

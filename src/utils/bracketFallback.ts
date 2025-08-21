@@ -1,5 +1,6 @@
 // Emergency fallback bracket generation function
 import { supabase } from '@/integrations/supabase/client';
+import { getDisplayName } from '@/types/unified-profile';
 
 export async function generateBracketFallback(tournamentId, generationType = 'elo_based') {
   
@@ -40,7 +41,7 @@ export async function generateBracketFallback(tournamentId, generationType = 'el
       return {
         user_id: reg.user_id,
         elo: profile?.elo || 1000,
-        full_name: profile?.full_name || 'Unknown Player',
+        full_name: profile ? getDisplayName(profile) : 'Unknown Player',
         created_at: reg.created_at
       };
     });

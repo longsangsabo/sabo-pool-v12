@@ -1,5 +1,6 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { getDisplayName } from '@/types/unified-profile';
 
 export interface ClubMemberData {
   id: string;
@@ -41,8 +42,7 @@ export const fetchClubMembers = async (
 
   const mapped = data
     .map((m: any) => {
-      const name =
-        m.profiles?.display_name || m.profiles?.full_name || 'Người chơi';
+      const name = m.profiles ? getDisplayName(m.profiles) : 'Người chơi';
       if (search && !name.toLowerCase().includes(search.toLowerCase()))
         return null;
       return {

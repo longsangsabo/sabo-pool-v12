@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { getDisplayName } from '@/types/unified-profile';
 import {
   Table,
   TableBody,
@@ -82,8 +83,7 @@ export function AdminSPAManager() {
   const filteredPlayers =
     playersWithSPA?.filter(
       player =>
-        player.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        player.display_name.toLowerCase().includes(searchQuery.toLowerCase())
+        getDisplayName(player).toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];
 
   const handleAdjustSPA = async () => {

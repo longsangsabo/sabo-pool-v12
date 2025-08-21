@@ -6,6 +6,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { supabaseService } from '@/integrations/supabase/service';
 import { SABOMatchHandler } from './SABOMatchHandler';
+import { getDisplayName } from '@/types/unified-profile';
 
 interface Player {
   user_id: string;
@@ -234,7 +235,7 @@ export class ClientSideDoubleElimination {
         const profile = profiles?.find(p => p.user_id === reg.user_id);
         return {
           user_id: reg.user_id,
-          full_name: profile?.display_name || profile?.full_name || 'Player',
+          full_name: profile ? getDisplayName(profile) : 'Player',
           elo: profile?.elo || 1000,
           seed: 0
         };

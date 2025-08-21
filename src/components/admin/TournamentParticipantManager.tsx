@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { getDisplayName } from '@/types/unified-profile';
 import {
   Select,
   SelectContent,
@@ -329,7 +330,7 @@ export const TournamentParticipantManager: React.FC<
             <SelectContent>
               {users.map(user => (
                 <SelectItem key={user.user_id} value={user.user_id}>
-                  {user.full_name || user.display_name || 'Không có tên'}
+                  {getDisplayName(user)}
                   {user.verified_rank && ` (${user.verified_rank})`}
                 </SelectItem>
               ))}
@@ -363,9 +364,7 @@ export const TournamentParticipantManager: React.FC<
                 >
                   <div className='flex-1'>
                     <div className='font-medium'>
-                      {registration.player?.full_name ||
-                        registration.player?.display_name ||
-                        'Không có tên'}
+                      {registration.player ? getDisplayName(registration.player) : 'Không có tên'}
                     </div>
                     <div className='text-sm text-muted-foreground flex gap-2'>
                       {getStatusBadge(registration.registration_status)}
@@ -382,11 +381,9 @@ export const TournamentParticipantManager: React.FC<
                     variant='outline'
                     size='sm'
                     onClick={() =>
-                      removeParticipant(
+                      handleRemovePlayer(
                         registration.id,
-                        registration.player?.full_name ||
-                          registration.player?.display_name ||
-                          'Người chơi'
+                        registration.player ? getDisplayName(registration.player) : 'Người chơi'
                       )
                     }
                   >

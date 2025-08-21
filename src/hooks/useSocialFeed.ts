@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { safeRelationshipQuery } from '@/utils/relationshipMapper';
+import { getDisplayName } from '@/types/unified-profile';
 
 export interface SocialFeedPost {
   id: string;
@@ -122,9 +123,8 @@ export const useSocialFeed = () => {
       type: 'challenge',
       user: {
         id: challenge.challenger_id,
-        name:
-          challenger.full_name || challenger.display_name || 'Unknown Player',
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(challenger.full_name || challenger.display_name || 'Player')}&background=random&size=40`,
+        name: getDisplayName(challenger),
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(getDisplayName(challenger))}&background=random&size=40`,
         rank: 'Pro',
       },
       content: `Ai dám nhận thách đấu với tôi không? Đặt cược ${challenge.bet_points || 100} điểm! 🔥`,

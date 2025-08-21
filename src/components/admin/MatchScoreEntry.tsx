@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { getDisplayName } from '@/types/unified-profile';
 import {
   Play,
   Pause,
@@ -200,7 +201,7 @@ export const MatchScoreEntry: React.FC<MatchScoreEntryProps> = ({
           {/* Player 1 */}
           <div className='text-center'>
             <div className='font-medium text-lg'>
-              {match.player1?.display_name || match.player1?.full_name || 'TBD'}
+              {match.player1 ? getDisplayName(match.player1) : 'TBD'}
             </div>
             {match.winner_id === match.player1_id && (
               <Trophy className='h-5 w-5 text-yellow-500 mx-auto mt-1' />
@@ -241,7 +242,7 @@ export const MatchScoreEntry: React.FC<MatchScoreEntryProps> = ({
           {/* Player 2 */}
           <div className='text-center'>
             <div className='font-medium text-lg'>
-              {match.player2?.display_name || match.player2?.full_name || 'TBD'}
+              {match.player2 ? getDisplayName(match.player2) : 'TBD'}
             </div>
             {match.winner_id === match.player2_id && (
               <Trophy className='h-5 w-5 text-yellow-500 mx-auto mt-1' />

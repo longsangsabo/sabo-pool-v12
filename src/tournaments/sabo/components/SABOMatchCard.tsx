@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { AlertTriangle, Trophy, Target, Users, Crown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getDisplayName } from '@/types/unified-profile';
 import type { SABOMatch } from '../SABOLogicCore';
 
 interface SABOMatchCardProps {

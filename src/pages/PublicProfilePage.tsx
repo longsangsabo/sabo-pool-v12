@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
+import { getDisplayName } from '@/types/unified-profile';
 import { toast } from 'sonner';
 import {
   MapPin,
@@ -70,8 +71,7 @@ const PublicProfilePage = () => {
       if (data) {
         setProfile({
           ...data,
-          display_name:
-            data.display_name || data.full_name || 'Người chơi ẩn danh',
+          display_name: getDisplayName(data),
           member_since: data.member_since || data.created_at || '',
           skill_level: (data.skill_level || 'beginner') as
             | 'beginner'

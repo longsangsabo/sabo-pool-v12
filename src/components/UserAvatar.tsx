@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { RankBadge } from '@/components/ranking/RankBadge';
 import { getNormalizedRank } from '@/lib/rankUtils';
 import { supabase } from '@/integrations/supabase/client';
+import { getDisplayName } from '@/types/unified-profile';
 import { Loader2 } from 'lucide-react';
 
 interface User {
@@ -65,7 +66,7 @@ const UserAvatar = ({
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select(
-          'user_id, full_name, display_name, avatar_url, verified_rank, elo'
+          'user_id, full_name, display_name, nickname, email, avatar_url, verified_rank, elo'
         )
         .eq('user_id', userId)
         .single();
@@ -81,7 +82,7 @@ const UserAvatar = ({
 
       return {
         id: profile.user_id,
-        name: profile.display_name || profile.full_name || 'User',
+        name: getDisplayName(profile),
         avatar: profile.avatar_url,
         verified_rank: ranking?.current_rank || 'K',
         rank: ranking?.current_rank || 'K',

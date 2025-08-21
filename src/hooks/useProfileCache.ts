@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { getDisplayName } from '@/types/unified-profile';
 
 interface ProfileData {
   user_id: string;
   full_name: string;
   display_name: string;
+  nickname?: string;
+  email?: string;
   avatar_url: string | null;
   verified_rank: string | null;
 }
@@ -54,7 +57,7 @@ export const useProfileCache = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('user_id, full_name, display_name, avatar_url, verified_rank')
+        .select('user_id, full_name, display_name, nickname, email, avatar_url, verified_rank')
         .eq('user_id', userId)
         .single();
 
@@ -63,16 +66,14 @@ export const useProfileCache = () => {
         return null;
       }
 
-      // Ensure display_name fallback to full_name
+      // Use unified display name logic
       if (data) {
         const profile = {
           ...data,
-          display_name: data.display_name || data.full_name || 'Unknown Player'
+          display_name: getDisplayName(data)
         };
-        console.log(`🔧 Profile cache fix for ${userId}:`, {
-          original_display_name: data.display_name,
-          original_full_name: data.full_name,
-          fixed_display_name: profile.display_name
+        console.log(`🔧 Profile cache unified for ${userId}:`, {
+          unified_display_name: profile.display_name
         });
         return profile;
       }

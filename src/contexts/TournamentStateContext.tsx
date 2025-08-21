@@ -8,6 +8,7 @@ import React, {
 import { useTournamentRegistrations } from '@/hooks/useTournamentRegistrations';
 import { useTournamentGlobal } from './TournamentGlobalContext';
 import { useModuleLoading } from './LoadingStateContext';
+import { getDisplayName } from '@/types/unified-profile';
 
 interface TournamentStateContextType {
   // Tournament selection (inherited from global)
@@ -105,9 +106,8 @@ export const TournamentStateProvider: React.FC<
     .filter(r => r.registration_status === 'confirmed')
     .map((r, index) => ({
       id: r.user_id,
-      name: r.player?.full_name || r.player?.display_name || 'Unknown Player',
-      displayName:
-        r.player?.display_name || r.player?.full_name || 'Unknown Player',
+      name: getDisplayName(r.player || { user_id: r.user_id }),
+      displayName: getDisplayName(r.player || { user_id: r.user_id }),
       rank:
         (r.player as any)?.verified_rank ||
         (r.player as any)?.current_rank ||

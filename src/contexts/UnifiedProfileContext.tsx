@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { getDisplayName } from '@/types/unified-profile';
 import { toast } from 'sonner';
 
 // Simplified Profile Types
@@ -107,7 +108,7 @@ export const UnifiedProfileProvider: React.FC<{
 
       const formattedProfile: ProfileData = {
         user_id: user.id,
-        display_name: profileData?.display_name || profileData?.full_name || '',
+        display_name: getDisplayName(profileData || { user_id: user.id, email: user.email }),
         full_name: profileData?.full_name || '',
         phone: profileData?.phone || user.phone || '',
         bio: profileData?.bio || '',
@@ -164,7 +165,7 @@ export const UnifiedProfileProvider: React.FC<{
       try {
         const updateData = {
           ...data,
-          full_name: data.display_name || data.full_name, // Sync display_name with full_name
+          full_name: data.user_id ? getDisplayName(data as any) : data.full_name, // Use unified display name if user_id exists
         };
 
         const { error } = await supabase.from('profiles').upsert({
@@ -266,7 +267,7 @@ export const UnifiedProfileProvider: React.FC<{
             const newData = payload.new as any;
             const updatedProfile: ProfileData = {
               user_id: newData.user_id || '',
-              display_name: newData.display_name || newData.full_name || '',
+              display_name: getDisplayName(newData),
               full_name: newData.full_name || '',
               phone: newData.phone || '',
               bio: newData.bio || '',

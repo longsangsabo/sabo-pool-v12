@@ -1,5 +1,6 @@
 import { Challenge } from '@/types/challenge';
 import { ExtendedChallenge, ExtendedChallengeProfile } from '@/types/enhancedChallenge';
+import { getDisplayName } from '@/types/unified-profile';
 
 /**
  * Type Guards and Validators for Challenge Components
@@ -56,7 +57,7 @@ export const safeChallengeAccess = {
 export const safeProfileAccess = {
   getId: (profile?: ExtendedChallengeProfile): string => profile?.id || profile?.user_id || '',
   getName: (profile?: ExtendedChallengeProfile): string => 
-    profile?.display_name || profile?.full_name || profile?.username || 'Unknown Player',
+    profile ? getDisplayName(profile as any) : 'Unknown Player',
   getAvatar: (profile?: ExtendedChallengeProfile): string => profile?.avatar_url || '',
   getRank: (profile?: ExtendedChallengeProfile): string => 
     profile?.verified_rank || profile?.current_rank || profile?.rank || '',

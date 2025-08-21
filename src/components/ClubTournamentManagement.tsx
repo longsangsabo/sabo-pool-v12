@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getDisplayName } from '@/types/unified-profile';
 import {
   Plus,
   Trophy,
@@ -892,7 +893,7 @@ const TournamentParticipantsView = ({
                     <div className='flex-1'>
                       <div className='flex items-center gap-3 mb-2'>
                         <h4 className='font-medium'>
-                          {registration.profiles?.full_name || 'Không có tên'}
+                          {registration.profiles ? getDisplayName(registration.profiles) : 'Không có tên'}
                         </h4>
                         {getRegistrationStatusBadge(
                           registration.registration_status

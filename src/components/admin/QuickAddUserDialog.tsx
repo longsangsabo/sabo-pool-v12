@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getDisplayName } from '@/types/unified-profile';
 import { UserPlus, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -97,7 +98,7 @@ export const QuickAddUserDialog: React.FC<QuickAddUserDialogProps> = ({
 
       // Filter out already registered users and users without names
       const availableUsers = (allUsers || []).filter(user => 
-        (user.full_name || user.display_name) && // Only users with names
+        getDisplayName(user) !== `User ${user.user_id.substring(0, 8)}` && // Only users with proper names
         !registeredUserIds.has(user.user_id) // Not already registered
       );
 
@@ -124,7 +125,7 @@ export const QuickAddUserDialog: React.FC<QuickAddUserDialogProps> = ({
     }
 
     const filtered = users.filter(user => {
-      const name = (user.full_name || user.display_name || '').toLowerCase();
+      const name = getDisplayName(user).toLowerCase();
       const rank = (
         user.verified_rank ||
         user.current_rank ||
@@ -322,7 +323,7 @@ export const QuickAddUserDialog: React.FC<QuickAddUserDialogProps> = ({
 
                   <div className='flex-1'>
                     <div className='font-medium'>
-                      {user.full_name || user.display_name || 'Không có tên'}
+                      {getDisplayName(user)}
                     </div>
                     <div className='flex gap-2 mt-1'>
                       {(user.verified_rank || user.current_rank) && (

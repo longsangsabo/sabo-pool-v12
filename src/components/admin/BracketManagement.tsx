@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getDisplayName } from '@/types/unified-profile';
 import {
   Select,
   SelectContent,
@@ -336,7 +337,7 @@ const BracketManagement: React.FC<BracketManagementProps> = ({
                           .filter(p => p.id !== substitutionData.oldPlayerId)
                           .map(player => (
                             <SelectItem key={player.id} value={player.id}>
-                              {player.full_name} (ELO: {player.elo || 'N/A'})
+                              {getDisplayName(player)} (ELO: {player.elo || 'N/A'})
                             </SelectItem>
                           ))}
                       </SelectContent>
@@ -429,7 +430,7 @@ const BracketManagement: React.FC<BracketManagementProps> = ({
                               <div className='space-y-1'>
                                 <div className='flex items-center justify-between'>
                                   <span>
-                                    {match.player1?.full_name || 'TBD'}
+                                    {match.player1 ? getDisplayName(match.player1) : 'TBD'}
                                   </span>
                                   <Badge variant='outline' className='text-xs'>
                                     P1
@@ -437,7 +438,7 @@ const BracketManagement: React.FC<BracketManagementProps> = ({
                                 </div>
                                 <div className='flex items-center justify-between'>
                                   <span>
-                                    {match.player2?.full_name || 'TBD'}
+                                    {match.player2 ? getDisplayName(match.player2) : 'TBD'}
                                   </span>
                                   <Badge variant='outline' className='text-xs'>
                                     P2

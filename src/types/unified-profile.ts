@@ -5,59 +5,88 @@
  */
 
 export interface UnifiedProfile {
-  // === REQUIRED FIELDS (Database enforced) ===
-  id: string;
   user_id: string;
-  created_at: string;
-  updated_at: string;
-  spa_points: number;
-
-  // === ESSENTIAL FIELDS (App critical) ===
   email?: string;
-  current_rank?: string;
-  
-  // === OPTIONAL FIELDS (All optional, no dependencies) ===
+  display_name?: string;
   full_name?: string;
-  display_name?: string; // OPTIONAL - no function dependencies
-  phone?: string;
-  bio?: string;
+  nickname?: string;
   avatar_url?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  twitter_handle?: string;
+  github_handle?: string;
+  linkedin_handle?: string;
+  created_at?: string;
+  updated_at?: string;
+  is_verified?: boolean;
+  privacy_settings?: {
+    show_email?: boolean;
+    show_location?: boolean;
+    show_social_links?: boolean;
+  };
+  preferences?: {
+    theme?: 'light' | 'dark' | 'system';
+    language?: string;
+    notifications?: {
+      email?: boolean;
+      push?: boolean;
+      in_app?: boolean;
+    };
+  };
+  stats?: {
+    total_matches?: number;
+    wins?: number;
+    losses?: number;
+    win_rate?: number;
+    current_streak?: number;
+    best_streak?: number;
+    total_points?: number;
+    rank?: string;
+    achievements?: string[];
+  };
+  
+  // === LEGACY COMPATIBILITY ===
+  id?: string;
+  spa_points?: number;
+  current_rank?: string;
+  phone?: string;
   city?: string;
   district?: string;
   skill_level?: 'beginner' | 'intermediate' | 'advanced' | 'pro';
   verified_rank?: string;
-  nickname?: string;
-  
-  // === CALCULATED FIELDS ===
   completion_percentage?: number;
   member_since?: string;
   role?: 'player' | 'club_owner' | 'both';
   active_role?: 'player' | 'club_owner';
-  
-  // === ADMIN FIELDS ===
   is_admin?: boolean;
   is_demo_user?: boolean;
   ban_status?: string;
   ban_reason?: string;
   banned_at?: string;
   banned_by?: string;
-  
-  // === RANKING FIELDS ===
   elo?: number;
 }
 
 /**
  * DISPLAY NAME UTILITY
- * Simple fallback logic without function dependencies
+ * Matches database get_user_display_name() function exactly
  */
 export function getDisplayName(profile: UnifiedProfile): string {
-  return (
-    profile.display_name?.trim() ||
-    profile.full_name?.trim() ||
-    profile.nickname?.trim() ||
-    profile.email ||
-    `User ${profile.user_id.substring(0, 8)}`
-  );
+  // Use SAME logic as database function
+  if (profile.display_name?.trim()) {
+    return profile.display_name.trim();
+  }
+  if (profile.full_name?.trim()) {
+    return profile.full_name.trim(); 
+  }
+  if (profile.nickname?.trim()) {
+    return profile.nickname.trim();
+  }
+  if (profile.email?.trim()) {
+    return profile.email.trim();
+  }
+  return `User ${profile.user_id.substring(0, 8)}`;
 }
 
 /**

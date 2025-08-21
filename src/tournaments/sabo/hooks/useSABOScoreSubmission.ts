@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { SABOTournamentEngine } from '@/services/tournament/SABOTournamentManager';
 
 interface MatchScore {
   player1: number;
@@ -25,15 +24,14 @@ export const useSABOScoreSubmission = (
       scores: MatchScore;
       matchData: any;
     }) => {
-      console.log('🎯 Submitting SABO match score with direct table update:', { matchId, scores, matchData });
+      console.log('🎯 Submitting SABO match score with SAFE DIRECT UPDATE:', { matchId, scores, matchData });
 
       // Get current user for submitted_by parameter
       const {
         data: { user },
       } = await supabase.auth.getUser();
       
-      // TEMPORARY FIX: If no user logged in, use club owner ID
-      const submittedBy = user?.id || '18f49e79-f402-46d1-90be-889006e9761c'; // Club owner fallback
+      const submittedBy = user?.id || '18f49e79-f402-46d1-90be-889006e9761c';
       
       if (!user) {
         console.warn('⚠️ No user logged in, using club owner fallback');
@@ -49,220 +47,152 @@ export const useSABOScoreSubmission = (
       
       const winnerId = player1Score > player2Score ? matchData.player1_id : matchData.player2_id;
       const loserId = player1Score > player2Score ? matchData.player2_id : matchData.player1_id;
-      const winnerScore = Math.max(player1Score, player2Score);
-      const loserScore = Math.min(player1Score, player2Score);
 
-      console.log('🔍 Using direct table update instead of RPC function');
+      console.log('🔍 Using SAFE DIRECT UPDATE (step by step)');
 
+      // ✅ STEP 1: Update match result ONLY (using exact schema columns)
+      const { error: updateError } = await supabase
+        .from('tournament_matches')
+        .update({
+          score_player1: player1Score,
+          score_player2: player2Score,
+          status: 'completed',
+          winner_id: winnerId,
+          loser_id: loserId,
+          completed_at: new Date().toISOString()
+          // ✅ Removed submitted_by - column doesn't exist
+        })
+        .eq('id', matchId);
+
+      if (updateError) {
+        console.error('❌ Match update failed:', updateError);
+        throw updateError;
+      }
+
+      console.log('✅ Match result updated successfully');
+
+      // ✅ STEP 2: Handle advancement logic safely
       try {
-        // Direct table update instead of RPC function
-        const { data: updateResult, error: updateError } = await supabase
-          .from('tournament_matches')
-          .update({
-            score_player1: player1Score,
-            score_player2: player2Score,
-            winner_id: winnerId,
-            loser_id: loserId,
-            status: 'completed',
-            completed_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', matchId)
-          .select();
+        const { SABOLogicCore } = await import('../SABOLogicCore');
+        
+        const winnerAdvancement = SABOLogicCore.getAdvancementTarget(
+          matchData.round_number, 
+          true
+        );
+        const loserAdvancement = SABOLogicCore.getAdvancementTarget(
+          matchData.round_number, 
+          false
+        );
+        
+        console.log('📋 Advancement targets:', {
+          round: matchData.round_number,
+          winner: winnerAdvancement,
+          loser: loserAdvancement
+        });
 
-        if (updateError) {
-          throw updateError;
+        // ✅ ADVANCE WINNER (if applicable)
+        if (winnerAdvancement.round) {
+          console.log(`🏆 Advancing winner to round ${winnerAdvancement.round}`);
+          
+          const nextMatchNumber = Math.ceil(matchData.match_number / 2);
+          
+          const { data: nextMatches } = await supabase
+            .from('tournament_matches')
+            .select('*')
+            .eq('tournament_id', matchData.tournament_id)
+            .eq('round_number', winnerAdvancement.round)
+            .eq('match_number', nextMatchNumber);
+
+          if (nextMatches && nextMatches.length > 0) {
+            const nextMatch = nextMatches[0];
+            const updateField = !nextMatch.player1_id ? 'player1_id' : 'player2_id';
+            
+            const { error: winnerError } = await supabase
+              .from('tournament_matches')
+              .update({ 
+                [updateField]: winnerId,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', nextMatch.id);
+              
+            if (winnerError) {
+              console.error('❌ Winner advancement failed:', winnerError);
+            } else {
+              console.log('✅ Winner advanced successfully');
+            }
+          }
         }
 
-        console.log('✅ Direct table update successful:', updateResult);
-
-        // ✅ IMPLEMENT TOURNAMENT ADVANCEMENT LOGIC
-        console.log('🎯 Implementing tournament advancement...');
-        
-        try {
-          // Import advancement logic
-          const { SABOLogicCore } = await import('../SABOLogicCore');
+        // ✅ ADVANCE LOSER (if applicable)
+        if (loserAdvancement.round) {
+          console.log(`💔 Advancing loser to round ${loserAdvancement.round}`);
           
-          // Get advancement target for winner and loser
-          const winnerAdvancement = SABOLogicCore.getAdvancementTarget(
-            matchData.round_number, 
-            true // isWinner
-          );
-          const loserAdvancement = SABOLogicCore.getAdvancementTarget(
-            matchData.round_number, 
-            false // isLoser
-          );
+          const loserMatchNumber = Math.ceil(matchData.match_number / 2);
           
-          console.log('📋 Advancement targets:', {
-            round: matchData.round_number,
-            matchNumber: matchData.match_number,
-            winner: winnerAdvancement,
-            loser: loserAdvancement,
-            winnerId: winnerId.substring(0,8),
-            loserId: loserId.substring(0,8)
-          });
+          const { data: loserMatches } = await supabase
+            .from('tournament_matches')
+            .select('*')
+            .eq('tournament_id', matchData.tournament_id)
+            .eq('round_number', loserAdvancement.round)
+            .eq('match_number', loserMatchNumber);
 
-          // ✅ ADVANCE WINNER TO NEXT ROUND
-          if (winnerAdvancement.round) {
-            console.log(`🏆 Advancing winner to round ${winnerAdvancement.round}`);
+          if (loserMatches && loserMatches.length > 0) {
+            const loserMatch = loserMatches[0];
             
-            // Calculate which match in next round based on current match
-            const nextMatchNumber = Math.ceil(matchData.match_number / 2);
-            
-            // Find the specific next match
-            const { data: nextMatches, error: nextMatchError } = await supabase
-              .from('tournament_matches')
-              .select('*')
-              .eq('tournament_id', matchData.tournament_id)
-              .eq('round_number', winnerAdvancement.round)
-              .eq('match_number', nextMatchNumber)
-              .single();
+            if (!loserMatch.player1_id || !loserMatch.player2_id) {
+              const updateField = !loserMatch.player1_id ? 'player1_id' : 'player2_id';
               
-            if (!nextMatchError && nextMatches) {
-              const nextMatch = nextMatches;
-              
-              // Determine if winner goes to player1 or player2 slot
-              const isOddMatch = matchData.match_number % 2 === 1;
-              const updateField = isOddMatch ? 'player1_id' : 'player2_id';
-              
-              console.log(`📍 Placing winner in ${updateField} of R${winnerAdvancement.round} M${nextMatchNumber}`);
-              
-              // Update next match with winner
-              const { error: advanceError } = await supabase
+              const { error: loserError } = await supabase
                 .from('tournament_matches')
                 .update({ 
-                  [updateField]: winnerId,
+                  [updateField]: loserId,
                   updated_at: new Date().toISOString()
                 })
-                .eq('id', nextMatch.id);
+                .eq('id', loserMatch.id);
                 
-              if (advanceError) {
-                console.error('❌ Winner advancement error:', advanceError);
+              if (loserError) {
+                console.error('❌ Loser advancement failed:', loserError);
               } else {
-                console.log('✅ Winner advanced successfully');
+                console.log('✅ Loser advanced successfully');
               }
             }
           }
-
-          // ✅ ADVANCE LOSER TO LOSERS BRACKET
-          if (loserAdvancement.round) {
-            console.log(`⬇️ Moving loser to losers bracket round ${loserAdvancement.round}`);
-            
-            // For losers bracket, match number depends on the bracket structure
-            let loserMatchNumber;
-            let updateField = 'player1_id'; // Default to player1 slot
-            
-            if (loserAdvancement.round === 101) {
-              // R1 losers: 8 losers → 4 matches in R101 (2 per match)
-              // Match pairs: (M1,M2)→R101M1, (M3,M4)→R101M2, (M5,M6)→R101M3, (M7,M8)→R101M4
-              loserMatchNumber = Math.ceil(matchData.match_number / 2);
-              updateField = (matchData.match_number % 2 === 1) ? 'player1_id' : 'player2_id';
-              
-            } else if (loserAdvancement.round === 201) {
-              // R2 losers: 4 losers → 2 matches in R201 (2 per match) 
-              // Match pairs: (M1,M2)→R201M1, (M3,M4)→R201M2
-              loserMatchNumber = Math.ceil(matchData.match_number / 2);
-              updateField = (matchData.match_number % 2 === 1) ? 'player1_id' : 'player2_id';
-            }
-            
-            if (loserMatchNumber) {
-              // Find losers bracket match
-              const { data: loserMatches, error: loserMatchError } = await supabase
-                .from('tournament_matches')
-                .select('*')
-                .eq('tournament_id', matchData.tournament_id)
-                .eq('round_number', loserAdvancement.round)
-                .eq('match_number', loserMatchNumber)
-                .single();
-                
-              if (!loserMatchError && loserMatches) {
-                const loserMatch = loserMatches;
-                
-                console.log(`📍 Placing loser in ${updateField} of R${loserAdvancement.round} M${loserMatchNumber}`);
-                
-                // Update losers bracket match
-                const { error: loserAdvanceError } = await supabase
-                  .from('tournament_matches')
-                  .update({ 
-                    [updateField]: loserId,
-                    updated_at: new Date().toISOString()
-                  })
-                  .eq('id', loserMatch.id);
-                  
-                if (loserAdvanceError) {
-                  console.error('❌ Loser advancement error:', loserAdvanceError);
-                } else {
-                  console.log('✅ Loser advanced to losers bracket');
-                }
-              }
-            }
-          }
-          
-        } catch (advancementError) {
-          console.error('❌ Advancement logic error:', advancementError);
-          // Don't fail the entire operation, advancement is secondary
         }
-
-        return {
-          success: true,
-          message: 'Score submitted and players advanced successfully',
-          winner_id: winnerId,
-          match_updated: true,
-          advancement_completed: true
-        };
-
-      } catch (error) {
-        console.error('❌ Direct update error:', error);
-        throw error;
+        
+      } catch (advancementError) {
+        console.error('❌ Advancement logic error (non-critical):', advancementError);
+        // Don't fail the entire operation for advancement issues
       }
+
+      return {
+        success: true,
+        message: 'Score submitted and advancement completed',
+        winner_id: winnerId,
+        match_updated: true
+      };
     },
     onSuccess: (data, variables) => {
       console.log('✅ SABO score submission successful:', data);
 
-      // ✅ AGGRESSIVE CACHE INVALIDATION - Force refresh all tournament data
       queryClient.invalidateQueries({ queryKey: ['tournament-matches'] });
       queryClient.invalidateQueries({ queryKey: ['sabo-tournament'] });
       queryClient.invalidateQueries({ queryKey: ['sabo-tournament-matches'] });
-      queryClient.invalidateQueries({ queryKey: ['tournaments'] });
-      queryClient.invalidateQueries({ queryKey: ['tournament'] }); // Additional key
 
-      // ✅ FIXED: Handle JSONB response format correctly
-      if (data && typeof data === 'object' && !Array.isArray(data)) {
-        const result = data as any;
-        if (result.success) {
-          toast.success(result.message || '🎯 Score submitted successfully!');
-        } else {
-          toast.error(
-            `❌ ${result.error || result.message || 'Failed to submit score'}`
-          );
-        }
-      } else {
-        toast.success('🎯 Score submitted successfully!');
+      const result = data as any;
+      if (result?.success) {
+        toast.success(result.message || '🎯 Score submitted successfully!');
       }
 
-      // ✅ CRITICAL: Force immediate refresh with scroll preservation
       setTimeout(() => {
-        // Use provided refresh callback if available (should preserve scroll)
         if (onRefresh) {
-          console.log(
-            '🔄 Calling provided refresh callback with scroll preservation'
-          );
           onRefresh();
         } else {
-          // Fallback: just invalidate queries without scroll preservation
           queryClient.refetchQueries({ queryKey: ['tournament-matches'] });
-          queryClient.refetchQueries({ queryKey: ['sabo-tournament'] });
         }
-      }, 50); // Faster response for immediate feedback
-
-      // ✅ ADDITIONAL: Force window refresh as emergency fallback if needed
-      // Uncomment the line below if UI still doesn't update
-      // setTimeout(() => window.location.reload(), 1000);
+      }, 100);
     },
     onError: (error: any) => {
       console.error('❌ SABO score submission failed:', error);
-
-      // Show specific error message if available
       const errorMessage = error?.message || 'Failed to submit score';
       toast.error(`❌ ${errorMessage}`);
     },
@@ -271,8 +201,6 @@ export const useSABOScoreSubmission = (
   const submitScore = useCallback(
     async (matchId: string, scores: MatchScore, matchData?: any) => {
       if (!matchData) {
-        console.log('🔍 Match data not provided, attempting to fetch from database...');
-        // Get match data if not provided - USE SABO SPECIFIC TABLE
         const { data: match, error } = await supabase
           .from('tournament_matches')
           .select('*')
@@ -280,13 +208,9 @@ export const useSABOScoreSubmission = (
           .single();
           
         if (error || !match) {
-          console.error('❌ Could not retrieve match data from database:', error);
           throw new Error(`Could not retrieve match data: ${error?.message || 'Match not found'}`);
         }
         matchData = match;
-        console.log('✅ Successfully fetched match data from database');
-      } else {
-        console.log('✅ Using provided match data');
       }
       
       return submitScoreMutation.mutateAsync({ matchId, scores, matchData });

@@ -78,13 +78,21 @@ export class MessageService {
   ): Promise<Message[]> {
   if (this.isSmokeBypass()) return [];
   try {
+      // Check if messages table exists first
+      const { data: tableExists, error: tableError } = await supabase
+        .from('messages')
+        .select('id')
+        .limit(1);
+
+      if (tableError) {
+        console.log('Messages table not available:', tableError.message);
+        return [];
+      }
+
+      // Use separate queries to avoid PostgREST relationship issues
       let query = supabase
         .from('messages')
-        .select(`
-          *,
-          sender:profiles!messages_sender_id_fkey(user_id, full_name, avatar_url, display_name),
-          recipient:profiles!messages_recipient_id_fkey(user_id, full_name, avatar_url, display_name)
-        `)
+        .select('*')
         .eq('recipient_id', userId)
         .order('created_at', { ascending: false })
         .range((page - 1) * limit, page * limit - 1);
@@ -109,10 +117,39 @@ export class MessageService {
         query = query.eq('sender_id', filters.sender);
       }
 
-      const { data, error } = await query;
+      const { data: messages, error } = await query;
       if (error) throw error;
 
-      return data || [];
+      // Get profile data separately to avoid relationship issues
+      if (messages && messages.length > 0) {
+        const userIds = new Set<string>();
+        messages.forEach(msg => {
+          if (msg.sender_id) userIds.add(msg.sender_id);
+          if (msg.recipient_id) userIds.add(msg.recipient_id);
+        });
+
+        const { data: profiles, error: profileError } = await supabase
+          .from('profiles')
+          .select('user_id, full_name, avatar_url, display_name')
+          .in('user_id', Array.from(userIds));
+
+        if (!profileError && profiles) {
+          // Create profile lookup map
+          const profileMap = new Map();
+          profiles.forEach(profile => {
+            profileMap.set(profile.user_id, profile);
+          });
+
+          // Attach profile data to messages
+          return messages.map(msg => ({
+            ...msg,
+            sender: profileMap.get(msg.sender_id) || null,
+            recipient: profileMap.get(msg.recipient_id) || null
+          }));
+        }
+      }
+
+      return messages || [];
     } catch (error) {
       console.error('Error fetching inbox messages:', error);
       return [];
@@ -240,13 +277,37 @@ export class MessageService {
 
   // Get unread message count
   static async getUnreadCount(userId: string): Promise<number> {
-  if (this.isSmokeBypass()) return { total_messages:0, unread_count:0, sent_count:0, archived_count:0, system_messages:0 };
+  if (this.isSmokeBypass()) return 0;
   try {
-      const { data, error } = await supabase
+      // First try the database function
+      const { data: functionResult, error: functionError } = await supabase
         .rpc('get_unread_message_count', { user_uuid: userId });
 
-      if (error) throw error;
-      return data || 0;
+      if (!functionError && functionResult !== null) {
+        return functionResult;
+      }
+
+      // Fallback to manual count if function doesn't exist
+      console.log('Function get_unread_message_count not found, using fallback query');
+      
+      const { data: tableExists, error: tableError } = await supabase
+        .from('messages')
+        .select('id')
+        .limit(1);
+
+      if (tableError) {
+        console.log('Messages table not available:', tableError.message);
+        return 0;
+      }
+
+      const { count, error: countError } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('recipient_id', userId)
+        .eq('status', 'unread');
+
+      if (countError) throw countError;
+      return count || 0;
     } catch (error) {
       console.error('Error getting unread count:', error);
       return 0;

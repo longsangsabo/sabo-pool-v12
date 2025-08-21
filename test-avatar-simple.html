@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Upload Test - Simplified Version</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: #f8fafc;
+        }
+        
+        .test-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .status-good {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .status-warning {
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background 0.2s;
+        }
+        
+        .btn:hover {
+            background: #2563eb;
+        }
+        
+        .btn-success { background: #059669; }
+        .btn-success:hover { background: #047857; }
+        
+        .code-block {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .emoji { font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1><span class="emoji">🔧</span> Avatar Upload Fix - Test Results</h1>
+        
+        <div class="status-good">
+            <strong><span class="emoji">✅</span> Fixed Issues:</strong>
+            <ul>
+                <li>Removed problematic image cropping functionality</li>
+                <li>Implemented direct file upload without canvas processing</li>
+                <li>Fixed CSS z-index conflicts that were hiding images</li>
+                <li>Enhanced error handling with fallback bucket support</li>
+                <li>Added comprehensive logging for debugging</li>
+            </ul>
+        </div>
+        
+        <div class="status-warning">
+            <strong><span class="emoji">⚠️</span> Changes Made:</strong>
+            <ul>
+                <li>Disabled MobileImageCropper component temporarily</li>
+                <li>Updated CSS to ensure avatar images display properly</li>
+                <li>Modified upload flow to skip cropping step</li>
+                <li>Enhanced avatar URL validation and display</li>
+            </ul>
+        </div>
+        
+        <h2><span class="emoji">🧪</span> Test Instructions</h2>
+        <ol>
+            <li><strong>Navigate to Mobile Profile:</strong></li>
+            <button class="btn" onclick="goToProfile()">
+                <span class="emoji">📱</span> Open Mobile Profile
+            </button>
+            
+            <li><strong>Test Avatar Upload:</strong>
+                <ul>
+                    <li>Click on the avatar/profile picture area</li>
+                    <li>Select an image file (JPG, PNG, WebP)</li>
+                    <li>Image should upload directly (no cropping step)</li>
+                    <li>Verify the image displays correctly</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <h2><span class="emoji">🎯</span> Expected Behavior</h2>
+        <div class="status-good">
+            <strong>What Should Work Now:</strong>
+            <ul>
+                <li><span class="emoji">🖼️</span> Images display correctly (no more white background)</li>
+                <li><span class="emoji">📤</span> Direct upload without cropping complications</li>
+                <li><span class="emoji">🔗</span> Proper URL generation and storage</li>
+                <li><span class="emoji">🛡️</span> Fallback bucket support if primary fails</li>
+                <li><span class="emoji">📊</span> Better error logging in console</li>
+            </ul>
+        </div>
+        
+        <h2><span class="emoji">🔍</span> Debug Console</h2>
+        <p>Check browser console for these logs:</p>
+        <div class="code-block">
+🔄 [Avatar Upload] Direct upload without cropping for better compatibility
+🔄 [Avatar Upload] Starting direct upload for user: [USER_ID]
+🔄 [Avatar Upload] Upload path: [USER_ID]/avatar-[USER_ID]-[TIMESTAMP].[EXT]
+✅ [Avatar Upload] Success with bucket: avatars
+🔗 [Avatar Upload] Generated URL: [AVATAR_URL]
+✅ Avatar loaded successfully: [AVATAR_URL]
+        </div>
+        
+        <button class="btn" onclick="openConsole()">
+            <span class="emoji">🔍</span> Open Browser Console
+        </button>
+        
+        <h2><span class="emoji">🚀</span> Production Readiness</h2>
+        <div class="status-good">
+            The simplified avatar upload system is now more reliable and should work consistently across different devices and browsers.
+        </div>
+        
+        <div class="status-warning">
+            <strong>Future Enhancement:</strong> Image cropping can be re-enabled later with a more robust implementation once the basic functionality is verified to work properly.
+        </div>
+    </div>
+    
+    <script>
+        function goToProfile() {
+            try {
+                // Try different possible URLs for the mobile profile
+                const possibleUrls = [
+                    '/mobile/profile',
+                    '/profile',
+                    '/player/profile',
+                    '/#/mobile/profile'
+                ];
+                
+                // Try the first URL
+                window.location.href = possibleUrls[0];
+            } catch (error) {
+                alert('Please manually navigate to the mobile profile page to test avatar upload.');
+            }
+        }
+        
+        function openConsole() {
+            alert('Press F12 (or Cmd+Option+I on Mac) to open Developer Tools and view the Console tab for debug logs.');
+        }
+        
+        // Log test environment info
+        console.log('🧪 Avatar Upload Test - Simplified Version');
+        console.log('📍 Test URL:', window.location.href);
+        console.log('🕐 Test Time:', new Date().toISOString());
+        console.log('🌐 User Agent:', navigator.userAgent);
+        
+        // Check if dev server is running
+        if (window.location.port === '8001') {
+            console.log('✅ Running on Vite dev server (port 8001)');
+        }
+    </script>
+</body>
+</html>

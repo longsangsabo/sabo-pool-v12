@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Filter, CheckCircle, ChevronDown, RefreshCw, Trash2 } from 'lucide-react';
+import { Bell, Filter, CheckCircle, ChevronDown, RefreshCw, Trash2, Archive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,16 +10,16 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { useChallengeNotifications } from '@/hooks/useChallengeNotifications';
-import { NotificationCard, NotificationBell } from '@/components/notifications/ChallengeNotificationComponents';
-import { ChallengeNotificationType } from '@/types/challengeNotification';
+import { useUnifiedNotifications } from '@/hooks/useUnifiedNotifications';
+import { UnifiedNotificationCard } from '@/components/notifications/UnifiedNotificationComponents';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 interface FilterState {
   read: 'all' | 'read' | 'unread';
   priority: 'all' | 'low' | 'medium' | 'high' | 'urgent';
-  type: 'all' | ChallengeNotificationType;
+  category: 'all' | 'general' | 'challenge' | 'tournament' | 'club' | 'match' | 'system' | 'milestone';
+  type: 'all' | string;
 }
 
 const NotificationsPage: React.FC = () => {
@@ -27,22 +27,27 @@ const NotificationsPage: React.FC = () => {
   
   const {
     notifications,
-    unreadCount,
     stats,
+    unreadCount,
     loading,
     error,
     fetchNotifications,
     markAsRead,
     markAllAsRead,
+    markAsArchived,
     deleteNotification,
-    refreshUnreadCount,
-    hasMore,
-    totalCount
-  } = useChallengeNotifications();
+    getNotificationsByCategory,
+    getUnreadNotifications
+  } = useUnifiedNotifications({
+    limit: 100,
+    realtime: true,
+    autoRefresh: true
+  });
 
   const [filters, setFilters] = useState<FilterState>({
     read: 'all',
     priority: 'all',
+    category: 'all',
     type: 'all'
   });
 

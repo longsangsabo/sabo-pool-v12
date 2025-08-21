@@ -265,8 +265,8 @@ const OptimizedMobileProfile: React.FC = () => {
         theme={theme as 'light' | 'dark'}
       />
 
-      {/* Image Cropper Modal */}
-      {originalImageForCrop && (
+      {/* Image Cropper Modal - Temporarily disabled for better reliability */}
+      {/* {originalImageForCrop && (
         <MobileImageCropper
           open={showImageCropper}
           onOpenChange={setShowImageCropper}
@@ -274,7 +274,7 @@ const OptimizedMobileProfile: React.FC = () => {
           onCropComplete={handleCroppedImageUpload}
           aspectRatio={1} // Square aspect ratio for avatar
         />
-      )}
+      )} */}
     </div>
   );
 };

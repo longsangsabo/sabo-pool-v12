@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Upload Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Avatar Upload Test - SABO Pool V12</h1>
+    
+    <div class="test-section info">
+        <h2>📋 Test Overview</h2>
+        <p>This page tests the mobile profile avatar upload functionality that was recently fixed.</p>
+        <ul>
+            <li>✅ Fixed TypeScript compilation errors in useMobileProfile.ts</li>
+            <li>✅ Corrected Supabase storage bucket from 'user-content' to 'avatars'</li>
+            <li>✅ Implemented proper user folder structure for RLS compliance</li>
+            <li>✅ Enhanced error handling with fallback bucket detection</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 Test Mobile Profile Navigation</h2>
+        <p>Click the button below to navigate to the mobile profile page:</p>
+        <button class="test-button" onclick="testMobileProfile()">
+            🏠 Go to Mobile Profile Page
+        </button>
+        <div id="navigation-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 Test Instructions</h2>
+        <ol>
+            <li><strong>Login:</strong> Make sure you're logged in to the application</li>
+            <li><strong>Navigate:</strong> Go to the mobile profile page</li>
+            <li><strong>Test Avatar Upload:</strong>
+                <ul>
+                    <li>Click on the avatar/profile picture area</li>
+                    <li>Select an image file (preferably JPG/PNG)</li>
+                    <li>Use the image cropper if available</li>
+                    <li>Confirm the upload</li>
+                </ul>
+            </li>
+            <li><strong>Verify:</strong> Check that the avatar updates successfully</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🐛 Expected Behavior</h2>
+        <div class="success">
+            <h3>✅ What Should Work Now:</h3>
+            <ul>
+                <li>No more "StorageApiError: Bucket not found" errors</li>
+                <li>Avatar uploads should use the correct 'avatars' bucket</li>
+                <li>Files are stored in user-specific folders (${user.id}/${fileName})</li>
+                <li>Proper error handling with fallback bucket attempts</li>
+                <li>Enhanced logging for debugging storage issues</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Debug Information</h2>
+        <p>If issues persist, check the browser console for detailed logs:</p>
+        <pre>
+🔄 [Avatar Upload] Starting upload process...
+🔄 [Avatar Upload] Trying bucket: avatars
+🔄 [Avatar Upload] Upload path: ${user.id}/${fileName}
+✅ [Avatar Upload] Success with bucket: avatars
+        </pre>
+        
+        <button class="test-button" onclick="openConsole()">
+            🔍 Open Browser Console
+        </button>
+    </div>
+
+    <div class="test-section">
+        <h2>📱 Mobile Profile Tabs</h2>
+        <p>The mobile profile contains 5 tabs that should all work:</p>
+        <ul>
+            <li><strong>Activities:</strong> User activity history</li>
+            <li><strong>Personal:</strong> Personal information and avatar upload</li>
+            <li><strong>Rank:</strong> Player ranking information</li>
+            <li><strong>SPA:</strong> Special activities</li>
+            <li><strong>Club:</strong> Club-related information</li>
+        </ul>
+    </div>
+
+    <script>
+        function testMobileProfile() {
+            const resultDiv = document.getElementById('navigation-result');
+            resultDiv.innerHTML = '<p>🔄 Navigating to mobile profile...</p>';
+            
+            // Try to navigate to the mobile profile page
+            try {
+                window.location.href = '/mobile/profile';
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <p>❌ Navigation failed: ${error.message}</p>
+                        <p>Please manually navigate to the mobile profile page.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function openConsole() {
+            alert('Press F12 or right-click → Inspect Element → Console tab to view debug logs');
+        }
+
+        // Log current test environment
+        console.log('🧪 Avatar Upload Test Environment:');
+        console.log('📍 Current URL:', window.location.href);
+        console.log('🕐 Test Time:', new Date().toISOString());
+        console.log('🌐 User Agent:', navigator.userAgent);
+        
+        // Check if we're on the correct port
+        if (window.location.port === '8001') {
+            console.log('✅ Running on correct Vite dev server port (8001)');
+        } else {
+            console.warn('⚠️ Not running on expected port 8001');
+        }
+    </script>
+</body>
+</html>

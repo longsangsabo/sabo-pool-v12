@@ -58,19 +58,31 @@ export const useRecentActivities = () => {
           playerMap.set(player.user_id, player.full_name);
         });
 
-        // Get recent tournament registrations
-        const { data: tournaments, error: tournamentError } = await supabase
+        // Get recent tournament registrations (avoid PostgREST relationship)
+        const { data: tournamentRegistrations, error: tournamentRegError } = await supabase
           .from('tournament_registrations')
-          .select(`
-            id,
-            created_at,
-            tournaments (name)
-          `)
+          .select('id, created_at, tournament_id')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(3);
 
-        if (tournamentError) throw tournamentError;
+        if (tournamentRegError) throw tournamentRegError;
+
+        // Get tournament names separately to avoid schema cache issues
+        let tournamentNames = new Map();
+        if (tournamentRegistrations && tournamentRegistrations.length > 0) {
+          const tournamentIds = tournamentRegistrations.map(tr => tr.tournament_id);
+          const { data: tournamentData, error: tournamentDataError } = await supabase
+            .from('tournaments')
+            .select('id, name')
+            .in('id', tournamentIds);
+
+          if (!tournamentDataError && tournamentData) {
+            tournamentData.forEach(t => {
+              tournamentNames.set(t.id, t.name);
+            });
+          }
+        }
 
         // Get recent profile updates
         const { data: profile, error: profileError } = await supabase
@@ -104,12 +116,13 @@ export const useRecentActivities = () => {
           });
 
           // Add tournament joins
-          (tournaments || []).forEach(tournament => {
+          (tournamentRegistrations || []).forEach(registration => {
+            const tournamentName = tournamentNames.get(registration.tournament_id) || 'giải đấu';
             recentActivities.push({
-              id: `tournament-${tournament.id}`,
+              id: `tournament-${registration.id}`,
               type: 'tournament_join',
-              title: `Tham gia ${tournament.tournaments?.name || 'giải đấu'}`,
-              time: formatTimeAgo(tournament.created_at),
+              title: `Tham gia ${tournamentName}`,
+              time: formatTimeAgo(registration.created_at),
               icon_type: 'trophy',
               gradient_type: 'blue'
             });

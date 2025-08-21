@@ -80,31 +80,26 @@ export const useLeaderboard = () => {
     setError('');
 
     try {
-      // Build query for leaderboard data using player_rankings with proper join
-      let query = supabase.from('player_rankings').select(`
-          *,
-          profiles!inner(
-            user_id,
-            full_name,
-            display_name,
-            avatar_url,
-            city,
-            district,
-            verified_rank,
-            bio
-          )
-        `);
+      // Check if player_rankings table exists first
+      const { data: tableExists, error: tableError } = await supabase
+        .from('player_rankings')
+        .select('id')
+        .limit(1);
 
-      // Apply filters
-      if (currentFilters.city) {
-        query = query.eq('profiles.city', currentFilters.city);
+      if (tableError) {
+        console.log('Player rankings table not available:', tableError.message);
+        setLeaderboard([]);
+        setTotalCount(0);
+        return;
       }
 
-      if (currentFilters.searchTerm) {
-        query = query.or(
-          `profiles.full_name.ilike.%${currentFilters.searchTerm}%,profiles.display_name.ilike.%${currentFilters.searchTerm}%`
-        );
-      }
+      // Build query for leaderboard data using separate queries to avoid schema cache issues
+      let query = supabase
+        .from('player_rankings')
+        .select('*', { count: 'exact' });
+
+      // Apply basic filters on player_rankings table only
+      // Note: City and search filters will be applied after getting profile data
 
       // Apply sorting
       const sortColumn =
@@ -127,12 +122,58 @@ export const useLeaderboard = () => {
       const to = from + currentFilters.pageSize - 1;
       query = query.range(from, to);
 
-      const { data, error, count } = await query;
+      const { data: rankingsData, error: rankingsError, count } = await query;
 
-      if (error) throw error;
+      if (rankingsError) throw rankingsError;
+
+      // Get profile data separately to avoid relationship issues
+      let profilesData = [];
+      if (rankingsData && rankingsData.length > 0) {
+        const userIds = rankingsData.map(item => item.user_id).filter(Boolean);
+        
+        if (userIds.length > 0) {
+          const { data: profiles, error: profileError } = await supabase
+            .from('profiles')
+            .select('user_id, full_name, display_name, avatar_url, city, district, verified_rank, bio')
+            .in('user_id', userIds);
+
+          if (!profileError && profiles) {
+            profilesData = profiles;
+          }
+        }
+      }
+
+      // Create profile lookup map
+      const profileMap = new Map();
+      profilesData.forEach(profile => {
+        profileMap.set(profile.user_id, profile);
+      });
+
+      // Combine rankings data with profiles
+      const dataWithProfiles = (rankingsData || []).map(item => ({
+        ...item,
+        profiles: profileMap.get(item.user_id) || null
+      }));
+
+      // Apply client-side filters for profile-related data
+      let filteredData = dataWithProfiles;
+      
+      if (currentFilters.city) {
+        filteredData = filteredData.filter(item => 
+          item.profiles?.city === currentFilters.city
+        );
+      }
+
+      if (currentFilters.searchTerm) {
+        const searchTerm = currentFilters.searchTerm.toLowerCase();
+        filteredData = filteredData.filter(item => 
+          item.profiles?.full_name?.toLowerCase().includes(searchTerm) ||
+          item.profiles?.display_name?.toLowerCase().includes(searchTerm)
+        );
+      }
 
       // Transform data to match LeaderboardEntry interface
-      const transformedData: LeaderboardEntry[] = (data || []).map(
+      const transformedData: LeaderboardEntry[] = (filteredData || []).map(
         (item: any, index: number) => ({
           id: item.id,
           username:

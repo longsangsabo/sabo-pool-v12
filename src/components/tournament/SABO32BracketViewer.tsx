@@ -134,26 +134,34 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Winners Bracket */}
           <div>
-            <h4 className="font-semibold mb-2 text-green-600">🏆 Winners Bracket</h4>
-            {winnersMatches.map(renderMatchCard)}
+            <h4 className="font-semibold mb-3 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg border border-green-200 dark:border-green-700">🏆 Winners Bracket</h4>
+            <div className="space-y-2">
+              {winnersMatches.map(renderMatchCard)}
+            </div>
           </div>
 
           {/* Losers Bracket A */}
           <div>
-            <h4 className="font-semibold mb-2 text-orange-600">⬇️ Losers A</h4>
-            {losersAMatches.map(renderMatchCard)}
+            <h4 className="font-semibold mb-3 text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg border border-orange-200 dark:border-orange-700">⬇️ Losers A</h4>
+            <div className="space-y-2">
+              {losersAMatches.map(renderMatchCard)}
+            </div>
           </div>
 
           {/* Losers Bracket B */}
           <div>
-            <h4 className="font-semibold mb-2 text-red-600">⬇️ Losers B</h4>
-            {losersBMatches.map(renderMatchCard)}
+            <h4 className="font-semibold mb-3 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-2 rounded-lg border border-red-200 dark:border-red-700">⬇️ Losers B</h4>
+            <div className="space-y-2">
+              {losersBMatches.map(renderMatchCard)}
+            </div>
           </div>
 
           {/* Group Final */}
           <div>
-            <h4 className="font-semibold mb-2 text-purple-600">👑 Group Final</h4>
-            {finalMatches.map(renderMatchCard)}
+            <h4 className="font-semibold mb-3 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 p-2 rounded-lg border border-purple-200 dark:border-purple-700">👑 Group Final</h4>
+            <div className="space-y-2">
+              {finalMatches.map(renderMatchCard)}
+            </div>
           </div>
         </div>
       </div>
@@ -167,14 +175,18 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
 
     return (
       <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold mb-2 text-blue-600">🥊 Semifinals</h4>
-            {semifinals.map(renderMatchCard)}
+            <h4 className="font-semibold mb-3 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-700">🥊 Semifinals</h4>
+            <div className="space-y-2">
+              {semifinals.map(renderMatchCard)}
+            </div>
           </div>
           <div>
-            <h4 className="font-semibold mb-2 text-yellow-600">🏆 Finals</h4>
-            {finals.map(renderMatchCard)}
+            <h4 className="font-semibold mb-3 text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg border border-yellow-200 dark:border-yellow-700">🏆 Finals</h4>
+            <div className="space-y-2">
+              {finals.map(renderMatchCard)}
+            </div>
           </div>
         </div>
       </div>
@@ -247,36 +259,36 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
         </TabsList>
 
         <TabsContent value="groupA" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Group A - Double Elimination</CardTitle>
+          <Card className="border-green-200 dark:border-green-700">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+              <CardTitle className="text-lg text-green-800 dark:text-green-200">Group A - Double Elimination</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               {renderGroupBracket('A')}
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="groupB" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Group B - Double Elimination</CardTitle>
+          <Card className="border-blue-200 dark:border-blue-700">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
+              <CardTitle className="text-lg text-blue-800 dark:text-blue-200">Group B - Double Elimination</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               {renderGroupBracket('B')}
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="crossBracket" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Cross-Bracket Finals</CardTitle>
+          <Card className="border-purple-200 dark:border-purple-700">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
+              <CardTitle className="text-lg text-purple-800 dark:text-purple-200">Cross-Bracket Finals</CardTitle>
               <p className="text-sm text-muted-foreground">
                 Winner A vs Runner-up B | Winner B vs Runner-up A | Finals
               </p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               {renderCrossBracket()}
             </CardContent>
           </Card>

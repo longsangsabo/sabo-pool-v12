@@ -83,22 +83,23 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
 
     if (result.success) {
       setIsEditing(false);
-      onUpdate?.();
+      // Don't call onUpdate to prevent page scroll
+      // onUpdate?.();
     }
   };
 
   const getStatusBadge = () => {
     switch (match.status) {
       case 'completed':
-        return <Badge variant="default" className="bg-green-500"><CheckCircle className="w-3 h-3 mr-1" />Hoàn thành</Badge>;
+        return <Badge variant="default" className="bg-green-600 hover:bg-green-700 text-white dark:bg-green-700 dark:hover:bg-green-800"><CheckCircle className="w-3 h-3 mr-1" />Hoàn thành</Badge>;
       case 'in_progress':
-        return <Badge variant="default" className="bg-blue-500"><Play className="w-3 h-3 mr-1" />Đang đấu</Badge>;
+        return <Badge variant="default" className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"><Play className="w-3 h-3 mr-1" />Đang đấu</Badge>;
       case 'scheduled':
-        return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" />Đã lên lịch</Badge>;
+        return <Badge variant="secondary" className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"><Clock className="w-3 h-3 mr-1" />Đã lên lịch</Badge>;
       case 'bye':
-        return <Badge variant="outline">Bye</Badge>;
+        return <Badge variant="outline" className="border-border text-muted-foreground">Bye</Badge>;
       default:
-        return <Badge variant="outline"><Users className="w-3 h-3 mr-1" />Chờ</Badge>;
+        return <Badge variant="outline" className="border-border text-muted-foreground"><Users className="w-3 h-3 mr-1" />Chờ</Badge>;
     }
   };
 
@@ -119,18 +120,21 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
 
   return (
     <Card className={cn(
-      "w-full transition-all duration-200",
-      isCompleted && "border-green-200 bg-green-50",
-      match.status === 'in_progress' && "border-blue-200 bg-blue-50",
-      !hasBothPlayers && "border-gray-200 bg-gray-50"
+      "w-full transition-all duration-200 border-2",
+      // Light mode
+      isCompleted && "border-green-300 bg-green-50 dark:border-green-600 dark:bg-green-900/20",
+      match.status === 'in_progress' && "border-blue-300 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/20", 
+      !hasBothPlayers && "border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800/50",
+      // Default state
+      hasBothPlayers && !isCompleted && match.status === 'pending' && "border-amber-300 bg-amber-50 dark:border-amber-500 dark:bg-amber-900/20"
     )}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-semibold">
+          <CardTitle className="text-sm font-semibold text-foreground">
             {match.sabo_match_id}
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-xs border-border">
               {getBracketTypeDisplay(match.bracket_type)}
             </Badge>
             {getStatusBadge()}
@@ -144,12 +148,14 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
           <div className="grid grid-cols-3 items-center gap-4">
             {/* Player 1 */}
             <div className={cn(
-              "text-center p-2 rounded-lg transition-colors",
-              match.winner_id === match.player1_id && "bg-yellow-100 border border-yellow-300"
+              "text-center p-3 rounded-lg transition-colors border",
+              match.winner_id === match.player1_id 
+                ? "bg-yellow-100 border-yellow-400 dark:bg-yellow-900/30 dark:border-yellow-600" 
+                : "bg-card border-border hover:bg-muted/50"
             )}>
-              <div className="font-medium text-sm">{player1Name}</div>
+              <div className="font-medium text-sm text-foreground">{player1Name}</div>
               {isCompleted && (
-                <div className="text-lg font-bold mt-1">{match.score_player1 || 0}</div>
+                <div className="text-lg font-bold mt-1 text-foreground">{match.score_player1 || 0}</div>
               )}
             </div>
 
@@ -163,31 +169,33 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
                     max="99"
                     value={score1}
                     onChange={(e) => setScore1(e.target.value)}
-                    className="w-12 h-8 text-center p-1"
+                    className="w-12 h-8 text-center p-1 bg-background border-border text-foreground"
                   />
-                  <span className="text-xs font-semibold">vs</span>
+                  <span className="text-xs font-semibold text-muted-foreground">vs</span>
                   <Input
                     type="number"
                     min="0"
                     max="99"
                     value={score2}
                     onChange={(e) => setScore2(e.target.value)}
-                    className="w-12 h-8 text-center p-1"
+                    className="w-12 h-8 text-center p-1 bg-background border-border text-foreground"
                   />
                 </div>
               ) : (
-                <div className="text-xs font-semibold text-gray-500">VS</div>
+                <div className="text-xs font-semibold text-muted-foreground">VS</div>
               )}
             </div>
 
             {/* Player 2 */}
             <div className={cn(
-              "text-center p-2 rounded-lg transition-colors",
-              match.winner_id === match.player2_id && "bg-yellow-100 border border-yellow-300"
+              "text-center p-3 rounded-lg transition-colors border",
+              match.winner_id === match.player2_id 
+                ? "bg-yellow-100 border-yellow-400 dark:bg-yellow-900/30 dark:border-yellow-600" 
+                : "bg-card border-border hover:bg-muted/50"
             )}>
-              <div className="font-medium text-sm">{player2Name}</div>
+              <div className="font-medium text-sm text-foreground">{player2Name}</div>
               {isCompleted && (
-                <div className="text-lg font-bold mt-1">{match.score_player2 || 0}</div>
+                <div className="text-lg font-bold mt-1 text-foreground">{match.score_player2 || 0}</div>
               )}
             </div>
           </div>
@@ -195,10 +203,10 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
           {/* Winner Display */}
           {isCompleted && getWinnerName() && (
             <>
-              <Separator />
-              <div className="flex items-center justify-center gap-2 text-sm">
-                <Trophy className="w-4 h-4 text-yellow-500" />
-                <span className="font-semibold text-yellow-700">
+              <Separator className="bg-border" />
+              <div className="flex items-center justify-center gap-2 text-sm bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 p-2 rounded-lg border border-yellow-200 dark:border-yellow-700">
+                <Trophy className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">
                   Người thắng: {getWinnerName()}
                 </span>
               </div>
@@ -213,7 +221,7 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
                   variant="outline"
                   size="sm"
                   onClick={() => setIsEditing(true)}
-                  className="w-full"
+                  className="w-full border-border hover:bg-muted text-foreground"
                 >
                   <Play className="w-3 h-3 mr-1" />
                   Nhập tỷ số
@@ -224,7 +232,7 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
                     variant="outline"
                     size="sm"
                     onClick={() => setIsEditing(false)}
-                    className="flex-1"
+                    className="flex-1 border-border hover:bg-muted text-foreground"
                   >
                     Hủy
                   </Button>
@@ -232,7 +240,7 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
                     size="sm"
                     onClick={handleScoreSubmit}
                     disabled={isSubmitting}
-                    className="flex-1"
+                    className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     {isSubmitting ? 'Đang lưu...' : 'Lưu kết quả'}
                   </Button>
@@ -242,7 +250,7 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
           )}
 
           {/* Match Info */}
-          <div className="text-xs text-gray-500 text-center">
+          <div className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
             {match.completed_at && (
               <div>Hoàn thành: {new Date(match.completed_at).toLocaleString('vi-VN')}</div>
             )}

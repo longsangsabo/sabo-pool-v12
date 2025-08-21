@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
-import { AdminMobileHeader } from '@/components/admin/AdminMobileHeader';
-import { AdminMobileNavigation } from '@/components/admin/AdminMobileNavigation';
+import { AdminHybridLayout } from '@/components/mobile/AdminHybridLayout';
 import { AdminMobileDrawer } from '@/components/admin/AdminMobileDrawer';
 
 interface AdminMobileLayoutProps {
@@ -28,17 +27,13 @@ export const AdminMobileLayout: React.FC<AdminMobileLayoutProps> = ({
   }
 
   return (
-    <div className='min-h-screen bg-background'>
-      <AdminMobileHeader onMenuClick={() => setIsDrawerOpen(true)} />
-
-      <main className='pb-16 pt-2 px-4'>{children || <Outlet />}</main>
-
-      <AdminMobileNavigation />
-
+    <AdminHybridLayout onMenuClick={() => setIsDrawerOpen(true)}>
+      {children || <Outlet />}
+      
       <AdminMobileDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
       />
-    </div>
+    </AdminHybridLayout>
   );
 };

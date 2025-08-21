@@ -14,7 +14,7 @@ export interface SABO32ScoreSubmission {
   winner_id: string;
 }
 
-export const useSABO32ScoreSubmission = (tournamentId: string) => {
+export const useSABO32ScoreSubmission = (tournamentId: string, onMatchUpdate?: () => void) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitScore = async (submission: SABO32ScoreSubmission) => {
@@ -46,6 +46,11 @@ export const useSABO32ScoreSubmission = (tournamentId: string) => {
 
       // 3. Handle advancement logic
       await handleAdvancement(completedMatch, tournamentId);
+
+      // 4. Call the update callback to refresh data
+      if (onMatchUpdate) {
+        onMatchUpdate();
+      }
 
       toast.success('Tỷ số đã được cập nhật và người chơi được thăng hạng!');
       

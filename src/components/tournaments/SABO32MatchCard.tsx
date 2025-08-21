@@ -3,7 +3,7 @@
 // Complete match card with score input and submission
 // =============================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -47,18 +47,31 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
   const [score2, setScore2] = useState(match.score_player2?.toString() || '0');
   const [isEditing, setIsEditing] = useState(false);
   
-  const { submitScore, isSubmitting } = useSABO32ScoreSubmission(tournamentId);
+  // Optimistic update states
+  const [optimisticMatch, setOptimisticMatch] = useState(match);
+  const [isOptimistic, setIsOptimistic] = useState(false);
+  
+  const { submitScore, isSubmitting } = useSABO32ScoreSubmission(tournamentId, onUpdate);
 
-  const player1Name = match.player1_profile?.full_name || 
-                     match.player1_profile?.display_name || 
+  // Update local state when match prop changes (real data from server)
+  React.useEffect(() => {
+    if (!isOptimistic) {
+      setOptimisticMatch(match);
+      setScore1(match.score_player1?.toString() || '0');
+      setScore2(match.score_player2?.toString() || '0');
+    }
+  }, [match, isOptimistic]);
+
+  const player1Name = optimisticMatch.player1_profile?.full_name || 
+                     optimisticMatch.player1_profile?.display_name || 
                      'TBD';
   
-  const player2Name = match.player2_profile?.full_name || 
-                     match.player2_profile?.display_name || 
+  const player2Name = optimisticMatch.player2_profile?.full_name || 
+                     optimisticMatch.player2_profile?.display_name || 
                      'TBD';
 
-  const isCompleted = match.status === 'completed';
-  const hasBothPlayers = match.player1_id && match.player2_id;
+  const isCompleted = optimisticMatch.status === 'completed';
+  const hasBothPlayers = optimisticMatch.player1_id && optimisticMatch.player2_id;
   const canSubmitScore = hasBothPlayers && !isCompleted;
 
   const handleScoreSubmit = async () => {
@@ -72,24 +85,56 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
       return;
     }
 
-    const winner_id = scoreNum1 > scoreNum2 ? match.player1_id! : match.player2_id!;
+    const winner_id = scoreNum1 > scoreNum2 ? optimisticMatch.player1_id! : optimisticMatch.player2_id!;
 
-    const result = await submitScore({
-      matchId: match.id,
-      score_player1: scoreNum1,
-      score_player2: scoreNum2,
-      winner_id
-    });
-
-    if (result.success) {
+    try {
+      // ✅ IMMEDIATE OPTIMISTIC UPDATE
+      setIsOptimistic(true);
       setIsEditing(false);
-      // Don't call onUpdate to prevent page scroll
-      // onUpdate?.();
+      
+      // Update optimistic state immediately for instant UI feedback
+      setOptimisticMatch({
+        ...optimisticMatch,
+        score_player1: scoreNum1,
+        score_player2: scoreNum2,
+        winner_id: winner_id,
+        status: 'completed' as const,
+        completed_at: new Date().toISOString()
+      });
+      
+      // Submit score (this will trigger refresh with scroll preservation)
+      const result = await submitScore({
+        matchId: optimisticMatch.id,
+        score_player1: scoreNum1,
+        score_player2: scoreNum2,
+        winner_id
+      });
+
+      if (!result.success) {
+        // Revert optimistic update on failure
+        setOptimisticMatch(match);
+        setIsOptimistic(false);
+        setIsEditing(true);
+      } else {
+        // Clear form on success, real data will come from server
+        setScore1('0');
+        setScore2('0');
+        // Keep optimistic state until real data arrives
+        setTimeout(() => {
+          setIsOptimistic(false);
+        }, 1000); // Allow time for server update
+      }
+    } catch (error) {
+      console.error('Failed to submit score:', error);
+      // Revert optimistic update
+      setOptimisticMatch(match);
+      setIsOptimistic(false);
+      setIsEditing(true);
     }
   };
 
   const getStatusBadge = () => {
-    switch (match.status) {
+    switch (optimisticMatch.status) {
       case 'completed':
         return <Badge variant="default" className="bg-green-600 hover:bg-green-700 text-white dark:bg-green-700 dark:hover:bg-green-800"><CheckCircle className="w-3 h-3 mr-1" />Hoàn thành</Badge>;
       case 'in_progress':
@@ -112,30 +157,41 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
   };
 
   const getWinnerName = () => {
-    if (!match.winner_id) return null;
-    if (match.winner_id === match.player1_id) return player1Name;
-    if (match.winner_id === match.player2_id) return player2Name;
+    if (!optimisticMatch.winner_id) return null;
+    if (optimisticMatch.winner_id === optimisticMatch.player1_id) return player1Name;
+    if (optimisticMatch.winner_id === optimisticMatch.player2_id) return player2Name;
     return 'Unknown';
   };
 
   return (
     <Card className={cn(
-      "w-full transition-all duration-200 border-2",
+      "w-full transition-all duration-200 border-2 relative",
       // Light mode
       isCompleted && "border-green-300 bg-green-50 dark:border-green-600 dark:bg-green-900/20",
-      match.status === 'in_progress' && "border-blue-300 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/20", 
+      optimisticMatch.status === 'in_progress' && "border-blue-300 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/20", 
       !hasBothPlayers && "border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800/50",
       // Default state
-      hasBothPlayers && !isCompleted && match.status === 'pending' && "border-amber-300 bg-amber-50 dark:border-amber-500 dark:bg-amber-900/20"
+      hasBothPlayers && !isCompleted && optimisticMatch.status === 'pending' && "border-amber-300 bg-amber-50 dark:border-amber-500 dark:bg-amber-900/20",
+      // Optimistic update indicator
+      isOptimistic && "ring-2 ring-blue-400 dark:ring-blue-600"
     )}>
+      {/* Loading overlay for optimistic updates */}
+      {isOptimistic && (
+        <div className="absolute inset-0 bg-blue-500/10 rounded-lg flex items-center justify-center z-10">
+          <div className="bg-blue-600 dark:bg-blue-500 text-white px-2 py-1 rounded text-xs font-medium">
+            Đang cập nhật...
+          </div>
+        </div>
+      )}
+      
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold text-foreground">
-            {match.sabo_match_id}
+            {optimisticMatch.sabo_match_id}
           </CardTitle>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-xs border-border">
-              {getBracketTypeDisplay(match.bracket_type)}
+              {getBracketTypeDisplay(optimisticMatch.bracket_type)}
             </Badge>
             {getStatusBadge()}
           </div>
@@ -149,13 +205,13 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
             {/* Player 1 */}
             <div className={cn(
               "text-center p-3 rounded-lg transition-colors border",
-              match.winner_id === match.player1_id 
+              optimisticMatch.winner_id === optimisticMatch.player1_id 
                 ? "bg-yellow-100 border-yellow-400 dark:bg-yellow-900/30 dark:border-yellow-600" 
                 : "bg-card border-border hover:bg-muted/50"
             )}>
               <div className="font-medium text-sm text-foreground">{player1Name}</div>
               {isCompleted && (
-                <div className="text-lg font-bold mt-1 text-foreground">{match.score_player1 || 0}</div>
+                <div className="text-lg font-bold mt-1 text-foreground">{optimisticMatch.score_player1 || 0}</div>
               )}
             </div>
 
@@ -189,13 +245,13 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
             {/* Player 2 */}
             <div className={cn(
               "text-center p-3 rounded-lg transition-colors border",
-              match.winner_id === match.player2_id 
+              optimisticMatch.winner_id === optimisticMatch.player2_id 
                 ? "bg-yellow-100 border-yellow-400 dark:bg-yellow-900/30 dark:border-yellow-600" 
                 : "bg-card border-border hover:bg-muted/50"
             )}>
               <div className="font-medium text-sm text-foreground">{player2Name}</div>
               {isCompleted && (
-                <div className="text-lg font-bold mt-1 text-foreground">{match.score_player2 || 0}</div>
+                <div className="text-lg font-bold mt-1 text-foreground">{optimisticMatch.score_player2 || 0}</div>
               )}
             </div>
           </div>
@@ -251,11 +307,11 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
 
           {/* Match Info */}
           <div className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
-            {match.completed_at && (
-              <div>Hoàn thành: {new Date(match.completed_at).toLocaleString('vi-VN')}</div>
+            {optimisticMatch.completed_at && (
+              <div>Hoàn thành: {new Date(optimisticMatch.completed_at).toLocaleString('vi-VN')}</div>
             )}
-            {match.scheduled_at && !match.completed_at && (
-              <div>Lên lịch: {new Date(match.scheduled_at).toLocaleString('vi-VN')}</div>
+            {optimisticMatch.scheduled_at && !optimisticMatch.completed_at && (
+              <div>Lên lịch: {new Date(optimisticMatch.scheduled_at).toLocaleString('vi-VN')}</div>
             )}
           </div>
         </div>

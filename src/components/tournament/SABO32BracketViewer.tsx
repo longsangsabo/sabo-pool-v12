@@ -3,7 +3,7 @@
 // Display double elimination bracket for 32 players
 // =============================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -49,10 +49,25 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
   const [matches, setMatches] = useState<SABO32Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Scroll position preservation (like SABODoubleEliminationViewer)
+  const scrollPositionRef = useRef<number>(0);
 
   useEffect(() => {
     fetchMatches();
   }, [tournamentId]);
+
+  // Custom refresh function that preserves scroll position
+  const refreshWithScrollPreservation = useCallback(() => {
+    // Save current scroll position
+    scrollPositionRef.current = window.scrollY;
+    fetchMatches();
+
+    // Restore scroll position after refresh
+    setTimeout(() => {
+      window.scrollTo({ top: scrollPositionRef.current, behavior: 'instant' });
+    }, 100);
+  }, []);
 
   const fetchMatches = async () => {
     try {
@@ -116,9 +131,21 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
   const renderMatchCard = (match: SABO32Match) => (
     <SABO32MatchCard
       key={match.id}
-      match={match}
+      match={{
+        ...match,
+        player1_profile: match.player1_profile ? {
+          id: match.player1_id || '',
+          full_name: match.player1_profile.full_name || '',
+          display_name: match.player1_profile.display_name || ''
+        } : undefined,
+        player2_profile: match.player2_profile ? {
+          id: match.player2_id || '',
+          full_name: match.player2_profile.full_name || '',
+          display_name: match.player2_profile.display_name || ''
+        } : undefined
+      }}
       tournamentId={tournamentId}
-      onUpdate={fetchMatches}
+      onUpdate={refreshWithScrollPreservation}
     />
   );
 
@@ -232,7 +259,7 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={fetchMatches}
+              onClick={refreshWithScrollPreservation}
               disabled={loading}
             >
               <RefreshCw className={`w-4 h-4 mr-1 ${loading ? 'animate-spin' : ''}`} />

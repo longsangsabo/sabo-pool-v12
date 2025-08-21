@@ -107,7 +107,7 @@ USING (
     -- Allow if user is a club owner
     EXISTS (
         SELECT 1 FROM club_profiles 
-        WHERE owner_id = auth.uid()
+        WHERE user_id = auth.uid()
     )
     OR
     -- Allow if it's their own request
@@ -117,7 +117,7 @@ WITH CHECK (
     -- Same conditions for INSERT/UPDATE
     EXISTS (
         SELECT 1 FROM club_profiles 
-        WHERE owner_id = auth.uid()
+        WHERE user_id = auth.uid()
     )
     OR
     user_id = auth.uid()

@@ -29,6 +29,7 @@ import TableAssignmentDisplay from './TableAssignmentDisplay';
 import TournamentPlayerAvatar from './TournamentPlayerAvatar';
 import { SABODoubleEliminationViewer } from '@/components/tournaments/sabo/SABODoubleEliminationViewer';
 import { SABO32BracketViewer } from './SABO32BracketViewer';
+import { SABO32TournamentResults } from '../tournaments/SABO32TournamentResults';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -1947,10 +1948,22 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                   )}
                   
                   {/* Main Results Display */}
-                  <TournamentResults 
-                    tournamentId={selectedTournament.id}
-                    showTitle={true}
-                  />
+                  {isSABO32Tournament(selectedTournament) ? (
+                    <SABO32TournamentResults 
+                      tournamentId={selectedTournament.id}
+                      tournament={{
+                        name: selectedTournament.name,
+                        start_date: selectedTournament.tournament_start,
+                        end_date: selectedTournament.tournament_end,
+                        status: selectedTournament.status
+                      }}
+                    />
+                  ) : (
+                    <TournamentResults 
+                      tournamentId={selectedTournament.id}
+                      showTitle={true}
+                    />
+                  )}
                 </div>
               </TabsContent>
 

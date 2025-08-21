@@ -8,7 +8,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Users, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Trophy, Users, Clock, RefreshCw } from 'lucide-react';
+import { SABO32MatchCard } from '../tournaments/SABO32MatchCard';
 
 interface SABO32Match {
   id: string;
@@ -112,61 +114,12 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
   };
 
   const renderMatchCard = (match: SABO32Match) => (
-    <Card key={match.id} className="mb-2 border-l-4 border-l-blue-500">
-      <CardContent className="p-3">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs">
-              {match.sabo_match_id}
-            </Badge>
-            <Badge variant={match.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
-              {match.status}
-            </Badge>
-          </div>
-          <div className="text-sm text-muted-foreground">
-            R{match.round_number} M{match.match_number}
-          </div>
-        </div>
-        
-        <div className="mt-2 space-y-1">
-          <div className="flex justify-between items-center">
-            <span className="text-sm">
-              {match.player1_profile 
-                ? (match.player1_profile.display_name || match.player1_profile.full_name || 'Unknown Player')
-                : match.player1_id 
-                  ? `Player ${match.player1_id.slice(-4)}`
-                  : 'TBD'
-              }
-            </span>
-            <span className="font-mono text-sm">{match.score_player1}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm">
-              {match.player2_profile 
-                ? (match.player2_profile.display_name || match.player2_profile.full_name || 'Unknown Player')
-                : match.player2_id 
-                  ? `Player ${match.player2_id.slice(-4)}`
-                  : 'TBD'
-              }
-            </span>
-            <span className="font-mono text-sm">{match.score_player2}</span>
-          </div>
-        </div>
-
-        {match.winner_id && (
-          <div className="mt-2 flex items-center gap-1 text-sm text-green-600">
-            <Trophy className="w-3 h-3" />
-            Winner: {
-              match.winner_id === match.player1_id 
-                ? (match.player1_profile?.display_name || match.player1_profile?.full_name || `Player ${match.winner_id.slice(-4)}`)
-                : match.winner_id === match.player2_id
-                  ? (match.player2_profile?.display_name || match.player2_profile?.full_name || `Player ${match.winner_id.slice(-4)}`)
-                  : `Player ${match.winner_id.slice(-4)}`
-            }
-          </div>
-        )}
-      </CardContent>
-    </Card>
+    <SABO32MatchCard
+      key={match.id}
+      match={match}
+      tournamentId={tournamentId}
+      onUpdate={fetchMatches}
+    />
   );
 
   const renderGroupBracket = (groupId: 'A' | 'B') => {
@@ -259,10 +212,21 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="w-5 h-5" />
-            SABO-32 Double Elimination Bracket
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5" />
+              SABO-32 Double Elimination Bracket
+            </CardTitle>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={fetchMatches}
+              disabled={loading}
+            >
+              <RefreshCw className={`w-4 h-4 mr-1 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          </div>
           <div className="flex gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <Users className="w-4 h-4" />

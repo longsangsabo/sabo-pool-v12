@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { createClient } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import {
   callTournamentFunction,
@@ -100,13 +101,75 @@ export const useBracketGeneration = () => {
             .select('user_id')
             .eq('tournament_id', tournamentId)
             .eq('registration_status', 'confirmed')
-            .limit(16);
+            .limit(32); // Support both 16 and 32 players
 
-          if (regError || !registrations || registrations.length !== 16) {
+          if (regError || !registrations) {
+            toast.error('Không thể lấy danh sách người chơi đã xác nhận');
+            return { error: 'Failed to get participants' };
+          }
+
+          const playerCount = registrations.length;
+          
+          // Check if it's SABO-32 (32 players) or SABO-16 (16 players)
+          if (playerCount === 32) {
+            // Use SABO-32 system
+            console.log('🎯 Detected 32 players - using SABO-32 system');
+            
+            try {
+              // Use SABO-32 client-side generation
+              const { SABO32TournamentEngine } = await import('@/tournaments/sabo/SABO32TournamentEngine');
+              const matches = await SABO32TournamentEngine.createTournament(
+                tournamentId,
+                registrations.map(r => r.user_id)
+              );
+              
+              // Use database function to insert matches (bypasses RLS with SECURITY DEFINER)
+              const matchData = matches.map(match => ({
+                group_id: match.group_id,
+                bracket_type: match.bracket_type,
+                round_number: match.round_number,
+                match_number: match.match_number,
+                sabo_match_id: match.sabo_match_id,
+                player1_id: match.player1_id,
+                player2_id: match.player2_id
+              }));
+
+              const { data: result, error: insertError } = await supabase.rpc(
+                'insert_sabo32_matches',
+                {
+                  p_tournament_id: tournamentId,
+                  p_matches: matchData
+                }
+              );
+
+              if (insertError) {
+                console.error('Function insert failed:', insertError);
+                toast.error(`Lỗi tạo matches SABO-32: ${insertError.message}`);
+                return { error: insertError.message };
+              }
+
+              const resultData = result as any;
+              if (!resultData?.success) {
+                console.error('Function returned error:', resultData);
+                toast.error(`Lỗi: ${resultData?.error || 'Unknown error'}`);
+                return { error: resultData?.error || 'Unknown error' };
+              }
+
+              toast.success(`🎯 Tạo bảng đấu SABO-32 thành công! ${resultData.matches_created} trận đấu cho 32 người chơi`);
+              return { success: true, matches_created: resultData.matches_created };
+            } catch (error) {
+              console.error('SABO-32 generation failed:', error);
+              toast.error(`Lỗi tạo bảng đấu SABO-32: ${error}`);
+              return { error: 'SABO-32 generation failed' };
+            }
+          } else if (playerCount === 16) {
+            // Use SABO-16 system (existing logic)
+            console.log('🎯 Detected 16 players - using SABO-16 system');
+          } else {
             toast.error(
-              `SABO Double Elimination cần đúng 16 người chơi đã xác nhận. Hiện có: ${registrations?.length || 0}`
+              `SABO Double Elimination cần 16 hoặc 32 người chơi đã xác nhận. Hiện có: ${playerCount}`
             );
-            return { error: 'Insufficient participants' };
+            return { error: 'Invalid participant count for SABO' };
           }
 
           // Use the correct SABO function

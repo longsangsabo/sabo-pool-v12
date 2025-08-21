@@ -16,32 +16,52 @@ class SPAService {
     return this.getCurrentSPAPoints(userId);
   }
 
-  // Generic delta apply using existing RPC if still present else manual fallback
+  // Generic delta apply with ranking check
   private async applyDelta(
     userId: string,
     pointsChange: number,
     transactionType: string,
     description?: string,
     referenceId?: string
-  ): Promise<number> {
-    // Try RPC first
-    const { data, error } = await supabase.rpc('update_spa_points', {
-      p_user_id: userId,
-      p_points_change: pointsChange,
-      p_transaction_type: transactionType,
-      p_description: description || null,
-      p_reference_id: referenceId || null,
-    });
-    if (!error) return data || 0;
+  ): Promise<{ success: boolean; balance: number; requiresRanking: boolean }> {
+    // Check if user has ranking record first
+    const { data: rankingRecord } = await supabase
+      .from('player_rankings')
+      .select('spa_points')
+      .eq('user_id', userId)
+      .single();
 
-    // Fallback: direct update (assuming player_rankings.spa_points exists)
-    const current = await this.getCurrentSPAPoints(userId);
+    if (!rankingRecord) {
+      // User doesn't have ranking record - they need to register ranking first
+      return { success: false, balance: 0, requiresRanking: true };
+    }
+
+    // Direct update since user has ranking record
+    const current = rankingRecord.spa_points || 0;
     const newBalance = current + pointsChange;
-    await supabase
+    
+    const { error } = await supabase
       .from('player_rankings')
       .update({ spa_points: newBalance })
       .eq('user_id', userId);
-    return newBalance;
+      
+    if (error) {
+      console.error('SPA update error:', error);
+      return { success: false, balance: current, requiresRanking: false };
+    }
+
+    // Create transaction record
+    await supabase.from('spa_transactions').insert({
+      user_id: userId,
+      amount: pointsChange,
+      source_type: transactionType,
+      transaction_type: pointsChange > 0 ? 'credit' : 'debit',
+      description: description || `${transactionType} transaction`,
+      status: 'completed',
+      reference_id: referenceId
+    });
+
+    return { success: true, balance: newBalance, requiresRanking: false };
   }
 
   async addSPAPoints(
@@ -50,8 +70,8 @@ class SPAService {
     reason = 'manual_adjust',
     description?: string,
     referenceId?: string
-  ): Promise<number> {
-    if (points <= 0) return this.getCurrentSPAPoints(userId);
+  ): Promise<{ success: boolean; balance: number; requiresRanking: boolean }> {
+    if (points <= 0) return { success: true, balance: await this.getCurrentSPAPoints(userId), requiresRanking: false };
     return this.applyDelta(userId, points, reason, description, referenceId);
   }
 
@@ -61,8 +81,8 @@ class SPAService {
     reason = 'manual_deduct',
     description?: string,
     referenceId?: string
-  ): Promise<number> {
-    if (points <= 0) return this.getCurrentSPAPoints(userId);
+  ): Promise<{ success: boolean; balance: number; requiresRanking: boolean }> {
+    if (points <= 0) return { success: true, balance: await this.getCurrentSPAPoints(userId), requiresRanking: false };
     return this.applyDelta(userId, -Math.abs(points), reason, description, referenceId);
   }
 }

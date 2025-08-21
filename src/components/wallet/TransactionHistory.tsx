@@ -58,14 +58,24 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
       setIsLoading(true);
       try {
         const { data, error } = await supabase
-          .from('spa_points_log')
+          .from('spa_transactions')
           .select('*')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(50);
 
         if (error) throw error;
-        setTransactions((data as any[]) || []);
+        // Map spa_transactions to SPATransaction format
+        const mappedData = (data || []).map(tx => ({
+          id: tx.id,
+          user_id: tx.user_id,
+          points_earned: tx.amount,
+          source_type: tx.source_type || 'other',
+          source_id: tx.reference_id,
+          description: tx.description,
+          created_at: tx.created_at
+        }));
+        setTransactions(mappedData);
       } catch (error) {
         console.error('Failed to fetch SPA transactions:', error);
       } finally {
@@ -83,12 +93,21 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'spa_points_log',
+          table: 'spa_transactions',
           filter: `user_id=eq.${user.id}`,
         },
         payload => {
-          const newTransaction = payload.new as SPATransaction;
-          setTransactions(prev => [newTransaction, ...prev.slice(0, 49)]);
+          const newTransaction = payload.new as any;
+          const mappedTransaction = {
+            id: newTransaction.id,
+            user_id: newTransaction.user_id,
+            points_earned: newTransaction.amount,
+            source_type: newTransaction.source_type || 'other',
+            source_id: newTransaction.reference_id,
+            description: newTransaction.description,
+            created_at: newTransaction.created_at
+          };
+          setTransactions(prev => [mappedTransaction, ...prev.slice(0, 49)]);
           // Invalidate user profile to refresh SPA balance
           queryClient.invalidateQueries({ queryKey: ['user-profile'] });
         }

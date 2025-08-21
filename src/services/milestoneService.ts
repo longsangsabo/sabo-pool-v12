@@ -99,29 +99,88 @@ class MilestoneService {
       completedAt = new Date().toISOString();
       timesCompleted = (timesCompleted || 0) + 1;
       if (milestone.spa_reward > 0) {
-        await spaService.addSPAPoints(
+        const spaResult = await spaService.addSPAPoints(
           playerId,
           milestone.spa_reward,
           'milestone_award',
           milestone.milestone_type,
           milestone.id
         );
-        await supabase.rpc('create_challenge_notification', {
-          p_type: 'milestone_completed',
-          p_user_id: playerId,
-          p_title: '🏆 Hoàn thành milestone!',
-          p_message: `🎉 ${milestone.name} - Nhận ${milestone.spa_reward} SPA!`,
-          p_icon: 'trophy',
-          p_priority: 'high',
-          p_action_text: 'Xem thưởng',
-          p_action_url: '/milestones',
-          p_metadata: JSON.stringify({ 
+        
+        if (spaResult.requiresRanking) {
+          // User needs to register ranking first - create special notification
+          await supabase.from('notifications').insert({
+            user_id: playerId,
+            type: 'milestone_completed_pending',
+            category: 'achievement',
+            title: '🏆 Hoàn thành milestone!',
+            message: `🎉 Chúc mừng! Bạn đã hoàn thành "${milestone.name}". Để nhận ${milestone.spa_reward} SPA, vui lòng đăng ký hạng trước.`,
+            priority: 'high',
+            metadata: { 
+              milestone_id: milestone.id, 
+              milestone_type: milestone.milestone_type,
+              milestone_name: milestone.name,
+              spa_reward: milestone.spa_reward,
+              pending_spa: true,
+              action_required: true,
+              action_url: '/ranking/register'
+            }
+          });
+        } else if (spaResult.success) {
+          // Normal success notification
+          await supabase.from('notifications').insert({
+            user_id: playerId,
+            type: 'milestone_completed',
+            category: 'achievement',
+            title: '🏆 Hoàn thành milestone!',
+            message: `🎉 Chúc mừng! Bạn đã hoàn thành "${milestone.name}" và nhận được ${milestone.spa_reward} SPA!`,
+            priority: 'high',
+            metadata: { 
+              milestone_id: milestone.id, 
+              milestone_type: milestone.milestone_type,
+              milestone_name: milestone.name,
+              spa_reward: milestone.spa_reward,
+              badge_name: milestone.badge_name || 'Achievement',
+              celebration: true,
+              action_url: '/milestones'
+            }
+          });
+        } else {
+          // SPA award failed for other reasons
+          await supabase.from('notifications').insert({
+            user_id: playerId,
+            type: 'milestone_completed_error',
+            category: 'achievement',
+            title: '🏆 Hoàn thành milestone!',
+            message: `🎉 Chúc mừng! Bạn đã hoàn thành "${milestone.name}". Có lỗi khi cộng SPA, vui lòng liên hệ hỗ trợ.`,
+            priority: 'medium',
+            metadata: { 
+              milestone_id: milestone.id, 
+              milestone_type: milestone.milestone_type,
+              milestone_name: milestone.name,
+              spa_reward: milestone.spa_reward,
+              error: true,
+              action_url: '/support'
+            }
+          });
+        }
+      } else {
+        // Milestone with no SPA reward
+        await supabase.from('notifications').insert({
+          user_id: playerId,
+          type: 'milestone_completed',
+          category: 'achievement',
+          title: '🏆 Hoàn thành milestone!',
+          message: `🎉 Chúc mừng! Bạn đã hoàn thành "${milestone.name}"!`,
+          priority: 'medium',
+          metadata: { 
             milestone_id: milestone.id, 
             milestone_type: milestone.milestone_type,
-            spa_reward: milestone.spa_reward,
+            milestone_name: milestone.name,
             badge_name: milestone.badge_name || 'Achievement',
-            celebration: true
-          })
+            celebration: true,
+            action_url: '/milestones'
+          }
         });
       }
     }
@@ -176,7 +235,47 @@ class MilestoneService {
       .eq('milestone_id', milestone.id);
 
     if (milestone.spa_reward > 0) {
-      await spaService.addSPAPoints(playerId, milestone.spa_reward, 'milestone_award', milestone.milestone_type, milestone.id);
+      const spaResult = await spaService.addSPAPoints(playerId, milestone.spa_reward, 'milestone_award', milestone.milestone_type, milestone.id);
+      
+      if (spaResult.requiresRanking) {
+        // User needs to register ranking first - create special notification
+        await supabase.from('notifications').insert({
+          user_id: playerId,
+          type: 'milestone_completed_pending',
+          category: 'achievement',
+          title: '🏆 Hoàn thành milestone!',
+          message: `🎉 Chúc mừng! Bạn đã hoàn thành "${milestone.name}". Để nhận ${milestone.spa_reward} SPA, vui lòng đăng ký hạng trước.`,
+          priority: 'high',
+          metadata: { 
+            milestone_id: milestone.id, 
+            milestone_type: milestone.milestone_type,
+            milestone_name: milestone.name,
+            spa_reward: milestone.spa_reward,
+            pending_spa: true,
+            action_required: true,
+            action_url: '/ranking/register'
+          }
+        });
+      } else if (spaResult.success) {
+        // Normal success notification
+        await supabase.from('notifications').insert({
+          user_id: playerId,
+          type: 'milestone_completed',
+          category: 'achievement',
+          title: '🏆 Hoàn thành milestone!',
+          message: `🎉 Chúc mừng! Bạn đã hoàn thành "${milestone.name}" và nhận được ${milestone.spa_reward} SPA!`,
+          priority: 'high',
+          metadata: { 
+            milestone_id: milestone.id, 
+            milestone_type: milestone.milestone_type,
+            milestone_name: milestone.name,
+            spa_reward: milestone.spa_reward,
+            badge_name: milestone.badge_name || 'Achievement',
+            celebration: true,
+            action_url: '/milestones'
+          }
+        });
+      }
     }
     return true;
   }

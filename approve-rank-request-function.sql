@@ -42,8 +42,10 @@ BEGIN
   
   -- Add user to club_members (status can be null, that's fine)
   INSERT INTO club_members (club_id, user_id, join_date, status)
-  VALUES (club_id, request_record.user_id, NOW(), NULL)
-  ON CONFLICT DO NOTHING;
+  VALUES (club_id, request_record.user_id, NOW(), 'active')
+  ON CONFLICT (club_id, user_id) DO UPDATE SET 
+    status = 'active',
+    updated_at = NOW();
   
   RETURN jsonb_build_object('success', true, 'message', 'Rank request approved successfully');
   

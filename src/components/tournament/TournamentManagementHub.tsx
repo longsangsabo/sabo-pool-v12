@@ -28,6 +28,7 @@ import UserAvatar from '@/components/UserAvatar';
 import TableAssignmentDisplay from './TableAssignmentDisplay';
 import TournamentPlayerAvatar from './TournamentPlayerAvatar';
 import { SABODoubleEliminationViewer } from '@/components/tournaments/sabo/SABODoubleEliminationViewer';
+import { SABO32BracketViewer } from './SABO32BracketViewer';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -97,6 +98,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
   const [clubId, setClubId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState('active');
   const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
+  const [tournamentParticipantCounts, setTournamentParticipantCounts] = useState<{[key: string]: number}>({});
   const [editingTournament, setEditingTournament] = useState<Tournament | null>(null);
   
   // Bracket Generation State
@@ -208,7 +210,25 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
 
       if (error) throw error;
 
-      setTournaments((data as any[]) || []);
+      const tournaments = (data as any[]) || [];
+      setTournaments(tournaments);
+
+      // Fetch participant counts for SABO-32 detection
+      const counts: {[key: string]: number} = {};
+      for (const tournament of tournaments) {
+        if (tournament.tournament_type === 'double_elimination' || 
+            tournament.tournament_type === 'sabo_double_elimination') {
+          const { data: registrations } = await supabase
+            .from('tournament_registrations')
+            .select('user_id')
+            .eq('tournament_id', tournament.id)
+            .eq('registration_status', 'confirmed');
+          
+          counts[tournament.id] = registrations?.length || 0;
+        }
+      }
+      setTournamentParticipantCounts(counts);
+
     } catch (error) {
       console.error('Error loading tournaments:', error);
       toast.error('Không thể tải danh sách giải đấu');
@@ -216,6 +236,13 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
   };
 
   const fetchTournaments = () => loadTournaments();
+
+  // Helper function to detect SABO-32 tournaments
+  const isSABO32Tournament = (tournament: Tournament) => {
+    if (!tournament || tournament.tournament_type !== 'double_elimination') return false;
+    const participantCount = tournamentParticipantCounts[tournament.id] || 0;
+    return participantCount === 32;
+  };
 
   // Expose refresh function via ref
   useImperativeHandle(ref, () => ({
@@ -1811,10 +1838,18 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                 {(selectedTournament.tournament_type === 'double_elimination' || 
                   selectedTournament.tournament_type === 'sabo_double_elimination' || 
                   selectedTournament.tournament_type === 'sabo_round_robin_double_elimination') && (
-                  <SABODoubleEliminationViewer
-                    tournamentId={selectedTournament.id}
-                    adminMode={true}
-                  />
+                  <>
+                    {isSABO32Tournament(selectedTournament) ? (
+                      <SABO32BracketViewer
+                        tournamentId={selectedTournament.id}
+                      />
+                    ) : (
+                      <SABODoubleEliminationViewer
+                        tournamentId={selectedTournament.id}
+                        adminMode={true}
+                      />
+                    )}
+                  </>
                 )}
                 {(selectedTournament.tournament_type === 'single_elimination' || selectedTournament.tournament_type === 'pool_to_single') && (
                   <TournamentBracket

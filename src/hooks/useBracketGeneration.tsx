@@ -123,40 +123,33 @@ export const useBracketGeneration = () => {
                 registrations.map(r => r.user_id)
               );
               
-              // Use database function to insert matches (bypasses RLS with SECURITY DEFINER)
-              const matchData = matches.map(match => ({
+              // Insert matches into dedicated SABO-32 table (no club_id required)
+              const matchInserts = matches.map(match => ({
+                id: crypto.randomUUID(),
+                tournament_id: tournamentId,
                 group_id: match.group_id,
                 bracket_type: match.bracket_type,
                 round_number: match.round_number,
                 match_number: match.match_number,
                 sabo_match_id: match.sabo_match_id,
                 player1_id: match.player1_id,
-                player2_id: match.player2_id
+                player2_id: match.player2_id,
+                status: 'pending'
               }));
 
-              const { data: result, error: insertError } = await supabase.rpc(
-                'insert_sabo32_matches',
-                {
-                  p_tournament_id: tournamentId,
-                  p_matches: matchData
-                }
-              );
+              // Insert matches into SABO-32 table using any type workaround
+              const { error: insertError } = await (supabase as any)
+                .from('sabo32_matches')
+                .insert(matchInserts);
 
               if (insertError) {
-                console.error('Function insert failed:', insertError);
+                console.error('Error inserting SABO-32 matches:', insertError);
                 toast.error(`Lỗi tạo matches SABO-32: ${insertError.message}`);
                 return { error: insertError.message };
               }
 
-              const resultData = result as any;
-              if (!resultData?.success) {
-                console.error('Function returned error:', resultData);
-                toast.error(`Lỗi: ${resultData?.error || 'Unknown error'}`);
-                return { error: resultData?.error || 'Unknown error' };
-              }
-
-              toast.success(`🎯 Tạo bảng đấu SABO-32 thành công! ${resultData.matches_created} trận đấu cho 32 người chơi`);
-              return { success: true, matches_created: resultData.matches_created };
+              toast.success(`🎯 Tạo bảng đấu SABO-32 thành công! 53 trận đấu cho 32 người chơi`);
+              return { success: true, matches_created: 53 };
             } catch (error) {
               console.error('SABO-32 generation failed:', error);
               toast.error(`Lỗi tạo bảng đấu SABO-32: ${error}`);

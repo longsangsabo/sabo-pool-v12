@@ -61,8 +61,17 @@ BEGIN
     UPDATE tournament_matches
     SET 
       player1_id = CASE WHEN player1_id IS NULL THEN p_participant_id ELSE player1_id END,
-      player2_id = CASE WHEN player1_id IS NOT NULL AND player2_id IS NULL THEN p_participant_id ELSE player2_id END,
-      status = CASE WHEN player1_id IS NOT NULL AND player2_id IS NOT NULL THEN 'ready' ELSE 'pending' END,
+      player2_id = CASE 
+        WHEN player1_id IS NOT NULL AND player2_id IS NULL THEN p_participant_id 
+        WHEN player1_id IS NULL AND player2_id IS NULL THEN NULL
+        ELSE player2_id 
+      END,
+      status = CASE 
+        WHEN (CASE WHEN player1_id IS NULL THEN p_participant_id ELSE player1_id END) IS NOT NULL 
+         AND (CASE WHEN player1_id IS NOT NULL AND player2_id IS NULL THEN p_participant_id ELSE player2_id END) IS NOT NULL 
+        THEN 'ready' 
+        ELSE 'pending' 
+      END,
       updated_at = NOW()
     WHERE id = v_match_id;
   END IF;

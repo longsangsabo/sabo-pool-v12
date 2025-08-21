@@ -21,7 +21,7 @@ export interface Milestone {
 
 export interface PlayerMilestone {
   id: string;
-  player_id: string;
+  user_id: string;
   milestone_id: string;
   current_progress: number;
   is_completed: boolean;
@@ -47,7 +47,7 @@ class MilestoneService {
     const { data, error } = await supabase
       .from('player_milestones')
       .select('*, milestone:milestones(*)')
-      .eq('player_id', playerId);
+      .eq('user_id', playerId);
     if (error) throw error;
     return (data || []) as unknown as PlayerMilestone[];
   }
@@ -60,9 +60,20 @@ class MilestoneService {
     if (error) throw error;
     if (!milestones) return;
     for (const m of milestones) {
-      await supabase
+      // Check if milestone already exists for this user
+      const { data: existing } = await supabase
         .from('player_milestones')
-        .upsert({ player_id: playerId, milestone_id: m.id }, { onConflict: 'player_id,milestone_id' });
+        .select('id')
+        .eq('user_id', playerId)
+        .eq('milestone_id', m.id)
+        .single();
+      
+      // Only insert if doesn't exist
+      if (!existing) {
+        await supabase
+          .from('player_milestones')
+          .insert({ user_id: playerId, milestone_id: m.id });
+      }
     }
   }
 
@@ -78,14 +89,24 @@ class MilestoneService {
       .single();
     if (!milestone) return;
 
-    await supabase
+    // Check if milestone record exists, if not create it
+    const { data: existing } = await supabase
       .from('player_milestones')
-      .upsert({ player_id: playerId, milestone_id: milestone.id }, { onConflict: 'player_id,milestone_id' });
+      .select('*')
+      .eq('user_id', playerId)
+      .eq('milestone_id', milestone.id)
+      .single();
+
+    if (!existing) {
+      await supabase
+        .from('player_milestones')
+        .insert({ user_id: playerId, milestone_id: milestone.id });
+    }
 
     const { data: progressRow } = await supabase
       .from('player_milestones')
       .select('*')
-      .eq('player_id', playerId)
+      .eq('user_id', playerId)
       .eq('milestone_id', milestone.id)
       .single();
 
@@ -194,7 +215,7 @@ class MilestoneService {
         times_completed: timesCompleted,
         last_progress_update: new Date().toISOString()
       })
-      .eq('player_id', playerId)
+      .eq('user_id', playerId)
       .eq('milestone_id', milestone.id);
   }
 
@@ -209,14 +230,22 @@ class MilestoneService {
       .single();
     if (!milestone) return false;
 
-    await supabase
-      .from('player_milestones')
-      .upsert({ player_id: playerId, milestone_id: milestone.id }, { onConflict: 'player_id,milestone_id' });
+    // Try insert first, if conflict then do nothing (user already has this milestone)
+    try {
+      await supabase
+        .from('player_milestones')
+        .insert({ user_id: playerId, milestone_id: milestone.id });
+    } catch (error) {
+      // Ignore duplicate key errors - milestone already exists for user
+      if (error && !error.message?.includes('duplicate key')) {
+        throw error;
+      }
+    }
 
     const { data: progressRow } = await supabase
       .from('player_milestones')
       .select('*')
-      .eq('player_id', playerId)
+      .eq('user_id', playerId)
       .eq('milestone_id', milestone.id)
       .single();
 
@@ -231,7 +260,7 @@ class MilestoneService {
         completed_at: new Date().toISOString(),
         times_completed: (progressRow?.times_completed || 0) + 1
       })
-      .eq('player_id', playerId)
+      .eq('user_id', playerId)
       .eq('milestone_id', milestone.id);
 
     if (milestone.spa_reward > 0) {
@@ -285,7 +314,7 @@ class MilestoneService {
     const { data: dailyRow, error } = await supabase
       .from('player_daily_progress')
       .select('*')
-      .eq('player_id', playerId)
+      .eq('user_id', playerId)
       .eq('date', today)
       .single();
     if (error && (error as any).code !== 'PGRST116') {
@@ -293,9 +322,19 @@ class MilestoneService {
     }
     if (dailyRow?.daily_checkin) return { success: false, rewards: 0 };
 
-    await supabase
+    // Check if daily progress already exists
+    const { data: existingDaily } = await supabase
       .from('player_daily_progress')
-      .upsert({ player_id: playerId, date: today, daily_checkin: true }, { onConflict: 'player_id,date' });
+      .select('id')
+      .eq('user_id', playerId)
+      .eq('date', today)
+      .single();
+
+    if (!existingDaily) {
+      await supabase
+        .from('player_daily_progress')
+        .insert({ user_id: playerId, date: today, daily_checkin: true });
+    }
 
     await this.updateLoginStreak(playerId);
     await this.updatePlayerProgress(playerId, 'daily_checkin', 1);
@@ -308,7 +347,7 @@ class MilestoneService {
     const { data } = await supabase
       .from('player_daily_progress')
       .select('*')
-      .eq('player_id', playerId)
+      .eq('user_id', playerId)
       .eq('date', today)
       .single();
     return data;
@@ -320,12 +359,12 @@ class MilestoneService {
     const { data: streak } = await supabase
       .from('player_login_streaks')
       .select('*')
-      .eq('player_id', playerId)
+      .eq('user_id', playerId)
       .single();
 
     if (!streak) {
       await supabase.from('player_login_streaks').insert({
-        player_id: playerId,
+        user_id: playerId,
         current_streak: 1,
         longest_streak: 1,
         last_login_date: todayDate,
@@ -353,7 +392,7 @@ class MilestoneService {
         last_login_date: todayDate,
         weekly_logins: weeklyLogins
       })
-      .eq('player_id', playerId);
+      .eq('user_id', playerId);
 
     await this.checkAndAwardMilestone(playerId, 'login_streak', currentStreak);
   }

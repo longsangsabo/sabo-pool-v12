@@ -19,7 +19,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 
-import { SABO32BracketViewer } from './SABO32BracketViewer';
+import { SABO32BracketViewer } from '../tournament/SABO32BracketViewer';
 import { SABO32ProgressTracker } from './SABO32ProgressTracker';
 import { SABO32QuickActions } from './SABO32QuickActions';
 import { SABO32MatchNavigator } from './SABO32MatchNavigator';

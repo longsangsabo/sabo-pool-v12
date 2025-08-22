@@ -206,11 +206,13 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                 >
                   <Avatar className='w-8 h-8 ring-2 ring-primary/20'>
                     <AvatarImage
-                      src={
-                        contextAvatar || profile?.avatar_url
-                          ? `${contextAvatar || profile?.avatar_url}${(contextAvatar || profile?.avatar_url)?.includes('?') ? '' : '?'}v=${Date.now()}`
-                          : undefined
-                      }
+                      src={contextAvatar || profile?.avatar_url || undefined}
+                      loading="lazy"
+                      className="object-cover"
+                      onError={(e) => {
+                        console.log('Avatar failed to load:', contextAvatar || profile?.avatar_url);
+                        e.currentTarget.style.display = 'none';
+                      }}
                     />
                     <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold'>
                       {profile?.display_name?.[0] ||

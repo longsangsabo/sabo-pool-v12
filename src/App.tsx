@@ -21,6 +21,9 @@ import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
 import { OfflineIndicator } from '@/components/pwa/OfflineIndicator';
 import { ReAuthModal } from '@/components/auth/ReAuthModal';
 
+// Import CSS optimizations
+import '@/styles/avatar-optimizations.css';
+
 // ✅ Import debug utilities for tournament refresh
 import '@/utils/debugTournamentRefresh';
 

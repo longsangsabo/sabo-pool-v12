@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Avatar Upload Debug Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        
+        input[type="file"] {
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        
+        img {
+            max-width: 200px;
+            max-height: 200px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Avatar Upload Debug Test</h1>
+        <div class="info">
+            <strong>Purpose:</strong> Test avatar upload functionality and debug issues in real browser environment
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🔐 Authentication Status</h2>
+        <button onclick="testAuth()">Check Auth Status</button>
+        <button onclick="signInTest()">Sign In (Test User)</button>
+        <button onclick="signOut()">Sign Out</button>
+        <div id="authStatus" class="status info">Click "Check Auth Status" to verify</div>
+    </div>
+
+    <div class="container">
+        <h2>📁 Storage Bucket Test</h2>
+        <button onclick="testBucket()">Test Bucket Access</button>
+        <button onclick="listUserFiles()">List My Files</button>
+        <div id="bucketStatus" class="status info">Click "Test Bucket Access" to check</div>
+    </div>
+
+    <div class="container">
+        <h2>📤 Avatar Upload Test</h2>
+        <input type="file" id="avatarFile" accept="image/*" />
+        <br>
+        <button onclick="uploadAvatar()">Upload Avatar</button>
+        <button onclick="uploadDirect()">Upload Direct (No Auth)</button>
+        <div id="uploadStatus" class="status info">Select an image and click upload</div>
+        <div id="uploadedImage"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 Debug Log</h2>
+        <button onclick="clearLog()">Clear Log</button>
+        <div id="debugLog" class="log">Debug information will appear here...</div>
+    </div>
+
+    <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://exlqvlbawytbglioqfbc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODAwODgsImV4cCI6MjA2ODY1NjA4OH0.-WHrBx32yHJwhqXAYUOdW5fytPvpzc4AFttXBl3MykA';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logDiv = document.getElementById('debugLog');
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            logDiv.innerHTML += `${timestamp} ${prefix} ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = 'Debug log cleared...\n';
+        }
+        
+        async function testAuth() {
+            try {
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (error) throw error;
+                
+                if (user) {
+                    document.getElementById('authStatus').innerHTML = `
+                        <div class="success">✅ Authenticated as: ${user.email || user.id}</div>
+                        <div>User ID: ${user.id}</div>
+                        <div>Created: ${new Date(user.created_at).toLocaleString()}</div>
+                    `;
+                    log(`Authenticated as: ${user.email || user.id}`, 'success');
+                } else {
+                    document.getElementById('authStatus').innerHTML = `
+                        <div class="warning">⚠️ Not authenticated</div>
+                    `;
+                    log('Not authenticated', 'warning');
+                }
+            } catch (error) {
+                document.getElementById('authStatus').innerHTML = `
+                    <div class="error">❌ Auth check failed: ${error.message}</div>
+                `;
+                log(`Auth check failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function signInTest() {
+            try {
+                // Try to sign in with a test user (you'll need to replace with actual credentials)
+                log('Note: You need to implement actual sign-in logic here', 'warning');
+                log('For testing, you can sign in manually through Supabase Auth UI', 'info');
+                
+                // Placeholder for actual sign-in implementation
+                // const { data, error } = await supabase.auth.signInWithPassword({
+                //   email: 'test@example.com',
+                //   password: 'testpassword'
+                // });
+                
+            } catch (error) {
+                log(`Sign in failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function signOut() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                document.getElementById('authStatus').innerHTML = `
+                    <div class="info">📤 Signed out successfully</div>
+                `;
+                log('Signed out successfully', 'success');
+            } catch (error) {
+                log(`Sign out failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testBucket() {
+            try {
+                // Test bucket access
+                log('Testing bucket access...', 'info');
+                
+                const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
+                if (bucketError) throw bucketError;
+                
+                const avatarsBucket = buckets.find(b => b.name === 'avatars');
+                if (avatarsBucket) {
+                    document.getElementById('bucketStatus').innerHTML = `
+                        <div class="success">✅ Avatars bucket found</div>
+                        <div>Public: ${avatarsBucket.public ? 'Yes' : 'No'}</div>
+                        <div>Created: ${new Date(avatarsBucket.created_at).toLocaleString()}</div>
+                    `;
+                    log('Avatars bucket found and accessible', 'success');
+                } else {
+                    document.getElementById('bucketStatus').innerHTML = `
+                        <div class="error">❌ Avatars bucket not found</div>
+                    `;
+                    log('Avatars bucket not found', 'error');
+                }
+                
+                // List available buckets
+                log(`Available buckets: ${buckets.map(b => b.name).join(', ')}`, 'info');
+                
+            } catch (error) {
+                document.getElementById('bucketStatus').innerHTML = `
+                    <div class="error">❌ Bucket test failed: ${error.message}</div>
+                `;
+                log(`Bucket test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function listUserFiles() {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    log('Need to be authenticated to list files', 'warning');
+                    return;
+                }
+                
+                const { data: files, error } = await supabase.storage
+                    .from('avatars')
+                    .list(user.id, { limit: 10 });
+                
+                if (error) throw error;
+                
+                log(`Found ${files?.length || 0} files in user folder`, 'info');
+                files?.forEach(file => {
+                    log(`  - ${file.name} (${file.metadata?.size} bytes)`, 'info');
+                });
+                
+            } catch (error) {
+                log(`Failed to list user files: ${error.message}`, 'error');
+            }
+        }
+        
+        async function uploadAvatar() {
+            const fileInput = document.getElementById('avatarFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                document.getElementById('uploadStatus').innerHTML = `
+                    <div class="warning">⚠️ Please select a file first</div>
+                `;
+                return;
+            }
+            
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    document.getElementById('uploadStatus').innerHTML = `
+                        <div class="warning">⚠️ Please authenticate first</div>
+                    `;
+                    log('Authentication required for upload', 'warning');
+                    return;
+                }
+                
+                document.getElementById('uploadStatus').innerHTML = `
+                    <div class="info">⏳ Uploading ${file.name}...</div>
+                `;
+                log(`Starting upload of ${file.name} (${file.size} bytes, ${file.type})`, 'info');
+                
+                const fileExt = file.name.split('.').pop();
+                const fileName = `avatar-${user.id}-${Date.now()}.${fileExt}`;
+                const filePath = `${user.id}/${fileName}`;
+                
+                log(`Upload path: ${filePath}`, 'info');
+                
+                const { data, error } = await supabase.storage
+                    .from('avatars')
+                    .upload(filePath, file, {
+                        contentType: file.type,
+                        upsert: true,
+                    });
+                
+                if (error) throw error;
+                
+                // Get public URL
+                const { data: urlData } = supabase.storage
+                    .from('avatars')
+                    .getPublicUrl(filePath);
+                
+                const publicUrl = urlData.publicUrl;
+                
+                document.getElementById('uploadStatus').innerHTML = `
+                    <div class="success">✅ Upload successful!</div>
+                    <div>File: ${fileName}</div>
+                    <div>URL: <a href="${publicUrl}" target="_blank">${publicUrl}</a></div>
+                `;
+                
+                document.getElementById('uploadedImage').innerHTML = `
+                    <img src="${publicUrl}" alt="Uploaded Avatar" />
+                `;
+                
+                log(`Upload successful: ${publicUrl}`, 'success');
+                
+            } catch (error) {
+                document.getElementById('uploadStatus').innerHTML = `
+                    <div class="error">❌ Upload failed: ${error.message}</div>
+                `;
+                log(`Upload failed: ${error.message}`, 'error');
+                
+                // Detailed error logging
+                if (error.message.includes('RLS')) {
+                    log('🔒 This is likely an RLS (Row Level Security) policy issue', 'error');
+                    log('💡 Check that storage policies allow authenticated users to upload to their own folder', 'info');
+                }
+            }
+        }
+        
+        async function uploadDirect() {
+            const fileInput = document.getElementById('avatarFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                log('Please select a file first', 'warning');
+                return;
+            }
+            
+            try {
+                log('Attempting direct upload (without authentication)...', 'info');
+                
+                const fileName = `direct-test-${Date.now()}.${file.name.split('.').pop()}`;
+                const filePath = `test/${fileName}`;
+                
+                const { data, error } = await supabase.storage
+                    .from('avatars')
+                    .upload(filePath, file, {
+                        contentType: file.type,
+                        upsert: true,
+                    });
+                
+                if (error) throw error;
+                
+                log('Direct upload succeeded (this might indicate a security issue)', 'warning');
+                
+            } catch (error) {
+                log(`Direct upload failed: ${error.message} (this is expected)`, 'info');
+            }
+        }
+        
+        // Auto-check auth status on page load
+        window.addEventListener('load', () => {
+            log('Avatar Upload Debug Test loaded', 'info');
+            log('Supabase client initialized', 'info');
+            testAuth();
+        });
+        
+        // Listen for auth changes
+        supabase.auth.onAuthStateChange((event, session) => {
+            log(`Auth state changed: ${event}`, 'info');
+            if (session) {
+                log(`User signed in: ${session.user.email || session.user.id}`, 'success');
+            } else {
+                log('User signed out', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

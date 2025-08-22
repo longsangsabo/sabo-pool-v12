@@ -338,7 +338,15 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
 
                     {/* Avatar */}
                     <Avatar className='w-11 h-11 ring-2 ring-offset-1 ring-purple-500/30 transition-all duration-300'>
-                      <AvatarImage src={player.avatar_url} />
+                      <AvatarImage 
+                        src={player.avatar_url || undefined}
+                        loading="lazy"
+                        className="object-cover"
+                        onError={(e) => {
+                          console.log('Leaderboard avatar failed to load:', player.avatar_url);
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
                       <AvatarFallback
                         className={`${
                           theme === 'dark'

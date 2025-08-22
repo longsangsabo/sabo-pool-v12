@@ -229,8 +229,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             <div className='relative'>
               <Avatar className='w-20 h-20'>
                 <AvatarImage
-                  src={avatarUrl || profile.avatar_url}
+                  src={avatarUrl || profile.avatar_url || undefined}
                   alt='Avatar'
+                  loading="lazy"
+                  className="object-cover"
+                  onError={(e) => {
+                    console.log('Profile avatar failed to load:', avatarUrl || profile.avatar_url);
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
                 <AvatarFallback className='text-lg'>
                   {profile.display_name?.charAt(0) || '👤'}

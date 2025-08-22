@@ -239,7 +239,15 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
         <CardContent className='flex flex-col items-center p-5'>
           <div className='relative'>
             <Avatar className='w-24 h-24 mb-3 ring-2 ring-primary/30 shadow-md'>
-              <AvatarImage src={club.logo_url} />
+              <AvatarImage 
+                src={club.logo_url || undefined}
+                loading="lazy"
+                className="object-cover"
+                onError={(e) => {
+                  console.log('Club logo failed to load:', club.logo_url);
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
               <AvatarFallback className='bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-500 text-white text-3xl font-bold'>
                 {club.name.charAt(0).toUpperCase()}
               </AvatarFallback>

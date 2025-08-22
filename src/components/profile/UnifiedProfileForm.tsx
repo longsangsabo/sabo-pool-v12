@@ -67,7 +67,15 @@ export const UnifiedProfileForm: React.FC = () => {
           <div className='flex flex-col md:flex-row items-center gap-6'>
             <div className='relative'>
               <Avatar className='w-24 h-24'>
-                <AvatarImage src={profile.avatar_url} />
+                <AvatarImage 
+                  src={profile.avatar_url || undefined}
+                  loading="lazy"
+                  className="object-cover"
+                  onError={(e) => {
+                    console.log('Unified profile avatar failed to load:', profile.avatar_url);
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
                 <AvatarFallback className='text-2xl'>
                   {profile.display_name?.[0] || profile.full_name?.[0] || 'U'}
                 </AvatarFallback>

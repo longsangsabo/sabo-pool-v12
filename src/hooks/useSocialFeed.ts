@@ -363,6 +363,46 @@ export const useSocialFeed = () => {
     );
   }, []);
 
+  // Delete post handler for admin
+  const handleDelete = useCallback(async (postId: string) => {
+    try {
+      const post = feedPosts.find(p => p.id === postId);
+      if (!post) return;
+
+      // Determine the source table and ID
+      let recordId = '';
+
+      if (postId.startsWith('match_')) {
+        recordId = postId.replace('match_', '');
+        const { error } = await supabase
+          .from('matches')
+          .delete()
+          .eq('id', recordId);
+        if (error) throw error;
+      } else if (postId.startsWith('challenge_')) {
+        recordId = postId.replace('challenge_', '');
+        const { error } = await supabase
+          .from('challenges')
+          .delete()
+          .eq('id', recordId);
+        if (error) throw error;
+      } else if (postId.startsWith('tournament_')) {
+        recordId = postId.replace('tournament_', '');
+        const { error } = await supabase
+          .from('tournaments')
+          .delete()
+          .eq('id', recordId);
+        if (error) throw error;
+      }
+
+      // Remove from local state immediately
+      setFeedPosts(prev => prev.filter(p => p.id !== postId));
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      throw error;
+    }
+  }, [feedPosts]);
+
   const refreshFeed = useCallback(() => {
     fetchFeedData();
   }, [fetchFeedData]);
@@ -374,6 +414,7 @@ export const useSocialFeed = () => {
     error,
     refreshFeed,
     handleLike,
+    handleDelete,
     isConnected: true,
   };
 };

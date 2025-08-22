@@ -322,29 +322,127 @@ const ClubMembersOptimized: React.FC = () => {
         throw new Error('Không tìm thấy thông tin club');
       }
 
-      // Use the database function to approve the request
-      console.log('🔧 Calling approve_rank_request function...');
-      const { data: result, error: functionError } = await supabase.rpc(
-        'approve_rank_request' as any,
-        {
-          request_id: requestId,
-          approver_id: user.id,
-          club_id: clubProfile.id
+      // FIXED: Use direct Supabase operations instead of problematic function
+      console.log('🔧 Processing approval with direct database operations...');
+
+      // 1. Get request details first 
+      const { data: requestData, error: requestFetchError } = await supabase
+        .from('rank_requests')
+        .select('user_id, requested_rank')
+        .eq('id', requestId)
+        .eq('status', 'pending')
+        .single();
+
+      if (requestFetchError || !requestData) {
+        console.error('❌ Error fetching request details:', requestFetchError);
+        throw new Error('Lỗi khi lấy thông tin yêu cầu hoặc yêu cầu không tồn tại');
+      }
+
+      console.log('📋 Processing request for user:', requestData.user_id, 'rank:', requestData.requested_rank);
+
+      // 2. Update rank request status
+      const { error: requestUpdateError } = await supabase
+        .from('rank_requests')
+        .update({
+          status: 'approved',
+          approved_by: user.id,
+          approved_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', requestId)
+        .eq('status', 'pending');
+
+      if (requestUpdateError) {
+        console.error('❌ Error updating rank request:', requestUpdateError);
+        throw new Error('Lỗi khi cập nhật yêu cầu: ' + requestUpdateError.message);
+      }
+
+      // 3. Update user's verified rank in profiles
+      const { error: profileUpdateError } = await supabase
+        .from('profiles')
+        .update({
+          verified_rank: requestData.requested_rank,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', requestData.user_id);
+
+      if (profileUpdateError) {
+        console.error('❌ Error updating profile verified_rank:', profileUpdateError);
+        throw new Error('Lỗi khi cập nhật rank trong profile: ' + profileUpdateError.message);
+      }
+
+      // 4. Ensure player ranking exists (check first)
+      const { data: existingRanking } = await supabase
+        .from('player_rankings')
+        .select('user_id')
+        .eq('user_id', requestData.user_id)
+        .single();
+
+      if (!existingRanking) {
+        console.log('📝 Creating new player ranking for user:', requestData.user_id);
+        const { error: rankingCreateError } = await supabase
+          .from('player_rankings')
+          .insert({
+            user_id: requestData.user_id,
+            spa_points: 0,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+
+        if (rankingCreateError) {
+          console.error('❌ Error creating player ranking:', rankingCreateError);
+          // Continue anyway - this is not critical for approval
         }
-      );
-
-      if (functionError) {
-        console.error('❌ Database function error:', functionError);
-        throw new Error('Lỗi khi gọi function database: ' + functionError.message);
+      } else {
+        console.log('✅ Player ranking already exists for user:', requestData.user_id);
       }
 
-      const approvalResult = result as any;
-      if (!approvalResult?.success) {
-        console.error('❌ Function returned error:', approvalResult);
-        throw new Error(approvalResult?.error || 'Lỗi không xác định từ database function');
+      // 5. Add user to club members (check first to avoid duplicates)
+      const { data: existingMember } = await supabase
+        .from('club_members')
+        .select('id, status')
+        .eq('club_id', clubProfile.id)
+        .eq('user_id', requestData.user_id)
+        .single();
+
+      if (!existingMember) {
+        console.log('📝 Adding user to club members:', requestData.user_id);
+        const { error: memberCreateError } = await supabase
+          .from('club_members')
+          .insert({
+            club_id: clubProfile.id,
+            user_id: requestData.user_id,
+            join_date: new Date().toISOString(),
+            status: 'active',
+            created_at: new Date().toISOString()
+          });
+
+        if (memberCreateError) {
+          console.error('❌ Error adding club member:', memberCreateError);
+          // Continue anyway - user approval is more important than club membership
+        }
+      } else {
+        console.log('✅ User already in club, updating status to active');
+        // Update existing member status
+        const { error: memberUpdateError } = await supabase
+          .from('club_members')
+          .update({
+            status: 'active',
+            updated_at: new Date().toISOString()
+          })
+          .eq('club_id', clubProfile.id)
+          .eq('user_id', requestData.user_id);
+
+        if (memberUpdateError) {
+          console.error('❌ Error updating club member status:', memberUpdateError);
+          // Continue anyway
+        }
       }
 
-      console.log('✅ Rank request approved successfully:', approvalResult);
+      console.log('✅ Rank request approved successfully with direct operations');
+
+      // Show success message
+      toast.success(`Đã duyệt yêu cầu rank ${requestData.requested_rank} thành công!`);
 
       // Refresh data
       await loadAllData();

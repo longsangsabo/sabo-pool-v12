@@ -1,9 +1,13 @@
--- SQL Script to create approve_rank_request function (SAFE VERSION)
--- Run this in Supabase Dashboard > SQL Editor
+-- ================================================================================
+-- QUICK FIX: CHỈ SỬA APPROVE_RANK_REQUEST FUNCTION
+-- ================================================================================
+-- Script đơn giản để fix function gây lỗi ngay lập tức
+-- ================================================================================
 
--- Drop existing function first
-DROP FUNCTION IF EXISTS approve_rank_request(UUID, UUID, UUID);
+-- Drop function cũ FORCE
+DROP FUNCTION IF EXISTS approve_rank_request(UUID, UUID, UUID) CASCADE;
 
+-- Recreate với logic an toàn
 CREATE OR REPLACE FUNCTION approve_rank_request(
   request_id UUID,
   approver_id UUID,
@@ -13,8 +17,6 @@ RETURNS JSONB AS $$
 DECLARE
   request_record RECORD;
   v_user_id UUID;
-  v_member_exists BOOLEAN := false;
-  v_player_ranking_exists BOOLEAN := false;
 BEGIN
   -- Check if request exists and is pending
   SELECT * INTO request_record 
@@ -36,40 +38,25 @@ BEGIN
     updated_at = NOW()
   WHERE id = request_id;
   
-  -- Check if player_rankings record exists (SAFE: no ON CONFLICT)
-  SELECT EXISTS(
-    SELECT 1 FROM player_rankings WHERE user_id = v_user_id
-  ) INTO v_player_ranking_exists;
-  
-  IF NOT v_player_ranking_exists THEN
+  -- Handle player_rankings safely (NO ON CONFLICT)
+  IF NOT EXISTS(SELECT 1 FROM player_rankings WHERE user_id = v_user_id) THEN
     INSERT INTO player_rankings (user_id, updated_at, created_at)
     VALUES (v_user_id, NOW(), NOW());
   ELSE
-    UPDATE player_rankings 
-    SET updated_at = NOW()
-    WHERE user_id = v_user_id;
+    UPDATE player_rankings SET updated_at = NOW() WHERE user_id = v_user_id;
   END IF;
   
   -- Update user's verified rank
   UPDATE profiles 
-  SET verified_rank = request_record.requested_rank,
-      updated_at = NOW()
+  SET verified_rank = request_record.requested_rank, updated_at = NOW()
   WHERE user_id = v_user_id;
   
-  -- Check if club member exists (SAFE: no ON CONFLICT)
-  SELECT EXISTS(
-    SELECT 1 FROM club_members 
-    WHERE club_id = approve_rank_request.club_id AND user_id = v_user_id
-  ) INTO v_member_exists;
-  
-  -- Add or update club member safely
-  IF NOT v_member_exists THEN
+  -- Handle club_members safely (NO ON CONFLICT)
+  IF NOT EXISTS(SELECT 1 FROM club_members WHERE club_id = approve_rank_request.club_id AND user_id = v_user_id) THEN
     INSERT INTO club_members (club_id, user_id, join_date, status, created_at)
     VALUES (club_id, v_user_id, NOW(), 'active', NOW());
   ELSE
-    UPDATE club_members 
-    SET status = 'active', 
-        updated_at = NOW()
+    UPDATE club_members SET status = 'active', updated_at = NOW()
     WHERE club_id = approve_rank_request.club_id AND user_id = v_user_id;
   END IF;
   
@@ -89,5 +76,13 @@ EXCEPTION WHEN OTHERS THEN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Grant execute permission to authenticated users
+-- Grant permission
 GRANT EXECUTE ON FUNCTION approve_rank_request(UUID, UUID, UUID) TO authenticated;
+
+-- Test message
+DO $$
+BEGIN
+    RAISE NOTICE '✅ APPROVE_RANK_REQUEST FUNCTION FIXED!';
+    RAISE NOTICE 'Function now uses IF EXISTS instead of ON CONFLICT';
+    RAISE NOTICE 'Error should be resolved immediately.';
+END $$;

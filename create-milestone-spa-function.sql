@@ -18,13 +18,13 @@ BEGIN
   -- 1. Get current SPA balance
   SELECT COALESCE(spa_points, 0) INTO v_current_spa
   FROM player_rankings 
-  WHERE player_id = p_user_id;
+  WHERE user_id = p_user_id;
   
   -- If user doesn't exist in player_rankings, create record
   IF NOT FOUND THEN
-    INSERT INTO player_rankings (player_id, spa_points)
+    INSERT INTO player_rankings (user_id, spa_points)
     VALUES (p_user_id, 0)
-    ON CONFLICT (player_id) DO NOTHING;
+    ON CONFLICT (user_id) DO NOTHING;
     v_current_spa := 0;
   END IF;
 
@@ -32,7 +32,7 @@ BEGIN
   UPDATE player_rankings 
   SET spa_points = COALESCE(spa_points, 0) + p_spa_amount,
       updated_at = NOW()
-  WHERE player_id = p_user_id;
+  WHERE user_id = p_user_id;
 
   -- 3. Create SPA transaction record
   INSERT INTO spa_transactions (

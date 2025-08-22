@@ -21,6 +21,7 @@ const Dashboard = () => {
     error,
     refreshFeed,
     handleLike,
+    handleDelete,
     isConnected,
   } = useSocialFeed();
 
@@ -118,6 +119,17 @@ const Dashboard = () => {
     toast.info('Tính năng tạo nội dung đang phát triển');
   }, []);
 
+  // Admin delete handler
+  const handleDeletePost = useCallback(async (postId: string) => {
+    try {
+      await handleDelete(postId);
+      toast.success('Đã xóa bài viết thành công!');
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      toast.error('Không thể xóa bài viết. Vui lòng thử lại.');
+    }
+  }, [handleDelete]);
+
   return (
     <>
       <Helmet>
@@ -193,6 +205,7 @@ const Dashboard = () => {
                 onComment={handleComment}
                 onShare={handleShare}
                 onAction={handleAction}
+                onDelete={handleDeletePost}
               />
             ))}
 

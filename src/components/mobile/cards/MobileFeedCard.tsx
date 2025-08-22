@@ -8,13 +8,22 @@ import {
   Flame,
   Users,
   Clock,
+  Trash2,
+  MoreVertical,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { MobileReactionBar } from './MobileReactionBar';
 import { MobileLiveIndicator } from '../common/MobileLiveIndicator';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
 
 interface FeedPost {
   id: string;
@@ -46,6 +55,7 @@ interface MobileFeedCardProps {
   onComment?: (postId: string) => void;
   onShare?: (postId: string) => void;
   onAction?: (postId: string, action: string) => void;
+  onDelete?: (postId: string) => void;
 }
 
 export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
@@ -54,7 +64,9 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
   onComment,
   onShare,
   onAction,
+  onDelete,
 }) => {
+  const { isAdmin } = useAdminCheck();
   const getPostIcon = () => {
     switch (post.type) {
       case 'match_result':
@@ -150,14 +162,40 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
             </div>
           </div>
 
-          {/* Live Indicator */}
-          {isLiveContent && (
-            <MobileLiveIndicator
-              type='live_match'
-              viewers={Math.floor(Math.random() * 500) + 50}
-              status='LIVE'
-            />
-          )}
+          <div className='flex items-center gap-2'>
+            {/* Live Indicator */}
+            {isLiveContent && (
+              <MobileLiveIndicator
+                type='live_match'
+                viewers={Math.floor(Math.random() * 500) + 50}
+                status='LIVE'
+              />
+            )}
+
+            {/* Admin Actions */}
+            {isAdmin && onDelete && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+                  >
+                    <MoreVertical className='h-4 w-4' />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align='end' className='w-40'>
+                  <DropdownMenuItem
+                    onClick={() => onDelete(post.id)}
+                    className='text-destructive focus:text-destructive'
+                  >
+                    <Trash2 className='mr-2 h-4 w-4' />
+                    Xóa bài viết
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
 
         {/* Post Content */}

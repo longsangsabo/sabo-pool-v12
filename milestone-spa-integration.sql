@@ -36,7 +36,7 @@ BEGIN
   -- Check if already completed
   SELECT is_completed INTO v_already_completed
   FROM player_milestones 
-  WHERE player_id = p_user_id AND milestone_id = p_milestone_id;
+  WHERE user_id = p_user_id AND milestone_id = p_milestone_id;
   
   IF v_already_completed THEN
     RETURN jsonb_build_object('success', false, 'error', 'Milestone already completed');
@@ -44,7 +44,7 @@ BEGIN
   
   -- Mark milestone as completed
   INSERT INTO player_milestones (
-    player_id, 
+    user_id, 
     milestone_id, 
     current_progress, 
     is_completed, 
@@ -58,7 +58,7 @@ BEGIN
     NOW(),
     NOW()
   )
-  ON CONFLICT (player_id, milestone_id) DO UPDATE SET
+  ON CONFLICT (user_id, milestone_id) DO UPDATE SET
     current_progress = v_milestone_record.requirement_value,
     is_completed = true,
     completed_at = NOW(),
@@ -67,9 +67,9 @@ BEGIN
   -- Award SPA points
   IF v_milestone_record.spa_reward > 0 THEN
     -- Update player rankings
-    INSERT INTO player_rankings (player_id, spa_points, updated_at)
+    INSERT INTO player_rankings (user_id, spa_points, updated_at)
     VALUES (p_user_id, v_milestone_record.spa_reward, NOW())
-    ON CONFLICT (player_id) DO UPDATE SET
+    ON CONFLICT (user_id) DO UPDATE SET
       spa_points = player_rankings.spa_points + v_milestone_record.spa_reward,
       updated_at = NOW();
     
@@ -176,7 +176,7 @@ BEGIN
   FOR v_milestone IN 
     SELECT m.*, COALESCE(pm.current_progress, 0) as current_progress, COALESCE(pm.is_completed, false) as is_completed
     FROM milestones m
-    LEFT JOIN player_milestones pm ON m.id = pm.milestone_id AND pm.player_id = p_user_id
+    LEFT JOIN player_milestones pm ON m.id = pm.milestone_id AND pm.user_id = p_user_id
     WHERE m.milestone_type = p_milestone_type 
       AND m.is_active = true
       AND COALESCE(pm.is_completed, false) = false
@@ -196,13 +196,13 @@ BEGIN
       updated_at = NOW()
   FROM milestones m
   WHERE pm.milestone_id = m.id
-    AND pm.player_id = p_user_id
+    AND pm.user_id = p_user_id
     AND m.milestone_type = p_milestone_type
     AND pm.is_completed = false
     AND p_new_value < m.requirement_value;
   
   -- Insert progress for new milestones
-  INSERT INTO player_milestones (player_id, milestone_id, current_progress, is_completed, created_at)
+  INSERT INTO player_milestones (user_id, milestone_id, current_progress, is_completed, created_at)
   SELECT 
     p_user_id,
     m.id,
@@ -215,7 +215,7 @@ BEGIN
     AND p_new_value < m.requirement_value
     AND NOT EXISTS (
       SELECT 1 FROM player_milestones pm 
-      WHERE pm.player_id = p_user_id AND pm.milestone_id = m.id
+      WHERE pm.user_id = p_user_id AND pm.milestone_id = m.id
     );
   
   RETURN jsonb_build_object(

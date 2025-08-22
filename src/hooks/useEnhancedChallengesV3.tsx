@@ -171,6 +171,11 @@ export const useEnhancedChallengesV3 = () => {
         if (challenge.opponent_id) userIds.add(challenge.opponent_id);
       });
 
+      // ✅ ALWAYS include current user to fix SPA validation issue
+      if (user?.id) {
+        userIds.add(user.id);
+      }
+
       // Fetch profiles and rankings in parallel
       const [profilesResponse, rankingsResponse] = await Promise.all([
         supabase
@@ -224,6 +229,34 @@ export const useEnhancedChallengesV3 = () => {
       // Set the final profile with SPA data
       if (tempCurrentUserProfile) {
         setCurrentUserProfile(tempCurrentUserProfile);
+      } else if (user?.id) {
+        // ✅ Fallback: Direct load current user if not found in batch
+        console.log('⚠️ Current user not found in batch, loading directly...');
+        const [directProfile, directRanking] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('user_id, full_name, display_name, verified_rank, elo, avatar_url, current_rank')
+            .eq('user_id', user.id)
+            .single(),
+          supabase
+            .from('player_rankings')
+            .select('spa_points, elo_points')
+            .eq('user_id', user.id)
+            .single()
+        ]);
+
+        if (directProfile.data && !directProfile.error) {
+          const fallbackProfile = {
+            ...directProfile.data,
+            spa_points: directRanking.data?.spa_points || 0,
+            elo_points: directRanking.data?.elo_points || 1000
+          };
+          setCurrentUserProfile(fallbackProfile);
+          console.log('✅ Loaded current user profile via fallback:', {
+            display_name: fallbackProfile.display_name,
+            spa_points: fallbackProfile.spa_points
+          });
+        }
       }
 
       // Enrich challenges with profile data
@@ -432,14 +465,18 @@ export const useEnhancedChallengesV3 = () => {
       userId: user.id
     });
 
+    // ✅ SIMPLIFIED FIX: Skip frontend validation, let server handle it
+    // This prevents "currentUserProfile null" issues
+    console.log('⚠️ Skipping frontend SPA validation - let server handle it');
+
     // Frontend validation - check SPA before API call
-    if (requiredSpa > 0 && userSpa < requiredSpa) {
-      // If we don't have profile data, don't show fake numbers
-      if (!currentUserProfile) {
-        throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa} SPA)`);
-      }
-      throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa}, có ${userSpa})`);
-    }
+    // DISABLED: if (requiredSpa > 0 && userSpa < requiredSpa) {
+    //   // If we don't have profile data, don't show fake numbers
+    //   if (!currentUserProfile) {
+    //     throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa} SPA)`);
+    //   }
+    //   throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa}, có ${userSpa})`);
+    // }
 
     try {
       console.log('🎯 Calling accept_open_challenge with:', {
@@ -492,6 +529,15 @@ export const useEnhancedChallengesV3 = () => {
         if (response?.error?.includes('không đủ SPA')) {
           const requiredSpa = response.required_spa || 0;
           const userSpa = response.user_spa || 0;
+          
+          // ✅ Show actual server response for debugging
+          console.log('🚨 Server SPA Error:', {
+            response,
+            requiredSpa,
+            userSpa,
+            currentUserProfile,
+            profileSpa: currentUserProfile?.spa_points
+          });
           
           throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa}, có ${userSpa})`);
         }

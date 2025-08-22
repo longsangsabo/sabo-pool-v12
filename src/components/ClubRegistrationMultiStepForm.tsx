@@ -188,6 +188,7 @@ const ClubRegistrationMultiStepForm = () => {
       const { error } = await supabase.from('club_profiles').upsert({
         user_id: user.id,
         club_name: formData.club_name,
+        name: formData.club_name, // Required field - same as club_name
         address: formData.address,
         phone: formData.phone,
         description: '',
@@ -211,14 +212,26 @@ const ClubRegistrationMultiStepForm = () => {
 
     setSaving(true);
     try {
-      const { error } = await supabase.from('club_profiles').upsert({
+      // Validate required fields
+      if (!formData.club_name || !formData.address || !formData.phone) {
+        toast.error('Vui lòng điền đầy đủ thông tin bắt buộc');
+        setSaving(false);
+        return;
+      }
+
+      const registrationData = {
         user_id: user.id,
         club_name: formData.club_name,
+        name: formData.club_name, // Required field - same as club_name
         address: formData.address,
         phone: formData.phone,
-        description: '',
+        description: '', // Set empty string instead of undefined
         verification_status: 'pending',
-      });
+      };
+
+      console.log('Submitting registration data:', registrationData);
+
+      const { error } = await supabase.from('club_profiles').upsert(registrationData);
 
       if (error) throw error;
 

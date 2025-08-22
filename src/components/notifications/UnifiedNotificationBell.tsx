@@ -328,7 +328,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
 
         // Subscribe to real-time notifications for both INSERT and UPDATE
         subscription = supabase
-          .channel('unified_notifications_realtime')
+          .channel(`unified_notifications_${user.id}`) // Unique channel per user
           .on(
             'postgres_changes',
             {
@@ -342,14 +342,24 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
                 console.log('New notification received:', payload);
                 const newNotification = payload.new as Notification;
                 
-                setNotifications(prev => [newNotification, ...prev]);
+                // Prevent duplicate notifications
+                setNotifications(prev => {
+                  const exists = prev.some(n => n.id === newNotification.id);
+                  if (exists) {
+                    console.log('Duplicate notification detected, skipping...');
+                    return prev;
+                  }
+                  return [newNotification, ...prev];
+                });
                 setUnreadCount(prev => prev + 1);
                 
-                // Show toast for high priority notifications
+                // Show toast for high priority notifications (throttled)
                 if (newNotification.priority === 'high' || newNotification.priority === 'urgent') {
-                  toast.info(newNotification.title, {
-                    description: newNotification.message,
-                  });
+                  setTimeout(() => {
+                    toast.info(newNotification.title, {
+                      description: newNotification.message,
+                    });
+                  }, 100); // Small delay to prevent spam
                 }
               } catch (error) {
                 console.error('Error handling real-time notification:', error);
@@ -410,19 +420,26 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
     };
   }, [user?.id]);
 
-  // Add window focus listener to refresh notifications with force refresh
+  // Add window focus listener - THROTTLED to prevent spam
   useEffect(() => {
+    let lastFocusTime = 0;
+    const THROTTLE_DELAY = 30000; // 30 seconds throttle
+
     const handleWindowFocus = () => {
-      if (user?.id) {
-        console.log('🔄 Window focused - force refreshing notifications');
-        fetchNotifications(true); // Force refresh on window focus
+      const now = Date.now();
+      if (user?.id && (now - lastFocusTime) > THROTTLE_DELAY) {
+        console.log('🔄 Window focused - gentle refresh (throttled)');
+        lastFocusTime = now;
+        fetchNotifications(false); // Gentle refresh, no force
       }
     };
 
     const handleVisibilityChange = () => {
-      if (!document.hidden && user?.id) {
-        console.log('🔄 Page became visible - force refreshing notifications');
-        fetchNotifications(true); // Force refresh when page becomes visible
+      const now = Date.now();
+      if (!document.hidden && user?.id && (now - lastFocusTime) > THROTTLE_DELAY) {
+        console.log('🔄 Page became visible - gentle refresh (throttled)');
+        lastFocusTime = now;
+        fetchNotifications(false); // Gentle refresh, no force
       }
     };
 
@@ -435,14 +452,14 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
     };
   }, [user?.id]);
 
-  // Add periodic refresh to ensure data consistency with force refresh
+  // Add periodic refresh - REDUCED FREQUENCY to prevent spam
   useEffect(() => {
     if (!user?.id) return;
 
     const refreshInterval = setInterval(() => {
-      console.log('⏰ Periodic refresh - force refreshing notifications');
-      fetchNotifications(true); // Force refresh every interval
-    }, 30000); // Refresh every 30 seconds
+      console.log('⏰ Periodic refresh - gentle refresh only');
+      fetchNotifications(false); // Gentle refresh only, no force
+    }, 180000); // Refresh every 3 minutes instead of 30 seconds
 
     return () => clearInterval(refreshInterval);
   }, [user?.id]);

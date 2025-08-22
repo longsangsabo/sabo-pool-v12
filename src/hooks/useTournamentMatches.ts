@@ -64,7 +64,6 @@ export const useTournamentMatches = (tournamentId: string | null) => {
         .from('tournament_matches')
         .select('*')
         .eq('tournament_id', tournamentId)
-        .order('match_stage', { ascending: true })
         .order('bracket_type', { ascending: true })
         .order('round_number', { ascending: true })
         .order('match_number', { ascending: true });

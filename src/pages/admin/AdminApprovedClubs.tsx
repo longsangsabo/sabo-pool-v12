@@ -151,10 +151,10 @@ const AdminApprovedClubs = () => {
     club =>
       club.club_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       club.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      club.profiles?.full_name
+      club.profiles?.display_name
         ?.toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      club.profiles?.display_name
+      club.profiles?.full_name
         ?.toLowerCase()
         .includes(searchTerm.toLowerCase())
   );
@@ -257,6 +257,7 @@ const AdminApprovedClubs = () => {
                         <div className='text-sm'>
                           <span className='font-medium'>Chủ sở hữu:</span>{' '}
                           {club.profiles?.display_name ||
+                            club.profiles?.display_name ||
                             club.profiles?.full_name ||
                             'Chưa có thông tin'}
                         </div>
@@ -381,7 +382,8 @@ const AdminApprovedClubs = () => {
                                       Họ tên đầy đủ
                                     </label>
                                     <p className='text-sm'>
-                                      {selectedClub.profiles?.full_name ||
+                                      {selectedClub.profiles?.display_name ||
+                                        selectedClub.profiles?.full_name ||
                                         'Chưa có'}
                                     </p>
                                   </div>

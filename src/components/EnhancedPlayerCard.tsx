@@ -7,6 +7,7 @@ interface PlayerCardProps {
   player: {
     user_id: string;
     full_name: string;
+    display_name?: string;
     avatar_url?: string;
     current_rank: string;
     ranking_points: number;
@@ -59,7 +60,7 @@ const EnhancedPlayerCard = ({
         <img
           src={player.avatar_url || '/placeholder.svg'}
           className='w-full h-full object-cover'
-          alt={player.full_name}
+          alt={player.display_name || player.full_name}
         />
         <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent' />
 
@@ -74,7 +75,7 @@ const EnhancedPlayerCard = ({
         {/* Basic Info */}
         <div className='absolute bottom-4 left-4 text-white'>
           <h2 className='text-2xl font-bold'>
-            {player.full_name}
+            {player.display_name || player.full_name}
             {player.age ? `, ${player.age}` : ''}
           </h2>
           <div className='flex items-center space-x-2 mt-1'>

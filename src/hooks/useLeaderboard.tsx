@@ -9,6 +9,7 @@ import {
 export interface LeaderboardEntry {
   id: string;
   username: string;
+  display_name?: string;
   full_name: string;
   current_rank: string;
   ranking_points: number;

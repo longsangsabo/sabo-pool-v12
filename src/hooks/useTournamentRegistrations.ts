@@ -44,28 +44,10 @@ export const useTournamentRegistrations = (tournamentId: string) => {
 
       console.log('🔍 Fetching registrations for tournament:', tournamentId);
 
-      // Fetch tournament registrations with enhanced player data
-      const { data, error: fetchError } = await supabase
+      // First, fetch tournament registrations without foreign key join
+      const { data: registrations, error: fetchError } = await supabase
         .from('tournament_registrations')
-        .select(
-          `
-          id,
-          tournament_id,
-          user_id,
-          registration_status,
-          payment_status,
-          created_at,
-          notes,
-          profiles (
-            id,
-            user_id,
-            full_name,
-            display_name,
-            avatar_url,
-            verified_rank
-          )
-        `
-        )
+        .select('*')
         .eq('tournament_id', tournamentId)
         .order('created_at', { ascending: true });
 
@@ -77,7 +59,58 @@ export const useTournamentRegistrations = (tournamentId: string) => {
         throw fetchError;
       }
 
-      console.log('✅ Fetched registrations:', data?.length || 0);
+      console.log('✅ Fetched registrations:', registrations?.length || 0);
+
+      // If no registrations, return empty array
+      if (!registrations || registrations.length === 0) {
+        return [];
+      }
+
+      // Get unique user IDs
+      const userIds = [...new Set(registrations.map(reg => reg.user_id))];
+
+      // Fetch user profiles separately (may fail due to RLS, handle gracefully)
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, user_id, full_name, display_name, avatar_url, verified_rank')
+        .in('user_id', userIds);
+
+      if (profilesError) {
+        console.warn('⚠️ Error fetching profiles (likely RLS), using player_rankings as fallback:', profilesError);
+        
+        // Try player_rankings as fallback for user data
+        const { data: rankings, error: rankingsError } = await supabase
+          .from('player_rankings')
+          .select('user_id, user_name, current_rank, verified_rank')
+          .in('user_id', userIds);
+
+        if (rankingsError) {
+          console.warn('⚠️ Error fetching player rankings, continuing with registration data only:', rankingsError);
+        }
+
+        // Combine with fallback data
+        const data = registrations.map(registration => ({
+          ...registration,
+          profiles: rankings?.find(rank => rank.user_id === registration.user_id) 
+            ? {
+                id: registration.user_id,
+                user_id: registration.user_id,
+                full_name: rankings.find(rank => rank.user_id === registration.user_id)?.user_name || 'Unknown',
+                display_name: rankings.find(rank => rank.user_id === registration.user_id)?.user_name || 'Unknown',
+                avatar_url: null,
+                verified_rank: rankings.find(rank => rank.user_id === registration.user_id)?.verified_rank || null
+              }
+            : null
+        }));
+
+        return data;
+      }
+
+      // Combine data manually
+      const data = registrations.map(registration => ({
+        ...registration,
+        profiles: profiles?.find(profile => profile.user_id === registration.user_id) || null
+      }));
 
       // Transform the data to match our interface
       const transformedData = (data || []).map(reg => ({

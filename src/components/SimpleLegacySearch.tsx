@@ -68,7 +68,7 @@ export const SimpleLegacySearch: React.FC = () => {
           <h4 className="font-semibold">Kết quả tìm kiếm:</h4>
           {results.map((player) => (
             <div key={player.id} className="p-3 border rounded bg-gray-50">
-              <div className="font-semibold">{player.full_name}</div>
+              <div className="font-semibold">{player.display_name || player.full_name}</div>
               {player.nick_name && (
                 <div className="text-sm text-gray-600">Biệt danh: {player.nick_name}</div>
               )}

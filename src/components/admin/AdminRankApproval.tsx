@@ -163,7 +163,8 @@ export const AdminRankApproval: React.FC<AdminRankApprovalProps> = ({ className 
                       <User className="h-5 w-5 text-gray-400" />
                       <div>
                         <div className="font-medium">
-                          {request.user?.profiles?.full_name || 'Unknown User'}
+                          {request.user?.profiles?.display_name || 
+                           request.user?.profiles?.full_name || 'Unknown User'}
                         </div>
                         <div className="text-sm text-gray-500">
                           {request.user?.email}

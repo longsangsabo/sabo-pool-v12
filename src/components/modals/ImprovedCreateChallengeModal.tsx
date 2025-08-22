@@ -50,6 +50,7 @@ interface ImprovedCreateChallengeModalProps {
 interface Player {
   user_id: string;
   full_name: string;
+  display_name?: string;
   avatar_url?: string;
   current_rank?: string;
   ranking_points?: number;
@@ -519,7 +520,7 @@ const ImprovedCreateChallengeModal = ({
                           setFormData(prev => ({
                             ...prev,
                             opponent_id: player.user_id,
-                            opponent_search: player.full_name,
+                            opponent_search: player.display_name || player.full_name,
                           }));
                           setSelectedOpponent(player);
                           setSearchResults([]);
@@ -528,12 +529,12 @@ const ImprovedCreateChallengeModal = ({
                         <Avatar className='w-8 h-8'>
                           <AvatarImage src={player.avatar_url} />
                           <AvatarFallback>
-                            {player.full_name?.[0] || 'U'}
+                            {(player.display_name || player.full_name)?.[0] || 'U'}
                           </AvatarFallback>
                         </Avatar>
                         <div className='flex-1'>
                           <div className='body-small font-medium'>
-                            {player.full_name}
+                            {player.display_name || player.full_name}
                           </div>
                           <div className='timestamp'>
                             Rank: {player.current_rank || 'K'} |{' '}

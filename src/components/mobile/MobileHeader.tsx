@@ -258,13 +258,13 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                   </Badge>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem
+                {/* <DropdownMenuItem
                   onClick={() => navigate('/wallet')}
                   className='hover:bg-muted/50 cursor-pointer'
                 >
                   <Wallet className='w-4 h-4 mr-2' />
                   Ví của tôi
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
 
                 <DropdownMenuItem
                   onClick={() => navigate('/settings')}

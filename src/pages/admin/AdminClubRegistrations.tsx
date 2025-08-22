@@ -480,6 +480,7 @@ const AdminClubRegistrations = () => {
                         <div className='text-sm'>
                           <span className='font-medium'>Người đăng ký:</span>{' '}
                           {registration.profiles?.display_name ||
+                            registration.profiles?.display_name ||
                             registration.profiles?.full_name ||
                             'Chưa có thông tin'}
                         </div>

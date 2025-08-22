@@ -62,7 +62,34 @@ export const useProfileCache = () => {
         .single();
 
       if (error) {
-        console.error('Error fetching profile:', error);
+        console.warn('⚠️ Error fetching profile from profiles table, trying player_rankings fallback:', error);
+        
+        // Try player_rankings as fallback
+        const { data: rankingData, error: rankingError } = await supabase
+          .from('player_rankings')
+          .select('user_id, user_name, current_rank, verified_rank')
+          .eq('user_id', userId)
+          .single();
+
+        if (rankingError) {
+          console.error('❌ Error fetching from player_rankings fallback:', rankingError);
+          return null;
+        }
+
+        if (rankingData) {
+          const fallbackProfile = {
+            user_id: rankingData.user_id,
+            full_name: rankingData.user_name || 'Unknown User',
+            display_name: rankingData.user_name || 'Unknown User',
+            nickname: null,
+            email: null,
+            avatar_url: null,
+            verified_rank: rankingData.verified_rank
+          };
+          console.log(`🔄 Using fallback profile for ${userId}:`, fallbackProfile);
+          return fallbackProfile;
+        }
+        
         return null;
       }
 

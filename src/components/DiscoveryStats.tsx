@@ -43,7 +43,7 @@ const DiscoveryStats = ({
               <div className='w-6 h-6 bg-white/20 rounded-full flex items-center justify-center'>
                 <Users className='w-3 h-3' />
               </div>
-              <span className='font-semibold'>{currentPlayer.full_name}</span>
+              <span className='font-semibold'>{currentPlayer.display_name || currentPlayer.full_name}</span>
               <Badge
                 variant='secondary'
                 className='text-xs bg-white/20 border-none'

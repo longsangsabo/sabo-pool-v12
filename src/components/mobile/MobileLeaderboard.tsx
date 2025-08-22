@@ -21,6 +21,11 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
   const { leaderboard, loading, error, updateFilters } = useLeaderboard();
   const { theme } = useTheme();
 
+  // Utility function to get display name
+  const getPlayerDisplayName = (player: any) => {
+    return player.display_name || player.username || player.full_name || 'Player';
+  };
+
   // Sort data based on active tab
   const sortedData = React.useMemo(() => {
     if (!leaderboard.length) return [];
@@ -250,7 +255,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
                             : 'bg-gray-100 text-gray-700'
                         }`}
                       >
-                        {player.username.substring(0, 2).toUpperCase()}
+                        {getPlayerDisplayName(player).substring(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
 
@@ -261,7 +266,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
                           theme === 'dark' ? 'text-gray-100' : 'text-gray-900'
                         }`}
                       >
-                        {player.username}
+                        {getPlayerDisplayName(player)}
                       </p>
                       <div className='flex items-center gap-2 mt-1'>
                         <Badge
@@ -341,7 +346,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
                             : 'bg-gray-100 text-gray-700'
                         }`}
                       >
-                        {player.username.substring(0, 2).toUpperCase()}
+                        {getPlayerDisplayName(player).substring(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
 
@@ -352,7 +357,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
                           theme === 'dark' ? 'text-gray-100' : 'text-gray-900'
                         }`}
                       >
-                        {player.username}
+                        {getPlayerDisplayName(player)}
                       </p>
                       <div className='flex items-center gap-2 mt-1'>
                         <Badge

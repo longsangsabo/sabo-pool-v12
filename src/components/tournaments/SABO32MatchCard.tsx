@@ -54,13 +54,20 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
   const { submitScore, isSubmitting } = useSABO32ScoreSubmission(tournamentId, onUpdate);
 
   // Update local state when match prop changes (real data from server)
-  React.useEffect(() => {
-    if (!isOptimistic) {
+  useEffect(() => {
+    // Only update if we're not in optimistic state or if real data is different
+    if (!isOptimistic || 
+        match.score_player1 !== optimisticMatch.score_player1 || 
+        match.score_player2 !== optimisticMatch.score_player2 ||
+        match.status !== optimisticMatch.status) {
       setOptimisticMatch(match);
       setScore1(match.score_player1?.toString() || '0');
       setScore2(match.score_player2?.toString() || '0');
+      if (match.status === 'completed' && isOptimistic) {
+        setIsOptimistic(false);
+      }
     }
-  }, [match, isOptimistic]);
+  }, [match, isOptimistic, optimisticMatch]);
 
   const player1Name = optimisticMatch.player1_profile?.full_name || 
                      optimisticMatch.player1_profile?.display_name || 
@@ -102,7 +109,7 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
         completed_at: new Date().toISOString()
       });
       
-      // Submit score (this will trigger refresh with scroll preservation)
+      // Submit score in background WITHOUT triggering page refresh
       const result = await submitScore({
         matchId: optimisticMatch.id,
         score_player1: scoreNum1,
@@ -116,13 +123,10 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
         setIsOptimistic(false);
         setIsEditing(true);
       } else {
-        // Clear form on success, real data will come from server
+        // Clear form on success
         setScore1('0');
         setScore2('0');
-        // Keep optimistic state until real data arrives
-        setTimeout(() => {
-          setIsOptimistic(false);
-        }, 1000); // Allow time for server update
+        // Optimistic state will be cleared when real data arrives via useEffect
       }
     } catch (error) {
       console.error('Failed to submit score:', error);
@@ -296,6 +300,7 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
                     size="sm"
                     onClick={handleScoreSubmit}
                     disabled={isSubmitting}
+                    data-submitting={isSubmitting}
                     className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     {isSubmitting ? 'Đang lưu...' : 'Lưu kết quả'}

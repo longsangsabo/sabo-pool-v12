@@ -24,6 +24,9 @@ import { ReAuthModal } from '@/components/auth/ReAuthModal';
 // ✅ Import debug utilities for tournament refresh
 import '@/utils/debugTournamentRefresh';
 
+// 🔧 Create SABO-32 advancement function
+import '@/utils/createSABO32Function';
+
 // 🔧 Test auth functionality in development - DISABLED FOR PRODUCTION
 // import '@/utils/testAuth';
 

@@ -11,6 +11,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Trophy, Users, Clock, RefreshCw } from 'lucide-react';
 import { SABO32MatchCard } from '../tournaments/SABO32MatchCard';
+import { useSABO32BackgroundSync } from '@/hooks/useSABO32BackgroundSync';
+import { SABO32ProgressTracker } from '../tournaments/SABO32ProgressTracker';
+import { useSABO32Realtime } from '@/hooks/useSABO32Realtime';
+import { SABO32AdvancementFixer } from '../tournaments/SABO32AdvancementFixer';
+import { SABO32AdvancementFix } from '../tournaments/SABO32AdvancementFix';
 
 interface SABO32Match {
   id: string;
@@ -49,6 +54,7 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
   const [matches, setMatches] = useState<SABO32Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('progress'); // Track active tab
   
   // Scroll position preservation (like SABODoubleEliminationViewer)
   const scrollPositionRef = useRef<number>(0);
@@ -57,17 +63,20 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
     fetchMatches();
   }, [tournamentId]);
 
-  // Custom refresh function that preserves scroll position
+  // Custom refresh function that preserves scroll position AND active tab
   const refreshWithScrollPreservation = useCallback(() => {
-    // Save current scroll position
+    // Save current scroll position AND active tab
     scrollPositionRef.current = window.scrollY;
+    const currentTab = activeTab; // Preserve current tab
+    
     fetchMatches();
 
-    // Restore scroll position after refresh
+    // Restore scroll position and tab after refresh
     setTimeout(() => {
       window.scrollTo({ top: scrollPositionRef.current, behavior: 'instant' });
+      // Tab state is preserved by activeTab state
     }, 100);
-  }, []);
+  }, [activeTab]);
 
   const fetchMatches = async () => {
     try {
@@ -120,12 +129,19 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
     }
   };
 
+  // Setup realtime subscription
+  useSABO32Realtime({
+    tournamentId,
+    onUpdate: refreshWithScrollPreservation,
+    enabled: true
+  });
+
   const getMatchesByGroup = (groupId: 'A' | 'B' | null) => {
-    return matches.filter(match => match.group_id === groupId);
+    return (matches || []).filter(match => match.group_id === groupId);
   };
 
   const getMatchesByBracketType = (matches: SABO32Match[], bracketType: string) => {
-    return matches.filter(match => match.bracket_type === bracketType);
+    return (matches || []).filter(match => match.bracket_type === bracketType);
   };
 
   const renderMatchCard = (match: SABO32Match) => (
@@ -256,20 +272,26 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
               <Trophy className="w-5 h-5" />
               SABO-32 Double Elimination Bracket
             </CardTitle>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={refreshWithScrollPreservation}
-              disabled={loading}
-            >
-              <RefreshCw className={`w-4 h-4 mr-1 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={refreshWithScrollPreservation}
+                disabled={loading}
+              >
+                <RefreshCw className={`w-4 h-4 mr-1 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+              <SABO32AdvancementFixer 
+                tournamentId={tournamentId} 
+                onFixed={refreshWithScrollPreservation}
+              />
+            </div>
           </div>
           <div className="flex gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <Users className="w-4 h-4" />
-              Total matches: {matches.length}
+              Total matches: {(matches || []).length}
             </div>
             <div>Group A: {groupAMatches.length}</div>
             <div>Group B: {groupBMatches.length}</div>
@@ -278,12 +300,18 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
         </CardHeader>
       </Card>
 
-      <Tabs defaultValue="groupA" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="progress">📊 Progress</TabsTrigger>
           <TabsTrigger value="groupA">Group A ({groupAMatches.length})</TabsTrigger>
           <TabsTrigger value="groupB">Group B ({groupBMatches.length})</TabsTrigger>
           <TabsTrigger value="crossBracket">Cross-Bracket ({crossMatches.length})</TabsTrigger>
+          <TabsTrigger value="fix">🔧 Fix</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="progress" className="space-y-4">
+          <SABO32ProgressTracker tournamentId={tournamentId} />
+        </TabsContent>
 
         <TabsContent value="groupA" className="space-y-4">
           <Card className="border-green-200 dark:border-green-700">
@@ -319,6 +347,13 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
               {renderCrossBracket()}
             </CardContent>
           </Card>
+        </TabsContent>
+        
+        <TabsContent value="fix" className="space-y-4">
+          <SABO32AdvancementFix 
+            tournamentId={tournamentId} 
+            onComplete={refreshWithScrollPreservation}
+          />
         </TabsContent>
       </Tabs>
     </div>

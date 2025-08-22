@@ -47,12 +47,21 @@ export const useSABO32ScoreSubmission = (tournamentId: string, onMatchUpdate?: (
       // 3. Handle advancement logic
       await handleAdvancement(completedMatch, tournamentId);
 
-      // 4. Call the update callback to refresh data
+      // 4. ONLY call update callback if provided, but preserve scroll
       if (onMatchUpdate) {
+        // Save scroll position before update
+        const scrollY = window.scrollY;
         onMatchUpdate();
+        // Restore scroll position after update
+        setTimeout(() => {
+          window.scrollTo({ top: scrollY, behavior: 'instant' });
+        }, 50);
       }
 
-      toast.success('Tỷ số đã được cập nhật và người chơi được thăng hạng!');
+      toast.success('Tỷ số đã được cập nhật!', {
+        duration: 2000,
+        position: 'top-center'
+      });
       
       return { success: true };
       

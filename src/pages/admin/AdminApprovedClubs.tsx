@@ -80,19 +80,10 @@ const AdminApprovedClubs = () => {
   const fetchApprovedClubs = async () => {
     setLoading(true);
     try {
+      // First, get approved club profiles
       const { data: clubs, error } = await supabase
         .from('club_profiles')
-        .select(
-          `
-          *,
-          profiles!club_profiles_user_id_fkey (
-            display_name,
-            full_name,
-            phone,
-            role
-          )
-        `
-        )
+        .select('*')
         .eq('verification_status', 'approved')
         .order('created_at', { ascending: false });
 
@@ -102,7 +93,31 @@ const AdminApprovedClubs = () => {
         return;
       }
 
-      setClubs(clubs || []);
+      // Get user profiles separately
+      let clubsWithProfiles: ApprovedClub[] = [];
+      
+      if (clubs && clubs.length > 0) {
+        const userIds = clubs.map(c => c.user_id);
+        
+        const { data: profiles, error: profileError } = await supabase
+          .from('profiles')
+          .select('user_id, display_name, full_name, phone, role')
+          .in('user_id', userIds);
+
+        if (profileError) {
+          console.warn('Warning: Could not load user profiles:', profileError);
+        }
+
+        // Combine clubs with profiles
+        clubsWithProfiles = clubs.map(club => ({
+          ...club,
+          profiles: profiles?.find(p => p.user_id === club.user_id) || null
+        }));
+      } else {
+        clubsWithProfiles = clubs || [];
+      }
+
+      setClubs(clubsWithProfiles);
     } catch (error: any) {
       console.error('Error fetching approved clubs:', error);
       toast.error('Lỗi khi tải danh sách câu lạc bộ');

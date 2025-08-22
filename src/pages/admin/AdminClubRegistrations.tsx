@@ -102,18 +102,10 @@ const AdminClubRegistrations = () => {
     setLoading(true);
 
     try {
+      // First, get club registrations without join
       let query = supabase
         .from('club_registrations')
-        .select(
-          `
-          *,
-          profiles!club_registrations_user_id_fkey (
-            display_name,
-            full_name,
-            phone
-          )
-        `
-        )
+        .select('*')
         .order('created_at', { ascending: false });
 
       // Apply status filter
@@ -129,14 +121,38 @@ const AdminClubRegistrations = () => {
         return;
       }
 
+      // Get user profiles separately to avoid relationship issues
+      let registrationsWithProfiles: ClubRegistration[] = [];
+      
+      if (registrations && registrations.length > 0) {
+        const userIds = registrations.map(r => r.user_id);
+        
+        const { data: profiles, error: profileError } = await supabase
+          .from('profiles')
+          .select('user_id, display_name, full_name, phone')
+          .in('user_id', userIds);
+
+        if (profileError) {
+          console.warn('Warning: Could not load user profiles:', profileError);
+        }
+
+        // Combine registrations with profiles
+        registrationsWithProfiles = registrations.map(reg => ({
+          ...reg,
+          profiles: profiles?.find(p => p.user_id === reg.user_id) || null
+        }));
+      } else {
+        registrationsWithProfiles = registrations || [];
+      }
+
       console.log(
         '📋 Found registrations with filter:',
         statusFilter,
         'Count:',
-        registrations?.length || 0
+        registrationsWithProfiles?.length || 0
       );
 
-      setRegistrations((registrations || []) as any);
+      setRegistrations((registrationsWithProfiles || []) as any);
     } catch (error: any) {
       console.error('Error fetching registrations:', error);
       toast.error('Lỗi khi tải danh sách đăng ký: ' + error.message);

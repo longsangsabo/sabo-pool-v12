@@ -38,8 +38,7 @@ export function useMobileProfile() {
       // ✅ AUTO-CREATE PROFILE if missing using upsert with ignoreDuplicates
       let actualData = data;
       if (!data) {
-        console.log('🛠️ [MobileProfile] No profile found, creating one for user:', user.id);
-        
+
         try {
           // Use upsert with ignoreDuplicates to handle the ON CONFLICT issue
           const { data: newProfile, error: createError } = await supabase
@@ -63,13 +62,13 @@ export function useMobileProfile() {
             console.error('❌ [MobileProfile] Failed to create profile via upsert:', createError);
             
             // Final fallback: Just continue without profile (for read-only access)
-            console.log('⚠️ [MobileProfile] Continuing without profile creation');
+
           } else if (newProfile) {
-            console.log('✅ [MobileProfile] Profile created/found via upsert:', newProfile);
+
             actualData = newProfile;
           } else {
             // ignoreDuplicates=true returns null when duplicate exists, so fetch again
-            console.log('🔄 [MobileProfile] Profile exists, fetching...');
+
             const { data: existingProfile } = await supabase
               .from('profiles')
               .select('*')
@@ -104,14 +103,7 @@ export function useMobileProfile() {
         updated_at: actualData?.updated_at || new Date().toISOString(),
         completion_percentage: actualData?.completion_percentage || 0,
       };
-      
-      console.log('🎯 [MobileProfile] Profile loaded:', {
-        hasData: !!actualData,
-        displayName: profileData.display_name,
-        avatarUrl: profileData.avatar_url,
-        email: profileData.email
-      });
-      
+
       setProfile(profileData);
       setEditingProfile(profileData);
     } catch (e) {
@@ -144,8 +136,6 @@ export function useMobileProfile() {
         role: editingProfile.role,
         active_role: editingProfile.active_role,
       };
-
-      console.log('🎯 [MobileProfile] Saving payload:', payload);
 
       const { error: mutationError } = await supabase
         .from('profiles')
@@ -193,8 +183,6 @@ export function useMobileProfile() {
       return;
     }
 
-    console.log('🔄 [Avatar Upload] Direct upload without cropping for better compatibility');
-    
     // Skip cropping and upload directly for better reliability
     handleDirectImageUpload(file);
   };
@@ -204,13 +192,10 @@ export function useMobileProfile() {
     setUploading(true);
     
     try {
-      console.log('🔄 [Avatar Upload] Starting direct upload for user:', user.id);
-      
+
       const fileExt = file.name.split('.').pop() || 'jpg';
       const fileName = `avatar-${user.id}-${Date.now()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
-
-      console.log('🔄 [Avatar Upload] Upload path:', filePath);
 
       const { error } = await supabase.storage
         .from('avatars')
@@ -227,8 +212,7 @@ export function useMobileProfile() {
         
         for (const bucketName of alternativeBuckets) {
           try {
-            console.log(`🔄 [Avatar Upload] Trying bucket: ${bucketName}`);
-            
+
             const altFilePath = bucketName === 'logo' ? fileName : filePath;
             
             const { error: altError } = await supabase.storage
@@ -239,18 +223,18 @@ export function useMobileProfile() {
               });
             
             if (!altError) {
-              console.log(`✅ [Avatar Upload] Success with bucket: ${bucketName}`);
+
               const { data: urlData } = supabase.storage
                 .from(bucketName)
                 .getPublicUrl(altFilePath);
               
               const avatarUrl = urlData.publicUrl;
-              console.log('🔗 [Avatar Upload] Generated URL:', avatarUrl);
+
               await updateProfileAvatar(avatarUrl);
               return;
             }
           } catch (e) {
-            console.log(`❌ [Avatar Upload] ${bucketName} failed:`, e);
+
           }
         }
         
@@ -262,7 +246,6 @@ export function useMobileProfile() {
         .getPublicUrl(filePath);
 
       const avatarUrl = urlData.publicUrl;
-      console.log('🔗 [Avatar Upload] Generated URL:', avatarUrl);
 
       await updateProfileAvatar(avatarUrl);
       
@@ -280,20 +263,15 @@ export function useMobileProfile() {
     if (!user) return;
     setUploading(true);
     try {
-      console.log('🎯 [Avatar Upload] Starting upload for user:', user.id);
-      
+
       const fileExt = 'webp';
       const fileName = `avatar-${user.id}-${Date.now()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`; // ✅ Fixed: Use user_id folder structure
-
-      console.log('🎯 [Avatar Upload] Uploading to path:', filePath);
 
       // Check if bucket exists by listing first
       const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
       if (bucketsError) {
         console.error('❌ [Avatar Upload] Error listing buckets:', bucketsError);
-      } else {
-        console.log('📦 [Avatar Upload] Available buckets:', buckets?.map(b => b.name));
       }
 
       const { error: uploadError } = await supabase.storage
@@ -308,15 +286,13 @@ export function useMobileProfile() {
         
         // Try alternative bucket names if 'avatars' fails
         if (uploadError.message?.includes('Bucket not found')) {
-          console.log('🔄 [Avatar Upload] Trying alternative buckets...');
-          
+
           // Try with different bucket names
           const alternativeBuckets = ['logo', 'evidence', 'public'];
           
           for (const bucketName of alternativeBuckets) {
             try {
-              console.log(`🔄 [Avatar Upload] Trying bucket: ${bucketName}`);
-              
+
               // For alternative buckets, try different path structures
               const altFilePath = bucketName === 'logo' ? fileName : filePath;
               
@@ -328,7 +304,7 @@ export function useMobileProfile() {
                 });
               
               if (!altError) {
-                console.log(`✅ [Avatar Upload] Success with bucket: ${bucketName}`);
+
                 const { data: urlData } = supabase.storage
                   .from(bucketName)
                   .getPublicUrl(altFilePath);
@@ -338,13 +314,13 @@ export function useMobileProfile() {
                 // Validate alternative URL
                 if (avatarUrl && avatarUrl !== 'undefined' && avatarUrl.includes('supabase')) {
                   const urlWithCache = `${avatarUrl}?t=${Date.now()}`;
-                  console.log(`✅ [Avatar Upload] Success with bucket: ${bucketName}, URL: ${urlWithCache}`);
+
                   await updateProfileAvatar(urlWithCache);
                   return;
                 }
               }
             } catch (e) {
-              console.log(`❌ [Avatar Upload] ${bucketName} failed:`, e);
+
             }
           }
         }
@@ -357,8 +333,7 @@ export function useMobileProfile() {
         .getPublicUrl(filePath);
 
       const avatarUrl = urlData.publicUrl;
-      console.log('✅ [Avatar Upload] Generated URL:', avatarUrl);
-      
+
       // Validate URL format
       if (!avatarUrl || avatarUrl === 'undefined' || !avatarUrl.includes('supabase')) {
         console.error('❌ [Avatar Upload] Invalid URL generated:', avatarUrl);
@@ -367,7 +342,6 @@ export function useMobileProfile() {
       
       // Add cache busting parameter to force refresh
       const urlWithCache = `${avatarUrl}?t=${Date.now()}`;
-      console.log('🔄 [Avatar Upload] URL with cache busting:', urlWithCache);
 
       await updateProfileAvatar(urlWithCache);
       

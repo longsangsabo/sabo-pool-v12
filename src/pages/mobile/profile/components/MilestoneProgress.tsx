@@ -38,8 +38,7 @@ export const MilestoneProgress: React.FC<MilestoneProgressProps> = ({ theme, onV
         
         // Get progress directly
         const progress = await milestoneService.getPlayerMilestoneProgress(user.id);
-        console.log('Loaded milestone progress:', progress);
-        
+
         // Sort to show most important milestones first (prioritize in-progress and completed)
         const sorted = progress.sort((a, b) => {
           const aProgress = a.milestone ? (a.current_progress / a.milestone.requirement_value) : 0;

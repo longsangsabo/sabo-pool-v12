@@ -179,9 +179,10 @@ export const useLeaderboard = () => {
           username:
             item.profiles?.display_name ||
             item.profiles?.full_name ||
+            item.user_name ||
             'Unknown',
           full_name: item.profiles?.full_name || '',
-          current_rank: item.profiles?.verified_rank || 'Nghiệp dư',
+          current_rank: item.verified_rank || item.profiles?.verified_rank || item.current_rank || 'Nghiệp dư',
           ranking_points: item.spa_points || 0,
           total_matches: item.total_matches || 0,
           avatar_url: item.profiles?.avatar_url || '',

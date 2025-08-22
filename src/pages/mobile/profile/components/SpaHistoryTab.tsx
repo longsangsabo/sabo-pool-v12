@@ -271,8 +271,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
       setCurrentBalance(rankingData?.spa_points || 0);
 
       // Fetch transaction history from multiple sources
-      console.log('🔍 Fetching SPA history from multiple tables...');
-      
+
       // 1. Fetch from spa_points_log (most detailed)
       const { data: pointsLogData, error: pointsLogError } = await supabase
         .from('spa_points_log')
@@ -334,8 +333,6 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
       // Sort by created_at desc
       allTransactions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-      console.log(`✅ Found ${allTransactions.length} total SPA transactions`);
-      console.log(`📊 Primary source: ${allTransactions.length > 0 ? allTransactions[0].metadata?.source : 'none'}`);
       setTransactions(allTransactions);
       
       // Fetch detailed information for transactions with reference_id

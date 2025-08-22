@@ -14,11 +14,13 @@ import {
   FileText,
   Camera,
   Users,
+  Star,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useClubRole } from '@/hooks/useClubRole';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface RankRequest {
   id: string;
@@ -41,6 +43,7 @@ interface RankRequest {
 const ClubRankVerificationTab = () => {
   const { user } = useAuth();
   const { isClubOwner, clubProfile } = useClubRole();
+  const queryClient = useQueryClient();
   const [requests, setRequests] = useState<RankRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
@@ -131,7 +134,14 @@ const ClubRankVerificationTab = () => {
     try {
       setProcessing(requestId);
 
-      const { error } = await supabase
+      // Get the request details first
+      const request = requests.find(r => r.id === requestId);
+      if (!request) {
+        throw new Error('Request not found');
+      }
+
+      // Update rank_requests table
+      const { error: updateError } = await supabase
         .from('rank_requests')
         .update({
           status: newStatus,
@@ -143,13 +153,96 @@ const ClubRankVerificationTab = () => {
         })
         .eq('id', requestId);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
-      // Note: Profile update and SPA point rewards are now handled automatically by database triggers
+      // If approved, sync the new rank to player_rankings and profiles tables
+      if (newStatus === 'approved') {
+        try {
+          // Calculate SPA bonus based on rank
+          const rankBonusMap: Record<string, number> = {
+            'H': 100,
+            'I': 150, 
+            'K': 200,
+            'A': 250,
+            'B': 300,
+            'C': 350,
+            'D': 400
+          };
+          const spaBonus = rankBonusMap[request.requested_rank] || 50;
 
-      toast.success(
-        newStatus === 'approved' ? 'Đã phê duyệt yêu cầu' : 'Đã từ chối yêu cầu'
-      );
+          // Update player_rankings table with new rank and SPA bonus
+          const { data: currentRanking } = await supabase
+            .from('player_rankings')
+            .select('spa_points')
+            .eq('user_id', request.user_id)
+            .single();
+
+          const newSpaPoints = (currentRanking?.spa_points || 0) + spaBonus;
+
+          const { error: playerRankingError } = await supabase
+            .from('player_rankings')
+            .update({
+              verified_rank: request.requested_rank,
+              current_rank: request.requested_rank,
+              spa_points: newSpaPoints,
+              updated_at: new Date().toISOString()
+            })
+            .eq('user_id', request.user_id);
+
+          if (playerRankingError) {
+            console.error('Error updating player_rankings:', playerRankingError);
+          }
+
+          // Update profiles table
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              verified_rank: request.requested_rank,
+              current_rank: request.requested_rank,
+              updated_at: new Date().toISOString()
+            })
+            .eq('user_id', request.user_id);
+
+          if (profileError) {
+            console.error('Error updating profiles:', profileError);
+          }
+
+          // Send notification to user
+          const { error: notificationError } = await supabase
+            .from('notifications')
+            .insert({
+              user_id: request.user_id,
+              type: 'rank_approved',
+              title: `Rank Approved: ${request.requested_rank}`,
+              message: `Your rank request for ${request.requested_rank} has been approved by club owner! Bonus: +${spaBonus} SPA points`,
+              metadata: {
+                request_id: requestId,
+                new_rank: request.requested_rank,
+                old_rank: request.current_rank,
+                approved_by: user?.id,
+                club_id: clubProfile?.id,
+                spa_bonus: spaBonus
+              }
+            });
+
+          if (notificationError) {
+            console.error('Error sending notification:', notificationError);
+          }
+
+          // Invalidate relevant cache
+          queryClient.invalidateQueries({ queryKey: ['leaderboard'] });
+          queryClient.invalidateQueries({ queryKey: ['user-profile', request.user_id] });
+          queryClient.invalidateQueries({ queryKey: ['player-rankings'] });
+
+          toast.success(`✅ Rank ${request.requested_rank} approved! +${spaBonus} SPA bonus awarded!`);
+        } catch (syncError) {
+          console.error('Error syncing rank data:', syncError);
+          toast.warning('Rank request approved but some data may not be synced properly');
+        }
+      } else {
+        toast.success('Đã từ chối yêu cầu');
+      }
+
       loadRankRequests();
     } catch (error: any) {
       console.error('Error updating rank request:', error);

@@ -17,7 +17,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
   className,
   hideTitle = false,
 }) => {
-  const [activeTab, setActiveTab] = useState<'elo' | 'spa' | 'legacy'>('elo');
+  const [activeTab, setActiveTab] = useState<'elo' | 'spa' | 'legacy'>('legacy');
   const { leaderboard, loading, error, updateFilters } = useLeaderboard();
   const { theme } = useTheme();
 
@@ -172,15 +172,15 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
           }`}
         >
           <TabsTrigger
-            value='elo'
+            value='legacy'
             className={`flex items-center gap-2 transition-all duration-200 ${
               theme === 'dark'
-                ? 'data-[state=active]:bg-blue-600 data-[state=active]:text-white'
-                : 'data-[state=active]:bg-blue-500 data-[state=active]:text-white'
+                ? 'data-[state=active]:bg-orange-600 data-[state=active]:text-white'
+                : 'data-[state=active]:bg-orange-500 data-[state=active]:text-white'
             }`}
           >
-            <Trophy className='w-4 h-4' />
-            ELO
+            <Archive className='w-4 h-4' />
+            Legacy
           </TabsTrigger>
           <TabsTrigger
             value='spa'
@@ -194,15 +194,15 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
             SPA
           </TabsTrigger>
           <TabsTrigger
-            value='legacy'
+            value='elo'
             className={`flex items-center gap-2 transition-all duration-200 ${
               theme === 'dark'
-                ? 'data-[state=active]:bg-orange-600 data-[state=active]:text-white'
-                : 'data-[state=active]:bg-orange-500 data-[state=active]:text-white'
+                ? 'data-[state=active]:bg-blue-600 data-[state=active]:text-white'
+                : 'data-[state=active]:bg-blue-500 data-[state=active]:text-white'
             }`}
           >
-            <Archive className='w-4 h-4' />
-            Legacy
+            <Trophy className='w-4 h-4' />
+            ELO
           </TabsTrigger>
         </TabsList>
 

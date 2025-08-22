@@ -6,6 +6,7 @@ import {
   RankRequestFilters,
 } from '@/types/rankRequests';
 import { UnifiedProfile, ProfileCreateData } from '@/types/unified-profile';
+import { RankApprovalService } from '@/services/rankApprovalService';
 
 export const useRankRequests = (clubId?: string) => {
   const [requests, setRequests] = useState<RankRequest[]>([]);
@@ -354,11 +355,29 @@ export const useRankRequests = (clubId?: string) => {
     }
   };
 
-  const approveRankRequest = async (id: string, verifierId?: string) => {
-    return updateRankRequest(id, {
-      status: 'approved',
-      approved_by: verifierId,
-    });
+  const approveRankRequest = async (
+    id: string, 
+    verifierId?: string,
+    options?: {
+      addBonusSPA?: number;
+      notes?: string;
+    }
+  ) => {
+    try {
+      const result = await RankApprovalService.approveRankRequest(id, verifierId, options);
+      
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      
+      // Refresh the requests list to show updated status
+      await fetchRankRequests();
+      
+      return result;
+    } catch (err) {
+      console.error('Error approving rank request:', err);
+      throw err;
+    }
   };
 
   const rejectRankRequest = async (

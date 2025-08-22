@@ -51,6 +51,10 @@ interface AuthContextType extends AuthState {
     phone: string,
     password?: string
   ) => Promise<{ data?: any; error?: any }>;
+  signInWithPhonePassword: (
+    phone: string,
+    password: string
+  ) => Promise<{ data?: any; error?: any }>;
   signUpWithPhone: (
     phone: string,
     password?: string,
@@ -527,8 +531,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Phone login with password (no OTP required)
+  const signInWithPhonePassword = async (phone: string, password: string) => {
+    try {
+      const e164 = formatPhoneToE164(phone);
+      console.log('🔐 Attempting phone login with password:', e164);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        phone: e164,
+        password,
+      });
+      
+      if (error) {
+        console.error('❌ Phone password login failed:', error.message);
+        
+        // Check if error is due to missing password for OTP-created account
+        if (error.message.includes('Invalid login credentials')) {
+          console.log('💡 This might be an OTP-created account without password');
+          console.log('🔄 Falling back to OTP login flow...');
+          
+          // Return a special error indicating fallback needed
+          return { 
+            data: null, 
+            error: { 
+              ...error,
+              fallbackToOtp: true,
+              message: 'Tài khoản này được tạo bằng OTP. Vui lòng sử dụng OTP để đăng nhập hoặc đặt lại mật khẩu.'
+            }
+          };
+        }
+      }
+      
+      console.log('✅ Phone password login successful');
+      return { data, error };
+    } catch (error) {
+      console.error('❌ Phone password login exception:', error);
+      return { error } as any;
+    }
+  };
+
   // Backward-compatible aliases
-  const signInWithPhone = async (phone: string) => requestPhoneOtp(phone);
+  const signInWithPhone = async (phone: string, password?: string) => {
+    // If password is provided, try password-based login first
+    if (password) {
+      console.log('📱 Attempting phone login with password...');
+      const result = await signInWithPhonePassword(phone, password);
+      
+      // If password login fails with fallback indicator, continue to OTP
+      if (result.error && (result.error as any).fallbackToOtp) {
+        console.log('🔄 Password login failed, falling back to OTP...');
+        // Don't return the error, continue to OTP flow
+        return requestPhoneOtp(phone);
+      }
+      
+      // Return result (success or non-fallback error)
+      return result;
+    }
+    
+    // Otherwise, use OTP-based login
+    console.log('📱 Using OTP login flow...');
+    return requestPhoneOtp(phone);
+  };
   const signInWithEmail = signIn;
 
   const signUpWithPhone = async (
@@ -627,6 +690,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     signInWithGoogle,
     signInWithFacebook,
     signInWithPhone,
+    signInWithPhonePassword,
     signInWithEmail,
     signUpWithPhone,
     signUpWithEmail,

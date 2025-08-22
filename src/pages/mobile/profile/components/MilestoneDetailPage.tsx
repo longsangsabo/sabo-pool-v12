@@ -47,7 +47,8 @@ export const MilestoneDetailPage: React.FC<MilestoneDetailPageProps> = ({ theme,
 
       try {
         // Initialize player milestones
-        await milestoneService.initializePlayerMilestones(user.id);
+        // TEMPORARY DISABLE: Skip initialization to prevent infinite loop
+        // await milestoneService.initializePlayerMilestones(user.id);
         
         // Load player progress
         const playerProgress = await milestoneService.getPlayerMilestoneProgress(user.id);

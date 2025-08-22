@@ -251,7 +251,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         
         // Trigger milestone for new account creation
         if (session.user) {
+          // TEMPORARY DISABLE: Skip milestone initialization to prevent infinite loop
+          // TODO: Fix RLS policies for player_milestones table first
+          console.log('🏆 [DISABLED] Milestone initialization temporarily disabled');
+          
           // Check if this is a new user by checking if they have any milestone progress
+          /* DISABLED TO PREVENT INFINITE LOOP
           milestoneService.getPlayerMilestoneProgress(session.user.id)
             .then(progress => {
               // If no milestone progress exists, this is likely a new account
@@ -269,6 +274,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             .catch(error => {
               console.error('🔧 Error handling milestone for new user:', error);
             });
+          */
         }
       } else if (event === 'TOKEN_REFRESHED') {
         console.log('🔧 Auth: Token refreshed for user:', session?.user?.id);

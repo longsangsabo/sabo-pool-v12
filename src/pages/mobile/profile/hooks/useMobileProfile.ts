@@ -35,26 +35,50 @@ export function useMobileProfile() {
         return;
       }
 
-      // ✅ AUTO-CREATE PROFILE if missing
+      // ✅ AUTO-CREATE PROFILE if missing using upsert with ignoreDuplicates
       let actualData = data;
       if (!data) {
         console.log('🛠️ [MobileProfile] No profile found, creating one for user:', user.id);
-        const { data: newProfile, error: createError } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: user.id,
-            email: user.email || null,
-            current_rank: 'K',
-          })
-          .select()
-          .single();
-          
-        if (createError) {
-          console.error('❌ [MobileProfile] Failed to create profile:', createError);
-          // Continue with empty profile instead of crashing
-        } else {
-          console.log('✅ [MobileProfile] Profile created successfully:', newProfile);
-          actualData = newProfile; // ✅ Use newly created profile
+        
+        try {
+          // Use upsert with ignoreDuplicates to handle the ON CONFLICT issue
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .upsert([{
+              user_id: user.id,
+              email: user.email || null,
+              current_rank: 'K',
+              spa_points: 0,
+              elo: 1000,
+              is_admin: false,
+              skill_level: 'beginner',
+              ban_status: 'active'
+            }], {
+              ignoreDuplicates: true
+            })
+            .select()
+            .maybeSingle();
+            
+          if (createError) {
+            console.error('❌ [MobileProfile] Failed to create profile via upsert:', createError);
+            
+            // Final fallback: Just continue without profile (for read-only access)
+            console.log('⚠️ [MobileProfile] Continuing without profile creation');
+          } else if (newProfile) {
+            console.log('✅ [MobileProfile] Profile created/found via upsert:', newProfile);
+            actualData = newProfile;
+          } else {
+            // ignoreDuplicates=true returns null when duplicate exists, so fetch again
+            console.log('🔄 [MobileProfile] Profile exists, fetching...');
+            const { data: existingProfile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('user_id', user.id)
+              .single();
+            actualData = existingProfile;
+          }
+        } catch (e) {
+          console.error('❌ [MobileProfile] Exception creating profile:', e);
         }
       }
 

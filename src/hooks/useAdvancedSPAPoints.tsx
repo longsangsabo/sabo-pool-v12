@@ -28,7 +28,7 @@ export interface Milestone {
 
 export interface PlayerMilestone {
   milestone_id: string;
-  achieved_at: string;
+  completed_at: string;
 }
 
 export interface ChallengeCompletionResult {

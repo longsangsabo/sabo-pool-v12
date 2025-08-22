@@ -32,10 +32,11 @@ export const MilestoneProgress: React.FC<MilestoneProgressProps> = ({ theme, onV
       }
       
       try {
-        // Initialize player milestones first
-        await milestoneService.initializePlayerMilestones(user.id);
+        // TEMPORARY FIX: Skip initialization to prevent infinite loop
+        // TODO: Fix RLS policies for player_milestones table
+        // await milestoneService.initializePlayerMilestones(user.id);
         
-        // Then get progress
+        // Get progress directly
         const progress = await milestoneService.getPlayerMilestoneProgress(user.id);
         console.log('Loaded milestone progress:', progress);
         

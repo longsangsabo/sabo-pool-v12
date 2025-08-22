@@ -97,7 +97,7 @@ export const MobileStoryReel: React.FC<MobileStoryReelProps> = ({
   const getStoryBadge = (type: StoryItem['type'], isLive?: boolean) => {
     if (isLive) {
       return (
-        <Badge className='absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 animate-pulse'>
+        <Badge className='absolute top-0 right-0 bg-red-500 text-white text-xs px-1.5 py-0.5 animate-pulse'>
           LIVE
         </Badge>
       );
@@ -105,61 +105,47 @@ export const MobileStoryReel: React.FC<MobileStoryReelProps> = ({
 
     switch (type) {
       case 'achievement':
-        return <div className='absolute -top-1 -right-1 text-lg'>🏆</div>;
+        return <div className='absolute top-0 right-0 text-lg'>🏆</div>;
       case 'highlight':
-        return <div className='absolute -top-1 -right-1 text-lg'>⭐</div>;
+        return <div className='absolute top-0 right-0 text-lg'>⭐</div>;
       case 'tournament':
-        return <div className='absolute -top-1 -right-1 text-lg'>🎯</div>;
+        return <div className='absolute top-0 right-0 text-lg'>🎯</div>;
       default:
         return null;
     }
   };
 
   return (
-    <div
-      className='relative py-3 rounded-2xl border-2 border-white/20 dark:border-slate-700/40 
-      shadow-lg shadow-black/10 dark:shadow-black/30 transition-all duration-300 overflow-hidden
-      before:content-[""] before:absolute before:inset-0 
-      before:bg-white/30 before:dark:bg-slate-900/20 
-      before:backdrop-blur-md before:saturate-150 before:rounded-2xl'
-    >
-      <div className='px-4 mb-3'>
-        <h3 className='text-sm font-semibold text-foreground'>
-          Hoạt động gần đây
-        </h3>
-      </div>
+    <div className='mobile-story-reel relative z-10'>
+      {displayStories.map(story => (
+        <div
+          key={story.id}
+          className='story-item cursor-pointer'
+          onClick={() => onStoryClick?.(story.id)}
+        >
+          <div className='relative'>
+            <Avatar
+              className={`h-16 w-16 ${getStoryRingClass(story.type, story.isLive)}`}
+            >
+              <AvatarImage src={story.user.avatar} />
+              <AvatarFallback className='text-sm font-semibold'>
+                {story.user.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
 
-      <div className='mobile-story-reel relative z-10'>
-        {displayStories.map(story => (
-          <div
-            key={story.id}
-            className='story-item cursor-pointer'
-            onClick={() => onStoryClick?.(story.id)}
-          >
-            <div className='relative'>
-              <Avatar
-                className={`h-16 w-16 ${getStoryRingClass(story.type, story.isLive)}`}
-              >
-                <AvatarImage src={story.user.avatar} />
-                <AvatarFallback className='text-sm font-semibold'>
-                  {story.user.name.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-
-              {getStoryBadge(story.type, story.isLive)}
-            </div>
-
-            <div className='mt-2 text-center'>
-              <p className='text-xs font-medium text-foreground truncate max-w-[70px]'>
-                {story.user.name}
-              </p>
-              <p className='text-xs text-muted-foreground truncate max-w-[70px]'>
-                {story.title}
-              </p>
-            </div>
+            {getStoryBadge(story.type, story.isLive)}
           </div>
-        ))}
-      </div>
+
+          <div className='mt-2 text-center'>
+            <p className='text-xs font-medium text-foreground truncate max-w-[70px]'>
+              {story.user.name}
+            </p>
+            <p className='text-xs text-muted-foreground truncate max-w-[70px]'>
+              {story.title}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

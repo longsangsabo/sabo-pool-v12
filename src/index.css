@@ -991,7 +991,7 @@ body.tech-theme {
 .mobile-story-reel {
   display: flex;
   overflow-x: auto;
-  padding: 0 1rem;
+  padding: 0.5rem 1rem 0.25rem 1rem;
   gap: 1rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -1009,6 +1009,7 @@ body.tech-theme {
   align-items: center;
   gap: 0.5rem;
   width: 80px;
+  padding-top: 0.25rem;
   transition: transform 0.2s ease;
 }
 

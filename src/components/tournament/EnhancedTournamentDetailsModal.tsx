@@ -181,73 +181,44 @@ export const EnhancedTournamentDetailsModal: React.FC<
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
-          <TabsList className={`grid w-full ${isMobile ? 'grid-cols-2 h-auto' : 'grid-cols-4'} ${
-            theme === 'dark' 
-              ? 'bg-gray-800/50 border-gray-600' 
-              : 'bg-gray-100/50 border-gray-200'
-          }`}>
-            <TabsTrigger 
-              value='overview'
-              className={`${isMobile ? 'text-xs py-2 px-2' : ''} ${
-                theme === 'dark' 
-                  ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-                  : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
-              }`}
-            >
-              Tổng quan
-            </TabsTrigger>
-            <TabsTrigger 
-              value='participants'
-              className={`${isMobile ? 'text-xs py-2 px-2' : ''} ${
-                theme === 'dark' 
-                  ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-                  : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
-              }`}
-            >
-              {isMobile ? 'Thành viên' : 'Người tham gia'}
-              {!registrationsLoading && (
-                <span className={`ml-1 ${isMobile ? 'text-[10px]' : ''}`}>
-                  ({confirmedParticipants})
-                </span>
-              )}
-            </TabsTrigger>
-            {!isMobile && (
-              <>
-                <TabsTrigger 
-                  value='bracket'
-                  className={`${
-                    theme === 'dark' 
-                      ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-                      : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
-                  }`}
-                >
-                  Bảng đấu{' '}
-                  {!matchesLoading && matches.length > 0 && `(${matches.length})`}
-                </TabsTrigger>
-                <TabsTrigger 
-                  value='results'
-                  className={`${
-                    theme === 'dark' 
-                      ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-                      : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
-                  }`}
-                >
-                  Kết quả{' '}
-                  {!resultsLoading && results.length > 0 && `(${results.length})`}
-                </TabsTrigger>
-              </>
-            )}
-          </TabsList>
-          
-          {/* Mobile: Additional tabs in a second row */}
-          {isMobile && (
-            <div className={`grid grid-cols-2 gap-1 mt-2`}>
+          {/* Desktop: All tabs in one row */}
+          {!isMobile && (
+            <TabsList className={`grid w-full grid-cols-4 ${
+              theme === 'dark' 
+                ? 'bg-gray-800/50 border-gray-600' 
+                : 'bg-gray-100/50 border-gray-200'
+            }`}>
+              <TabsTrigger 
+                value='overview'
+                className={`${
+                  theme === 'dark' 
+                    ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
+                    : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
+                }`}
+              >
+                Tổng quan
+              </TabsTrigger>
+              <TabsTrigger 
+                value='participants'
+                className={`${
+                  theme === 'dark' 
+                    ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
+                    : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
+                }`}
+              >
+                Người tham gia
+                {!registrationsLoading && (
+                  <span className="ml-1">
+                    ({confirmedParticipants})
+                  </span>
+                )}
+              </TabsTrigger>
               <TabsTrigger 
                 value='bracket'
-                className={`text-xs py-2 px-2 ${
+                className={`${
                   theme === 'dark' 
-                    ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white bg-gray-800/50' 
-                    : 'data-[state=active]:bg-white data-[state=active]:text-gray-900 bg-gray-100/50'
+                    ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
+                    : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
                 }`}
               >
                 Bảng đấu{' '}
@@ -255,16 +226,51 @@ export const EnhancedTournamentDetailsModal: React.FC<
               </TabsTrigger>
               <TabsTrigger 
                 value='results'
-                className={`text-xs py-2 px-2 ${
+                className={`${
                   theme === 'dark' 
-                    ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white bg-gray-800/50' 
-                    : 'data-[state=active]:bg-white data-[state=active]:text-gray-900 bg-gray-100/50'
+                    ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
+                    : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
                 }`}
               >
                 Kết quả{' '}
                 {!resultsLoading && results.length > 0 && `(${results.length})`}
               </TabsTrigger>
-            </div>
+            </TabsList>
+          )}
+
+          {/* Mobile: Simplified single row with key tabs */}
+          {isMobile && (
+            <TabsList className={`grid w-full grid-cols-2 h-auto ${
+              theme === 'dark' 
+                ? 'bg-gray-800/50 border-gray-600' 
+                : 'bg-gray-100/50 border-gray-200'
+            }`}>
+              <TabsTrigger 
+                value='overview'
+                className={`text-xs py-2 px-2 ${
+                  theme === 'dark' 
+                    ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
+                    : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
+                }`}
+              >
+                Tổng quan
+              </TabsTrigger>
+              <TabsTrigger 
+                value='participants'
+                className={`text-xs py-2 px-2 ${
+                  theme === 'dark' 
+                    ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
+                    : 'data-[state=active]:bg-white data-[state=active]:text-gray-900'
+                }`}
+              >
+                Thành viên
+                {!registrationsLoading && (
+                  <span className="ml-1 text-[10px]">
+                    ({confirmedParticipants})
+                  </span>
+                )}
+              </TabsTrigger>
+            </TabsList>
           )}
 
           <TabsContent value='overview' className={`space-y-4 ${isMobile ? 'space-y-3' : 'space-y-6'}`}>
@@ -490,6 +496,48 @@ export const EnhancedTournamentDetailsModal: React.FC<
                     </p>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Mobile: Quick action buttons for other tabs */}
+            {isMobile && (
+              <div className={`grid grid-cols-2 gap-3 p-4 border rounded-lg ${
+                theme === 'dark' 
+                  ? 'border-gray-600 bg-gray-800/30' 
+                  : 'border-gray-200 bg-gray-50/30'
+              }`}>
+                <button
+                  onClick={() => setActiveTab('bracket')}
+                  className={`flex items-center justify-center gap-2 p-3 rounded-lg transition-colors ${
+                    theme === 'dark'
+                      ? 'bg-gray-700 hover:bg-gray-600 text-white'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                  }`}
+                >
+                  <Target className="h-4 w-4" />
+                  <span className="text-sm font-medium">Bảng đấu</span>
+                  {matches.length > 0 && (
+                    <span className="text-xs bg-blue-500 text-white rounded-full px-2 py-0.5">
+                      {matches.length}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => setActiveTab('results')}
+                  className={`flex items-center justify-center gap-2 p-3 rounded-lg transition-colors ${
+                    theme === 'dark'
+                      ? 'bg-gray-700 hover:bg-gray-600 text-white'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                  }`}
+                >
+                  <Trophy className="h-4 w-4" />
+                  <span className="text-sm font-medium">Kết quả</span>
+                  {results.length > 0 && (
+                    <span className="text-xs bg-green-500 text-white rounded-full px-2 py-0.5">
+                      {results.length}
+                    </span>
+                  )}
+                </button>
               </div>
             )}
           </TabsContent>

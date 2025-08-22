@@ -41,6 +41,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        "@tournament": path.resolve(__dirname, "./src/components/tournament"),
       },
     },
     define: {

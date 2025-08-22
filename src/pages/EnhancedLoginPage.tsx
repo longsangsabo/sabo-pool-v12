@@ -15,6 +15,7 @@ import { FacebookLoginButton } from '@/components/auth/FacebookLoginButton';
 import { GoogleLoginButton } from '@/components/auth/GoogleLoginButton';
 import { AuthDivider } from '@/components/auth/AuthDivider';
 import { OAuthSetupGuide } from '@/components/auth/OAuthSetupGuide';
+import { PhoneOtpDialog } from '@/components/auth/PhoneOtpDialog';
 import { handleAuthError } from '@/utils/authHelpers';
 import { supabase } from '@/integrations/supabase/client';
 import { Moon, Sun, ArrowLeft } from 'lucide-react';
@@ -28,12 +29,18 @@ const EnhancedLoginPage = () => {
   const [email, setEmail] = useState('');
   const [emailPassword, setEmailPassword] = useState('');
 
+  // OTP fallback state
+  const [otpOpen, setOtpOpen] = useState(false);
+  const [otpPhone, setOtpPhone] = useState('');
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const {
     signInWithPhone,
     signInWithEmail,
+    verifyPhoneOtp,
+    requestPhoneOtp,
     user,
     loading: authLoading,
   } = useAuth();
@@ -118,7 +125,15 @@ const EnhancedLoginPage = () => {
       const { error, data } = await signInWithPhone(phone, phonePassword);
 
       if (error) {
-        handleAuthError(error);
+        // Check if this is a fallback case (OTP-created account needing OTP login)
+        if ((error as any).fallbackToOtp) {
+          console.log('🔄 Switching to OTP login for this account...');
+          toast.info('Tài khoản này sử dụng xác thực OTP. Đang gửi mã xác thực...');
+          setOtpPhone(phone);
+          setOtpOpen(true);
+        } else {
+          handleAuthError(error);
+        }
       } else {
         toast.success('Đăng nhập thành công!');
         // Immediate redirect based on freshly returned user if available
@@ -423,6 +438,48 @@ const EnhancedLoginPage = () => {
           </div>
         </div>
       </div>
+
+      {/* OTP Dialog for fallback authentication */}
+      <PhoneOtpDialog
+        isOpen={otpOpen}
+        phone={otpPhone}
+        onClose={() => {
+          setOtpOpen(false);
+          setOtpPhone('');
+          setLoading(false);
+        }}
+        onVerify={async (code: string) => {
+          try {
+            const { error } = await verifyPhoneOtp(otpPhone, code);
+            if (error) {
+              toast.error('Mã OTP không đúng. Vui lòng thử lại.');
+            } else {
+              toast.success('Đăng nhập thành công!');
+              setOtpOpen(false);
+              setOtpPhone('');
+              // Let the auth state change handle navigation
+            }
+          } catch (error) {
+            console.error('OTP verification error:', error);
+            toast.error('Có lỗi xảy ra khi xác thực OTP');
+          } finally {
+            setLoading(false);
+          }
+        }}
+        onResend={async () => {
+          try {
+            const { error } = await requestPhoneOtp(otpPhone);
+            if (error) {
+              toast.error('Không thể gửi lại mã OTP. Vui lòng thử lại.');
+            } else {
+              toast.success('Mã OTP mới đã được gửi!');
+            }
+          } catch (error) {
+            console.error('Resend OTP error:', error);
+            toast.error('Có lỗi xảy ra khi gửi lại OTP');
+          }
+        }}
+      />
     </>
   );
 };

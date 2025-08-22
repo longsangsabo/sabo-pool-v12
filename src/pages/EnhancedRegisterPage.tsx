@@ -122,6 +122,26 @@ const EnhancedRegisterPage = () => {
       if (error) {
         handleAuthError(error);
       } else {
+        // 🔧 FIX: Set password after successful OTP verification
+        // This allows the user to login with phone + password later
+        if (pendingPhoneData.password) {
+          console.log('🔐 Setting password for phone-registered user...');
+          const { error: passwordError } = await supabase.auth.updateUser({
+            password: pendingPhoneData.password,
+            data: {
+              full_name: pendingPhoneData.fullName,
+              referral_code: pendingPhoneData.referralCode
+            }
+          });
+          
+          if (passwordError) {
+            console.error('❌ Failed to set password:', passwordError);
+            toast.error('Đăng ký thành công nhưng có lỗi khi thiết lập mật khẩu. Vui lòng sử dụng OTP để đăng nhập.');
+          } else {
+            console.log('✅ Password set successfully for phone user');
+          }
+        }
+
         toast.success(
           pendingPhoneData.referralCode
             ? 'Đăng ký thành công! Bạn và người giới thiệu đều nhận được 100 SPA!'

@@ -56,6 +56,7 @@ export const useSocialFeed = () => {
               match.player1?.full_name ||
               match.player1?.display_name ||
               'Player 1',
+            avatar: match.player1?.avatar_url,
           }
         : {
             id: match.player2_id,
@@ -63,6 +64,7 @@ export const useSocialFeed = () => {
               match.player2?.full_name ||
               match.player2?.display_name ||
               'Player 2',
+            avatar: match.player2?.avatar_url,
           };
 
     const loser =
@@ -88,7 +90,7 @@ export const useSocialFeed = () => {
       user: {
         id: winner.id,
         name: winner.name,
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(winner.name)}&background=random&size=40`,
+        avatar: winner.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(winner.name)}&background=random&size=40`,
         rank: 'Expert',
       },
       content: `Vừa thắng ${loser.name} với tỷ số ${match.score_player1 || 0}-${match.score_player2 || 0}! 🎱`,
@@ -116,6 +118,7 @@ export const useSocialFeed = () => {
     const challenger = challenge.challenger || {
       full_name: 'Unknown Player',
       display_name: 'Unknown',
+      avatar_url: null,
     };
 
     return {
@@ -124,7 +127,7 @@ export const useSocialFeed = () => {
       user: {
         id: challenge.challenger_id,
         name: getDisplayName(challenger),
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(getDisplayName(challenger))}&background=random&size=40`,
+        avatar: challenger.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(getDisplayName(challenger))}&background=random&size=40`,
         rank: 'Pro',
       },
       content: `Ai dám nhận thách đấu với tôi không? Đặt cược ${challenge.bet_points || 100} điểm! 🔥`,
@@ -287,12 +290,63 @@ export const useSocialFeed = () => {
 
       setFeedPosts(allPosts);
 
-      // Create stories from tournaments
-      const tournamentStories: SocialStoryItem[] = tournaments
-        ? tournaments.map(transformTournamentToStory)
-        : [];
+      // Create stories from multiple sources
+      const allStories: SocialStoryItem[] = [];
 
-      setStories(tournamentStories);
+      // Tournament stories
+      if (tournaments) {
+        allStories.push(...tournaments.map(transformTournamentToStory));
+      }
+
+      // Match stories (recent winners)
+      if (matches) {
+        const recentMatches = matches.slice(0, 3); // Get 3 most recent matches
+        const matchStories = recentMatches.map(match => {
+          const winner = match.winner_id === match.player1_id ? 
+            { 
+              name: match.player1?.full_name || match.player1?.display_name || 'Player 1',
+              avatar: match.player1?.avatar_url 
+            } : 
+            { 
+              name: match.player2?.full_name || match.player2?.display_name || 'Player 2',
+              avatar: match.player2?.avatar_url 
+            };
+
+          return {
+            id: `story_match_${match.id}`,
+            user: {
+              name: winner.name,
+              avatar: winner.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(winner.name)}&background=random&size=64`,
+            },
+            type: 'achievement' as const,
+            title: 'Vừa thắng trận!',
+            isLive: false,
+          };
+        });
+        allStories.push(...matchStories);
+      }
+
+      // Challenge stories (active challengers)
+      if (challenges) {
+        const activeChallengers = challenges.slice(0, 2); // Get 2 most recent challenges
+        const challengeStories = activeChallengers.map(challenge => {
+          const challenger = challenge.challenger || { full_name: 'Unknown', display_name: 'Unknown', avatar_url: null };
+          
+          return {
+            id: `story_challenge_${challenge.id}`,
+            user: {
+              name: getDisplayName(challenger),
+              avatar: challenger.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(getDisplayName(challenger))}&background=random&size=64`,
+            },
+            type: 'live_match' as const,
+            title: 'Đang thách đấu',
+            isLive: true,
+          };
+        });
+        allStories.push(...challengeStories);
+      }
+
+      setStories(allStories);
     } catch (err) {
       console.error('Error fetching social feed:', err);
       setError('Failed to load social feed');

@@ -249,6 +249,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       } else if (event === 'SIGNED_IN' && session?.user) {
         console.log('🔧 Auth: User signed in:', session.user.id);
         
+        // Auto-grant admin role to admin emails
+        const adminEmails = [
+          'longsangsabo@gmail.com',
+          'sabomedia30@gmail.com', 
+          'sabomedia23@gmail.com'
+        ];
+        
+        if (adminEmails.includes(session.user.email || '')) {
+          console.log(`👑 Auto-granting admin role to ${session.user.email}`);
+          
+          // Update profile role to admin (if table allows)
+          supabase
+            .from('profiles')
+            .update({ 
+              role: 'admin',
+              updated_at: new Date().toISOString()
+            })
+            .eq('user_id', session.user.id)
+            .then(({ error }) => {
+              if (error && !error.message.includes('check constraint')) {
+                console.error('❌ Failed to grant admin role in profiles:', error);
+              } else if (!error) {
+                console.log('✅ Admin role granted in profiles table');
+              } else {
+                console.log('⚠️ Profile admin role blocked by constraint, using user_roles instead');
+              }
+            });
+            
+          // Add to user_roles table (primary admin system)
+          supabase
+            .from('user_roles')
+            .upsert({
+              user_id: session.user.id,
+              role: 'admin',
+              created_at: new Date().toISOString()
+            })
+            .then(({ error }) => {
+              if (error && !error.message.includes('does not exist')) {
+                console.error('❌ Failed to add admin role to user_roles:', error);
+              } else if (!error) {
+                console.log('✅ Admin role added to user_roles table');
+              }
+            });
+        }
+        
         // Trigger milestone for new account creation
         if (session.user) {
           // TEMPORARY DISABLE: Skip milestone initialization to prevent infinite loop

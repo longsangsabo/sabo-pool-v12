@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useAdminCheck } from '@/hooks/useAdminCheck';
+import { useAdminCheck } from '@/hooks/useRoles';
 import { Loader2, Shield } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -37,12 +37,10 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     );
   }
 
-  // Temporary bypass for admin check debugging
-  const bypassAdmin =
-    user?.email === 'longsangsabo@gmail.com' ||
-    user?.email === 'longsang063@gmail.com';
+  // ✅ REMOVED HARDCODED EMAIL BYPASS - SECURITY FIX
+  // Now using only the proper role-based system
 
-  if (!isAdmin && !bypassAdmin) {
+  if (!isAdmin) {
     return (
       <div className='min-h-screen flex items-center justify-center bg-background p-4'>
         <Card className='w-full max-w-md'>

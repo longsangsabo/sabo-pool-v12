@@ -239,3 +239,4 @@ update_milestone_triggers_*.sql
 enable_http_extension.sql
 create_test_user.sh
 test_milestone_http.sh
+# Build trigger Fri Aug 22 07:59:29 UTC 2025

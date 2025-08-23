@@ -243,11 +243,12 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
 
                     {/* Avatar */}
                     <Avatar
-                      className={`w-11 h-11 ring-2 ring-offset-1 transition-all duration-300 ${
+                      className={`w-11 h-11 ring-2 ring-offset-1 transition-all duration-300 cursor-pointer hover:ring-4 hover:scale-105 ${
                         activeTab === 'elo'
-                          ? 'ring-blue-500/30'
-                          : 'ring-purple-500/30'
+                          ? 'ring-blue-500/30 hover:ring-blue-500/50'
+                          : 'ring-purple-500/30 hover:ring-purple-500/50'
                       }`}
+                      onClick={() => navigateToSocialProfile(player.user_id || player.id)}
                     >
                       <AvatarImage src={player.avatar_url} />
                       <AvatarFallback

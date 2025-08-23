@@ -44,21 +44,122 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
   const [approving, setApproving] = useState<string | null>(null);
   const [note, setNote] = useState<{ [key: string]: string }>({});
 
+  // Process SPA transfer when club approves challenge
+  const processSpaTransfer = async (challengeData: any) => {
+    try {
+      console.log('🎯 Processing SPA transfer for challenge:', challengeData.id);
+
+      const {
+        id: challengeId,
+        challenger_id,
+        opponent_id,
+        winner_id,
+        bet_points,
+        challenger_spa_points,
+        opponent_spa_points
+      } = challengeData;
+
+      if (!winner_id) {
+        console.log('❌ No winner_id found in challenge data');
+        return false;
+      }
+
+      if (!bet_points) {
+        console.log('⚠️ No bet_points, using default values');
+      }
+
+      // Calculate SPA changes
+      const challengerIsWinner = winner_id === challenger_id;
+      const winnerAmount = bet_points || 50;  // Default 50 if no bet_points
+      const loserAmount = bet_points || 25;   // Default 25 if no bet_points
+
+      console.log('📊 SPA Transfer:');
+      console.log('   Winner gets:', '+' + winnerAmount);
+      console.log('   Loser loses:', '-' + loserAmount);
+      console.log('   Challenger is winner:', challengerIsWinner);
+
+      // Use correct functions for add/subtract
+      if (challengerIsWinner) {
+        // Challenger wins - ADD points to challenger, SUBTRACT from opponent
+        const { data: challengerResult, error: challengerError } = await supabase
+          .rpc('update_spa_points', {
+            p_user_id: challenger_id,
+            p_points: winnerAmount,
+            p_source_type: 'challenge_win',
+            p_description: `Thắng thách đấu ${bet_points} điểm`,
+            p_reference_id: challengeId
+          });
+
+        if (challengerError) {
+          console.error('❌ Error updating challenger SPA:', challengerError);
+          return false;
+        }
+        console.log('✅ Challenger (winner) SPA updated:', challengerResult);
+
+        // Subtract from opponent using correct function
+        const { data: opponentResult, error: opponentError } = await supabase
+          .rpc('subtract_spa_points', {
+            p_user_id: opponent_id,
+            p_points_to_subtract: loserAmount
+          });
+
+        if (opponentError) {
+          console.error('❌ Error updating opponent SPA:', opponentError);
+          return false;
+        }
+        console.log('✅ Opponent (loser) SPA updated:', opponentResult);
+
+      } else {
+        // Opponent wins - ADD points to opponent, SUBTRACT from challenger
+        const { data: opponentResult, error: opponentError } = await supabase
+          .rpc('update_spa_points', {
+            p_user_id: opponent_id,
+            p_points: winnerAmount,
+            p_source_type: 'challenge_win',
+            p_description: `Thắng thách đấu ${bet_points} điểm`,
+            p_reference_id: challengeId
+          });
+
+        if (opponentError) {
+          console.error('❌ Error updating opponent SPA:', opponentError);
+          return false;
+        }
+        console.log('✅ Opponent (winner) SPA updated:', opponentResult);
+
+        // Subtract from challenger using correct function
+        const { data: challengerResult, error: challengerError } = await supabase
+          .rpc('subtract_spa_points', {
+            p_user_id: challenger_id,
+            p_points_to_subtract: loserAmount
+          });
+
+        if (challengerError) {
+          console.error('❌ Error updating challenger SPA:', challengerError);
+          return false;
+        }
+        console.log('✅ Challenger (loser) SPA updated:', challengerResult);
+      }
+
+      console.log('✅ SPA transfer completed successfully!');
+      return true;
+
+    } catch (error) {
+      console.error('❌ Exception in SPA transfer:', error);
+      return false;
+    }
+  };
+
   // Club approval function with SPA processing
   const handleClubApproval = async (challengeId: string, approved: boolean) => {
+    // Prevent double processing
+    if (approving === challengeId) {
+      console.log('⚠️ Already processing this challenge, ignoring duplicate request');
+      return;
+    }
+
     try {
       setApproving(challengeId);
-      // console.log('🎯 Club approval:', { challengeId, approved, note: note[challengeId] });
-
-      // First run the SQL function to handle SPA
-      if (approved) {
-        try {
-          await supabase.from('challenges').select('*').eq('id', challengeId).single();
-          // console.log('Processing SPA transfer for challenge:', challengeId);
-        } catch (e) {
-          console.log('Note: SPA processing may not be available yet');
-        }
-      }
+      console.log(`🎯 Club approval: ${approved ? 'APPROVED' : 'REJECTED'} challenge ${challengeId}`);
 
       // Update challenge status directly
       const { error } = await supabase
@@ -78,41 +179,50 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
         return;
       }
 
-      // If approved, trigger additional processing
+      // If approved, process SPA transfer and notifications
       if (approved) {
-        console.log('🎉 Challenge approved - triggering post-processing...');
+        console.log('🎉 Challenge approved - processing SPA transfer...');
         
-        // Get the challenge details for processing
-        const { data: challengeData } = await supabase
+        // Get the challenge details for SPA processing and notifications
+        const { data: challengeForSpa } = await supabase
           .from('challenges')
           .select('*')
           .eq('id', challengeId)
           .single();
 
-        if (challengeData && challengeData.winner_id) {
-          console.log('Winner ID:', challengeData.winner_id.substring(0, 8) + '...');
-          console.log('Bet Points:', challengeData.bet_points);
+        if (challengeForSpa && challengeForSpa.winner_id) {
+          console.log('Winner ID:', challengeForSpa.winner_id.substring(0, 8) + '...');
+          console.log('Bet Points:', challengeForSpa.bet_points);
           
+          // Process SPA transfer (ONLY ONCE)
+          const spaSuccess = await processSpaTransfer(challengeForSpa);
+          if (!spaSuccess) {
+            toast.error('Lỗi xử lý điểm SPA');
+            console.error('❌ SPA transfer failed');
+          } else {
+            toast.success('✅ Đã xử lý điểm SPA thành công!');
+          }
+
           // Create notifications for winner and loser
           const notifications = [];
           
           // Winner notification
           notifications.push({
-            user_id: challengeData.winner_id,
+            user_id: challengeForSpa.winner_id,
             title: '🏆 Thắng thách đấu!',
-            message: `Bạn đã thắng thách đấu với tỷ số ${challengeData.challenger_score}-${challengeData.opponent_score}. Đã được CLB xác nhận.`,
+            message: `Bạn đã thắng thách đấu với tỷ số ${challengeForSpa.challenger_score}-${challengeForSpa.opponent_score}. Đã được CLB xác nhận.`,
             type: 'challenge_win'
           });
           
           // Loser notification
-          const loserId = challengeData.winner_id === challengeData.challenger_id 
-            ? challengeData.opponent_id 
-            : challengeData.challenger_id;
+          const loserId = challengeForSpa.winner_id === challengeForSpa.challenger_id 
+            ? challengeForSpa.opponent_id 
+            : challengeForSpa.challenger_id;
           
           notifications.push({
             user_id: loserId,
             title: '📊 Kết quả thách đấu',
-            message: `Thách đấu đã kết thúc với tỷ số ${challengeData.challenger_score}-${challengeData.opponent_score}. Đã được CLB xác nhận.`,
+            message: `Thách đấu đã kết thúc với tỷ số ${challengeForSpa.challenger_score}-${challengeForSpa.opponent_score}. Đã được CLB xác nhận.`,
             type: 'challenge_result'
           });
           
@@ -127,11 +237,10 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
             console.log('✅ Notifications sent to players');
           }
           
-          // TODO: Add SPA processing, leaderboard updates here
-          console.log('💡 Additional processing needed:');
-          console.log('   - SPA points redistribution');
-          console.log('   - Leaderboard updates');
-          console.log('   - Milestone progress');
+          console.log('🎉 Challenge processing completed successfully!');
+          
+        } else {
+          console.log('⚠️ No winner_id found, skipping SPA transfer and notifications');
         }
       }
 

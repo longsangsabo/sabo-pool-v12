@@ -106,7 +106,9 @@ export const MobilePlayerLayout: React.FC<MobilePlayerLayoutProps> = ({
         className={`min-h-screen relative z-10 ${
           theme === 'dark' && showBackground
             ? 'bg-transparent'
-            : 'bg-background'
+            : theme === 'dark' 
+              ? 'bg-slate-950' 
+              : 'bg-white'
         } ${className}`}
       >
         {/* Content Area */}

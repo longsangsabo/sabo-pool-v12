@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tournament } from '@/types/tournament';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import { Search, Filter, Plus, Calendar, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
@@ -35,6 +36,7 @@ const TournamentsPage = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const { isMobile } = useOptimizedResponsive();
 
@@ -225,8 +227,13 @@ const TournamentsPage = () => {
 
   return (
     <div
-      className={`container mx-auto ${isMobile ? 'px-2 py-0 -mt-6' : 'px-4 py-8'}`}
+      className={`min-h-screen transition-colors duration-300 ${
+        theme === 'light' 
+          ? 'bg-white' 
+          : 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'
+      }`}
     >
+      <div className="container mx-auto">
       {/* Mobile: Hide title, show only action buttons */}
       {isMobile ? (
         <div className='flex gap-2 mb-1'>
@@ -492,6 +499,7 @@ const TournamentsPage = () => {
           }}
         />
       )}
+      </div>
     </div>
   );
 };

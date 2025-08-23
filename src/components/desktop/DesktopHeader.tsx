@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Target, Bell, Settings, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { UnifiedNotificationBell } from '@/components/notifications/UnifiedNotificationBell';
 import { useAuth } from '@/hooks/useAuth';
 
 export const DesktopHeader: React.FC = () => {
@@ -32,9 +34,8 @@ export const DesktopHeader: React.FC = () => {
 
         {/* Right Actions */}
         <div className='flex items-center space-x-4'>
-          <Button variant='ghost' size='icon'>
-            <Bell className='h-5 w-5' />
-          </Button>
+          <ThemeToggle variant="icon" size="sm" />
+          <UnifiedNotificationBell />
           <Button variant='ghost' size='icon'>
             <Settings className='h-5 w-5' />
           </Button>

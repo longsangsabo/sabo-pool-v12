@@ -168,7 +168,7 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => navigate('/profile')}
+                onClick={() => navigate('/standardized-profile')}
                 className='flex items-center gap-2'
               >
                 <User className='w-4 h-4' />

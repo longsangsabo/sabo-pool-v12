@@ -239,7 +239,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
-                  onClick={() => navigate('/profile')}
+                  onClick={() => navigate('/standardized-profile')}
                   className='hover:bg-muted/50 cursor-pointer'
                 >
                   <User className='w-4 h-4 mr-2' />

@@ -30,7 +30,7 @@ const MembershipPage = () => {
 
   const handleClubVerification = () => {
     // Navigate to profile page with club tab
-    navigate('/profile?tab=club');
+    navigate('/standardized-profile?tab=club');
   };
 
   const handleClubUpgrade = async (planType: string, planPrice: number) => {

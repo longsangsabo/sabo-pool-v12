@@ -227,16 +227,16 @@ const EnhancedChallengesPageV3: React.FC = () => {
   const myStats = getMyStats();
 
   return (
-    <div className="min-h-screen bg-black/80 dark:bg-black/90 backdrop-blur-sm">
+    <div className="min-h-screen transition-colors duration-300 bg-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:bg-gradient-to-br">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-black/70 dark:bg-black/80 backdrop-blur-md border-b border-gray-600/50 dark:border-gray-500/20">
+      <div className="sticky top-0 z-10 bg-white dark:bg-slate-900/80 dark:backdrop-blur-md border-b border-slate-200 dark:border-slate-700/50 shadow-md">
         <div className="p-4 space-y-4">
           {/* Title Section */}
           <div className="text-center space-y-2">
             <motion.h1
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent flex items-center justify-center gap-2"
+              className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex items-center justify-center gap-2"
             >
               🏆 THÁCH ĐẤU 🎯
             </motion.h1>

@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useLeaderboard } from '@/hooks/useLeaderboard';
+import { useTheme } from '@/hooks/useTheme';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { CombinedSPALeaderboard } from '@/components/legacy/CombinedSPALeaderboard';
 import {
   Trophy,
   TrendingUp,
@@ -17,6 +21,9 @@ import {
   Clock,
   Calendar,
   Filter,
+  Crown,
+  Medal,
+  Archive,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useMatchResults } from '@/hooks/useMatchResults';
@@ -104,24 +111,24 @@ export const ELORankingDashboard: React.FC = () => {
     switch (rank) {
       case 'E+':
       case 'E':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+        return 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20';
       case 'F+':
       case 'F':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20';
       case 'G+':
       case 'G':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
+        return 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20';
       case 'H+':
       case 'H':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
       case 'I+':
       case 'I':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20';
       case 'K+':
       case 'K':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-muted text-muted-foreground border-border';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -202,68 +209,69 @@ export const ELORankingDashboard: React.FC = () => {
   );
 
   return (
-    <div className='space-y-6'>
-      {/* Header */}
-      <div className='flex items-center justify-between'>
-        <div>
-          <h1 className='text-3xl font-bold tracking-tight'>
-            Hệ Thống Ranking ELO
-          </h1>
-          <p className='text-muted-foreground'>
-            Theo dõi và phân tích chi tiết thứ hạng ELO của bạn
-          </p>
+    <div className='min-h-screen bg-background'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6'>
+        {/* Header */}
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+          <div>
+            <h1 className='text-2xl sm:text-3xl font-bold tracking-tight text-foreground'>
+              🏆 Hệ Thống Ranking ELO
+            </h1>
+            <p className='text-muted-foreground mt-1'>
+              Theo dõi và phân tích chi tiết thứ hạng ELO của bạn
+            </p>
+          </div>
+          <div className='flex items-center gap-2'>
+            <Button variant='outline' size='sm'>
+              <Filter className='h-4 w-4 mr-2' />
+              Bộ lọc
+            </Button>
+            <Button variant='outline' size='sm'>
+              <Calendar className='h-4 w-4 mr-2' />
+              Thời gian
+            </Button>
+          </div>
         </div>
-        <div className='flex items-center gap-2'>
-          <Button variant='outline' size='sm'>
-            <Filter className='h-4 w-4 mr-2' />
-            Bộ lọc
-          </Button>
-          <Button variant='outline' size='sm'>
-            <Calendar className='h-4 w-4 mr-2' />
-            Thời gian
-          </Button>
-        </div>
-      </div>
 
-      {/* Personal Stats Overview */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-        <Card className='relative overflow-hidden'>
-          <CardContent className='p-6'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <p className='text-sm font-medium text-muted-foreground'>
-                  ELO Hiện Tại
-                </p>
-                <p className='text-3xl font-bold'>{personalStats.currentELO}</p>
-                <Badge className={getRankColor(personalStats.rank)}>
-                  {personalStats.rank} - {getRankName(personalStats.rank)}
-                </Badge>
+        {/* Personal Stats Overview */}
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+          <Card className='relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30'>
+            <CardContent className='p-6'>
+              <div className='flex items-center justify-between'>
+                <div className='space-y-2'>
+                  <p className='text-sm font-medium text-muted-foreground'>
+                    ELO Hiện Tại
+                  </p>
+                  <p className='text-3xl font-bold text-foreground'>{personalStats.currentELO}</p>
+                  <Badge className={getRankColor(personalStats.rank)}>
+                    {personalStats.rank} - {getRankName(personalStats.rank)}
+                  </Badge>
+                </div>
+                <Trophy className='h-8 w-8 text-yellow-500 dark:text-yellow-400' />
               </div>
-              <Trophy className='h-8 w-8 text-yellow-500' />
-            </div>
-            <div className='mt-4 flex items-center text-sm'>
-              {personalStats.eloChange24h > 0 ? (
-                <TrendingUp className='h-4 w-4 text-green-500 mr-1' />
-              ) : personalStats.eloChange24h < 0 ? (
-                <TrendingDown className='h-4 w-4 text-red-500 mr-1' />
-              ) : (
-                <Activity className='h-4 w-4 text-gray-500 mr-1' />
-              )}
-              <span
-                className={
-                  personalStats.eloChange24h > 0
-                    ? 'text-green-600'
-                    : personalStats.eloChange24h < 0
-                      ? 'text-red-600'
-                      : 'text-gray-600'
-                }
-              >
-                {personalStats.eloChange24h > 0 ? '+' : ''}
-                {personalStats.eloChange24h} (24h)
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+              <div className='mt-4 flex items-center text-sm'>
+                {personalStats.eloChange24h > 0 ? (
+                  <TrendingUp className='h-4 w-4 text-green-500 mr-1' />
+                ) : personalStats.eloChange24h < 0 ? (
+                  <TrendingDown className='h-4 w-4 text-red-500 mr-1' />
+                ) : (
+                  <Activity className='h-4 w-4 text-muted-foreground mr-1' />
+                )}
+                <span
+                  className={
+                    personalStats.eloChange24h > 0
+                      ? 'text-green-600 dark:text-green-400'
+                      : personalStats.eloChange24h < 0
+                        ? 'text-red-600 dark:text-red-400'
+                        : 'text-muted-foreground'
+                  }
+                >
+                  {personalStats.eloChange24h > 0 ? '+' : ''}
+                  {personalStats.eloChange24h} (24h)
+                </span>
+              </div>
+            </CardContent>
+          </Card>
 
         <StatCard
           title='Vị Trí Xếp Hạng'
@@ -292,13 +300,13 @@ export const ELORankingDashboard: React.FC = () => {
 
       {/* Main Dashboard */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className='grid w-full grid-cols-6'>
+        <TabsList className='grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1'>
           <TabsTrigger value='overview'>Tổng Quan</TabsTrigger>
-          <TabsTrigger value='history'>Lịch Sử ELO</TabsTrigger>
+          <TabsTrigger value='history'>Lịch Sử</TabsTrigger>
           <TabsTrigger value='analytics'>Phân Tích</TabsTrigger>
-          <TabsTrigger value='leaderboard'>Bảng Xếp Hạng</TabsTrigger>
-          <TabsTrigger value='realtime'>Theo Dõi</TabsTrigger>
-          <TabsTrigger value='register'>Đăng ký Rank</TabsTrigger>
+          <TabsTrigger value='leaderboard'>BXH</TabsTrigger>
+          <TabsTrigger value='realtime'>Live</TabsTrigger>
+          <TabsTrigger value='register'>Đăng ký</TabsTrigger>
         </TabsList>
 
         <TabsContent value='overview' className='space-y-6'>
@@ -457,6 +465,7 @@ export const ELORankingDashboard: React.FC = () => {
           <RankRegistrationForm />
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 };

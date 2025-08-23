@@ -43,7 +43,7 @@ export const ClubOwnerFallback: React.FC<ClubOwnerFallbackProps> = ({
                   <Building className='w-4 h-4' />
                   Đăng ký CLB
                 </Button>
-                <Button variant='outline' onClick={() => navigate('/profile')}>
+                <Button variant='outline' onClick={() => navigate('/standardized-profile')}>
                   Về trang cá nhân
                 </Button>
               </div>

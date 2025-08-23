@@ -22,8 +22,12 @@ import {
   Shield,
   User,
   Mail,
+  Bell,
+  MessageCircle,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import SPAPointsBadge from '@/components/SPAPointsBadge';
 
 interface UserDesktopSidebarProps {
@@ -31,16 +35,17 @@ interface UserDesktopSidebarProps {
   onToggle?: () => void;
 }
 
+// Navigation items
 const navigationItems = [
   { name: 'Trang chủ', href: '/dashboard', icon: Home },
-  { name: 'Hồ sơ', href: '/profile', icon: User },
-  { name: 'Hộp thư', href: '/messages', icon: Mail },
-  { name: 'Giải đấu', href: '/tournaments', icon: Trophy },
   { name: 'Thách đấu', href: '/challenges', icon: Swords },
-  // Cộng đồng chuyển sang trang /community thay vì feed
+  { name: 'Giải đấu', href: '/tournaments', icon: Trophy },
+  { name: 'Bảng xếp hạng', href: '/leaderboard', icon: BarChart3 },
+  { name: 'Hồ sơ', href: '/profile', icon: User },
+  { name: 'Hộp thư', href: '/messages', icon: MessageCircle },
+  { name: 'Thông báo', href: '/notifications', icon: Bell },
   { name: 'Cộng đồng', href: '/community', icon: Heart },
   { name: 'Lịch', href: '/calendar', icon: Calendar },
-  { name: 'Bảng xếp hạng', href: '/leaderboard', icon: BarChart3 },
   { name: 'Marketplace', href: '/marketplace', icon: Store },
   { name: 'CLB', href: '/clubs', icon: Users },
   { name: 'Đăng ký CLB', href: '/club-registration', icon: Shield },
@@ -56,11 +61,9 @@ export const UserDesktopSidebar: React.FC<UserDesktopSidebarProps> = ({
   const { user } = useAuth();
 
   const isActiveRoute = (href: string) => {
-    // For dashboard, match exactly
     if (href === '/dashboard') {
-      return location.pathname === '/dashboard';
+      return location.pathname === '/dashboard' || location.pathname === '/';
     }
-    // For other routes, match if current path starts with the href
     return location.pathname.startsWith(href);
   };
 
@@ -170,3 +173,5 @@ export const UserDesktopSidebar: React.FC<UserDesktopSidebarProps> = ({
     </div>
   );
 };
+
+export default UserDesktopSidebar;

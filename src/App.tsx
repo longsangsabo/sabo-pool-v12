@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from '@/components/ui/sonner';
 import { CombinedProviders } from '@/contexts/CombinedProviders';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import { AppErrorBoundary } from '@/components/error/AppErrorBoundary';
 import { AppLoadingFallback } from '@/components/loading/AppLoadingFallback';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -21,8 +22,9 @@ import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
 import { OfflineIndicator } from '@/components/pwa/OfflineIndicator';
 import { ReAuthModal } from '@/components/auth/ReAuthModal';
 
-// Import CSS optimizations
+// Import CSS optimizations and theme styles
 import '@/styles/avatar-optimizations.css';
+import '@/styles/theme.css';
 
 // ✅ Import debug utilities for tournament refresh
 import '@/utils/debugTournamentRefresh';
@@ -98,6 +100,18 @@ const MilestonePage = lazy(() => import('@/pages/MilestonePage'));
 // const DemoPage = lazy(() => import('@/pages/DemoPage'));
 const TestAvatarPage = lazy(() => import('@/pages/test-avatar'));
 
+// Testing components
+const NavigationIntegrationDashboard = lazy(() => import('@/components/testing/NavigationIntegrationDashboard'));
+
+// Design System Testing and Standardized Pages
+const DesignSystemAudit = lazy(() => import('@/components/testing/DesignSystemAudit'));
+const StandardizedDashboardPage = lazy(() => import('@/pages/StandardizedDashboardPage'));
+const StandardizedTournamentsPage = lazy(() => import('@/pages/StandardizedTournamentsPage'));
+const StandardizedChallengesPage = lazy(() => import('@/pages/StandardizedChallengesPage'));
+const StandardizedProfilePage = lazy(() => import('@/pages/StandardizedProfilePage'));
+const ThemeDemoPage = lazy(() => import('@/pages/ThemeDemoPage'));
+const ThemeImprovementSummary = lazy(() => import('@/pages/ThemeImprovementSummary'));
+
 // Admin components
 const AdminRouter = lazy(() => import('@/router/AdminRouter'));
 
@@ -152,7 +166,7 @@ const AppContent = () => {
   const LandingRoute: React.FC = () => {
     const { user, session, loading } = useAuth();
     if (loading) return <div className='p-8 text-center'>Đang tải...</div>;
-    if (user && session) return <Navigate to='/dashboard' replace />;
+    if (user && session) return <Navigate to='/standardized-dashboard' replace />;
     return <HomePage />;
   };
 
@@ -182,6 +196,14 @@ const AppContent = () => {
           <Route path='/club-approvals' element={<ClubApprovalManagement />} />
           <Route path='/demo-integrated-score' element={<IntegratedScoreSystemDemo />} />
           <Route path='/demo-sabo32' element={<SABO32DemoPage />} />
+          
+          {/* Navigation Integration Testing */}
+          <Route path='/test-navigation-integration' element={<NavigationIntegrationDashboard />} />
+          
+          {/* Design System Audit and Theme Pages - standalone for testing */}
+          <Route path='/design-system-audit' element={<DesignSystemAudit />} />
+          <Route path='/theme-demo' element={<ThemeDemoPage />} />
+          <Route path='/theme-summary' element={<ThemeImprovementSummary />} />
 
           {/* Auth routes - only accessible when NOT logged in */}
           <Route
@@ -257,16 +279,24 @@ const AppContent = () => {
             <Route path='milestones' element={<MilestonePage />} />
             <Route path='auth-test' element={<AuthTestPage />} />
 
-          {/* Public pages accessible through sidebar when logged in */}
-          <Route path='tournaments' element={<TournamentPage />} />
-          <Route path='leaderboard' element={<LeaderboardPage />} />
-          <Route path='clubs' element={<ClubsPage />} />
-          <Route path='clubs/:id' element={<ClubDetailPage />} />
-          <Route
-            path='clubs/:id/owner'
-            element={<ClubOwnerDashboardPage />}
-          />
-        </Route>
+            {/* Public pages accessible through sidebar when logged in */}
+            <Route path='tournaments' element={<TournamentPage />} />
+            <Route path='leaderboard' element={<LeaderboardPage />} />
+            <Route path='clubs' element={<ClubsPage />} />
+            <Route path='clubs/:id' element={<ClubDetailPage />} />
+            <Route
+              path='clubs/:id/owner'
+              element={<ClubOwnerDashboardPage />}
+            />
+            
+            {/* Legacy Claim Admin route removed - now using direct code claim system */}
+            
+            {/* Standardized Pages with Navigation */}
+            <Route path='standardized-dashboard' element={<StandardizedDashboardPage />} />
+            <Route path='standardized-tournaments' element={<StandardizedTournamentsPage />} />
+            <Route path='standardized-challenges' element={<StandardizedChallengesPage />} />
+            <Route path='standardized-profile' element={<StandardizedProfilePage />} />
+          </Route>
 
         {/* Social Profile - Public route accessible without login */}
         <Route path='/players/:userId' element={<SocialProfileCard />} />          {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}
@@ -316,13 +346,15 @@ const App = () => {
     <AppErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <HelmetProvider>
-          <Router>
-            <CombinedProviders>
-              <AppContent />
-              <ReAuthModal />
-            </CombinedProviders>
-            <Toaster />
-          </Router>
+          <ThemeProvider defaultTheme="light">
+            <Router>
+              <CombinedProviders>
+                <AppContent />
+                <ReAuthModal />
+              </CombinedProviders>
+              <Toaster />
+            </Router>
+          </ThemeProvider>
         </HelmetProvider>
       </QueryClientProvider>
     </AppErrorBoundary>

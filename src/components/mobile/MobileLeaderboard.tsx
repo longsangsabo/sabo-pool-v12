@@ -165,17 +165,21 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
   }
 
   return (
-    <div className={className}>
+    <div className={`${className} min-h-screen transition-colors duration-300 ${
+      theme === 'dark' 
+        ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
+        : 'bg-white'
+    } p-4`}>
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}
         className='w-full'
       >
         <TabsList
-          className={`grid w-full grid-cols-3 mb-2 ${
+          className={`grid w-full grid-cols-3 mb-6 transition-all duration-300 ${
             theme === 'dark'
-              ? 'bg-gray-800/60 border-gray-700/50'
-              : 'bg-white/80 border-gray-200/50'
+              ? 'bg-slate-900/80 border-slate-700/50 backdrop-blur-sm shadow-xl'
+              : 'bg-white/80 border-slate-200/50 backdrop-blur-sm shadow-lg'
           }`}
         >
           <TabsTrigger
@@ -214,14 +218,16 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
         </TabsList>
 
         <TabsContent value='elo'>
-          <div className='space-y-2'>
+          <div className='space-y-3'>
             {sortedData.map((player, index) => (
               <Card
                 key={player.id}
-                className={`overflow-hidden transition-all duration-200 hover:scale-[1.02] ${
+                className={`overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl ${
+                  index < 3 ? 'ring-2 ring-yellow-400/30 shadow-xl' : ''
+                } ${
                   theme === 'dark'
-                    ? 'bg-gray-800/60 border-gray-700/50 backdrop-blur-sm hover:bg-gray-800/80'
-                    : 'bg-white/80 border-gray-200/50 backdrop-blur-sm hover:bg-white/90 hover:shadow-lg'
+                    ? 'bg-slate-900/80 border-slate-700/50 backdrop-blur-sm hover:bg-slate-800/90 shadow-lg'
+                    : 'bg-white border-slate-200 hover:bg-slate-50 shadow-md hover:shadow-lg'
                 }`}
               >
                 <CardContent className='p-3'>
@@ -312,14 +318,16 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
         </TabsContent>
 
         <TabsContent value='spa'>
-          <div className='space-y-2'>
+          <div className='space-y-3'>
             {sortedData.map((player, index) => (
               <Card
                 key={player.id}
-                className={`overflow-hidden transition-all duration-200 hover:scale-[1.02] ${
+                className={`overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl ${
+                  index < 3 ? 'ring-2 ring-purple-400/30 shadow-xl' : ''
+                } ${
                   theme === 'dark'
-                    ? 'bg-gray-800/60 border-gray-700/50 backdrop-blur-sm hover:bg-gray-800/80'
-                    : 'bg-white/80 border-gray-200/50 backdrop-blur-sm hover:bg-white/90 hover:shadow-lg'
+                    ? 'bg-slate-900/80 border-slate-700/50 backdrop-blur-sm hover:bg-slate-800/90 shadow-lg'
+                    : 'bg-white border-slate-200 hover:bg-slate-50 shadow-md hover:shadow-lg'
                 }`}
               >
                 <CardContent className='p-3'>

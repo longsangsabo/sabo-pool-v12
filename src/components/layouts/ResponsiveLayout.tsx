@@ -1,8 +1,10 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { DesktopLayout } from '../desktop/DesktopLayout';
 import { MobilePlayerLayout } from '../mobile/MobilePlayerLayout';
 import { TabletLayout } from '../tablet/TabletLayout';
+import { UserDesktopSidebarIntegrated } from '../desktop/UserDesktopSidebarIntegrated';
+import { DesktopHeader } from '../desktop/DesktopHeader';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 interface ResponsiveLayoutProps {
@@ -13,8 +15,13 @@ const ResponsiveLayoutBase: React.FC<ResponsiveLayoutProps> = ({
   children,
 }) => {
   const { isMobile, isTablet, isDesktop } = useOptimizedResponsive();
+  const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false);
 
-  // Early return pattern - only render one layout
+  const handleToggleSidebar = () => {
+    setDesktopSidebarCollapsed(!desktopSidebarCollapsed);
+  };
+
+  // Mobile layout - use existing mobile player layout with 5-tab bottom navigation
   if (isMobile) {
     return (
       <div data-testid='mobile-layout'>
@@ -23,18 +30,42 @@ const ResponsiveLayoutBase: React.FC<ResponsiveLayoutProps> = ({
     );
   }
 
+  // Tablet layout - compact desktop sidebar with all navigation options
   if (isTablet) {
     return (
-      <div data-testid='tablet-layout'>
-        <TabletLayout>{children}</TabletLayout>
+      <div data-testid='tablet-layout' className="flex h-screen bg-background">
+        <UserDesktopSidebarIntegrated 
+          collapsed={true} // Always collapsed on tablet for space optimization
+          onToggle={handleToggleSidebar}
+        />
+        <div className="flex-1 flex flex-col">
+          <DesktopHeader />
+          <main className="flex-1 overflow-auto">
+            <div className="p-4">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
 
+  // Desktop layout - full navigation with 14 tabs and toggle capability
   if (isDesktop) {
     return (
-      <div data-testid='desktop-layout'>
-        <DesktopLayout>{children}</DesktopLayout>
+      <div data-testid='desktop-layout' className="flex h-screen bg-background">
+        <UserDesktopSidebarIntegrated 
+          collapsed={desktopSidebarCollapsed}
+          onToggle={handleToggleSidebar}
+        />
+        <div className="flex-1 flex flex-col">
+          <DesktopHeader />
+          <main className="flex-1 overflow-auto">
+            <div className="p-6">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
     );
   }

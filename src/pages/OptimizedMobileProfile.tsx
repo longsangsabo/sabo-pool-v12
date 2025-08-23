@@ -73,9 +73,14 @@ const OptimizedMobileProfile: React.FC = () => {
 
   return (
     <div
-      className={`pb-24 min-h-screen relative px-2 ${
-        theme === 'light' ? 'bg-gradient-to-br from-background to-muted' : ''
+      className={`pb-24 min-h-screen relative px-2 transition-colors duration-300 ${
+        theme === 'light' 
+          ? 'bg-white' 
+          : 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'
       }`}
+      style={{
+        backgroundColor: theme === 'light' ? '#ffffff' : undefined
+      }}
     >
       <Helmet>
         <title>Hồ sơ cá nhân - SABO ARENA</title>
@@ -95,7 +100,7 @@ const OptimizedMobileProfile: React.FC = () => {
             ranking={playerRanking?.ranking_position || 0}
             matches={playerStats?.total_matches || 0}
             size='md'
-            className='mb-8'
+            className='mb-8 shadow-2xl'
           />
         ) : (
           <CardAvatar
@@ -109,17 +114,17 @@ const OptimizedMobileProfile: React.FC = () => {
             ranking={playerRanking?.ranking_position || 0}
             matches={playerStats?.total_matches || 0}
             size='md'
-            className='mb-8'
+            className='mb-8 shadow-2xl border-white/20 backdrop-blur-sm'
           />
         )}
       </div>
 
       {/* Tabs Card */}
       <Card
-        className={`overflow-hidden mt-2 ${
+        className={`mx-2 mb-6 overflow-hidden mt-2 transition-all duration-300 ${
           theme === 'dark'
-            ? 'bg-slate-900/50 border-slate-700/60 backdrop-blur-sm'
-            : 'bg-white border-slate-200'
+            ? 'bg-slate-900/90 border-slate-700/50 backdrop-blur-sm shadow-2xl'
+            : 'bg-white border-slate-200 shadow-lg'
         }`}
       >
         <CardContent className='p-0'>

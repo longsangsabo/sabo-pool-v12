@@ -66,7 +66,7 @@ const ClubManagementPage = () => {
 
   // Redirect if not authenticated
   if (!user) {
-    return <Navigate to='/profile' replace />;
+    return <Navigate to='/standardized-profile' replace />;
   }
 
   // Show error if not a club owner

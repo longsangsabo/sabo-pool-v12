@@ -219,7 +219,7 @@ const PublicProfilePage = () => {
               )}
 
               {isOwnProfile && (
-                <Button onClick={() => navigate('/profile')} variant='outline'>
+                <Button onClick={() => navigate('/standardized-profile')} variant='outline'>
                   Chỉnh sửa hồ sơ
                 </Button>
               )}

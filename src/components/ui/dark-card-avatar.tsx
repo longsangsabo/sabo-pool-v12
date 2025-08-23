@@ -88,7 +88,8 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
           {/* Main Image Area with Nickname Overlay */}
           <div
             className='dark-image-area'
-            onClick={() => fileInputRef.current?.click()}
+            onClick={onAvatarChange ? () => fileInputRef.current?.click() : undefined}
+            style={{ cursor: onAvatarChange ? 'pointer' : 'default' }}
           >
             {currentAvatar ? (
               <img
@@ -145,7 +146,7 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
           </div>
 
           {/* Camera Button - Outside card corner */}
-          {!uploading && (
+          {!uploading && onAvatarChange && (
             <div
               className='dark-camera-button'
               onClick={() => fileInputRef.current?.click()}

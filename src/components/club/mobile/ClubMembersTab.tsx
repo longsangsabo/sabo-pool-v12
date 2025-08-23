@@ -8,6 +8,7 @@ import ClubEmptyState from './ClubEmptyState';
 import { useInfiniteClubMembers } from '@/hooks/club/useClubMembers';
 import { performanceUtils } from '@/utils/performance';
 import { clubRoleUtils } from '@/utils/clubRoleUtils';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 
 interface MemberItem {
   id: string;
@@ -49,6 +50,7 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
   const [statusFilter, setStatusFilter] = useState<
     'all' | 'pending' | 'member'
   >('all');
+  const { navigateToSocialProfile } = useSocialProfile();
   const [roleFilter, setRoleFilter] = useState<
     'all' | 'owner' | 'moderator' | 'member'
   >('all');
@@ -238,10 +240,15 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
             return (
               <button
                 key={m.id}
-                onClick={() => onMemberClick?.(m.id)}
+                onClick={() => {
+                  // Navigate to social profile instead of member sheet
+                  navigateToSocialProfile(m.id, m.name);
+                  // Keep original callback for backward compatibility
+                  onMemberClick?.(m.id);
+                }}
                 className={`mobile-list-item mobile-list-item-hover w-full text-left group ${dark ? 'mobile-card-glass' : 'bg-white'}`}
               >
-                <Avatar className='mobile-avatar-medium'>
+                <Avatar className='mobile-avatar-medium cursor-pointer'>
                   <AvatarImage src={m.avatar_url} />
                   <AvatarFallback>
                     {m.name.charAt(0).toUpperCase()}

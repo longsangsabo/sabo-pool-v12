@@ -92,7 +92,8 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
           {/* Main Image Area with Nickname Overlay */}
           <div
             className='image-area'
-            onClick={() => fileInputRef.current?.click()}
+            onClick={onAvatarChange ? () => fileInputRef.current?.click() : undefined}
+            style={{ cursor: onAvatarChange ? 'pointer' : 'default' }}
           >
             {currentAvatar && currentAvatar.trim() !== '' ? (
               <img 
@@ -178,7 +179,7 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
           </div>
 
           {/* Camera Button - Outside card corner */}
-          {!uploading && (
+          {!uploading && onAvatarChange && (
             <div
               className='camera-button'
               onClick={() => fileInputRef.current?.click()}

@@ -58,6 +58,10 @@ const ClubDetailPage = lazy(() => import('@/pages/ClubDetailPage'));
 const LeaderboardPage = lazy(() => import('@/pages/LeaderboardPage'));
 const TournamentPage = lazy(() => import('@/pages/TournamentsPage'));
 
+// Social Profile - Public access
+const SocialProfileCard = lazy(() => import('@/components/mobile/SocialProfileCard'));
+const SocialProfileDemo = lazy(() => import('@/pages/SocialProfileDemo'));
+
 // SABO-32 Tournament Demo
 const SABO32DemoPage = lazy(() => import('@/pages/SABO32DemoPage'));
 
@@ -168,6 +172,7 @@ const AppContent = () => {
 
           {/* Demo pages */}
           {/* <Route path='/demo' element={<RainbowAvatarDemo />} /> */}
+          <Route path='/demo-social-profile' element={<SocialProfileDemo />} />
           <Route path='/test-avatar' element={<TestAvatarPage />} />
           <Route path='/test-rank' element={<RankTestPage />} />
           <Route path='/test-sabo-style' element={<SABOStyleTestPage />} />
@@ -252,20 +257,19 @@ const AppContent = () => {
             <Route path='milestones' element={<MilestonePage />} />
             <Route path='auth-test' element={<AuthTestPage />} />
 
-            {/* Public pages accessible through sidebar when logged in */}
-            <Route path='tournaments' element={<TournamentPage />} />
-            <Route path='leaderboard' element={<LeaderboardPage />} />
-            <Route path='clubs' element={<ClubsPage />} />
-            <Route path='clubs/:id' element={<ClubDetailPage />} />
-            <Route
-              path='clubs/:id/owner'
-              element={<ClubOwnerDashboardPage />}
-            />
-            
-            {/* Legacy Claim Admin route removed - now using direct code claim system */}
-          </Route>
+          {/* Public pages accessible through sidebar when logged in */}
+          <Route path='tournaments' element={<TournamentPage />} />
+          <Route path='leaderboard' element={<LeaderboardPage />} />
+          <Route path='clubs' element={<ClubsPage />} />
+          <Route path='clubs/:id' element={<ClubDetailPage />} />
+          <Route
+            path='clubs/:id/owner'
+            element={<ClubOwnerDashboardPage />}
+          />
+        </Route>
 
-          {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}
+        {/* Social Profile - Public route accessible without login */}
+        <Route path='/players/:userId' element={<SocialProfileCard />} />          {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}
           <Route
             path='/admin/*'
             element={

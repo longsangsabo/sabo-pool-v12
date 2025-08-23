@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Crown, Medal, Trophy, TrendingUp, Archive } from 'lucide-react';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useTheme } from '@/hooks/useTheme';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 import { CombinedSPALeaderboard } from '@/components/legacy/CombinedSPALeaderboard';
 
 interface MobileLeaderboardProps {
@@ -20,6 +21,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
   const [activeTab, setActiveTab] = useState<'elo' | 'spa' | 'legacy'>('legacy');
   const { leaderboard, loading, error, updateFilters } = useLeaderboard();
   const { theme } = useTheme();
+  const { navigateToSocialProfile } = useSocialProfile();
 
   // Utility function to get display name
   const getPlayerDisplayName = (player: any) => {
@@ -337,7 +339,10 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
                     </div>
 
                     {/* Avatar */}
-                    <Avatar className='w-11 h-11 ring-2 ring-offset-1 ring-purple-500/30 transition-all duration-300'>
+                    <Avatar 
+                      className='w-11 h-11 ring-2 ring-offset-1 ring-purple-500/30 transition-all duration-300 cursor-pointer hover:ring-4 hover:ring-purple-500/50'
+                      onClick={() => navigateToSocialProfile(player.user_id, getPlayerDisplayName(player))}
+                    >
                       <AvatarImage 
                         src={player.avatar_url || undefined}
                         loading="lazy"

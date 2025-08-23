@@ -48,13 +48,13 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
   const handleClubApproval = async (challengeId: string, approved: boolean) => {
     try {
       setApproving(challengeId);
-      console.log('🎯 Club approval:', { challengeId, approved, note: note[challengeId] });
+      // console.log('🎯 Club approval:', { challengeId, approved, note: note[challengeId] });
 
       // First run the SQL function to handle SPA
       if (approved) {
         try {
           await supabase.from('challenges').select('*').eq('id', challengeId).single();
-          console.log('Processing SPA transfer for challenge:', challengeId);
+          // console.log('Processing SPA transfer for challenge:', challengeId);
         } catch (e) {
           console.log('Note: SPA processing may not be available yet');
         }
@@ -67,16 +67,72 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
           club_confirmed: approved,
           club_confirmed_at: new Date().toISOString(),
           club_note: note[challengeId] || '',
-          status: approved ? 'completed' : 'rejected',
-          completed_at: approved ? new Date().toISOString() : null
+          // Don't change status if already completed - just update confirmation
+          ...(approved ? {} : { status: 'rejected' })
         })
-        .eq('id', challengeId)
-        .in('status', ['pending_approval', 'ongoing']);
+        .eq('id', challengeId);
 
       if (error) {
         console.error('❌ Club approval error:', error);
         toast.error(`Lỗi: ${error.message}`);
         return;
+      }
+
+      // If approved, trigger additional processing
+      if (approved) {
+        console.log('🎉 Challenge approved - triggering post-processing...');
+        
+        // Get the challenge details for processing
+        const { data: challengeData } = await supabase
+          .from('challenges')
+          .select('*')
+          .eq('id', challengeId)
+          .single();
+
+        if (challengeData && challengeData.winner_id) {
+          console.log('Winner ID:', challengeData.winner_id.substring(0, 8) + '...');
+          console.log('Bet Points:', challengeData.bet_points);
+          
+          // Create notifications for winner and loser
+          const notifications = [];
+          
+          // Winner notification
+          notifications.push({
+            user_id: challengeData.winner_id,
+            title: '🏆 Thắng thách đấu!',
+            message: `Bạn đã thắng thách đấu với tỷ số ${challengeData.challenger_score}-${challengeData.opponent_score}. Đã được CLB xác nhận.`,
+            type: 'challenge_win'
+          });
+          
+          // Loser notification
+          const loserId = challengeData.winner_id === challengeData.challenger_id 
+            ? challengeData.opponent_id 
+            : challengeData.challenger_id;
+          
+          notifications.push({
+            user_id: loserId,
+            title: '📊 Kết quả thách đấu',
+            message: `Thách đấu đã kết thúc với tỷ số ${challengeData.challenger_score}-${challengeData.opponent_score}. Đã được CLB xác nhận.`,
+            type: 'challenge_result'
+          });
+          
+          // Insert notifications
+          const { error: notificationError } = await supabase
+            .from('notifications')
+            .insert(notifications);
+            
+          if (notificationError) {
+            console.warn('Notification error:', notificationError);
+          } else {
+            console.log('✅ Notifications sent to players');
+          }
+          
+          // TODO: Add SPA processing, leaderboard updates here
+          console.log('💡 Additional processing needed:');
+          console.log('   - SPA points redistribution');
+          console.log('   - Leaderboard updates');
+          console.log('   - Milestone progress');
+        }
       }
 
       // Refresh challenges
@@ -102,7 +158,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
   // Fetch all challenges - simple and clean
   const fetchChallenges = async () => {
     try {
-      console.log('🔄 Fetching challenges...');
+      // console.log('🔄 Fetching challenges...');
       
       const { data, error } = await supabase
         .from('challenges')
@@ -124,8 +180,8 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
         return;
       }
 
-      console.log('✅ Fetched challenges:', data?.length || 0);
-      console.log('📋 Challenges data:', data);
+      // console.log('✅ Fetched challenges:', data?.length || 0);
+      // console.log('📋 Challenges data:', data);
       setChallenges(data || []);
     } catch (error) {
       console.error('❌ Exception fetching challenges:', error);
@@ -148,30 +204,30 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
   );
   
   const pendingApproval = challenges.filter(c => 
-    c.status === 'pending_approval'
+    c.status === 'completed' && c.club_confirmed === false
   );
   
   const completedChallenges = challenges.filter(c => 
-    c.status === 'completed'
+    c.status === 'completed' && c.club_confirmed === true
   );
 
-  console.log('📊 Challenge counts:', {
-    total: challenges.length,
-    pending: pendingChallenges.length,
-    active: activeChallenges.length,
-    pendingApproval: pendingApproval.length,
-    completed: completedChallenges.length
-  });
+  // console.log('📊 Challenge counts:', {
+  //   total: challenges.length,
+  //   pending: pendingChallenges.length,
+  //   active: activeChallenges.length,
+  //   pendingApproval: pendingApproval.length,
+  //   completed: completedChallenges.length
+  // });
 
   const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
     // Get scores from multiple possible column names
     const challengerScore = challenge.challenger_score ?? challenge.score_challenger ?? challenge.final_score_challenger;
     const opponentScore = challenge.opponent_score ?? challenge.score_opponent ?? challenge.final_score_opponent;
     
-    const needsApproval = (challenge.status === 'pending_approval' || challenge.status === 'ongoing') && 
+    const needsApproval = challenge.status === 'completed' && 
                          challengerScore !== null && challengerScore !== undefined &&
                          opponentScore !== null && opponentScore !== undefined &&
-                         !challenge.club_confirmed;
+                         challenge.club_confirmed === false;
 
     return (
       <Card className="p-4 border border-gray-200 dark:border-gray-700">

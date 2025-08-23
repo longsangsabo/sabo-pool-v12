@@ -23,9 +23,11 @@ import StatusBadge from './Enhanced/StatusBadge';
 import CurrentUserInfo from './CurrentUserInfo';
 import { formatVietnamTime } from '@/utils/timezone';
 import { getRankOrder, extractRankFromProfile } from '@/lib/rankUtils';
+import { useEnhancedChallengesV3 } from '@/hooks/useEnhancedChallengesV3';
+import { toast } from 'sonner';
 import { formatHandicapForDisplay, calculateSaboHandicapPrecise } from '@/utils/saboHandicapCalculator';
 import { SaboRank } from '@/utils/saboHandicap';
-import ScoreSubmissionCard from './ScoreSubmissionCard';
+import IntegratedScoreManager from './IntegratedScoreManager';
 import ClubApprovalCard from './ClubApprovalCard';
 import { useClubAdminCheck } from '@/hooks/useClubAdminCheck';
 
@@ -55,11 +57,90 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   currentUserId,
   currentUserProfile
 }) => {
+  console.log('🎯 [DEBUG] EnhancedChallengeCard rendered for challenge:', originalChallenge.id);
+  
   // Convert to ExtendedChallenge for enhanced features
   const challenge = toExtendedChallenge(originalChallenge);
   
+  // 🎯 NEW: Hook for direct challenge actions
+  const { acceptChallenge } = useEnhancedChallengesV3();
+  
   // Check if current user is the challenger (creator)
   const isCreator = currentUserId && challenge.challenger_id === currentUserId;
+  
+  // 🚀 NEW: Simple join challenge handler
+  const handleJoinChallenge = async () => {
+    console.log('🎯 [DEBUG] handleJoinChallenge called for challenge:', challenge.id);
+    try {
+      console.log('🎯 [DEBUG] Calling acceptChallenge...');
+      await acceptChallenge(challenge.id);
+      console.log('🎯 [DEBUG] acceptChallenge successful!');
+      toast.success('🎯 Tham gia thách đấu thành công!');
+    } catch (error) {
+      console.error('🎯 [DEBUG] acceptChallenge error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Lỗi khi tham gia thách đấu';
+      toast.error(errorMessage);
+    }
+  };
+
+  // 🚀 NEW: Simple cancel challenge handler  
+  const handleCancelChallenge = async () => {
+    // Fallback to onAction if available
+    if (onAction) {
+      onAction(challenge.id, 'cancel');
+    } else {
+      toast.error('Tính năng hủy thách đấu chưa được kết nối');
+    }
+  };
+
+  // Start match handler - simplified to only update challenge status
+  const handleStartMatch = async () => {
+    console.log('🎯 [DEBUG] handleStartMatch called for challenge:', challenge.id);
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        import.meta.env.VITE_SUPABASE_URL!,
+        import.meta.env.VITE_SUPABASE_ANON_KEY!
+      );
+
+      // Simply update challenge status to ongoing - no matches table needed
+      const { error } = await supabase
+        .from('challenges')
+        .update({ status: 'ongoing' })
+        .eq('id', challenge.id);
+
+      if (error) {
+        console.error('🎯 [ERROR] Challenge status update failed:', error);
+        toast.error('Lỗi khi bắt đầu trận đấu');
+        return;
+      }
+
+      console.log('🎯 [DEBUG] Challenge status updated to ongoing');
+      toast.success('🏁 Trận đấu đã được bắt đầu!');
+      
+      // Refresh challenges
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.error('🎯 [DEBUG] handleStartMatch error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Lỗi khi bắt đầu trận đấu';
+      toast.error(errorMessage);
+    }
+  };
+
+  // 🚀 NEW: Enter score handler
+  const handleEnterScore = async () => {
+    console.log('🎯 [DEBUG] handleEnterScore called for challenge:', challenge.id);
+    toast.info('🎮 Tính năng nhập tỷ số đang được phát triển');
+    
+    // TODO: Implement score entry modal or flow
+    // This should:
+    // 1. Show score input modal
+    // 2. Submit scores to matches table
+    // 3. Determine winner
+    // 4. Update challenge status to completed
+  };
   
   // Check if current user is a club admin for this challenge's club
   const { isClubAdmin, loading: clubAdminLoading } = useClubAdminCheck({
@@ -76,14 +157,15 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
     const requiredRankOrder = getRankOrder(challenge.required_rank);
     const currentRankOrder = getRankOrder(currentUserRank);
     
-    console.log('🔍 [EnhancedChallengeCard] Rank eligibility check:', {
-      challengeId: challenge.id,
-      required_rank: challenge.required_rank,
-      requiredRankOrder,
-      currentUserRank,
-      currentRankOrder,
-      isEligible: currentRankOrder >= requiredRankOrder
-    });
+    // Only log in development mode if needed for debugging
+    // console.log('🔍 [EnhancedChallengeCard] Rank eligibility check:', {
+    //   challengeId: challenge.id,
+    //   required_rank: challenge.required_rank,
+    //   requiredRankOrder,
+    //   currentUserRank,
+    //   currentRankOrder,
+    //   isEligible: currentRankOrder >= requiredRankOrder
+    // });
     
     return currentRankOrder >= requiredRankOrder;
   };
@@ -102,6 +184,17 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
 
   const currentUserChallengeProfile = getCurrentUserProfile();
 
+  // Debug logging after functions are defined
+  console.log('🎯 [DEBUG] Challenge conditions:', {
+    challengeId: challenge.id,
+    status: challenge.status,
+    currentUserId,
+    challengerId: challenge.challenger_id,
+    isCreator,
+    hasRequiredRank: isRankEligible(),
+    requiredRank: challenge.required_rank
+  });
+
   // Calculate handicap in real-time if not available or to verify stored data
   const calculateLiveHandicap = () => {
     try {
@@ -116,24 +209,31 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
           betAmount
         );
 
-        console.log('🎯 Live Handicap Calculation:', {
-          challengeId: challenge.id,
-          challengerRank,
-          opponentRank,
-          betAmount,
-          result
-        });
+        // Only log in development mode if needed for debugging
+        // console.log('🎯 Live Handicap Calculation:', {
+        //   challengeId: challenge.id,
+        //   challengerRank,
+        //   opponentRank,
+        //   betAmount,
+        //   result
+        // });
 
         return result;
       } else {
-        console.warn('Missing rank data for handicap calculation:', {
-          challengeId: challenge.id,
-          challengerRank,
-          opponentRank
-        });
+        // Only warn if both ranks are missing (normal for open challenges)
+        if (!challengerRank && !opponentRank) {
+          // console.warn('Missing rank data for handicap calculation:', {
+          //   challengeId: challenge.id,
+          //   challengerRank,
+          //   opponentRank
+          // });
+        }
       }
     } catch (error) {
-      console.warn('Error calculating live handicap:', error);
+      // Only log errors in development
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Error calculating live handicap:', error);
+      }
     }
     return null;
   };
@@ -340,7 +440,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                   className="mx-auto mb-1"
                 />
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
-                  {challenge.challenger_profile?.full_name || challenge.challenger_profile?.username || 'Player 1'}
+                  {challenge.challenger_profile?.display_name || challenge.challenger_profile?.full_name || challenge.challenger_profile?.username || 'Player 1'}
                 </div>
                 {/* Player Info */}
                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 space-y-0.5">
@@ -413,7 +513,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                   className="mx-auto mb-1"
                 />
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
-                  {challenge.opponent_profile?.full_name || challenge.opponent_profile?.username || 'Waiting...'}
+                  {challenge.opponent_profile?.display_name || challenge.opponent_profile?.full_name || challenge.opponent_profile?.username || 'Waiting...'}
                 </div>
                 {/* Player Info */}
                 {challenge.opponent_profile && (
@@ -544,59 +644,63 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
               userProfile={currentUserProfile}
             />
 
-            {/* Enhanced Score Section - Show for all challenges with scores */}
-            {(() => {
-              // Get scores from multiple possible fields
-              const challengerScore = challenge.challenger_final_score ?? 
-                                     challenge.challenger_score ?? 
-                                     (challenge as any).score_challenger ?? 
-                                     (challenge as any).final_score_challenger;
-              
-              const opponentScore = challenge.opponent_final_score ?? 
-                                   challenge.opponent_score ?? 
-                                   (challenge as any).score_opponent ?? 
-                                   (challenge as any).final_score_opponent;
+            {/* Integrated Score Manager - Show for ongoing, accepted, or completed challenges */}
+            {(challenge.status === 'ongoing' || challenge.status === 'accepted' || challenge.status === 'completed' || 
+              (challenge.challenger_final_score !== null && challenge.challenger_final_score !== undefined) ||
+              (challenge.opponent_final_score !== null && challenge.opponent_final_score !== undefined)) && 
+             challenge.challenger_profile && challenge.opponent_profile && (
+              <IntegratedScoreManager
+                challengerScore={challenge.challenger_final_score ?? challenge.challenger_score ?? (challenge as any).score_challenger ?? (challenge as any).final_score_challenger}
+                opponentScore={challenge.opponent_final_score ?? challenge.opponent_score ?? (challenge as any).score_opponent ?? (challenge as any).final_score_opponent}
+                challengerName={challenge.challenger_profile.display_name || challenge.challenger_profile.full_name || 'Player 1'}
+                opponentName={challenge.opponent_profile.display_name || challenge.opponent_profile.full_name || 'Player 2'}
+                currentUserId={currentUserId || ''}
+                challengerId={challenge.challenger_id}
+                opponentId={challenge.opponent_id || ''}
+                challengeStatus={challenge.status as 'ongoing' | 'accepted' | 'completed' | 'pending'}
+                challengeId={challenge.id}
+                onScoreUpdate={async (challengerScore: number, opponentScore: number) => {
+                  console.log('🎯 [DEBUG] Score update callback:', { challengerScore, opponentScore, challengeId: challenge.id });
+                  
+                  // TODO: Implement actual score update API call
+                  const { createClient } = await import('@supabase/supabase-js');
+                  const supabase = createClient(
+                    import.meta.env.VITE_SUPABASE_URL!,
+                    import.meta.env.VITE_SUPABASE_ANON_KEY!
+                  );
 
-              if (challengerScore !== null && challengerScore !== undefined && 
-                  opponentScore !== null && opponentScore !== undefined) {
-                return (
-                  <div className={`flex items-center justify-center gap-4 p-3 rounded-lg border-2 ${
-                    challenge.status === 'completed' 
-                      ? 'bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-700 text-green-800 dark:text-green-200' 
-                      : 'bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-700 text-blue-800 dark:text-blue-200'
-                  } backdrop-blur-sm`}>
-                    <div className="text-center flex-1">
-                      <div className="font-bold text-2xl">
-                        {challengerScore}
-                      </div>
-                      <div className="text-xs opacity-75 font-medium truncate">
-                        {challenge.challenger_profile?.full_name || 'Player 1'}
-                      </div>
-                    </div>
-                    <div className="text-2xl font-bold opacity-60">-</div>
-                    <div className="text-center flex-1">
-                      <div className="font-bold text-2xl">
-                        {opponentScore}
-                      </div>
-                      <div className="text-xs opacity-75 font-medium truncate">
-                        {challenge.opponent_profile?.full_name || 'Player 2'}
-                      </div>
-                    </div>
-                    {challenge.status === 'completed' && (
-                      <div className="absolute top-1 right-2 text-xs opacity-60">
-                        ✅ Hoàn thành
-                      </div>
-                    )}
-                    {challenge.status === 'ongoing' && (
-                      <div className="absolute top-1 right-2 text-xs opacity-60">
-                        🔴 Đang diễn ra
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-              return null;
-            })()}
+                  // Update matches table
+                  const { error: matchError } = await supabase
+                    .from('matches')
+                    .update({
+                      score_player1: challengerScore,
+                      score_player2: opponentScore,
+                      status: challengerScore === 5 || opponentScore === 5 ? 'completed' : 'in_progress'
+                    })
+                    .eq('challenge_id', challenge.id);
+
+                  if (matchError) {
+                    console.error('Match update error:', matchError);
+                    throw matchError;
+                  }
+
+                  // Update challenges table
+                  const { error: challengeError } = await supabase
+                    .from('challenges')
+                    .update({
+                      challenger_final_score: challengerScore,
+                      opponent_final_score: opponentScore,
+                      status: challengerScore === 5 || opponentScore === 5 ? 'completed' : 'ongoing'
+                    })
+                    .eq('id', challenge.id);
+
+                  if (challengeError) {
+                    console.error('Challenge update error:', challengeError);
+                    throw challengeError;
+                  }
+                }}
+              />
+            )}
 
             {/* Enhanced Actions */}
             {showQuickActions && (
@@ -604,19 +708,23 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                 {(challenge.status === 'pending' || challenge.status === 'open') && (
                   <>
                     {/* Join button - only show if user is NOT the creator AND has required rank */}
-                    {!isCreator && isRankEligible() && (
-                      <Button
-                        size="sm"
-                        className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 dark:from-emerald-400 dark:to-green-500 dark:hover:from-emerald-500 dark:hover:to-green-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onAction?.(challenge.id, 'join');
-                        }}
-                      >
-                        <Zap className="w-4 h-4 mr-1" />
-                        Tham gia ngay
-                      </Button>
-                    )}
+                    {!isCreator && isRankEligible() && (() => {
+                      console.log('🎯 [DEBUG] Rendering JOIN button for challenge:', challenge.id, 'isCreator:', isCreator, 'isRankEligible:', isRankEligible());
+                      return (
+                        <Button
+                          size="sm"
+                          className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 dark:from-emerald-400 dark:to-green-500 dark:hover:from-emerald-500 dark:hover:to-green-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                          onClick={(e) => {
+                            console.log('🎯 [DEBUG] Join button clicked!');
+                            e.stopPropagation();
+                            handleJoinChallenge();
+                          }}
+                        >
+                          <Zap className="w-4 h-4 mr-1" />
+                          Tham gia ngay
+                        </Button>
+                      );
+                    })()}
                     
                     {/* Rank insufficient button - show if user is NOT the creator but doesn't have required rank */}
                     {!isCreator && !isRankEligible() && challenge.required_rank && challenge.required_rank !== 'all' && (
@@ -639,7 +747,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                         className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 dark:from-red-400 dark:to-red-500 dark:hover:from-red-500 dark:hover:to-red-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                         onClick={(e) => {
                           e.stopPropagation();
-                          onAction?.(challenge.id, 'cancel');
+                          handleCancelChallenge();
                         }}
                       >
                         <X className="w-4 h-4 mr-1" />
@@ -648,6 +756,35 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                     )}
                   </>
                 )}
+
+                {/* Start Match / Enter Score for accepted challenges */}
+                {(challenge.status === 'pending' && challenge.opponent_id) && (
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-400 dark:to-blue-500 dark:hover:from-blue-500 dark:hover:to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStartMatch();
+                    }}
+                  >
+                    <Play className="w-4 h-4 mr-1" />
+                    Bắt đầu trận đấu
+                  </Button>
+                )}
+
+                {challenge.status === 'accepted' && (
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-400 dark:to-blue-500 dark:hover:from-blue-500 dark:hover:to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStartMatch();
+                    }}
+                  >
+                    <Play className="w-4 h-4 mr-1" />
+                    Bắt đầu trận đấu
+                  </Button>
+                )}
                 {challenge.status === 'ongoing' && (
                   <Button
                     size="sm"
@@ -655,7 +792,12 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                     className="border-red-500/50 text-red-600 hover:bg-red-50 dark:border-red-400/50 dark:text-red-400 dark:hover:bg-red-950/20"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onAction?.(challenge.id, 'watch');
+                      // Fallback to onAction or show message
+                      if (onAction) {
+                        onAction(challenge.id, 'watch');
+                      } else {
+                        toast.info('Tính năng xem trực tiếp đang phát triển');
+                      }
                     }}
                   >
                     <Play className="w-4 h-4 mr-1" />
@@ -669,7 +811,12 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                     className="text-muted-foreground hover:text-foreground dark:text-muted-foreground/80 dark:hover:text-foreground/90"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onAction?.(challenge.id, 'view');
+                      // Fallback to onAction or show message
+                      if (onAction) {
+                        onAction(challenge.id, 'view');
+                      } else {
+                        toast.info('Tính năng xem chi tiết đang phát triển');
+                      }
                     }}
                   >
                     <Trophy className="w-4 h-4 mr-1" />
@@ -681,44 +828,6 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
           </div>
         </CardContent>
       </Card>
-
-      {/* Score Submission Card - Only show for active/ongoing challenges */}
-      {(challenge.status === 'accepted' || challenge.status === 'ongoing') && 
-       challenge.challenger_profile && 
-       challenge.opponent_profile && (
-        <div className="mt-4">
-          <ScoreSubmissionCard
-            challenge={{
-              id: challenge.id,
-              challenger_id: challenge.challenger_id,
-              opponent_id: challenge.opponent_id || '',
-              challenger_score: challenge.challenger_score,
-              opponent_score: challenge.opponent_score,
-              status: challenge.status,
-              response_message: challenge.message, // Using message field
-              bet_points: challenge.bet_points,
-              race_to: challenge.race_to,
-              handicap_data: challenge.handicap_data
-            }}
-            challengerProfile={{
-              id: challenge.challenger_profile.id || challenge.challenger_profile.user_id,
-              display_name: challenge.challenger_profile.display_name || challenge.challenger_profile.full_name,
-              spa_rank: challenge.challenger_profile.verified_rank || challenge.challenger_profile.current_rank,
-              spa_points: challenge.challenger_profile.spa_points
-            }}
-            opponentProfile={{
-              id: challenge.opponent_profile.id || challenge.opponent_profile.user_id,
-              display_name: challenge.opponent_profile.display_name || challenge.opponent_profile.full_name,
-              spa_rank: challenge.opponent_profile.verified_rank || challenge.opponent_profile.current_rank,
-              spa_points: challenge.opponent_profile.spa_points
-            }}
-            onScoreSubmitted={() => {
-              // Refresh challenge data if needed
-              console.log('Score submitted for challenge:', challenge.id);
-            }}
-          />
-        </div>
-      )}
 
       {/* Club Approval Card - Only show for club admins when score is confirmed */}
       {challenge.status === 'ongoing' && 
@@ -757,7 +866,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
             }}
             isClubAdmin={isClubAdmin}
             onApprovalComplete={() => {
-              console.log('Club approval completed for challenge:', challenge.id);
+              // console.log('Club approval completed for challenge:', challenge.id);
               // Refresh challenge data if needed
             }}
           />

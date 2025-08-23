@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { getDisplayName } from '@/types/unified-profile';
 import CardAvatar from '@/components/ui/card-avatar';
 import DarkCardAvatar from '@/components/ui/dark-card-avatar';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 
 interface SocialProfile {
   user_id: string;
@@ -31,6 +32,7 @@ const SocialProfileCard: React.FC = () => {
   const { user: currentUser } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const { navigateToSocialProfile } = useSocialProfile();
   
   const [profile, setProfile] = useState<SocialProfile | null>(null);
   const [stats, setStats] = useState<PlayerStats | null>(null);
@@ -39,6 +41,9 @@ const SocialProfileCard: React.FC = () => {
   useEffect(() => {
     if (userId) {
       fetchProfileData();
+    } else {
+      toast.error('User ID không hợp lệ');
+      navigate('/');
     }
   }, [userId]);
 
@@ -48,30 +53,55 @@ const SocialProfileCard: React.FC = () => {
     try {
       setLoading(true);
 
-      // For testing: Use mock data if userId is 'user-1', 'user-2', etc.
-      if (userId.startsWith('user-')) {
-        const mockProfile = {
-          user_id: userId,
-          display_name: userId === 'user-1' ? 'Nguyễn Văn A' : 
-                       userId === 'user-2' ? 'SABO BILLIARDS' : 
-                       'Test Player',
-          full_name: userId === 'user-1' ? 'Nguyễn Văn A' : 
-                     userId === 'user-2' ? 'SABO BILLIARDS' : 
-                     'Test Player',
-          avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}`,
-          verified_rank: userId === 'user-1' ? 'A' : 'H+',
-          role: userId === 'user-2' ? 'club_owner' as const : 'player' as const,
+      // Development mode: Use mock data for testing with user-* IDs
+      if (process.env.NODE_ENV === 'development' && userId.startsWith('user-')) {
+        console.log('🧪 Using mock data for development testing');
+        
+        const mockProfiles = {
+          'user-1': {
+            user_id: 'user-1',
+            display_name: 'BẢO HUYNH',
+            full_name: 'Nguyễn Bảo Huynh',
+            avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user-1',
+            verified_rank: 'G+',
+            role: 'player' as const,
+          },
+          'user-2': {
+            user_id: 'user-2',
+            display_name: 'SABO BILLIARDS',
+            full_name: 'SABO BILLIARDS CLUB',
+            avatar_url: 'https://api.dicebear.com/7.x/bottts/svg?seed=user-2',
+            verified_rank: 'H+',
+            role: 'club_owner' as const,
+          },
+          'user-3': {
+            user_id: 'user-3',
+            display_name: 'ACE PLAYER',
+            full_name: 'Trần Văn C',
+            avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user-3',
+            verified_rank: 'I',
+            role: 'player' as const,
+          },
         };
 
         const mockStats = {
-          elo: 1500,
-          spa: 398,
-          total_matches: userId === 'user-1' ? 25 : 10,
-          ranking_position: userId === 'user-1' ? 5 : 0,
+          'user-1': { elo: 1500, spa: 398, total_matches: 15, ranking_position: 0 },
+          'user-2': { elo: 1200, spa: 250, total_matches: 8, ranking_position: 0 },
+          'user-3': { elo: 1800, spa: 450, total_matches: 22, ranking_position: 12 },
         };
 
-        setProfile(mockProfile);
-        setStats(mockStats);
+        const profile = mockProfiles[userId as keyof typeof mockProfiles];
+        const stats = mockStats[userId as keyof typeof mockStats];
+
+        if (profile && stats) {
+          setProfile(profile);
+          setStats(stats);
+        } else {
+          toast.error('Mock user không tồn tại');
+          navigate('/');
+          return;
+        }
+        
         setLoading(false);
         return;
       }
@@ -92,24 +122,21 @@ const SocialProfileCard: React.FC = () => {
 
       // Fetch player stats
       const { data: statsData, error: statsError } = await supabase
-        .from('player_stats')
-        .select('elo, spa_points, total_matches')
+        .from('player_rankings')
+        .select('elo_points, spa_points, matches_played, current_rank, ranking_position')
         .eq('user_id', userId)
         .single();
 
-      // Fetch ranking
-      const { data: rankingData, error: rankingError } = await supabase
-        .from('player_rankings')
-        .select('ranking_position')
-        .eq('user_id', userId)
-        .single();
+      if (statsError) {
+        console.log('No stats found, using defaults:', statsError);
+      }
 
       setProfile(profileData);
       setStats({
-        elo: statsData?.elo || 1500,
-        spa: statsData?.spa_points || 398,
-        total_matches: statsData?.total_matches || 0,
-        ranking_position: rankingData?.ranking_position || 0,
+        elo: statsData?.elo_points || 1000,
+        spa: statsData?.spa_points || 0,
+        total_matches: statsData?.matches_played || 0,
+        ranking_position: statsData?.ranking_position || 0,
       });
 
     } catch (error) {
@@ -168,10 +195,21 @@ const SocialProfileCard: React.FC = () => {
     });
   };
 
+  const handleAvatarClick = () => {
+    // Navigate to social profile when clicking avatar (for other users)
+    if (profile && profile.user_id !== currentUser?.id) {
+      navigateToSocialProfile(profile.user_id);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-400"></div>
+        <div className="text-center text-white">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
+          <h2 className="text-lg font-semibold mb-2">Đang tải thông tin</h2>
+          <p className="text-slate-400">Vui lòng chờ trong giây lát...</p>
+        </div>
       </div>
     );
   }
@@ -218,7 +256,8 @@ const SocialProfileCard: React.FC = () => {
             ranking={stats?.ranking_position || 0}
             matches={stats?.total_matches || 0}
             size='lg'
-            className='mb-8'
+            className='mb-8 cursor-pointer'
+            onClick={handleAvatarClick}
           />
         ) : (
           <CardAvatar
@@ -232,7 +271,8 @@ const SocialProfileCard: React.FC = () => {
             ranking={stats?.ranking_position || 0}
             matches={stats?.total_matches || 0}
             size='lg'
-            className='mb-8'
+            className='mb-8 cursor-pointer'
+            onClick={handleAvatarClick}
           />
         )}
 
@@ -241,7 +281,7 @@ const SocialProfileCard: React.FC = () => {
           <div className="flex gap-3 mt-6">
             <Button
               onClick={handleChallenge}
-              className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-semibold py-3"
+              className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-semibold py-3 transition-all duration-200"
             >
               <Trophy className="w-4 h-4 mr-2" />
               Thách đấu
@@ -249,7 +289,7 @@ const SocialProfileCard: React.FC = () => {
             <Button
               onClick={handleMessage}
               variant="outline"
-              className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:text-white py-3"
+              className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:text-white py-3 transition-all duration-200"
             >
               <MessageCircle className="w-4 h-4 mr-2" />
               Nhắn tin
@@ -257,11 +297,25 @@ const SocialProfileCard: React.FC = () => {
           </div>
         )}
 
+        {/* Login prompt for non-authenticated users */}
+        {!isOwnProfile && !currentUser && (
+          <div className="mt-6 text-center">
+            <p className="text-slate-400 mb-4">Đăng nhập để thách đấu và nhắn tin</p>
+            <Button
+              onClick={() => navigate('/auth/login')}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold py-3 px-6 transition-all duration-200"
+            >
+              Đăng nhập
+            </Button>
+          </div>
+        )}
+
+        {/* Own profile edit button */}
         {isOwnProfile && (
           <Button
             onClick={() => navigate('/profile')}
             variant="outline"
-            className="w-full mt-6 border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:text-white py-3"
+            className="w-full mt-6 border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:text-white py-3 transition-all duration-200"
           >
             Chỉnh sửa hồ sơ
           </Button>

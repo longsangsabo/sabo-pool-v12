@@ -27,6 +27,7 @@ interface DarkCardAvatarProps {
   matches?: number;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }
 
 const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
@@ -41,6 +42,7 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
   matches = 0,
   className = '',
   size = 'md',
+  onClick,
 }) => {
   const [showCropper, setShowCropper] = useState(false);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -79,7 +81,11 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
   const currentAvatar = croppedImage || userAvatar;
 
   return (
-    <div className={`dark-card-avatar-container ${className}`}>
+    <div 
+      className={`dark-card-avatar-container ${className}`}
+      onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
+    >
       <div
         className={`dark-card-avatar-frame ${sizeConfig[size].width} ${sizeConfig[size].height}`}
       >
@@ -113,20 +119,18 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
                   className='dark-nickname-text-overlay'
                   style={{
                     fontFamily:
-                      "'Khand', 'Oswald', 'Bebas Neue', 'Antonio', 'Fjalla One', 'Roboto Condensed', condensed, sans-serif",
-                    fontWeight: 900, // font-black equivalent
-                    fontSize: '1.125rem', // 1.5x từ 0.75rem
-                    fontStretch: 'condensed', // Nén font
-                    lineHeight: 0.9, // Cao hơn, compact hơn
+                      "'Inter', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+                    fontWeight: 700, // font-bold
+                    fontSize: '2rem', // Tăng để text rõ hơn
+                    lineHeight: 1, // Cân bằng cho tiếng Việt
                     background:
                       'linear-gradient(to right, #60a5fa, #c084fc, #3b82f6, #ffffff, #fbbf24)', // Bright colors cho dark mode
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                    letterSpacing: '0.05em', // Spacing nhỏ cho condensed look
+                    letterSpacing: '0.025em', // Giảm để tiếng Việt đọc dễ hơn
                     textTransform: 'uppercase',
                     filter: 'brightness(1.1)', // Giảm xuống +10%
-                    fontVariant: 'small-caps', // Thêm small-caps cho cứng cáp
                   }}
                 >
                   {nickname}
@@ -246,7 +250,7 @@ const DarkCardAvatar: React.FC<DarkCardAvatarProps> = ({
                 }}
               />
               <div className='dark-stat-label'>XH</div>
-              <div className='dark-stat-value'>#{ranking}</div>
+              <div className='dark-stat-value'>{ranking > 0 ? `#${ranking}` : 'N/A'}</div>
             </div>
             <div className='dark-stat-item'>
               <Swords

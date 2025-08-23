@@ -27,6 +27,7 @@ interface CardAvatarProps {
   matches?: number;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }
 
 const CardAvatar: React.FC<CardAvatarProps> = ({
@@ -41,6 +42,7 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
   matches = 0,
   className = '',
   size = 'md',
+  onClick,
 }) => {
   const [showCropper, setShowCropper] = useState(false);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -83,7 +85,11 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
   console.log('🎯 CardAvatar - currentAvatar:', currentAvatar);
 
   return (
-    <div className={`card-avatar-container ${className}`}>
+    <div 
+      className={`card-avatar-container ${className}`}
+      onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
+    >
       <div
         className={`card-avatar-frame ${sizeConfig[size].width} ${sizeConfig[size].height}`}
       >
@@ -146,20 +152,18 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
                   className='nickname-text-overlay'
                   style={{
                     fontFamily:
-                      "'Khand', 'Oswald', 'Bebas Neue', 'Antonio', 'Fjalla One', 'Roboto Condensed', condensed, sans-serif",
+                      "'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif",
                     fontWeight: 900, // font-black equivalent
-                    fontSize: '1.125rem', // 1.5x từ 0.75rem
-                    fontStretch: 'condensed', // Nén font
-                    lineHeight: 0.9, // Cao hơn, compact hơn
+                    fontSize: '2rem', // Tăng lên 2rem cho rõ ràng hơn
+                    lineHeight: 1.1, // Tăng line-height cho tiếng Việt
                     background:
                       'linear-gradient(to right, #1d4ed8, #7c3aed, #1e40af, #ffffff)', // Thêm white để sáng hơn
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                    letterSpacing: '0.05em', // Spacing nhỏ cho condensed look
+                    letterSpacing: '0.02em', // Giảm letter-spacing cho tiếng Việt
                     textTransform: 'uppercase',
                     filter: 'brightness(1.1)', // Giảm xuống +10%
-                    fontVariant: 'small-caps', // Thêm small-caps cho cứng cáp
                   }}
                 >
                   {nickname}
@@ -257,7 +261,7 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
                 }}
               />
               <div className='stat-label'>XH</div>
-              <div className='stat-value'>#{ranking}</div>
+              <div className='stat-value'>{ranking > 0 ? `#${ranking}` : 'N/A'}</div>
             </div>
             <div className='stat-item'>
               <Swords

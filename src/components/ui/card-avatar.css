@@ -8,12 +8,13 @@
 /* Nickname inline style override helper (optional) */
 .nickname-text-overlay[style] {
   font-family:
-    Khand, Oswald, 'Bebas Neue', Antonio, 'Fjalla One', 'Roboto Condensed',
-    sans-serif !important;
+    'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 
+    'Noto Sans', 'Liberation Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important;
   font-weight: 900 !important;
-  font-size: 1.4rem !important;
-  line-height: 0.9 !important;
-  letter-spacing: 0.05em !important;
+  font-size: 2rem !important; /* Tăng lên 2rem cho rõ ràng hơn */
+  line-height: 1.1 !important; /* Tăng line-height cho tiếng Việt */
+  letter-spacing: 0.02em !important; /* Giảm letter-spacing cho tiếng Việt */
 }
 
 /* ===================================
@@ -170,16 +171,16 @@
 /* Nickname Overlay on Image */
 .nickname-overlay {
   position: absolute;
-  bottom: 0;
+  bottom: 0px; /* Di chuyển xuống sát khung dưới */
   left: 0;
   right: 0;
   background: linear-gradient(
     to top,
-    rgb(0 0 0 / 55%) 0%,
-    rgb(0 0 0 / 25%) 60%,
+    rgb(0 0 0 / 75%) 0%, /* Tăng opacity để text rõ hơn */
+    rgb(0 0 0 / 45%) 70%,
     transparent 100%
   );
-  padding: 14px 10px 10px;
+  padding: 20px 12px 16px; /* Tăng padding để text có không gian hơn */
   z-index: 2;
   display: flex;
   align-items: center;

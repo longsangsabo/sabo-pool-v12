@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { withScrollPreservation } from '@/utils/scrollPreservation';
 
 export interface SABO32ScoreSubmission {
   matchId: string;
@@ -47,15 +48,16 @@ export const useSABO32ScoreSubmission = (tournamentId: string, onMatchUpdate?: (
       // 3. Handle advancement logic
       await handleAdvancement(completedMatch, tournamentId);
 
-      // 4. ONLY call update callback if provided, but preserve scroll
+      // 4. ENHANCED SCROLL PRESERVATION: Use utility for consistent behavior
       if (onMatchUpdate) {
-        // Save scroll position before update
-        const scrollY = window.scrollY;
-        onMatchUpdate();
-        // Restore scroll position after update
-        setTimeout(() => {
-          window.scrollTo({ top: scrollY, behavior: 'instant' });
-        }, 50);
+        await withScrollPreservation(
+          async () => {
+            onMatchUpdate();
+            // Small delay to ensure DOM updates are complete
+            await new Promise(resolve => setTimeout(resolve, 50));
+          },
+          { delayMs: 150, restoreFocus: true }
+        );
       }
 
       toast.success('Tỷ số đã được cập nhật!', {

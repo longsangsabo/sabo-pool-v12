@@ -28,20 +28,20 @@ export const SABO32DoubleEliminationViewer: React.FC<SABO32ViewerProps> = ({
     
     return {
       groupA: {
-        winners: groupA.filter(m => m.bracket_type === 'group_a_winners'),
-        losersA: groupA.filter(m => m.bracket_type === 'group_a_losers_a'),
-        losersB: groupA.filter(m => m.bracket_type === 'group_a_losers_b'),
-        final: groupA.filter(m => m.bracket_type === 'group_a_final')
+        winners: groupA.filter(m => m.bracket_type === 'GROUP_A_WINNERS'),
+        losersA: groupA.filter(m => m.bracket_type === 'GROUP_A_LOSERS_A'),
+        losersB: groupA.filter(m => m.bracket_type === 'GROUP_A_LOSERS_B'),
+        final: groupA.filter(m => m.bracket_type === 'GROUP_A_FINAL')
       },
       groupB: {
-        winners: groupB.filter(m => m.bracket_type === 'group_b_winners'),
-        losersA: groupB.filter(m => m.bracket_type === 'group_b_losers_a'),
-        losersB: groupB.filter(m => m.bracket_type === 'group_b_losers_b'),
-        final: groupB.filter(m => m.bracket_type === 'group_b_final')
+        winners: groupB.filter(m => m.bracket_type === 'GROUP_B_WINNERS'),
+        losersA: groupB.filter(m => m.bracket_type === 'GROUP_B_LOSERS_A'),
+        losersB: groupB.filter(m => m.bracket_type === 'GROUP_B_LOSERS_B'),
+        final: groupB.filter(m => m.bracket_type === 'GROUP_B_FINAL')
       },
       crossBracket: {
-        semifinals: crossBracket.filter(m => m.bracket_type === 'cross_semifinals'),
-        final: crossBracket.filter(m => m.bracket_type === 'cross_final')
+        semifinals: crossBracket.filter(m => m.bracket_type === 'CROSS_SEMIFINALS'),
+        final: crossBracket.filter(m => m.bracket_type === 'CROSS_FINAL')
       }
     };
   };
@@ -63,9 +63,9 @@ export const SABO32DoubleEliminationViewer: React.FC<SABO32ViewerProps> = ({
   const groupAProgress = getGroupProgress(organized.groupA);
   const groupBProgress = getGroupProgress(organized.groupB);
   
-  // Check if groups are completed
-  const isGroupACompleted = organized.groupA.final[0]?.status === 'completed';
-  const isGroupBCompleted = organized.groupB.final[0]?.status === 'completed';
+  // Check if groups are completed (both finals completed)
+  const isGroupACompleted = organized.groupA.final.every(match => match.status === 'completed');
+  const isGroupBCompleted = organized.groupB.final.every(match => match.status === 'completed');
   const canStartCrossBracket = isGroupACompleted && isGroupBCompleted;
 
   return (
@@ -331,22 +331,29 @@ const GroupBracketViewer: React.FC<GroupBracketViewerProps> = ({
         </Card>
       </div>
 
-      {/* Group Final */}
+      {/* Group Finals */}
       {groupData.final.length > 0 && (
         <Card className="bg-yellow-50 border-yellow-200">
           <CardHeader>
-            <CardTitle className="text-yellow-700">🥇 Group {groupId} Final</CardTitle>
+            <CardTitle className="text-yellow-700">🥇 Group {groupId} Finals</CardTitle>
             <p className="text-sm text-yellow-600">
-              Winner and Runner-up qualify for Cross-Bracket Finals
+              Both winners qualify for Cross-Bracket Finals (4 qualifiers total)
             </p>
           </CardHeader>
           <CardContent>
-            <div className="max-w-md mx-auto">
-              <SABOMatchCard
-                match={groupData.final[0]}
-                onScoreSubmit={onScoreSubmit}
-                isSubmitting={isSubmitting}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {groupData.final.map((match, index) => (
+                <div key={match.id} className="max-w-md mx-auto">
+                  <h4 className="text-sm font-medium text-yellow-700 mb-2 text-center">
+                    Final {index + 1}
+                  </h4>
+                  <SABOMatchCard
+                    match={match}
+                    onScoreSubmit={onScoreSubmit}
+                    isSubmitting={isSubmitting}
+                  />
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
@@ -382,7 +389,7 @@ const CrossBracketViewer: React.FC<CrossBracketViewerProps> = ({
             Cross-Bracket Finals Not Available
           </h3>
           <p className="text-gray-500">
-            Complete both Group A and Group B to unlock cross-bracket finals
+            Complete both Group A and Group B Finals (4 matches total) to unlock cross-bracket finals
           </p>
         </CardContent>
       </Card>

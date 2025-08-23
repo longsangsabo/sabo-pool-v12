@@ -24,12 +24,12 @@ export const SABO_32_STRUCTURE = {
         total: 3
       },
       semifinals: {
-        rounds: [250], // Group A Final
-        matches: [1],
-        total: 1,
-        qualifiers: 2 // Top 2 to cross-bracket
+        rounds: [250, 251], // Group A Finals
+        matches: [1, 1],
+        total: 2,
+        qualifiers: 2 // 2 winners to cross-bracket
       },
-      total_matches: 25 // 14 + 7 + 3 + 1
+      total_matches: 26 // 14 + 7 + 3 + 2
     },
     B: {
       players: 16,
@@ -49,12 +49,12 @@ export const SABO_32_STRUCTURE = {
         total: 3
       },
       semifinals: {
-        rounds: [250], // Group B Final
-        matches: [1],
-        total: 1,
-        qualifiers: 2 // Top 2 to cross-bracket
+        rounds: [250, 251], // Group B Finals
+        matches: [1, 1],
+        total: 2,
+        qualifiers: 2 // 2 winners to cross-bracket
       },
-      total_matches: 25 // 14 + 7 + 3 + 1
+      total_matches: 26 // 14 + 7 + 3 + 2
     }
   },
   CROSS_BRACKET: {
@@ -63,8 +63,8 @@ export const SABO_32_STRUCTURE = {
       matches: [2], // SF1, SF2
       total: 2,
       bracket_rules: {
-        SF1: 'Winner A vs Loser B',
-        SF2: 'Winner B vs Loser A'
+        SF1: '2 Winners Group A vs 2 Winners Group B',
+        SF2: '2v2 Matchup System'
       }
     },
     finals: {
@@ -74,25 +74,25 @@ export const SABO_32_STRUCTURE = {
     },
     total_matches: 3
   },
-  TOTAL_MATCHES: 53 // 25 + 25 + 3
+  TOTAL_MATCHES: 55 // 26 + 26 + 3
 } as const;
 
 export const SABO_32_BRACKET_TYPES = {
   // Group A
-  GROUP_A_WINNERS: 'group_a_winners',
-  GROUP_A_LOSERS_A: 'group_a_losers_a', 
-  GROUP_A_LOSERS_B: 'group_a_losers_b',
-  GROUP_A_FINAL: 'group_a_final',
+  GROUP_A_WINNERS: 'GROUP_A_WINNERS',
+  GROUP_A_LOSERS_A: 'GROUP_A_LOSERS_A', 
+  GROUP_A_LOSERS_B: 'GROUP_A_LOSERS_B',
+  GROUP_A_FINAL: 'GROUP_A_FINAL',
   
   // Group B  
-  GROUP_B_WINNERS: 'group_b_winners',
-  GROUP_B_LOSERS_A: 'group_b_losers_a',
-  GROUP_B_LOSERS_B: 'group_b_losers_b', 
-  GROUP_B_FINAL: 'group_b_final',
+  GROUP_B_WINNERS: 'GROUP_B_WINNERS',
+  GROUP_B_LOSERS_A: 'GROUP_B_LOSERS_A',
+  GROUP_B_LOSERS_B: 'GROUP_B_LOSERS_B', 
+  GROUP_B_FINAL: 'GROUP_B_FINAL',
   
   // Cross-bracket
-  CROSS_SEMIFINALS: 'cross_semifinals',
-  CROSS_FINAL: 'cross_final'
+  CROSS_SEMIFINALS: 'CROSS_SEMIFINALS',
+  CROSS_FINAL: 'CROSS_FINAL'
 } as const;
 
 export interface SABO32Match {
@@ -118,7 +118,7 @@ export interface SABO32Match {
   feeds_loser_to_match_id?: string;
   
   // Qualification tracking for cross-bracket
-  qualifies_as?: 'group_winner' | 'group_runner_up' | null;
+  qualifies_as?: 'group_winner_1' | 'group_winner_2' | null;
 }
 
 // Seeding logic for random distribution
@@ -154,12 +154,12 @@ export class SABO32Seeding {
 // Cross-bracket advancement logic
 export class SABO32CrossBracket {
   static createCrossBracketMatches(
-    groupAQualifiers: { winner: string; runnerUp: string },
-    groupBQualifiers: { winner: string; runnerUp: string },
+    groupAWinners: { winner1: string; winner2: string },
+    groupBWinners: { winner1: string; winner2: string },
     tournamentId: string
   ): SABO32Match[] {
     return [
-      // Semifinal 1: Winner A vs Loser B
+      // Semifinal 1: Winner1 A vs Winner1 B
       {
         id: `sf1-${tournamentId}`,
         tournament_id: tournamentId,
@@ -168,13 +168,13 @@ export class SABO32CrossBracket {
         round_number: 350,
         match_number: 1,
         sabo_match_id: 'SF1',
-        player1_id: groupAQualifiers.winner,
-        player2_id: groupBQualifiers.runnerUp,
+        player1_id: groupAWinners.winner1,
+        player2_id: groupBWinners.winner1,
         status: 'ready',
         advances_to_match_id: `final-${tournamentId}`
       },
       
-      // Semifinal 2: Winner B vs Loser A  
+      // Semifinal 2: Winner2 A vs Winner2 B  
       {
         id: `sf2-${tournamentId}`,
         tournament_id: tournamentId,
@@ -183,8 +183,8 @@ export class SABO32CrossBracket {
         round_number: 350,
         match_number: 2,
         sabo_match_id: 'SF2',
-        player1_id: groupBQualifiers.winner,
-        player2_id: groupAQualifiers.runnerUp,
+        player1_id: groupAWinners.winner2,
+        player2_id: groupBWinners.winner2,
         status: 'ready',
         advances_to_match_id: `final-${tournamentId}`
       },

@@ -24,7 +24,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
       console.log('🔍 Fetching SABO-32 tournament matches for:', tournamentId);
       
       const { data, error } = await supabase
-        .from('tournament_matches')
+        .from('sabo32_matches')
         .select(`
           id,
           tournament_id,
@@ -34,8 +34,6 @@ export const useSABO32Tournament = (tournamentId: string) => {
           sabo_match_id,
           player1_id,
           player2_id,
-          player1_name,
-          player2_name,
           winner_id,
           loser_id,
           score_player1,
@@ -44,9 +42,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
           group_id,
           advances_to_match_id,
           feeds_loser_to_match_id,
-          scheduled_time,
-          started_at,
-          completed_at,
+          qualifies_as,
           created_at,
           updated_at
         `)
@@ -99,7 +95,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
 
       // Update match result using direct table update
       const { error: updateError } = await supabase
-        .from('tournament_matches')
+        .from('sabo32_matches')
         .update({
           score_player1: player1Score,
           score_player2: player2Score,
@@ -166,12 +162,12 @@ export const useSABO32Tournament = (tournamentId: string) => {
       }
 
       // Cross-bracket advancement  
-      if (completedMatch.bracket_type === 'cross_semifinals') {
+      if (completedMatch.bracket_type === 'CROSS_SEMIFINALS') {
         await handleCrossBracketAdvancement(completedMatch, winnerId, tournamentId);
       }
 
       // Check if group is completed and ready for cross-bracket
-      if (completedMatch.bracket_type === 'group_a_final' || completedMatch.bracket_type === 'group_b_final') {
+      if (completedMatch.bracket_type === 'GROUP_A_FINAL' || completedMatch.bracket_type === 'GROUP_B_FINAL') {
         await checkAndPopulateCrossBracket(tournamentId);
       }
 

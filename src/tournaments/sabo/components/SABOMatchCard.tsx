@@ -43,6 +43,7 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
   const [player1Score, setPlayer1Score] = useState('');
   const [player2Score, setPlayer2Score] = useState('');
   const [showScoreInput, setShowScoreInput] = useState(false);
+  const [justSubmitted, setJustSubmitted] = useState(false);
 
   const { player1, player2, winner_id, status } = match;
   const isCompleted = status === 'completed';
@@ -138,11 +139,18 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
       setShowScoreInput(false);
       setPlayer1Score('');
       setPlayer2Score('');
+      setJustSubmitted(true);
 
       // Submit score (this will trigger refresh with scroll preservation)
       await onScoreSubmit(match.id, scores);
+
+      // Clear the "just submitted" flag after a short time
+      setTimeout(() => setJustSubmitted(false), 2000);
+
     } catch (error) {
       console.error('Failed to submit score:', error);
+      // Reopen score input if there was an error
+      setShowScoreInput(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -185,7 +193,8 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
         styles.background,
         'relative transition-all duration-200',
         isChampionshipMatch && 'shadow-lg border-2',
-        eliminationRisk && 'shadow-md'
+        eliminationRisk && 'shadow-md',
+        justSubmitted && 'ring-2 ring-green-300 shadow-lg' // Visual feedback for successful submission
       )}
     >
       <CardContent className='p-4'>

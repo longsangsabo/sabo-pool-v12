@@ -81,9 +81,9 @@ export class SABO32TournamentEngine {
     matches.push(...losersBMatches);
     matchCounter += losersBMatches.length;
     
-    // Group Final (1 match) - determines top 2
-    const groupFinal = this.createGroupFinal(groupId, tournamentId, matchCounter);
-    matches.push(groupFinal);
+    // Group Finals (2 matches) - determines 2 winners
+    const groupFinals = this.createGroupFinals(groupId, tournamentId, matchCounter);
+    matches.push(...groupFinals);
     
     return matches;
   }
@@ -227,29 +227,45 @@ export class SABO32TournamentEngine {
   }
   
   /**
-   * Create Group Final match (determines top 2 qualifiers)
+   * Create Group Finals matches (2 matches - determines 2 winners)
    */
-  private static createGroupFinal(
+  private static createGroupFinals(
     groupId: 'A' | 'B',
     tournamentId: string,
     counter: number
-  ): SABO32Match {
+  ): SABO32Match[] {
     
     const bracketType = groupId === 'A' ? 
       SABO_32_BRACKET_TYPES.GROUP_A_FINAL : 
       SABO_32_BRACKET_TYPES.GROUP_B_FINAL;
     
-    return {
-      id: `${tournamentId}-${groupId}-FINAL`,
-      tournament_id: tournamentId,
-      group_id: groupId,
-      bracket_type: bracketType,
-      round_number: 250,
-      match_number: 1,
-      sabo_match_id: `${groupId}-FINAL`,
-      status: 'pending',
-      qualifies_as: 'group_winner' // Winner qualifies as group winner
-    } as SABO32Match;
+    return [
+      // Match 1: Winner Winners Bracket vs Winner Losers Branch A
+      {
+        id: `${tournamentId}-${groupId}-FINAL1`,
+        tournament_id: tournamentId,
+        group_id: groupId,
+        bracket_type: bracketType,
+        round_number: 250,
+        match_number: 1,
+        sabo_match_id: `${groupId}-FINAL1`,
+        status: 'pending',
+        qualifies_as: 'group_winner_1'
+      },
+      
+      // Match 2: Winner Winners Bracket vs Winner Losers Branch B
+      {
+        id: `${tournamentId}-${groupId}-FINAL2`,
+        tournament_id: tournamentId,
+        group_id: groupId,
+        bracket_type: bracketType,
+        round_number: 251,
+        match_number: 2,
+        sabo_match_id: `${groupId}-FINAL2`,
+        status: 'pending',
+        qualifies_as: 'group_winner_2'
+      }
+    ] as SABO32Match[];
   }
   
   /**
@@ -257,7 +273,7 @@ export class SABO32TournamentEngine {
    */
   private static createPlaceholderCrossBracket(tournamentId: string): SABO32Match[] {
     return [
-      // Semifinal 1: Winner A vs Runner-up B
+      // Semifinal 1: Winner1 A vs Winner1 B
       {
         id: `${tournamentId}-SF1`,
         tournament_id: tournamentId,
@@ -269,7 +285,7 @@ export class SABO32TournamentEngine {
         status: 'pending'
       },
       
-      // Semifinal 2: Winner B vs Runner-up A
+      // Semifinal 2: Winner2 A vs Winner2 B
       {
         id: `${tournamentId}-SF2`,
         tournament_id: tournamentId,
@@ -300,13 +316,12 @@ export class SABO32TournamentEngine {
    */
   static handleGroupCompletion(
     groupId: 'A' | 'B',
-    groupWinner: string,
-    groupRunnerUp: string,
+    groupWinners: { winner1: string; winner2: string },
     tournamentId: string
   ): void {
     console.log(`🏆 Group ${groupId} completed:`, {
-      winner: groupWinner,
-      runnerUp: groupRunnerUp
+      winner1: groupWinners.winner1,
+      winner2: groupWinners.winner2
     });
     
     // This will trigger cross-bracket population

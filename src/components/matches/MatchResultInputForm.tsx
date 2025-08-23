@@ -32,6 +32,7 @@ import {
   CheckCircle,
   Target,
 } from 'lucide-react';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
@@ -118,6 +119,7 @@ export const MatchResultInputForm: React.FC<MatchResultInputFormProps> = ({
   onCancel,
   initialData,
 }) => {
+  const { navigateToSocialProfile } = useSocialProfile();
   const [players, setPlayers] = useState<Player[]>([]);
   const [clubs, setClubs] = useState<Club[]>([]);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
@@ -341,7 +343,13 @@ export const MatchResultInputForm: React.FC<MatchResultInputFormProps> = ({
                               setSearchPlayer1('');
                             }}
                           >
-                            <Avatar className='h-8 w-8'>
+                            <Avatar 
+                              className='h-8 w-8 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigateToSocialProfile(player.user_id);
+                              }}
+                            >
                               <AvatarImage src={player.avatar_url} />
                               <AvatarFallback>
                                 {player.display_name[0]}
@@ -363,7 +371,10 @@ export const MatchResultInputForm: React.FC<MatchResultInputFormProps> = ({
                   {selectedPlayer1 && (
                     <div className='p-3 border rounded-lg bg-muted/50'>
                       <div className='flex items-center gap-3'>
-                        <Avatar>
+                        <Avatar 
+                          className='cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                          onClick={() => navigateToSocialProfile(selectedPlayer1.user_id)}
+                        >
                           <AvatarImage src={selectedPlayer1.avatar_url} />
                           <AvatarFallback>
                             {selectedPlayer1.display_name[0]}

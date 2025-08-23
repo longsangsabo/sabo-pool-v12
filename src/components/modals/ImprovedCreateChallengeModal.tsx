@@ -21,6 +21,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useChallenges } from '@/hooks/useChallenges';
 import { toast } from 'sonner';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 import {
   Search,
   Trophy,
@@ -80,6 +81,7 @@ const ImprovedCreateChallengeModal = ({
   const { isMobile } = useOptimizedResponsive();
   const { isDark } = useTheme();
   const { createChallenge } = useChallenges();
+  const { navigateToSocialProfile } = useSocialProfile();
   const [loading, setLoading] = useState(false);
 
   // 🎯 Default to open challenge và SABO mode
@@ -526,7 +528,13 @@ const ImprovedCreateChallengeModal = ({
                           setSearchResults([]);
                         }}
                       >
-                        <Avatar className='w-8 h-8'>
+                        <Avatar 
+                          className='w-8 h-8 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigateToSocialProfile(player.user_id);
+                          }}
+                        >
                           <AvatarImage src={player.avatar_url} />
                           <AvatarFallback>
                             {(player.display_name || player.full_name)?.[0] || 'U'}
@@ -553,7 +561,10 @@ const ImprovedCreateChallengeModal = ({
                         : 'bg-slate-100/70 border-slate-200'
                     }`}
                   >
-                    <Avatar className='w-10 h-10'>
+                    <Avatar 
+                      className='w-10 h-10 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                      onClick={() => navigateToSocialProfile(selectedOpponent.user_id)}
+                    >
                       <AvatarImage src={selectedOpponent.avatar_url} />
                       <AvatarFallback>
                         {selectedOpponent.full_name?.[0] || 'U'}

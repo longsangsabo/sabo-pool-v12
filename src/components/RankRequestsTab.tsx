@@ -29,6 +29,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useRankRequests } from '@/hooks/useRankRequests';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 import { RankRequest } from '@/types/rankRequests';
 import { toast } from 'sonner';
 
@@ -38,6 +39,7 @@ interface RankRequestsTabProps {
 }
 
 const RankRequestsTab = ({ clubId, user }: RankRequestsTabProps) => {
+  const { navigateToSocialProfile } = useSocialProfile();
   const {
     rankRequests,
     loading,
@@ -311,7 +313,10 @@ const RankRequestsTab = ({ clubId, user }: RankRequestsTabProps) => {
                 <Card key={request.id} className='p-4'>
                   <div className='flex items-start justify-between'>
                     <div className='flex items-start space-x-4 flex-1'>
-                      <Avatar className='w-12 h-12'>
+                      <Avatar 
+                        className='w-12 h-12 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                        onClick={() => navigateToSocialProfile(request.user_id)}
+                      >
                         <AvatarImage src={request.user?.profiles?.avatar_url} />
                         <AvatarFallback>
                           <User className='w-6 h-6' />

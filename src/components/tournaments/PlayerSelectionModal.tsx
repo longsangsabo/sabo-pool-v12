@@ -11,6 +11,7 @@ import { User, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 
 interface Player {
   user_id: string;
@@ -40,6 +41,7 @@ export const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPlayerId, setSelectedPlayerId] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { navigateToSocialProfile } = useSocialProfile();
 
   const filteredPlayers = availablePlayers.filter(player => {
     const name = player.full_name || player.display_name || '';
@@ -122,7 +124,13 @@ export const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                   }`}
                   onClick={() => setSelectedPlayerId(player.user_id)}
                 >
-                  <Avatar className='h-10 w-10'>
+                  <Avatar 
+                    className='h-10 w-10 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigateToSocialProfile(player.user_id);
+                    }}
+                  >
                     <AvatarImage src={player.avatar_url} />
                     <AvatarFallback>
                       <User className='h-5 w-5' />

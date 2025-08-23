@@ -28,6 +28,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 
 interface LeaderboardPlayer {
   id: string;
@@ -60,6 +61,7 @@ interface RankingLeaderboardProps {
 export const RankingLeaderboard: React.FC<RankingLeaderboardProps> = ({
   className,
 }) => {
+  const { navigateToSocialProfile } = useSocialProfile();
   const [players, setPlayers] = useState<LeaderboardPlayer[]>([]);
   const [filteredPlayers, setFilteredPlayers] = useState<LeaderboardPlayer[]>(
     []
@@ -372,7 +374,10 @@ export const RankingLeaderboard: React.FC<RankingLeaderboardProps> = ({
                         <div className='flex items-center justify-center w-12'>
                           {getPositionIcon(player.position)}
                         </div>
-                        <Avatar className='h-10 w-10'>
+                        <Avatar 
+                          className='h-10 w-10 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                          onClick={() => navigateToSocialProfile(player.id)}
+                        >
                           <AvatarImage src={player.avatarUrl} />
                           <AvatarFallback>
                             <Users className='h-4 w-4' />

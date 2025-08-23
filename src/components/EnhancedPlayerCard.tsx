@@ -2,6 +2,7 @@ import React from 'react';
 import { MapPin, Clock, Trophy, Users, Zap } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 
 interface PlayerCardProps {
   player: {
@@ -42,10 +43,16 @@ const EnhancedPlayerCard = ({
   index = 0,
   onChallenge,
 }: PlayerCardProps) => {
+  const { navigateToSocialProfile } = useSocialProfile();
+  
   const winRate =
     player.matches_played > 0
       ? Math.round((player.matches_won / player.matches_played) * 100)
       : 0;
+
+  const handleAvatarClick = () => {
+    navigateToSocialProfile(player.user_id);
+  };
 
   return (
     <div
@@ -59,8 +66,9 @@ const EnhancedPlayerCard = ({
       <div className='h-1/2 relative'>
         <img
           src={player.avatar_url || '/placeholder.svg'}
-          className='w-full h-full object-cover'
+          className='w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform'
           alt={player.display_name || player.full_name}
+          onClick={handleAvatarClick}
         />
         <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent' />
 

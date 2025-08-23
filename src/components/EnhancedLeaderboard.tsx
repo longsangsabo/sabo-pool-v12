@@ -32,6 +32,7 @@ import {
   TrendingDownIcon,
   BarChart3,
 } from 'lucide-react';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 import { getRankFromRating, type PlayerStats } from '../utils/eloCalculator';
 
 interface LeaderboardPlayer extends PlayerStats {
@@ -53,6 +54,7 @@ export const EnhancedLeaderboard: React.FC<EnhancedLeaderboardProps> = ({
   players,
   className,
 }) => {
+  const { navigateToSocialProfile } = useSocialProfile();
   const [filteredPlayers, setFilteredPlayers] =
     useState<LeaderboardPlayer[]>(players);
   const [searchTerm, setSearchTerm] = useState('');
@@ -343,7 +345,10 @@ export const EnhancedLeaderboard: React.FC<EnhancedLeaderboardProps> = ({
                       </td>
                       <td className='p-3'>
                         <div className='flex items-center gap-3'>
-                          <div className='w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center'>
+                          <div 
+                            className='w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                            onClick={() => navigateToSocialProfile(player.user_id || player.id)}
+                          >
                             {player.avatar_url ? (
                               <img
                                 src={player.avatar_url}
@@ -494,7 +499,10 @@ export const EnhancedLeaderboard: React.FC<EnhancedLeaderboardProps> = ({
                     </div>
 
                     <div className='flex items-center gap-3 mb-4'>
-                      <div className='w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center'>
+                      <div 
+                        className='w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                        onClick={() => navigateToSocialProfile(player.user_id || player.id)}
+                      >
                         {player.avatar_url ? (
                           <img
                             src={player.avatar_url}

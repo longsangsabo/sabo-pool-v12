@@ -6,6 +6,7 @@ import { getNormalizedRank } from '@/lib/rankUtils';
 import { supabase } from '@/integrations/supabase/client';
 import { getDisplayName } from '@/types/unified-profile';
 import { Loader2 } from 'lucide-react';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 
 interface User {
   id?: string;
@@ -26,6 +27,7 @@ interface UserAvatarProps {
   showRank?: boolean;
   showName?: boolean;
   compact?: boolean;
+  clickable?: boolean; // New prop to enable/disable click functionality
 }
 
 const UserAvatar = ({
@@ -36,7 +38,9 @@ const UserAvatar = ({
   showRank = false,
   showName = true,
   compact = false,
+  clickable = true, // Default to true for backward compatibility
 }: UserAvatarProps) => {
+  const { navigateToSocialProfile } = useSocialProfile();
   // Constants defined at the top
   const sizeClasses = {
     xs: 'h-6 w-6',
@@ -161,11 +165,20 @@ const UserAvatar = ({
     rank: activeUser.rank,
   });
 
+  const handleAvatarClick = () => {
+    if (clickable && activeUser?.id) {
+      navigateToSocialProfile(activeUser.id);
+    }
+  };
+
   if (compact) {
     return (
       <div className='flex items-center gap-2'>
         <div className='relative'>
-          <Avatar className={`${sizeClasses[size]} ${className}`}>
+          <Avatar 
+            className={`${sizeClasses[size]} ${className} ${clickable ? 'cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all' : ''}`}
+            onClick={handleAvatarClick}
+          >
             <AvatarImage src={activeUser.avatar} alt={activeUser.name} />
             <AvatarFallback className='text-xs'>
               {activeUser.name?.charAt(0)?.toUpperCase() || 'U'}
@@ -195,7 +208,10 @@ const UserAvatar = ({
   return (
     <div className='flex items-center gap-3'>
       <div className='relative'>
-        <Avatar className={`${sizeClasses[size]} ${className}`}>
+        <Avatar 
+          className={`${sizeClasses[size]} ${className} ${clickable ? 'cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all' : ''}`}
+          onClick={handleAvatarClick}
+        >
           <AvatarImage src={activeUser.avatar} alt={activeUser.name} />
           <AvatarFallback>
             {activeUser.name?.charAt(0)?.toUpperCase() || 'U'}

@@ -23,6 +23,7 @@ import {
   SortAsc,
   SortDesc,
 } from 'lucide-react';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
 
 interface ClubPlayer {
   id: string;
@@ -51,6 +52,7 @@ export const ClubLeaderboard: React.FC<ClubLeaderboardProps> = ({
   players,
   className,
 }) => {
+  const { navigateToSocialProfile } = useSocialProfile();
   const [filteredPlayers, setFilteredPlayers] = useState<ClubPlayer[]>(players);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<
@@ -266,7 +268,10 @@ export const ClubLeaderboard: React.FC<ClubLeaderboardProps> = ({
                     </td>
                     <td className='p-3'>
                       <div className='flex items-center gap-3'>
-                        <div className='w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center'>
+                        <div 
+                          className='w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all'
+                          onClick={() => navigateToSocialProfile(player.id)}
+                        >
                           {player.avatar_url ? (
                             <img
                               src={player.avatar_url}

@@ -1,3 +1,20 @@
+# 🏆 SABO Pool Arena - Challenge System v3.0
+
+## 📚 **OFFICIAL DOCUMENTATION**
+**📖 [CHALLENGE_SYSTEM_OFFICIAL_DOCUMENTATION.md](./CHALLENGE_SYSTEM_OFFICIAL_DOCUMENTATION.md)** - Complete system documentation
+
+**📋 [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)** - Documentation guide and file references
+
+## 🚀 **System Status: ✅ FULLY OPERATIONAL**
+- Challenge creation and acceptance workflow
+- Automatic match creation upon acceptance
+- SPA points betting system with transaction logging
+- Real-time notifications system
+- Club approval workflow for final scores
+- Comprehensive system health monitoring
+
+---
+
 # Supabase CLI (v1)
 
 [![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main)

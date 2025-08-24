@@ -479,7 +479,7 @@ export const useEnhancedChallengesV3 = () => {
     // }
 
     try {
-      console.log('🎯 Calling accept_open_challenge with:', {
+      console.log('🎯 Calling accept_open_challenge_v3 with:', {
         challengeId,
         userId: user.id,
         timestamp: new Date().toISOString()
@@ -494,27 +494,23 @@ export const useEnhancedChallengesV3 = () => {
       
       console.log('🔍 Pre-validation challenge data:', challengeCheck);
 
-      const { data: result, error } = await supabase.rpc('accept_open_challenge', {
+      const { data: result, error } = await supabase.rpc('accept_open_challenge_v3', {
         p_challenge_id: challengeId,
         p_user_id: user.id,
       });
 
-      console.log('🎯 accept_open_challenge result:', { result, error });
+      console.log('🎯 accept_open_challenge_v3 result:', { result, error });
 
       if (error) {
         throw new Error(`Không thể tham gia thách đấu: ${error.message}`);
       }
 
-      // Cast result to expected type with SPA validation info
-      const response = result as { 
-        success: boolean; 
-        error?: string; 
-        required_spa?: number;
-        user_spa?: number;
-        shortage?: number;
-      };
+      // ✅ v3 function returns clean JSON object - no Array conversion needed
+      const response = result || {};
       
-      if (response?.success) {
+      console.log('🔍 v3 response:', response);
+      
+      if (response?.success === true) {
         toast.success('Tham gia thách đấu thành công! Trận đấu đã được lên lịch.');
         
         // Force refresh data immediately
@@ -525,24 +521,25 @@ export const useEnhancedChallengesV3 = () => {
         
         return result;
       } else {
-        // Handle SPA-specific errors with better messaging
-        if (response?.error?.includes('không đủ SPA')) {
-          const requiredSpa = response.required_spa || 0;
-          const userSpa = response.user_spa || 0;
-          
-          // ✅ Show actual server response for debugging
-          console.log('🚨 Server SPA Error:', {
-            response,
-            requiredSpa,
-            userSpa,
-            currentUserProfile,
-            profileSpa: currentUserProfile?.spa_points
-          });
-          
-          throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa}, có ${userSpa})`);
-        }
+        // Handle specific error codes from v3 function
+        const errorCode = response?.code;
+        const errorMessage = response?.error || 'Lỗi không xác định';
         
-        throw new Error(response?.error || 'Không thể tham gia thách đấu');
+        if (errorCode === 'OPPONENT_INSUFFICIENT_SPA') {
+          const requiredSpa = response.required || 0;
+          const availableSpa = response.available || 0;
+          throw new Error(`Không đủ SPA để tham gia (cần ${requiredSpa}, có ${availableSpa})`);
+        } else if (errorCode === 'CHALLENGER_INSUFFICIENT_SPA') {
+          throw new Error('Người tạo thách đấu không đủ SPA. Thách đấu không hợp lệ.');
+        } else if (errorCode === 'SELF_CHALLENGE') {
+          throw new Error('Bạn không thể tham gia thách đấu của chính mình.');
+        } else if (errorCode === 'CHALLENGE_TAKEN') {
+          throw new Error('Thách đấu này đã có người tham gia.');
+        } else if (errorCode === 'CHALLENGE_NOT_OPEN') {
+          throw new Error('Thách đấu này không còn mở.');
+        } else {
+          throw new Error(errorMessage);
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Không thể tham gia thách đấu';

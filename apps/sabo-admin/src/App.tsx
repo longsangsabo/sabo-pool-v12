@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { AdminLayout } from './components/AdminLayout'
+import { AuthProvider } from '@sabo/shared-auth'
 
 // Production-ready consolidated components
 import AdminDashboard from './pages/admin/AdminDashboard'
@@ -51,56 +52,58 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <AdminLayout theme={theme} toggleTheme={toggleTheme}>
-          <Routes>
-            {/* Overview Page */}
-            <Route path="/overview" element={<AdminOverview />} />
-            
-            {/* Core Management Routes */}
-            <Route path="/dashboard" element={<AdminDashboard />} />
-            
-            <Route path="/users" element={<AdminUsers />} />
-            <Route path="/users-enterprise" element={<AdminUserManagementEnterprise />} />
-            
-            <Route path="/tournaments" element={<AdminTournaments />} />
-            <Route path="/tournament-manager" element={<AdminTournamentManagerFunctional />} />
-            
-            <Route path="/clubs" element={<AdminClubs />} />
-            
-            {/* System Management Routes */}
-            <Route path="/system-health" element={<AdminSystemHealthMonitoring />} />
-            <Route path="/settings" element={<AdminSettings />} />
-            
-            {/* Advanced Analytics & Reports */}
-            <Route path="/analytics" element={<AdminAnalytics />} />
-            <Route path="/reports" element={<AdminReports />} />
-            
-            {/* Content Management */}
-            <Route path="/content" element={<AdminContent />} />
-            <Route path="/media" element={<AdminMedia />} />
-            <Route path="/notifications" element={<AdminNotifications />} />
-            <Route path="/messages" element={<AdminMessages />} />
-            
-            {/* Security & Permissions */}
-            <Route path="/permissions" element={<AdminPermissions />} />
-            <Route path="/audit-logs" element={<AdminAuditLogs />} />
-            
-            {/* Financial Management */}
-            <Route path="/finance" element={<AdminFinance />} />
-            <Route path="/payments" element={<AdminPayments />} />
-            <Route path="/billing" element={<AdminBilling />} />
-            
-            {/* Support & Feedback */}
-            <Route path="/support" element={<AdminSupport />} />
-            <Route path="/feedback" element={<AdminFeedback />} />
-            
-            {/* Default redirect to dashboard */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </AdminLayout>
-      </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <AdminLayout theme={theme} toggleTheme={toggleTheme}>
+            <Routes>
+              {/* Overview Page */}
+              <Route path="/overview" element={<AdminOverview />} />
+              
+              {/* Core Management Routes */}
+              <Route path="/dashboard" element={<AdminDashboard />} />
+              
+              <Route path="/users" element={<AdminUsers />} />
+              <Route path="/users-enterprise" element={<AdminUserManagementEnterprise />} />
+              
+              <Route path="/tournaments" element={<AdminTournaments />} />
+              <Route path="/tournament-manager" element={<AdminTournamentManagerFunctional />} />
+              
+              <Route path="/clubs" element={<AdminClubs />} />
+              
+              {/* System Management Routes */}
+              <Route path="/system-health" element={<AdminSystemHealthMonitoring />} />
+              <Route path="/settings" element={<AdminSettings />} />
+              
+              {/* Advanced Analytics & Reports */}
+              <Route path="/analytics" element={<AdminAnalytics />} />
+              <Route path="/reports" element={<AdminReports />} />
+              
+              {/* Content Management */}
+              <Route path="/content" element={<AdminContent />} />
+              <Route path="/media" element={<AdminMedia />} />
+              <Route path="/notifications" element={<AdminNotifications />} />
+              <Route path="/messages" element={<AdminMessages />} />
+              
+              {/* Security & Permissions */}
+              <Route path="/permissions" element={<AdminPermissions />} />
+              <Route path="/audit-logs" element={<AdminAuditLogs />} />
+              
+              {/* Financial Management */}
+              <Route path="/finance" element={<AdminFinance />} />
+              <Route path="/payments" element={<AdminPayments />} />
+              <Route path="/billing" element={<AdminBilling />} />
+              
+              {/* Support & Feedback */}
+              <Route path="/support" element={<AdminSupport />} />
+              <Route path="/feedback" element={<AdminFeedback />} />
+              
+              {/* Default redirect to dashboard */}
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </AdminLayout>
+        </BrowserRouter>
+      </AuthProvider>
   )
 }
 

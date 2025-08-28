@@ -1,25 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 import type { User, UserRole } from './types';
 
-// Environment variables configuration
-const getEnvVar = (key: string): string => {
-  // Browser environment (Vite)
-  if (typeof window !== 'undefined' && (globalThis as any)?.import?.meta?.env) {
-    return (globalThis as any).import.meta.env[key] || '';
-  }
-  // Node environment
-  if (typeof process !== 'undefined' && process.env) {
-    return process.env[key] || '';
-  }
-  return '';
-};
+// Direct environment access for Vite - SIMPLIFIED FIX
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '';
 
-const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
-const supabaseKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
-const supabaseServiceKey = getEnvVar('VITE_SUPABASE_SERVICE_ROLE_KEY');
+// Enhanced debugging for development
+if (import.meta.env.DEV) {
+  console.log('🔧 Auth Service Environment Check:', {
+    supabaseUrl: !!supabaseUrl,
+    supabaseKey: !!supabaseKey, 
+    serviceKey: !!supabaseServiceKey,
+    actualUrl: supabaseUrl,
+    mode: import.meta.env.MODE
+  });
+}
 
 if (!supabaseUrl || !supabaseKey) {
   console.warn('⚠️ Supabase environment variables not configured - auth service may not work properly');
+  console.warn('🐛 DEBUG: URL =', supabaseUrl, '| KEY =', !!supabaseKey);
 }
 
 // Create main client for auth (using anon key)

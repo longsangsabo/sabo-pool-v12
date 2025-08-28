@@ -1,182 +1,154 @@
-# Supabase CLI (v1)
+# 🎱 SABO Arena - Billiards Tournament Platform
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main)
+> **Clean Architecture Monorepo** - Modern billiards tournament management platform with separate user and admin applications.
 
-[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
+## 🏗️ Architecture Overview
 
-This repository contains all the functionality for Supabase CLI.
+```
+sabo-pool-v12/
+├── apps/
+│   ├── sabo-user/          # User Platform (Port 8080)
+│   └── sabo-admin/         # Admin Interface (Port 8081)
+├── packages/
+│   ├── shared-auth/        # Authentication utilities
+│   ├── shared-types/       # TypeScript type definitions
+│   ├── shared-ui/          # Reusable UI components
+│   ├── shared-utils/       # Common utilities
+│   └── shared-hooks/       # React hooks
+└── docs/                   # Documentation
+```
 
-- [x] Running Supabase locally
-- [x] Managing database migrations
-- [x] Creating and deploying Supabase Functions
-- [x] Generating types directly from your database schema
-- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
+## 🚀 Quick Start
 
-## Getting started
+### Prerequisites
+- Node.js 18+
+- pnpm 8+
+- Supabase account
 
-### Install the CLI
+### Installation
+```bash
+# Install dependencies
+pnpm install
 
-Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
+# Set up environment
+cp .env.example .env
+# Configure your Supabase credentials in .env
+```
+
+### Development
+```bash
+# Start user platform (Port 8080)
+cd apps/sabo-user && npm run dev
+
+# Start admin interface (Port 8081)
+cd apps/sabo-admin && npm run dev
+
+# Or run both simultaneously
+pnpm dev
+```
+
+## 📱 Applications
+
+### User Platform (`apps/sabo-user`)
+- **Port**: 8080
+- **Features**: Tournament registration, challenges, rankings, profile management
+- **Design**: Mobile-first responsive design with light/dark theme
+- **Auth**: Anonymous authentication with optional signup
+
+### Admin Interface (`apps/sabo-admin`)
+- **Port**: 8081  
+- **Features**: User management, tournament administration, system analytics
+- **Design**: Desktop-optimized with comprehensive navigation
+- **Auth**: Service role authentication required
+
+## 🎨 Design System
+
+- **Theme**: Light/Dark mode support
+- **Responsive**: Mobile-first approach
+- **Colors**: SABO brand gradients and tech aesthetics
+- **Components**: Shared UI library with consistent styling
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS, shadcn/ui components
+- **Backend**: Supabase (Database, Auth, Real-time)
+- **State**: React Query, Context API
+- **Monorepo**: pnpm workspaces
+- **Testing**: Vitest, Playwright
+
+## 📦 Packages
+
+| Package | Description | Version |
+|---------|-------------|---------|
+| `shared-auth` | Authentication hooks and services | 1.0.0 |
+| `shared-types` | TypeScript type definitions | 1.0.0 |
+| `shared-ui` | Reusable UI components | 1.0.0 |
+| `shared-utils` | Common utility functions | 1.0.0 |
+| `shared-hooks` | React hooks library | 1.0.0 |
+
+## 🔧 Configuration
+
+### Environment Variables
+```env
+# Supabase
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+VITE_SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# App Configuration
+VITE_APP_ENVIRONMENT=development
+VITE_APP_VERSION=1.0.0
+```
+
+## 🏃‍♂️ Scripts
 
 ```bash
-npm i supabase --save-dev
+# Development
+pnpm dev              # Start both apps
+pnpm dev:user         # Start user app only
+pnpm dev:admin        # Start admin app only
+
+# Building
+pnpm build            # Build all apps
+pnpm build:user       # Build user app
+pnpm build:admin      # Build admin app
+
+# Testing
+pnpm test             # Run all tests
+pnpm test:e2e         # Run E2E tests
+
+# Linting & Formatting
+pnpm lint             # Lint all packages
+pnpm format           # Format code
 ```
 
-To install the beta release channel:
+## 📚 Documentation
 
-```bash
-npm i supabase@beta --save-dev
-```
+- **Migration History**: `docs/migration-history/`
+- **Architecture**: `docs/architecture/`
+- **Legacy**: `docs/legacy/`
 
-When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
+## 🤝 Contributing
 
-```
-NODE_OPTIONS=--no-experimental-fetch yarn add supabase
-```
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
-> **Note**
-For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
+## 📄 License
 
-<details>
-  <summary><b>macOS</b></summary>
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-  Available via [Homebrew](https://brew.sh). To install:
+## 🎯 Roadmap
 
-  ```sh
-  brew install supabase/tap/supabase
-  ```
+- [ ] Mobile app development
+- [ ] Advanced analytics dashboard
+- [ ] Multi-language support
+- [ ] Tournament live streaming
+- [ ] AI-powered match recommendations
 
-  To install the beta release channel:
-  
-  ```sh
-  brew install supabase/tap/supabase-beta
-  brew link --overwrite supabase-beta
-  ```
-  
-  To upgrade:
+---
 
-  ```sh
-  brew upgrade supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Windows</b></summary>
-
-  Available via [Scoop](https://scoop.sh). To install:
-
-  ```powershell
-  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-  scoop install supabase
-  ```
-
-  To upgrade:
-
-  ```powershell
-  scoop update supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Linux</b></summary>
-
-  Available via [Homebrew](https://brew.sh) and Linux packages.
-
-  #### via Homebrew
-
-  To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-
-  #### via Linux packages
-
-  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
-
-  ```sh
-  sudo apk add --allow-untrusted <...>.apk
-  ```
-
-  ```sh
-  sudo dpkg -i <...>.deb
-  ```
-
-  ```sh
-  sudo rpm -i <...>.rpm
-  ```
-
-  ```sh
-  sudo pacman -U <...>.pkg.tar.zst
-  ```
-</details>
-
-<details>
-  <summary><b>Other Platforms</b></summary>
-
-  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
-
-  ```sh
-  go install github.com/supabase/cli@latest
-  ```
-
-  Add a symlink to the binary in `$PATH` for easier access:
-
-  ```sh
-  ln -s "$(go env GOPATH)/cli" /usr/bin/supabase
-  ```
-
-  This works on other non-standard Linux distros.
-</details>
-
-<details>
-  <summary><b>Community Maintained Packages</b></summary>
-
-  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
-  To install in your working directory:
-
-  ```bash
-  pkgx install supabase
-  ```
-
-  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
-</details>
-
-### Run the CLI
-
-```bash
-supabase bootstrap
-```
-
-Or using npx:
-
-```bash
-npx supabase bootstrap
-```
-
-The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
-
-## Docs
-
-Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
-
-## Breaking changes
-
-We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
-
-However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
-
-## Developing
-
-To run from source:
-
-```sh
-# Go >= 1.22
-go run . help
-```
+**Made with ❤️ by the SABO Team**

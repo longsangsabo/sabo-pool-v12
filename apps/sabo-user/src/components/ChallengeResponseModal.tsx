@@ -18,10 +18,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import UserAvatar from './UserAvatar';
-import { Challenge, ChallengeProposal } from '@/types/common';
+import { BaseChallenge, ChallengeProposal } from '@/types/common';
 
 interface ChallengeResponseModalProps {
-  challenge: Challenge | null;
+  challenge: BaseChallenge | null;
   suggestedClubs: Array<{ id: string; name: string; address: string }>;
   isOpen: boolean;
   onClose: () => void;
@@ -79,7 +79,7 @@ const ChallengeResponseModal = ({
         </DialogHeader>
 
         <div className='space-y-6'>
-          {/* Challenge Info */}
+          {/* BaseChallenge Info */}
           <div className='flex items-center space-x-3 p-3 bg-blue-50 rounded-lg'>
             <UserAvatar
               user={{

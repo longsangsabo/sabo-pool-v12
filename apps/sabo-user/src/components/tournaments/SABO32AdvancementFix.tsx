@@ -1,3 +1,4 @@
+import React from "react";
 // =============================================
 // SABO-32 ADVANCEMENT FIX COMPONENT
 // Fix players advancement in completed matches

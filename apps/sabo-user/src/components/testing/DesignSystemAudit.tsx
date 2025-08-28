@@ -1,3 +1,4 @@
+import React from "react";
 // Page-Level Design System Standardization Tool
 // Comprehensive audit and fix utility for SABO Arena pages
 

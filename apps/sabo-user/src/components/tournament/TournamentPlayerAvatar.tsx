@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';

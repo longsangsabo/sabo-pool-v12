@@ -74,7 +74,7 @@ const EnhancedDiscoveryPage = () => {
 
     setTimeout(() => {
       if (direction === 'right') {
-        // Swipe right = Challenge
+        // Swipe right = BaseChallenge
         setSelectedOpponent(player);
         setShowChallengeModal(true);
       } else if (direction === 'left') {
@@ -360,7 +360,7 @@ const EnhancedDiscoveryPage = () => {
         </div>
       </div>
 
-      {/* Challenge Modal */}
+      {/* BaseChallenge Modal */}
       <ChallengeModal
         opponent={selectedOpponent}
         isOpen={showChallengeModal}

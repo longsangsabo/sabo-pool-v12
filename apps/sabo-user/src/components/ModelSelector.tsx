@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Bot, Zap, Brain, Code, Star, DollarSign } from 'lucide-react';
 import {

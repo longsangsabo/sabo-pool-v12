@@ -77,7 +77,7 @@ export interface Notification {
 }
 
 // Updated Challenge interface to match the one in challenge.ts
-export interface Challenge {
+export interface BaseChallenge {
   id: string;
   challenger_id: string;
   opponent_id: string;
@@ -216,7 +216,7 @@ export interface CreateChallengeData {
   proposed_datetime?: string;
 }
 
-export interface ChallengeProposal {
+export interface BaseChallengeProposal {
   proposed_datetime?: string;
   club_id?: string;
   message?: string;

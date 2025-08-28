@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useRef } from 'react';
 import { Camera, Upload, Check, X, Crop } from 'lucide-react';
 import { Button } from '@/components/ui/button';

@@ -1,3 +1,4 @@
+import React from "react";
 // =============================================
 // SABO-32 BRACKET VIEWER COMPONENT
 // Display double elimination bracket for 32 players

@@ -4,11 +4,11 @@ import { useAuth } from './useAuth';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { RealtimeChannel } from '@supabase/supabase-js';
-import { Challenge, Club, Notification } from '@/types/common';
+import { BaseChallenge, Club, Notification } from '@/types/common';
 
 interface RealtimeSubscriptionOptions {
-  onChallengeReceived?: (challenge: Challenge) => void;
-  onChallengeUpdated?: (challenge: Challenge) => void;
+  onChallengeReceived?: (challenge: BaseChallenge) => void;
+  onChallengeUpdated?: (challenge: BaseChallenge) => void;
   onBookingCreated?: (booking: any) => void;
   onBookingUpdated?: (booking: any) => void;
   onNotificationReceived?: (notification: Notification) => void;
@@ -145,7 +145,7 @@ export const useRealtimeSubscriptions = (
               },
             },
           });
-          options.onChallengeReceived?.(newRecord as Challenge);
+          options.onChallengeReceived?.(newRecord as BaseChallenge);
         }
         break;
 
@@ -168,7 +168,7 @@ export const useRealtimeSubscriptions = (
             });
           }
         }
-        options.onChallengeUpdated?.(newRecord as Challenge);
+        options.onChallengeUpdated?.(newRecord as BaseChallenge);
         break;
     }
   };

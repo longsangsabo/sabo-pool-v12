@@ -1,3 +1,4 @@
+import React from "react";
 import { memo } from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { ClubDesktopLayout } from './ClubDesktopLayout';

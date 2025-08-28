@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Score Submission Component
  * Allows players to submit and confirm match scores

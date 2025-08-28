@@ -1,3 +1,4 @@
+import React from "react";
 // Manual SABO32 Advancement Fix Component
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';

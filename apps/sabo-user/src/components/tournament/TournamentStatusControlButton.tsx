@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Square, Loader2 } from 'lucide-react';

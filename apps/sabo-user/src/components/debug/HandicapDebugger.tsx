@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Debug component to test handicap calculations
  */

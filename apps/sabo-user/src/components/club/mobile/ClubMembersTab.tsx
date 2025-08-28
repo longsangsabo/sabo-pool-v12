@@ -1,3 +1,4 @@
+import React from "react";
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';

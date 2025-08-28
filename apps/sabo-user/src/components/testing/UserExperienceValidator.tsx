@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useCallback, useRef } from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

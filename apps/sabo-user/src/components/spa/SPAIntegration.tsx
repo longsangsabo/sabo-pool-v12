@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { spaService } from '@/services/spaService';

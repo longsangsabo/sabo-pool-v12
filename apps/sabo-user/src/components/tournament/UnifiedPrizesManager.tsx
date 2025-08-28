@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Unified Prizes Manager Component
  * Tích hợp OptimizedRewardsSection và TournamentPrizesManager thành một component duy nhất

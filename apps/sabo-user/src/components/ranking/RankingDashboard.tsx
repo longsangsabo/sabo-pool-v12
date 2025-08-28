@@ -1,3 +1,4 @@
+import React from "react";
 import { usePlayerRanking } from '@/hooks/usePlayerRanking';
 import { RankProgressBar } from './RankProgressBar';
 import { SPAPointsTracker } from './SPAPointsTracker';

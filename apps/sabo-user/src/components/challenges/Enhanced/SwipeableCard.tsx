@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useCallback } from 'react';
 import { motion, PanInfo, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';

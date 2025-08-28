@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Club Admin Score Approval Component
  * Allows club admins to approve/reject match results

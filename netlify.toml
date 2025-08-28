@@ -1,0 +1,43 @@
+[build]
+  publish = "apps/sabo-user/dist"
+  command = "pnpm build:user"
+  
+  # Environment variables
+  [build.environment]
+    NODE_VERSION = "18"
+    PNPM_VERSION = "8.15.0"
+
+# Redirect rules for SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Cache static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Admin app configuration (separate site)
+[context.admin]
+  publish = "apps/sabo-admin/dist"
+  command = "pnpm build:admin"
+
+# Development context
+[context.deploy-preview]
+  command = "pnpm build:user"
+
+# Production context
+[context.production]
+  command = "pnpm build:user"

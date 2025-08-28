@@ -35,7 +35,9 @@
     "analyze": "pnpm run analyze:user && pnpm run analyze:admin",
     "analyze:user": "cd apps/sabo-user && pnpm build && npx vite-bundle-analyzer dist",
     "analyze:admin": "cd apps/sabo-admin && pnpm build && npx vite-bundle-analyzer dist",
-    "size-report": "scripts/build-optimized.sh && cat build-reports/size-report.txt"
+    "size-report": "scripts/build-optimized.sh && cat build-reports/size-report.txt",
+    "deploy:netlify:user": "pnpm build:user && netlify deploy --prod --dir apps/sabo-user/dist",
+    "deploy:netlify:admin": "pnpm build:admin && netlify deploy --prod --dir apps/sabo-admin/dist"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.54.0",

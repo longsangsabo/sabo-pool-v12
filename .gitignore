@@ -16,6 +16,9 @@ backups/
 .env.test.local
 .env.production.local
 
+# Keep Netlify environment example
+!.env.netlify.example
+
 # Build outputs
 dist/
 build/

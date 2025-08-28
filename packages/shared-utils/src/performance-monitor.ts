@@ -195,7 +195,7 @@ class PerformanceMonitor {
         request_response: navigation.responseEnd - navigation.requestStart,
         dom_processing: navigation.domContentLoadedEventStart - navigation.responseEnd,
         load_complete: navigation.loadEventEnd - navigation.loadEventStart,
-        total_time: navigation.loadEventEnd - navigation.navigationStart,
+        total_time: navigation.loadEventEnd - (navigation as any).navigationStart,
       };
 
       Object.entries(metrics).forEach(([key, value]) => {

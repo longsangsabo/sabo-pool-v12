@@ -274,7 +274,7 @@ export const AvatarCustomizer: React.FC<AvatarCustomizerProps> = ({
               <CardTitle className='flex items-center justify-between'>
                 Avatar của bạn
                 {isVerified && (
-                  <Badge variant='default' className='bg-blue-500'>
+                  <Badge variant="outline" className='bg-blue-500'>
                     Đã xác thực
                   </Badge>
                 )}

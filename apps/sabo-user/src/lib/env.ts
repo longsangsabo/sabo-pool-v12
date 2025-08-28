@@ -38,20 +38,20 @@ const envSchema = z.object({
 });
 
 export const env = envSchema.parse({
-  VITE_VNP_TMN_CODE: import.meta.env.VITE_VNP_TMN_CODE,
-  VITE_VNP_HASH_SECRET: import.meta.env.VITE_VNP_HASH_SECRET,
-  VITE_VNP_RETURN_URL: import.meta.env.VITE_VNP_RETURN_URL,
-  VITE_VNP_PAYMENT_URL: import.meta.env.VITE_VNP_PAYMENT_URL,
-  VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
-  VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY,
-  VITE_APP_VERSION: import.meta.env.VITE_APP_VERSION,
-  VITE_APP_NAME: import.meta.env.VITE_APP_NAME,
-  VITE_SENTRY_DSN: import.meta.env.VITE_SENTRY_DSN,
-  VITE_ENABLE_PWA: import.meta.env.VITE_ENABLE_PWA,
-  VITE_ENABLE_ANALYTICS: import.meta.env.VITE_ENABLE_ANALYTICS,
-  VITE_ENABLE_NOTIFICATIONS: import.meta.env.VITE_ENABLE_NOTIFICATIONS,
-  DEV: import.meta.env.DEV,
-  PROD: import.meta.env.PROD,
+  VITE_VNP_TMN_CODE: process.env.VITE_VNP_TMN_CODE || '',
+  VITE_VNP_HASH_SECRET: process.env.VITE_VNP_HASH_SECRET || '',
+  VITE_VNP_RETURN_URL: process.env.VITE_VNP_RETURN_URL || '',
+  VITE_VNP_PAYMENT_URL: process.env.VITE_VNP_PAYMENT_URL || '',
+  VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL || '',
+  VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || '',
+  VITE_APP_VERSION: process.env.VITE_APP_VERSION || '',
+  VITE_APP_NAME: process.env.VITE_APP_NAME || '',
+  VITE_SENTRY_DSN: process.env.VITE_SENTRY_DSN || '',
+  VITE_ENABLE_PWA: process.env.VITE_ENABLE_PWA || '',
+  VITE_ENABLE_ANALYTICS: process.env.VITE_ENABLE_ANALYTICS || '',
+  VITE_ENABLE_NOTIFICATIONS: process.env.VITE_ENABLE_NOTIFICATIONS || '',
+  DEV: process.env.DEV || '',
+  PROD: process.env.PROD || '',
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -67,7 +67,7 @@ const ChallengeModal = ({
                 avatar: opponent.avatar_url || '/placeholder.svg',
                 rank: opponent.current_rank,
               }}
-              size='md'
+              size="sm"
             />
             <div>
               <h3 className='font-semibold'>{opponent.full_name}</h3>

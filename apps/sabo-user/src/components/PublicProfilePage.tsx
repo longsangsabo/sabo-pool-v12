@@ -180,7 +180,7 @@ const PublicProfilePage = () => {
                 <div className='flex space-x-2'>
                   <Button
                     onClick={handleFollowClick}
-                    variant='default'
+                    variant="outline"
                     size='sm'
                   >
                     <UserPlus className='w-4 h-4 mr-1' />

@@ -205,7 +205,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
             <h4 className="font-semibold mb-2">Phân tích hiện tại:</h4>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>Tổng số trận: <Badge variant="outline">{analysisResult.totalMatches}</Badge></div>
-              <div>Trận đã hoàn thành: <Badge variant="default">{analysisResult.completedMatches}</Badge></div>
+              <div>Trận đã hoàn thành: <Badge variant="outline">{analysisResult.completedMatches}</Badge></div>
               <div>Trận thiếu người chơi: <Badge variant="destructive">{analysisResult.missingPlayerMatches}</Badge></div>
               <div>Có vấn đề: <Badge variant={analysisResult.hasIssues ? "destructive" : "default"}>
                 {analysisResult.hasIssues ? "Có" : "Không"}

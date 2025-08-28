@@ -131,7 +131,7 @@ export const useRateLimit = (type: 'payment' | 'login' | 'api' = 'api') => {
 
   const reset = useCallback(
     (key: string = 'default') => {
-      getLimiter().reset(key);
+      getLimiter().reset();
     },
     [type]
   );

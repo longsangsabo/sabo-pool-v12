@@ -94,7 +94,7 @@ const TournamentCompletionButton: React.FC<TournamentCompletionButtonProps> = ({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant='default'
+          variant="outline"
           size='sm'
           disabled={isCompleting}
           className='gap-2'

@@ -99,7 +99,7 @@ export const BracketMatch: React.FC<BracketMatchProps> = ({
     switch (match.status) {
       case 'completed':
         return (
-          <Badge variant='default' className='gap-1'>
+          <Badge variant="outline" className='gap-1'>
             <CheckCircle className='w-3 h-3' />
             Hoàn thành
           </Badge>

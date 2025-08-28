@@ -68,7 +68,7 @@ export const DesktopProfileHero: React.FC<DesktopProfileHeroProps> = ({
                     spa={profile?.spa_points || 0}
                     ranking={profile?.current_ranking || 0}
                     matches={profile?.matches_played || 0}
-                    size='md'
+                    size="sm"
                     className='md:mr-0'
                   />
                 ) : (
@@ -88,7 +88,7 @@ export const DesktopProfileHero: React.FC<DesktopProfileHeroProps> = ({
                     spa={profile?.spa_points || 0}
                     ranking={profile?.current_ranking || 0}
                     matches={profile?.matches_played || 0}
-                    size='md'
+                    size="sm"
                     className='md:mr-0'
                   />
                 )}

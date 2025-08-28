@@ -5,22 +5,22 @@
 
 export const authConfig = {
   google: {
-    clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
+    clientId: process.env.VITE_GOOGLE_CLIENT_ID || '' || '',
     redirectUri: `${window.location.origin}/auth/callback/google`
   },
   
   facebook: {
-    appId: import.meta.env.VITE_FACEBOOK_APP_ID || '',
+    appId: process.env.VITE_FACEBOOK_APP_ID || '' || '',
     redirectUri: `${window.location.origin}/auth/callback/facebook`
   },
   
   twitter: {
-    clientId: import.meta.env.VITE_TWITTER_CLIENT_ID || '',
+    clientId: process.env.VITE_TWITTER_CLIENT_ID || '' || '',
     redirectUri: `${window.location.origin}/auth/callback/twitter`
   },
   
   github: {
-    clientId: import.meta.env.VITE_GITHUB_CLIENT_ID || '',
+    clientId: process.env.VITE_GITHUB_CLIENT_ID || '' || '',
     redirectUri: `${window.location.origin}/auth/callback/github`
   }
 };

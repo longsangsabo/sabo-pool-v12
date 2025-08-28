@@ -134,7 +134,7 @@ const SystemHealthPage: React.FC = () => {
 
   const getStatusBadge = (success: boolean) => {
     return success ? (
-      <Badge variant='default' className='bg-green-100 text-green-800'>
+      <Badge variant="outline" className='bg-green-100 text-green-800'>
         Healthy
       </Badge>
     ) : (

@@ -416,7 +416,7 @@ const expensiveValue = useMemo(() => {
 // Correct - Mobile-optimized touch targets
 import { MobileTouchButton } from '@/components/mobile/MobileOptimizedComponents';
 
-<MobileTouchButton size="md">
+<MobileTouchButton size="sm">
   Properly Sized Button (48px+ on mobile)
 </MobileTouchButton>`}
                 />

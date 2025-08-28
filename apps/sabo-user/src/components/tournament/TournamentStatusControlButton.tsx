@@ -165,7 +165,7 @@ const TournamentStatusControlButton: React.FC<
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant='default'
+          variant="outline"
           size='sm'
           disabled={isUpdating}
           className='gap-2'

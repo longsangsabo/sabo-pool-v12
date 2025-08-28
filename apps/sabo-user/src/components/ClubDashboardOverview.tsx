@@ -209,7 +209,7 @@ const ClubDashboardOverview = () => {
               </div>
               <Calendar className='h-8 w-8 text-muted-foreground' />
             </div>
-            <Badge variant='default' className='text-xs mt-1 px-1 py-0'>
+            <Badge variant="outline" className='text-xs mt-1 px-1 py-0'>
               {data.tournamentStats.upcoming} sắp tới
             </Badge>
           </CardContent>

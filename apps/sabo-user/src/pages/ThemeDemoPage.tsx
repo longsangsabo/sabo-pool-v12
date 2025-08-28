@@ -67,7 +67,7 @@ const ThemeDemoPage = () => {
           <StandardCard 
             title="Default Card" 
             description="This is a default card design"
-            variant="default"
+            variant="outline"
           >
             <p className="text-sm text-muted-foreground">
               Card content goes here. This demonstrates how cards look in both light and dark modes.
@@ -117,7 +117,7 @@ const ThemeDemoPage = () => {
           <StandardCard 
             title="Card with Footer" 
             description="Demonstrates footer functionality"
-            variant="default"
+            variant="outline"
             footer={
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Updated 2 hours ago</span>

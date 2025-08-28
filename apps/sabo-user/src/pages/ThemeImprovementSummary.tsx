@@ -167,7 +167,7 @@ const ThemeImprovementSummary = () => {
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
-              <StandardCard key={feature.title} variant="default">
+              <StandardCard key={feature.title} variant="outline">
                 <div className="text-center space-y-4">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto ${feature.color}`}>
                     <Icon className="w-6 h-6" />
@@ -181,7 +181,7 @@ const ThemeImprovementSummary = () => {
         </div>
 
         {/* Implementation Details */}
-        <StandardCard title="📋 Implementation Summary" variant="default">
+        <StandardCard title="📋 Implementation Summary" variant="outline">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {improvements.map((category) => (
               <div key={category.category} className="space-y-3">

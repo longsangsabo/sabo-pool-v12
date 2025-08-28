@@ -82,11 +82,11 @@ export const ProfileQuickActions: React.FC<ProfileQuickActionsProps> = ({
     return (
       <div className={`space-y-3 px-4 ${className}`}>
         <div className='grid grid-cols-2 gap-3'>
-          <TechButton variant='primary' size='md' fullWidth>
+          <TechButton variant='primary' size="sm" fullWidth>
             <Edit className='w-4 h-4 mr-2' />
             Chỉnh sửa
           </TechButton>
-          <TechButton variant='secondary' size='md' fullWidth>
+          <TechButton variant='secondary' size="sm" fullWidth>
             <Settings className='w-4 h-4 mr-2' />
             Cài đặt
           </TechButton>
@@ -96,7 +96,7 @@ export const ProfileQuickActions: React.FC<ProfileQuickActionsProps> = ({
   }
 
   return (
-    <TechCard className={className} variant='default'>
+    <TechCard className={className} variant="outline">
       <div className='space-y-4'>
         <div className='flex items-center gap-2 text-lg font-semibold text-foreground'>
           <Plus className='w-5 h-5 text-primary' />

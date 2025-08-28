@@ -208,7 +208,7 @@ const DirectMessaging = ({ isOpen, onClose }: DirectMessagingProps) => {
                 >
                   <div className='flex items-center gap-3'>
                     <div className='relative'>
-                      <UserAvatar user={chat.participant} size='md' />
+                      <UserAvatar user={chat.participant} size="sm" />
                       {chat.participant.isOnline && (
                         <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white'></div>
                       )}

@@ -43,7 +43,7 @@ export const RankEloCard: React.FC<RankEloCardProps> = ({
             <span className={rankColor}>{formatRankDisplay(rank)}</span>
             <Badge variant='secondary'>{elo} ELO</Badge>
             {isEligibleForPromotion && (
-              <Badge variant='default' className='bg-green-500'>
+              <Badge variant="outline" className='bg-green-500'>
                 <TrendingUpIcon className='w-3 h-3 mr-1' />
                 Sẵn sàng thăng hạng
               </Badge>

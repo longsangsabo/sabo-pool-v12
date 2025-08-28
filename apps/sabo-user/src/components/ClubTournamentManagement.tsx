@@ -1404,7 +1404,7 @@ const TournamentCard = ({
           {tournament.status === 'ongoing' && (
             <>
               <Button
-                variant='default'
+                variant="outline"
                 size='sm'
                 className='bg-orange-600 hover:bg-orange-700'
                 onClick={() => onTournamentSettings(tournament)}

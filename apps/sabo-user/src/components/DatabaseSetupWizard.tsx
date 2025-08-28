@@ -62,7 +62,7 @@ const DatabaseSetupWizard: React.FC = () => {
 
   const getStatusBadge = (success: boolean) => {
     return success ? (
-      <Badge variant='default' className='bg-green-100 text-green-800'>
+      <Badge variant="outline" className='bg-green-100 text-green-800'>
         Connected
       </Badge>
     ) : (
@@ -206,7 +206,7 @@ const DatabaseSetupWizard: React.FC = () => {
                     </div>
 
                     <div className='mt-4 flex gap-2'>
-                      <Button variant='default'>
+                      <Button variant="outline">
                         {key === 'useExisting' && (
                           <Settings className='h-4 w-4 mr-2' />
                         )}

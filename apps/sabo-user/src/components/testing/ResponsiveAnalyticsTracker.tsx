@@ -229,7 +229,7 @@ export const ResponsiveAnalyticsTracker: React.FC = () => {
             <Button
               onClick={startTracking}
               disabled={isTracking}
-              variant='default'
+              variant="outline"
               size='sm'
             >
               Start Tracking

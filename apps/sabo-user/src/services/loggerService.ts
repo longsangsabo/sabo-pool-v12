@@ -26,7 +26,7 @@ export interface LogEntry {
 }
 
 class LoggerService {
-  private isDevelopment = import.meta.env.DEV || false;
+  private isDevelopment = process.env.DEV || '' || false;
   private minLogLevel = this.isDevelopment ? LogLevel.DEBUG : LogLevel.INFO;
 
   private log(level: LogLevel, message: string, context?: any, component?: string, action?: string) {
@@ -142,7 +142,7 @@ class LoggerService {
   private async sendToLoggingService(logEntry: LogEntry) {
     try {
       // Send to external logging service (Sentry, LogRocket, etc.)
-      if (import.meta.env.VITE_SENTRY_DSN) {
+      if (process.env.VITE_SENTRY_DSN || '') {
         // Integration with Sentry or other services
         await fetch('/api/logs', {
           method: 'POST',

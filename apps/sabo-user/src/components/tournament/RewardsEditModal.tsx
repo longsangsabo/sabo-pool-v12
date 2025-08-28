@@ -231,7 +231,7 @@ export const RewardsEditModal: React.FC<RewardsEditModalProps> = ({
       await onSave(formData);
 
       // Mark form as clean after successful save to prevent reset
-      form.reset(formData, { keepValues: true });
+      form.reset();
       setLocalRewards(formData);
 
       console.log('🔍 RewardsEditModal - Save successful');

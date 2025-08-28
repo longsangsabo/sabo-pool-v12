@@ -109,7 +109,7 @@ export const MatchStatusDebugInfo: React.FC<MatchStatusDebugInfoProps> = ({
       <div className='flex items-center gap-2'>
         <span className='font-medium'>Ready for Score:</span>
         {statusInfo.isMatchReady ? (
-          <Badge variant='default' className='bg-green-600'>
+          <Badge variant="outline" className='bg-green-600'>
             ✅ YES
           </Badge>
         ) : (

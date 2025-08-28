@@ -46,7 +46,7 @@ const GoogleMapsPlacesAutocomplete = ({
   const [selectedPlace, setSelectedPlace] = useState<GooglePlace | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const GOOGLE_PLACES_API_KEY = import.meta.env.VITE_GOOGLE_PLACES_KEY;
+  const GOOGLE_PLACES_API_KEY = process.env.VITE_GOOGLE_PLACES_KEY || '';
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

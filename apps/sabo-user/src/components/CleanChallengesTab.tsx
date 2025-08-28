@@ -353,7 +353,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
                   {challenge.status}
                 </Badge>
                 {challenge.club_confirmed && (
-                  <Badge variant="default" className="text-xs bg-green-500">
+                  <Badge variant="outline" className="text-xs bg-green-500">
                     Đã phê duyệt
                   </Badge>
                 )}

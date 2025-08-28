@@ -404,7 +404,7 @@ export const MatchResultVerification: React.FC<
 
           {/* Admin/Referee Verification */}
           {canVerify && bothPlayersConfirmed && (
-            <Button onClick={handleVerify} disabled={loading} variant='default'>
+            <Button onClick={handleVerify} disabled={loading} variant="outline">
               <Shield className='h-4 w-4 mr-2' />
               Xác thực kết quả
             </Button>

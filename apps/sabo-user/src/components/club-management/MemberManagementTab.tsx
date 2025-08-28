@@ -572,7 +572,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
                     </TableCell>
                     <TableCell>
                       {member.profiles?.verified_rank ? (
-                        <Badge variant='default'>
+                        <Badge variant="outline">
                           {member.profiles.verified_rank}
                         </Badge>
                       ) : (

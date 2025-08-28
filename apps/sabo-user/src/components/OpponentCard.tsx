@@ -25,16 +25,16 @@ interface OpponentCardProps {
     last_active: string;
     preferred_stakes?: number[];
   };
-  onSwipeLeft: (opponentId: string) => void;
-  onSwipeRight: (opponentId: string) => void;
+  onChevronLeft: (opponentId: string) => void;
+  onChevronRight: (opponentId: string) => void;
   onChallenge: (opponentId: string) => void;
   onViewProfile?: (opponentId: string) => void;
 }
 
 const OpponentCard = ({
   opponent,
-  onSwipeLeft,
-  onSwipeRight,
+  onChevronLeft,
+  onChevronRight,
   onChallenge,
   onViewProfile,
 }: OpponentCardProps) => {
@@ -44,19 +44,19 @@ const OpponentCard = ({
   );
 
   const swipeCallbacks = {
-    onSwipeLeft: (id: string) => {
+    onChevronLeft: (id: string) => {
       console.log('Swiped left - Pass');
-      onSwipeLeft(id);
+      onChevronLeft(id);
     },
-    onSwipeRight: (id: string) => {
+    onChevronRight: (id: string) => {
       console.log('Swiped right - Challenge');
       onChallenge(id);
     },
-    onSwipeUp: (id: string) => {
+    onChevronUp: (id: string) => {
       console.log('Swiped up - Super Like');
-      onSwipeRight(id); // Treat as interest
+      onChevronRight(id); // Treat as interest
     },
-    onSwipeDown: (id: string) => {
+    onChevronDown: (id: string) => {
       console.log('Swiped down - View Profile');
       onViewProfile?.(id);
     },
@@ -78,9 +78,9 @@ const OpponentCard = ({
 
     setTimeout(() => {
       if (direction === 'left') {
-        onSwipeLeft(opponent.id);
+        onChevronLeft(opponent.id);
       } else {
-        onSwipeRight(opponent.id);
+        onChevronRight(opponent.id);
       }
     }, 300);
   };

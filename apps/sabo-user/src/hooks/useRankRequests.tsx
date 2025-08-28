@@ -149,7 +149,7 @@ export const useRankRequests = (clubId?: string) => {
       console.log('🔍 [DEBUG] Environment check:', {
         isDev: window.location.hostname === 'localhost',
         hostname: window.location.hostname,
-        supabaseUrl: import.meta.env.VITE_SUPABASE_URL
+        supabaseUrl: process.env.VITE_SUPABASE_URL || ''
       });
       
       const userId = data.user_id;

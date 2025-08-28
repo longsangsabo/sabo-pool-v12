@@ -1,6 +1,6 @@
 /**
  * Core User and Authentication Types
- * Extracted from existing SABO Arena codebase
+ * Consolidated from existing SABO Arena codebase
  */
 
 import type {
@@ -12,9 +12,14 @@ import type {
 export type User = SupabaseUser;
 export type Session = SupabaseSession;
 
+export type UserRole = 'user' | 'admin' | 'super_admin' | 'club_owner' | 'moderator';
+
+// ===== AUTH TYPES =====
 export interface AuthResponse {
   data?: any;
   error?: any;
+  success?: boolean;
+  message?: string;
 }
 
 export interface SignInCredentials {
@@ -34,6 +39,12 @@ export interface PhoneCredentials {
   password: string;
   fullName?: string;
   referralCode?: string;
+}
+
+export interface AuthState {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
 }
 
 // ===== PROFILE TYPES =====
@@ -128,7 +139,6 @@ export interface RankVerificationStatus {
 
 // ===== ENUMS AND CONSTANTS =====
 export type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | 'pro';
-export type UserRole = 'player' | 'club_owner' | 'both' | 'admin' | 'moderator';
 
 export const SKILL_LEVELS = {
   beginner: { label: 'Người mới', color: 'bg-green-100 text-green-800' },

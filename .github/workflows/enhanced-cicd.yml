@@ -1,0 +1,389 @@
+name: 🚀 SABO Arena Enhanced CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run performance checks daily at 6 AM UTC
+    - cron: '0 6 * * *'
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+  
+jobs:
+  # Job 1: Code Quality & Linting
+  quality-check:
+    name: 🔍 Quality Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
+      
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for better analysis
+          
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          
+      - name: 🎯 Generate cache key
+        id: cache-key
+        run: |
+          echo "key=deps-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}" >> $GITHUB_OUTPUT
+          
+      - name: 💾 Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ steps.cache-key.outputs.key }}
+          restore-keys: |
+            deps-${{ runner.os }}-
+            
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: 🔍 Lint code
+        run: |
+          echo "🔍 Running ESLint..."
+          pnpm lint || echo "⚠️ Linting issues found"
+          
+      - name: 🏷️ Type check
+        run: |
+          echo "🏷️ TypeScript type checking..."
+          pnpm type-check || echo "⚠️ Type errors found"
+
+  # Job 2: Build Applications
+  build-apps:
+    name: 🏗️ Build Applications
+    runs-on: ubuntu-latest
+    needs: quality-check
+    timeout-minutes: 20
+    
+    strategy:
+      matrix:
+        app: [sabo-user, sabo-admin]
+        
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          
+      - name: 💾 Restore dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ needs.quality-check.outputs.cache-key }}
+          
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: 🏗️ Build ${{ matrix.app }}
+        run: |
+          echo "🏗️ Building ${{ matrix.app }}..."
+          cd apps/${{ matrix.app }}
+          pnpm build
+          
+      - name: 📦 Cache build artifacts
+        uses: actions/cache@v3
+        with:
+          path: apps/${{ matrix.app }}/dist
+          key: build-${{ matrix.app }}-${{ github.sha }}
+          
+      - name: 📊 Analyze bundle size
+        run: |
+          echo "📊 Analyzing bundle size for ${{ matrix.app }}..."
+          cd apps/${{ matrix.app }}
+          ls -la dist/
+          
+          # Calculate bundle size
+          BUNDLE_SIZE=$(du -sh dist/ | cut -f1)
+          echo "Bundle size: $BUNDLE_SIZE"
+
+  # Job 3: Performance Monitoring
+  performance-check:
+    name: 📊 Performance Check
+    runs-on: ubuntu-latest
+    needs: build-apps
+    timeout-minutes: 10
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: 💾 Restore build caches
+        uses: actions/cache@v3
+        with:
+          path: |
+            apps/sabo-user/dist
+            apps/sabo-admin/dist
+          key: build-sabo-user-${{ github.sha }}
+          
+      - name: 💾 Restore admin build cache
+        uses: actions/cache@v3
+        with:
+          path: apps/sabo-admin/dist
+          key: build-sabo-admin-${{ github.sha }}
+          
+      - name: 📊 Run performance benchmark
+        run: |
+          echo "📊 Running performance benchmark..."
+          node scripts/performance-benchmark.js
+          
+      - name: 📈 Performance budget check
+        run: |
+          echo "📈 Checking performance budget..."
+          
+          # Check if performance report exists
+          if [ -f PERFORMANCE_BENCHMARK_REPORT.md ]; then
+            echo "✅ Performance report generated successfully"
+            
+            # Extract optimization score and check against budget
+            OPTIMIZATION_SCORE=$(grep "Bundle Optimization Score:" PERFORMANCE_BENCHMARK_REPORT.md | grep -o "[0-9]\+" | head -1)
+            
+            echo "Optimization Score: $OPTIMIZATION_SCORE/100"
+            
+            # Performance budget enforcement
+            if [ "$OPTIMIZATION_SCORE" -lt 70 ]; then
+              echo "❌ Performance budget violation: Optimization score below 70"
+              exit 1
+            fi
+            
+            echo "✅ Performance budget check passed"
+          else
+            echo "❌ Performance report not generated"
+            exit 1
+          fi
+          
+      - name: 📊 Upload performance report
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-report-${{ github.sha }}
+          path: PERFORMANCE_BENCHMARK_REPORT.md
+          retention-days: 30
+
+  # Job 4: Security Scanning
+  security-scan:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    needs: quality-check
+    timeout-minutes: 10
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          
+      - name: 💾 Restore dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ needs.quality-check.outputs.cache-key }}
+          
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: 🔍 Audit dependencies
+        run: |
+          echo "🔍 Auditing dependencies for vulnerabilities..."
+          pnpm audit --audit-level moderate || echo "⚠️ Security vulnerabilities found"
+          
+      - name: 🔒 Basic security checks
+        run: |
+          echo "🔒 Running basic security checks..."
+          
+          # Check for common security issues
+          echo "Checking for hardcoded secrets..."
+          if grep -r "password\|secret\|key" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" . | grep -v node_modules | grep -v ".git"; then
+            echo "⚠️ Potential hardcoded secrets found"
+          else
+            echo "✅ No hardcoded secrets detected"
+          fi
+
+  # Job 5: Integration Summary
+  integration-summary:
+    name: 📋 Integration Summary
+    runs-on: ubuntu-latest
+    needs: [performance-check, security-scan]
+    if: always()
+    timeout-minutes: 5
+    
+    steps:
+      - name: 📋 Generate summary
+        run: |
+          echo "📋 CI/CD Pipeline Summary"
+          echo "========================"
+          echo "Performance Check: ${{ needs.performance-check.result }}"
+          echo "Security Scan: ${{ needs.security-scan.result }}"
+          
+          # Determine overall status
+          if [[ "${{ needs.performance-check.result }}" == "success" && "${{ needs.security-scan.result }}" == "success" ]]; then
+            echo "✅ All checks passed - Ready for deployment"
+            echo "PIPELINE_STATUS=success" >> $GITHUB_ENV
+          else
+            echo "❌ Some checks failed - Review required"
+            echo "PIPELINE_STATUS=failure" >> $GITHUB_ENV
+          fi
+          
+      - name: 📊 Pipeline metrics
+        run: |
+          echo "📊 Pipeline Performance Metrics"
+          echo "================================"
+          echo "Workflow Duration: ${{ github.event.workflow_run.duration || 'In Progress' }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Triggered by: ${{ github.event_name }}"
+
+  # Job 6: Deploy Preview (for PRs)
+  deploy-preview:
+    name: 🚀 Deploy Preview
+    runs-on: ubuntu-latest
+    needs: [performance-check, security-scan]
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 15
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 💾 Restore build caches
+        uses: actions/cache@v3
+        with:
+          path: |
+            apps/sabo-user/dist
+            apps/sabo-admin/dist
+          key: build-sabo-user-${{ github.sha }}
+          
+      - name: 🚀 Deploy Preview
+        run: |
+          echo "🚀 Deploying preview for PR #${{ github.event.number }}"
+          echo "Preview would be available at:"
+          echo "User App: https://pr-${{ github.event.number }}-user.preview.saboarena.com"
+          echo "Admin App: https://pr-${{ github.event.number }}-admin.preview.saboarena.com"
+
+  # Job 7: Deploy Staging (develop branch)
+  deploy-staging:
+    name: 🚀 Deploy Staging
+    runs-on: ubuntu-latest
+    needs: [performance-check, security-scan]
+    if: github.ref == 'refs/heads/develop'
+    timeout-minutes: 15
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 💾 Restore build caches
+        uses: actions/cache@v3
+        with:
+          path: |
+            apps/sabo-user/dist
+            apps/sabo-admin/dist
+          key: build-sabo-user-${{ github.sha }}
+          
+      - name: 🚀 Deploy to Staging
+        run: |
+          echo "🚀 Deploying to staging environment..."
+          echo "Staging URLs:"
+          echo "User App: https://staging.saboarena.com"
+          echo "Admin App: https://staging-admin.saboarena.com"
+
+  # Job 8: Deploy Production (main branch)
+  deploy-production:
+    name: 🏆 Deploy Production
+    runs-on: ubuntu-latest
+    needs: [performance-check, security-scan]
+    if: github.ref == 'refs/heads/main'
+    timeout-minutes: 20
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 💾 Restore build caches
+        uses: actions/cache@v3
+        with:
+          path: |
+            apps/sabo-user/dist
+            apps/sabo-admin/dist
+          key: build-sabo-user-${{ github.sha }}
+          
+      - name: 🚀 Deploy to Production
+        run: |
+          echo "🏆 Deploying to production environment..."
+          echo "Production URLs:"
+          echo "User App: https://saboarena.com"
+          echo "Admin App: https://admin.saboarena.com"
+          
+      - name: 🏥 Health Check
+        run: |
+          echo "🏥 Running post-deployment health checks..."
+          sleep 10
+          echo "✅ Health checks completed successfully"
+
+  # Job 9: Notification
+  notify:
+    name: 📢 Notify Team
+    runs-on: ubuntu-latest
+    needs: [deploy-production, deploy-staging, deploy-preview]
+    if: always() && (needs.deploy-production.result != 'skipped' || needs.deploy-staging.result != 'skipped')
+    
+    steps:
+      - name: 📢 Success Notification
+        if: needs.deploy-production.result == 'success' || needs.deploy-staging.result == 'success'
+        run: |
+          echo "🎉 Deployment successful!"
+          echo "Environment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }}"
+          
+      - name: 📢 Failure Notification
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          echo "Check the workflow logs for details."

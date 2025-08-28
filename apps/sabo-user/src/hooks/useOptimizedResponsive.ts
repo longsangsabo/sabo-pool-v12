@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { debounce as sharedDebounce } from '@sabo/shared-utils';
 import {
   BREAKPOINTS,
   getBreakpoint,
@@ -13,19 +14,6 @@ interface ResponsiveState {
   width: number;
   height: number;
 }
-
-// Debounce function to prevent excessive re-renders
-const debounce = (func: Function, wait: number) => {
-  let timeout: NodeJS.Timeout;
-  return function executedFunction(...args: any[]) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-};
 
 const getInitialState = (): ResponsiveState => {
   if (typeof window === 'undefined') {
@@ -85,7 +73,7 @@ export const useOptimizedResponsive = (): ResponsiveState => {
 
   // Debounced resize handler
   const debouncedUpdateState = useMemo(
-    () => debounce(updateState, 150),
+    () => sharedDebounce(updateState, 150),
     [updateState]
   );
 

@@ -75,7 +75,6 @@ export default function AdminSystemHealthMonitoring() {
     try {
       setLoading(true)
       setError(null)
-      console.log('🔄 Fetching system health metrics...')
 
       const startTime = Date.now()
 
@@ -164,7 +163,6 @@ export default function AdminSystemHealthMonitoring() {
 
       setMetrics(newMetrics)
       setLastUpdated(new Date())
-      console.log('✅ System metrics updated:', newMetrics)
     } catch (error: any) {
       console.error('❌ Failed to fetch system metrics:', error)
       setError(error.message || 'Failed to load system metrics')

@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Phone, Users, Star, DollarSign } from 'lucide-react';
 import { useClubs } from '@/hooks/useClubs';
+import { formatPrice } from '@sabo/shared-utils';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import PageLayout from '@/components/layout/PageLayout';
@@ -11,13 +12,6 @@ const ClubsPage = () => {
   console.log('🏢 [ClubsPage] Component rendering...');
   const { clubs, loading, error } = useClubs();
   console.log('🏢 [ClubsPage] Hook state:', { clubs, loading, error });
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(price);
-  };
 
   if (loading) {
     return (

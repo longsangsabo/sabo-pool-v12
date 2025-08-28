@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@sabo/shared-auth'
+import { formatDate } from '@sabo/shared-utils'
 import { 
   Search, Users, UserCheck, UserX, Crown, Shield, 
   Download, Plus, CheckCircle, Clock, Ban
@@ -71,7 +72,6 @@ export default function AdminUserManagementEnterprise() {
     try {
       setLoading(true)
       setError(null)
-      console.log('🔄 Fetching users for enterprise management...')
 
       const { data, error } = await supabase
         .from('profiles')
@@ -107,7 +107,6 @@ export default function AdminUserManagementEnterprise() {
         throw error
       }
 
-      console.log('✅ Fetched users:', data?.length || 0)
       setUsers(data || [])
 
       // Calculate analytics
@@ -136,7 +135,6 @@ export default function AdminUserManagementEnterprise() {
 
   const updateUserBanStatus = async (userId: string, banStatus: string, banReason?: string, banExpiresAt?: string) => {
     try {
-      console.log('🔨 Updating ban status:', { userId, banStatus, banReason })
       
       const { error } = await supabase
         .from('profiles')
@@ -153,7 +151,6 @@ export default function AdminUserManagementEnterprise() {
         throw error
       }
 
-      console.log('✅ Ban status updated successfully')
       await fetchUsers() // Refresh the list
       return true
     } catch (error: any) {
@@ -165,7 +162,6 @@ export default function AdminUserManagementEnterprise() {
 
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
-      console.log('👑 Updating user role:', { userId, newRole })
       
       const { error } = await supabase
         .from('profiles')
@@ -180,7 +176,6 @@ export default function AdminUserManagementEnterprise() {
         throw error
       }
 
-      console.log('✅ Role updated successfully')
       await fetchUsers() // Refresh the list
       return true
     } catch (error: any) {
@@ -284,16 +279,6 @@ export default function AdminUserManagementEnterprise() {
       return <span className="px-2 py-1 text-xs bg-blue-600 text-white rounded">Club Owner</span>
     }
     return <span className="px-2 py-1 text-xs bg-green-600 text-white rounded">Active</span>
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
   }
 
   if (error) {

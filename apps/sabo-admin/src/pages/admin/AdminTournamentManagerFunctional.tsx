@@ -1,6 +1,16 @@
-import { useState, useEffect } from 'react'
-import { supabase } from '@sabo/shared-auth'
-import { Search, Calendar, Users, Trophy, Eye, Edit, Trash2, Plus } from 'lucide-react'
+import { useState, useEffect } from 'react';
+import { supabase } from '@sabo/shared-auth';
+import { formatDate } from '@sabo/shared-utils';
+import {
+  Trophy,
+  Users,
+  Calendar,
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
+  Eye,
+} from 'lucide-react';
 
 interface Tournament {
   id: string
@@ -27,7 +37,6 @@ export default function AdminTournamentManagerFunctional() {
     try {
       setLoading(true)
       setError(null)
-      console.log('🔄 Fetching tournaments for admin...')
 
       const { data, error } = await supabase
         .from('tournaments')
@@ -51,7 +60,6 @@ export default function AdminTournamentManagerFunctional() {
         throw error
       }
 
-      console.log('✅ Fetched tournaments:', data?.length || 0)
       setTournaments(data || [])
     } catch (error: any) {
       console.error('❌ Failed to fetch tournaments:', error)
@@ -67,7 +75,6 @@ export default function AdminTournamentManagerFunctional() {
     }
 
     try {
-      console.log('🗑️ Deleting tournament:', tournamentId)
       
       const { error } = await supabase
         .from('tournaments')
@@ -79,7 +86,6 @@ export default function AdminTournamentManagerFunctional() {
         throw error
       }
 
-      console.log('✅ Tournament deleted successfully')
       
       // Remove from local state
       setTournaments(prev => prev.filter(t => t.id !== tournamentId))
@@ -114,14 +120,6 @@ export default function AdminTournamentManagerFunctional() {
       default:
         return 'bg-gray-600'
     }
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
   }
 
   if (error) {
@@ -248,7 +246,7 @@ export default function AdminTournamentManagerFunctional() {
                         <Eye className="h-4 w-4" />
                       </button>
                       <button className="p-2 text-yellow-400 hover:bg-yellow-900/20 rounded transition-colors">
-                        <Edit className="h-4 w-4" />
+                        <Edit2 className="h-4 w-4" />
                       </button>
                       <button 
                         onClick={() => deleteTournament(tournament.id, tournament.name)}

@@ -1,9 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { 
-  Home, Trophy, Users, Building2, Settings, LogOut, UserCog, Activity,
-  DollarSign, BarChart3, Database, Shield, FileText, AlertTriangle,
-  Archive, Key, Bell, Flag, Zap, Wrench, TrendingUp, Sun, Moon, Menu, X
+  Home, Users, Building2, Trophy, Activity, Settings, 
+  DollarSign, FileText,
+  Bell, TrendingUp, Sun, Moon, Menu, X,
+  UserCog, Eye, MessageSquare, CreditCard, HelpCircle, MessageCircle, Target, 
+  Folder, Image, Lock, Shield, LogOut
 } from 'lucide-react'
 import { useAuth } from '@sabo/shared-auth'
 
@@ -18,37 +20,43 @@ export function AdminNavigation({ theme, toggleTheme }: AdminNavigationProps) {
   const { signOut, user } = useAuth()
 
   const navigation = [
-    // Core Admin
+    // Overview
+    { name: 'Overview', href: '/overview', icon: Eye, category: 'overview' },
+    
+    // Core Admin 
     { name: 'Dashboard', href: '/dashboard', icon: Home, category: 'core' },
     { name: 'Users', href: '/users', icon: Users, category: 'core' },
-    { name: 'User Enterprise', href: '/users-enterprise', icon: UserCog, category: 'core' },
+    { name: 'Users Enterprise', href: '/users-enterprise', icon: UserCog, category: 'core' },
     { name: 'Tournaments', href: '/tournaments', icon: Trophy, category: 'core' },
+    { name: 'Tournament Manager', href: '/tournament-manager', icon: Target, category: 'core' },
     { name: 'Clubs', href: '/clubs', icon: Building2, category: 'core' },
     
-    // Financial & Analytics
-    { name: 'Transactions', href: '/transactions', icon: DollarSign, category: 'financial' },
-    { name: 'Analytics', href: '/analytics', icon: BarChart3, category: 'financial' },
-    { name: 'Billing', href: '/billing', icon: TrendingUp, category: 'financial' },
-    { name: 'Reports', href: '/reports', icon: FileText, category: 'financial' },
-    
-    // Security & Monitoring
-    { name: 'Audit Trail', href: '/audit', icon: Shield, category: 'security' },
-    { name: 'Security', href: '/security', icon: Shield, category: 'security' },
-    { name: 'System Logs', href: '/logs', icon: FileText, category: 'security' },
-    { name: 'Alerts', href: '/alerts', icon: AlertTriangle, category: 'security' },
-    
-    // System Operations
-    { name: 'Database', href: '/database', icon: Database, category: 'system' },
-    { name: 'Backup', href: '/backup', icon: Archive, category: 'system' },
-    { name: 'Maintenance', href: '/maintenance', icon: Wrench, category: 'system' },
-    { name: 'API Keys', href: '/api-keys', icon: Key, category: 'system' },
+    // System Management
     { name: 'System Health', href: '/system-health', icon: Activity, category: 'system' },
+    { name: 'Settings', href: '/settings', icon: Settings, category: 'system' },
     
-    // Advanced Features
-    { name: 'Notifications', href: '/notifications', icon: Bell, category: 'advanced' },
-    { name: 'Content', href: '/content', icon: Flag, category: 'advanced' },
-    { name: 'Integrations', href: '/integrations', icon: Zap, category: 'advanced' },
-    { name: 'Settings', href: '/settings', icon: Settings, category: 'advanced' },
+    // Analytics & Reports
+    { name: 'Analytics', href: '/analytics', icon: TrendingUp, category: 'analytics' },
+    { name: 'Reports', href: '/reports', icon: FileText, category: 'analytics' },
+    
+    // Content Management
+    { name: 'Content', href: '/content', icon: Folder, category: 'content' },
+    { name: 'Media', href: '/media', icon: Image, category: 'content' },
+    { name: 'Notifications', href: '/notifications', icon: Bell, category: 'content' },
+    { name: 'Messages', href: '/messages', icon: MessageSquare, category: 'content' },
+    
+    // Security & Permissions
+    { name: 'Permissions', href: '/permissions', icon: Lock, category: 'security' },
+    { name: 'Audit Logs', href: '/audit-logs', icon: Shield, category: 'security' },
+    
+    // Financial Management
+    { name: 'Finance', href: '/finance', icon: DollarSign, category: 'financial' },
+    { name: 'Payments', href: '/payments', icon: CreditCard, category: 'financial' },
+    { name: 'Billing', href: '/billing', icon: FileText, category: 'financial' },
+    
+    // Support & Feedback
+    { name: 'Support', href: '/support', icon: HelpCircle, category: 'support' },
+    { name: 'Feedback', href: '/feedback', icon: MessageCircle, category: 'support' },
   ]
 
   const handleSignOut = async () => {

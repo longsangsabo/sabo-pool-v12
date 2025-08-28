@@ -1,9 +1,13 @@
-export type UserRole = 'user' | 'admin' | 'super_admin';
+/**
+ * Auth package types - will be updated to use shared-types once integrated
+ */
+
+export type UserRole = 'user' | 'admin' | 'super_admin' | 'club_owner' | 'moderator';
 
 export interface User {
   id: string;
   email: string;
-  role: UserRole;
+  role?: UserRole;
   username?: string;
   avatar_url?: string;
   created_at: string;
@@ -30,6 +34,8 @@ export interface AuthContext {
 export interface AdminAuthContext extends AuthContext {
   isAdmin: boolean;
   isSuperAdmin: boolean;
+  hasRole: (role: UserRole) => boolean;
+  switchRole: (role: UserRole) => Promise<void>;
   checkAdminAccess: () => boolean;
   requireAdminAccess: () => void;
 }

@@ -118,3 +118,6 @@ export const TournamentBracket: React.FC<TournamentBracketProps> = ({
     );
   }
 };
+
+// Add default export for lazy loading
+export default TournamentBracket;

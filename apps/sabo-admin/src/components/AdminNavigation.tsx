@@ -67,87 +67,99 @@ export function AdminNavigation({ theme, toggleTheme }: AdminNavigationProps) {
 
   // Group navigation by category
   const categories = {
+    overview: navigation.filter(item => item.category === 'overview'),
     core: navigation.filter(item => item.category === 'core'),
-    financial: navigation.filter(item => item.category === 'financial'),
-    security: navigation.filter(item => item.category === 'security'),
     system: navigation.filter(item => item.category === 'system'),
-    advanced: navigation.filter(item => item.category === 'advanced'),
+    analytics: navigation.filter(item => item.category === 'analytics'),
+    content: navigation.filter(item => item.category === 'content'),
+    security: navigation.filter(item => item.category === 'security'),
+    financial: navigation.filter(item => item.category === 'financial'),
+    support: navigation.filter(item => item.category === 'support'),
   }
 
   return (
     <>
-      <nav className="bg-secondary border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <h1 className="text-xl font-bold text-primary">🎯 SABO Admin</h1>
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-1">
-                  {Object.entries(categories).map(([categoryName, items]) => (
-                    <div key={categoryName} className="flex items-center space-x-1">
-                      {items.map((item) => {
-                        const isActive = location.pathname === item.href
-                        const Icon = item.icon
-                        return (
-                          <Link
-                            key={item.name}
-                            to={item.href}
-                            className={`px-2 py-2 rounded-md text-xs font-medium flex items-center gap-1 transition-colors ${
-                              isActive
-                                ? 'bg-accent text-accent-foreground'
-                                : 'text-secondary hover:bg-muted hover:text-primary'
-                            }`}
-                            title={item.name}
-                          >
-                            <Icon className="h-4 w-4" />
-                            <span className="hidden lg:block">{item.name}</span>
-                          </Link>
-                        )
-                      })}
-                      {categoryName !== 'advanced' && (
-                        <div className="w-px h-6 bg-border mx-2" />
-                      )}
-                    </div>
-                  ))}
+      {/* Sidebar Navigation */}
+      <div className="hidden md:flex flex-col w-64 bg-secondary border-r border-border">
+        {/* Header */}
+        <div className="flex items-center px-6 py-4 border-b border-border">
+          <h1 className="text-xl font-bold text-primary">🎯 SABO Admin</h1>
+        </div>
+        
+        {/* Navigation Items */}
+        <div className="flex-1 px-3 py-6 overflow-y-auto">
+          <nav className="space-y-6">
+            {Object.entries(categories).map(([categoryName, items]) => (
+              <div key={categoryName}>
+                <h3 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                  {categoryName === 'overview' ? 'Overview' :
+                   categoryName === 'core' ? 'Core Management' : 
+                   categoryName === 'system' ? 'System' :
+                   categoryName === 'analytics' ? 'Analytics' :
+                   categoryName === 'content' ? 'Content' :
+                   categoryName === 'security' ? 'Security' :
+                   categoryName === 'financial' ? 'Financial' :
+                   categoryName === 'support' ? 'Support' : categoryName}
+                </h3>
+                <div className="space-y-1">
+                  {items.map((item) => {
+                    const isActive = location.pathname === item.href
+                    const Icon = item.icon
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                          isActive
+                            ? 'bg-accent text-accent-foreground'
+                            : 'text-secondary hover:bg-muted hover:text-primary'
+                        }`}
+                      >
+                        <Icon className="mr-3 h-5 w-5" />
+                        {item.name}
+                      </Link>
+                    )
+                  })}
                 </div>
               </div>
-            </div>
-            
-            {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-4">
-              <button
-                onClick={toggleTheme}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:text-primary hover:bg-muted rounded transition-colors"
-                title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              >
-                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </button>
-              <span className="text-secondary text-sm">
-                {user?.email}
-              </span>
-              <button
-                onClick={handleSignOut}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:text-primary hover:bg-muted rounded transition-colors"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </button>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-secondary hover:text-primary hover:bg-muted"
-              >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
-          </div>
+            ))}
+          </nav>
         </div>
-      </nav>
+        
+        {/* Bottom Actions */}
+        <div className="border-t border-border p-4 space-y-2">
+          <button
+            onClick={toggleTheme}
+            className="flex items-center w-full px-3 py-2 text-sm text-secondary hover:text-primary hover:bg-muted rounded transition-colors"
+          >
+            {theme === 'dark' ? <Sun className="mr-3 h-5 w-5" /> : <Moon className="mr-3 h-5 w-5" />}
+            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          </button>
+          <div className="px-3 py-2 text-sm text-muted-foreground border-t border-border">
+            {user?.email}
+          </div>
+          <button
+            onClick={handleSignOut}
+            className="flex items-center w-full px-3 py-2 text-sm text-secondary hover:text-primary hover:bg-muted rounded transition-colors"
+          >
+            <LogOut className="mr-3 h-5 w-5" />
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Header */}
+      <div className="md:hidden bg-secondary border-b border-border">
+        <div className="flex items-center justify-between px-4 py-3">
+          <h1 className="text-lg font-bold text-primary">🎯 SABO Admin</h1>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="inline-flex items-center justify-center p-2 rounded-md text-secondary hover:text-primary hover:bg-muted"
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+      </div>
 
       {/* Mobile menu */}
       {mobileMenuOpen && (

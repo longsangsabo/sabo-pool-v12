@@ -2,12 +2,9 @@ import { createClient } from '@supabase/supabase-js';
 import type { User, UserRole } from './types';
 
 // Environment variables - these will be provided by the consuming app
-const supabaseUrl = (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_URL || 
-                   (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_URL : '');
-const supabaseKey = (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_ANON_KEY || 
-                   (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_ANON_KEY : '');
-const supabaseServiceKey = (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_SERVICE_ROLE_KEY || 
-                          (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_SERVICE_ROLE_KEY : '');
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   console.warn('Supabase environment variables not found - auth service may not work properly');

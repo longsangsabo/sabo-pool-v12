@@ -27,7 +27,6 @@ export default function AdminTournamentManagerFunctional() {
     try {
       setLoading(true)
       setError(null)
-      console.log('🔄 Fetching tournaments for admin...')
 
       const { data, error } = await supabase
         .from('tournaments')
@@ -51,7 +50,6 @@ export default function AdminTournamentManagerFunctional() {
         throw error
       }
 
-      console.log('✅ Fetched tournaments:', data?.length || 0)
       setTournaments(data || [])
     } catch (error: any) {
       console.error('❌ Failed to fetch tournaments:', error)
@@ -67,7 +65,6 @@ export default function AdminTournamentManagerFunctional() {
     }
 
     try {
-      console.log('🗑️ Deleting tournament:', tournamentId)
       
       const { error } = await supabase
         .from('tournaments')
@@ -79,7 +76,6 @@ export default function AdminTournamentManagerFunctional() {
         throw error
       }
 
-      console.log('✅ Tournament deleted successfully')
       
       // Remove from local state
       setTournaments(prev => prev.filter(t => t.id !== tournamentId))

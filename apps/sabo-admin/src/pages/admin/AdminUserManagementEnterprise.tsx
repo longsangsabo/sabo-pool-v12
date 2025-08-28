@@ -71,7 +71,6 @@ export default function AdminUserManagementEnterprise() {
     try {
       setLoading(true)
       setError(null)
-      console.log('🔄 Fetching users for enterprise management...')
 
       const { data, error } = await supabase
         .from('profiles')
@@ -107,7 +106,6 @@ export default function AdminUserManagementEnterprise() {
         throw error
       }
 
-      console.log('✅ Fetched users:', data?.length || 0)
       setUsers(data || [])
 
       // Calculate analytics
@@ -136,7 +134,6 @@ export default function AdminUserManagementEnterprise() {
 
   const updateUserBanStatus = async (userId: string, banStatus: string, banReason?: string, banExpiresAt?: string) => {
     try {
-      console.log('🔨 Updating ban status:', { userId, banStatus, banReason })
       
       const { error } = await supabase
         .from('profiles')
@@ -153,7 +150,6 @@ export default function AdminUserManagementEnterprise() {
         throw error
       }
 
-      console.log('✅ Ban status updated successfully')
       await fetchUsers() // Refresh the list
       return true
     } catch (error: any) {
@@ -165,7 +161,6 @@ export default function AdminUserManagementEnterprise() {
 
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
-      console.log('👑 Updating user role:', { userId, newRole })
       
       const { error } = await supabase
         .from('profiles')
@@ -180,7 +175,6 @@ export default function AdminUserManagementEnterprise() {
         throw error
       }
 
-      console.log('✅ Role updated successfully')
       await fetchUsers() // Refresh the list
       return true
     } catch (error: any) {

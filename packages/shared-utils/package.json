@@ -1,0 +1,26 @@
+{
+  "name": "@sabo/shared-utils",
+  "version": "1.0.0",
+  "description": "Shared utility functions for SABO Arena",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "date-fns": "^2.30.0",
+    "@supabase/supabase-js": "^2.38.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "peerDependencies": {
+    "@sabo/shared-types": "workspace:*"
+  },
+  "files": [
+    "dist"
+  ]
+}

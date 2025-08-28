@@ -68,7 +68,7 @@ async function listClubOwners() {
     } else {
       console.log('\n💡 Để test club management:');
       console.log('   1. Đăng nhập bằng một trong các email ở trên');
-      console.log('   2. Truy cập: http://localhost:8000/club-management');
+      console.log('   2. Truy cập: http://localhost:8080/club-management');
     }
 
     // 2. Kiểm tra club registrations đang chờ approve

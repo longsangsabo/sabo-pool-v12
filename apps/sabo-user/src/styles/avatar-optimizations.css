@@ -1,0 +1,120 @@
+/* Avatar Display Optimization */
+
+/* Improved Avatar Loading */
+.avatar-image {
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.avatar-image[data-loading="true"] {
+  opacity: 0.5;
+}
+
+.avatar-image[data-error="true"] {
+  display: none;
+}
+
+/* Avatar Container Optimization */
+.avatar-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+              linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+              linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+              linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.avatar-container[data-loading="true"]::before {
+  opacity: 0.3;
+}
+
+/* Fallback Avatar Improvements */
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+/* Responsive Avatar Sizes */
+@media (max-width: 768px) {
+  .avatar-large {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .avatar-medium {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .avatar-small {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Avatar Upload Button */
+.avatar-upload-button {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: var(--primary);
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-upload-button:hover {
+  background: var(--primary-hover);
+  transform: scale(1.05);
+}
+
+/* Loading spinner for avatar */
+.avatar-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 10;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Performance optimizations */
+.avatar-image {
+  will-change: auto;
+  transform: translateZ(0); /* Enable hardware acceleration */
+}
+
+/* Reduce paint on scroll */
+.avatar-container {
+  contain: layout style paint;
+}

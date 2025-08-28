@@ -74,7 +74,7 @@ async function createSABO32TestTournament() {
     console.log(`Players: 32 confirmed`);
     console.log(`Type: double_elimination`);
     console.log('\n📱 NEXT STEPS:');
-    console.log('1. Go to http://localhost:8000');
+    console.log('1. Go to http://localhost:8080');
     console.log('2. Find tournament: "Test SABO-32 Double Elimination"');
     console.log('3. Click "Tạo SABO Bracket" button');
     console.log('4. Should create 53 matches (25 + 25 + 3)');

@@ -127,5 +127,5 @@ async function finalNotificationCleanup() {
 finalNotificationCleanup().then(() => {
   console.log('\n🎉 Final cleanup completed!');
   console.log('\n💡 TIP: Refresh your browser to see the changes in action');
-  console.log('🌐 Development server: http://localhost:8000/');
+  console.log('🌐 Development server: http://localhost:8080/');
 }).catch(console.error);

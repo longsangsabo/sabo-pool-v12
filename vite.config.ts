@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => {
     base: '/', // Remove base path to fix routing issues
     server: {
       host: "::",
-      port: 8000,
+      port: 8080, // ✅ Updated to match Loveable requirement
     },
     plugins,
     resolve: {

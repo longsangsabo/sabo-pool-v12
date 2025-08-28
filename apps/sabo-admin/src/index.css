@@ -1,0 +1,72 @@
+/* Import theme system FIRST */
+@import '../../../apps/sabo-user/src/styles/theme.css';
+@import '../../../apps/sabo-user/src/styles/sabo-design-system.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Admin-specific styling */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #111827; /* Gray-900 */
+  }
+}
+
+@layer components {
+  /* Admin-specific button styles */
+  .admin-btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors;
+  }
+  
+  .admin-btn-secondary {
+    @apply bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors;
+  }
+  
+  .admin-btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors;
+  }
+  
+  /* Admin card styles */
+  .admin-card {
+    @apply bg-gray-800 border border-gray-700 rounded-xl p-6 hover:bg-gray-750 transition-colors;
+  }
+  
+  /* Admin form styles */
+  .admin-input {
+    @apply w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all;
+  }
+  
+  .admin-label {
+    @apply block text-sm font-medium text-gray-300 mb-2;
+  }
+}
+
+@layer utilities {
+  /* Custom admin utilities */
+  .bg-gray-750 {
+    background-color: #374151;
+  }
+  
+  .text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Security-focused styling */
+  .security-warning {
+    @apply bg-yellow-900/20 border border-yellow-700 text-yellow-400 px-4 py-3 rounded-lg;
+  }
+  
+  .security-danger {
+    @apply bg-red-900/20 border border-red-700 text-red-400 px-4 py-3 rounded-lg;
+  }
+  
+  .security-success {
+    @apply bg-green-900/20 border border-green-700 text-green-400 px-4 py-3 rounded-lg;
+  }
+}

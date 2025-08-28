@@ -16,7 +16,7 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useIsClubOwner } from '@/hooks/club/useClubRole';
 import { useAuth } from '@/hooks/useAuth';
 import { PublicRoute } from '@/components/auth/PublicRoute';
-import { AdminRoute } from '@/components/auth/AdminRoute';
+// AdminRoute removed - admin functionality moved to separate app
 import MainLayout from '@/components/MainLayout';
 import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
 import { OfflineIndicator } from '@/components/pwa/OfflineIndicator';
@@ -112,8 +112,8 @@ const StandardizedProfilePage = lazy(() => import('@/pages/StandardizedProfilePa
 const ThemeDemoPage = lazy(() => import('@/pages/ThemeDemoPage'));
 const ThemeImprovementSummary = lazy(() => import('@/pages/ThemeImprovementSummary'));
 
-// Admin components
-const AdminRouter = lazy(() => import('@/router/AdminRouter'));
+// Admin components - REMOVED - Now redirects to separate admin app
+// const AdminRouter = lazy(() => import('@/router/AdminRouter'));
 
 // Club components
 const ClubManagementPage = lazy(() => import('@/pages/ClubManagementPage'));
@@ -299,15 +299,33 @@ const AppContent = () => {
           </Route>
 
         {/* Social Profile - Public route accessible without login */}
-        <Route path='/players/:userId' element={<SocialProfileCard />} />          {/* Admin routes - use wildcard to let AdminRouter handle sub-routes */}
-          <Route
-            path='/admin/*'
-            element={
-              <AdminRoute>
-                <AdminRouter />
-              </AdminRoute>
-            }
-          />
+        <Route path='/players/:userId' element={<SocialProfileCard />} />
+        
+        {/* Admin routes - REDIRECT to separate admin app */}
+        <Route
+          path='/admin/*'
+          element={
+            <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+              <div className="text-center text-white">
+                <h1 className="text-3xl font-bold mb-4">🔄 Redirecting to Admin Panel</h1>
+                <p className="text-gray-400 mb-6">
+                  The admin panel has been moved to a separate application for better performance and security.
+                </p>
+                <div className="bg-blue-600/20 border border-blue-500 rounded-lg p-4 max-w-md mx-auto mb-6">
+                  <p className="text-blue-300 text-sm">
+                    You are being redirected to the admin application...
+                  </p>
+                </div>
+                <a
+                  href="http://localhost:8081"
+                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors"
+                >
+                  Go to Admin Panel
+                </a>
+              </div>
+            </div>
+          }
+        />
 
           {/* Club management routes - protected and require club owner privileges */}
           <Route

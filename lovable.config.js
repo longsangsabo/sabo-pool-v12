@@ -9,13 +9,13 @@ module.exports = {
   // Development server
   dev: {
     command: 'npm run dev',
-    port: 3000
+    port: 8080  // ✅ Updated to match VSCode config
   },
 
   // Environment variables
   env: {
     NODE_ENV: 'production',
-    PORT: '3000'
+    PORT: '8080'  // ✅ Updated for consistency
   },
 
   // Build optimization

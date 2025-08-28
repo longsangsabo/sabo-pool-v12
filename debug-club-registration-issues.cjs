@@ -121,7 +121,7 @@ async function checkClubRegistrationIssues() {
     if (pendingRegs && pendingRegs.length > 0) {
       console.log(`  📋 ${pendingRegs.length} registration(s) pending admin approval`);
       console.log('  👨‍💼 Admin should log in to approve/reject pending registrations');
-      console.log('  🔗 Admin URL: http://localhost:8000/admin/clubs');
+      console.log('  🔗 Admin URL: http://localhost:8080/admin/clubs');
     }
     
     const rejectedRegs = allRegs?.filter(r => r.status === 'rejected');

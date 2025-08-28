@@ -1,0 +1,28 @@
+{
+  "name": "@sabo/shared-hooks",
+  "version": "1.0.0",
+  "description": "Shared React hooks for SABO Arena",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "@tanstack/react-query": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/react": "^18.2.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "@sabo/shared-types": "workspace:*",
+    "@sabo/shared-utils": "workspace:*"
+  },
+  "files": [
+    "dist"
+  ]
+}

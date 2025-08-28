@@ -84,7 +84,7 @@
 ## 📱 IMMEDIATE TESTING INSTRUCTIONS
 
 ### MILESTONE INTEGRATION TEST:
-1. **Open**: http://localhost:8000
+1. **Open**: http://localhost:8080
 2. **Register new user** (use phone or email registration)
 3. **Complete verification** (OTP or email confirmation)
 4. **Expected results**:
@@ -115,6 +115,6 @@ The milestone notification system is now fully integrated into the user registra
 
 The notification system is mobile-first with a comprehensive full-page interface that replaces the simple dropdown approach.
 
-**🚨 READY FOR REAL USER TESTING: http://localhost:8000**
+**🚨 READY FOR REAL USER TESTING: http://localhost:8080**
 
 No additional implementation needed - the system is complete and functional!

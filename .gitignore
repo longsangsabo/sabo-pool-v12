@@ -146,7 +146,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
+# .env (commented out to allow admin env to be committed)
 .env.development.local
 .env.test.local
 .env.production.local

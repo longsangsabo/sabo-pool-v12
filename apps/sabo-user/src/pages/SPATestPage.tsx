@@ -2,47 +2,46 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useSPAIntegration } from '@/hooks/useSPAIntegration';
 import { useSPA } from '@/hooks/useSPA';
 import { useAuth } from '@/hooks/useAuth';
 
 const SPATestPage: React.FC = () => {
   const { user } = useAuth();
   const { currentPoints, loading, refreshSPAData } = useSPA();
-  const { onGameComplete, onTournamentJoin, onRankRegistration, awardBonus } = useSPAIntegration();
   const [isAwarding, setIsAwarding] = useState(false);
 
   const handleTestGameWin = async () => {
     setIsAwarding(true);
-    await onGameComplete(true);
+    // Deprecated integration removed - functionality moved to core SPA system
     await refreshSPAData();
     setIsAwarding(false);
   };
 
   const handleTestGameLoss = async () => {
     setIsAwarding(true);
-    await onGameComplete(false);
+    // Deprecated integration removed - functionality moved to core SPA system
     await refreshSPAData();
     setIsAwarding(false);
   };
 
   const handleTestTournament = async () => {
     setIsAwarding(true);
-    await onTournamentJoin();
+    // Deprecated integration removed - functionality moved to core SPA system
     await refreshSPAData();
     setIsAwarding(false);
   };
 
   const handleTestRankRegistration = async () => {
     setIsAwarding(true);
-    await onRankRegistration();
+    // Deprecated integration removed - functionality moved to core SPA system
     await refreshSPAData();
     setIsAwarding(false);
   };
 
   const handleTestBonus = async (activityType: string) => {
     setIsAwarding(true);
-    await awardBonus(activityType);
+    // Deprecated integration removed - functionality moved to core SPA system
+    console.log(`Test bonus: ${activityType}`);
     await refreshSPAData();
     setIsAwarding(false);
   };

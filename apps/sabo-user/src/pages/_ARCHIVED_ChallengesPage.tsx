@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { formatCurrency } from '@sabo/shared-utils';
 import {
   Target,
   Plus,
@@ -146,13 +147,6 @@ const ChallengesPage: React.FC = () => {
       default:
         return status;
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(amount);
   };
 
   const filteredChallenges = challenges.filter(challenge => {

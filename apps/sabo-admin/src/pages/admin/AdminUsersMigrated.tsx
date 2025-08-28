@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@sabo/shared-auth';
+import { formatDate } from '@sabo/shared-utils';
 import {
   Search,
   MoreHorizontal,
@@ -219,10 +220,6 @@ export default function AdminUsersMigrated() {
 
   const getRoleIcon = (role: string) => {
     return role === 'premium' ? <Crown className='w-4 h-4 text-yellow-400' /> : null;
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('vi-VN');
   };
 
   if (error) {

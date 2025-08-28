@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@sabo/shared-auth';
+import { formatDate, formatCurrency } from '@sabo/shared-utils';
 import {
   Search,
   Eye,
@@ -143,24 +144,6 @@ export default function AdminTournamentsMigrated() {
 
     return matchesSearch && matchesStatus;
   });
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return 'Not Set';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
 
   const openParticipantModal = (tournament: Tournament) => {
     setSelectedTournament(tournament);

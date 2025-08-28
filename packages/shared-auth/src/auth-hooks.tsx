@@ -1,40 +1,60 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { authService } from './auth-service';
-import type { User, AuthContext, AdminAuthContext } from './types';
+import { AuthService } from './auth-service';
+import type { User, UserRole, AuthContext, AdminAuthContext } from './types';
 
+// Initialize auth service instance
+const authService = new AuthService();
+
+// Create auth context
 const AuthContextInstance = createContext<AuthContext | null>(null);
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
+/**
+ * Main Auth Provider
+ * Provides authentication state and methods to the entire app
+ */
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Initialize auth state and listen for changes
   useEffect(() => {
-    // Initialize auth state
+    let mounted = true;
+
     const initializeAuth = async () => {
       try {
         const currentUser = await authService.getCurrentUser();
-        setUser(currentUser);
+        if (mounted) {
+          setUser(currentUser);
+        }
       } catch (error) {
-        console.log('No authenticated user');
+        console.log('No authenticated user found');
+        if (mounted) {
+          setUser(null);
+        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     initializeAuth();
 
-    // Listen for auth changes
+    // Listen for auth state changes
     const { data: { subscription } } = authService.onAuthStateChange((user) => {
-      setUser(user);
-      setLoading(false);
+      if (mounted) {
+        setUser(user);
+        setLoading(false);
+      }
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, []);
@@ -134,6 +154,15 @@ export function useAdminAuth(): AdminAuthContext {
   const isAdmin = authService.isAdmin(auth.user);
   const isSuperAdmin = authService.isSuperAdmin(auth.user);
   
+  const hasRole = (role: UserRole) => {
+    return authService.hasRole(auth.user, role);
+  };
+  
+  const switchRole = async (role: UserRole) => {
+    // Implement role switching logic
+    return authService.switchRole(auth.user, role);
+  };
+  
   const checkAdminAccess = () => isAdmin;
   
   const requireAdminAccess = () => {
@@ -144,6 +173,8 @@ export function useAdminAuth(): AdminAuthContext {
     ...auth,
     isAdmin,
     isSuperAdmin,
+    hasRole,
+    switchRole,
     checkAdminAccess,
     requireAdminAccess,
   };

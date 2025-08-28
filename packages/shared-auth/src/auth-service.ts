@@ -1,16 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 import type { User, UserRole } from './types';
 
-// Environment variables - these will be provided by the consuming app
-const supabaseUrl = (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_URL || 
-                   (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_URL : '');
-const supabaseKey = (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_ANON_KEY || 
-                   (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_ANON_KEY : '');
-const supabaseServiceKey = (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_SERVICE_ROLE_KEY || 
-                          (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_SERVICE_ROLE_KEY : '');
+// Environment variables configuration
+const getEnvVar = (key: string): string => {
+  // Browser environment (Vite)
+  if (typeof window !== 'undefined' && (globalThis as any)?.import?.meta?.env) {
+    return (globalThis as any).import.meta.env[key] || '';
+  }
+  // Node environment
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env[key] || '';
+  }
+  return '';
+};
+
+const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
+const supabaseKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
+const supabaseServiceKey = getEnvVar('VITE_SUPABASE_SERVICE_ROLE_KEY');
 
 if (!supabaseUrl || !supabaseKey) {
-  console.warn('Supabase environment variables not found - auth service may not work properly');
+  console.warn('⚠️ Supabase environment variables not configured - auth service may not work properly');
 }
 
 // Create main client for auth (using anon key)
@@ -19,6 +28,10 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 // Create admin client for admin operations (using service role key if available)
 export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey || supabaseKey);
 
+/**
+ * Centralized Authentication Service
+ * Handles all auth operations for both user and admin apps
+ */
 export class AuthService {
   async signIn(email: string, password: string): Promise<User> {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -207,6 +220,26 @@ export class AuthService {
 
     return stats;
   }
+
+  // Role management methods
+  hasRole(user: User | null, role: UserRole): boolean {
+    if (!user) return false;
+    // Role checking logic - could be from user metadata or separate profile table
+    return this.isAdmin(user) && (role === 'admin' || role === 'super_admin');
+  }
+
+  async switchRole(user: User | null, role: UserRole): Promise<void> {
+    if (!user) throw new Error('No user provided');
+    
+    // Update the user's role in the database
+    const { error } = await supabaseAdmin
+      .from('user_profiles')
+      .update({ role })
+      .eq('user_id', user.id);
+
+    if (error) throw error;
+  }
 }
 
+// Export singleton instance
 export const authService = new AuthService();

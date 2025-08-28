@@ -1,0 +1,21 @@
+SABO Arena - Bundle Summary
+Generated: Thu Aug 28 08:42:38 UTC 2025
+==========================
+
+User App:
+  Size: 12M
+  JS files: 109
+  CSS files: 3
+
+Admin App:
+  Size: 2.0M
+  JS files: 8
+  CSS files: 1
+
+Optimization Tips:
+=================
+• Keep JavaScript chunks under 500KB
+• Use code splitting for large features
+• Compress images and optimize assets
+• Consider tree shaking unused code
+• Implement lazy loading for routes

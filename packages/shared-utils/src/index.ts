@@ -18,6 +18,9 @@ export * from './validation';
 // Array and object helpers
 export * from './helpers';
 
+// SABO Arena specific utilities
+export * from './sabo';
+
 // Re-export commonly used functions for convenience
 export {
   formatCurrency,
@@ -57,3 +60,15 @@ export {
   debounce,
   throttle,
 } from './helpers';
+
+export {
+  calculateRank,
+  calculateEloChange,
+  formatTournamentStatus,
+  calculateTournamentProgress,
+  generateBracketSeeding,
+  calculateRentalCost,
+  isTimeSlotAvailable,
+  generateRoundRobinSchedule,
+  formatMatchResult,
+} from './sabo';

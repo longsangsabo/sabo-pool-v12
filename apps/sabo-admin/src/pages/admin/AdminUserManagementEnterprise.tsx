@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@sabo/shared-auth'
+import { formatDate } from '@sabo/shared-utils'
 import { 
   Search, Users, UserCheck, UserX, Crown, Shield, 
   Download, Plus, CheckCircle, Clock, Ban
@@ -284,16 +285,6 @@ export default function AdminUserManagementEnterprise() {
       return <span className="px-2 py-1 text-xs bg-blue-600 text-white rounded">Club Owner</span>
     }
     return <span className="px-2 py-1 text-xs bg-green-600 text-white rounded">Active</span>
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
   }
 
   if (error) {

@@ -8,6 +8,7 @@ import { TournamentStatsRealtime } from '@/components/tournament/TournamentStats
 import { ParticipantListRealtime } from '@/components/tournament/ParticipantListRealtime';
 import AutomationMonitor from '@/components/tournament/AutomationMonitor';
 import { supabase } from '@/integrations/supabase/client';
+import { formatDate } from '@sabo/shared-utils';
 import { toast } from 'sonner';
 import {
   Users,
@@ -109,16 +110,6 @@ export const TournamentDetailRealtime: React.FC = () => {
     } finally {
       setRegistering(false);
     }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   const getStatusBadge = (status: string) => {

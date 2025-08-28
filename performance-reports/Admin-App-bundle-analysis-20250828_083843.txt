@@ -1,0 +1,20 @@
+SABO Arena - Admin-App Bundle Analysis
+Generated: Thu Aug 28 08:38:45 UTC 2025
+========================================
+
+JavaScript Bundles:
+==================
+  react-vendor-C4WFCG9O.js: KB
+  data-layer-D38rKCN3.js: KB
+  index-BSbXZiQY.js: KB
+  react-router-DHAOyA5b.js: KB
+  ui-vendor-BITjp_c3.js: KB
+  admin-tables-CEmhUPfq.js: 86B
+  admin-charts-CEmhUPfq.js: 86B
+  admin-forms-CEmhUPfq.js: 85B
+
+CSS Bundles:
+============
+  index-Bei-yOk6.css: KB
+
+Total Build Size: MB

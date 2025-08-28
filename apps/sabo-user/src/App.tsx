@@ -81,6 +81,9 @@ const EnhancedChallengesPageV3 = lazy(
 const ChallengeTabsDebug = lazy(() => import('./pages/ChallengeTabsDebug'));
 const ChallengeTabsStabilityTest = lazy(() => import('./pages/ChallengeTabsStabilityTest'));
 const HandicapDebugger = lazy(() => import('./components/debug/HandicapDebugger'));
+
+// New Components Showcase
+const NewComponentsShowcase = lazy(() => import('./pages/NewComponentsShowcase'));
 const ScoreSubmissionDemo = lazy(() => import('./pages/ScoreSubmissionDemo'));
 const ClubApprovalDemo = lazy(() => import('./pages/ClubApprovalDemo'));
 const ClubApprovalManagement = lazy(() => import('./pages/ClubApprovalManagement'));
@@ -186,6 +189,7 @@ const AppContent = () => {
 
           {/* Demo pages */}
           {/* PRODUCTION: All demo/test routes removed for better mobile performance */}
+          <Route path='/demo/new-components' element={<NewComponentsShowcase />} />
 
           {/* Auth routes - only accessible when NOT logged in */}
           <Route

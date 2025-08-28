@@ -101,7 +101,7 @@ export const MobileNavigation = () => {
   };
 
   return (
-    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t border-border lg:hidden mobile-safe-area-bottom'>
+    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-background dark:bg-slate-900 backdrop-blur-md border-t border-border lg:hidden mobile-safe-area-bottom'>
       <div className='flex items-center justify-around py-2 px-4'>
         {navItems.map(item => {
           const Icon = item.icon;

@@ -14,6 +14,16 @@
   
   body {
     font-family: 'Inter', system-ui, sans-serif;
-    background-color: #111827; /* Gray-900 */
+    /* Remove fixed background - let theme handle it */
+  }
+
+  /* Global dark mode enforcement */
+  .dark {
+    color-scheme: dark;
+  }
+  
+  .dark body {
+    background-color: transparent; /* Let billiards background show through */
+    color: #f1f5f9; /* slate-100 */
   }
 }

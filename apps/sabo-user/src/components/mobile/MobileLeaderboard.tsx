@@ -158,8 +158,8 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
   return (
     <div className={`${className} min-h-screen transition-colors duration-300 ${
       theme === 'dark' 
-        ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
-        : 'bg-white'
+        ? 'bg-transparent' 
+        : 'bg-background'
     } p-4`}>
       <Tabs
         value={activeTab}
@@ -169,7 +169,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
         <TabsList
           className={`grid w-full grid-cols-3 mb-6 transition-all duration-300 ${
             theme === 'dark'
-              ? 'bg-slate-900/80 border-slate-700/50 backdrop-blur-sm shadow-xl'
+              ? 'bg-slate-900/60 border-slate-700/30 backdrop-blur-lg shadow-xl'
               : 'bg-white/80 border-slate-200/50 backdrop-blur-sm shadow-lg'
           }`}
         >
@@ -206,7 +206,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
                   index < 3 ? 'ring-2 ring-yellow-400/30 shadow-xl' : ''
                 } ${
                   theme === 'dark'
-                    ? 'bg-slate-900/80 border-slate-700/50 backdrop-blur-sm hover:bg-slate-800/90 shadow-lg'
+                    ? 'bg-slate-900/60 border-slate-700/30 backdrop-blur-lg hover:bg-slate-800/60 shadow-lg'
                     : 'bg-white border-slate-200 hover:bg-slate-50 shadow-md hover:shadow-lg'
                 }`}
               >
@@ -306,7 +306,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
                   index < 3 ? 'ring-2 ring-purple-400/30 shadow-xl' : ''
                 } ${
                   theme === 'dark'
-                    ? 'bg-slate-900/80 border-slate-700/50 backdrop-blur-sm hover:bg-slate-800/90 shadow-lg'
+                    ? 'bg-slate-900/60 border-slate-700/30 backdrop-blur-lg hover:bg-slate-800/60 shadow-lg'
                     : 'bg-white border-slate-200 hover:bg-slate-50 shadow-md hover:shadow-lg'
                 }`}
               >

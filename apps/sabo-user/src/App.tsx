@@ -26,6 +26,7 @@ import { ReAuthModal } from '@/components/auth/ReAuthModal';
 import './styles/avatar-optimizations.css';
 import './styles/theme.css';
 import './styles/sabo-design-system.css'; // Design system
+import './styles/mobile-enhancements.css'; // Mobile optimizations
 
 // ✅ Import debug utilities for tournament refresh
 import './utils/debugTournamentRefresh';
@@ -164,7 +165,7 @@ const AppContent = () => {
   const LandingRoute: React.FC = () => {
     const { user, session, loading } = useAuth();
     if (loading) return <div className='p-8 text-center'>Đang tải...</div>;
-    if (user && session) return <Navigate to='/standardized-dashboard' replace />;
+    if (user && session) return <Navigate to='/dashboard' replace />;
     return <HomePage />;
   };
 
@@ -238,7 +239,7 @@ const AppContent = () => {
               </ProtectedRoute>
             }
           >
-            <Route path='dashboard' element={<Navigate to="/standardized-dashboard" replace />} />
+            <Route path='dashboard' element={<Dashboard />} />
             <Route path='profile' element={<Profile />} />
             <Route path='challenges' element={<EnhancedChallengesPageV3 />} />
             {/* Legacy challenge routes removed for production */}
@@ -270,7 +271,7 @@ const AppContent = () => {
             {/* Legacy Claim Admin route removed - now using direct code claim system */}
             
             {/* Standardized Pages with Navigation */}
-            <Route path='standardized-dashboard' element={<StandardizedDashboardPage />} />
+            <Route path='standardized-dashboard' element={<Navigate to="/dashboard" replace />} />
             <Route path='standardized-tournaments' element={<StandardizedTournamentsPage />} />
             <Route path='standardized-challenges' element={<StandardizedChallengesPage />} />
             <Route path='standardized-profile' element={<StandardizedProfilePage />} />
@@ -342,7 +343,7 @@ const App = () => {
     <AppErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <HelmetProvider>
-          <ThemeProvider defaultTheme="light">
+          <ThemeProvider defaultTheme="dark">{/* 🛡️ LOCKED: Dark mode protected */}
             <Router>
               <CombinedProviders>
                 <AppContent />

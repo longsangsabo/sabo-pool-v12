@@ -17,6 +17,28 @@
     max(env(safe-area-inset-left), 0px);
 }
 
+/* Stories Reel Styling */
+.mobile-story-reel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mobile-story-reel::-webkit-scrollbar {
+  display: none;
+}
+
+.story-item {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+}
+
 /* Enhanced Touch Targets */
 .mobile-touch-button {
   /* Minimum 44px touch target for accessibility */
@@ -252,4 +274,34 @@
     background: hsl(var(--card) / 95%);
     border-bottom: 1px solid hsl(var(--border) / 30%);
   }
+}
+
+/* Force dark mode - transparent backgrounds to show billiards background */
+.dark-mode-enforced {
+  background-color: transparent !important;
+  color: #f1f5f9 !important; /* slate-100 */
+}
+
+.dark-mode-enforced * {
+  background-color: inherit;
+  color: inherit;
+}
+
+/* Remove all white backgrounds in dark mode and make them transparent */
+.dark .bg-white {
+  background-color: rgba(30, 41, 59, 0.6) !important; /* semi-transparent slate-800 */
+  backdrop-filter: blur(8px);
+}
+
+.dark .text-black {
+  color: #f1f5f9 !important; /* slate-100 */
+}
+
+/* Ensure mobile pages have transparent backgrounds to show billiards */
+.dark .min-h-screen {
+  background-color: transparent; 
+}
+
+.dark .bg-background {
+  background-color: transparent !important;
 }

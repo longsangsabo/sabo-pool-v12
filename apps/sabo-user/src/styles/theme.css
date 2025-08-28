@@ -5,7 +5,7 @@
   --theme-transition: all 0.2s ease-in-out;
 }
 
-/* Light mode (default) */
+/* Light mode (default) with beautiful gradient backgrounds */
 .light {
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
@@ -28,6 +28,16 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* Light mode gradient backgrounds */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+/* Light mode dashboard specific gradient */
+.light .dashboard-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
 }
 
 /* Dark mode */

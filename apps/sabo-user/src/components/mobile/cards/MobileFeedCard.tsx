@@ -24,6 +24,7 @@ import {
 import { MobileReactionBar } from './MobileReactionBar';
 import { MobileLiveIndicator } from '../common/MobileLiveIndicator';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
+import { useProtectedTheme } from '@/hooks/useProtectedTheme';
 
 interface FeedPost {
   id: string;
@@ -67,6 +68,12 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
   onDelete,
 }) => {
   const { isAdmin } = useAdminCheck();
+  const { 
+    getComponentClasses, 
+    getClasses,
+    conditionalClasses,
+    isDark 
+  } = useProtectedTheme();
   const getPostIcon = () => {
     switch (post.type) {
       case 'match_result':
@@ -127,7 +134,7 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
   const isLiveContent = post.type === 'match_result' && Math.random() > 0.7; // Mock live status
 
   return (
-    <Card className='mobile-feed-card w-full bg-white/70 dark:bg-slate-900/30 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-[0.98]'>
+    <Card className={`mobile-feed-card w-full ${getComponentClasses('feedCard')} shadow-lg hover:shadow-xl transition-all duration-200 active:scale-[0.98]`}>
       <CardContent className='p-4 space-y-3'>
         {/* User Header */}
         <div className='flex items-center justify-between'>
@@ -140,18 +147,18 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
             </Avatar>
             <div className='flex-1'>
               <div className='flex items-center gap-2'>
-                <span className='font-semibold text-sm text-foreground'>
+                <span className={`font-semibold text-sm ${getClasses('textPrimary')}`}>
                   {post.user.name}
                 </span>
                 <Badge
                   variant='secondary'
-                  className='text-xs px-2 py-0.5 font-medium'
+                  className={`text-xs px-2 py-0.5 font-medium ${getClasses('badge')}`}
                 >
                   {post.user.rank}
                 </Badge>
                 {getPostIcon()}
               </div>
-              <div className='flex items-center gap-2 text-xs text-muted-foreground'>
+              <div className={`flex items-center gap-2 text-xs ${getClasses('textSecondary')}`}>
                 <span>{getPostTypeLabel()}</span>
                 <span>•</span>
                 <div className='flex items-center gap-1'>
@@ -179,7 +186,7 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
                   <Button
                     variant='ghost'
                     size='sm'
-                    className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+                    className='h-8 w-8 p-0 text-slate-400 hover:text-slate-200'
                   >
                     <MoreVertical className='h-4 w-4' />
                   </Button>
@@ -200,41 +207,41 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
 
         {/* Post Content */}
         <div className='space-y-3'>
-          <p className='text-sm leading-relaxed'>{post.content}</p>
+          <p className='text-sm leading-relaxed text-slate-100'>{post.content}</p>
 
           {/* Post Stats */}
           {post.stats && (
-            <div className='p-3 bg-white/40 dark:bg-slate-800/30 rounded-lg space-y-2'>
+            <div className='p-3 bg-slate-700/40 dark:bg-slate-700/50 rounded-lg space-y-2'>
               {post.stats.score && (
                 <div className='flex justify-between text-sm'>
-                  <span className='text-muted-foreground'>Tỷ số:</span>
-                  <span className='font-semibold'>{post.stats.score}</span>
+                  <span className='text-slate-300'>Tỷ số:</span>
+                  <span className='font-semibold text-slate-100'>{post.stats.score}</span>
                 </div>
               )}
               {post.stats.opponent && (
                 <div className='flex justify-between text-sm'>
-                  <span className='text-muted-foreground'>Đối thủ:</span>
-                  <span>{post.stats.opponent}</span>
+                  <span className='text-slate-300'>Đối thủ:</span>
+                  <span className='text-slate-100'>{post.stats.opponent}</span>
                 </div>
               )}
               {post.stats.achievement && (
                 <div className='flex justify-between text-sm'>
-                  <span className='text-muted-foreground'>Thành tích:</span>
-                  <span className='font-semibold text-green-600'>
+                  <span className='text-slate-300'>Thành tích:</span>
+                  <span className='font-semibold text-green-400'>
                     {post.stats.achievement}
                   </span>
                 </div>
               )}
               {post.stats.challenge_type && (
                 <div className='flex justify-between text-sm'>
-                  <span className='text-muted-foreground'>Loại thách đấu:</span>
-                  <span>{post.stats.challenge_type}</span>
+                  <span className='text-slate-300'>Loại thách đấu:</span>
+                  <span className='text-slate-100'>{post.stats.challenge_type}</span>
                 </div>
               )}
               {post.stats.tournament_name && (
                 <div className='flex justify-between text-sm'>
-                  <span className='text-muted-foreground'>Giải đấu:</span>
-                  <span className='font-semibold text-purple-600'>
+                  <span className='text-slate-300'>Giải đấu:</span>
+                  <span className='font-semibold text-purple-400'>
                     {post.stats.tournament_name}
                   </span>
                 </div>
@@ -244,7 +251,7 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
         </div>
 
         {/* Enhanced Reaction Bar */}
-        <div className='flex items-center justify-between pt-3 border-t border-border/30'>
+        <div className='flex items-center justify-between pt-3 border-t border-slate-600/30'>
           <MobileReactionBar
             likes={post.stats?.likes || 0}
             comments={post.stats?.comments || 0}

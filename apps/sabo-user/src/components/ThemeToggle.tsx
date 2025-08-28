@@ -28,7 +28,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
     border
     focus:outline-none focus:ring-2 focus:ring-offset-2
     ${theme === 'light' 
-      ? 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 focus:ring-blue-500' 
+      ? 'bg-white/90 border-white/40 text-slate-700 hover:bg-white focus:ring-blue-500' 
       : 'bg-gray-800 border-gray-600 text-gray-200 hover:bg-gray-700 focus:ring-blue-400'
     }
     ${className}
@@ -43,7 +43,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
     border
     focus:outline-none focus:ring-2 focus:ring-offset-2
     ${theme === 'light'
-      ? 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 focus:ring-blue-500'
+      ? 'bg-white/90 border-white/40 text-slate-700 hover:bg-white focus:ring-blue-500'
       : 'bg-gray-800 border-gray-600 text-gray-200 hover:bg-gray-700 focus:ring-blue-400'
     }
     ${className}
@@ -62,7 +62,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
           border
           focus:outline-none focus:ring-2 focus:ring-offset-2
           ${theme === 'light'
-            ? 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 focus:ring-blue-500'
+            ? 'bg-white/90 border-white/40 text-slate-700 hover:bg-white focus:ring-blue-500'
             : 'bg-gray-800 border-gray-600 text-gray-200 hover:bg-gray-700 focus:ring-blue-400'
           }
           ${className}

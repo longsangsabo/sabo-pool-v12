@@ -107,8 +107,8 @@ export const MobilePlayerLayout: React.FC<MobilePlayerLayoutProps> = ({
           theme === 'dark' && showBackground
             ? 'bg-transparent'
             : theme === 'dark' 
-              ? 'bg-slate-950' 
-              : 'bg-white'
+              ? 'bg-transparent' 
+              : 'bg-background'
         } ${className}`}
       >
         {/* Content Area */}

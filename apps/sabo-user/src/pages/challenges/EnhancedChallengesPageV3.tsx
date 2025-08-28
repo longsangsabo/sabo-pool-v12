@@ -227,9 +227,9 @@ const EnhancedChallengesPageV3: React.FC = () => {
   const myStats = getMyStats();
 
   return (
-    <div className="min-h-screen transition-colors duration-300 bg-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:bg-gradient-to-br">
+    <div className="min-h-screen transition-colors duration-300 bg-transparent dark:bg-transparent">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white dark:bg-slate-900/80 dark:backdrop-blur-md border-b border-slate-200 dark:border-slate-700/50 shadow-md">
+      <div className="sticky top-0 z-10 bg-background/80 dark:bg-slate-900/60 backdrop-blur-md border-b border-border dark:border-slate-700/30 shadow-md">
         <div className="p-4 space-y-4">
           {/* Title Section */}
           <div className="text-center space-y-2">
@@ -264,7 +264,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
                 onClick={handleRefresh}
                 variant="outline"
                 size="sm"
-                className="rounded-full bg-black/60 dark:bg-black/80 backdrop-blur-sm border-gray-600 dark:border-gray-500"
+                className="rounded-full bg-black/40 dark:bg-black/50 backdrop-blur-lg border-gray-600 dark:border-gray-500"
                 disabled={isRefreshing}
               >
                 <RefreshCw
@@ -302,7 +302,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
       {/* Main Content */}
       <div ref={scrollRef} className="p-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6 bg-black/60 dark:bg-black/80 backdrop-blur-sm border border-gray-600/50 dark:border-gray-500/20">
+          <TabsList className="grid w-full grid-cols-2 mb-6 bg-black/40 dark:bg-black/50 backdrop-blur-lg border border-gray-600/30 dark:border-gray-500/20">
             <TabsTrigger value="community" className="relative group">
               <span className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-blue-500 group-data-[state=active]:text-blue-600" />
@@ -384,7 +384,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-full shadow-lg bg-black/70 dark:bg-black/90 backdrop-blur-sm"
+            className="rounded-full shadow-lg bg-black/40 dark:bg-black/50 backdrop-blur-lg"
           >
             <MessageCircle className="w-4 h-4 mr-2" />
             Hỗ trợ
@@ -393,7 +393,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
       </div>
 
       {/* Bottom Stats Bar */}
-      <div className="sticky bottom-0 bg-black/60 backdrop-blur-md border-t border-gray-600/30 p-4">
+      <div className="sticky bottom-0 bg-black/40 backdrop-blur-lg border-t border-gray-600/20 p-4">
         <div className="flex justify-around text-center">
           <motion.div whileHover={{ scale: 1.1 }}>
             <p className="text-lg font-bold text-foreground flex items-center justify-center gap-1">

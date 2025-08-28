@@ -229,8 +229,8 @@ const TournamentsPage = () => {
     <div
       className={`min-h-screen transition-colors duration-300 ${
         theme === 'light' 
-          ? 'bg-white' 
-          : 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'
+          ? 'bg-background' 
+          : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto">

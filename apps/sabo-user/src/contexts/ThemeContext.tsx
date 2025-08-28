@@ -18,26 +18,24 @@ interface ThemeProviderProps {
   defaultTheme?: ThemeMode;
 }
 
-// Theme Provider Component
+// Theme Provider Component - DARK MODE LOCKED AS DEFAULT
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
   children, 
-  defaultTheme = 'light' 
+  defaultTheme = 'dark' // LOCKED: Default to dark mode to preserve current styling
 }) => {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
-    // Check for saved theme in localStorage
+    // PROTECTION: Always start with dark mode to preserve current design
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('sabo-theme') as ThemeMode;
-      if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
-        return savedTheme;
+      if (savedTheme && (savedTheme === 'dark' || savedTheme === 'light')) {
+        return savedTheme; // Allow both dark and light if previously saved
       }
       
-      // Check for system preference
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
-      }
+      // DEFAULT: Force dark mode to preserve current styling as baseline
+      return 'dark';
     }
     
-    return defaultTheme;
+    return 'dark'; // LOCKED: Always default to dark mode
   });
 
   // Update document class and localStorage when theme changes
@@ -62,16 +60,20 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
   }, [theme]);
 
-  // Listen for system theme changes
+  // Listen for system theme changes - DISABLED to protect dark mode
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       
       const handleChange = (e: MediaQueryListEvent) => {
-        // Only auto-switch if no manual preference is saved
+        // PROTECTION: Disable auto-switching to preserve locked dark mode
+        // Only auto-switch if no manual preference is saved AND we explicitly allow it
         const savedTheme = localStorage.getItem('sabo-theme');
-        if (!savedTheme) {
-          setThemeState(e.matches ? 'dark' : 'light');
+        if (!savedTheme && theme !== 'dark') {
+          // Only allow switching to dark, never away from dark
+          if (e.matches) {
+            setThemeState('dark');
+          }
         }
       };
       
@@ -79,7 +81,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
-  }, []);
+  }, [theme]); // Added theme dependency
 
   const toggleTheme = () => {
     setThemeState(prev => prev === 'light' ? 'dark' : 'light');

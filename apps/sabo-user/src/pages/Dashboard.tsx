@@ -6,13 +6,23 @@ import MobileFloatingActionButton from '../components/mobile/common/MobileFloati
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { useSocialFeed } from '../hooks/useSocialFeed';
+import { useProtectedTheme } from '../hooks/useProtectedTheme';
+import { COMPONENT_THEMES } from '../constants/theme';
 import { RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
-// Removed ChallengeDataChecker debug component
+import React from 'react';
 
-// Dashboard now uses real data from useSocialFeed hook
+// Dashboard with theme-aware transparent backgrounds for light mode
 
 const Dashboard = () => {
+  // Use protected theme system
+  const { 
+    isDark, 
+    getComponentClasses, 
+    getClasses,
+    conditionalClasses 
+  } = useProtectedTheme();
+
   // Use real social feed data
   const {
     feedPosts,
@@ -142,7 +152,7 @@ const Dashboard = () => {
 
       <div
         ref={combinedRef}
-        className='min-h-screen overflow-auto'
+        className={`min-h-screen overflow-auto ${getComponentClasses('dashboard')}`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -158,24 +168,24 @@ const Dashboard = () => {
           style={getRefreshIndicatorStyle()}
         >
           <RefreshCw
-            className={`w-6 h-6 text-primary ${
+            className={`w-6 h-6 ${conditionalClasses('text-white', 'text-slate-700')} ${
               isPullRefreshing || loading ? 'animate-spin' : ''
             }`}
           />
         </div>
 
-        {/* Story Reel with real data */}
-        <MobileStoryReel stories={stories} />
-
-        {/* Debug component removed */}
+        {/* Story Reel with theme-aware transparent background */}
+        <div className={getComponentClasses('storySection')}>
+          <MobileStoryReel stories={stories} />
+        </div>
 
         {/* Social Feed */}
         <div className='px-4 space-y-4 pb-4'>
           {/* Loading state */}
           {loading && feedPosts.length === 0 && (
-            <div className='text-center py-8'>
-              <RefreshCw className='w-8 h-8 animate-spin mx-auto text-muted-foreground' />
-              <p className='text-sm text-muted-foreground mt-2'>
+            <div className={`text-center py-8 ${conditionalClasses('bg-slate-800/30', 'bg-white/30')} backdrop-blur-md rounded-lg`}>
+              <RefreshCw className={`w-8 h-8 animate-spin mx-auto ${getClasses('textSecondary')}`} />
+              <p className={`text-sm ${getClasses('textSecondary')} mt-2 font-medium`}>
                 Đang tải feed...
               </p>
             </div>
@@ -183,11 +193,11 @@ const Dashboard = () => {
 
           {/* Error state */}
           {error && (
-            <div className='text-center py-8'>
-              <p className='text-sm text-destructive'>{error}</p>
+            <div className={`text-center py-8 ${conditionalClasses('bg-slate-800/40', 'bg-white/40')} backdrop-blur-md rounded-lg border ${getClasses('border')}`}>
+              <p className='text-sm text-red-400 font-medium'>{error}</p>
               <button
                 onClick={refreshFeed}
-                className='text-sm text-primary hover:underline mt-2'
+                className={`text-sm ${getClasses('textSecondary')} hover:${getClasses('textPrimary')} ${conditionalClasses('bg-slate-700/50 hover:bg-slate-700/70', 'bg-white/50 hover:bg-white/70')} px-4 py-2 rounded-md mt-3 transition-colors`}
               >
                 Thử lại
               </button>
@@ -211,20 +221,20 @@ const Dashboard = () => {
 
           {/* End of feed indicator */}
           {feedPosts.length > 0 && !loading && (
-            <div className='text-center py-8 text-muted-foreground'>
-              <div className='text-sm'>🎱</div>
-              <div className='text-xs mt-2'>Bạn đã xem hết feed rồi!</div>
+            <div className={`text-center py-8 ${getClasses('textSecondary')}`}>
+              <div className='text-2xl'>🎱</div>
+              <div className='text-sm mt-2 font-medium'>Bạn đã xem hết feed rồi!</div>
             </div>
           )}
 
           {/* Empty state */}
           {!loading && !error && feedPosts.length === 0 && (
-            <div className='text-center py-12'>
-              <div className='text-4xl mb-2'>🎱</div>
-              <p className='text-sm text-muted-foreground'>
+            <div className={`text-center py-12 ${conditionalClasses('bg-slate-800/30', 'bg-white/30')} backdrop-blur-md rounded-lg`}>
+              <div className='text-4xl mb-4'>🎱</div>
+              <p className={`text-base ${getClasses('textPrimary')} font-medium mb-2`}>
                 Chưa có hoạt động nào
               </p>
-              <p className='text-xs text-muted-foreground mt-1'>
+              <p className={`text-sm ${getClasses('textMuted')}`}>
                 Hãy tham gia một trận đấu hoặc tạo thách đấu!
               </p>
             </div>

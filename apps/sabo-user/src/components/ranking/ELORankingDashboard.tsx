@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useTheme } from '@/hooks/useTheme';

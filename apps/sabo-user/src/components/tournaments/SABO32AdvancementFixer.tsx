@@ -1,3 +1,4 @@
+import React from "react";
 // =============================================
 // SABO-32 ADVANCEMENT FIXER
 // Simple button to fix missing player advancements

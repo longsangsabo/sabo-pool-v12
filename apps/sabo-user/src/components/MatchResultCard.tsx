@@ -98,7 +98,7 @@ const MatchResultCard = ({ match, onLike }: MatchResultCardProps) => {
         <div className='bg-tertiary rounded-lg p-4 mb-4'>
           {/* Player 1 */}
           <div className='flex items-center justify-between mb-3'>
-            <UserAvatar user={match.player1} size='md' showRank={true} />
+            <UserAvatar user={match.player1} size="sm" showRank={true} />
             <div
               className={`px-6 py-3 rounded-lg text-center ${getWinnerStyle(match.player1.id)}`}
             >
@@ -113,7 +113,7 @@ const MatchResultCard = ({ match, onLike }: MatchResultCardProps) => {
 
           {/* Player 2 */}
           <div className='flex items-center justify-between'>
-            <UserAvatar user={match.player2} size='md' showRank={true} />
+            <UserAvatar user={match.player2} size="sm" showRank={true} />
             <div
               className={`px-6 py-3 rounded-lg text-center ${getWinnerStyle(match.player2.id)}`}
             >

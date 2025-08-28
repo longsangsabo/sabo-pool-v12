@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -264,7 +265,7 @@ export const TournamentAutomationStatus: React.FC<
                           {getRoundName(roundNumber)}
                         </h3>
                         {isCurrentRound && (
-                          <Badge variant='default'>Đang diễn ra</Badge>
+                          <Badge variant="outline">Đang diễn ra</Badge>
                         )}
                       </div>
                       <div className='text-sm text-muted-foreground'>

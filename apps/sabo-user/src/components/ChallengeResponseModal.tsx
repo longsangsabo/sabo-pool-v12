@@ -18,16 +18,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import UserAvatar from './UserAvatar';
-import { Challenge, ChallengeProposal } from '@/types/common';
+import { BaseChallenge, BaseChallengeProposal } from '@/types/common';
 
 interface ChallengeResponseModalProps {
-  challenge: Challenge | null;
+  challenge: BaseChallenge | null;
   suggestedClubs: Array<{ id: string; name: string; address: string }>;
   isOpen: boolean;
   onClose: () => void;
   onRespond: (
     status: 'accepted' | 'declined',
-    proposalData?: ChallengeProposal
+    proposalData?: BaseChallengeProposal
   ) => void;
 }
 
@@ -46,7 +46,7 @@ const ChallengeResponseModal = ({
   if (!challenge) return null;
 
   const handleAccept = () => {
-    const proposalData: ChallengeProposal = {
+    const proposalData: BaseChallengeProposal = {
       proposed_datetime:
         proposedDate && proposedTime
           ? `${proposedDate}T${proposedTime}`
@@ -79,7 +79,7 @@ const ChallengeResponseModal = ({
         </DialogHeader>
 
         <div className='space-y-6'>
-          {/* Challenge Info */}
+          {/* BaseChallenge Info */}
           <div className='flex items-center space-x-3 p-3 bg-blue-50 rounded-lg'>
             <UserAvatar
               user={{
@@ -88,7 +88,7 @@ const ChallengeResponseModal = ({
                 avatar: challenge.challenger?.avatar_url || '/placeholder.svg',
                 rank: challenge.challenger?.verified_rank || 'Unranked',
               }}
-              size='md'
+              size="sm"
             />
             <div>
               <h3 className='font-semibold'>

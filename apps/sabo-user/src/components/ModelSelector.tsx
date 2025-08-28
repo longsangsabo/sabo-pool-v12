@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Bot, Zap, Brain, Code, Star, DollarSign } from 'lucide-react';
 import {
@@ -245,7 +246,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                       {model.speed}
                     </Badge>
                     {model.id === recommendedModelId && (
-                      <Badge variant='default' className='text-xs'>
+                      <Badge variant="outline" className='text-xs'>
                         ★
                       </Badge>
                     )}

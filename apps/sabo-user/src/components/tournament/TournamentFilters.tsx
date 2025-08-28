@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Enhanced Tournament Filters with search and status tabs
  */

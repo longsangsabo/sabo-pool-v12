@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -133,7 +134,7 @@ const SystemHealthPage: React.FC = () => {
 
   const getStatusBadge = (success: boolean) => {
     return success ? (
-      <Badge variant='default' className='bg-green-100 text-green-800'>
+      <Badge variant="outline" className='bg-green-100 text-green-800'>
         Healthy
       </Badge>
     ) : (

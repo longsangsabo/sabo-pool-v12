@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import {
   Dialog,
@@ -342,7 +343,7 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
       };
       
       setFormData(newFormData);
-      form.reset(newFormData);
+      form.reset();
       
       // Fetch prize tiers
       fetchPrizeTiers();

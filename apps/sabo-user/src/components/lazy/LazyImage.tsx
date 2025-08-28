@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useRef, useEffect, memo } from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';

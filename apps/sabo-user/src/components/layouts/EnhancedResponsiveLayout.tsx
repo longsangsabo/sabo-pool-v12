@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { useNavigationConfig } from '@/config/NavigationConfig';

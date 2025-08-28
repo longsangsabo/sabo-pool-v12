@@ -99,8 +99,8 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
     try {
       const { createClient } = await import('@supabase/supabase-js');
       const supabase = createClient(
-        import.meta.env.VITE_SUPABASE_URL!,
-        import.meta.env.VITE_SUPABASE_ANON_KEY!
+        process.env.VITE_SUPABASE_URL || ''!,
+        process.env.VITE_SUPABASE_ANON_KEY || ''!
       );
 
       // Simply update challenge status to ongoing - no matches table needed
@@ -665,8 +665,8 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
                   // TODO: Implement actual score update API call
                   const { createClient } = await import('@supabase/supabase-js');
                   const supabase = createClient(
-                    import.meta.env.VITE_SUPABASE_URL!,
-                    import.meta.env.VITE_SUPABASE_ANON_KEY!
+                    process.env.VITE_SUPABASE_URL || ''!,
+                    process.env.VITE_SUPABASE_ANON_KEY || ''!
                   );
 
                   // Update matches table

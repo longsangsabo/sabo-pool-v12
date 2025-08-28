@@ -176,7 +176,7 @@ const PostCard = ({
         <CardContent className='p-4'>
           {/* Post Header */}
           <div className='flex items-center justify-between mb-3'>
-            <UserAvatar user={post.user} size='md' showRank={true} />
+            <UserAvatar user={post.user} size="sm" showRank={true} />
             <div className='flex items-center space-x-2'>
               <span className='text-2xl'>{getPostTypeIcon()}</span>
               <p className='text-xs text-comment-gray'>{post.timestamp}</p>

@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { Bell, Filter, CheckCircle, ChevronDown, RefreshCw, Trash2, Archive } from 'lucide-react';
 import { Button } from '@/components/ui/button';

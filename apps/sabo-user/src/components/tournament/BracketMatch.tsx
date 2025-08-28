@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -98,7 +99,7 @@ export const BracketMatch: React.FC<BracketMatchProps> = ({
     switch (match.status) {
       case 'completed':
         return (
-          <Badge variant='default' className='gap-1'>
+          <Badge variant="outline" className='gap-1'>
             <CheckCircle className='w-3 h-3' />
             Hoàn thành
           </Badge>

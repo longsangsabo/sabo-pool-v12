@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -571,7 +572,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
                     </TableCell>
                     <TableCell>
                       {member.profiles?.verified_rank ? (
-                        <Badge variant='default'>
+                        <Badge variant="outline">
                           {member.profiles.verified_rank}
                         </Badge>
                       ) : (

@@ -233,7 +233,7 @@ const AuthTestingDashboard = () => {
             )}
             Test Database
           </Button>
-          <Button onClick={runAllTests} disabled={isRunning} variant='default'>
+          <Button onClick={runAllTests} disabled={isRunning} variant="outline">
             {isRunning ? (
               <Loader2 className='w-4 h-4 animate-spin mr-2' />
             ) : (

@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Image optimization utilities and components
  * Provides progressive loading and responsive images

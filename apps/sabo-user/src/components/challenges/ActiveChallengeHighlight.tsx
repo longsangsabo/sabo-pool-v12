@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -141,7 +142,7 @@ export const ActiveChallengeHighlight: React.FC<
                       <div className='flex items-center justify-between mb-3'>
                         <div className='flex items-center gap-2'>
                           <Badge
-                            variant='default'
+                            variant="outline"
                             className='bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-sm border-0'
                           >
                             <Target className='w-3 h-3 mr-1' />

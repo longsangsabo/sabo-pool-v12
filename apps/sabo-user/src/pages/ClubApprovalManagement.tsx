@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Club Approval Management Page
  * Central place for club admins to manage pending approvals

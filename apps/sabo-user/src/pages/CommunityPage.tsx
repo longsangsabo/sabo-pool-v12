@@ -157,7 +157,7 @@ const CommunityPage = () => {
                   <MessageCircle className='w-3 h-3 mr-1' />
                   Nhắn tin
                 </Button>
-                <Button size='sm' variant='default'>
+                <Button size='sm' variant="outline">
                   <UserPlus className='w-3 h-3 mr-1' />
                   Kết bạn
                 </Button>

@@ -150,11 +150,11 @@ const DashboardPage = () => {
         <StandardCard 
           title="Thông số người chơi" 
           description="Tổng quan về thành tích thi đấu của bạn"
-          variant="default"
+          variant="outline"
         >
           <StandardStatsGrid 
             stats={playerStats} 
-            variant="default"
+            variant="outline"
           />
         </StandardCard>
 
@@ -162,7 +162,7 @@ const DashboardPage = () => {
         <StandardCard 
           title="Hành động nhanh" 
           description="Các thao tác phổ biến để bắt đầu"
-          variant="default"
+          variant="outline"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {quickActions.map((action, index) => {
@@ -190,7 +190,7 @@ const DashboardPage = () => {
         {/* Recent Activity */}
         <StandardCard 
           title="Hoạt động gần đây" 
-          variant="default"
+          variant="outline"
           headerActions={
             <Button variant="outline" size="sm" asChild>
               <Link to="/activity">
@@ -221,7 +221,7 @@ const DashboardPage = () => {
         <StandardCard 
           title="Lịch thi đấu" 
           description="Các trận đấu sắp tới của bạn"
-          variant="default"
+          variant="outline"
           headerActions={
             <Button variant="outline" size="sm" asChild>
               <Link to="/schedule">

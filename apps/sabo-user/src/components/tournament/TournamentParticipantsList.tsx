@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -343,7 +344,7 @@ export const TournamentParticipantsList: React.FC<
               participants.filter(p => p.payment_status === 'paid').length >=
                 maxParticipants && (
                 <Button
-                  variant='default'
+                  variant="outline"
                   onClick={handleFinalizeRegistration}
                   className='bg-primary hover:bg-primary/90'
                 >

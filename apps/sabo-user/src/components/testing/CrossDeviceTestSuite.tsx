@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { BREAKPOINTS } from '@/constants/breakpoints';

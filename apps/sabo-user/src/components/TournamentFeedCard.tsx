@@ -91,7 +91,7 @@ const TournamentFeedCard = ({
         {/* Post Header */}
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-3'>
-            <UserAvatar user={tournament.organizer} size='md' showRank={true} />
+            <UserAvatar user={tournament.organizer} size="sm" showRank={true} />
             <div>
               <p className='font-medium'>{tournament.organizer.name}</p>
               <p className='text-sm text-gray-500'>đã tạo giải đấu mới</p>

@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Lazy-loaded components with enhanced loading states
  * Provides consistent loading experience across the application

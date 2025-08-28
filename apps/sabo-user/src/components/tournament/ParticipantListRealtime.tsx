@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -59,7 +60,7 @@ export const ParticipantListRealtime: React.FC<
       case 'confirmed':
         return (
           <Badge
-            variant='default'
+            variant="outline"
             className='bg-green-100 text-green-800 border-green-200'
           >
             <UserCheck className='w-3 h-3 mr-1' />

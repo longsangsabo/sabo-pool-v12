@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useCallback } from 'react';
 import { TechCard, TechHeader } from '@/components/ui/sabo-tech-global';
 import { Badge } from '@/components/ui/badge';

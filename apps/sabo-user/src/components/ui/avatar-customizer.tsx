@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { SaboAvatar } from '@/components/ui/sabo-avatar';
 import { useRainbowAvatar } from '@/hooks/useRainbowAvatar';
@@ -273,7 +274,7 @@ export const AvatarCustomizer: React.FC<AvatarCustomizerProps> = ({
               <CardTitle className='flex items-center justify-between'>
                 Avatar của bạn
                 {isVerified && (
-                  <Badge variant='default' className='bg-blue-500'>
+                  <Badge variant="outline" className='bg-blue-500'>
                     Đã xác thực
                   </Badge>
                 )}

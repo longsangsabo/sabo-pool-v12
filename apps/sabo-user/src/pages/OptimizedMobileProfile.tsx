@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
@@ -99,7 +100,7 @@ const OptimizedMobileProfile: React.FC = () => {
             spa={playerStats?.spa || 0}
             ranking={playerRanking?.ranking_position || 0}
             matches={playerStats?.total_matches || 0}
-            size='md'
+            size="sm"
             className='mb-8 shadow-2xl'
           />
         ) : (
@@ -113,7 +114,7 @@ const OptimizedMobileProfile: React.FC = () => {
             spa={playerStats?.spa || 0}
             ranking={playerRanking?.ranking_position || 0}
             matches={playerStats?.total_matches || 0}
-            size='md'
+            size="sm"
             className='mb-8 shadow-2xl border-white/20 backdrop-blur-sm'
           />
         )}

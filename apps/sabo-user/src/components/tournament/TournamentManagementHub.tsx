@@ -987,7 +987,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
             {existingMatches.length > 0 ? (
               <Button 
                 size="sm" 
-                variant="default"
+                variant="outline"
                 onClick={() => {
                   setSelectedTournament(tournament);
                   setCurrentView('bracket-viewer');
@@ -1003,7 +1003,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                 {tournament.tournament_type === 'double_elimination' ? (
                   <Button 
                     size="sm" 
-                    variant="default"
+                    variant="outline"
                     onClick={async () => {
                       // Direct SABO bracket generation for double elimination
                       if (!tournament.id) return;
@@ -1044,7 +1044,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                 ) : (
                   <Button 
                     size="sm" 
-                    variant="default"
+                    variant="outline"
                     onClick={() => handleGenerateBracket(tournament)}
                     disabled={tournament.status === 'completed'}
                     className="flex-1 bg-green-600 hover:bg-green-700"
@@ -2093,7 +2093,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                     <div className="flex items-center gap-3">
                        <UserAvatar 
                          userId={participant.user_id} 
-                         size="md"
+                         size="sm"
                          showRank={true}
                          showName={false}
                        />

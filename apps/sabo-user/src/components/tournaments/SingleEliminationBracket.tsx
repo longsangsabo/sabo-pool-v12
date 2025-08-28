@@ -122,7 +122,7 @@ export function SingleEliminationBracket({
 
   const getMatchStatusBadge = (match: Match) => {
     if (match.status === 'completed') {
-      return <Badge variant='default'>Completed</Badge>;
+      return <Badge variant="outline">Completed</Badge>;
     }
     if (match.status === 'scheduled' && match.player1_id && match.player2_id) {
       return <Badge variant='secondary'>Ready to Play</Badge>;

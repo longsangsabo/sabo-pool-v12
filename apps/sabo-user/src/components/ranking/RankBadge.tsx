@@ -1,3 +1,4 @@
+import React from "react";
 import { getSaboRankInfoByCode, integerToSaboRank } from '@/utils/saboRanks';
 
 interface RankBadgeProps {

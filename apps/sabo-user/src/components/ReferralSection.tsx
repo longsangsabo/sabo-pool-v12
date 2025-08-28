@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -124,7 +125,7 @@ export const ReferralSection: React.FC = () => {
             <span className='w-2 h-2 bg-yellow-500 rounded-full mr-1'></span>
             Chờ: {stats?.pendingRewards || 0}
           </Badge>
-          <Badge variant='default'>
+          <Badge variant="outline">
             <span className='w-2 h-2 bg-green-500 rounded-full mr-1'></span>
             Hoàn thành: {stats?.successfulReferrals || 0}
           </Badge>

@@ -1,15 +1,15 @@
 import * as Sentry from '@sentry/react';
 
 export function initSentry() {
-  if (import.meta.env.PROD) {
+  if (process.env.PROD || '') {
     Sentry.init({
-      dsn: import.meta.env.VITE_SENTRY_DSN || 'YOUR_SENTRY_DSN',
+      dsn: process.env.VITE_SENTRY_DSN || '' || 'YOUR_SENTRY_DSN',
       integrations: [
         // Remove BrowserTracing as it's not compatible with current version
       ],
       tracesSampleRate: 0.1,
-      environment: import.meta.env.MODE,
-      release: import.meta.env.VITE_APP_VERSION || '1.0.0',
+      environment: process.env.MODE || '',
+      release: process.env.VITE_APP_VERSION || '' || '1.0.0',
 
       // Remove performance option as it's not valid
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -181,7 +182,7 @@ export const EnhancedMatchCard: React.FC<EnhancedMatchCardProps> = ({
                   <div className='flex items-center gap-3'>
                     <UserAvatar
                       userId={match.player1_id}
-                      size='md'
+                      size="sm"
                       showRank={false}
                       showName={false}
                       compact={false}
@@ -262,7 +263,7 @@ export const EnhancedMatchCard: React.FC<EnhancedMatchCardProps> = ({
                   <div className='flex items-center gap-3'>
                     <UserAvatar
                       userId={match.player2_id}
-                      size='md'
+                      size="sm"
                       showRank={false}
                       showName={false}
                       compact={false}

@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -242,12 +243,7 @@ const RankVerificationTab: React.FC<RankVerificationTabProps> = ({
 
   const handleOpenDialog = (verification: RankVerification) => {
     setSelectedVerification(verification);
-    form.reset({
-      status: verification.status,
-      test_score: verification.test_score || undefined,
-      instructor_feedback: verification.instructor_feedback || '',
-      club_notes: '',
-    });
+    form.reset();
     setIsDialogOpen(true);
   };
 
@@ -391,7 +387,7 @@ const RankVerificationTab: React.FC<RankVerificationTabProps> = ({
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant='default'>
+                      <Badge variant="outline">
                         {verification.requested_rank}
                       </Badge>
                     </TableCell>

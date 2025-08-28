@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -138,7 +139,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
     if (!formInitialized) {
       const initialData = tournament || formDraft;
       if (initialData) {
-        form.reset(initialData);
+        form.reset();
         setFormInitialized(true);
         console.log('🏁 Form initialized with:', initialData ? 'data' : 'empty');
       }
@@ -425,7 +426,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
                   const normalized = {
                     ...templateData,
                   };
-                  form.reset(normalized);
+                  form.reset();
                   // Update context
                   updateTournament(normalized);
                 }}

@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useClubOwnership } from '@/hooks/useClubOwnership';
@@ -156,7 +157,7 @@ const ClubProfileForm = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge variant="default" className="bg-green-500">Đã duyệt</Badge>;
+        return <Badge variant="outline" className="bg-green-500">Đã duyệt</Badge>;
       case 'pending':
         return <Badge variant="secondary">Chờ duyệt</Badge>;
       case 'rejected':

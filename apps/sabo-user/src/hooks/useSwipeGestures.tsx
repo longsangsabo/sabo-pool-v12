@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useRef } from 'react';
 
 interface SwipeGesture {
@@ -8,10 +9,10 @@ interface SwipeGesture {
 }
 
 interface SwipeCallbacks {
-  onSwipeLeft?: (id: string) => void;
-  onSwipeRight?: (id: string) => void;
-  onSwipeUp?: (id: string) => void;
-  onSwipeDown?: (id: string) => void;
+  onChevronLeft?: (id: string) => void;
+  onChevronRight?: (id: string) => void;
+  onChevronUp?: (id: string) => void;
+  onChevronDown?: (id: string) => void;
 }
 
 export const useSwipeGestures = (id: string, callbacks: SwipeCallbacks) => {
@@ -87,16 +88,16 @@ export const useSwipeGestures = (id: string, callbacks: SwipeCallbacks) => {
     setTimeout(() => {
       switch (direction) {
         case 'LEFT':
-          callbacks.onSwipeLeft?.(id);
+          callbacks.onChevronLeft?.(id);
           break;
         case 'RIGHT':
-          callbacks.onSwipeRight?.(id);
+          callbacks.onChevronRight?.(id);
           break;
         case 'UP':
-          callbacks.onSwipeUp?.(id);
+          callbacks.onChevronUp?.(id);
           break;
         case 'DOWN':
-          callbacks.onSwipeDown?.(id);
+          callbacks.onChevronDown?.(id);
           break;
       }
 

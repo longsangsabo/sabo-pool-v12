@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Club Approval Demo Page
  * Demonstrates the club approval system for match results

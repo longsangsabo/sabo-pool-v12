@@ -1,3 +1,4 @@
+import React from "react";
 // Page-Level Design System Standardization Tool
 // Comprehensive audit and fix utility for SABO Arena pages
 
@@ -184,7 +185,7 @@ const SampleComponents = () => {
       </StandardCard>
 
       {/* Status Badges */}
-      <StandardCard title="Status Badge System" variant="default">
+      <StandardCard title="Status Badge System" variant="outline">
         <div className="space-y-4">
           <div>
             <h4 className="font-medium mb-2">Tournament Status</h4>
@@ -210,13 +211,13 @@ const SampleComponents = () => {
       </StandardCard>
 
       {/* User Profile Components */}
-      <StandardCard title="User Profile Components" variant="default">
+      <StandardCard title="User Profile Components" variant="outline">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 className="font-medium mb-3">Horizontal Layout</h4>
             <div className="space-y-3">
               <StandardUserProfile user={sampleUser} size="sm" showRank showPoints />
-              <StandardUserProfile user={sampleUser} size="md" showRank showPoints />
+              <StandardUserProfile user={sampleUser} size="sm" showRank showPoints />
               <StandardUserProfile user={sampleUser} size="lg" showRank showPoints />
             </div>
           </div>
@@ -224,7 +225,7 @@ const SampleComponents = () => {
             <h4 className="font-medium mb-3">Vertical Layout</h4>
             <div className="grid grid-cols-3 gap-4">
               <StandardUserProfile user={sampleUser} size="sm" orientation="vertical" showRank />
-              <StandardUserProfile user={sampleUser} size="md" orientation="vertical" showRank />
+              <StandardUserProfile user={sampleUser} size="sm" orientation="vertical" showRank />
               <StandardUserProfile user={sampleUser} size="lg" orientation="vertical" showRank />
             </div>
           </div>
@@ -232,7 +233,7 @@ const SampleComponents = () => {
       </StandardCard>
 
       {/* Stats Grid */}
-      <StandardCard title="Statistics Grid System" variant="default">
+      <StandardCard title="Statistics Grid System" variant="outline">
         <div className="space-y-6">
           <div>
             <h4 className="font-medium mb-3">Compact Variant</h4>
@@ -240,7 +241,7 @@ const SampleComponents = () => {
           </div>
           <div>
             <h4 className="font-medium mb-3">Default Variant</h4>
-            <StandardStatsGrid stats={sampleStats} variant="default" />
+            <StandardStatsGrid stats={sampleStats} variant="outline" />
           </div>
         </div>
       </StandardCard>
@@ -248,7 +249,7 @@ const SampleComponents = () => {
       {/* Card Variants */}
       <StandardCard title="Card Layout System" variant="feature">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <StandardCard title="Default Card" description="Standard content card" variant="default">
+          <StandardCard title="Default Card" description="Standard content card" variant="outline">
             <p className="text-gray-600">This is a default card with standard padding and styling.</p>
           </StandardCard>
           

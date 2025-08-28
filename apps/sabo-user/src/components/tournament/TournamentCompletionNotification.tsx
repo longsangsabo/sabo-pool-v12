@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect } from 'react';
 import { Trophy, Star, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';

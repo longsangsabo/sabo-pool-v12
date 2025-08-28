@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Score Submission Demo Page
  * Demonstrates the score submission system

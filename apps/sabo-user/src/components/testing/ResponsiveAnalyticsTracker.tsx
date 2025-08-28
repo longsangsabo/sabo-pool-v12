@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -228,7 +229,7 @@ export const ResponsiveAnalyticsTracker: React.FC = () => {
             <Button
               onClick={startTracking}
               disabled={isTracking}
-              variant='default'
+              variant="outline"
               size='sm'
             >
               Start Tracking

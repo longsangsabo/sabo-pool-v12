@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -403,7 +404,7 @@ export const MatchResultVerification: React.FC<
 
           {/* Admin/Referee Verification */}
           {canVerify && bothPlayersConfirmed && (
-            <Button onClick={handleVerify} disabled={loading} variant='default'>
+            <Button onClick={handleVerify} disabled={loading} variant="outline">
               <Shield className='h-4 w-4 mr-2' />
               Xác thực kết quả
             </Button>

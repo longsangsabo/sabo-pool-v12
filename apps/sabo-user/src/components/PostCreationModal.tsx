@@ -113,7 +113,7 @@ const PostCreationModal = ({
         <div className='space-y-4'>
           {/* User Info */}
           <div className='flex items-center gap-3'>
-            <UserAvatar user={mockUser} size='md' />
+            <UserAvatar user={mockUser} size="sm" />
             <div>
               <p className='font-medium'>{mockUser.name}</p>
               <Badge variant='secondary' className='text-xs'>

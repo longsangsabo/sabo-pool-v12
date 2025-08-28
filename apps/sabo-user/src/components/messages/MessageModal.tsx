@@ -146,7 +146,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({
               )}
               
               {message.is_important && (
-                <Badge variant="default" className="bg-yellow-500 text-white">
+                <Badge variant="outline" className="bg-yellow-500 text-white">
                   <Star className="h-3 w-3 mr-1" />
                   Quan trọng
                 </Badge>

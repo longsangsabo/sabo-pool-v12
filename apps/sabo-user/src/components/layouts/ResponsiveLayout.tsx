@@ -1,3 +1,4 @@
+import React from "react";
 import { memo, useState } from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { DesktopLayout } from '../desktop/DesktopLayout';

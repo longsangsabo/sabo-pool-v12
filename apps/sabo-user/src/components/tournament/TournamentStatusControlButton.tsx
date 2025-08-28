@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Square, Loader2 } from 'lucide-react';
@@ -164,7 +165,7 @@ const TournamentStatusControlButton: React.FC<
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant='default'
+          variant="outline"
           size='sm'
           disabled={isUpdating}
           className='gap-2'

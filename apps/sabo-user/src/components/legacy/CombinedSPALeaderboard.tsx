@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from 'react';
 import { useLegacySPA } from '@/hooks/useLegacySPA';
 import { useAuth } from '@/hooks/useAuth';

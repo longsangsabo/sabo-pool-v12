@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,8 +53,8 @@ const IntegratedScoreManager: React.FC<IntegratedScoreManagerProps> = ({
     try {
       const { createClient } = await import('@supabase/supabase-js');
       const supabase = createClient(
-        import.meta.env.VITE_SUPABASE_URL!,
-        import.meta.env.VITE_SUPABASE_ANON_KEY!
+        process.env.VITE_SUPABASE_URL || ''!,
+        process.env.VITE_SUPABASE_ANON_KEY || ''!
       );
 
       const { error } = await supabase
@@ -84,8 +85,8 @@ const IntegratedScoreManager: React.FC<IntegratedScoreManagerProps> = ({
       
       // Use service key for completing challenges to set club confirmation
       const supabase = createClient(
-        import.meta.env.VITE_SUPABASE_URL!,
-        import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY!
+        process.env.VITE_SUPABASE_URL || ''!,
+        process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || ''!
       );
 
       // Determine winner
@@ -303,7 +304,7 @@ const IntegratedScoreManager: React.FC<IntegratedScoreManagerProps> = ({
                 <Button
                   onClick={handleScoreUpdate}
                   className="flex-1"
-                  variant="default"
+                  variant="outline"
                 >
                   <Check className="w-4 h-4 mr-2" />
                   Lưu tỷ số
@@ -327,7 +328,7 @@ const IntegratedScoreManager: React.FC<IntegratedScoreManagerProps> = ({
             <Button
               onClick={handleCompleteChallenge}
               className="w-full"
-              variant="default"
+              variant="outline"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
               Xác nhận kết quả

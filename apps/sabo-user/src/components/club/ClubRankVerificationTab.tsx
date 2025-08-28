@@ -263,7 +263,7 @@ const ClubRankVerificationTab = () => {
         );
       case 'approved':
         return (
-          <Badge variant='default'>
+          <Badge variant="outline">
             <CheckCircle className='w-3 h-3 mr-1' />
             Đã duyệt
           </Badge>

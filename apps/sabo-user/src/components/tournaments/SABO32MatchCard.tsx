@@ -140,9 +140,9 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
   const getStatusBadge = () => {
     switch (optimisticMatch.status) {
       case 'completed':
-        return <Badge variant="default" className="bg-green-600 hover:bg-green-700 text-white dark:bg-green-700 dark:hover:bg-green-800"><CheckCircle className="w-3 h-3 mr-1" />Hoàn thành</Badge>;
+        return <Badge variant="outline" className="bg-green-600 hover:bg-green-700 text-white dark:bg-green-700 dark:hover:bg-green-800"><CheckCircle className="w-3 h-3 mr-1" />Hoàn thành</Badge>;
       case 'in_progress':
-        return <Badge variant="default" className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"><Play className="w-3 h-3 mr-1" />Đang đấu</Badge>;
+        return <Badge variant="outline" className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"><Play className="w-3 h-3 mr-1" />Đang đấu</Badge>;
       case 'scheduled':
         return <Badge variant="secondary" className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"><Clock className="w-3 h-3 mr-1" />Đã lên lịch</Badge>;
       case 'bye':

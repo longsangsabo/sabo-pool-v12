@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Trophy, Loader2 } from 'lucide-react';
@@ -93,7 +94,7 @@ const TournamentCompletionButton: React.FC<TournamentCompletionButtonProps> = ({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant='default'
+          variant="outline"
           size='sm'
           disabled={isCompleting}
           className='gap-2'

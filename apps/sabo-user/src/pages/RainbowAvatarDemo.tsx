@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react';
 import { RainbowAvatar } from '@/components/ui/rainbow-avatar';
 import { SaboAvatar } from '@/components/ui/sabo-avatar';

@@ -1,6 +1,0 @@
-SABO Arena - User-App Shared Package Import Test
-Generated: Thu Aug 28 08:43:54 UTC 2025
-==============================================
-
-Checking TypeScript compilation...
-=================================

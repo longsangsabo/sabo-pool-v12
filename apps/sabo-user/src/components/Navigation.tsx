@@ -22,7 +22,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
-import { checkUserAdminStatus } from '@/utils/adminHelpers';
 import { supabase } from '@/integrations/supabase/client';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';

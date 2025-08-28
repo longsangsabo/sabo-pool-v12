@@ -37,7 +37,7 @@ const PAGE_AUDIT_CONFIG = {
     title: 'Dashboard Pages',
     pages: [
       { name: 'Main Dashboard', path: '/dashboard', component: 'DashboardPage' },
-      { name: 'SPA Dashboard', path: '/spa-dashboard', component: 'SPADashboardPage' },
+
       { name: 'Simple Dashboard', path: '/simple-dashboard', component: 'SimpleDashboard' },
       { name: 'Analytics', path: '/analytics', component: 'AnalyticsPage' }
     ],

@@ -93,7 +93,9 @@ export interface Challenge {
     | 'accepted'
     | 'declined'
     | 'ongoing'
+    | 'pending_approval'  // ✅ New status for challenges waiting club confirmation
     | 'completed'
+    | 'rejected'  // ✅ New status for club-rejected challenges
     | 'cancelled'
     | 'expired';
   scheduled_time?: string;

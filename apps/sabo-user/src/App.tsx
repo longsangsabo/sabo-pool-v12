@@ -79,7 +79,6 @@ const EnhancedChallengesPageV3 = lazy(
 
 // Debug component
 const ChallengeTabsDebug = lazy(() => import('./pages/ChallengeTabsDebug'));
-const ChallengeTabsStabilityTest = lazy(() => import('./pages/ChallengeTabsStabilityTest'));
 const HandicapDebugger = lazy(() => import('./components/debug/HandicapDebugger'));
 const ScoreSubmissionDemo = lazy(() => import('./pages/ScoreSubmissionDemo'));
 const ClubApprovalDemo = lazy(() => import('./pages/ClubApprovalDemo'));
@@ -123,7 +122,6 @@ const ClubOwnerDashboardPage = lazy(
 );
 
 // Auth pages
-const AuthTestPage = lazy(() => import('./pages/AuthTestPage'));
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPassword'));
 const AuthRouteGuard = lazy(() => import('./pages/AuthRouteGuard'));

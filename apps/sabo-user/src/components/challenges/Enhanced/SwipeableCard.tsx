@@ -3,8 +3,6 @@ import { motion, PanInfo, useMotionValue, useTransform, AnimatePresence } from '
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
-  SwipeRight, 
-  SwipeLeft, 
   Eye, 
   Zap, 
   X, 

@@ -11,7 +11,7 @@ const SocialLoginButtons = () => {
   const handleGoogleLogin = async () => {
     setSocialLoading('google');
     try {
-      const { OAUTH_CONFIGS } = await import('./utils/authConfig');
+      const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
       const { data, error } = await supabase.auth.signInWithOAuth(
         OAUTH_CONFIGS.google
       );
@@ -55,7 +55,7 @@ const SocialLoginButtons = () => {
   const handleFacebookLogin = async () => {
     setSocialLoading('facebook');
     try {
-      const { OAUTH_CONFIGS } = await import('./utils/authConfig');
+      const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
       const { data, error } = await supabase.auth.signInWithOAuth(
         OAUTH_CONFIGS.facebook
       );

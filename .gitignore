@@ -148,12 +148,18 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variable files
-# .env (commented out to allow admin env to be committed)
+# dotenv environment variable files  
+# Note: .env is temporarily allowed for admin app setup
+# In production, use .env.example and deployment scripts
+# .env (commented out to allow admin env to be committed for development)
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+
+# But always include .env.example files
+!.env.example
+!**/.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

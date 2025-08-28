@@ -23,6 +23,20 @@ export interface TournamentRewards {
   totalPrize: number;
   showPrizes: boolean;
   positions: RewardPosition[];
+  specialAwards?: SpecialAward[]; // Added for enhanced rewards
+}
+
+export interface SpecialAward {
+  id: string;
+  name: string;
+  description: string;
+  criteria: string;
+  reward: {
+    eloPoints?: number;
+    spaPoints?: number;
+    cashPrize?: number;
+    items?: string[];
+  };
 }
 
 export interface RewardPosition {

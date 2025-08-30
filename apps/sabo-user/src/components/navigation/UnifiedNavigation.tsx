@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { useNavigationConfig } from '@/config/NavigationConfig';
-import { UserDesktopSidebarIntegrated } from '@/components/desktop/UserDesktopSidebarIntegrated';
+import PlayerDesktopLayout from '@/components/desktop/PlayerDesktopLayout';
 import { MobilePlayerLayout } from '@/components/mobile/MobilePlayerLayout';
 
 interface UnifiedNavigationProps {
@@ -29,39 +29,21 @@ export const UnifiedNavigation: React.FC<UnifiedNavigationProps> = ({
     );
   }
 
-  // Tablet navigation - use desktop sidebar but more compact
+  // Tablet navigation - use PlayerDesktopLayout
   if (isTablet) {
     return (
-      <div className="flex h-screen bg-background">
-        <UserDesktopSidebarIntegrated 
-          collapsed={true} // Always collapsed on tablet
-          onToggle={onToggleCollapsed}
-        />
-        <main className="flex-1 overflow-auto">
-          <div className="container mx-auto p-4">
-            {children}
-          </div>
-        </main>
-      </div>
+      <PlayerDesktopLayout pageTitle="SABO Arena (Tablet)">
+        {children}
+      </PlayerDesktopLayout>
     );
   }
 
-  // Desktop navigation - full sidebar with toggle capability
+  // Desktop navigation - use PlayerDesktopLayout
   if (isDesktop) {
     return (
-      <div className="flex h-screen bg-background">
-        <UserDesktopSidebarIntegrated 
-          collapsed={collapsed}
-          onToggle={onToggleCollapsed}
-        />
-        <main className={`flex-1 overflow-auto transition-all duration-300 ${
-          collapsed ? 'ml-0' : 'ml-0'
-        }`}>
-          <div className="container mx-auto p-6">
-            {children}
-          </div>
-        </main>
-      </div>
+      <PlayerDesktopLayout pageTitle="SABO Arena (Desktop)">
+        {children}
+      </PlayerDesktopLayout>
     );
   }
 

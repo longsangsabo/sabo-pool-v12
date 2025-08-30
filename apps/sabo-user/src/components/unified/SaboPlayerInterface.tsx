@@ -1,8 +1,7 @@
 import React from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { DesktopDashboard } from '@/components/dashboard/DesktopDashboard';
-import { UserDesktopSidebarSynchronized } from '@/components/desktop/UserDesktopSidebarSynchronized';
-import { UserDesktopHeaderSynchronized } from '@/components/desktop/UserDesktopHeaderSynchronized';
+import PlayerDesktopLayout from '@/components/desktop/PlayerDesktopLayout';
 import { MobilePlayerLayout } from '@/components/mobile/MobilePlayerLayout';
 
 // Import the synchronized design system
@@ -29,7 +28,6 @@ export const SaboPlayerInterface: React.FC<SaboPlayerInterfaceProps> = ({
   children 
 }) => {
   const { isMobile, isTablet, isDesktop } = useOptimizedResponsive();
-  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
 
   // Mobile Interface - Uses existing mobile layout
   if (isMobile) {
@@ -45,30 +43,12 @@ export const SaboPlayerInterface: React.FC<SaboPlayerInterfaceProps> = ({
     );
   }
 
-  // Desktop Interface - Synchronized with mobile design
+  // Desktop Interface - Uses unified PlayerDesktopLayout
   if (isDesktop) {
     return (
-      <div className="sabo-player-interface flex min-h-screen bg-background">
-        {/* Synchronized Desktop Sidebar */}
-        <UserDesktopSidebarSynchronized
-          collapsed={sidebarCollapsed}
-          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-        />
-
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0">
-          {/* Synchronized Desktop Header */}
-          <UserDesktopHeaderSynchronized
-            onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-            sidebarCollapsed={sidebarCollapsed}
-          />
-
-          {/* Content Container */}
-          <main className="flex-1 overflow-auto">
-            {children || <DesktopDashboard />}
-          </main>
-        </div>
-      </div>
+      <PlayerDesktopLayout pageTitle="SABO Arena Player">
+        {children || <DesktopDashboard />}
+      </PlayerDesktopLayout>
     );
   }
 
@@ -85,11 +65,10 @@ export const SaboPlayerInterface: React.FC<SaboPlayerInterfaceProps> = ({
   );
 };
 
-// Export individual synchronized components for custom layouts
+// Export individual components for custom layouts
 export {
   DesktopDashboard,
-  UserDesktopSidebarSynchronized,
-  UserDesktopHeaderSynchronized,
+  PlayerDesktopLayout,
 };
 
 /**
@@ -104,11 +83,7 @@ export {
  * </SaboPlayerInterface>
  * 
  * // Individual components for custom layouts
- * <div className="custom-layout">
- *   <UserDesktopSidebarSynchronized collapsed={false} />
- *   <main>
- *     <UserDesktopHeaderSynchronized />
- *     <DesktopDashboard />
- *   </main>
- * </div>
+ * <PlayerDesktopLayout pageTitle="Custom Page">
+ *   <DesktopDashboard />
+ * </PlayerDesktopLayout>
  */

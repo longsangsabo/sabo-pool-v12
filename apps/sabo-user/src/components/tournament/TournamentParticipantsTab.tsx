@@ -10,11 +10,32 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Users, Crown, Trophy, Clock } from 'lucide-react';
-import {
-  TournamentRegistrationSkeleton,
-  TournamentErrorDisplay,
-  TournamentLoading,
-} from './TournamentLoadingStates';
+
+// Simple loading states
+const TournamentRegistrationSkeleton = () => (
+  <div className="animate-pulse">
+    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+  </div>
+);
+
+const TournamentErrorDisplay = ({ error, onRetry }: { error?: string; onRetry?: () => void; message?: string }) => (
+  <div className="text-red-500 p-4 text-center">
+    {error || 'Có lỗi xảy ra'}
+    {onRetry && (
+      <button onClick={onRetry} className="ml-2 text-blue-500 underline">
+        Thử lại
+      </button>
+    )}
+  </div>
+);
+
+const TournamentLoading = ({ message }: { message?: string }) => (
+  <div className="flex justify-center p-4">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+    {message && <span className="ml-2">{message}</span>}
+  </div>
+);
 
 interface TournamentParticipantsTabProps {
   tournamentId: string;

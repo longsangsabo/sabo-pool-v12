@@ -80,7 +80,6 @@ const EnhancedChallengesPageV3 = lazy(
 
 // Debug component
 const ChallengeTabsDebug = lazy(() => import('./pages/ChallengeTabsDebug'));
-const HandicapDebugger = lazy(() => import('./components/debug/HandicapDebugger'));
 const ScoreSubmissionDemo = lazy(() => import('./pages/ScoreSubmissionDemo'));
 const ClubApprovalDemo = lazy(() => import('./pages/ClubApprovalDemo'));
 const ClubApprovalManagement = lazy(() => import('./pages/ClubApprovalManagement'));
@@ -101,11 +100,7 @@ const MilestonePage = lazy(() => import('./pages/MilestonePage'));
 // const DemoPage = lazy(() => import('./pages/DemoPage'));
 const TestAvatarPage = lazy(() => import('./pages/test-avatar'));
 
-// Testing components
-const NavigationIntegrationDashboard = lazy(() => import('./components/testing/NavigationIntegrationDashboard'));
-
 // Design System Testing and Standardized Pages
-const DesignSystemAudit = lazy(() => import('./components/testing/DesignSystemAudit'));
 const StandardizedDashboardPage = lazy(() => import('./pages/StandardizedDashboardPage'));
 const StandardizedTournamentsPage = lazy(() => import('./pages/StandardizedTournamentsPage'));
 const StandardizedChallengesPage = lazy(() => import('./pages/StandardizedChallengesPage'));

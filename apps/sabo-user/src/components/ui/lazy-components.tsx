@@ -6,7 +6,7 @@
 import { Suspense, ComponentType } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { performanceMonitor, bundleMonitor } from '@/utils/performance';
+import { performanceMonitor, bundleMonitor } from '@sabo/shared-utils';
 
 // Enhanced loading fallback with skeleton
 export const PageLoadingFallback = ({ pageTitle }: { pageTitle?: string }) => (

@@ -1,4 +1,4 @@
-import { getSaboRankInfoByCode, integerToSaboRank } from '@/utils/saboRanks';
+import { getSaboRankInfoByCode, integerToSaboRank } from '@sabo/shared-utils';
 
 interface RankBadgeProps {
   rank:

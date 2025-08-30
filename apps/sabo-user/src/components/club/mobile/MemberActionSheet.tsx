@@ -14,7 +14,7 @@ import { User, Shield, Crown, UserX, Loader2, Info } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { clubRoleUtils } from '@/utils/clubRoleUtils';
+import { clubRoleUtils } from "@sabo/shared-utils"
 
 export interface MemberActionSheetProps {
   open: boolean;

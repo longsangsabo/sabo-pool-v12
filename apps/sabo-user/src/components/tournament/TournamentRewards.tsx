@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Trophy, Medal, Award, Star, Users, Gift, Edit } from 'lucide-react';
 import { TournamentRewards as TournamentRewardsType } from '@/types/tournament-extended';
-import type { RankCode } from '@/utils/eloConstants';
+import type { RankCode } from '@sabo/shared-utils';
 
 interface TournamentRewardsProps {
   rewards?: TournamentRewardsType;

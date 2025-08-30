@@ -6,7 +6,7 @@ import {
   PaymentStatus,
   RegistrationStatus,
 } from './tournament-enums';
-import type { RankCode } from '@/utils/eloConstants';
+import type { RankCode } from '@sabo/shared-utils';
 
 // Import prize types from service
 import type { 

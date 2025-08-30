@@ -39,7 +39,7 @@ import { calculateSaboHandicap, type SaboRank } from '@/utils/saboHandicap';
 import SaboInfoDialog from '@/components/sabo/SaboInfoDialog';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { useTheme } from '@/hooks/useTheme';
-import { convertVietnamToUTC } from '@/utils/timezone';
+import { convertVietnamToUTC } from "@sabo/shared-utils"
 // Removed TechCard usage to simplify border style
 
 interface ImprovedCreateChallengeModalProps {

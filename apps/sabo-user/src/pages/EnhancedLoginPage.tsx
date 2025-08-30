@@ -16,7 +16,7 @@ import { GoogleLoginButton } from '@/components/auth/GoogleLoginButton';
 import { AuthDivider } from '@/components/auth/AuthDivider';
 import { OAuthSetupGuide } from '@/components/auth/OAuthSetupGuide';
 import { PhoneOtpDialog } from '@/components/auth/PhoneOtpDialog';
-import { handleAuthError } from '@/utils/authHelpers';
+import { handleAuthError } from '@sabo/shared-utils';
 import { supabase } from '@/integrations/supabase/client';
 import { Moon, Sun, ArrowLeft } from 'lucide-react';
 

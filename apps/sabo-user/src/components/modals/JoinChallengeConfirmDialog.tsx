@@ -12,7 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Coins, Clock, User } from 'lucide-react';
 import { Challenge } from '@/types/challenge';
-import { formatVietnamTime } from '@/utils/timezone';
+import { formatVietnamTime } from "@sabo/shared-utils"
 
 interface JoinChallengeConfirmDialogProps {
   open: boolean;

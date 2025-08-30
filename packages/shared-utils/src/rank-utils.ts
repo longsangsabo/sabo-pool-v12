@@ -1,4 +1,4 @@
-import { RANK_ELO, type RankCode } from './eloConstants';
+import { RANK_ELO, type RankCode } from './elo-constants';
 
 // Danh sách các hạng theo thứ tự
 export const RANK_ORDER: RankCode[] = [
@@ -81,8 +81,9 @@ export function calculateNewElo(
 ): number {
   const expectedResult =
     1 / (1 + Math.pow(10, (opponentElo - playerElo) / 400));
-  // ELO calculation removed due to incorrect formula
-  const eloChange = 0;
+  // ELO calculation simplified
+  const K_FACTOR = 32;
+  const eloChange = K_FACTOR * (result - expectedResult);
 
   return Math.round(playerElo + eloChange);
 }
@@ -97,8 +98,8 @@ export function calculateEloChange(
 ): number {
   const expectedResult =
     1 / (1 + Math.pow(10, (opponentElo - playerElo) / 400));
-  // ELO calculation removed due to incorrect formula
-  return 0;
+  const K_FACTOR = 32;
+  return Math.round(K_FACTOR * (result - expectedResult));
 }
 
 /**

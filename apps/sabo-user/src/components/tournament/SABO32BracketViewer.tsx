@@ -17,7 +17,7 @@ import { useSABO32Realtime } from '@/hooks/useSABO32Realtime';
 import { SABO32AdvancementFixer } from '../tournaments/SABO32AdvancementFixer';
 import { SABO32AdvancementFix } from '../tournaments/SABO32AdvancementFix';
 import { SABO32ManualFix } from '../tournaments/SABO32ManualFix';
-import { saveScrollState, restoreScrollState } from '@/utils/scrollPreservation';
+import { saveScrollState, restoreScrollState } from "@sabo/shared-utils"
 
 interface SABO32Match {
   id: string;

@@ -1,4 +1,7 @@
-// Trust score utility functions with color coding system
+/**
+ * Trust Score Utilities
+ * Functions for calculating and displaying user trust scores
+ */
 
 export interface TrustScoreInfo {
   score: number;
@@ -10,7 +13,7 @@ export interface TrustScoreInfo {
 }
 
 /**
- * Get trust score color based on score value
+ * Get trust score color and styling based on score value
  * 🟢 Uy tín cao (≥80%) - Dark green
  * 🔵 Khá tốt (60-79%) - Blue
  * 🟡 Trung bình (40-59%) - Yellow
@@ -89,4 +92,40 @@ export const getApproximateStarRating = (trustScore: number): number => {
   if (trustScore >= 60) return 4.0;
   if (trustScore >= 40) return 3.5;
   return 3.0;
+};
+
+/**
+ * Check if trust score is considered safe for transactions
+ */
+export const isTrustScoreSafe = (score: number): boolean => {
+  return score >= 60;
+};
+
+/**
+ * Get trust score level (1-5 scale)
+ */
+export const getTrustScoreLevel = (score: number): number => {
+  if (score >= 95) return 5;
+  if (score >= 80) return 4;
+  if (score >= 60) return 3;
+  if (score >= 40) return 2;
+  return 1;
+};
+
+/**
+ * Calculate trust score change percentage
+ */
+export const calculateTrustScoreChange = (oldScore: number, newScore: number): {
+  change: number;
+  percentage: number;
+  isIncrease: boolean;
+} => {
+  const change = newScore - oldScore;
+  const percentage = oldScore > 0 ? (change / oldScore) * 100 : 0;
+  
+  return {
+    change: Math.round(change * 100) / 100,
+    percentage: Math.round(percentage * 100) / 100,
+    isIncrease: change > 0,
+  };
 };

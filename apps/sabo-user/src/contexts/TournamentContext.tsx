@@ -9,8 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { TournamentRewards } from '@/types/tournament-extended';
-import { RankCode, getDefaultRank } from '@/utils/eloConstants';
-import { calculateRewards } from '@/utils/tournamentRewards';
+import { RankCode, getDefaultRank } from '@sabo/shared-utils';
+import { calculateRewards } from '@sabo/shared-utils';
 import { useRewardTemplates } from '@/hooks/useRewardTemplates';
 
 interface TournamentContextType {

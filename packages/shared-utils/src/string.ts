@@ -1,6 +1,6 @@
 /**
  * String Utility Functions
- * Common string manipulation utilities for SABO Arena
+ * Consolidated from SABO Arena codebase including sanitization from validation.ts
  */
 
 /**
@@ -38,6 +38,27 @@ export const generateSlug = (str: string): string => {
     .replace(/[^\w\s-]/g, '') // Remove special characters
     .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
     .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+};
+
+/**
+ * Sanitize input to prevent XSS
+ * Consolidated from apps/sabo-user/src/utils/validation.ts
+ */
+export const sanitizeInput = (input: string): string => {
+  return input
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .trim();
+};
+
+/**
+ * Advanced HTML sanitization
+ */
+export const sanitizeHtml = (input: string): string => {
+  // Basic HTML sanitization - remove script tags and dangerous attributes
+  return input
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/on\w+="[^"]*"/gi, '')
+    .replace(/javascript:/gi, '');
 };
 
 /**

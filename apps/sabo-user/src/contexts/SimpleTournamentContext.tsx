@@ -10,7 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { RewardsService } from '@/services/RewardsService';
 import { TournamentRewards } from '@/types/tournament-extended';
-import { RankCode } from '@/utils/eloConstants';
+import { RankCode } from '@sabo/shared-utils';
 
 interface Tournament {
   id: string;

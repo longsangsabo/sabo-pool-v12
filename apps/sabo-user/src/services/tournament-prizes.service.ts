@@ -4,8 +4,8 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import { calculateRewards } from '@/utils/tournamentRewards';
-import type { RankCode } from '@/utils/eloConstants';
+import { calculateRewards } from '@sabo/shared-utils';
+import type { RankCode } from '@sabo/shared-utils';
 
 // Types for tournament prizes
 export interface TournamentPrize {

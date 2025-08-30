@@ -19,7 +19,7 @@ import { GoogleLoginButton } from '@/components/auth/GoogleLoginButton';
 import { AuthDivider } from '@/components/auth/AuthDivider';
 import { TermsCheckbox } from '@/components/auth/TermsCheckbox';
 import { OAuthSetupGuide } from '@/components/auth/OAuthSetupGuide';
-import { handleAuthError } from '@/utils/authHelpers';
+import { handleAuthError } from '@sabo/shared-utils';
 import { PhoneOtpDialog } from '@/components/auth/PhoneOtpDialog';
 import { Gift, Moon, Sun, ArrowLeft } from 'lucide-react';
 

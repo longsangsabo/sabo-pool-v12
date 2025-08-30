@@ -21,7 +21,7 @@ import { EnhancedChallengeCardProps, ExtendedChallenge, toExtendedChallenge } fr
 import AvatarWithStatus from './Enhanced/AvatarWithStatus';
 import StatusBadge from './Enhanced/StatusBadge';
 import CurrentUserInfo from './CurrentUserInfo';
-import { formatVietnamTime } from '@/utils/timezone';
+import { formatVietnamTime } from "@sabo/shared-utils"
 import { getRankOrder, extractRankFromProfile } from '@/lib/rankUtils';
 import { useEnhancedChallengesV3 } from '@/hooks/useEnhancedChallengesV3';
 import { toast } from 'sonner';

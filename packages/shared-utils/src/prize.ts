@@ -1,4 +1,7 @@
-import { Tournament } from '@/types/tournament';
+/**
+ * Prize and Tournament Utilities
+ * Consolidated from SABO Arena codebase
+ */
 
 export interface PrizeDistribution {
   [key: string]: number;
@@ -46,9 +49,9 @@ export const getPrizeForPosition = (
 };
 
 /**
- * Calculate total prize pool from distribution
+ * Calculate total prize pool from tournament
  */
-export const calculateTotalPrizePool = (tournament: Tournament): number => {
+export const calculateTotalPrizePool = (tournament: any): number => {
   // First try direct prize_pool value
   if (tournament.prize_pool && tournament.prize_pool > 0) {
     return Number(tournament.prize_pool);
@@ -62,20 +65,8 @@ export const calculateTotalPrizePool = (tournament: Tournament): number => {
  * Format prize distribution for display
  */
 export const formatPrizeDistribution = (
-  tournament: Tournament
+  tournament: any
 ): Array<{ position: string; amount: number }> => {
   // Note: prize_distribution removed - using tournament_prize_tiers table
   return [];
-};
-
-/**
- * Format currency for display
- */
-export const formatCurrency = (amount: number): string => {
-  if (amount >= 1000000) {
-    return `${(amount / 1000000).toFixed(1)}M VND`;
-  } else if (amount >= 1000) {
-    return `${(amount / 1000).toFixed(0)}K VND`;
-  }
-  return `${amount.toLocaleString()} VND`;
 };

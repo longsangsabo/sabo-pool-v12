@@ -27,7 +27,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { FacebookLoginButton } from '@/components/auth/FacebookLoginButton';
 import { GoogleLoginButton } from '@/components/auth/GoogleLoginButton';
-import { handleAuthError } from '@/utils/authHelpers';
+import { handleAuthError } from '@sabo/shared-utils';
 
 type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
 

@@ -39,8 +39,8 @@ import {
   calculateTotalPrizePool,
   formatPrizeDistribution,
   formatCurrency,
-} from '@/utils/prizeUtils';
-import { formatSafeDate as formatSafeDateUtil } from '@/utils/dateUtils';
+} from "@sabo/shared-utils"
+import { formatSafeDate as formatSafeDateUtil } from "@sabo/shared-utils"
 
 export interface EnhancedTournamentDetailsModalProps {
   tournament: Tournament | null;

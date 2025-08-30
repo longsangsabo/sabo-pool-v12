@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { setupAuthMonitoring } from '@/utils/authRecovery';
 import { milestoneService } from '@/services/milestoneService';
 import { useTokenRefresh } from '@/hooks/useTokenRefresh';
-import { formatPhoneToE164 } from '@/utils/phone';
+import { formatPhoneToE164 } from '@sabo/shared-utils';
 import { AUTH_REDIRECTS, getAuthRedirectUrl } from '@/utils/authConfig';
 
 interface AuthError extends Error {

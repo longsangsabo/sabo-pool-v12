@@ -6,8 +6,8 @@ import { Users, Search, Loader2, Crown, Shield } from 'lucide-react';
 import ClubStatusBadge from './ClubStatusBadge';
 import ClubEmptyState from './ClubEmptyState';
 import { useInfiniteClubMembers } from '@/hooks/club/useClubMembers';
-import { performanceUtils } from '@/utils/performance';
-import { clubRoleUtils } from '@/utils/clubRoleUtils';
+import { performanceUtils } from '@sabo/shared-utils';
+import { clubRoleUtils } from "@sabo/shared-utils"
 import { useSocialProfile } from '@/hooks/useSocialProfile';
 
 interface MemberItem {

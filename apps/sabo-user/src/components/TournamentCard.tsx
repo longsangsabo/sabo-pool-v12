@@ -13,8 +13,9 @@ import {
 } from 'lucide-react';
 import { EnhancedTournament } from '@/types/tournament-extended';
 import { EnhancedTournamentDetailsModal } from './tournament/EnhancedTournamentDetailsModal';
-import { calculateTotalPrizePool, formatCurrency } from '@/utils/prizeUtils';
-import { formatSafeDate } from '@/utils/dateUtils';
+import { calculateTotalPrizePool } from "@sabo/shared-utils"
+import { formatCurrency } from '@sabo/shared-utils';
+import { formatSafeDate } from "@sabo/shared-utils"
 
 interface TournamentCardProps {
   tournament: EnhancedTournament;

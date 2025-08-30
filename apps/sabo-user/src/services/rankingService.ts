@@ -2,8 +2,8 @@ import {
   TOURNAMENT_ELO_REWARDS,
   SPA_TOURNAMENT_REWARDS,
   RANK_ELO,
-} from '@/utils/eloConstants';
-import type { RankCode, TournamentPosition } from '@/utils/eloConstants';
+} from '@sabo/shared-utils';
+import type { RankCode, TournamentPosition } from '@sabo/shared-utils';
 
 export class RankingService {
   /**

@@ -19,7 +19,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import TrustScoreBadgeMock from '@/components/TrustScoreBadgeMock';
 import ProfileCompletionBadge from '@/components/profile/ProfileCompletionBadge';
-import { formatRankDisplay } from '@/utils/eloToSaboRank';
+import { formatRankDisplay } from "@sabo/shared-utils"
 
 interface ProfileData {
   user_id: string;

@@ -11,7 +11,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp';
-import { maskPhone } from '@/utils/phone';
+import { maskPhone } from "@sabo/shared-utils"
 
 interface PhoneOtpDialogProps {
   isOpen: boolean;

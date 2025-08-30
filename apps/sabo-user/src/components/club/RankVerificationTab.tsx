@@ -14,7 +14,7 @@ import {
   RefreshCw,
   AlertCircle,
 } from 'lucide-react';
-import { eloToSaboRank } from '@/utils/eloToSaboRank';
+import { eloToSaboRank } from "@sabo/shared-utils"
 
 // Helper function to convert rank integer to SABO rank text
 const getRankFromInteger = (rankInt: number): string => {

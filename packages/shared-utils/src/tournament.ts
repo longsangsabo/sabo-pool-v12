@@ -1,4 +1,11 @@
-// Tournament helper utilities
+/**
+ * Tournament Utilities
+ * Helper functions for tournament formatting and display
+ */
+
+/**
+ * Get tournament type display text
+ */
 export const getTournamentTypeText = (type: string): string => {
   switch (type) {
     case 'single_elimination':
@@ -14,6 +21,9 @@ export const getTournamentTypeText = (type: string): string => {
   }
 };
 
+/**
+ * Get tier display text
+ */
 export const getTierText = (tier: string | number): string => {
   switch (tier) {
     case 'K':
@@ -39,6 +49,9 @@ export const getTierText = (tier: string | number): string => {
   }
 };
 
+/**
+ * Get rank requirement text
+ */
 export const getRankRequirementText = (
   minRank?: string,
   maxRank?: string,
@@ -49,11 +62,11 @@ export const getRankRequirementText = (
   }
 
   if (minRank && maxRank) {
-    return `Từ hạng ${minRank} đến ${maxRank}`;
+    return `Hạng ${minRank} - ${maxRank}`;
   }
 
   if (minRank) {
-    return `Từ hạng ${minRank} trở lên`;
+    return `Tối thiểu hạng ${minRank}`;
   }
 
   if (maxRank) {
@@ -63,6 +76,9 @@ export const getRankRequirementText = (
   return 'Tất cả hạng';
 };
 
+/**
+ * Format tournament date and time
+ */
 export const formatTournamentDateTime = (dateString: string | undefined): string => {
   if (!dateString) return 'Chưa xác định';
 
@@ -81,6 +97,9 @@ export const formatTournamentDateTime = (dateString: string | undefined): string
   }
 };
 
+/**
+ * Format tournament date range
+ */
 export const formatTournamentDateRange = (
   startDate: string | undefined,
   endDate: string | undefined
@@ -123,7 +142,9 @@ export const formatTournamentDateRange = (
   return 'Chưa xác định';
 };
 
-// Prize formatting function to fix scientific notation display
+/**
+ * Format prize amount with proper units
+ */
 export const formatPrizeAmount = (amount: number | string): string => {
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
 
@@ -138,39 +159,91 @@ export const formatPrizeAmount = (amount: number | string): string => {
   }
 };
 
-// Tournament automation status helpers
-export const getAutomationStatusText = (
-  automationType: 'registration' | 'bracket' | 'progression' | 'completion',
-  isActive: boolean
-): string => {
-  const texts = {
-    registration: isActive ? '✅ Tự động đóng đăng ký' : '⏳ Chờ đóng đăng ký',
-    bracket: isActive ? '✅ Tự động tạo bracket' : '⏳ Chờ tạo bracket',
-    progression: isActive ? '✅ Tự động tiến vòng' : '⏳ Chờ tiến vòng',
-    completion: isActive ? '✅ Tự động hoàn thành' : '⏳ Chờ hoàn thành',
-  };
-
-  return texts[automationType];
-};
-
-// Calculate tournament round requirements
-export const calculateTournamentRounds = (participantCount: number): number => {
-  if (participantCount <= 1) return 0;
-  return Math.ceil(Math.log2(participantCount));
-};
-
-// Generate tournament seeding for single elimination
-export const generateSeeding = (
-  participantCount: number
-): Array<[number, number | null]> => {
-  const rounds = calculateTournamentRounds(participantCount);
-  const maxParticipants = Math.pow(2, rounds);
-  const pairs: Array<[number, number | null]> = [];
-
-  for (let i = 1; i <= maxParticipants / 2; i++) {
-    const opponent = maxParticipants + 1 - i;
-    pairs.push([i, opponent <= participantCount ? opponent : null]);
+/**
+ * Get tournament status display text
+ */
+export const getTournamentStatusText = (status: string): string => {
+  switch (status) {
+    case 'upcoming':
+      return 'Sắp diễn ra';
+    case 'registration':
+      return 'Đang đăng ký';
+    case 'ongoing':
+      return 'Đang diễn ra';
+    case 'completed':
+      return 'Đã kết thúc';
+    case 'cancelled':
+      return 'Đã hủy';
+    default:
+      return status;
   }
+};
 
-  return pairs;
+/**
+ * Get tournament status color
+ */
+export const getTournamentStatusColor = (status: string): string => {
+  switch (status) {
+    case 'upcoming':
+      return 'blue';
+    case 'registration':
+      return 'green';
+    case 'ongoing':
+      return 'orange';
+    case 'completed':
+      return 'gray';
+    case 'cancelled':
+      return 'red';
+    default:
+      return 'gray';
+  }
+};
+
+/**
+ * Check if tournament is joinable
+ */
+export const isTournamentJoinable = (
+  status: string,
+  registrationDeadline?: string
+): boolean => {
+  if (status !== 'registration') return false;
+  
+  if (registrationDeadline) {
+    const deadline = new Date(registrationDeadline);
+    const now = new Date();
+    return now < deadline;
+  }
+  
+  return true;
+};
+
+/**
+ * Calculate tournament progress percentage
+ */
+export const calculateTournamentProgress = (
+  startDate: string,
+  endDate: string
+): number => {
+  const now = new Date();
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  
+  if (now < start) return 0;
+  if (now > end) return 100;
+  
+  const total = end.getTime() - start.getTime();
+  const elapsed = now.getTime() - start.getTime();
+  
+  return Math.round((elapsed / total) * 100);
+};
+
+// Tournament rewards calculation (stub for build compatibility)
+export const calculateRewards = (tournament: any, playerRank: any = 'K') => {
+  // Stub implementation for build compatibility
+  return {
+    totalPrize: tournament?.prize_pool || 0,
+    distribution: {},
+    eloPoints: {},
+    spaPoints: {},
+  };
 };

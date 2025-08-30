@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Trophy, Star, Award, Gift } from 'lucide-react';
-import { formatCurrency } from '@/utils/prizeUtils';
+import { formatCurrency } from '@sabo/shared-utils';
 
 interface AwardDetail {
   position: number;

@@ -14,11 +14,6 @@ export const eloToSaboRank = (eloValue: number): string => {
   return 'K';
 };
 
-// Format rank with ELO for display
-export const formatRankDisplay = (rank: string, elo: number): string => {
-  return `Hạng ${rank} - ${elo} ELO`;
-};
-
 // Get ELO from SABO rank (approximation for reverse conversion)
 export const saboRankToElo = (rank: string): number => {
   switch (rank) {

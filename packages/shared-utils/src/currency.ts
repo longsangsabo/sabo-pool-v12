@@ -1,12 +1,26 @@
 /**
  * Currency and Number Formatting Utilities
- * Extracted from SABO Arena codebase
+ * Consolidated from SABO Arena codebase (apps/sabo-user/src/utils/prizeUtils.ts + existing)
  */
 
 /**
- * Format currency for display (Vietnamese VND)
+ * Format currency for display (Vietnamese VND) - Full format
  */
-export const formatCurrency = (amount: number): string => {
+/**
+ * Format currency value with VND symbol
+ * Handles both number and string inputs
+ */
+export const formatCurrency = (amount: number | string): string => {
+  if (typeof amount === 'string') {
+    const parsed = parseFloat(amount);
+    if (isNaN(parsed)) return '0 ₫';
+    amount = parsed;
+  }
+  
+  if (typeof amount !== 'number' || isNaN(amount)) {
+    return '0 ₫';
+  }
+  
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',
@@ -16,34 +30,15 @@ export const formatCurrency = (amount: number): string => {
 };
 
 /**
- * Format price with currency symbol
+ * Format price with VND symbol (alias for formatCurrency)
  */
-export const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  }).format(price);
+export const formatPrice = (amount: number | string): string => {
+  return formatCurrency(amount);
 };
 
 /**
- * Format prize amount to fix scientific notation display
- */
-export const formatPrizeAmount = (amount: number | string): string => {
-  const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-
-  if (isNaN(numAmount) || numAmount === 0) return '0 VND';
-
-  if (numAmount >= 1000000) {
-    return `${(numAmount / 1000000).toFixed(1)}M VND`;
-  } else if (numAmount >= 1000) {
-    return `${Math.round(numAmount / 1000)}K VND`;
-  } else {
-    return `${Math.round(numAmount)} VND`;
-  }
-};
-
-/**
- * Format currency with abbreviation (K, M)
+ * Format currency with abbreviation (K, M) - Short format
+ * Merged from prizeUtils.ts - popular in tournament displays
  */
 export const formatCurrencyShort = (amount: number): string => {
   if (amount >= 1000000) {
@@ -53,6 +48,11 @@ export const formatCurrencyShort = (amount: number): string => {
   }
   return `${amount.toLocaleString()} VND`;
 };
+
+/**
+ * Format prize amount (alias for formatCurrencyShort - commonly used in tournaments)
+ */
+export const formatPrizeAmount = formatCurrencyShort;
 
 /**
  * Format bytes for file size display

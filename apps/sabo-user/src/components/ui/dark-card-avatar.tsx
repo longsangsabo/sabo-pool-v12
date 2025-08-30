@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { getRankDisplay } from '@/utils/rank-colors';
+import { getRankDisplay } from '@sabo/shared-utils';
 import './dark-card-avatar.css';
 
 interface DarkCardAvatarProps {

@@ -1,0 +1,42 @@
+{
+  "name": "@sabo-pool/shared-business",
+  "version": "1.0.0",
+  "description": "Shared business logic for SABO Pool Arena",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.50.3",
+    "@sabo-pool/shared-types": "*",
+    "@sabo-pool/shared-utils": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./tournament": {
+      "import": "./dist/tournament/index.js",
+      "require": "./dist/tournament/index.js",
+      "types": "./dist/tournament/index.d.ts"
+    },
+    "./ranking": {
+      "import": "./dist/ranking/index.js",
+      "require": "./dist/ranking/index.js",
+      "types": "./dist/ranking/index.d.ts"
+    },
+    "./payment": {
+      "import": "./dist/payment/index.js",
+      "require": "./dist/payment/index.js",
+      "types": "./dist/payment/index.d.ts"
+    }
+  }
+}

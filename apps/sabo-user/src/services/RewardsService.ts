@@ -3,7 +3,7 @@ import {
   RewardPosition,
   SpecialAward,
 } from '@/types/tournament-extended';
-import { RankCode } from '@/utils/eloConstants';
+import { RankCode } from '@sabo/shared-utils';
 
 export class RewardsService {
   /**

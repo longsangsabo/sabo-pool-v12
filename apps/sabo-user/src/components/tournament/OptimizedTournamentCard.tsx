@@ -12,12 +12,12 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { Tournament } from '@/types/tournament';
-import { formatCurrency } from '@/utils/prizeUtils';
+import { formatCurrency } from "@sabo/shared-utils"
 import {
   getTournamentTypeText,
   getTierText,
   formatTournamentDateTime,
-} from '@/utils/tournamentHelpers';
+} from "@sabo/shared-utils"
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';

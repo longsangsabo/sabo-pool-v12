@@ -1,4 +1,4 @@
-import { RankCode } from '@/utils/eloConstants';
+import { RankCode } from '@sabo/shared-utils';
 
 export interface TournamentRewardsCalculation {
   totalPrize: number;

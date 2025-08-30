@@ -5,7 +5,7 @@ import { useAuth } from './useAuth';
 import { RankingService } from '@/services/rankingService';
 import { TournamentRepository } from './repositories/tournamentRepository';
 import { TOURNAMENT_STATUS } from '@/constants/tournamentConstants';
-import type { RankCode, TournamentPosition } from '@/utils/eloConstants';
+import type { RankCode, TournamentPosition } from '@sabo/shared-utils';
 
 export interface TournamentServiceData {
   id: string;

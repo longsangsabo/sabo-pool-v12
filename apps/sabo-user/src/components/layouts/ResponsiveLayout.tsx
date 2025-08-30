@@ -1,10 +1,7 @@
 import { memo, useState } from 'react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
-import { DesktopLayout } from '../desktop/DesktopLayout';
 import { MobilePlayerLayout } from '../mobile/MobilePlayerLayout';
-import { TabletLayout } from '../tablet/TabletLayout';
-import { UserDesktopSidebarIntegrated } from '../desktop/UserDesktopSidebarIntegrated';
-import { DesktopHeader } from '../desktop/DesktopHeader';
+import PlayerDesktopLayout from '../desktop/PlayerDesktopLayout';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 interface ResponsiveLayoutProps {
@@ -30,42 +27,24 @@ const ResponsiveLayoutBase: React.FC<ResponsiveLayoutProps> = ({
     );
   }
 
-  // Tablet layout - compact desktop sidebar with all navigation options
+  // Tablet layout - use PlayerDesktopLayout with collapsed sidebar
   if (isTablet) {
     return (
-      <div data-testid='tablet-layout' className="flex h-screen bg-background">
-        <UserDesktopSidebarIntegrated 
-          collapsed={true} // Always collapsed on tablet for space optimization
-          onToggle={handleToggleSidebar}
-        />
-        <div className="flex-1 flex flex-col">
-          <DesktopHeader />
-          <main className="flex-1 overflow-auto">
-            <div className="p-4">
-              {children}
-            </div>
-          </main>
-        </div>
+      <div data-testid='tablet-layout'>
+        <PlayerDesktopLayout pageTitle="SABO Arena Player (Tablet)">
+          {children}
+        </PlayerDesktopLayout>
       </div>
     );
   }
 
-  // Desktop layout - full navigation with 14 tabs and toggle capability
+  // Desktop layout - unified PlayerDesktopLayout with consolidated features
   if (isDesktop) {
     return (
-      <div data-testid='desktop-layout' className="flex h-screen bg-background">
-        <UserDesktopSidebarIntegrated 
-          collapsed={desktopSidebarCollapsed}
-          onToggle={handleToggleSidebar}
-        />
-        <div className="flex-1 flex flex-col">
-          <DesktopHeader />
-          <main className="flex-1 overflow-auto">
-            <div className="p-6">
-              {children}
-            </div>
-          </main>
-        </div>
+      <div data-testid='desktop-layout'>
+        <PlayerDesktopLayout pageTitle="SABO Arena Player">
+          {children}
+        </PlayerDesktopLayout>
       </div>
     );
   }

@@ -1,24 +1,3 @@
-/**
- * @deprecated This component is deprecated as of Phase 2 Desktop Consolidation
- * 
- * ⚠️  LEGACY COMPONENT - DO NOT USE IN NEW CODE
- * 
- * This component has been replaced by the unified PlayerDesktopLayout system:
- * - PlayerDesktopLayout.tsx (main layout)
- * - PlayerDesktopSidebar.tsx (consolidated sidebar)  
- * - PlayerDesktopHeader.tsx (unified header)
- * 
- * Migration path:
- * - Replace all desktop layout usage with PlayerDesktopLayout
- * - Update imports to use new components
- * - Remove references to this legacy component
- * 
- * This component will be removed in Phase 3 of the standardization plan.
- * 
- * @see /workspaces/sabo-pool-v12/DESKTOP_CONSOLIDATION_PHASE1_COMPLETE.md
- * @see /workspaces/sabo-pool-v12/ROLE_PLAYER_STANDARDIZATION_PLAN.md
- */
-
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';

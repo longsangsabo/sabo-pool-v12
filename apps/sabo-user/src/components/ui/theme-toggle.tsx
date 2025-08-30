@@ -43,10 +43,6 @@ export function ThemeToggle() {
               <Moon className='mr-2 h-4 w-4' />
               <span>Tối</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme('system')}>
-              <span className='mr-2'>💻</span>
-              <span>Hệ thống</span>
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <TooltipContent>

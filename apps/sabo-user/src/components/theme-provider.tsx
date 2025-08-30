@@ -11,13 +11,11 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-  isDark: boolean;
 };
 
 const initialState: ThemeProviderState = {
   theme: 'dark',
   setTheme: () => null,
-  isDark: true,
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
@@ -25,35 +23,18 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 export function ThemeProvider({
   children,
   defaultTheme = 'dark',
-  storageKey = 'sabo-ui-theme',
+  storageKey = 'vite-ui-theme',
   ...props
 }: ThemeProviderProps) {
-  // Migration logic: Force dark mode for all users initially
-  const migrateToDefaultDark = () => {
-    const currentTheme = localStorage.getItem(storageKey) as Theme;
-    const migrationKey = `${storageKey}-migrated-to-dark`;
-    const hasMigrated = localStorage.getItem(migrationKey);
-
-    // If hasn't migrated yet, set to dark and mark as migrated
-    if (!hasMigrated) {
-      localStorage.setItem(storageKey, 'dark');
-      localStorage.setItem(migrationKey, 'true');
-      return 'dark';
-    }
-
-    return currentTheme || defaultTheme;
-  };
-
-  const [theme, setTheme] = useState<Theme>(migrateToDefaultDark);
-
-  const [isDark, setIsDark] = useState(false);
+  const [theme, setTheme] = useState<Theme>(
+    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
+  );
 
   useEffect(() => {
     const root = window.document.documentElement;
 
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
-    setIsDark(theme === 'dark');
   }, [theme]);
 
   const value = {
@@ -62,7 +43,6 @@ export function ThemeProvider({
       localStorage.setItem(storageKey, theme);
       setTheme(theme);
     },
-    isDark,
   };
 
   return (

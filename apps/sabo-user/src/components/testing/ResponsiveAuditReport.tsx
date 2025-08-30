@@ -52,12 +52,6 @@ export const ResponsiveAuditReport: React.FC = () => {
       },
       {
         type: 'success',
-        component: 'OptimizedResponsiveLayout',
-        issue: 'Optimized for performance with proper memoization',
-        priority: 'low',
-      },
-      {
-        type: 'success',
         component: 'AdminSidebar',
         issue: 'Props interface correctly defined with collapsed?: boolean',
         priority: 'low',

@@ -15,11 +15,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ClubOverviewTab from '@/components/ClubOverviewTab';
 import ClubSettingsTab from '@/components/ClubSettingsTab';
-import ClubRankVerificationTab from '@/components/club/ClubRankVerificationTab';
 import CleanChallengesTab from '@/components/CleanChallengesTab';
 import ClubTournamentManagement from '@/components/club/ClubTournamentManagement';
 import ClubMembersAndNotifications from '@/components/club/optimized/ClubMembersAndNotifications';
-import ClubManagementAudit from '@/components/club/testing/ClubManagementAudit';
 import { ClubResponsiveLayout } from '@/components/layouts/ClubResponsiveLayout';
 import { useRankUpdates } from '@/hooks/useRankUpdates';
 import { AppProviders } from '@/contexts/AppProviders';

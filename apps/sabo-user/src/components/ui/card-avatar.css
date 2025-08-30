@@ -53,7 +53,7 @@
     background 0.3s ease,
     border-color 0.3s ease,
     box-shadow 0.3s ease;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 6%);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
 }
 
 /* ===================================
@@ -65,7 +65,7 @@
   overflow: hidden;
   background: #f8fafc; /* Nền xám nhạt cho light mode */
   margin: 12px 12px 0;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition:
     transform 0.3s ease,
@@ -143,7 +143,7 @@
   width: 28px;
   height: 28px;
   background: rgb(255 255 255 / 90%);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border: none;
   border-radius: 50%;
   display: flex;
@@ -161,8 +161,8 @@
 
 .camera-button .camera-icon {
   color: #374151;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 /* ===================================
@@ -181,7 +181,7 @@
     rgb(0 0 0 / 45%) 70%,
     transparent 100%
   );
-  padding: 20px 12px 16px; /* Tăng padding để text có không gian hơn */
+  padding: 20px 12px 20px; /* Tăng padding để text có không gian hơn */
   z-index: 2;
   display: flex;
   align-items: center;
@@ -345,19 +345,19 @@
   text-align: center;
   letter-spacing: 0.04em;
   color: #1f2937 !important;
-  width: 16px;
+  width: 20px;
   line-height: 1;
 }
 
 .stat-value {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   font-family: 'Courier New', Monaco, monospace;
 }
 
 .stat-label {
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.05em;
   opacity: 0.7;
@@ -375,7 +375,7 @@
 .dark .card-border {
   background: rgba(30, 41, 59, 0.9);
   border: 1px solid rgba(71, 85, 105, 0.5);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .dark .image-area {
@@ -394,9 +394,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 7px 16px 6px; /* giảm ngang để gọn hơn */
+  padding: 7px 20px 8px; /* giảm ngang để gọn hơn */
   margin: 0 auto 4px;
-  border-radius: 14px;
+  border-radius: 12px;
   font-family: Orbitron, 'Exo 2', Rajdhani, sans-serif;
   font-weight: 800;
   letter-spacing: 0.13em;
@@ -405,7 +405,7 @@
   background: linear-gradient(135deg, #14532d 0%, #15803d 55%, #16a34a 100%);
   color: #fff;
   box-shadow:
-    0 4px 10px rgb(0 0 0 / 25%),
+    0 4px 12px rgb(0 0 0 / 25%),
     inset 0 1px 2px rgb(255 255 255 / 15%);
   backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
@@ -426,7 +426,7 @@
     );
     color: #fff;
     box-shadow:
-      0 3px 6px rgb(0 0 0 / 18%),
+      0 3px 8px rgb(0 0 0 / 18%),
       inset 0 1px 2px rgb(255 255 255 / 25%);
   }
 }
@@ -504,6 +504,6 @@
 /* Border & sheen refinement when custom gradient applied inline */
 .rank-badge[data-rank] {
   box-shadow:
-    0 4px 10px rgb(0 0 0 / 28%),
+    0 4px 12px rgb(0 0 0 / 28%),
     inset 0 1px 2px rgb(255 255 255 / 18%);
 }

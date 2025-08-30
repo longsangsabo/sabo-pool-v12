@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Typography } from '@/packages/shared-ui';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -212,7 +213,7 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
     return (
       <div className='min-h-screen flex flex-col items-center justify-center p-6 text-center'>
         <Building className='w-10 h-10 text-muted-foreground mb-3' />
-        <p className='text-sm text-muted-foreground mb-4'>{anyError}</p>
+        <p className='text-body-small text-muted-foreground mb-4'>{anyError}</p>
         <Button
           variant='outline'
           size='sm'
@@ -226,7 +227,7 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
 
   if (!club) {
     return (
-      <div className='p-6 text-center text-sm text-muted-foreground'>
+      <div className='p-6 text-center text-body-small text-muted-foreground'>
         Chưa có dữ liệu câu lạc bộ.
       </div>
     );
@@ -236,7 +237,7 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
     <div className='mobile-container pb-24 px-4'>
       {/* Header */}
       <Card className={`${dark ? 'mobile-card-glass' : 'bg-white/80'} mb-4`}>
-        <CardContent className='flex flex-col items-center p-5'>
+        <CardContent className='flex flex-col items-center p-6'>
           <div className='relative'>
             <Avatar className='w-24 h-24 mb-3 ring-2 ring-primary/30 shadow-md'>
               <AvatarImage 
@@ -254,16 +255,16 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
             </Avatar>
             {club.verified && (
               <div className='absolute -bottom-1 -right-1'>
-                <span className='inline-flex items-center gap-1 bg-emerald-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow'>
+                <span className='inline-flex items-center gap-1 bg-emerald-600 text-white text-[12px] font-semibold px-2 py-0.5 rounded shadow'>
                   <CheckCircle2 className='mobile-icon-small' /> VERIFIED
                 </span>
               </div>
             )}
           </div>
-          <h2 className='text-2xl font-bold tracking-wide mobile-heading-primary'>
+          <h2 className='text-heading-bold tracking-wide mobile-heading-primary'>
             {club.name}
           </h2>
-          <div className='flex items-center gap-2 text-xs mt-1 text-muted-foreground'>
+          <div className='flex items-center gap-2 text-caption mt-1 text-muted-foreground'>
             {club.address && (
               <>
                 <MapPin className='mobile-icon-small' />{' '}
@@ -279,7 +280,7 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
             )}
           </div>
           {club.phone && (
-            <div className='flex items-center gap-1 text-xs text-muted-foreground mt-1'>
+            <div className='flex items-center gap-1 text-caption text-muted-foreground mt-1'>
               <Phone className='mobile-icon-small' /> {club.phone}
             </div>
           )}
@@ -345,7 +346,7 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
         <TabsContent value='overview'>
           <Card className={dark ? 'mobile-card-glass' : ''}>
             <CardHeader className='pb-2'>
-              <CardTitle className='text-base mobile-heading-secondary'>
+              <CardTitle className='text-body mobile-heading-secondary'>
                 Giới thiệu
               </CardTitle>
             </CardHeader>

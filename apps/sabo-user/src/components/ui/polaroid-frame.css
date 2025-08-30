@@ -70,7 +70,7 @@
 /* Responsive adjustments */
 @media (width <= 640px) {
   .polaroid-frame-container {
-    margin: 10px 0;
+    margin: 12px 0;
   }
 
   .polaroid-cropper-container {
@@ -85,7 +85,7 @@
 
 @media (width <= 480px) {
   .polaroid-frame-container {
-    margin: 5px 0;
+    margin: 4px 0;
   }
 }
 

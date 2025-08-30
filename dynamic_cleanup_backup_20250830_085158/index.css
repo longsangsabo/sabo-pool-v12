@@ -1,0 +1,33 @@
+/* Import theme system FIRST */
+@import './styles/theme.css';
+@import './styles/sabo-design-system.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* User app styling */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    /* Remove fixed background - let theme handle it */
+  }
+
+  /* Global dark mode enforcement */
+  .dark {
+    color-scheme: dark;
+  }
+  
+  .dark body {
+    background-color: transparent; /* Let billiards background show through */
+    color: #f1f5f9; /* slate-100 */
+  }
+}
+@import "./styles/utilities/animations.css";
+@import "./styles/sabo-test-page.css";
+@import "./styles/rank-test-page.css";
+@import "./styles/dynamic-utilities.css";

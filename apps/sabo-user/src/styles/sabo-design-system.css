@@ -48,13 +48,13 @@
   
   /* Font Sizes - Mobile-Desktop Synchronized */
   --sabo-text-xs: 0.75rem;     /* 12px */
-  --sabo-text-sm: 0.875rem;    /* 14px */
-  --sabo-text-base: 1rem;      /* 16px */
-  --sabo-text-lg: 1.125rem;    /* 18px */
+  --sabo-text-sm: 1rem;    /* 12px */
+  --sabo-text-base: 1rem;      /* 20px */
+  --sabo-text-lg: 1.125rem;    /* 20px */
   --sabo-text-xl: 1.25rem;     /* 20px */
   --sabo-text-2xl: 1.5rem;     /* 24px */
-  --sabo-text-3xl: 1.875rem;   /* 30px */
-  --sabo-text-4xl: 2.25rem;    /* 36px */
+  --sabo-text-3xl: 1.875rem;   /* 32px */
+  --sabo-text-4xl: 2.25rem;    /* 38px */
   
   /* Font Weights */
   --sabo-font-light: 300;
@@ -75,7 +75,7 @@
   --sabo-space-1: 0.25rem;     /* 4px */
   --sabo-space-2: 0.5rem;      /* 8px */
   --sabo-space-3: 0.75rem;     /* 12px */
-  --sabo-space-4: 1rem;        /* 16px */
+  --sabo-space-4: 1rem;        /* 20px */
   --sabo-space-5: 1.25rem;     /* 20px */
   --sabo-space-6: 1.5rem;      /* 24px */
   --sabo-space-8: 2rem;        /* 32px */
@@ -87,10 +87,10 @@
   /* ============ BORDER RADIUS - CONSISTENT SYSTEM ============ */
   
   --sabo-radius-none: 0;
-  --sabo-radius-sm: 0.375rem;   /* 6px */
+  --sabo-radius-sm: 0.5rem;   /* 8px */
   --sabo-radius-base: 0.5rem;   /* 8px */
   --sabo-radius-md: 0.75rem;    /* 12px */
-  --sabo-radius-lg: 1rem;       /* 16px */
+  --sabo-radius-lg: 1rem;       /* 20px */
   --sabo-radius-xl: 1.5rem;     /* 24px */
   --sabo-radius-full: 9999px;   /* Fully rounded */
   
@@ -98,10 +98,10 @@
   
   --sabo-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --sabo-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --sabo-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --sabo-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --sabo-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --sabo-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --sabo-shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --sabo-shadow-lg: 0 12px 16px -3px rgb(0 0 0 / 0.1), 0 4px 8px -4px rgb(0 0 0 / 0.1);
+  --sabo-shadow-xl: 0 20px 24px -5px rgb(0 0 0 / 0.1), 0 8px 12px -8px rgb(0 0 0 / 0.1);
+  --sabo-shadow-2xl: 0 24px 50px -12px rgb(0 0 0 / 0.25);
   
   /* ============ ANIMATION TOKENS ============ */
   
@@ -120,7 +120,7 @@
   /* Touch Target Sizes */
   --sabo-touch-target-sm: 44px;   /* Minimum accessibility standard */
   --sabo-touch-target-md: 48px;   /* Recommended size */
-  --sabo-touch-target-lg: 56px;   /* Large touch targets */
+  --sabo-touch-target-lg: 58px;   /* Large touch targets */
   
   /* Mobile Safe Areas */
   --sabo-safe-area-top: env(safe-area-inset-top);
@@ -132,10 +132,10 @@
   
   /* Sidebar Dimensions */
   --sabo-sidebar-width-collapsed: 4rem;    /* 64px */
-  --sabo-sidebar-width-expanded: 16rem;    /* 256px */
+  --sabo-sidebar-width-expanded: 16rem;    /* 258px */
   
   /* Header Heights */
-  --sabo-header-height-mobile: 3.5rem;     /* 56px */
+  --sabo-header-height-mobile: 3.5rem;     /* 58px */
   --sabo-header-height-desktop: 4rem;      /* 64px */
   
   /* Content Container Widths */
@@ -143,7 +143,7 @@
   --sabo-container-md: 768px;
   --sabo-container-lg: 1024px;
   --sabo-container-xl: 1280px;
-  --sabo-container-2xl: 1536px;
+  --sabo-container-2xl: 1538px;
 }
 
 /* ============ DARK MODE OVERRIDES ============ */
@@ -155,8 +155,8 @@
   
   /* Dark mode specific shadows */
   --sabo-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2);
-  --sabo-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
-  --sabo-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+  --sabo-shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --sabo-shadow-lg: 0 12px 16px -3px rgb(0 0 0 / 0.2), 0 4px 8px -4px rgb(0 0 0 / 0.2);
 }
 
 /* ============ COMPONENT STYLE SYNCHRONIZATION ============ */
@@ -381,7 +381,7 @@
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;

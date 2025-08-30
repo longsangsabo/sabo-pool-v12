@@ -1,0 +1,207 @@
+// =============================================
+// SABO DOUBLE ELIMINATION 32 - TWO GROUP STRUCTURE
+// Design for 32 players split into 2 groups of 16
+// =============================================
+
+export const SABO_32_STRUCTURE = {
+  TOTAL_PLAYERS: 32,
+  GROUPS: {
+    A: {
+      players: 16,
+      winners_bracket: {
+        rounds: [1, 2, 3], // 3 rounds
+        matches: [8, 4, 2], // matches per round
+        total: 14
+      },
+      losers_branch_a: {
+        rounds: [101, 102, 103],
+        matches: [4, 2, 1], 
+        total: 7
+      },
+      losers_branch_b: {
+        rounds: [201, 202],
+        matches: [2, 1],
+        total: 3
+      },
+      semifinals: {
+        rounds: [250, 251], // Group A Finals
+        matches: [1, 1],
+        total: 2,
+        qualifiers: 2 // 2 winners to cross-bracket
+      },
+      total_matches: 26 // 14 + 7 + 3 + 2
+    },
+    B: {
+      players: 16,
+      winners_bracket: {
+        rounds: [1, 2, 3],
+        matches: [8, 4, 2],
+        total: 14
+      },
+      losers_branch_a: {
+        rounds: [101, 102, 103],
+        matches: [4, 2, 1],
+        total: 7
+      },
+      losers_branch_b: {
+        rounds: [201, 202], 
+        matches: [2, 1],
+        total: 3
+      },
+      semifinals: {
+        rounds: [250, 251], // Group B Finals
+        matches: [1, 1],
+        total: 2,
+        qualifiers: 2 // 2 winners to cross-bracket
+      },
+      total_matches: 26 // 14 + 7 + 3 + 2
+    }
+  },
+  CROSS_BRACKET: {
+    semifinals: {
+      rounds: [350], // Cross-bracket semifinals
+      matches: [2], // SF1, SF2
+      total: 2,
+      bracket_rules: {
+        SF1: '2 Winners Group A vs 2 Winners Group B',
+        SF2: '2v2 Matchup System'
+      }
+    },
+    finals: {
+      rounds: [400],
+      matches: [1], // Final
+      total: 1
+    },
+    total_matches: 3
+  },
+  TOTAL_MATCHES: 55 // 26 + 26 + 3
+} as const;
+
+export const SABO_32_BRACKET_TYPES = {
+  // Group A
+  GROUP_A_WINNERS: 'GROUP_A_WINNERS',
+  GROUP_A_LOSERS_A: 'GROUP_A_LOSERS_A', 
+  GROUP_A_LOSERS_B: 'GROUP_A_LOSERS_B',
+  GROUP_A_FINAL: 'GROUP_A_FINAL',
+  
+  // Group B  
+  GROUP_B_WINNERS: 'GROUP_B_WINNERS',
+  GROUP_B_LOSERS_A: 'GROUP_B_LOSERS_A',
+  GROUP_B_LOSERS_B: 'GROUP_B_LOSERS_B', 
+  GROUP_B_FINAL: 'GROUP_B_FINAL',
+  
+  // Cross-bracket
+  CROSS_SEMIFINALS: 'CROSS_SEMIFINALS',
+  CROSS_FINAL: 'CROSS_FINAL'
+} as const;
+
+export interface SABO32Match {
+  id: string;
+  tournament_id: string;
+  group_id: 'A' | 'B' | null; // null for cross-bracket
+  bracket_type: keyof typeof SABO_32_BRACKET_TYPES;
+  round_number: number;
+  match_number: number;
+  sabo_match_id: string;
+  
+  player1_id?: string;
+  player2_id?: string;
+  winner_id?: string;
+  loser_id?: string;
+  
+  score_player1?: number;
+  score_player2?: number;
+  status: 'pending' | 'ready' | 'completed';
+  
+  // Advancement tracking
+  advances_to_match_id?: string;
+  feeds_loser_to_match_id?: string;
+  
+  // Qualification tracking for cross-bracket
+  qualifies_as?: 'group_winner_1' | 'group_winner_2' | null;
+}
+
+// Seeding logic for random distribution
+export class SABO32Seeding {
+  static randomSeed(players: string[]): {
+    groupA: string[];
+    groupB: string[];
+  } {
+    if (players.length !== 32) {
+      throw new Error('Exactly 32 players required');
+    }
+    
+    // Shuffle players randomly
+    const shuffled = [...players].sort(() => Math.random() - 0.5);
+    
+    return {
+      groupA: shuffled.slice(0, 16),
+      groupB: shuffled.slice(16, 32)
+    };
+  }
+  
+  static generateGroupMatches(
+    groupPlayers: string[], 
+    groupId: 'A' | 'B',
+    tournamentId: string
+  ): SABO32Match[] {
+    // Use existing SABO-16 logic but with group prefix
+    // This will generate all 25 matches for one group
+    return []; // Implementation will reuse SABO-16 logic
+  }
+}
+
+// Cross-bracket advancement logic
+export class SABO32CrossBracket {
+  static createCrossBracketMatches(
+    groupAWinners: { winner1: string; winner2: string },
+    groupBWinners: { winner1: string; winner2: string },
+    tournamentId: string
+  ): SABO32Match[] {
+    return [
+      // Semifinal 1: Winner1 A vs Winner1 B
+      {
+        id: `sf1-${tournamentId}`,
+        tournament_id: tournamentId,
+        group_id: null,
+        bracket_type: 'CROSS_SEMIFINALS',
+        round_number: 350,
+        match_number: 1,
+        sabo_match_id: 'SF1',
+        player1_id: groupAWinners.winner1,
+        player2_id: groupBWinners.winner1,
+        status: 'ready',
+        advances_to_match_id: `final-${tournamentId}`
+      },
+      
+      // Semifinal 2: Winner2 A vs Winner2 B  
+      {
+        id: `sf2-${tournamentId}`,
+        tournament_id: tournamentId,
+        group_id: null,
+        bracket_type: 'CROSS_SEMIFINALS', 
+        round_number: 350,
+        match_number: 2,
+        sabo_match_id: 'SF2',
+        player1_id: groupAWinners.winner2,
+        player2_id: groupBWinners.winner2,
+        status: 'ready',
+        advances_to_match_id: `final-${tournamentId}`
+      },
+      
+      // Final
+      {
+        id: `final-${tournamentId}`,
+        tournament_id: tournamentId,
+        group_id: null,
+        bracket_type: 'CROSS_FINAL',
+        round_number: 400, 
+        match_number: 1,
+        sabo_match_id: 'FINAL',
+        status: 'pending' // Will be populated after semifinals
+      }
+    ] as SABO32Match[];
+  }
+}
+
+export default SABO_32_STRUCTURE;

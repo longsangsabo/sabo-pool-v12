@@ -85,7 +85,7 @@
 
 /* Avatar Image Positioning */
 .sabo-avatar-container img {
-  margin: 2px;
+  margin: 4px;
   width: calc(100% - 4px);
   height: calc(100% - 4px);
 }
@@ -121,7 +121,7 @@
 }
 
 .rainbow-frame-border-outer {
-  filter: drop-shadow(0 0 6px rgb(255 255 255 / 30%));
+  filter: drop-shadow(0 0 8px rgb(255 255 255 / 30%));
 }
 
 /* Premium Frame Borders */
@@ -287,7 +287,7 @@
   }
 
   100% {
-    filter: drop-shadow(0 0 15px rgb(255 215 0 / 80%));
+    filter: drop-shadow(0 0 16px rgb(255 215 0 / 80%));
     stroke-width: 4;
   }
 }
@@ -334,7 +334,7 @@
 
 .hexagon-variant .hexagon-inner-glow {
   position: absolute;
-  inset: 6px;
+  inset: 8px;
   border: 1.5px solid rgb(255 215 0 / 60%);
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   z-index: 10;
@@ -537,14 +537,14 @@
 
 /* Diamond Silver Effects */
 .diamond-silver-variant .premium-frame-border {
-  filter: drop-shadow(0 0 6px var(--diamond-base))
+  filter: drop-shadow(0 0 8px var(--diamond-base))
     drop-shadow(0 0 12px rgb(255 255 255 / 30%));
   animation: diamondFacet var(--rainbow-speed-normal) linear infinite;
 }
 
 /* Chrome Metal Effects */
 .chrome-metal-variant .premium-frame-border {
-  filter: drop-shadow(0 0 10px var(--chrome-base));
+  filter: drop-shadow(0 0 12px var(--chrome-base));
   animation: chromeReflection var(--rainbow-speed-fast) linear infinite;
 }
 
@@ -556,14 +556,14 @@
 
 /* White Gold Effects */
 .white-gold-variant .premium-frame-border {
-  filter: drop-shadow(0 0 6px var(--white-gold-base));
+  filter: drop-shadow(0 0 8px var(--white-gold-base));
   animation: whiteGoldGlow var(--rainbow-speed-normal) ease-in-out infinite;
 }
 
 /* Silver Holographic Effects */
 .silver-holographic-variant .premium-frame-border {
   filter: drop-shadow(0 0 8px rgb(255 255 255 / 50%))
-    drop-shadow(0 0 16px var(--holographic-base));
+    drop-shadow(0 0 20px var(--holographic-base));
   animation: holographicShift var(--rainbow-speed-normal) linear infinite;
 }
 
@@ -744,7 +744,7 @@
 
   50% {
     background-position: 100% 50%;
-    filter: drop-shadow(0 0 16px rgb(255 255 255 / 100%));
+    filter: drop-shadow(0 0 20px rgb(255 255 255 / 100%));
   }
 
   75% {
@@ -756,11 +756,11 @@
 @keyframes diamondFacet {
   0% {
     transform: rotate(0deg);
-    filter: drop-shadow(0 0 6px rgb(255 255 255 / 40%));
+    filter: drop-shadow(0 0 8px rgb(255 255 255 / 40%));
   }
 
   25% {
-    filter: drop-shadow(0 0 10px rgb(255 255 255 / 60%));
+    filter: drop-shadow(0 0 12px rgb(255 255 255 / 60%));
   }
 
   50% {
@@ -774,7 +774,7 @@
 
   100% {
     transform: rotate(360deg);
-    filter: drop-shadow(0 0 6px rgb(255 255 255 / 40%));
+    filter: drop-shadow(0 0 8px rgb(255 255 255 / 40%));
   }
 }
 
@@ -807,12 +807,12 @@
   0%,
   100% {
     background-position: 0% 50%;
-    filter: drop-shadow(0 0 6px var(--white-gold-base));
+    filter: drop-shadow(0 0 8px var(--white-gold-base));
   }
 
   50% {
     background-position: 100% 50%;
-    filter: drop-shadow(0 0 10px rgb(255 215 0 / 50%));
+    filter: drop-shadow(0 0 12px rgb(255 215 0 / 50%));
   }
 }
 
@@ -823,7 +823,7 @@
   }
 
   25% {
-    filter: drop-shadow(0 0 10px rgb(255 180 255 / 50%));
+    filter: drop-shadow(0 0 12px rgb(255 180 255 / 50%));
   }
 
   50% {
@@ -832,7 +832,7 @@
   }
 
   75% {
-    filter: drop-shadow(0 0 10px rgb(255 255 180 / 50%));
+    filter: drop-shadow(0 0 12px rgb(255 255 180 / 50%));
   }
 
   100% {
@@ -926,7 +926,7 @@
 
   50% {
     border-color: rgb(255 255 255 / 90%);
-    filter: drop-shadow(0 0 16px rgb(255 255 255 / 60%));
+    filter: drop-shadow(0 0 20px rgb(255 255 255 / 60%));
   }
 }
 
@@ -1069,7 +1069,7 @@
   0%,
   100% {
     border-color: rgb(255 255 255 / 90%);
-    filter: drop-shadow(0 0 6px rgb(255 255 255 / 60%));
+    filter: drop-shadow(0 0 8px rgb(255 255 255 / 60%));
   }
 
   50% {
@@ -1206,8 +1206,8 @@
   }
 
   .glow-variant .glow-effect {
-    inset: -6px;
-    filter: blur(6px);
+    inset: -8px;
+    filter: blur(8px);
   }
 }
 
@@ -1341,48 +1341,48 @@
 
 /* Tech Edge Rainbow Frame Borders */
 .tech-rainbow-frame-border {
-  filter: drop-shadow(0 0 6px var(--tech-edge-accent))
+  filter: drop-shadow(0 0 8px var(--tech-edge-accent))
     drop-shadow(0 0 12px rgb(0 136 255 / 40%))
-    drop-shadow(0 0 18px rgb(136 0 255 / 30%));
+    drop-shadow(0 0 20px rgb(136 0 255 / 30%));
   animation: techRainbowPulse 4s ease-in-out infinite;
 }
 
 @keyframes techRainbowPulse {
   0%,
   100% {
-    filter: drop-shadow(0 0 6px var(--tech-edge-accent))
+    filter: drop-shadow(0 0 8px var(--tech-edge-accent))
       drop-shadow(0 0 12px rgb(0 136 255 / 40%))
-      drop-shadow(0 0 18px rgb(136 0 255 / 30%));
+      drop-shadow(0 0 20px rgb(136 0 255 / 30%));
   }
 
   16.66% {
-    filter: drop-shadow(0 0 6px rgb(0 136 255 / 60%))
+    filter: drop-shadow(0 0 8px rgb(0 136 255 / 60%))
       drop-shadow(0 0 12px rgb(136 0 255 / 40%))
-      drop-shadow(0 0 18px rgb(255 0 136 / 30%));
+      drop-shadow(0 0 20px rgb(255 0 136 / 30%));
   }
 
   33.33% {
-    filter: drop-shadow(0 0 6px rgb(136 0 255 / 60%))
+    filter: drop-shadow(0 0 8px rgb(136 0 255 / 60%))
       drop-shadow(0 0 12px rgb(255 0 136 / 40%))
-      drop-shadow(0 0 18px rgb(255 136 0 / 30%));
+      drop-shadow(0 0 20px rgb(255 136 0 / 30%));
   }
 
   50% {
-    filter: drop-shadow(0 0 6px rgb(255 0 136 / 60%))
+    filter: drop-shadow(0 0 8px rgb(255 0 136 / 60%))
       drop-shadow(0 0 12px rgb(255 136 0 / 40%))
-      drop-shadow(0 0 18px rgb(136 255 0 / 30%));
+      drop-shadow(0 0 20px rgb(136 255 0 / 30%));
   }
 
   66.66% {
-    filter: drop-shadow(0 0 6px rgb(255 136 0 / 60%))
+    filter: drop-shadow(0 0 8px rgb(255 136 0 / 60%))
       drop-shadow(0 0 12px rgb(136 255 0 / 40%))
-      drop-shadow(0 0 18px var(--tech-edge-accent));
+      drop-shadow(0 0 20px var(--tech-edge-accent));
   }
 
   83.33% {
-    filter: drop-shadow(0 0 6px rgb(136 255 0 / 60%))
+    filter: drop-shadow(0 0 8px rgb(136 255 0 / 60%))
       drop-shadow(0 0 12px var(--tech-edge-accent))
-      drop-shadow(0 0 18px rgb(0 136 255 / 30%));
+      drop-shadow(0 0 20px rgb(0 136 255 / 30%));
   }
 }
 
@@ -1587,7 +1587,7 @@ Development Notes:
   border-image: var(--effect-neon) 1;
   background: var(--effect-neon);
   animation: neon-pulse 2s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 10px cyan);
+  filter: drop-shadow(0 0 12px cyan);
 }
 
 /* Fire Effect - Universal */
@@ -1619,7 +1619,7 @@ Development Notes:
   border-image: var(--effect-water) 1;
   background: var(--effect-water);
   animation: water-wave 2.5s ease-in-out infinite;
-  filter: drop-shadow(0 0 6px blue);
+  filter: drop-shadow(0 0 8px blue);
 }
 
 /* Earth Effect - Universal */
@@ -1683,7 +1683,7 @@ Development Notes:
   border-image: var(--effect-royal) 1;
   background: var(--effect-royal);
   animation: royal-shimmer 3s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 10px gold);
+  filter: drop-shadow(0 0 12px gold);
 }
 
 /* Shadow Effect - Universal */
@@ -1699,7 +1699,7 @@ Development Notes:
   border-image: var(--effect-shadow) 1;
   background: var(--effect-shadow);
   animation: shadow-creep 4s ease-in-out infinite;
-  filter: drop-shadow(0 0 15px black);
+  filter: drop-shadow(0 0 16px black);
 }
 
 /* Ice Effect - Universal */
@@ -1761,10 +1761,10 @@ Development Notes:
     filter: drop-shadow(0 0 5px orange) brightness(1);
   }
   25% {
-    filter: drop-shadow(0 0 15px red) brightness(1.2);
+    filter: drop-shadow(0 0 16px red) brightness(1.2);
   }
   50% {
-    filter: drop-shadow(0 0 10px orange) brightness(0.9);
+    filter: drop-shadow(0 0 12px orange) brightness(0.9);
   }
   75% {
     filter: drop-shadow(0 0 20px orangered) brightness(1.1);
@@ -1807,7 +1807,7 @@ Development Notes:
   }
 
   50% {
-    filter: drop-shadow(0 0 15px mediumorchid) hue-rotate(180deg);
+    filter: drop-shadow(0 0 16px mediumorchid) hue-rotate(180deg);
     background-position: 100% 50%;
   }
 
@@ -1877,7 +1877,7 @@ Development Notes:
   }
 
   20% {
-    filter: drop-shadow(0 0 25px purple) brightness(1.5);
+    filter: drop-shadow(0 0 24px purple) brightness(1.5);
     opacity: 0.9;
   }
 

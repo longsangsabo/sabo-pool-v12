@@ -1,0 +1,26 @@
+{
+  "name": "@sabo-pool/design-tokens",
+  "version": "1.0.0",
+  "description": "Design tokens for Sabo Pool design system",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./colors": "./dist/colors.js",
+    "./typography": "./dist/typography.js",
+    "./spacing": "./dist/spacing.js",
+    "./shadows": "./dist/shadows.js",
+    "./borders": "./dist/borders.js",
+    "./breakpoints": "./dist/breakpoints.js"
+  }
+}

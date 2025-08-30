@@ -1,4 +1,5 @@
 import React from 'react';
+import { Typography } from '@/packages/shared-ui';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -82,10 +83,10 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({
               />
             </div>
             <div className='flex flex-col leading-none'>
-              <h1 className='text-sm font-black bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent leading-none tracking-tight'>
+              <h1 className='text-body-small font-black bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent leading-none tracking-tight'>
                 SABO
               </h1>
-              <span className='text-[10px] font-bold text-muted-foreground leading-none tracking-wider'>
+              <span className='text-[12px] font-bold text-muted-foreground leading-none tracking-wider'>
                 ARENA
               </span>
             </div>
@@ -95,7 +96,7 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({
           <div className='flex items-center gap-2 min-w-0 ml-2'>
             <div className='w-0.5 h-6 bg-border'></div>
             <div className='flex flex-col leading-none truncate'>
-              <span className='text-xs font-medium text-muted-foreground truncate'>
+              <span className='text-caption-medium text-muted-foreground truncate'>
                 {clubProfile?.club_name || clubProfile?.name || 'Câu Lạc Bộ'}
               </span>
               {isClubOwner && (
@@ -120,7 +121,7 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({
           >
             <Bell className='w-5 h-5' />
             {notificationCount && notificationCount > 0 && (
-              <span className='absolute -top-1 -right-1 bg-destructive text-[10px] leading-none text-white font-medium w-4 h-4 rounded-full flex items-center justify-center animate-pulse'>
+              <span className='absolute -top-1 -right-1 bg-destructive text-[12px] leading-none text-white font-medium w-4 h-4 rounded-full flex items-center justify-center animate-pulse'>
                 {notificationCount > 9 ? '9+' : notificationCount}
               </span>
             )}
@@ -179,7 +180,7 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({
 
           <Avatar className='w-8 h-8 border border-border'>
             <AvatarImage src={user?.user_metadata?.avatar_url} />
-            <AvatarFallback className='text-xs bg-gradient-to-br from-blue-500 to-purple-600 text-white'>
+            <AvatarFallback className='text-caption bg-gradient-to-br from-blue-500 to-purple-600 text-white'>
               {user?.user_metadata?.full_name?.charAt(0) ||
                 user?.email?.charAt(0)?.toUpperCase() ||
                 'U'}

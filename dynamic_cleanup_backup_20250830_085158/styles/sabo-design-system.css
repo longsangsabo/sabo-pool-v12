@@ -1,0 +1,501 @@
+/* SABO Arena Desktop-Mobile Design System Synchronization
+ * This file contains design tokens and CSS variables that ensure
+ * visual consistency between mobile and desktop interfaces
+ */
+
+:root {
+  /* ============ MOBILE-DESKTOP SYNCHRONIZED COLOR SYSTEM ============ */
+  
+  /* Primary Brand Colors - Extracted from Mobile */
+  --sabo-primary-50: #eff6ff;
+  --sabo-primary-100: #dbeafe;
+  --sabo-primary-200: #bfdbfe;
+  --sabo-primary-300: #93c5fd;
+  --sabo-primary-400: #60a5fa;
+  --sabo-primary-500: #3b82f6;  /* Main brand color */
+  --sabo-primary-600: #2563eb;
+  --sabo-primary-700: #1d4ed8;
+  --sabo-primary-800: #1e40af;
+  --sabo-primary-900: #1e3a8a;
+  
+  /* Secondary Colors - Mobile Synchronized */
+  --sabo-secondary-50: #f8fafc;
+  --sabo-secondary-100: #f1f5f9;
+  --sabo-secondary-200: #e2e8f0;
+  --sabo-secondary-300: #cbd5e1;
+  --sabo-secondary-400: #94a3b8;
+  --sabo-secondary-500: #64748b;
+  --sabo-secondary-600: #475569;
+  --sabo-secondary-700: #334155;
+  --sabo-secondary-800: #1e293b;
+  --sabo-secondary-900: #0f172a;
+  
+  /* Accent Colors for Actions */
+  --sabo-accent-green: #10b981;
+  --sabo-accent-green-light: #34d399;
+  --sabo-accent-orange: #f59e0b;
+  --sabo-accent-orange-light: #fbbf24;
+  --sabo-accent-red: #ef4444;
+  --sabo-accent-red-light: #f87171;
+  --sabo-accent-purple: #8b5cf6;
+  --sabo-accent-purple-light: #a78bfa;
+  
+  /* ============ TYPOGRAPHY SYSTEM - MOBILE ALIGNED ============ */
+  
+  /* Font Families */
+  --sabo-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --sabo-font-mono: 'JetBrains Mono', 'Fira Code', 'Source Code Pro', monospace;
+  
+  /* Font Sizes - Mobile-Desktop Synchronized */
+  --sabo-text-xs: 0.75rem;     /* 12px */
+  --sabo-text-sm: 0.875rem;    /* 14px */
+  --sabo-text-base: 1rem;      /* 16px */
+  --sabo-text-lg: 1.125rem;    /* 18px */
+  --sabo-text-xl: 1.25rem;     /* 20px */
+  --sabo-text-2xl: 1.5rem;     /* 24px */
+  --sabo-text-3xl: 1.875rem;   /* 30px */
+  --sabo-text-4xl: 2.25rem;    /* 36px */
+  
+  /* Font Weights */
+  --sabo-font-light: 300;
+  --sabo-font-normal: 400;
+  --sabo-font-medium: 500;
+  --sabo-font-semibold: 600;
+  --sabo-font-bold: 700;
+  --sabo-font-extrabold: 800;
+  
+  /* Line Heights */
+  --sabo-leading-tight: 1.25;
+  --sabo-leading-normal: 1.5;
+  --sabo-leading-relaxed: 1.75;
+  
+  /* ============ SPACING SYSTEM - MOBILE DERIVED ============ */
+  
+  --sabo-space-0: 0;
+  --sabo-space-1: 0.25rem;     /* 4px */
+  --sabo-space-2: 0.5rem;      /* 8px */
+  --sabo-space-3: 0.75rem;     /* 12px */
+  --sabo-space-4: 1rem;        /* 16px */
+  --sabo-space-5: 1.25rem;     /* 20px */
+  --sabo-space-6: 1.5rem;      /* 24px */
+  --sabo-space-8: 2rem;        /* 32px */
+  --sabo-space-10: 2.5rem;     /* 40px */
+  --sabo-space-12: 3rem;       /* 48px */
+  --sabo-space-16: 4rem;       /* 64px */
+  --sabo-space-20: 5rem;       /* 80px */
+  
+  /* ============ BORDER RADIUS - CONSISTENT SYSTEM ============ */
+  
+  --sabo-radius-none: 0;
+  --sabo-radius-sm: 0.375rem;   /* 6px */
+  --sabo-radius-base: 0.5rem;   /* 8px */
+  --sabo-radius-md: 0.75rem;    /* 12px */
+  --sabo-radius-lg: 1rem;       /* 16px */
+  --sabo-radius-xl: 1.5rem;     /* 24px */
+  --sabo-radius-full: 9999px;   /* Fully rounded */
+  
+  /* ============ SHADOW SYSTEM - ELEVATION CONSISTENT ============ */
+  
+  --sabo-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --sabo-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --sabo-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --sabo-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --sabo-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --sabo-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  
+  /* ============ ANIMATION TOKENS ============ */
+  
+  --sabo-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --sabo-transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --sabo-transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Animation Easing */
+  --sabo-ease-linear: linear;
+  --sabo-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --sabo-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --sabo-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ============ MOBILE-SPECIFIC TOKENS ============ */
+  
+  /* Touch Target Sizes */
+  --sabo-touch-target-sm: 44px;   /* Minimum accessibility standard */
+  --sabo-touch-target-md: 48px;   /* Recommended size */
+  --sabo-touch-target-lg: 56px;   /* Large touch targets */
+  
+  /* Mobile Safe Areas */
+  --sabo-safe-area-top: env(safe-area-inset-top);
+  --sabo-safe-area-bottom: env(safe-area-inset-bottom);
+  --sabo-safe-area-left: env(safe-area-inset-left);
+  --sabo-safe-area-right: env(safe-area-inset-right);
+  
+  /* ============ DESKTOP-SPECIFIC TOKENS ============ */
+  
+  /* Sidebar Dimensions */
+  --sabo-sidebar-width-collapsed: 4rem;    /* 64px */
+  --sabo-sidebar-width-expanded: 16rem;    /* 256px */
+  
+  /* Header Heights */
+  --sabo-header-height-mobile: 3.5rem;     /* 56px */
+  --sabo-header-height-desktop: 4rem;      /* 64px */
+  
+  /* Content Container Widths */
+  --sabo-container-sm: 640px;
+  --sabo-container-md: 768px;
+  --sabo-container-lg: 1024px;
+  --sabo-container-xl: 1280px;
+  --sabo-container-2xl: 1536px;
+}
+
+/* ============ DARK MODE OVERRIDES ============ */
+
+[data-theme="dark"] {
+  /* Dark mode color adjustments */
+  --sabo-primary-500: #60a5fa;
+  --sabo-secondary-500: #6b7280;
+  
+  /* Dark mode specific shadows */
+  --sabo-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2);
+  --sabo-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --sabo-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+}
+
+/* ============ COMPONENT STYLE SYNCHRONIZATION ============ */
+
+/* Desktop Dashboard - Mobile Aligned Styles */
+.desktop-dashboard {
+  font-family: var(--sabo-font-primary);
+  line-height: var(--sabo-leading-normal);
+}
+
+.desktop-dashboard .stats-card {
+  border-radius: var(--sabo-radius-md);
+  box-shadow: var(--sabo-shadow-sm);
+  transition: box-shadow var(--sabo-transition-normal);
+}
+
+.desktop-dashboard .stats-card:hover {
+  box-shadow: var(--sabo-shadow-md);
+  transform: translateY(-1px);
+}
+
+.desktop-dashboard .quick-action-button {
+  border-radius: var(--sabo-radius-base);
+  transition: all var(--sabo-transition-normal);
+  font-weight: var(--sabo-font-medium);
+}
+
+.desktop-dashboard .quick-action-button:hover {
+  transform: scale(1.02);
+}
+
+.desktop-dashboard .quick-action-button:active {
+  transform: scale(0.98);
+}
+
+/* Desktop Sidebar - Mobile Navigation Synchronized */
+.desktop-sidebar {
+  font-family: var(--sabo-font-primary);
+  box-shadow: var(--sabo-shadow-sm);
+}
+
+.desktop-sidebar .nav-item {
+  border-radius: var(--sabo-radius-base);
+  transition: all var(--sabo-transition-normal);
+  font-weight: var(--sabo-font-medium);
+  min-height: var(--sabo-touch-target-sm);
+}
+
+.desktop-sidebar .nav-item:hover {
+  transform: scale(1.02);
+}
+
+.desktop-sidebar .nav-item.active {
+  font-weight: var(--sabo-font-semibold);
+  box-shadow: var(--sabo-shadow-sm);
+}
+
+.desktop-sidebar .nav-badge {
+  border-radius: var(--sabo-radius-full);
+  font-size: var(--sabo-text-xs);
+  font-weight: var(--sabo-font-semibold);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Desktop Header - Mobile Header Synchronized */
+.desktop-header {
+  height: var(--sabo-header-height-desktop);
+  box-shadow: var(--sabo-shadow-sm);
+  font-family: var(--sabo-font-primary);
+}
+
+.desktop-header .search-input {
+  border-radius: var(--sabo-radius-base);
+  transition: all var(--sabo-transition-normal);
+}
+
+.desktop-header .user-avatar {
+  transition: transform var(--sabo-transition-normal);
+}
+
+.desktop-header .user-avatar:hover {
+  transform: scale(1.05);
+}
+
+.desktop-header .action-button {
+  border-radius: var(--sabo-radius-sm);
+  transition: all var(--sabo-transition-normal);
+  min-height: var(--sabo-touch-target-sm);
+}
+
+.desktop-header .action-button:hover {
+  transform: scale(1.05);
+}
+
+/* ============ RESPONSIVE BREAKPOINT HELPERS ============ */
+
+/* Mobile-first responsive classes synchronized with Tailwind */
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-optimized {
+    padding: var(--sabo-space-4);
+    font-size: var(--sabo-text-base);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .tablet-optimized {
+    padding: var(--sabo-space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  .tablet-only {
+    display: none !important;
+  }
+  
+  .desktop-optimized {
+    padding: var(--sabo-space-8);
+  }
+}
+
+/* ============ UTILITY CLASSES - MOBILE ALIGNED ============ */
+
+.sabo-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--sabo-radius-md);
+  box-shadow: var(--sabo-shadow-sm);
+  transition: all var(--sabo-transition-normal);
+}
+
+.sabo-card:hover {
+  box-shadow: var(--sabo-shadow-md);
+}
+
+.sabo-button-primary {
+  background: var(--sabo-primary-500);
+  color: white;
+  border-radius: var(--sabo-radius-base);
+  font-weight: var(--sabo-font-medium);
+  transition: all var(--sabo-transition-normal);
+  min-height: var(--sabo-touch-target-sm);
+}
+
+.sabo-button-primary:hover {
+  background: var(--sabo-primary-600);
+  transform: scale(1.02);
+}
+
+.sabo-button-primary:active {
+  transform: scale(0.98);
+}
+
+.sabo-badge {
+  border-radius: var(--sabo-radius-full);
+  font-size: var(--sabo-text-xs);
+  font-weight: var(--sabo-font-semibold);
+  padding: var(--sabo-space-1) var(--sabo-space-3);
+}
+
+.sabo-input {
+  border-radius: var(--sabo-radius-base);
+  border: 1px solid hsl(var(--border));
+  transition: all var(--sabo-transition-normal);
+  font-family: var(--sabo-font-primary);
+}
+
+.sabo-input:focus {
+  border-color: var(--sabo-primary-500);
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+}
+
+/* ============ ANIMATION CLASSES ============ */
+
+.sabo-fade-in {
+  animation: fadeIn var(--sabo-transition-normal) var(--sabo-ease-out);
+}
+
+.sabo-scale-in {
+  animation: scaleIn var(--sabo-transition-normal) var(--sabo-ease-out);
+}
+
+.sabo-slide-up {
+  animation: slideUp var(--sabo-transition-normal) var(--sabo-ease-out);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============ MOBILE SAFE AREA HANDLING ============ */
+
+.mobile-safe-area-top {
+  padding-top: var(--sabo-safe-area-top);
+}
+
+.mobile-safe-area-bottom {
+  padding-bottom: var(--sabo-safe-area-bottom);
+}
+
+.mobile-safe-area-left {
+  padding-left: var(--sabo-safe-area-left);
+}
+
+.mobile-safe-area-right {
+  padding-right: var(--sabo-safe-area-right);
+}
+
+/* ============ HAPTIC FEEDBACK SIMULATION ============ */
+
+.haptic-feedback {
+  transition: transform var(--sabo-transition-fast);
+}
+
+.haptic-feedback:active {
+  transform: scale(0.95);
+}
+
+/* ============ BILLIARDS THEME BACKGROUND ============ */
+
+.billiards-background {
+  background-image: url('https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.billiards-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+/* ============ BRAND GRADIENT ============ */
+
+.sabo-gradient {
+  background: linear-gradient(135deg, var(--sabo-primary-500) 0%, var(--sabo-primary-600) 100%);
+}
+
+.sabo-gradient-text {
+  background: linear-gradient(135deg, var(--sabo-primary-500) 0%, var(--sabo-primary-600) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============ ACCESSIBILITY IMPROVEMENTS ============ */
+
+.focus-visible {
+  outline: 2px solid var(--sabo-primary-500);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .sabo-card {
+    border-width: 2px;
+  }
+  
+  .sabo-button-primary {
+    border: 2px solid transparent;
+  }
+  
+  .sabo-button-primary:focus {
+    border-color: currentColor;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .sabo-scale-in,
+  .sabo-fade-in,
+  .sabo-slide-up {
+    animation: none;
+  }
+}

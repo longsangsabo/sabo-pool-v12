@@ -38,7 +38,7 @@
 /* Dark Card Border - Simplified Clean Design */
 .dark-card-border {
   background: rgb(31 41 59 / 30%); /* Nền mờ thay vì solid */
-  backdrop-filter: blur(10px); /* Hiệu ứng mờ */
+  backdrop-filter: blur(12px); /* Hiệu ứng mờ */
   border-radius: 12px;
   position: relative;
   border: 2px solid rgb(75 85 99 / 60%); /* Tăng độ dày và opacity của viền */
@@ -65,7 +65,7 @@
   );
   border-radius: 8px;
   z-index: -1;
-  margin: -2px;
+  margin: -4px;
 }
 
 /* Dark Image Area - Clean and Simple */
@@ -100,7 +100,7 @@
   transform: scale(1.01);
   background: transparent; /* Changed from #0f172a */
   box-shadow:
-    0 8px 16px rgb(0 0 0 / 40%),
+    0 8px 20px rgb(0 0 0 / 40%),
     inset 0 1px 2px rgb(255 255 255 / 20%),
     0 0 20px rgb(96 165 250 / 30%);
   background-image:
@@ -200,7 +200,7 @@
     rgb(30 41 59 / 80%) 60%,
     transparent 100%
   );
-  padding: 20px 12px 16px; /* Tăng padding top để có không gian căn giữa */
+  padding: 20px 12px 20px; /* Tăng padding top để có không gian căn giữa */
   z-index: 2;
   display: flex;
   align-items: center;
@@ -316,7 +316,7 @@
 
 /* Dark Rank Section - Enhanced Dark Style */
 .dark-rank-section {
-  padding: 8px 16px;
+  padding: 8px 20px;
   margin: 0 8px 2px; /* Giảm margin-bottom từ 4px xuống 2px */
   display: flex;
   justify-content: center;
@@ -425,7 +425,7 @@
 /* Dark Responsive adjustments */
 @media (width <= 640px) {
   .dark-card-avatar-container {
-    margin: 16px 0;
+    margin: 20px 0;
   }
 
   .dark-card-avatar-frame {
@@ -435,7 +435,7 @@
 
 @media (width <= 480px) {
   .dark-card-avatar-container {
-    margin: 5px 0;
+    margin: 4px 0;
   }
 
   .dark-nickname-text-overlay {
@@ -448,7 +448,7 @@
   }
 
   .dark-card-border {
-    border-width: 6px;
+    border-width: 8px;
   }
 }
 
@@ -460,7 +460,7 @@
   width: 28px;
   height: 28px;
   background: rgb(0 0 0 / 20%);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border: none; /* Bỏ viền */
   border-radius: 50%;
   display: flex;
@@ -478,8 +478,8 @@
 
 .dark-camera-button .camera-icon {
   color: white;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 /* Dark hover effects */
@@ -528,14 +528,14 @@
 .dark-stats-row .dark-stat-icon {
   margin: 0 auto 4px;
   color: #f1f1f1 !important;
-  width: 16px; /* Keep same size as light mode */
-  height: 16px; /* Keep same size as light mode */
+  width: 20px; /* Keep same size as light mode */
+  height: 20px; /* Keep same size as light mode */
 }
 
 .dark-stat-value {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   font-family: 'Courier New', Monaco, monospace; /* DECO font style */
 }
 

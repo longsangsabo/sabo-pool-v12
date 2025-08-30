@@ -1,0 +1,208 @@
+/* Dark Mode CSS Variables and Styles */
+
+/* Root variables for consistent theming */
+:root {
+  --theme-transition: all 0.2s ease-in-out;
+}
+
+/* Light mode (default) with beautiful gradient backgrounds */
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-muted: #f3f4f6;
+  --bg-accent: #f0f9ff;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
+  
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --text-accent: #0ea5e9;
+  
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+  --border-muted: #f3f4f6;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* Light mode gradient backgrounds */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+/* Light mode dashboard specific gradient */
+.light .dashboard-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+/* Dark mode */
+.dark {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-muted: #374151;
+  --bg-accent: #1e3a8a;
+  --bg-card: #1f2937;
+  --bg-elevated: #374151;
+  
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-accent: #60a5fa;
+  
+  --border-primary: #374151;
+  --border-secondary: #4b5563;
+  --border-muted: #1f2937;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+  --shadow-glow: 0 0 20px rgb(14 165 233 / 0.3);
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: var(--theme-transition);
+}
+
+/* Override default body styles */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: var(--theme-transition);
+}
+
+/* Utility classes for theme-aware styling */
+.theme-bg-primary { background-color: var(--bg-primary); }
+.theme-bg-secondary { background-color: var(--bg-secondary); }
+.theme-bg-muted { background-color: var(--bg-muted); }
+.theme-bg-card { background-color: var(--bg-card); }
+.theme-bg-elevated { background-color: var(--bg-elevated); }
+
+.theme-text-primary { color: var(--text-primary); }
+.theme-text-secondary { color: var(--text-secondary); }
+.theme-text-muted { color: var(--text-muted); }
+.theme-text-accent { color: var(--text-accent); }
+
+.theme-border-primary { border-color: var(--border-primary); }
+.theme-border-secondary { border-color: var(--border-secondary); }
+.theme-border-muted { border-color: var(--border-muted); }
+
+.theme-shadow-sm { box-shadow: var(--shadow-sm); }
+.theme-shadow-base { box-shadow: var(--shadow-base); }
+.theme-shadow-md { box-shadow: var(--shadow-md); }
+.theme-shadow-lg { box-shadow: var(--shadow-lg); }
+.theme-shadow-xl { box-shadow: var(--shadow-xl); }
+
+/* Dark mode specific enhancements */
+.dark .theme-shadow-glow { box-shadow: var(--shadow-glow); }
+
+/* Navigation theme adjustments */
+.theme-nav-mobile {
+  background-color: var(--bg-card);
+  border-color: var(--border-primary);
+}
+
+.theme-nav-desktop {
+  background-color: var(--bg-card);
+  border-color: var(--border-primary);
+}
+
+/* Card theme adjustments */
+.theme-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-base);
+}
+
+.theme-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Button theme adjustments */
+.theme-btn-primary {
+  background-color: #0ea5e9;
+  color: var(--color-white);
+}
+
+.theme-btn-primary:hover {
+  background-color: #0284c7;
+}
+
+.dark .theme-btn-primary:hover {
+  background-color: #38bdf8;
+}
+
+.theme-btn-secondary {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-secondary);
+}
+
+.theme-btn-secondary:hover {
+  background-color: var(--bg-muted);
+}
+
+/* Input theme adjustments */
+.theme-input {
+  background-color: var(--bg-primary);
+  border-color: var(--border-secondary);
+  color: var(--text-primary);
+}
+
+.theme-input:focus {
+  border-color: var(--text-accent);
+}
+
+.theme-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Badge theme adjustments for better contrast in dark mode */
+.dark .bg-blue-100 { background-color: #1e3a8a; }
+.dark .text-blue-800 { color: #93c5fd; }
+.dark .bg-green-100 { background-color: #14532d; }
+.dark .text-green-800 { color: #86efac; }
+.dark .bg-yellow-100 { background-color: #78350f; }
+.dark .text-yellow-800 { color: #fde047; }
+.dark .bg-red-100 { background-color: #7f1d1d; }
+.dark .text-red-800 { color: #fca5a5; }
+.dark .bg-gray-100 { background-color: #374151; }
+.dark .text-gray-800 { color: #d1d5db; }
+.dark .bg-purple-100 { background-color: #581c87; }
+.dark .text-purple-800 { color: #c4b5fd; }
+.dark .bg-orange-100 { background-color: #9a3412; }
+.dark .text-orange-800 { color: #fed7aa; }
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+  .theme-mobile-nav {
+    background-color: var(--bg-card);
+    border-color: var(--border-primary);
+  }
+}
+
+/* Scrollbar theming */
+.dark::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark::-webkit-scrollbar-track {
+  background: var(--bg-muted);
+}
+
+.dark::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: 4px;
+}
+
+.dark::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

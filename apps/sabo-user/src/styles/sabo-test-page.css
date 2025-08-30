@@ -1,0 +1,36 @@
+.test-page-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  min-height: 100vh;
+}
+
+.test-page-title {
+  text-align: center;
+  margin-bottom: 32px;
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  font-stretch: condensed;
+  background: linear-gradient(to right, #1d4ed8, #7c3aed, #1e40af, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.1em;
+  line-height: 0.9;
+  filter: brightness(1.1);
+  font-variant: small-caps;
+}
+
+.test-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.1);
+}
+
+.test-section-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1f2937;
+}

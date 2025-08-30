@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.3",
-    "@sabo-pool/shared-types": "*",
-    "@sabo-pool/shared-utils": "*"
+    "@sabo/shared-types": "*",
+    "@sabo/shared-utils": "*"
   },
   "devDependencies": {
     "typescript": "^5.9.2"

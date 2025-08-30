@@ -1,0 +1,47 @@
+/* Animation Utilities - Design System Compliant */
+
+/* Pull to refresh animations */
+.pull-refresh-container {
+  transition: height 0.2s ease-out;
+}
+
+.pull-refresh-progress {
+  transition: width 0.3s ease-out;
+}
+
+/* Swipeable card animations */
+.swipeable-card {
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+/* Staggered list animations */
+.stagger-animation {
+  animation: slideInUp 0.6s ease-out forwards;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tournament participant animations */
+.participant-enter {
+  animation: participantEnter 0.6s ease-out forwards;
+}
+
+@keyframes participantEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
+import { Typography } from '@/packages/shared-ui';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { TabsContent } from '@/components/ui/tabs';
@@ -134,12 +135,12 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
             <div className='relative'>
               <Users className='mobile-icon-secondary text-emerald-500' />
               {filtered.length > 0 && (
-                <span className='absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold rounded-full h-4 w-4 flex items-center justify-center'>
+                <span className='absolute -top-1 -right-1 bg-error-500 text-white text-[12px] font-semibold rounded-full h-4 w-4 flex items-center justify-center'>
                   {filtered.length}
                 </span>
               )}
             </div>
-            <h3 className='mobile-heading-tertiary'>Thành viên</h3>
+            <Typography variant="heading" size="lg">Thành viên</Typography>
           </div>
           {isOwner && (
             <button
@@ -206,7 +207,7 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder='Tìm thành viên...'
-            className='pl-8 text-sm h-9 mobile-input-standard'
+            className='pl-8 text-body-small h-9 mobile-input-standard'
           />
         </div>
         {/* List */}
@@ -264,7 +265,7 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
                       <Shield className='mobile-icon-small text-blue-400' />
                     )}
                   </div>
-                  <div className='text-[10px] text-muted-foreground flex items-center gap-1'>
+                  <div className='text-[12px] text-muted-foreground flex items-center gap-1'>
                     Rank: {m.rank || 'N/A'}
                   </div>
                 </div>

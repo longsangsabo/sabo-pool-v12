@@ -64,10 +64,8 @@ const TournamentPage = lazy(() => import('./pages/TournamentsPage'));
 
 // Social Profile - Public access
 const SocialProfileCard = lazy(() => import('./components/mobile/SocialProfileCard'));
-const SocialProfileDemo = lazy(() => import('./pages/SocialProfileDemo'));
 
-// SABO-32 Tournament Demo
-const SABO32DemoPage = lazy(() => import('./pages/SABO32DemoPage'));
+// Demo pages removed for production
 
 // Protected pages - User dashboard and features
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -80,10 +78,9 @@ const EnhancedChallengesPageV3 = lazy(
 
 // Debug component
 const ChallengeTabsDebug = lazy(() => import('./pages/ChallengeTabsDebug'));
-const ScoreSubmissionDemo = lazy(() => import('./pages/ScoreSubmissionDemo'));
-const ClubApprovalDemo = lazy(() => import('./pages/ClubApprovalDemo'));
+// Demo pages removed for production
 const ClubApprovalManagement = lazy(() => import('./pages/ClubApprovalManagement'));
-const IntegratedScoreSystemDemo = lazy(() => import('./pages/IntegratedScoreSystemDemo'));
+// Demo pages removed for production
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const SettingsPage = lazy(() => import('./pages/EnhancedSettingsPage'));
 const WalletPage = lazy(() => import('./pages/PaymentPage'));
@@ -98,14 +95,14 @@ const MilestonePage = lazy(() => import('./pages/MilestonePage'));
 // Demo pages
 // const DemoPlayerPage = lazy(() => import('./pages/DemoPlayerPage'));
 // const DemoPage = lazy(() => import('./pages/DemoPage'));
-const TestAvatarPage = lazy(() => import('./pages/test-avatar'));
+// Test pages removed for production
 
 // Design System Testing and Standardized Pages
 const StandardizedDashboardPage = lazy(() => import('./pages/StandardizedDashboardPage'));
 const StandardizedTournamentsPage = lazy(() => import('./pages/StandardizedTournamentsPage'));
 const StandardizedChallengesPage = lazy(() => import('./pages/StandardizedChallengesPage'));
 const StandardizedProfilePage = lazy(() => import('./pages/StandardizedProfilePage'));
-const ThemeDemoPage = lazy(() => import('./pages/ThemeDemoPage'));
+// Demo pages removed for production
 const ThemeImprovementSummary = lazy(() => import('./pages/ThemeImprovementSummary'));
 
 // Admin components - REMOVED - Now redirects to separate admin app

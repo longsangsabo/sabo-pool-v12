@@ -1,11 +1,13 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart3, TrendingUp, Star, TestTube } from 'lucide-react';
+import { BarChart3, TrendingUp, Star } from 'lucide-react';
 import ClubDashboardOverview from '@/components/ClubDashboardOverview';
 import ClubStatsDashboard from '@/components/ClubStatsDashboard';
 import TrustScoreDisplay from '@/components/TrustScoreDisplay';
-import RankingWorkflowTest from '@/components/test/RankingWorkflowTest';
-import TestCopyTemplate from '@/components/test/TestCopyTemplate';
+// Test components removed for production
+import React, { useState, useEffect } from 'react';
+import ClubTournamentManagement from './ClubTournamentManagement';
+// Test component removed for production
 
 const ClubOverviewTab = () => {
   return (
@@ -31,10 +33,7 @@ const ClubOverviewTab = () => {
             <TrendingUp className='w-4 h-4' />
             Thống kê chi tiết
           </TabsTrigger>
-          <TabsTrigger value='test' className='flex items-center gap-2'>
-            <TestTube className='w-4 h-4' />
-            Backend Test
-          </TabsTrigger>
+          {/* Test tab removed for production */}
         </TabsList>
 
         <TabsContent value='dashboard'>
@@ -49,12 +48,7 @@ const ClubOverviewTab = () => {
           <ClubStatsDashboard />
         </TabsContent>
 
-        <TabsContent value='test'>
-          <div className='space-y-6'>
-            <TestCopyTemplate />
-            <RankingWorkflowTest />
-          </div>
-        </TabsContent>
+        {/* Test content removed for production */}
       </Tabs>
     </div>
   );

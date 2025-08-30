@@ -1,9 +1,35 @@
-# 🚀 SABO Arena Production Deployment Guide
+# 🚀 SABO POOL - DEPLOYMENT GUIDE
 
 ## 📋 Overview
-This guide provides comprehensive instructions for deploying the SABO Arena monorepo to production environments, including both user and admin applications with their shared infrastructure.
 
----
+Hướng dẫn triển khai chi tiết cho SABO Pool, bao gồm cả development và production environments.
+
+## 🏗️ Architecture Overview
+
+```mermaid
+graph TB
+    subgraph "Development"
+        DEV[Local Development]
+        DEV_DB[Local Supabase]
+    end
+    
+    subgraph "Staging"
+        STAGING[Staging Environment]
+        STAGING_DB[Staging Database]
+    end
+    
+    subgraph "Production"
+        PROD[Production Apps]
+        PROD_DB[Production Database]
+        CDN[CDN - Netlify]
+    end
+    
+    DEV --> STAGING
+    STAGING --> PROD
+    
+    PROD --> CDN
+    PROD --> PROD_DB
+```
 
 ## 🏗️ Architecture Overview
 

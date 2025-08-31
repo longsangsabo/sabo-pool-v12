@@ -2,6 +2,48 @@
 
 > **Clean Architecture Monorepo** - Modern billiards tournament management platform with complete TypeScript type safety and database synchronization.
 
+## 🤖 FOR COPILOT: Service Discovery Instructions
+
+**IMPORTANT**: Before working with any services, ALWAYS read these files first:
+
+1. **`/apps/sabo-user/src/services/serviceDiscovery.ts`** - 🔥 START HERE - Complete service registry
+2. **`.copilot-instructions.md`** - Detailed Copilot workflow instructions  
+3. **`SERVICES_REFERENCE.md`** - Complete service documentation
+4. **`SERVICES_IMPORTS.md`** - Copy-paste import examples
+
+### Quick Service Discovery for Copilot:
+```typescript
+// Import discovery functions
+import { findServicesFor, getServiceLocation, getServiceInfo } from './apps/sabo-user/src/services/serviceDiscovery';
+
+// Find services for any use case
+const services = findServicesFor('create tournament'); 
+// Returns: ['tournamentService', 'userService', 'paymentService', 'notificationService']
+
+// Get file location to read
+const filePath = getServiceLocation('tournamentService');
+// Returns: '/workspaces/sabo-pool-v12/apps/sabo-user/src/services/tournamentService.ts'
+
+// Get complete service info
+const info = getServiceInfo('userService');
+// Returns: { name, filePath, methods, dependencies, examples }
+```
+
+### Service Categories (43 total):
+- 🔐 **Authentication** (4): userService, authService, profileService, settingsService
+- 🏆 **Tournaments** (4): tournamentService, challengeService, matchService, tableService  
+- 🏢 **Clubs** (3): clubService, memberService, roleService
+- ⭐ **Verification** (4): verificationService, rankService, handicapService, statisticsService
+- 💰 **Payments** (4): walletService, paymentService, transactionService, spaPointsService
+- 📢 **Communication** (4): notificationService, emailService, messageService, alertService
+- 💾 **Data** (4): storageService, cacheService, backupService, syncService
+- 📊 **Analytics** (4): analyticsService, reportingService, metricsService, auditService
+- 🖥️ **Dashboard** (4): dashboardService, searchService, filterService, themeService
+- 📱 **Mobile** (3): offlineService, webSocketService, pushNotificationService
+- 🔒 **Security** (3): securityService, validationService, permissionService
+
+---
+
 ## 🎯 Status: Database Synchronization Complete ✅
 
 **Latest Update:** 2025-08-31 - Completed full database schema synchronization with TypeScript types

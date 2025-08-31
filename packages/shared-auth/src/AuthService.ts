@@ -17,7 +17,7 @@
  */
 
 import { SupabaseClient, User as SupabaseUser, Session } from '@supabase/supabase-js';
-import { ServiceCacheManager, CacheInvalidationManager } from '@sabo-pool/shared-business';
+// import { // ServiceCacheManager, // CacheInvalidationManager } from '@sabo/shared-business';
 import { AuthError } from './AuthError';
 import {
   User,
@@ -68,11 +68,11 @@ export class AuthService {
       this.validatePassword(password);
 
       // Check cache for recent attempts
-      const cacheKey = ServiceCacheManager.generateKey('auth:signin', email);
-      const cached = ServiceCacheManager.paymentCache.get(cacheKey);
-      if (cached && Date.now() - cached.timestamp < 30000) { // 30 second cooldown
-        throw new AuthError('Please wait before trying again', 'RATE_LIMITED');
-      }
+      // const cacheKey = ServiceCacheManager.generateKey('auth:signin', email);
+      // const cached = ServiceCacheManager.paymentCache.get(cacheKey);
+      // if (cached && Date.now() - cached.timestamp < 30000) { // 30 second cooldown
+      //   throw new AuthError('Please wait before trying again', 'RATE_LIMITED');
+      // }
 
       const { data, error } = await this.supabase.auth.signInWithPassword({
         email,
@@ -84,7 +84,7 @@ export class AuthService {
         this.metrics.errorCodes[error.message] = (this.metrics.errorCodes[error.message] || 0) + 1;
         
         // Cache failed attempt
-        ServiceCacheManager.paymentCache.set(cacheKey, { timestamp: Date.now() }, 30000);
+        // // ServiceCacheManager.paymentCache.set(cacheKey, { timestamp: Date.now() }, 30000);
         
         throw this.transformAuthError(error);
       }
@@ -103,7 +103,7 @@ export class AuthService {
       this.metrics.responseTime.push(Date.now() - startTime);
 
       // Clear any rate limit cache on success
-      ServiceCacheManager.paymentCache.delete(cacheKey);
+      // // ServiceCacheManager.paymentCache.delete(cacheKey);
 
       return {
         data: {
@@ -486,7 +486,7 @@ export class AuthService {
       });
 
       // Invalidate related caches
-      CacheInvalidationManager.invalidateELOData(userId);
+      // // CacheInvalidationManager.invalidateELOData(userId);
 
       return profile;
     } catch (error) {
@@ -650,7 +650,7 @@ export class AuthService {
     this.sessionCache.clear();
     this.profileCache.clear();
     // Clear service caches
-    ServiceCacheManager.clearAll();
+    // // ServiceCacheManager.clearAll();
   }
 
   private validateEmail(email: string): void {

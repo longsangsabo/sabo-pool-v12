@@ -1,0 +1,19 @@
+{
+  "timestamp": "2025-08-31T04:59:26.018Z",
+  "summary": {
+    "totalExpectedTables": 74,
+    "tableDefinitionsFound": 74,
+    "missingTables": [],
+    "codebaseFilesVerified": 4,
+    "errors": [
+      "Database error: \"failed to parse select parameter (count(*))\" (line 1, column 6)"
+    ]
+  },
+  "status": {
+    "typeFileExists": true,
+    "allTablesPresent": true,
+    "sharedTypesComplete": true,
+    "hasErrors": true
+  },
+  "recommendation": "Khắc phục các lỗi kết nối và file missing trước"
+}

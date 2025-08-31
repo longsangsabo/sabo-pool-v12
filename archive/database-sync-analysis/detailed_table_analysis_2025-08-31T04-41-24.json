@@ -1,0 +1,3767 @@
+{
+  "timestamp": "2025-08-31T04:41:24.243Z",
+  "tables_analyzed": [
+    "profiles",
+    "challenges",
+    "tournaments",
+    "wallets",
+    "user_roles",
+    "notifications",
+    "tournament_registrations",
+    "club_members",
+    "ranks"
+  ],
+  "detailed_structures": {
+    "profiles": {
+      "table_name": "profiles",
+      "row_count": 181,
+      "columns": [
+        "id",
+        "user_id",
+        "full_name",
+        "display_name",
+        "avatar_url",
+        "bio",
+        "verified_rank",
+        "elo",
+        "created_at",
+        "updated_at",
+        "is_admin",
+        "phone",
+        "skill_level",
+        "active_role",
+        "role",
+        "nickname",
+        "email",
+        "city",
+        "district",
+        "member_since",
+        "completion_percentage",
+        "is_demo_user",
+        "ban_status",
+        "ban_reason",
+        "banned_at",
+        "banned_by",
+        "cover_image_url",
+        "current_rank",
+        "spa_points",
+        "player_id",
+        "is_temp_player"
+      ],
+      "sample_data": [
+        {
+          "id": "4b18f69b-d907-48d9-b27e-9b43431b48db",
+          "user_id": "ed64fe18-5794-4cdb-bc62-17ce7697e83e",
+          "full_name": null,
+          "display_name": null,
+          "avatar_url": null,
+          "bio": null,
+          "verified_rank": null,
+          "elo": 1000,
+          "created_at": "2025-08-23T11:28:23.024234+00:00",
+          "updated_at": "2025-08-23T11:28:23.024234+00:00",
+          "is_admin": false,
+          "phone": null,
+          "skill_level": "beginner",
+          "active_role": "player",
+          "role": "player",
+          "nickname": null,
+          "email": null,
+          "city": null,
+          "district": null,
+          "member_since": "2025-08-23T11:28:23.024234+00:00",
+          "completion_percentage": 0,
+          "is_demo_user": false,
+          "ban_status": "active",
+          "ban_reason": null,
+          "banned_at": null,
+          "banned_by": null,
+          "cover_image_url": null,
+          "current_rank": "K",
+          "spa_points": 0,
+          "player_id": "ed64fe18-5794-4cdb-bc62-17ce7697e83e",
+          "is_temp_player": false
+        },
+        {
+          "id": "83e44683-074b-40c8-84bf-a38feaf620cc",
+          "user_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "full_name": "Võ Long Sang ",
+          "display_name": "SABO BILLIARDS",
+          "avatar_url": "https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/avatars/18f6e853-b072-47fb-9c9a-e5d42a5446a5/avatar-18f6e853-b072-47fb-9c9a-e5d42a5446a5-1755875757751.jpeg",
+          "bio": null,
+          "verified_rank": "H+",
+          "elo": 1500,
+          "created_at": "2025-07-23T04:24:58.596488+00:00",
+          "updated_at": "2025-08-24T01:04:32.508732+00:00",
+          "is_admin": false,
+          "phone": "0961167717",
+          "skill_level": "intermediate",
+          "active_role": "player",
+          "role": "player",
+          "nickname": null,
+          "email": "jesse421996@gmail.com",
+          "city": "Vũng Tàu",
+          "district": null,
+          "member_since": "2025-07-23T04:24:58.596488+00:00",
+          "completion_percentage": 0,
+          "is_demo_user": false,
+          "ban_status": "active",
+          "ban_reason": null,
+          "banned_at": null,
+          "banned_by": null,
+          "cover_image_url": "https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/avatars/18f6e853-b072-47fb-9c9a-e5d42a5446a5/covers/1753269306333_c1zfvi.jpg",
+          "current_rank": "H+",
+          "spa_points": 298,
+          "player_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "is_temp_player": false
+        },
+        {
+          "id": "e398042e-83fe-487e-92ec-fa437252564a",
+          "user_id": "665bd4f3-7cf1-4324-aa25-33213689325e",
+          "full_name": null,
+          "display_name": null,
+          "avatar_url": null,
+          "bio": null,
+          "verified_rank": null,
+          "elo": 1000,
+          "created_at": "2025-08-23T05:04:53.562598+00:00",
+          "updated_at": "2025-08-23T05:04:53.562598+00:00",
+          "is_admin": false,
+          "phone": null,
+          "skill_level": "beginner",
+          "active_role": "player",
+          "role": "player",
+          "nickname": null,
+          "email": null,
+          "city": null,
+          "district": null,
+          "member_since": "2025-08-23T05:04:53.562598+00:00",
+          "completion_percentage": 0,
+          "is_demo_user": false,
+          "ban_status": "active",
+          "ban_reason": null,
+          "banned_at": null,
+          "banned_by": null,
+          "cover_image_url": null,
+          "current_rank": "K",
+          "spa_points": 0,
+          "player_id": "665bd4f3-7cf1-4324-aa25-33213689325e",
+          "is_temp_player": false
+        },
+        {
+          "id": "e75b970e-9d69-4ab2-b320-6a3c327c1818",
+          "user_id": "08d3c8e7-ca83-4589-9242-bad4bdd4dfaa",
+          "full_name": "Nguyễn Hồ Danh",
+          "display_name": "Nguyễn Hồ Danh",
+          "avatar_url": null,
+          "bio": null,
+          "verified_rank": null,
+          "elo": 1000,
+          "created_at": "2025-08-23T05:05:22.286495+00:00",
+          "updated_at": "2025-08-23T05:05:22.286495+00:00",
+          "is_admin": false,
+          "phone": null,
+          "skill_level": "beginner",
+          "active_role": "player",
+          "role": "player",
+          "nickname": null,
+          "email": "danhnguyenho03@gmail.com",
+          "city": null,
+          "district": null,
+          "member_since": "2025-08-23T05:05:22.286495+00:00",
+          "completion_percentage": 0,
+          "is_demo_user": false,
+          "ban_status": "active",
+          "ban_reason": null,
+          "banned_at": null,
+          "banned_by": null,
+          "cover_image_url": null,
+          "current_rank": "K",
+          "spa_points": 0,
+          "player_id": "08d3c8e7-ca83-4589-9242-bad4bdd4dfaa",
+          "is_temp_player": false
+        },
+        {
+          "id": "001de9ee-c1e0-44f3-8d96-8674458fc318",
+          "user_id": "f271ced4-12e2-4643-8123-1a65df65acf8",
+          "full_name": "Vũ Nam Khoa",
+          "display_name": "Vũ Nam Khoa",
+          "avatar_url": null,
+          "bio": "Real user - advanced level",
+          "verified_rank": null,
+          "elo": 975,
+          "created_at": "2025-07-22T00:40:14.733911+00:00",
+          "updated_at": "2025-08-22T07:24:16.198434+00:00",
+          "is_admin": false,
+          "phone": "0388605830",
+          "skill_level": "advanced",
+          "active_role": "player",
+          "role": "player",
+          "nickname": null,
+          "email": "vunamkhoa3933@gmail.com",
+          "city": null,
+          "district": null,
+          "member_since": "2025-07-22T00:40:14.733911+00:00",
+          "completion_percentage": 0,
+          "is_demo_user": false,
+          "ban_status": "active",
+          "ban_reason": null,
+          "banned_at": null,
+          "banned_by": null,
+          "cover_image_url": null,
+          "current_rank": "K",
+          "spa_points": 250,
+          "player_id": "f271ced4-12e2-4643-8123-1a65df65acf8",
+          "is_temp_player": false
+        }
+      ],
+      "unique_values": {},
+      "data_types": {
+        "id": {
+          "name": "id",
+          "data_type": "string",
+          "sample_values": [
+            "4b18f69b-d907-48d9-b27e-9b43431b48db",
+            "83e44683-074b-40c8-84bf-a38feaf620cc",
+            "e398042e-83fe-487e-92ec-fa437252564a"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "user_id": {
+          "name": "user_id",
+          "data_type": "string",
+          "sample_values": [
+            "ed64fe18-5794-4cdb-bc62-17ce7697e83e",
+            "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+            "665bd4f3-7cf1-4324-aa25-33213689325e"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "full_name": {
+          "name": "full_name",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "Võ Long Sang ",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "display_name": {
+          "name": "display_name",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "SABO BILLIARDS",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "avatar_url": {
+          "name": "avatar_url",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/avatars/18f6e853-b072-47fb-9c9a-e5d42a5446a5/avatar-18f6e853-b072-47fb-9c9a-e5d42a5446a5-1755875757751.jpeg",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 4,
+          "patterns": [
+            "url"
+          ]
+        },
+        "bio": {
+          "name": "bio",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 4,
+          "patterns": []
+        },
+        "verified_rank": {
+          "name": "verified_rank",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "H+",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 4,
+          "patterns": []
+        },
+        "elo": {
+          "name": "elo",
+          "data_type": "number",
+          "sample_values": [
+            1000,
+            1500,
+            1000
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-23T11:28:23.024234+00:00",
+            "2025-07-23T04:24:58.596488+00:00",
+            "2025-08-23T05:04:53.562598+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-23T11:28:23.024234+00:00",
+            "2025-08-24T01:04:32.508732+00:00",
+            "2025-08-23T05:04:53.562598+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "is_admin": {
+          "name": "is_admin",
+          "data_type": "boolean",
+          "sample_values": [
+            false,
+            false,
+            false
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "phone": {
+          "name": "phone",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "0961167717",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 3,
+          "patterns": []
+        },
+        "skill_level": {
+          "name": "skill_level",
+          "data_type": "string",
+          "sample_values": [
+            "beginner",
+            "intermediate",
+            "beginner"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "active_role": {
+          "name": "active_role",
+          "data_type": "string",
+          "sample_values": [
+            "player",
+            "player",
+            "player"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "role": {
+          "name": "role",
+          "data_type": "string",
+          "sample_values": [
+            "player",
+            "player",
+            "player"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "nickname": {
+          "name": "nickname",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "email": {
+          "name": "email",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "jesse421996@gmail.com",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": [
+            "email"
+          ]
+        },
+        "city": {
+          "name": "city",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "Vũng Tàu",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 4,
+          "patterns": []
+        },
+        "district": {
+          "name": "district",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "member_since": {
+          "name": "member_since",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-23T11:28:23.024234+00:00",
+            "2025-07-23T04:24:58.596488+00:00",
+            "2025-08-23T05:04:53.562598+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "completion_percentage": {
+          "name": "completion_percentage",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "is_demo_user": {
+          "name": "is_demo_user",
+          "data_type": "boolean",
+          "sample_values": [
+            false,
+            false,
+            false
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "ban_status": {
+          "name": "ban_status",
+          "data_type": "string",
+          "sample_values": [
+            "active",
+            "active",
+            "active"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "ban_reason": {
+          "name": "ban_reason",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "banned_at": {
+          "name": "banned_at",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "banned_by": {
+          "name": "banned_by",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "cover_image_url": {
+          "name": "cover_image_url",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/avatars/18f6e853-b072-47fb-9c9a-e5d42a5446a5/covers/1753269306333_c1zfvi.jpg",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 4,
+          "patterns": [
+            "url"
+          ]
+        },
+        "current_rank": {
+          "name": "current_rank",
+          "data_type": "string",
+          "sample_values": [
+            "K",
+            "H+",
+            "K"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "spa_points": {
+          "name": "spa_points",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            298,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "player_id": {
+          "name": "player_id",
+          "data_type": "string",
+          "sample_values": [
+            "ed64fe18-5794-4cdb-bc62-17ce7697e83e",
+            "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+            "665bd4f3-7cf1-4324-aa25-33213689325e"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "is_temp_player": {
+          "name": "is_temp_player",
+          "data_type": "boolean",
+          "sample_values": [
+            false,
+            false,
+            false
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        }
+      },
+      "null_patterns": {},
+      "insights": [
+        "✅ Có dữ liệu đầy đủ để test",
+        "✅ Có cấu trúc chuẩn (id + created_at)",
+        "🔗 Có liên kết với user system",
+        "🎯 Ranking system columns present"
+      ]
+    },
+    "challenges": {
+      "table_name": "challenges",
+      "row_count": 10,
+      "columns": [
+        "id",
+        "challenger_id",
+        "opponent_id",
+        "status",
+        "challenge_message",
+        "response_message",
+        "created_at",
+        "responded_at",
+        "completed_at",
+        "is_open_challenge",
+        "bet_points",
+        "race_to",
+        "handicap_1_rank",
+        "handicap_05_rank",
+        "message",
+        "expires_at",
+        "challenge_type",
+        "handicap_data",
+        "club_id",
+        "scheduled_time",
+        "challenger_score",
+        "opponent_score",
+        "winner_id",
+        "started_at",
+        "updated_at",
+        "challenger_name",
+        "location",
+        "required_rank",
+        "is_sabo",
+        "club_confirmed",
+        "club_confirmed_at",
+        "club_confirmed_by",
+        "club_note",
+        "challenger_player_id",
+        "opponent_player_id",
+        "bet_amount"
+      ],
+      "sample_data": [
+        {
+          "id": "c3e2d2c1-69d5-47a8-9d30-05f926498919",
+          "challenger_id": "21c71eb2-3a42-4589-9089-24a9340a0e6a",
+          "opponent_id": null,
+          "status": "declined",
+          "challenge_message": null,
+          "response_message": null,
+          "created_at": "2025-08-23T12:19:49.62875+00:00",
+          "responded_at": null,
+          "completed_at": null,
+          "is_open_challenge": true,
+          "bet_points": 100,
+          "race_to": 8,
+          "handicap_1_rank": "0",
+          "handicap_05_rank": "0",
+          "message": "",
+          "expires_at": "2025-08-25T12:19:49.263+00:00",
+          "challenge_type": "standard",
+          "handicap_data": {},
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "scheduled_time": null,
+          "challenger_score": 0,
+          "opponent_score": 0,
+          "winner_id": null,
+          "started_at": null,
+          "updated_at": "2025-08-23T14:11:59.773972+00:00",
+          "challenger_name": "Trần hải",
+          "location": "SBO POOL ARENA",
+          "required_rank": "I",
+          "is_sabo": true,
+          "club_confirmed": false,
+          "club_confirmed_at": null,
+          "club_confirmed_by": null,
+          "club_note": null,
+          "challenger_player_id": "21c71eb2-3a42-4589-9089-24a9340a0e6a",
+          "opponent_player_id": null,
+          "bet_amount": 100
+        },
+        {
+          "id": "b73e120d-e693-4be8-aa67-7a9a13df0e9f",
+          "challenger_id": "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+          "opponent_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "status": "expired",
+          "challenge_message": null,
+          "response_message": null,
+          "created_at": "2025-08-23T23:35:34.097454+00:00",
+          "responded_at": "2025-08-24T00:26:28.09604+00:00",
+          "completed_at": null,
+          "is_open_challenge": true,
+          "bet_points": 100,
+          "race_to": 8,
+          "handicap_1_rank": "0",
+          "handicap_05_rank": "0",
+          "message": "",
+          "expires_at": "2025-08-25T23:35:33.979+00:00",
+          "challenge_type": "standard",
+          "handicap_data": {},
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "scheduled_time": "2025-08-23T23:40:00+00:00",
+          "challenger_score": 0,
+          "opponent_score": 0,
+          "winner_id": null,
+          "started_at": null,
+          "updated_at": "2025-08-24T00:26:34.751587+00:00",
+          "challenger_name": "Hoàng Anh",
+          "location": "SBO POOL ARENA",
+          "required_rank": "I",
+          "is_sabo": true,
+          "club_confirmed": false,
+          "club_confirmed_at": null,
+          "club_confirmed_by": null,
+          "club_note": null,
+          "challenger_player_id": "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+          "opponent_player_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "bet_amount": 100
+        },
+        {
+          "id": "e713e373-0d89-4c90-91ab-2c14e420276c",
+          "challenger_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "opponent_id": null,
+          "status": "ongoing",
+          "challenge_message": null,
+          "response_message": null,
+          "created_at": "2025-08-24T00:27:29.015783+00:00",
+          "responded_at": null,
+          "completed_at": null,
+          "is_open_challenge": true,
+          "bet_points": 100,
+          "race_to": 8,
+          "handicap_1_rank": "0",
+          "handicap_05_rank": "0",
+          "message": "",
+          "expires_at": "2025-08-26T00:27:28.544+00:00",
+          "challenge_type": "standard",
+          "handicap_data": {},
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "scheduled_time": "2025-08-24T00:30:00+00:00",
+          "challenger_score": 0,
+          "opponent_score": 0,
+          "winner_id": null,
+          "started_at": "2025-08-24T00:36:06.562+00:00",
+          "updated_at": "2025-08-24T00:36:07.114954+00:00",
+          "challenger_name": "Dức",
+          "location": "SBO POOL ARENA",
+          "required_rank": "I",
+          "is_sabo": true,
+          "club_confirmed": true,
+          "club_confirmed_at": "2025-08-24T00:35:46.144+00:00",
+          "club_confirmed_by": null,
+          "club_note": "Test approval",
+          "challenger_player_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "opponent_player_id": null,
+          "bet_amount": 100
+        },
+        {
+          "id": "19df5b7b-1fdc-4456-9409-929bf85ec13b",
+          "challenger_id": "558787dc-707c-4e84-9140-2fdc75b0efb9",
+          "opponent_id": null,
+          "status": "declined",
+          "challenge_message": null,
+          "response_message": null,
+          "created_at": "2025-08-23T22:50:36.209237+00:00",
+          "responded_at": null,
+          "completed_at": null,
+          "is_open_challenge": true,
+          "bet_points": 100,
+          "race_to": 8,
+          "handicap_1_rank": "0",
+          "handicap_05_rank": "0",
+          "message": "",
+          "expires_at": "2025-08-25T22:50:35.862+00:00",
+          "challenge_type": "standard",
+          "handicap_data": {},
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "scheduled_time": "2025-08-23T22:58:00+00:00",
+          "challenger_score": 0,
+          "opponent_score": 0,
+          "winner_id": null,
+          "started_at": null,
+          "updated_at": "2025-08-24T00:51:33.396517+00:00",
+          "challenger_name": "ádas",
+          "location": "SBO POOL ARENA",
+          "required_rank": "I",
+          "is_sabo": true,
+          "club_confirmed": false,
+          "club_confirmed_at": null,
+          "club_confirmed_by": null,
+          "club_note": null,
+          "challenger_player_id": "558787dc-707c-4e84-9140-2fdc75b0efb9",
+          "opponent_player_id": null,
+          "bet_amount": 100
+        },
+        {
+          "id": "612f6e2b-c165-44cc-b847-27a941cbb825",
+          "challenger_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "opponent_id": "17460a1a-8da6-4ed1-be44-56ff4dcd9c26",
+          "status": "completed",
+          "challenge_message": null,
+          "response_message": null,
+          "created_at": "2025-08-24T01:01:40.008047+00:00",
+          "responded_at": "2025-08-24T01:03:13.734588+00:00",
+          "completed_at": "2025-08-24T01:04:07.019+00:00",
+          "is_open_challenge": true,
+          "bet_points": 100,
+          "race_to": 8,
+          "handicap_1_rank": "0",
+          "handicap_05_rank": "0",
+          "message": "",
+          "expires_at": "2025-08-26T01:01:39.433+00:00",
+          "challenge_type": "standard",
+          "handicap_data": {},
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "scheduled_time": "2025-08-24T01:03:00+00:00",
+          "challenger_score": 8,
+          "opponent_score": 0,
+          "winner_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "started_at": null,
+          "updated_at": "2025-08-24T01:04:32.288732+00:00",
+          "challenger_name": "Dức",
+          "location": "SBO POOL ARENA",
+          "required_rank": "I",
+          "is_sabo": true,
+          "club_confirmed": true,
+          "club_confirmed_at": "2025-08-24T01:04:31.671+00:00",
+          "club_confirmed_by": null,
+          "club_note": "",
+          "challenger_player_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "opponent_player_id": "17460a1a-8da6-4ed1-be44-56ff4dcd9c26",
+          "bet_amount": 100
+        }
+      ],
+      "unique_values": {},
+      "data_types": {
+        "id": {
+          "name": "id",
+          "data_type": "string",
+          "sample_values": [
+            "c3e2d2c1-69d5-47a8-9d30-05f926498919",
+            "b73e120d-e693-4be8-aa67-7a9a13df0e9f",
+            "e713e373-0d89-4c90-91ab-2c14e420276c"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "challenger_id": {
+          "name": "challenger_id",
+          "data_type": "string",
+          "sample_values": [
+            "21c71eb2-3a42-4589-9089-24a9340a0e6a",
+            "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+            "18f6e853-b072-47fb-9c9a-e5d42a5446a5"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "opponent_id": {
+          "name": "opponent_id",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 3,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "status": {
+          "name": "status",
+          "data_type": "string",
+          "sample_values": [
+            "declined",
+            "expired",
+            "ongoing"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "challenge_message": {
+          "name": "challenge_message",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "response_message": {
+          "name": "response_message",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-23T12:19:49.62875+00:00",
+            "2025-08-23T23:35:34.097454+00:00",
+            "2025-08-24T00:27:29.015783+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "responded_at": {
+          "name": "responded_at",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "2025-08-24T00:26:28.09604+00:00",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 3,
+          "patterns": []
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 4,
+          "patterns": []
+        },
+        "is_open_challenge": {
+          "name": "is_open_challenge",
+          "data_type": "boolean",
+          "sample_values": [
+            true,
+            true,
+            true
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "bet_points": {
+          "name": "bet_points",
+          "data_type": "number",
+          "sample_values": [
+            100,
+            100,
+            100
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "race_to": {
+          "name": "race_to",
+          "data_type": "number",
+          "sample_values": [
+            8,
+            8,
+            8
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "handicap_1_rank": {
+          "name": "handicap_1_rank",
+          "data_type": "string",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "handicap_05_rank": {
+          "name": "handicap_05_rank",
+          "data_type": "string",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "message": {
+          "name": "message",
+          "data_type": "string",
+          "sample_values": [
+            "",
+            "",
+            ""
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-25T12:19:49.263+00:00",
+            "2025-08-25T23:35:33.979+00:00",
+            "2025-08-26T00:27:28.544+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "challenge_type": {
+          "name": "challenge_type",
+          "data_type": "string",
+          "sample_values": [
+            "standard",
+            "standard",
+            "standard"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "handicap_data": {
+          "name": "handicap_data",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "club_id": {
+          "name": "club_id",
+          "data_type": "string",
+          "sample_values": [
+            "8d883f90-0c54-4757-adba-25f1d5c02174",
+            "8d883f90-0c54-4757-adba-25f1d5c02174",
+            "8d883f90-0c54-4757-adba-25f1d5c02174"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "scheduled_time": {
+          "name": "scheduled_time",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "2025-08-23T23:40:00+00:00",
+            "2025-08-24T00:30:00+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 1,
+          "patterns": []
+        },
+        "challenger_score": {
+          "name": "challenger_score",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "opponent_score": {
+          "name": "opponent_score",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "winner_id": {
+          "name": "winner_id",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 4,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "started_at": {
+          "name": "started_at",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            null,
+            "2025-08-24T00:36:06.562+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 4,
+          "patterns": []
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-23T14:11:59.773972+00:00",
+            "2025-08-24T00:26:34.751587+00:00",
+            "2025-08-24T00:36:07.114954+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "challenger_name": {
+          "name": "challenger_name",
+          "data_type": "string",
+          "sample_values": [
+            "Trần hải",
+            "Hoàng Anh",
+            "Dức"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "location": {
+          "name": "location",
+          "data_type": "string",
+          "sample_values": [
+            "SBO POOL ARENA",
+            "SBO POOL ARENA",
+            "SBO POOL ARENA"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "required_rank": {
+          "name": "required_rank",
+          "data_type": "string",
+          "sample_values": [
+            "I",
+            "I",
+            "I"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "is_sabo": {
+          "name": "is_sabo",
+          "data_type": "boolean",
+          "sample_values": [
+            true,
+            true,
+            true
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "club_confirmed": {
+          "name": "club_confirmed",
+          "data_type": "boolean",
+          "sample_values": [
+            false,
+            false,
+            true
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "club_confirmed_at": {
+          "name": "club_confirmed_at",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            null,
+            "2025-08-24T00:35:46.144+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 3,
+          "patterns": []
+        },
+        "club_confirmed_by": {
+          "name": "club_confirmed_by",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "club_note": {
+          "name": "club_note",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            null,
+            "Test approval"
+          ],
+          "unique_count": 0,
+          "null_count": 3,
+          "patterns": []
+        },
+        "challenger_player_id": {
+          "name": "challenger_player_id",
+          "data_type": "string",
+          "sample_values": [
+            "21c71eb2-3a42-4589-9089-24a9340a0e6a",
+            "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+            "18f6e853-b072-47fb-9c9a-e5d42a5446a5"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "opponent_player_id": {
+          "name": "opponent_player_id",
+          "data_type": "string",
+          "sample_values": [
+            null,
+            "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 3,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "bet_amount": {
+          "name": "bet_amount",
+          "data_type": "number",
+          "sample_values": [
+            100,
+            100,
+            100
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        }
+      },
+      "null_patterns": {},
+      "insights": [
+        "✅ Có dữ liệu đầy đủ để test",
+        "✅ Có cấu trúc chuẩn (id + created_at)"
+      ]
+    },
+    "tournaments": {
+      "table_name": "tournaments",
+      "row_count": 2,
+      "columns": [
+        "id",
+        "name",
+        "description",
+        "tournament_type",
+        "game_format",
+        "tier_level",
+        "max_participants",
+        "current_participants",
+        "tournament_start",
+        "tournament_end",
+        "registration_start",
+        "registration_end",
+        "club_id",
+        "venue_address",
+        "entry_fee",
+        "prize_pool",
+        "first_prize",
+        "second_prize",
+        "third_prize",
+        "prize_distribution",
+        "status",
+        "management_status",
+        "rules",
+        "contact_info",
+        "banner_image",
+        "min_rank_requirement",
+        "max_rank_requirement",
+        "eligible_ranks",
+        "allow_all_ranks",
+        "requires_approval",
+        "is_public",
+        "has_third_place_match",
+        "created_by",
+        "created_at",
+        "updated_at",
+        "venue_name",
+        "start_date",
+        "end_date",
+        "registration_fee",
+        "is_visible",
+        "deleted_at",
+        "tier",
+        "elo_multiplier",
+        "live_stream_url",
+        "sponsor_info",
+        "spa_points_config",
+        "elo_points_config",
+        "comprehensive_rewards",
+        "special_rules",
+        "tournament_format_details",
+        "physical_prizes",
+        "winner_id",
+        "parent_tournament_id",
+        "tournament_format",
+        "group_number",
+        "group_assignment_method"
+      ],
+      "sample_data": [
+        {
+          "id": "87b3025c-b668-4b37-876c-4eb186bc3564",
+          "name": "TRIBUTE TO CHAMPIONSHIP ",
+          "description": "SABO 9 BALL OPEN Season 1",
+          "tournament_type": "double_elimination",
+          "game_format": "9_ball",
+          "tier_level": 1,
+          "max_participants": 32,
+          "current_participants": 0,
+          "tournament_start": "2025-08-24T01:15:00+00:00",
+          "tournament_end": "2025-08-24T12:30:00+00:00",
+          "registration_start": "2025-08-22T09:46:29.732+00:00",
+          "registration_end": "2025-08-24T00:00:00+00:00",
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "venue_address": "601 A Nguyễn An Ninh",
+          "entry_fee": 300000,
+          "prize_pool": 10000000,
+          "first_prize": 0,
+          "second_prize": 0,
+          "third_prize": 0,
+          "prize_distribution": {},
+          "status": "registration_open",
+          "management_status": "draft",
+          "rules": null,
+          "contact_info": null,
+          "banner_image": null,
+          "min_rank_requirement": null,
+          "max_rank_requirement": null,
+          "eligible_ranks": [],
+          "allow_all_ranks": true,
+          "requires_approval": false,
+          "is_public": true,
+          "has_third_place_match": false,
+          "created_by": "18f49e79-f402-46d1-90be-889006e9761c",
+          "created_at": "2025-08-22T09:49:48.438668+00:00",
+          "updated_at": "2025-08-22T09:52:34.836923+00:00",
+          "venue_name": null,
+          "start_date": null,
+          "end_date": null,
+          "registration_fee": 0,
+          "is_visible": true,
+          "deleted_at": null,
+          "tier": "I",
+          "elo_multiplier": 1,
+          "live_stream_url": null,
+          "sponsor_info": {},
+          "spa_points_config": {},
+          "elo_points_config": {},
+          "comprehensive_rewards": {},
+          "special_rules": {},
+          "tournament_format_details": {},
+          "physical_prizes": [],
+          "winner_id": null,
+          "parent_tournament_id": null,
+          "tournament_format": null,
+          "group_number": null,
+          "group_assignment_method": null
+        },
+        {
+          "id": "40c533ba-3a9b-4288-99e8-129488eeb8b8",
+          "name": "TRIBUTE TO CHAMPIONSHIP  - Copy",
+          "description": "SABO 9 BALL OPEN Season 1",
+          "tournament_type": "double_elimination",
+          "game_format": "9_ball",
+          "tier_level": 1,
+          "max_participants": 16,
+          "current_participants": 0,
+          "tournament_start": "2025-09-06T02:03:52.497+00:00",
+          "tournament_end": "2025-09-07T02:03:52.497+00:00",
+          "registration_start": "2025-08-30T02:03:52.497+00:00",
+          "registration_end": "2025-08-30T14:04:17.374+00:00",
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "venue_address": "601A NAN",
+          "entry_fee": 300000,
+          "prize_pool": 10000000,
+          "first_prize": 0,
+          "second_prize": 0,
+          "third_prize": 0,
+          "prize_distribution": {},
+          "status": "registration_open",
+          "management_status": "draft",
+          "rules": null,
+          "contact_info": null,
+          "banner_image": null,
+          "min_rank_requirement": null,
+          "max_rank_requirement": null,
+          "eligible_ranks": [],
+          "allow_all_ranks": true,
+          "requires_approval": false,
+          "is_public": true,
+          "has_third_place_match": false,
+          "created_by": "18f49e79-f402-46d1-90be-889006e9761c",
+          "created_at": "2025-08-30T02:04:17.850274+00:00",
+          "updated_at": "2025-08-30T02:04:17.850274+00:00",
+          "venue_name": null,
+          "start_date": null,
+          "end_date": null,
+          "registration_fee": 0,
+          "is_visible": true,
+          "deleted_at": null,
+          "tier": "I",
+          "elo_multiplier": 1,
+          "live_stream_url": null,
+          "sponsor_info": {},
+          "spa_points_config": {},
+          "elo_points_config": {},
+          "comprehensive_rewards": {},
+          "special_rules": {},
+          "tournament_format_details": {},
+          "physical_prizes": [],
+          "winner_id": null,
+          "parent_tournament_id": null,
+          "tournament_format": null,
+          "group_number": null,
+          "group_assignment_method": null
+        }
+      ],
+      "unique_values": {},
+      "data_types": {
+        "id": {
+          "name": "id",
+          "data_type": "string",
+          "sample_values": [
+            "87b3025c-b668-4b37-876c-4eb186bc3564",
+            "40c533ba-3a9b-4288-99e8-129488eeb8b8"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "name": {
+          "name": "name",
+          "data_type": "string",
+          "sample_values": [
+            "TRIBUTE TO CHAMPIONSHIP ",
+            "TRIBUTE TO CHAMPIONSHIP  - Copy"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "description": {
+          "name": "description",
+          "data_type": "string",
+          "sample_values": [
+            "SABO 9 BALL OPEN Season 1",
+            "SABO 9 BALL OPEN Season 1"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "tournament_type": {
+          "name": "tournament_type",
+          "data_type": "string",
+          "sample_values": [
+            "double_elimination",
+            "double_elimination"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "game_format": {
+          "name": "game_format",
+          "data_type": "string",
+          "sample_values": [
+            "9_ball",
+            "9_ball"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "tier_level": {
+          "name": "tier_level",
+          "data_type": "number",
+          "sample_values": [
+            1,
+            1
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "max_participants": {
+          "name": "max_participants",
+          "data_type": "number",
+          "sample_values": [
+            32,
+            16
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "current_participants": {
+          "name": "current_participants",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "tournament_start": {
+          "name": "tournament_start",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-24T01:15:00+00:00",
+            "2025-09-06T02:03:52.497+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "tournament_end": {
+          "name": "tournament_end",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-24T12:30:00+00:00",
+            "2025-09-07T02:03:52.497+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "registration_start": {
+          "name": "registration_start",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-22T09:46:29.732+00:00",
+            "2025-08-30T02:03:52.497+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "registration_end": {
+          "name": "registration_end",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-24T00:00:00+00:00",
+            "2025-08-30T14:04:17.374+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "club_id": {
+          "name": "club_id",
+          "data_type": "string",
+          "sample_values": [
+            "8d883f90-0c54-4757-adba-25f1d5c02174",
+            "8d883f90-0c54-4757-adba-25f1d5c02174"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "venue_address": {
+          "name": "venue_address",
+          "data_type": "string",
+          "sample_values": [
+            "601 A Nguyễn An Ninh",
+            "601A NAN"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "entry_fee": {
+          "name": "entry_fee",
+          "data_type": "number",
+          "sample_values": [
+            300000,
+            300000
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "prize_pool": {
+          "name": "prize_pool",
+          "data_type": "number",
+          "sample_values": [
+            10000000,
+            10000000
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "first_prize": {
+          "name": "first_prize",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "second_prize": {
+          "name": "second_prize",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "third_prize": {
+          "name": "third_prize",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "prize_distribution": {
+          "name": "prize_distribution",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "status": {
+          "name": "status",
+          "data_type": "string",
+          "sample_values": [
+            "registration_open",
+            "registration_open"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "management_status": {
+          "name": "management_status",
+          "data_type": "string",
+          "sample_values": [
+            "draft",
+            "draft"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "rules": {
+          "name": "rules",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "contact_info": {
+          "name": "contact_info",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "banner_image": {
+          "name": "banner_image",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "min_rank_requirement": {
+          "name": "min_rank_requirement",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "max_rank_requirement": {
+          "name": "max_rank_requirement",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "eligible_ranks": {
+          "name": "eligible_ranks",
+          "data_type": "object",
+          "sample_values": [
+            [],
+            []
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "allow_all_ranks": {
+          "name": "allow_all_ranks",
+          "data_type": "boolean",
+          "sample_values": [
+            true,
+            true
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "requires_approval": {
+          "name": "requires_approval",
+          "data_type": "boolean",
+          "sample_values": [
+            false,
+            false
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "is_public": {
+          "name": "is_public",
+          "data_type": "boolean",
+          "sample_values": [
+            true,
+            true
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "has_third_place_match": {
+          "name": "has_third_place_match",
+          "data_type": "boolean",
+          "sample_values": [
+            false,
+            false
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "created_by": {
+          "name": "created_by",
+          "data_type": "string",
+          "sample_values": [
+            "18f49e79-f402-46d1-90be-889006e9761c",
+            "18f49e79-f402-46d1-90be-889006e9761c"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-22T09:49:48.438668+00:00",
+            "2025-08-30T02:04:17.850274+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-22T09:52:34.836923+00:00",
+            "2025-08-30T02:04:17.850274+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "venue_name": {
+          "name": "venue_name",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "start_date": {
+          "name": "start_date",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "end_date": {
+          "name": "end_date",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "registration_fee": {
+          "name": "registration_fee",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "is_visible": {
+          "name": "is_visible",
+          "data_type": "boolean",
+          "sample_values": [
+            true,
+            true
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "tier": {
+          "name": "tier",
+          "data_type": "string",
+          "sample_values": [
+            "I",
+            "I"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "elo_multiplier": {
+          "name": "elo_multiplier",
+          "data_type": "number",
+          "sample_values": [
+            1,
+            1
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "live_stream_url": {
+          "name": "live_stream_url",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "sponsor_info": {
+          "name": "sponsor_info",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "spa_points_config": {
+          "name": "spa_points_config",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "elo_points_config": {
+          "name": "elo_points_config",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "comprehensive_rewards": {
+          "name": "comprehensive_rewards",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "special_rules": {
+          "name": "special_rules",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "tournament_format_details": {
+          "name": "tournament_format_details",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "physical_prizes": {
+          "name": "physical_prizes",
+          "data_type": "object",
+          "sample_values": [
+            [],
+            []
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "winner_id": {
+          "name": "winner_id",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "parent_tournament_id": {
+          "name": "parent_tournament_id",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "tournament_format": {
+          "name": "tournament_format",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "group_number": {
+          "name": "group_number",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        },
+        "group_assignment_method": {
+          "name": "group_assignment_method",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 2,
+          "patterns": []
+        }
+      },
+      "null_patterns": {},
+      "insights": [
+        "🟡 Ít dữ liệu - có thể cần thêm demo data",
+        "✅ Có cấu trúc chuẩn (id + created_at)"
+      ]
+    },
+    "wallets": {
+      "table_name": "wallets",
+      "row_count": 186,
+      "columns": [
+        "id",
+        "user_id",
+        "points_balance",
+        "total_earned",
+        "total_spent",
+        "created_at",
+        "updated_at",
+        "balance",
+        "status"
+      ],
+      "sample_data": [
+        {
+          "id": "c8a9f961-15f1-412c-8961-b53958e85d86",
+          "user_id": "519cf7c9-e112-40b2-9e4d-0cd44783ec9e",
+          "points_balance": 0,
+          "total_earned": 0,
+          "total_spent": 0,
+          "created_at": "2025-07-22T00:38:30.132097+00:00",
+          "updated_at": "2025-07-23T03:23:34.814432+00:00",
+          "balance": 0,
+          "status": "active"
+        },
+        {
+          "id": "b1f275dd-f0bf-40d5-8720-e3d6b131f5dc",
+          "user_id": "4bedc2fd-a85d-483d-80e5-c9541d6ecdc2",
+          "points_balance": 0,
+          "total_earned": 0,
+          "total_spent": 0,
+          "created_at": "2025-07-22T00:38:31.525942+00:00",
+          "updated_at": "2025-07-23T03:23:34.814432+00:00",
+          "balance": 0,
+          "status": "active"
+        },
+        {
+          "id": "a3f9fd6f-b6a7-4b86-b61b-817a4d81026a",
+          "user_id": "0e541971-640e-4a5e-881b-b7f98a2904f7",
+          "points_balance": 0,
+          "total_earned": 0,
+          "total_spent": 0,
+          "created_at": "2025-07-22T00:38:32.927917+00:00",
+          "updated_at": "2025-07-23T03:23:34.814432+00:00",
+          "balance": 0,
+          "status": "active"
+        },
+        {
+          "id": "66b3afe3-8982-4d5c-8c37-703695dce3f8",
+          "user_id": "9f5c350d-5ee2-4aa4-bd1e-e1ac2ed57e6a",
+          "points_balance": 0,
+          "total_earned": 0,
+          "total_spent": 0,
+          "created_at": "2025-07-22T00:38:34.531312+00:00",
+          "updated_at": "2025-07-23T03:23:34.814432+00:00",
+          "balance": 0,
+          "status": "active"
+        },
+        {
+          "id": "6b965326-1341-4c78-a049-d36160111c9e",
+          "user_id": "46bfe678-66cf-48a9-8bc8-d2eee8274ac3",
+          "points_balance": 0,
+          "total_earned": 0,
+          "total_spent": 0,
+          "created_at": "2025-07-22T00:39:47.105069+00:00",
+          "updated_at": "2025-07-23T03:23:34.814432+00:00",
+          "balance": 0,
+          "status": "active"
+        }
+      ],
+      "unique_values": {},
+      "data_types": {
+        "id": {
+          "name": "id",
+          "data_type": "string",
+          "sample_values": [
+            "c8a9f961-15f1-412c-8961-b53958e85d86",
+            "b1f275dd-f0bf-40d5-8720-e3d6b131f5dc",
+            "a3f9fd6f-b6a7-4b86-b61b-817a4d81026a"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "user_id": {
+          "name": "user_id",
+          "data_type": "string",
+          "sample_values": [
+            "519cf7c9-e112-40b2-9e4d-0cd44783ec9e",
+            "4bedc2fd-a85d-483d-80e5-c9541d6ecdc2",
+            "0e541971-640e-4a5e-881b-b7f98a2904f7"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "points_balance": {
+          "name": "points_balance",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "total_earned": {
+          "name": "total_earned",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "total_spent": {
+          "name": "total_spent",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-07-22T00:38:30.132097+00:00",
+            "2025-07-22T00:38:31.525942+00:00",
+            "2025-07-22T00:38:32.927917+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-07-23T03:23:34.814432+00:00",
+            "2025-07-23T03:23:34.814432+00:00",
+            "2025-07-23T03:23:34.814432+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "balance": {
+          "name": "balance",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "status": {
+          "name": "status",
+          "data_type": "string",
+          "sample_values": [
+            "active",
+            "active",
+            "active"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        }
+      },
+      "null_patterns": {},
+      "insights": [
+        "✅ Có dữ liệu đầy đủ để test",
+        "✅ Có cấu trúc chuẩn (id + created_at)",
+        "🔗 Có liên kết với user system",
+        "💰 Wallet balance tracking enabled"
+      ]
+    },
+    "user_roles": {
+      "table_name": "user_roles",
+      "row_count": 97,
+      "columns": [
+        "id",
+        "user_id",
+        "role",
+        "created_at",
+        "created_by"
+      ],
+      "sample_data": [
+        {
+          "id": "62669536-104d-4306-95e9-70bc823fc317",
+          "user_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "role": "user",
+          "created_at": "2025-08-22T03:07:16.42139+00:00",
+          "created_by": null
+        },
+        {
+          "id": "b47db11d-71c8-4103-a2b3-e17523402b82",
+          "user_id": "f4bf9554-f2a7-4aee-8ba3-7c38b89771ca",
+          "role": "user",
+          "created_at": "2025-08-22T03:07:16.42139+00:00",
+          "created_by": null
+        },
+        {
+          "id": "12364348-51e3-4b86-9aa5-6278ba900eec",
+          "user_id": "e57ff563-08d8-4015-bb36-0b1195dcae70",
+          "role": "user",
+          "created_at": "2025-08-22T03:07:16.42139+00:00",
+          "created_by": null
+        },
+        {
+          "id": "d80acd54-b2d4-4342-bf8a-3889b42c7ca5",
+          "user_id": "f271ced4-12e2-4643-8123-1a65df65acf8",
+          "role": "user",
+          "created_at": "2025-08-22T03:07:16.42139+00:00",
+          "created_by": null
+        },
+        {
+          "id": "b41135da-67ce-41a3-b432-ebced1b278b3",
+          "user_id": "2fbdd92e-1c53-4b9e-b156-f0d2621ed9df",
+          "role": "user",
+          "created_at": "2025-08-22T03:07:16.42139+00:00",
+          "created_by": null
+        }
+      ],
+      "unique_values": {},
+      "data_types": {
+        "id": {
+          "name": "id",
+          "data_type": "string",
+          "sample_values": [
+            "62669536-104d-4306-95e9-70bc823fc317",
+            "b47db11d-71c8-4103-a2b3-e17523402b82",
+            "12364348-51e3-4b86-9aa5-6278ba900eec"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "user_id": {
+          "name": "user_id",
+          "data_type": "string",
+          "sample_values": [
+            "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+            "f4bf9554-f2a7-4aee-8ba3-7c38b89771ca",
+            "e57ff563-08d8-4015-bb36-0b1195dcae70"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "role": {
+          "name": "role",
+          "data_type": "string",
+          "sample_values": [
+            "user",
+            "user",
+            "user"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-22T03:07:16.42139+00:00",
+            "2025-08-22T03:07:16.42139+00:00",
+            "2025-08-22T03:07:16.42139+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "created_by": {
+          "name": "created_by",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        }
+      },
+      "null_patterns": {},
+      "insights": [
+        "✅ Có dữ liệu đầy đủ để test",
+        "✅ Có cấu trúc chuẩn (id + created_at)",
+        "🔗 Có liên kết với user system"
+      ]
+    },
+    "notifications": {
+      "table_name": "notifications",
+      "row_count": 692,
+      "columns": [
+        "id",
+        "user_id",
+        "title",
+        "message",
+        "type",
+        "is_read",
+        "action_url",
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "auto_popup",
+        "priority",
+        "metadata",
+        "club_id",
+        "category",
+        "challenge_id",
+        "tournament_id",
+        "match_id",
+        "icon",
+        "action_text",
+        "scheduled_for",
+        "expires_at",
+        "is_archived"
+      ],
+      "sample_data": [
+        {
+          "id": "ecc6c1c1-c8e9-4061-b754-385666040101",
+          "user_id": "18f49e79-f402-46d1-90be-889006e9761c",
+          "title": "Yêu cầu xác thực hạng mới",
+          "message": "Có yêu cầu xác thực hạng K+ từ Sang tại CLB SBO POOL ARENA",
+          "type": "rank_request",
+          "is_read": false,
+          "action_url": "/club-dashboard?tab=rank-verification",
+          "created_at": "2025-08-18T03:21:36.462148+00:00",
+          "updated_at": "2025-08-18T03:21:36.462148+00:00",
+          "deleted_at": null,
+          "auto_popup": true,
+          "priority": "high",
+          "metadata": {},
+          "club_id": null,
+          "category": "general",
+          "challenge_id": null,
+          "tournament_id": null,
+          "match_id": null,
+          "icon": "bell",
+          "action_text": null,
+          "scheduled_for": null,
+          "expires_at": null,
+          "is_archived": false
+        },
+        {
+          "id": "2304d28f-9d4e-4d76-91f2-70ac5086ffca",
+          "user_id": "18f49e79-f402-46d1-90be-889006e9761c",
+          "title": "Yêu cầu xác thực hạng mới",
+          "message": "Có yêu cầu xác thực hạng H từ Võ Long Sang  tại CLB SBO POOL ARENA",
+          "type": "rank_request",
+          "is_read": false,
+          "action_url": "/club-dashboard?tab=rank-verification",
+          "created_at": "2025-08-21T04:07:54.87225+00:00",
+          "updated_at": "2025-08-21T04:07:54.87225+00:00",
+          "deleted_at": null,
+          "auto_popup": true,
+          "priority": "high",
+          "metadata": {},
+          "club_id": null,
+          "category": "general",
+          "challenge_id": null,
+          "tournament_id": null,
+          "match_id": null,
+          "icon": "bell",
+          "action_text": null,
+          "scheduled_for": null,
+          "expires_at": null,
+          "is_archived": false
+        },
+        {
+          "id": "44be0330-3557-4021-9fe8-e3b7650ae6e7",
+          "user_id": "e30e1d1d-d714-4678-b63c-9f403ea2aeac",
+          "title": "🔔 Sync Test 3",
+          "message": "Testing notification badge sync - notification 3",
+          "type": "sync_test",
+          "is_read": true,
+          "action_url": null,
+          "created_at": "2025-08-16T07:57:46.375388+00:00",
+          "updated_at": "2025-08-18T01:51:59.101225+00:00",
+          "deleted_at": null,
+          "auto_popup": false,
+          "priority": "medium",
+          "metadata": {},
+          "club_id": null,
+          "category": "challenge",
+          "challenge_id": null,
+          "tournament_id": null,
+          "match_id": null,
+          "icon": "test",
+          "action_text": null,
+          "scheduled_for": null,
+          "expires_at": null,
+          "is_archived": false
+        },
+        {
+          "id": "8369905c-1100-4f41-b582-34a4d4944634",
+          "user_id": "2875a45f-58bc-4c20-90fd-2ba58d40aa22",
+          "title": "🏆 Hoàn thành milestone!",
+          "message": "🎉 Chúc mừng! Bạn đã hoàn thành \"Tạo tài khoản thành công\". Để nhận 100 SPA, vui lòng đăng ký hạng trước.",
+          "type": "milestone_completed_pending",
+          "is_read": false,
+          "action_url": null,
+          "created_at": "2025-08-26T10:18:21.425623+00:00",
+          "updated_at": "2025-08-26T10:18:21.425623+00:00",
+          "deleted_at": null,
+          "auto_popup": false,
+          "priority": "high",
+          "metadata": {
+            "action_url": "/ranking/register",
+            "spa_reward": 100,
+            "pending_spa": true,
+            "milestone_id": "33618116-4318-4667-8208-2f167460c348",
+            "milestone_name": "Tạo tài khoản thành công",
+            "milestone_type": "account_creation",
+            "action_required": true
+          },
+          "club_id": null,
+          "category": "achievement",
+          "challenge_id": null,
+          "tournament_id": null,
+          "match_id": null,
+          "icon": "bell",
+          "action_text": null,
+          "scheduled_for": null,
+          "expires_at": null,
+          "is_archived": false
+        },
+        {
+          "id": "6765bcfa-98ba-4f1c-aa8c-463b5148c887",
+          "user_id": "e30e1d1d-d714-4678-b63c-9f403ea2aeac",
+          "title": "📧 Test Unread 1",
+          "message": "Testing badge synchronization",
+          "type": "badge_test",
+          "is_read": true,
+          "action_url": null,
+          "created_at": "2025-08-16T07:54:31.027768+00:00",
+          "updated_at": "2025-08-18T01:51:59.101225+00:00",
+          "deleted_at": null,
+          "auto_popup": false,
+          "priority": "medium",
+          "metadata": {},
+          "club_id": null,
+          "category": "challenge",
+          "challenge_id": null,
+          "tournament_id": null,
+          "match_id": null,
+          "icon": "test",
+          "action_text": null,
+          "scheduled_for": null,
+          "expires_at": null,
+          "is_archived": false
+        }
+      ],
+      "unique_values": {},
+      "data_types": {
+        "id": {
+          "name": "id",
+          "data_type": "string",
+          "sample_values": [
+            "ecc6c1c1-c8e9-4061-b754-385666040101",
+            "2304d28f-9d4e-4d76-91f2-70ac5086ffca",
+            "44be0330-3557-4021-9fe8-e3b7650ae6e7"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "user_id": {
+          "name": "user_id",
+          "data_type": "string",
+          "sample_values": [
+            "18f49e79-f402-46d1-90be-889006e9761c",
+            "18f49e79-f402-46d1-90be-889006e9761c",
+            "e30e1d1d-d714-4678-b63c-9f403ea2aeac"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "title": {
+          "name": "title",
+          "data_type": "string",
+          "sample_values": [
+            "Yêu cầu xác thực hạng mới",
+            "Yêu cầu xác thực hạng mới",
+            "🔔 Sync Test 3"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "message": {
+          "name": "message",
+          "data_type": "string",
+          "sample_values": [
+            "Có yêu cầu xác thực hạng K+ từ Sang tại CLB SBO POOL ARENA",
+            "Có yêu cầu xác thực hạng H từ Võ Long Sang  tại CLB SBO POOL ARENA",
+            "Testing notification badge sync - notification 3"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "type": {
+          "name": "type",
+          "data_type": "string",
+          "sample_values": [
+            "rank_request",
+            "rank_request",
+            "sync_test"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "is_read": {
+          "name": "is_read",
+          "data_type": "boolean",
+          "sample_values": [
+            false,
+            false,
+            true
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "action_url": {
+          "name": "action_url",
+          "data_type": "string",
+          "sample_values": [
+            "/club-dashboard?tab=rank-verification",
+            "/club-dashboard?tab=rank-verification",
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 3,
+          "patterns": [
+            "url"
+          ]
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-18T03:21:36.462148+00:00",
+            "2025-08-21T04:07:54.87225+00:00",
+            "2025-08-16T07:57:46.375388+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-18T03:21:36.462148+00:00",
+            "2025-08-21T04:07:54.87225+00:00",
+            "2025-08-18T01:51:59.101225+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "auto_popup": {
+          "name": "auto_popup",
+          "data_type": "boolean",
+          "sample_values": [
+            true,
+            true,
+            false
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "priority": {
+          "name": "priority",
+          "data_type": "string",
+          "sample_values": [
+            "high",
+            "high",
+            "medium"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "metadata": {
+          "name": "metadata",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "club_id": {
+          "name": "club_id",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "category": {
+          "name": "category",
+          "data_type": "string",
+          "sample_values": [
+            "general",
+            "general",
+            "challenge"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "challenge_id": {
+          "name": "challenge_id",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "tournament_id": {
+          "name": "tournament_id",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "match_id": {
+          "name": "match_id",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "icon": {
+          "name": "icon",
+          "data_type": "string",
+          "sample_values": [
+            "bell",
+            "bell",
+            "test"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "action_text": {
+          "name": "action_text",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "scheduled_for": {
+          "name": "scheduled_for",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "is_archived": {
+          "name": "is_archived",
+          "data_type": "boolean",
+          "sample_values": [
+            false,
+            false,
+            false
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        }
+      },
+      "null_patterns": {},
+      "insights": [
+        "✅ Có dữ liệu đầy đủ để test",
+        "✅ Có cấu trúc chuẩn (id + created_at)",
+        "🔗 Có liên kết với user system"
+      ]
+    },
+    "tournament_registrations": {
+      "table_name": "tournament_registrations",
+      "row_count": 284,
+      "columns": [
+        "id",
+        "tournament_id",
+        "user_id",
+        "registration_status",
+        "payment_status",
+        "registration_date",
+        "payment_date",
+        "notes",
+        "created_at",
+        "updated_at",
+        "player_id"
+      ],
+      "sample_data": [
+        {
+          "id": "fce564e3-ac69-42cc-a312-8bf2f67da9e3",
+          "tournament_id": "7aba5a78-5c2b-4884-937d-99274220b019",
+          "user_id": "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+          "registration_status": "confirmed",
+          "payment_status": "paid",
+          "registration_date": "2025-08-23T02:02:29.093+00:00",
+          "payment_date": "2025-08-23T02:02:29.093+00:00",
+          "notes": "Added by admin via quick add",
+          "created_at": "2025-08-23T02:02:30.202072+00:00",
+          "updated_at": "2025-08-23T02:02:30.202072+00:00",
+          "player_id": "74f72a82-d447-4dfd-a5f8-36701963b5d1"
+        },
+        {
+          "id": "c3b740ed-be36-4e5a-99a1-91c4718c99c0",
+          "tournament_id": "7aba5a78-5c2b-4884-937d-99274220b019",
+          "user_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "registration_status": "confirmed",
+          "payment_status": "paid",
+          "registration_date": "2025-08-23T02:02:29.093+00:00",
+          "payment_date": "2025-08-23T02:02:29.093+00:00",
+          "notes": "Added by admin via quick add",
+          "created_at": "2025-08-23T02:02:30.202072+00:00",
+          "updated_at": "2025-08-23T02:02:30.202072+00:00",
+          "player_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5"
+        },
+        {
+          "id": "01e64bc2-9d00-42c4-bdff-57e311b27e17",
+          "tournament_id": "7aba5a78-5c2b-4884-937d-99274220b019",
+          "user_id": "f271ced4-12e2-4643-8123-1a65df65acf8",
+          "registration_status": "confirmed",
+          "payment_status": "paid",
+          "registration_date": "2025-08-23T02:02:29.093+00:00",
+          "payment_date": "2025-08-23T02:02:29.093+00:00",
+          "notes": "Added by admin via quick add",
+          "created_at": "2025-08-23T02:02:30.202072+00:00",
+          "updated_at": "2025-08-23T02:02:30.202072+00:00",
+          "player_id": "f271ced4-12e2-4643-8123-1a65df65acf8"
+        },
+        {
+          "id": "91b8fcba-abfe-4a96-aaab-d6531db94e7e",
+          "tournament_id": "7aba5a78-5c2b-4884-937d-99274220b019",
+          "user_id": "c00c6652-616f-4f4e-b764-8d8822d16f27",
+          "registration_status": "confirmed",
+          "payment_status": "paid",
+          "registration_date": "2025-08-23T02:02:29.093+00:00",
+          "payment_date": "2025-08-23T02:02:29.093+00:00",
+          "notes": "Added by admin via quick add",
+          "created_at": "2025-08-23T02:02:30.202072+00:00",
+          "updated_at": "2025-08-23T02:02:30.202072+00:00",
+          "player_id": "c00c6652-616f-4f4e-b764-8d8822d16f27"
+        },
+        {
+          "id": "fbb978e4-f4c3-4a2a-b598-13da5f98d607",
+          "tournament_id": "7aba5a78-5c2b-4884-937d-99274220b019",
+          "user_id": "318fbe86-22c7-4d74-bca5-865661a6284f",
+          "registration_status": "confirmed",
+          "payment_status": "paid",
+          "registration_date": "2025-08-23T02:02:29.093+00:00",
+          "payment_date": "2025-08-23T02:02:29.093+00:00",
+          "notes": "Added by admin via quick add",
+          "created_at": "2025-08-23T02:02:30.202072+00:00",
+          "updated_at": "2025-08-23T02:02:30.202072+00:00",
+          "player_id": "318fbe86-22c7-4d74-bca5-865661a6284f"
+        }
+      ],
+      "unique_values": {},
+      "data_types": {
+        "id": {
+          "name": "id",
+          "data_type": "string",
+          "sample_values": [
+            "fce564e3-ac69-42cc-a312-8bf2f67da9e3",
+            "c3b740ed-be36-4e5a-99a1-91c4718c99c0",
+            "01e64bc2-9d00-42c4-bdff-57e311b27e17"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "tournament_id": {
+          "name": "tournament_id",
+          "data_type": "string",
+          "sample_values": [
+            "7aba5a78-5c2b-4884-937d-99274220b019",
+            "7aba5a78-5c2b-4884-937d-99274220b019",
+            "7aba5a78-5c2b-4884-937d-99274220b019"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "user_id": {
+          "name": "user_id",
+          "data_type": "string",
+          "sample_values": [
+            "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+            "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+            "f271ced4-12e2-4643-8123-1a65df65acf8"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "registration_status": {
+          "name": "registration_status",
+          "data_type": "string",
+          "sample_values": [
+            "confirmed",
+            "confirmed",
+            "confirmed"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "payment_status": {
+          "name": "payment_status",
+          "data_type": "string",
+          "sample_values": [
+            "paid",
+            "paid",
+            "paid"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "registration_date": {
+          "name": "registration_date",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-23T02:02:29.093+00:00",
+            "2025-08-23T02:02:29.093+00:00",
+            "2025-08-23T02:02:29.093+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "payment_date": {
+          "name": "payment_date",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-23T02:02:29.093+00:00",
+            "2025-08-23T02:02:29.093+00:00",
+            "2025-08-23T02:02:29.093+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "notes": {
+          "name": "notes",
+          "data_type": "string",
+          "sample_values": [
+            "Added by admin via quick add",
+            "Added by admin via quick add",
+            "Added by admin via quick add"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-23T02:02:30.202072+00:00",
+            "2025-08-23T02:02:30.202072+00:00",
+            "2025-08-23T02:02:30.202072+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-23T02:02:30.202072+00:00",
+            "2025-08-23T02:02:30.202072+00:00",
+            "2025-08-23T02:02:30.202072+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "player_id": {
+          "name": "player_id",
+          "data_type": "string",
+          "sample_values": [
+            "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+            "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+            "f271ced4-12e2-4643-8123-1a65df65acf8"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        }
+      },
+      "null_patterns": {},
+      "insights": [
+        "✅ Có dữ liệu đầy đủ để test",
+        "✅ Có cấu trúc chuẩn (id + created_at)",
+        "🔗 Có liên kết với user system"
+      ]
+    },
+    "club_members": {
+      "table_name": "club_members",
+      "row_count": 10,
+      "columns": [
+        "id",
+        "club_id",
+        "user_id",
+        "membership_type",
+        "membership_number",
+        "join_date",
+        "status",
+        "expiry_date",
+        "total_visits",
+        "last_visit",
+        "total_hours_played",
+        "preferred_table_types",
+        "preferred_time_slots",
+        "notification_preferences",
+        "membership_fee",
+        "outstanding_balance",
+        "created_at",
+        "updated_at",
+        "role"
+      ],
+      "sample_data": [
+        {
+          "id": "858f87d5-055d-4ab9-af63-9ea13d43ca23",
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "user_id": "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+          "membership_type": "regular",
+          "membership_number": "CLBC021746868",
+          "join_date": "2025-08-22T09:31:23.810402+00:00",
+          "status": "active",
+          "expiry_date": null,
+          "total_visits": 0,
+          "last_visit": null,
+          "total_hours_played": 0,
+          "preferred_table_types": null,
+          "preferred_time_slots": null,
+          "notification_preferences": {},
+          "membership_fee": 0,
+          "outstanding_balance": 0,
+          "created_at": "2025-08-22T13:59:46.917509+00:00",
+          "updated_at": "2025-08-22T13:59:46.917509+00:00",
+          "role": "member"
+        },
+        {
+          "id": "ece7d2fd-111f-4ee5-bada-d8034f98ed19",
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "user_id": "bc5545c5-0bb9-488f-b2ba-16fa373e1f5e",
+          "membership_type": "regular",
+          "membership_number": "CLBC021746993",
+          "join_date": "2025-08-22T12:23:31.99393+00:00",
+          "status": "active",
+          "expiry_date": null,
+          "total_visits": 0,
+          "last_visit": null,
+          "total_hours_played": 0,
+          "preferred_table_types": null,
+          "preferred_time_slots": null,
+          "notification_preferences": {},
+          "membership_fee": 0,
+          "outstanding_balance": 0,
+          "created_at": "2025-08-22T13:59:47.02985+00:00",
+          "updated_at": "2025-08-22T13:59:47.02985+00:00",
+          "role": "member"
+        },
+        {
+          "id": "d5c4cb5a-75aa-4928-9e64-33cda8807bec",
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "user_id": "89e6f5c0-29dc-4a75-9744-cd11b6d51723",
+          "membership_type": "regular",
+          "membership_number": "CLBC021747109",
+          "join_date": "2025-08-22T12:23:33.099924+00:00",
+          "status": "active",
+          "expiry_date": null,
+          "total_visits": 0,
+          "last_visit": null,
+          "total_hours_played": 0,
+          "preferred_table_types": null,
+          "preferred_time_slots": null,
+          "notification_preferences": {},
+          "membership_fee": 0,
+          "outstanding_balance": 0,
+          "created_at": "2025-08-22T13:59:47.156017+00:00",
+          "updated_at": "2025-08-22T13:59:47.156017+00:00",
+          "role": "member"
+        },
+        {
+          "id": "09553e16-7f94-4fe6-8e68-fcb7d77d866c",
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "user_id": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "membership_type": "regular",
+          "membership_number": "CLBC0217409530",
+          "join_date": "2025-08-22T06:27:04.421+00:00",
+          "status": "active",
+          "expiry_date": null,
+          "total_visits": 3,
+          "last_visit": null,
+          "total_hours_played": 16,
+          "preferred_table_types": null,
+          "preferred_time_slots": null,
+          "notification_preferences": {},
+          "membership_fee": 0,
+          "outstanding_balance": 0,
+          "created_at": "2025-08-22T14:02:41.019155+00:00",
+          "updated_at": "2025-08-22T14:02:41.019155+00:00",
+          "role": "member"
+        },
+        {
+          "id": "5c0f0c75-3db3-4ea3-971c-42ca45f9a6a8",
+          "club_id": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "user_id": "e411093e-144a-46c3-9def-37186c4ee6c8",
+          "membership_type": "regular",
+          "membership_number": "CLBC0217411861",
+          "join_date": "2025-08-13T08:46:08.501416+00:00",
+          "status": "active",
+          "expiry_date": null,
+          "total_visits": 1,
+          "last_visit": null,
+          "total_hours_played": 53,
+          "preferred_table_types": null,
+          "preferred_time_slots": null,
+          "notification_preferences": {},
+          "membership_fee": 0,
+          "outstanding_balance": 0,
+          "created_at": "2025-08-22T14:02:41.251382+00:00",
+          "updated_at": "2025-08-22T14:02:41.251382+00:00",
+          "role": "member"
+        }
+      ],
+      "unique_values": {},
+      "data_types": {
+        "id": {
+          "name": "id",
+          "data_type": "string",
+          "sample_values": [
+            "858f87d5-055d-4ab9-af63-9ea13d43ca23",
+            "ece7d2fd-111f-4ee5-bada-d8034f98ed19",
+            "d5c4cb5a-75aa-4928-9e64-33cda8807bec"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "club_id": {
+          "name": "club_id",
+          "data_type": "string",
+          "sample_values": [
+            "8d883f90-0c54-4757-adba-25f1d5c02174",
+            "8d883f90-0c54-4757-adba-25f1d5c02174",
+            "8d883f90-0c54-4757-adba-25f1d5c02174"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "user_id": {
+          "name": "user_id",
+          "data_type": "string",
+          "sample_values": [
+            "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+            "bc5545c5-0bb9-488f-b2ba-16fa373e1f5e",
+            "89e6f5c0-29dc-4a75-9744-cd11b6d51723"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "membership_type": {
+          "name": "membership_type",
+          "data_type": "string",
+          "sample_values": [
+            "regular",
+            "regular",
+            "regular"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "membership_number": {
+          "name": "membership_number",
+          "data_type": "string",
+          "sample_values": [
+            "CLBC021746868",
+            "CLBC021746993",
+            "CLBC021747109"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "join_date": {
+          "name": "join_date",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-22T09:31:23.810402+00:00",
+            "2025-08-22T12:23:31.99393+00:00",
+            "2025-08-22T12:23:33.099924+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "status": {
+          "name": "status",
+          "data_type": "string",
+          "sample_values": [
+            "active",
+            "active",
+            "active"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "expiry_date": {
+          "name": "expiry_date",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "total_visits": {
+          "name": "total_visits",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "last_visit": {
+          "name": "last_visit",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "total_hours_played": {
+          "name": "total_hours_played",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "preferred_table_types": {
+          "name": "preferred_table_types",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "preferred_time_slots": {
+          "name": "preferred_time_slots",
+          "data_type": "unknown",
+          "sample_values": [
+            null,
+            null,
+            null
+          ],
+          "unique_count": 0,
+          "null_count": 5,
+          "patterns": []
+        },
+        "notification_preferences": {
+          "name": "notification_preferences",
+          "data_type": "object",
+          "sample_values": [
+            {},
+            {},
+            {}
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "membership_fee": {
+          "name": "membership_fee",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "outstanding_balance": {
+          "name": "outstanding_balance",
+          "data_type": "number",
+          "sample_values": [
+            0,
+            0,
+            0
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-22T13:59:46.917509+00:00",
+            "2025-08-22T13:59:47.02985+00:00",
+            "2025-08-22T13:59:47.156017+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-22T13:59:46.917509+00:00",
+            "2025-08-22T13:59:47.02985+00:00",
+            "2025-08-22T13:59:47.156017+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "role": {
+          "name": "role",
+          "data_type": "string",
+          "sample_values": [
+            "member",
+            "member",
+            "member"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        }
+      },
+      "null_patterns": {},
+      "insights": [
+        "✅ Có dữ liệu đầy đủ để test",
+        "✅ Có cấu trúc chuẩn (id + created_at)",
+        "🔗 Có liên kết với user system"
+      ]
+    },
+    "ranks": {
+      "table_name": "ranks",
+      "row_count": 12,
+      "columns": [
+        "id",
+        "code",
+        "rank_name",
+        "rank_order",
+        "elo_requirement",
+        "rank_color",
+        "description",
+        "created_at",
+        "updated_at",
+        "level"
+      ],
+      "sample_data": [
+        {
+          "id": "8cd47209-05e6-42c7-b8b4-2e59b2cb64e1",
+          "code": "K",
+          "rank_name": "Hạng K",
+          "rank_order": 1,
+          "elo_requirement": 1000,
+          "rank_color": "text-slate-600",
+          "description": "Hạng thấp nhất",
+          "created_at": "2025-07-21T08:42:52.480869+00:00",
+          "updated_at": "2025-08-03T02:15:27.454384+00:00",
+          "level": 1
+        },
+        {
+          "id": "f82ebe2f-e317-4a92-9915-3377cc37fb8e",
+          "code": "K+",
+          "rank_name": "Hạng K+",
+          "rank_order": 2,
+          "elo_requirement": 1100,
+          "rank_color": "text-slate-500",
+          "description": "Hạng K cải tiến",
+          "created_at": "2025-07-21T08:42:52.480869+00:00",
+          "updated_at": "2025-08-03T02:15:27.454384+00:00",
+          "level": 2
+        },
+        {
+          "id": "4922535a-bbeb-45c8-8425-f8b9e2724cd5",
+          "code": "I",
+          "rank_name": "Hạng I",
+          "rank_order": 3,
+          "elo_requirement": 1200,
+          "rank_color": "text-amber-600",
+          "description": "Hạng trung bình thấp",
+          "created_at": "2025-07-21T08:42:52.480869+00:00",
+          "updated_at": "2025-08-03T02:15:27.454384+00:00",
+          "level": 3
+        },
+        {
+          "id": "7bdf3293-e6c1-43aa-bda6-52dfd1912b37",
+          "code": "I+",
+          "rank_name": "Hạng I+",
+          "rank_order": 4,
+          "elo_requirement": 1300,
+          "rank_color": "text-amber-500",
+          "description": "Hạng I cải tiến",
+          "created_at": "2025-07-21T08:42:52.480869+00:00",
+          "updated_at": "2025-08-03T02:15:27.454384+00:00",
+          "level": 4
+        },
+        {
+          "id": "37a18f53-58f9-4933-b42c-842c620f537f",
+          "code": "H",
+          "rank_name": "Hạng H",
+          "rank_order": 5,
+          "elo_requirement": 1400,
+          "rank_color": "text-green-600",
+          "description": "Hạng trung bình",
+          "created_at": "2025-07-21T08:42:52.480869+00:00",
+          "updated_at": "2025-08-03T02:15:27.454384+00:00",
+          "level": 5
+        }
+      ],
+      "unique_values": {},
+      "data_types": {
+        "id": {
+          "name": "id",
+          "data_type": "string",
+          "sample_values": [
+            "8cd47209-05e6-42c7-b8b4-2e59b2cb64e1",
+            "f82ebe2f-e317-4a92-9915-3377cc37fb8e",
+            "4922535a-bbeb-45c8-8425-f8b9e2724cd5"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "identifier"
+          ]
+        },
+        "code": {
+          "name": "code",
+          "data_type": "string",
+          "sample_values": [
+            "K",
+            "K+",
+            "I"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "rank_name": {
+          "name": "rank_name",
+          "data_type": "string",
+          "sample_values": [
+            "Hạng K",
+            "Hạng K+",
+            "Hạng I"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "rank_order": {
+          "name": "rank_order",
+          "data_type": "number",
+          "sample_values": [
+            1,
+            2,
+            3
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "elo_requirement": {
+          "name": "elo_requirement",
+          "data_type": "number",
+          "sample_values": [
+            1000,
+            1100,
+            1200
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "rank_color": {
+          "name": "rank_color",
+          "data_type": "string",
+          "sample_values": [
+            "text-slate-600",
+            "text-slate-500",
+            "text-amber-600"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "description": {
+          "name": "description",
+          "data_type": "string",
+          "sample_values": [
+            "Hạng thấp nhất",
+            "Hạng K cải tiến",
+            "Hạng trung bình thấp"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-07-21T08:42:52.480869+00:00",
+            "2025-07-21T08:42:52.480869+00:00",
+            "2025-07-21T08:42:52.480869+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "data_type": "string",
+          "sample_values": [
+            "2025-08-03T02:15:27.454384+00:00",
+            "2025-08-03T02:15:27.454384+00:00",
+            "2025-08-03T02:15:27.454384+00:00"
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": [
+            "timestamp"
+          ]
+        },
+        "level": {
+          "name": "level",
+          "data_type": "number",
+          "sample_values": [
+            1,
+            2,
+            3
+          ],
+          "unique_count": 0,
+          "null_count": 0,
+          "patterns": []
+        }
+      },
+      "null_patterns": {},
+      "insights": [
+        "✅ Có dữ liệu đầy đủ để test",
+        "✅ Có cấu trúc chuẩn (id + created_at)"
+      ]
+    }
+  },
+  "data_samples": {},
+  "relationships_found": {
+    "profiles": [],
+    "challenges": [],
+    "tournaments": [],
+    "wallets": [],
+    "user_roles": [],
+    "notifications": [
+      {
+        "column": "challenge_id",
+        "references": "challenges",
+        "type": "foreign_key"
+      },
+      {
+        "column": "tournament_id",
+        "references": "tournaments",
+        "type": "foreign_key"
+      }
+    ],
+    "tournament_registrations": [
+      {
+        "column": "tournament_id",
+        "references": "tournaments",
+        "type": "foreign_key"
+      }
+    ],
+    "club_members": [],
+    "ranks": []
+  },
+  "recommendations": [],
+  "summary": {
+    "total_tables_analyzed": 9,
+    "tables_with_data": 9,
+    "total_columns": 200,
+    "avg_columns_per_table": 22
+  },
+  "generated_at": "2025-08-31T04:41:25.900Z"
+}

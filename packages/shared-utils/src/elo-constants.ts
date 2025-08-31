@@ -17,13 +17,13 @@ export const RANK_ELO = {
 } as const;
 
 export const TOURNAMENT_ELO_REWARDS = {
-  CHAMPION: 100,
-  RUNNER_UP: 50,
-  THIRD_PLACE: 25,
-  FOURTH_PLACE: 12,
-  TOP_8: 6,
-  TOP_16: 3,
-  PARTICIPATION: 1,
+  CHAMPION: 200,
+  RUNNER_UP: 150,
+  THIRD_PLACE: 100,
+  FOURTH_PLACE: 75,
+  TOP_8: 50,
+  TOP_16: 30,
+  PARTICIPATION: 25,
 } as const;
 
 export const SPA_TOURNAMENT_REWARDS = {

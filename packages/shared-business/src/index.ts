@@ -1,8 +1,153 @@
 // SABO Pool Arena - Shared Business Logic Package
-// Consolidated business logic services for tournament, ranking, and payment systems
+// Consolidated business logic services for all major features
 
+// ===== PHASE 2: HIGH PRIORITY BUSINESS LOGIC =====
+// User Management
+export * from './user';
+
+// Club Management  
+export * from './club';
+
+// Challenge System
+export * from './challenge';
+
+// ===== PHASE 3: MEDIUM PRIORITY BUSINESS LOGIC =====
+// Notification System
+export {
+  NotificationService,
+  NotificationTemplates,
+  createNotificationService,
+  validateNotificationData,
+  type Notification,
+  type CreateNotificationData,
+  type NotificationStats,
+  type NotificationFilters,
+  type NotificationCategory,
+  type NotificationPriority,
+  type NotificationIcon,
+  type PaginationOptions
+} from './notification';
+
+// Analytics & Tracking
+export {
+  AnalyticsService,
+  createAnalyticsService,
+  aggregateMetricsByPeriod,
+  calculateMovingAverage,
+  type MetricData,
+  type TimeSeriesData,
+  type ChartData,
+  type AnalyticsFilters,
+  type ClubStats as AnalyticsClubStats,
+  type ClubPerformanceMetrics,
+  type UserStats as AnalyticsUserStats,
+  type UserBehaviorMetrics,
+  type RevenueStats,
+  type PerformanceMetrics,
+  type MetricType,
+  type TimeRange,
+  type ChartType
+} from './analytics';
+
+// Admin Functions
+export {
+  AdminService,
+  ROLE_DEFINITIONS,
+  createAdminService,
+  roleHasPermission,
+  getRolePermissions,
+  type AdminUser,
+  type RoleDefinition,
+  type AdminStats,
+  type AdminActivity,
+  type ModerationReport,
+  type UserManagementAction,
+  type UserRole,
+  type Permission,
+  type ActionType
+} from './admin';
+
+// ===== EXISTING BUSINESS LOGIC =====
 // Tournament Business Logic
 export * from './tournament';
+
+// Phase 4: Advanced Business Logic Services (Explicit Exports to Avoid Conflicts)
+export {
+  TournamentCoreLogicService,
+  SABO_TOURNAMENT_TYPES,
+  TOURNAMENT_STATUSES,
+  BRACKET_STATUSES,
+  MATCH_STATUSES,
+  type TournamentCreationRequest,
+  type TournamentValidationResult,
+  type TournamentProgress,
+  type BracketAdvancement,
+  type MatchAdvancement,
+  type TournamentStructure,
+  type BracketStructure,
+  type MatchStructure,
+  type TournamentMetadata,
+  type BracketMetadata,
+  type MatchMetadata,
+  type SABOTournamentType,
+  type TournamentStatus,
+  type BracketStatus,
+  type MatchStatus,
+  type TournamentSize,
+  type BracketType,
+  type MatchType,
+} from './tournament/tournament-core-logic';
+
+export {
+  ELOCalculationService,
+  ELO_ALGORITHM_TYPES,
+  type ELOCalculationRequest,
+  type ELOCalculationResult as ELOCalcResult,
+  type RatingPrediction,
+  type RankingProgression,
+  type PerformanceAnalysis,
+  type ELOStatistics,
+  type ELOTrendData,
+  type ELOAlgorithmType,
+  type ELOConfig as ELOCalcConfig,
+  type ELOMatch as ELOCalcMatch,
+  type ELOResult as ELOCalcResult,
+  type RankProgression as ELORankProgression,
+  type RankCode as ELORankCode,
+} from './ranking/elo-calculation-service';
+
+export {
+  BusinessValidationService,
+  type BusinessValidationRequest,
+  type BusinessValidationResult as BizValidationResult,
+  type FormValidation,
+  type TournamentValidation,
+  type RegistrationValidation,
+  type BusinessRule,
+  type ValidationContext,
+  type ValidationError as BizValidationError,
+  type ValidationWarning as BizValidationWarning,
+  type ValidationSeverity,
+  type ValidationCategory,
+  type ValidationType,
+} from './validation/business-validation-service';
+
+export {
+  RewardsCalculationService,
+  BASE_ELO_REWARDS,
+  BASE_SPA_REWARDS,
+  RANK_MULTIPLIERS,
+  PRIZE_DISTRIBUTION,
+  type RewardCalculationResult,
+  type TournamentRewards,
+  type RewardPosition,
+  type SpecialAward,
+  type PrizeDistribution,
+  type RewardMetadata,
+  type RankMultipliers,
+  type TournamentPosition,
+  type RankCode as RewardRankCode,
+} from './rewards/rewards-calculation-service';
 
 // Ranking & ELO System
 export * from './ranking';

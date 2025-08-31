@@ -8,50 +8,50 @@ import { ResponsiveLayout } from './ResponsiveLayout';
 import { useLocation } from 'react-router-dom';
 
 interface RoleBasedLayoutProps {
-  children: React.ReactNode;
+ children: React.ReactNode;
 }
 
 export const RoleBasedLayout: React.FC<RoleBasedLayoutProps> = ({
-  children,
+ children,
 }) => {
-  const { user, loading: authLoading } = useAuth();
-  const { isAdmin, isLoading: adminLoading } = useAdminCheck();
-  const { isClubOwner, loading: clubLoading } = useClubOwnership();
-  const { isDesktop } = useOptimizedResponsive();
-  const location = useLocation();
-  const path = location.pathname;
-  const isOwnerManagementRoute =
-    path.startsWith('/club-management') || /\/clubs\/.+\/owner$/.test(path);
+ const { user, loading: authLoading } = useAuth();
+ const { isAdmin, isLoading: adminLoading } = useAdminCheck();
+ const { isClubOwner, loading: clubLoading } = useClubOwnership();
+ const { isDesktop } = useOptimizedResponsive();
+ const location = useLocation();
+ const path = location.pathname;
+ const isOwnerManagementRoute =
+  path.startsWith('/club-management') || /\/clubs\/.+\/owner$/.test(path);
 
-  console.log('[RoleBasedLayout] Debug:', {
-    user: user?.id,
-    isClubOwner,
-    isOwnerManagementRoute,
-    path,
-    loading: { authLoading, adminLoading, clubLoading },
-  });
+ console.log('[RoleBasedLayout] Debug:', {
+  user: user?.id,
+  isClubOwner,
+  isOwnerManagementRoute,
+  path,
+  loading: { authLoading, adminLoading, clubLoading },
+ });
 
-  // Show loading while checking roles
-  if (authLoading || adminLoading || clubLoading) {
-    return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
-      </div>
-    );
-  }
+ // Show loading while checking roles
+ if (authLoading || adminLoading || clubLoading) {
+  return (
+   <div className='min-h-screen flex items-center justify-center'>
+    <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
+   </div>
+  );
+ }
 
-  // Priority: Club Owner > Regular User (no admin in user app)
-  // Note: Admin functionality is handled in separate admin app
+ // Priority: Club Owner > Regular User (no admin in user app)
+ // Note: Admin functionality is handled in separate admin app
 
-  // Club owners get club-specific layout ONLY for management routes
-  if (user && isClubOwner && isOwnerManagementRoute) {
-    console.log(
-      '[RoleBasedLayout] Using ClubResponsiveLayout for owner management'
-    );
-    return <ClubResponsiveLayout>{children}</ClubResponsiveLayout>;
-  }
+ // Club owners get club-specific layout ONLY for management routes
+ if (user && isClubOwner && isOwnerManagementRoute) {
+  console.log(
+   '[RoleBasedLayout] Using ClubResponsiveLayout for owner management'
+  );
+  return <ClubResponsiveLayout>{children}</ClubResponsiveLayout>;
+ }
 
-  // Regular users get standard responsive layout (including club owners viewing public pages)
-  console.log('[RoleBasedLayout] Using ResponsiveLayout (player/public)');
-  return <ResponsiveLayout>{children}</ResponsiveLayout>;
+ // Regular users get standard responsive layout (including club owners viewing public pages)
+ console.log('[RoleBasedLayout] Using ResponsiveLayout (player/public)');
+ return <ResponsiveLayout>{children}</ResponsiveLayout>;
 };

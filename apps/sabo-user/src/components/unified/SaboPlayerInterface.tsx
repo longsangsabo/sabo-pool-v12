@@ -8,7 +8,7 @@ import { MobilePlayerLayout } from '@/components/mobile/MobilePlayerLayout';
 import './styles/sabo-design-system.css';
 
 interface SaboPlayerInterfaceProps {
-  children?: React.ReactNode;
+ children?: React.ReactNode;
 }
 
 /**
@@ -25,50 +25,50 @@ interface SaboPlayerInterfaceProps {
  * - Responsive layout system
  */
 export const SaboPlayerInterface: React.FC<SaboPlayerInterfaceProps> = ({ 
-  children 
+ children 
 }) => {
-  const { isMobile, isTablet, isDesktop } = useOptimizedResponsive();
+ const { isMobile, isTablet, isDesktop } = useOptimizedResponsive();
 
-  // Mobile Interface - Uses existing mobile layout
-  if (isMobile) {
-    return (
-      <MobilePlayerLayout 
-        pageTitle="Trang Chủ"
-        showBackground={true}
-        showHeader={true}
-        showNavigation={true}
-      >
-        {children}
-      </MobilePlayerLayout>
-    );
-  }
-
-  // Desktop Interface - Uses unified PlayerDesktopLayout
-  if (isDesktop) {
-    return (
-      <PlayerDesktopLayout pageTitle="SABO Arena Player">
-        {children || <DesktopDashboard />}
-      </PlayerDesktopLayout>
-    );
-  }
-
-  // Tablet Interface - Falls back to mobile layout
+ // Mobile Interface - Uses existing mobile layout
+ if (isMobile) {
   return (
-    <MobilePlayerLayout 
-      pageTitle="Trang Chủ"
-      showBackground={true}
-      showHeader={true}
-      showNavigation={true}
-    >
-      {children}
-    </MobilePlayerLayout>
+   <MobilePlayerLayout 
+    pageTitle="Trang Chủ"
+    showBackground={true}
+    showHeader={true}
+    showNavigation={true}
+   >
+    {children}
+   </MobilePlayerLayout>
   );
+ }
+
+ // Desktop Interface - Uses unified PlayerDesktopLayout
+ if (isDesktop) {
+  return (
+   <PlayerDesktopLayout pageTitle="SABO Arena Player">
+    {children || <DesktopDashboard />}
+   </PlayerDesktopLayout>
+  );
+ }
+
+ // Tablet Interface - Falls back to mobile layout
+ return (
+  <MobilePlayerLayout 
+   pageTitle="Trang Chủ"
+   showBackground={true}
+   showHeader={true}
+   showNavigation={true}
+  >
+   {children}
+  </MobilePlayerLayout>
+ );
 };
 
 // Export individual components for custom layouts
 export {
-  DesktopDashboard,
-  PlayerDesktopLayout,
+ DesktopDashboard,
+ PlayerDesktopLayout,
 };
 
 /**
@@ -79,11 +79,11 @@ export {
  * 
  * // Custom content with unified interface
  * <SaboPlayerInterface>
- *   <CustomDashboardContent />
+ *  <CustomDashboardContent />
  * </SaboPlayerInterface>
  * 
  * // Individual components for custom layouts
  * <PlayerDesktopLayout pageTitle="Custom Page">
- *   <DesktopDashboard />
+ *  <DesktopDashboard />
  * </PlayerDesktopLayout>
  */

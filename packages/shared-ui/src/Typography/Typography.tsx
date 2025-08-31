@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '../../../shared-utils/src/helpers';
+import { cn } from '../lib/utils';
 
 interface TypographyProps {
   variant?: 'caption' | 'body-small' | 'body' | 'body-large' | 'title' | 'heading' | 'display';

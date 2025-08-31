@@ -11,35 +11,35 @@ import { AuthProvider } from '@/hooks/useAuth';
 import { useServiceWorker } from '@/hooks/useServiceWorker';
 
 interface CombinedProvidersProps {
-  children: React.ReactNode;
+ children: React.ReactNode;
 }
 
 const CombinedProvidersComponent: React.FC<CombinedProvidersProps> = ({
-  children,
+ children,
 }) => {
-  // Register service worker (safe client-side only)
-  try {
-    useServiceWorker();
-  } catch (e) {
-    // Ignore during SSR / tests
-  }
-  return (
-    <AuthErrorBoundary>
-      <ThemeProvider defaultTheme='dark' storageKey='sabo-ui-theme'>
-        <AuthProvider>
-          <AvatarProvider>
-            <LanguageProvider>
-              <ResponsiveLayoutProvider>
-                <UserDataProvider>
-                  <AppProviders>{children}</AppProviders>
-                </UserDataProvider>
-              </ResponsiveLayoutProvider>
-            </LanguageProvider>
-          </AvatarProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </AuthErrorBoundary>
-  );
+ // Register service worker (safe client-side only)
+ try {
+  useServiceWorker();
+ } catch (e) {
+  // Ignore during SSR / tests
+ }
+ return (
+  <AuthErrorBoundary>
+   <ThemeProvider defaultTheme='dark' storageKey='sabo-ui-theme'>
+    <AuthProvider>
+     <AvatarProvider>
+      <LanguageProvider>
+       <ResponsiveLayoutProvider>
+        <UserDataProvider>
+         <AppProviders>{children}</AppProviders>
+        </UserDataProvider>
+       </ResponsiveLayoutProvider>
+      </LanguageProvider>
+     </AvatarProvider>
+    </AuthProvider>
+   </ThemeProvider>
+  </AuthErrorBoundary>
+ );
 };
 
 export const CombinedProviders = memo(CombinedProvidersComponent);

@@ -4,21 +4,21 @@ import { LoadingStateProvider } from './LoadingStateContext';
 import { ErrorStateProvider } from './ErrorStateContext';
 
 interface AppProvidersProps {
-  children: React.ReactNode;
-  clubId?: string;
+ children: React.ReactNode;
+ clubId?: string;
 }
 
 export const AppProviders: React.FC<AppProvidersProps> = ({
-  children,
-  clubId,
+ children,
+ clubId,
 }) => {
-  return (
-    <ErrorStateProvider>
-      <LoadingStateProvider>
-        <TournamentGlobalProvider clubId={clubId}>
-          {children}
-        </TournamentGlobalProvider>
-      </LoadingStateProvider>
-    </ErrorStateProvider>
-  );
+ return (
+  <ErrorStateProvider>
+   <LoadingStateProvider>
+    <TournamentGlobalProvider clubId={clubId}>
+     {children}
+    </TournamentGlobalProvider>
+   </LoadingStateProvider>
+  </ErrorStateProvider>
+ );
 };

@@ -1,6 +1,20 @@
-/* Import theme system FIRST */
 @import './styles/theme.css';
 @import './styles/sabo-design-system.css';
+@import "./styles/utilities/animations.css";
+@import "./styles/sabo-test-page.css";
+@import "./styles/rank-test-page.css";
+@import "./styles/dynamic-utilities.css";
+@import "./styles/utilities/dynamic-props.css";
+@import "./styles/typography/design-system.css";
+@import "./styles/spacing/design-system.css";
+@import "./styles/utilities/animations.css";
+@import "./styles/sabo-test-page.css";
+@import "./styles/rank-test-page.css";
+@import "./styles/dynamic-utilities.css";
+@import "./styles/utilities/dynamic-props.css";
+@import "./styles/typography/design-system.css";
+@import "./styles/spacing/design-system.css";
+/* Import theme system FIRST */
 
 @tailwind base;
 @tailwind components;
@@ -27,10 +41,3 @@
     color: #f1f5f9; /* slate-100 */
   }
 }
-@import "./styles/utilities/animations.css";
-@import "./styles/sabo-test-page.css";
-@import "./styles/rank-test-page.css";
-@import "./styles/dynamic-utilities.css";
-@import "./styles/utilities/dynamic-props.css";
-@import "./styles/typography/design-system.css";
-@import "./styles/spacing/design-system.css";

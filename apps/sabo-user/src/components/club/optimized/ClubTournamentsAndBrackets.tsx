@@ -4,19 +4,19 @@ import { TournamentSection } from '@/components/error-boundary/SectionWrappers';
 import { AppProviders } from '@/contexts/AppProviders';
 
 interface ClubTournamentsAndBracketsProps {
-  clubId: string;
+ clubId: string;
 }
 
 const ClubTournamentsAndBrackets: React.FC<ClubTournamentsAndBracketsProps> = ({
-  clubId,
+ clubId,
 }) => {
-  return (
-    <AppProviders clubId={clubId}>
-      <TournamentSection>
-        <ClubTournamentManagement clubId={clubId} />
-      </TournamentSection>
-    </AppProviders>
-  );
+ return (
+  <AppProviders clubId={clubId}>
+   <TournamentSection>
+    <ClubTournamentManagement clubId={clubId} />
+   </TournamentSection>
+  </AppProviders>
+ );
 };
 
 export default ClubTournamentsAndBrackets;

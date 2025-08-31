@@ -3,116 +3,116 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
 export const useTournamentRegistrationState = () => {
-  const { user } = useAuth();
-  const [registrationState, setRegistrationState] = useState<
-    Record<string, boolean>
-  >({});
-  const [loading, setLoading] = useState<Record<string, boolean>>({});
+ const { user } = useAuth();
+ const [registrationState, setRegistrationState] = useState<
+  Record<string, boolean>
+ >({});
+ const [loading, setLoading] = useState<Record<string, boolean>>({});
 
-  // Auto-clear state when user logs out
-  useEffect(() => {
-    if (!user) {
-      setRegistrationState({});
-      setLoading({});
-      console.log('User logged out - cleared registration state');
+ // Auto-clear state when user logs out
+ useEffect(() => {
+  if (!user) {
+   setRegistrationState({});
+   setLoading({});
+   console.log('User logged out - cleared registration state');
+  }
+ }, [user]);
+
+ // Direct database check function
+ const checkRegistrationStatus = useCallback(
+  async (tournamentId: string): Promise<boolean> => {
+   if (!user?.id) return false;
+
+   try {
+    const { data, error } = await supabase
+     .from('tournament_registrations')
+     .select('id')
+     .eq('tournament_id', tournamentId)
+     .eq('user_id', user.id)
+     .limit(1);
+
+    if (error) {
+     console.error('Error checking registration:', error);
+     return false;
     }
-  }, [user]);
 
-  // Direct database check function
-  const checkRegistrationStatus = useCallback(
-    async (tournamentId: string): Promise<boolean> => {
-      if (!user?.id) return false;
+    return data && data.length > 0;
+   } catch (error) {
+    console.error('Error checking registration:', error);
+    return false;
+   }
+  },
+  [user?.id]
+ );
 
-      try {
-        const { data, error } = await supabase
-          .from('tournament_registrations')
-          .select('id')
-          .eq('tournament_id', tournamentId)
-          .eq('user_id', user.id)
-          .limit(1);
+ // Load registration status for tournaments
+ const loadRegistrationStatus = useCallback(
+  async (tournamentIds: string[]) => {
+   if (!user?.id || tournamentIds.length === 0) return;
 
-        if (error) {
-          console.error('Error checking registration:', error);
-          return false;
-        }
+   const newState: Record<string, boolean> = {};
 
-        return data && data.length > 0;
-      } catch (error) {
-        console.error('Error checking registration:', error);
-        return false;
-      }
-    },
-    [user?.id]
-  );
+   for (const tournamentId of tournamentIds) {
+    const isRegistered = await checkRegistrationStatus(tournamentId);
+    newState[tournamentId] = isRegistered;
+   }
 
-  // Load registration status for tournaments
-  const loadRegistrationStatus = useCallback(
-    async (tournamentIds: string[]) => {
-      if (!user?.id || tournamentIds.length === 0) return;
+   setRegistrationState(prev => ({ ...prev, ...newState }));
+  },
+  [user?.id, checkRegistrationStatus]
+ );
 
-      const newState: Record<string, boolean> = {};
+ // Set registration status manually
+ const setRegistrationStatus = useCallback(
+  (tournamentId: string, isRegistered: boolean) => {
+   setRegistrationState(prev => ({
+    ...prev,
+    [tournamentId]: isRegistered,
+   }));
+  },
+  []
+ );
 
-      for (const tournamentId of tournamentIds) {
-        const isRegistered = await checkRegistrationStatus(tournamentId);
-        newState[tournamentId] = isRegistered;
-      }
+ // Set loading state
+ const setLoadingState = useCallback(
+  (tournamentId: string, isLoading: boolean) => {
+   setLoading(prev => ({
+    ...prev,
+    [tournamentId]: isLoading,
+   }));
+  },
+  []
+ );
 
-      setRegistrationState(prev => ({ ...prev, ...newState }));
-    },
-    [user?.id, checkRegistrationStatus]
-  );
+ // Get registration status
+ const isRegistered = useCallback(
+  (tournamentId: string): boolean => {
+   return registrationState[tournamentId] || false;
+  },
+  [registrationState]
+ );
 
-  // Set registration status manually
-  const setRegistrationStatus = useCallback(
-    (tournamentId: string, isRegistered: boolean) => {
-      setRegistrationState(prev => ({
-        ...prev,
-        [tournamentId]: isRegistered,
-      }));
-    },
-    []
-  );
+ // Get loading status
+ const isLoading = useCallback(
+  (tournamentId: string): boolean => {
+   return loading[tournamentId] || false;
+  },
+  [loading]
+ );
 
-  // Set loading state
-  const setLoadingState = useCallback(
-    (tournamentId: string, isLoading: boolean) => {
-      setLoading(prev => ({
-        ...prev,
-        [tournamentId]: isLoading,
-      }));
-    },
-    []
-  );
+ // Clear all state
+ const clearState = useCallback(() => {
+  setRegistrationState({});
+  setLoading({});
+ }, []);
 
-  // Get registration status
-  const isRegistered = useCallback(
-    (tournamentId: string): boolean => {
-      return registrationState[tournamentId] || false;
-    },
-    [registrationState]
-  );
-
-  // Get loading status
-  const isLoading = useCallback(
-    (tournamentId: string): boolean => {
-      return loading[tournamentId] || false;
-    },
-    [loading]
-  );
-
-  // Clear all state
-  const clearState = useCallback(() => {
-    setRegistrationState({});
-    setLoading({});
-  }, []);
-
-  return {
-    loadRegistrationStatus,
-    setRegistrationStatus,
-    setLoadingState,
-    isRegistered,
-    isLoading,
-    clearState,
-    registrationState,
-  };
+ return {
+  loadRegistrationStatus,
+  setRegistrationStatus,
+  setLoadingState,
+  isRegistered,
+  isLoading,
+  clearState,
+  registrationState,
+ };
 };

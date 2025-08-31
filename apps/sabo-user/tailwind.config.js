@@ -7,6 +7,15 @@ export default {
   ],
   theme: {
     extend: {
+      fontSize: {
+        'caption': ['12px', '16px'],      // Custom caption size
+        'body-small': ['14px', '20px'],   // Custom body-small size  
+        'body': ['16px', '24px'],         // Custom body size
+        'body-large': ['18px', '28px'],   // Custom body-large size
+        'title': ['20px', '28px'],        // Custom title size
+        'heading': ['24px', '32px'],      // Custom heading size
+        'display': ['30px', '36px']       // Custom display size
+      },
       colors: {
         // CSS variable-based theming
         primary: 'var(--bg-primary)',

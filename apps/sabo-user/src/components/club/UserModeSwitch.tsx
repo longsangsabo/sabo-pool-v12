@@ -6,32 +6,32 @@ import { Users, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export const UserModeSwitch: React.FC = () => {
-  const navigate = useNavigate();
-  const { t } = useLanguage();
+ const navigate = useNavigate();
+ const { t } = useLanguage();
 
-  const handleSwitchToUser = () => {
-    navigate('/');
-  };
+ const handleSwitchToUser = () => {
+  navigate('/');
+ };
 
-  return (
-    <div className='flex items-center gap-2'>
-      <Button
-        variant='outline'
-        size='sm'
-        onClick={handleSwitchToUser}
-        className='flex items-center gap-2 hover:bg-muted'
-      >
-        <Users className='h-4 w-4' />
-        <span>Chế độ người chơi</span>
-        <ArrowRight className='h-3 w-3' />
-      </Button>
+ return (
+  <div className='flex items-center gap-2'>
+   <Button
+    variant='outline'
+    
+    onClick={handleSwitchToUser}
+    className='flex items-center gap-2 hover:bg-muted'
+   >
+    <Users className='h-4 w-4' />
+    <span>Chế độ người chơi</span>
+    <ArrowRight className='h-3 w-3' />
+   </Button>
 
-      <Badge
-        variant='secondary'
-        className='text-caption bg-success-100 text-success-700'
-      >
-        Player Mode
-      </Badge>
-    </div>
-  );
+   <Badge
+    variant='secondary'
+    className='text-caption bg-success-100 text-success-700'
+   >
+    Player Mode
+   </Badge>
+  </div>
+ );
 };

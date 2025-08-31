@@ -7,15 +7,15 @@ import AuthPage from '@/pages/AuthPage';
  * If mode is not one of ['forgot-password','reset-password'], redirect to new login page.
  */
 const AuthRouteGuard: React.FC = () => {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const mode = params.get('mode');
+ const location = useLocation();
+ const params = new URLSearchParams(location.search);
+ const mode = params.get('mode');
 
-  if (mode === 'forgot-password' || mode === 'reset-password') {
-    return <AuthPage />;
-  }
+ if (mode === 'forgot-password' || mode === 'reset-password') {
+  return <AuthPage />;
+ }
 
-  return <Navigate to='/auth/login' replace />;
+ return <Navigate to='/auth/login' replace />;
 };
 
 export default AuthRouteGuard;

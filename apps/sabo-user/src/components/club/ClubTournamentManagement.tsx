@@ -4,13 +4,13 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  Trophy,
-  Plus,
-  CreditCard,
-  Table,
-  Network,
-  GitBranch,
-  Settings,
+ Trophy,
+ Plus,
+ CreditCard,
+ Table,
+ Network,
+ GitBranch,
+ Settings,
 } from 'lucide-react';
 
 // Import shared components
@@ -37,116 +37,116 @@ import { TournamentProvider } from '@/contexts/TournamentContext';
 
 import { ProfileProvider } from '@/contexts/ProfileContext';
 import {
-  TournamentStateProvider,
-  useTournamentState,
+ TournamentStateProvider,
+ useTournamentState,
 } from '@/contexts/TournamentStateContext';
 import { toast } from 'sonner';
 import { createTestTournamentFlow } from '@/utils/tournamentTestFlow';
 
 // Internal component that uses TournamentState
 const ClubTournamentManagementInternal: React.FC = () => {
-  console.log('🔧 ClubTournamentManagementInternal rendering...');
-  const [managementActiveTab, setManagementActiveTab] = useState('create');
+ console.log('🔧 ClubTournamentManagementInternal rendering...');
+ const [managementActiveTab, setManagementActiveTab] = useState('create');
 
-  const tournamentManagementRef = useRef<TournamentManagementHubRef>(null);
-  const { selectedTournamentId, selectedTournament, refreshAll } =
-    useTournamentState();
+ const tournamentManagementRef = useRef<TournamentManagementHubRef>(null);
+ const { selectedTournamentId, selectedTournament, refreshAll } =
+  useTournamentState();
 
-  const handleTournamentSuccess = (tournament: any) => {
-    console.log('✅ Tournament created successfully:', tournament);
-    toast.success('Giải đấu đã được tạo thành công!');
+ const handleTournamentSuccess = (tournament: any) => {
+  console.log('✅ Tournament created successfully:', tournament);
+  toast.success('Giải đấu đã được tạo thành công!');
 
-    // Always go to tournaments list after creation
-    setTimeout(() => {
-      tournamentManagementRef.current?.refreshTournaments();
-      setManagementActiveTab('tournaments');
-      if (tournament?.tournament_type === 'double_elimination') {
-        toast.info(
-          'Giải đấu đã được tạo! Vào "Quản lý Bảng đấu" để tạo bảng đấu loại kép'
+  // Always go to tournaments list after creation
+  setTimeout(() => {
+   tournamentManagementRef.current?.refreshTournaments();
+   setManagementActiveTab('tournaments');
+   if (tournament?.tournament_type === 'double_elimination') {
+    toast.info(
+     'Giải đấu đã được tạo! Vào "Quản lý Bảng đấu" để tạo bảng đấu loại kép'
+    );
+   }
+  }, 500);
+ };
+
+ return (
+  <div className='space-y-4'>
+   {/* Mobile-optimized header using shared component */}
+   <MobileSectionHeader
+    title='Quản lý Giải đấu'
+    subtitle='Tạo mới và quản lý các giải đấu CLB'
+    icon={Trophy}
+    iconColor='text-amber-500'
+   />
+
+   {/* Mobile-optimized tabs */}
+   <Tabs
+    value={managementActiveTab}
+    onValueChange={setManagementActiveTab}
+    className='space-y-4'
+   >
+    {/* Main tabs - improved mobile spacing */}
+    <TabsList className='grid w-full grid-cols-2 h-10 bg-muted/50'>
+     <TabsTrigger
+      value='tournaments'
+      className='text-body-small h-8 px-3 font-medium'
+     >
+      <Trophy className='w-4 h-4 mr-1.5' />
+      Danh sách
+     </TabsTrigger>
+     <TabsTrigger value='create' className='text-body-small h-8 px-3 font-medium'>
+      <Plus className='w-4 h-4 mr-1.5' />
+      Tạo mới
+     </TabsTrigger>
+    </TabsList>
+
+    <TabsContent value='create'>
+     <ProfileProvider>
+      <TournamentProvider>
+       {(() => {
+        console.log(
+         '🎯 About to render EnhancedTournamentForm inside providers'
         );
-      }
-    }, 500);
-  };
+        return (
+         <EnhancedTournamentForm
+          onSuccess={handleTournamentSuccess}
+          onCancel={() => {
+           console.log('❌ Form canceled');
+          }}
+         />
+        );
+       })()}
+      </TournamentProvider>
+     </ProfileProvider>
+    </TabsContent>
 
-  return (
-    <div className='space-y-4'>
-      {/* Mobile-optimized header using shared component */}
-      <MobileSectionHeader
-        title='Quản lý Giải đấu'
-        subtitle='Tạo mới và quản lý các giải đấu CLB'
-        icon={Trophy}
-        iconColor='text-amber-500'
-      />
-
-      {/* Mobile-optimized tabs */}
-      <Tabs
-        value={managementActiveTab}
-        onValueChange={setManagementActiveTab}
-        className='space-y-4'
-      >
-        {/* Main tabs - improved mobile spacing */}
-        <TabsList className='grid w-full grid-cols-2 h-10 bg-muted/50'>
-          <TabsTrigger
-            value='tournaments'
-            className='text-body-small h-8 px-3 font-medium'
-          >
-            <Trophy className='w-4 h-4 mr-1.5' />
-            Danh sách
-          </TabsTrigger>
-          <TabsTrigger value='create' className='text-body-small h-8 px-3 font-medium'>
-            <Plus className='w-4 h-4 mr-1.5' />
-            Tạo mới
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value='create'>
-          <ProfileProvider>
-            <TournamentProvider>
-              {(() => {
-                console.log(
-                  '🎯 About to render EnhancedTournamentForm inside providers'
-                );
-                return (
-                  <EnhancedTournamentForm
-                    onSuccess={handleTournamentSuccess}
-                    onCancel={() => {
-                      console.log('❌ Form canceled');
-                    }}
-                  />
-                );
-              })()}
-            </TournamentProvider>
-          </ProfileProvider>
-        </TabsContent>
-
-        <TabsContent value='tournaments'>
-          <TournamentManagementHub ref={tournamentManagementRef} />
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
+    <TabsContent value='tournaments'>
+     <TournamentManagementHub ref={tournamentManagementRef} />
+    </TabsContent>
+   </Tabs>
+  </div>
+ );
 };
 
 // Main wrapper component with context
 interface ClubTournamentManagementProps {
-  clubId: string;
+ clubId: string;
 }
 
 const ClubTournamentManagement: React.FC<ClubTournamentManagementProps> = ({
-  clubId,
+ clubId,
 }) => {
-  console.log('🔧 ClubTournamentManagement rendering with clubId:', clubId);
+ console.log('🔧 ClubTournamentManagement rendering with clubId:', clubId);
 
-  try {
-    return (
-      <TournamentStateProvider clubId={clubId}>
-        <ClubTournamentManagementInternal />
-      </TournamentStateProvider>
-    );
-  } catch (error) {
-    console.error('🚨 Error in ClubTournamentManagement:', error);
-    return <div>Error loading tournament management: {String(error)}</div>;
-  }
+ try {
+  return (
+   <TournamentStateProvider clubId={clubId}>
+    <ClubTournamentManagementInternal />
+   </TournamentStateProvider>
+  );
+ } catch (error) {
+  console.error('🚨 Error in ClubTournamentManagement:', error);
+  return <div>Error loading tournament management: {String(error)}</div>;
+ }
 };
 
 export default ClubTournamentManagement;

@@ -3,14 +3,14 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
-  const navigate = useNavigate();
+ const navigate = useNavigate();
 
-  useEffect(() => {
-    // Redirect to enhanced register page
-    navigate('/auth/register', { replace: true });
-  }, [navigate]);
+ useEffect(() => {
+  // Redirect to enhanced register page
+  navigate('/auth/register', { replace: true });
+ }, [navigate]);
 
-  return null; // Component just redirects
+ return null; // Component just redirects
 };
 
 export default RegisterPage;

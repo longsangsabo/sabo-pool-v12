@@ -1,6 +1,6 @@
-/* Import theme system FIRST */
 @import '../../../apps/sabo-user/src/styles/theme.css';
 @import '../../../apps/sabo-user/src/styles/sabo-design-system.css';
+/* Import theme system FIRST */
 
 @tailwind base;
 @tailwind components;

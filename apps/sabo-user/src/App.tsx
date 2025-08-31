@@ -1,9 +1,9 @@
 import React, { Suspense, lazy } from 'react';
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
+ BrowserRouter as Router,
+ Routes,
+ Route,
+ Navigate,
 } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
@@ -73,7 +73,7 @@ const Profile = lazy(() => import('./pages/Profile'));
 const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 // Enhanced Challenges V3 - Main implementation
 const EnhancedChallengesPageV3 = lazy(
-  () => import('./pages/challenges/EnhancedChallengesPageV3')
+ () => import('./pages/challenges/EnhancedChallengesPageV3')
 );
 
 // Debug component
@@ -111,7 +111,7 @@ const ThemeImprovementSummary = lazy(() => import('./pages/ThemeImprovementSumma
 // Club components
 const ClubManagementPage = lazy(() => import('./pages/ClubManagementPage'));
 const ClubOwnerDashboardPage = lazy(
-  () => import('./pages/ClubOwnerDashboardPage')
+ () => import('./pages/ClubOwnerDashboardPage')
 );
 
 // Auth pages
@@ -122,232 +122,232 @@ const OtpTestPage = lazy(() => import('./pages/OtpTestPage'));
 
 // Create a stable query client
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      refetchOnWindowFocus: false,
-    },
+ defaultOptions: {
+  queries: {
+   retry: 1,
+   staleTime: 5 * 60 * 1000, // 5 minutes
+   refetchOnWindowFocus: false,
   },
+ },
 });
 
 // Component để sử dụng hooks bên trong providers
 const AppContent = () => {
-  // ✅ Initialize unified messages system
-  const { isConnected } = useUnifiedMessages();
+ // ✅ Initialize unified messages system
+ const { isConnected } = useUnifiedMessages();
 
-  // Inline component to protect club management routes by owner role
-  const ClubOwnerRoute: React.FC<{ children: React.ReactNode }> = ({
-    children,
-  }) => {
-    const { user } = useAuth();
-    const { data: isOwner, isLoading } = useIsClubOwner(user?.id, !!user?.id);
-    if (isLoading)
-      return <div className='p-8 text-center'>Đang kiểm tra quyền...</div>;
-    if (!isOwner)
-      return (
-        <div className='p-8 text-center text-red-500'>
-          Bạn không có quyền truy cập khu vực quản lý CLB.
-        </div>
-      );
-    return <>{children}</>;
-  };
-
-  // Landing route component to handle root path redirection
-  const LandingRoute: React.FC = () => {
-    const { user, session, loading } = useAuth();
-    if (loading) return <div className='p-8 text-center'>Đang tải...</div>;
-    if (user && session) return <Navigate to='/dashboard' replace />;
-    return <HomePage />;
-  };
-
-  return (
-    <div className='min-h-screen bg-background'>
-      <Suspense fallback={<AppLoadingFallback />}>
-        <Routes>
-          {/* Public routes - no authentication required */}
-          <Route path='/' element={<LandingRoute />} />
-          <Route path='/legacy-claim' element={<LegacyClaim />} />
-          <Route path='/claim-code' element={<ClaimCodePage />} />
-          <Route path='/about' element={<AboutPage />} />
-          <Route path='/contact' element={<ContactPage />} />
-          <Route path='/privacy' element={<PrivacyPolicyPage />} />
-          <Route path='/terms' element={<TermsOfServicePage />} />
-          <Route path='/news' element={<NewsPage />} />
-
-          {/* Demo pages */}
-          {/* PRODUCTION: All demo/test routes removed for better mobile performance */}
-
-          {/* Auth routes - only accessible when NOT logged in */}
-          <Route
-            path='/auth'
-            element={
-              <PublicRoute>
-                <AuthRouteGuard />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path='/auth/login'
-            element={
-              <PublicRoute>
-                <EnhancedLoginPage />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path='/auth/register'
-            element={
-              <PublicRoute>
-                <EnhancedRegisterPage />
-              </PublicRoute>
-            }
-          />
-          {/* Friendly redirects for legacy paths */}
-          <Route
-            path='/login'
-            element={<Navigate to='/auth/login' replace />}
-          />
-          <Route
-            path='/register'
-            element={<Navigate to='/auth/register' replace />}
-          />
-          <Route
-            path='/auth/forgot-password'
-            element={
-              <PublicRoute>
-                <ForgotPasswordPage />
-              </PublicRoute>
-            }
-          />
-          <Route path='/auth/callback' element={<AuthCallbackPage />} />
-          <Route path='/test/otp' element={<OtpTestPage />} />
-
-          {/* Protected routes with MainLayout - layout route without path to avoid overriding public home */}
-          <Route
-            element={
-              <ProtectedRoute>
-                <MainLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path='dashboard' element={<Dashboard />} />
-            <Route path='profile' element={<Profile />} />
-            <Route path='challenges' element={<EnhancedChallengesPageV3 />} />
-            {/* Legacy challenge routes removed for production */}
-            <Route path='community' element={<CommunityPage />} />
-            <Route path='calendar' element={<CalendarPage />} />
-            <Route path='settings' element={<SettingsPage />} />
-            <Route path='wallet' element={<WalletPage />} />
-            <Route
-              path='club-registration'
-              element={<ClubRegistrationPage />}
-            />
-            <Route path='feed' element={<FeedPage />} />
-            <Route path='marketplace' element={<MarketplacePage />} />
-            <Route path='messages' element={<MessagesPage />} />
-            <Route path='notifications' element={<NotificationsPage />} />
-            <Route path='milestones' element={<MilestonePage />} />
-            {/* Test routes removed for production - cleaner mobile experience */}
-
-            {/* Public pages accessible through sidebar when logged in */}
-            <Route path='tournaments' element={<TournamentPage />} />
-            <Route path='leaderboard' element={<LeaderboardPage />} />
-            <Route path='clubs' element={<ClubsPage />} />
-            <Route path='clubs/:id' element={<ClubDetailPage />} />
-            <Route
-              path='clubs/:id/owner'
-              element={<ClubOwnerDashboardPage />}
-            />
-            
-            {/* Legacy Claim Admin route removed - now using direct code claim system */}
-            
-            {/* Standardized Pages with Navigation */}
-            <Route path='standardized-dashboard' element={<Navigate to="/dashboard" replace />} />
-            <Route path='standardized-tournaments' element={<StandardizedTournamentsPage />} />
-            <Route path='standardized-challenges' element={<StandardizedChallengesPage />} />
-            <Route path='standardized-profile' element={<StandardizedProfilePage />} />
-          </Route>
-
-        {/* Social Profile - Public route accessible without login */}
-        <Route path='/players/:userId' element={<SocialProfileCard />} />
-        
-        {/* Admin routes - REDIRECT to separate admin app */}
-        <Route
-          path='/admin/*'
-          element={
-            <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
-              <div className="text-center text-white">
-                <h1 className="text-3xl font-bold mb-4">🔄 Redirecting to Admin Panel</h1>
-                <p className="text-gray-400 mb-6">
-                  The admin panel has been moved to a separate application for better performance and security.
-                </p>
-                <div className="bg-primary-600/20 border border-blue-500 rounded-lg p-4 max-w-md mx-auto mb-6">
-                  <p className="text-blue-300 text-body-small">
-                    You are being redirected to the admin application...
-                  </p>
-                </div>
-                <a
-                  href="http://localhost:8081"
-                  className="inline-block bg-primary-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors"
-                >
-                  Go to Admin Panel
-                </a>
-              </div>
-            </div>
-          }
-        />
-
-          {/* Club management routes - protected and require club owner privileges */}
-          <Route
-            path='/club-management/*'
-            element={
-              <ProtectedRoute>
-                <ClubOwnerRoute>
-                  <ClubManagementPage />
-                </ClubOwnerRoute>
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Fallback route */}
-          <Route path='*' element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
-      {/* ✅ Connection indicator for unified messages */}
-      {!isConnected && (
-        <div className="fixed bottom-4 right-4 bg-warning-100 border border-yellow-400 text-warning-700 px-3 py-2 rounded-md text-body-small">
-          🔄 Đang kết nối lại...
-        </div>
-      )}
-      <OfflineIndicator />
+ // Inline component to protect club management routes by owner role
+ const ClubOwnerRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+ }) => {
+  const { user } = useAuth();
+  const { data: isOwner, isLoading } = useIsClubOwner(user?.id, !!user?.id);
+  if (isLoading)
+   return <div className='p-8 text-center'>Đang kiểm tra quyền...</div>;
+  if (!isOwner)
+   return (
+    <div className='p-8 text-center text-red-500'>
+     Bạn không có quyền truy cập khu vực quản lý CLB.
     </div>
-  );
+   );
+  return <>{children}</>;
+ };
+
+ // Landing route component to handle root path redirection
+ const LandingRoute: React.FC = () => {
+  const { user, session, loading } = useAuth();
+  if (loading) return <div className='p-8 text-center'>Đang tải...</div>;
+  if (user && session) return <Navigate to='/dashboard' replace />;
+  return <HomePage />;
+ };
+
+ return (
+  <div className='min-h-screen bg-background'>
+   <Suspense fallback={<AppLoadingFallback />}>
+    <Routes>
+     {/* Public routes - no authentication required */}
+     <Route path='/' element={<LandingRoute />} />
+     <Route path='/legacy-claim' element={<LegacyClaim />} />
+     <Route path='/claim-code' element={<ClaimCodePage />} />
+     <Route path='/about' element={<AboutPage />} />
+     <Route path='/contact' element={<ContactPage />} />
+     <Route path='/privacy' element={<PrivacyPolicyPage />} />
+     <Route path='/terms' element={<TermsOfServicePage />} />
+     <Route path='/news' element={<NewsPage />} />
+
+     {/* Demo pages */}
+     {/* PRODUCTION: All demo/test routes removed for better mobile performance */}
+
+     {/* Auth routes - only accessible when NOT logged in */}
+     <Route
+      path='/auth'
+      element={
+       <PublicRoute>
+        <AuthRouteGuard />
+       </PublicRoute>
+      }
+     />
+     <Route
+      path='/auth/login'
+      element={
+       <PublicRoute>
+        <EnhancedLoginPage />
+       </PublicRoute>
+      }
+     />
+     <Route
+      path='/auth/register'
+      element={
+       <PublicRoute>
+        <EnhancedRegisterPage />
+       </PublicRoute>
+      }
+     />
+     {/* Friendly redirects for legacy paths */}
+     <Route
+      path='/login'
+      element={<Navigate to='/auth/login' replace />}
+     />
+     <Route
+      path='/register'
+      element={<Navigate to='/auth/register' replace />}
+     />
+     <Route
+      path='/auth/forgot-password'
+      element={
+       <PublicRoute>
+        <ForgotPasswordPage />
+       </PublicRoute>
+      }
+     />
+     <Route path='/auth/callback' element={<AuthCallbackPage />} />
+     <Route path='/test/otp' element={<OtpTestPage />} />
+
+     {/* Protected routes with MainLayout - layout route without path to avoid overriding public home */}
+     <Route
+      element={
+       <ProtectedRoute>
+        <MainLayout />
+       </ProtectedRoute>
+      }
+     >
+      <Route path='dashboard' element={<Dashboard />} />
+      <Route path='profile' element={<Profile />} />
+      <Route path='challenges' element={<EnhancedChallengesPageV3 />} />
+      {/* Legacy challenge routes removed for production */}
+      <Route path='community' element={<CommunityPage />} />
+      <Route path='calendar' element={<CalendarPage />} />
+      <Route path='settings' element={<SettingsPage />} />
+      <Route path='wallet' element={<WalletPage />} />
+      <Route
+       path='club-registration'
+       element={<ClubRegistrationPage />}
+      />
+      <Route path='feed' element={<FeedPage />} />
+      <Route path='marketplace' element={<MarketplacePage />} />
+      <Route path='messages' element={<MessagesPage />} />
+      <Route path='notifications' element={<NotificationsPage />} />
+      <Route path='milestones' element={<MilestonePage />} />
+      {/* Test routes removed for production - cleaner mobile experience */}
+
+      {/* Public pages accessible through sidebar when logged in */}
+      <Route path='tournaments' element={<TournamentPage />} />
+      <Route path='leaderboard' element={<LeaderboardPage />} />
+      <Route path='clubs' element={<ClubsPage />} />
+      <Route path='clubs/:id' element={<ClubDetailPage />} />
+      <Route
+       path='clubs/:id/owner'
+       element={<ClubOwnerDashboardPage />}
+      />
+      
+      {/* Legacy Claim Admin route removed - now using direct code claim system */}
+      
+      {/* Standardized Pages with Navigation */}
+      <Route path='standardized-dashboard' element={<Navigate to="/dashboard" replace />} />
+      <Route path='standardized-tournaments' element={<StandardizedTournamentsPage />} />
+      <Route path='standardized-challenges' element={<StandardizedChallengesPage />} />
+      <Route path='standardized-profile' element={<StandardizedProfilePage />} />
+     </Route>
+
+    {/* Social Profile - Public route accessible without login */}
+    <Route path='/players/:userId' element={<SocialProfileCard />} />
+    
+    {/* Admin routes - REDIRECT to separate admin app */}
+    <Route
+     path='/admin/*'
+     element={
+      <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
+       <div className="text-center text-white">
+        <h1 className="text-3xl font-bold mb-4">🔄 Redirecting to Admin Panel</h1>
+        <p className="text-gray-400 mb-6">
+         The admin panel has been moved to a separate application for better performance and security.
+        </p>
+        <div className="bg-primary-600/20 border border-blue-500 rounded-lg p-4 max-w-md mx-auto mb-6">
+         <p className="text-blue-300 text-body-small">
+          You are being redirected to the admin application...
+         </p>
+        </div>
+        <a
+         href="http://localhost:8081"
+         className="inline-block bg-primary-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors"
+        >
+         Go to Admin Panel
+        </a>
+       </div>
+      </div>
+     }
+    />
+
+     {/* Club management routes - protected and require club owner privileges */}
+     <Route
+      path='/club-management/*'
+      element={
+       <ProtectedRoute>
+        <ClubOwnerRoute>
+         <ClubManagementPage />
+        </ClubOwnerRoute>
+       </ProtectedRoute>
+      }
+     />
+
+     {/* Fallback route */}
+     <Route path='*' element={<NotFoundPage />} />
+    </Routes>
+   </Suspense>
+   {/* ✅ Connection indicator for unified messages */}
+   {!isConnected && (
+    <div className="fixed bottom-4 right-4 bg-warning-100 border border-yellow-400 text-warning-700 px-3 py-2 rounded-md text-body-small">
+     🔄 Đang kết nối lại...
+    </div>
+   )}
+   <OfflineIndicator />
+  </div>
+ );
 };
 
 const App = () => {
-  // ✅ Make query client available globally for debugging
-  React.useEffect(() => {
-    (window as any).queryClient = queryClient;
-  }, []);
+ // ✅ Make query client available globally for debugging
+ React.useEffect(() => {
+  (window as any).queryClient = queryClient;
+ }, []);
 
-  return (
-    <AppErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <HelmetProvider>
-          <ThemeProvider defaultTheme="dark">{/* 🛡️ LOCKED: Dark mode protected */}
-            <Router>
-              <CombinedProviders>
-                <AppContent />
-                <ReAuthModal />
-              </CombinedProviders>
-              <Toaster />
-            </Router>
-          </ThemeProvider>
-        </HelmetProvider>
-      </QueryClientProvider>
-    </AppErrorBoundary>
-  );
+ return (
+  <AppErrorBoundary>
+   <QueryClientProvider client={queryClient}>
+    <HelmetProvider>
+     <ThemeProvider defaultTheme="dark">{/* 🛡️ LOCKED: Dark mode protected */}
+      <Router>
+       <CombinedProviders>
+        <AppContent />
+        <ReAuthModal />
+       </CombinedProviders>
+       <Toaster />
+      </Router>
+     </ThemeProvider>
+    </HelmetProvider>
+   </QueryClientProvider>
+  </AppErrorBoundary>
+ );
 };
 
 export default App;

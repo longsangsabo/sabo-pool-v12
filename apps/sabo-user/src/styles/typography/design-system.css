@@ -109,17 +109,17 @@
 }
 
 .text-heading-primary {
-  @apply text-heading font-semibold text-primary-600;
+  @apply text-heading font-semibold text-blue-600;
 }
 
 .text-heading-success {
-  @apply text-heading font-bold text-success-600;
+  @apply text-heading font-bold text-green-600;
 }
 
 .text-heading-error {
-  @apply text-heading font-bold text-error-600;
+  @apply text-heading font-bold text-red-600;
 }
 
 .text-title-success {
-  @apply text-title font-semibold text-success-600;
+  @apply text-title font-semibold text-green-600;
 }

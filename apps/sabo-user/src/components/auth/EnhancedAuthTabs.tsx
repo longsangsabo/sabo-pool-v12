@@ -2,45 +2,45 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface EnhancedAuthTabsProps {
-  children: React.ReactNode;
-  defaultTab?: 'phone' | 'email';
+ children: React.ReactNode;
+ defaultTab?: 'phone' | 'email';
 }
 
 export const EnhancedAuthTabs = ({
-  children,
-  defaultTab = 'phone',
+ children,
+ defaultTab = 'phone',
 }: EnhancedAuthTabsProps) => {
-  return (
-    <Tabs defaultValue={defaultTab} className='w-full'>
-      <TabsList className='grid w-full grid-cols-2 mb-6'>
-        <TabsTrigger value='phone' className='text-body-small-medium'>
-          Số điện thoại
-        </TabsTrigger>
-        <TabsTrigger value='email' className='text-body-small-medium'>
-          Email
-        </TabsTrigger>
-      </TabsList>
-      {children}
-    </Tabs>
-  );
+ return (
+  <Tabs defaultValue={defaultTab} className='w-full'>
+   <TabsList className='grid w-full grid-cols-2 mb-6'>
+    <TabsTrigger value='phone' className='text-body-small-medium'>
+     Số điện thoại
+    </TabsTrigger>
+    <TabsTrigger value='email' className='text-body-small-medium'>
+     Email
+    </TabsTrigger>
+   </TabsList>
+   {children}
+  </Tabs>
+ );
 };
 
 export const PhoneTabContent = ({
-  children,
+ children,
 }: {
-  children: React.ReactNode;
+ children: React.ReactNode;
 }) => (
-  <TabsContent value='phone' className='space-y-4'>
-    {children}
-  </TabsContent>
+ <TabsContent value='phone' className='space-y-4'>
+  {children}
+ </TabsContent>
 );
 
 export const EmailTabContent = ({
-  children,
+ children,
 }: {
-  children: React.ReactNode;
+ children: React.ReactNode;
 }) => (
-  <TabsContent value='email' className='space-y-4'>
-    {children}
-  </TabsContent>
+ <TabsContent value='email' className='space-y-4'>
+  {children}
+ </TabsContent>
 );

@@ -1,5 +1,31 @@
-// SABO Pool Arena - Shared Business Logic Package
-// Consolidated business logic services for all major features
+/**
+ * SABO POOL - SHARED BUSINESS SERVICES REGISTRY
+ * ============================================
+ * Central registry và export cho tất cả shared business services
+ * File này là single source of truth cho việc import services từ shared package
+ * 
+ * HOW TO USE:
+ * -----------
+ * import { userService, paymentService } from '@sabo-pool/shared-business';
+ * 
+ * ARCHITECTURE:
+ * ------------
+ * Apps → Shared Business Services → Data Layer
+ */
+
+// ===== SERVICES REGISTRY =====
+import { UserService } from './user/UserService';
+import { PaymentService } from './payment/PaymentService';
+import { NotificationService } from './mobile/NotificationService';
+import { OfflineDataService } from './mobile/OfflineDataService';
+import { WebSocketService } from './mobile/WebSocketService';
+
+// Initialize service instances
+export const userService = new UserService();
+export const paymentService = new PaymentService();
+export const notificationService = new NotificationService();
+export const offlineDataService = new OfflineDataService();
+export const webSocketService = new WebSocketService();
 
 // ===== MOBILE-READY SERVICE LAYER =====
 // Core Services (Week 1-2)

@@ -1,0 +1,2801 @@
+{
+  "analysis_metadata": {
+    "timestamp": "2025-08-31T04:46:45.032Z",
+    "analysis_method": "Service Role Direct Access + Discovery",
+    "completeness_level": "Complete Schema Verification"
+  },
+  "timestamp": "2025-08-31T04:46:45.032Z",
+  "all_tables": [
+    {
+      "table_name": "profiles",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "users",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "user_roles",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "user_preferences",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "user_sessions",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "auth_users",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "auth_sessions",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "auth_refresh_tokens",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "challenges",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "challenge_participants",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "challenge_types",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "game_sessions",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "game_results",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "shots",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "shot_analysis",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "game_mechanics",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "game_settings",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "tournaments",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "tournament_types",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "tournament_brackets",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "tournament_registrations",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "tournament_matches",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "tournament_rounds",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "tournament_settings",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "clubs",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "club_members",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "club_roles",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "club_settings",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "club_invitations",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "club_activities",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "wallets",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "wallet_transactions",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "payment_transactions",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "payment_methods",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "billing_history",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "invoices",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "ranks",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "rank_requirements",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "ranking_history",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "rank_calculations",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "elo_history",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "notifications",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "notification_templates",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "notification_settings",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "messages",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "conversations",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "communication_channels",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "system_events",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "analytics_events",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "user_activities",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "performance_metrics",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "usage_statistics",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "achievements",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "achievement_progress",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "leaderboards",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "rewards",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "badges",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "points_history",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "settings",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "system_config",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "feature_flags",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "maintenance_logs",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "audit_logs",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "news",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "announcements",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "tutorials",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "media_files",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "file_uploads",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "venues",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "tables",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "table_bookings",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "support_tickets",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "faq",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    },
+    {
+      "table_name": "help_articles",
+      "table_type": "BASE TABLE",
+      "table_schema": "public",
+      "discovered": true
+    }
+  ],
+  "complete_schema": {
+    "profiles": {
+      "table_name": "profiles",
+      "columns": [
+        "id",
+        "user_id",
+        "full_name",
+        "display_name",
+        "avatar_url",
+        "bio",
+        "verified_rank",
+        "elo",
+        "created_at",
+        "updated_at",
+        "is_admin",
+        "phone",
+        "skill_level",
+        "active_role",
+        "role",
+        "nickname",
+        "email",
+        "city",
+        "district",
+        "member_since",
+        "completion_percentage",
+        "is_demo_user",
+        "ban_status",
+        "ban_reason",
+        "banned_at",
+        "banned_by",
+        "cover_image_url",
+        "current_rank",
+        "spa_points",
+        "player_id",
+        "is_temp_player"
+      ],
+      "column_count": 31,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "4b18f69b-d907-48d9-b27e-9b43431b48db",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "user_id": {
+          "data_type": "uuid",
+          "sample_value": "ed64fe18-5794-4cdb-bc62-17ce7697e83e",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "full_name": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 3
+        },
+        "display_name": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 4
+        },
+        "avatar_url": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 5
+        },
+        "bio": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 6
+        },
+        "verified_rank": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 7
+        },
+        "elo": {
+          "data_type": "integer",
+          "sample_value": 1000,
+          "is_nullable": false,
+          "column_position": 8
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-23T11:28:23.024234+00:00",
+          "is_nullable": false,
+          "column_position": 9
+        },
+        "updated_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-23T11:28:23.024234+00:00",
+          "is_nullable": false,
+          "column_position": 10
+        },
+        "is_admin": {
+          "data_type": "boolean",
+          "sample_value": false,
+          "is_nullable": false,
+          "column_position": 11
+        },
+        "phone": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 12
+        },
+        "skill_level": {
+          "data_type": "text",
+          "sample_value": "beginner",
+          "is_nullable": false,
+          "column_position": 13
+        },
+        "active_role": {
+          "data_type": "text",
+          "sample_value": "player",
+          "is_nullable": false,
+          "column_position": 14
+        },
+        "role": {
+          "data_type": "text",
+          "sample_value": "player",
+          "is_nullable": false,
+          "column_position": 15
+        },
+        "nickname": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 16
+        },
+        "email": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 17
+        },
+        "city": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 18
+        },
+        "district": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 19
+        },
+        "member_since": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-23T11:28:23.024234+00:00",
+          "is_nullable": false,
+          "column_position": 20
+        },
+        "completion_percentage": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 21
+        },
+        "is_demo_user": {
+          "data_type": "boolean",
+          "sample_value": false,
+          "is_nullable": false,
+          "column_position": 22
+        },
+        "ban_status": {
+          "data_type": "text",
+          "sample_value": "active",
+          "is_nullable": false,
+          "column_position": 23
+        },
+        "ban_reason": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 24
+        },
+        "banned_at": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 25
+        },
+        "banned_by": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 26
+        },
+        "cover_image_url": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 27
+        },
+        "current_rank": {
+          "data_type": "text",
+          "sample_value": "K",
+          "is_nullable": false,
+          "column_position": 28
+        },
+        "spa_points": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 29
+        },
+        "player_id": {
+          "data_type": "uuid",
+          "sample_value": "ed64fe18-5794-4cdb-bc62-17ce7697e83e",
+          "is_nullable": false,
+          "column_position": 30
+        },
+        "is_temp_player": {
+          "data_type": "boolean",
+          "sample_value": false,
+          "is_nullable": false,
+          "column_position": 31
+        }
+      },
+      "has_data": true
+    },
+    "users": {
+      "table_name": "users",
+      "columns": [],
+      "column_count": 0,
+      "column_details": {},
+      "has_data": false,
+      "note": "Table exists but is empty - column structure unknown"
+    },
+    "user_roles": {
+      "table_name": "user_roles",
+      "columns": [
+        "id",
+        "user_id",
+        "role",
+        "created_at",
+        "created_by"
+      ],
+      "column_count": 5,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "62669536-104d-4306-95e9-70bc823fc317",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "user_id": {
+          "data_type": "uuid",
+          "sample_value": "18f6e853-b072-47fb-9c9a-e5d42a5446a5",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "role": {
+          "data_type": "text",
+          "sample_value": "user",
+          "is_nullable": false,
+          "column_position": 3
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-22T03:07:16.42139+00:00",
+          "is_nullable": false,
+          "column_position": 4
+        },
+        "created_by": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 5
+        }
+      },
+      "has_data": true
+    },
+    "challenges": {
+      "table_name": "challenges",
+      "columns": [
+        "id",
+        "challenger_id",
+        "opponent_id",
+        "status",
+        "challenge_message",
+        "response_message",
+        "created_at",
+        "responded_at",
+        "completed_at",
+        "is_open_challenge",
+        "bet_points",
+        "race_to",
+        "handicap_1_rank",
+        "handicap_05_rank",
+        "message",
+        "expires_at",
+        "challenge_type",
+        "handicap_data",
+        "club_id",
+        "scheduled_time",
+        "challenger_score",
+        "opponent_score",
+        "winner_id",
+        "started_at",
+        "updated_at",
+        "challenger_name",
+        "location",
+        "required_rank",
+        "is_sabo",
+        "club_confirmed",
+        "club_confirmed_at",
+        "club_confirmed_by",
+        "club_note",
+        "challenger_player_id",
+        "opponent_player_id",
+        "bet_amount"
+      ],
+      "column_count": 36,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "c3e2d2c1-69d5-47a8-9d30-05f926498919",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "challenger_id": {
+          "data_type": "uuid",
+          "sample_value": "21c71eb2-3a42-4589-9089-24a9340a0e6a",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "opponent_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 3
+        },
+        "status": {
+          "data_type": "text",
+          "sample_value": "declined",
+          "is_nullable": false,
+          "column_position": 4
+        },
+        "challenge_message": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 5
+        },
+        "response_message": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 6
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-23T12:19:49.62875+00:00",
+          "is_nullable": false,
+          "column_position": 7
+        },
+        "responded_at": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 8
+        },
+        "completed_at": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 9
+        },
+        "is_open_challenge": {
+          "data_type": "boolean",
+          "sample_value": true,
+          "is_nullable": false,
+          "column_position": 10
+        },
+        "bet_points": {
+          "data_type": "integer",
+          "sample_value": 100,
+          "is_nullable": false,
+          "column_position": 11
+        },
+        "race_to": {
+          "data_type": "integer",
+          "sample_value": 8,
+          "is_nullable": false,
+          "column_position": 12
+        },
+        "handicap_1_rank": {
+          "data_type": "text",
+          "sample_value": "0",
+          "is_nullable": false,
+          "column_position": 13
+        },
+        "handicap_05_rank": {
+          "data_type": "text",
+          "sample_value": "0",
+          "is_nullable": false,
+          "column_position": 14
+        },
+        "message": {
+          "data_type": "text",
+          "sample_value": "",
+          "is_nullable": false,
+          "column_position": 15
+        },
+        "expires_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-25T12:19:49.263+00:00",
+          "is_nullable": false,
+          "column_position": 16
+        },
+        "challenge_type": {
+          "data_type": "text",
+          "sample_value": "standard",
+          "is_nullable": false,
+          "column_position": 17
+        },
+        "handicap_data": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 18
+        },
+        "club_id": {
+          "data_type": "uuid",
+          "sample_value": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "is_nullable": false,
+          "column_position": 19
+        },
+        "scheduled_time": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 20
+        },
+        "challenger_score": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 21
+        },
+        "opponent_score": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 22
+        },
+        "winner_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 23
+        },
+        "started_at": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 24
+        },
+        "updated_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-23T14:11:59.773972+00:00",
+          "is_nullable": false,
+          "column_position": 25
+        },
+        "challenger_name": {
+          "data_type": "text",
+          "sample_value": "Trần hải",
+          "is_nullable": false,
+          "column_position": 26
+        },
+        "location": {
+          "data_type": "text",
+          "sample_value": "SBO POOL ARENA",
+          "is_nullable": false,
+          "column_position": 27
+        },
+        "required_rank": {
+          "data_type": "text",
+          "sample_value": "I",
+          "is_nullable": false,
+          "column_position": 28
+        },
+        "is_sabo": {
+          "data_type": "boolean",
+          "sample_value": true,
+          "is_nullable": false,
+          "column_position": 29
+        },
+        "club_confirmed": {
+          "data_type": "boolean",
+          "sample_value": false,
+          "is_nullable": false,
+          "column_position": 30
+        },
+        "club_confirmed_at": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 31
+        },
+        "club_confirmed_by": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 32
+        },
+        "club_note": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 33
+        },
+        "challenger_player_id": {
+          "data_type": "uuid",
+          "sample_value": "21c71eb2-3a42-4589-9089-24a9340a0e6a",
+          "is_nullable": false,
+          "column_position": 34
+        },
+        "opponent_player_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 35
+        },
+        "bet_amount": {
+          "data_type": "integer",
+          "sample_value": 100,
+          "is_nullable": false,
+          "column_position": 36
+        }
+      },
+      "has_data": true
+    },
+    "tournaments": {
+      "table_name": "tournaments",
+      "columns": [
+        "id",
+        "name",
+        "description",
+        "tournament_type",
+        "game_format",
+        "tier_level",
+        "max_participants",
+        "current_participants",
+        "tournament_start",
+        "tournament_end",
+        "registration_start",
+        "registration_end",
+        "club_id",
+        "venue_address",
+        "entry_fee",
+        "prize_pool",
+        "first_prize",
+        "second_prize",
+        "third_prize",
+        "prize_distribution",
+        "status",
+        "management_status",
+        "rules",
+        "contact_info",
+        "banner_image",
+        "min_rank_requirement",
+        "max_rank_requirement",
+        "eligible_ranks",
+        "allow_all_ranks",
+        "requires_approval",
+        "is_public",
+        "has_third_place_match",
+        "created_by",
+        "created_at",
+        "updated_at",
+        "venue_name",
+        "start_date",
+        "end_date",
+        "registration_fee",
+        "is_visible",
+        "deleted_at",
+        "tier",
+        "elo_multiplier",
+        "live_stream_url",
+        "sponsor_info",
+        "spa_points_config",
+        "elo_points_config",
+        "comprehensive_rewards",
+        "special_rules",
+        "tournament_format_details",
+        "physical_prizes",
+        "winner_id",
+        "parent_tournament_id",
+        "tournament_format",
+        "group_number",
+        "group_assignment_method"
+      ],
+      "column_count": 56,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "87b3025c-b668-4b37-876c-4eb186bc3564",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "name": {
+          "data_type": "text",
+          "sample_value": "TRIBUTE TO CHAMPIONSHIP ",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "description": {
+          "data_type": "text",
+          "sample_value": "SABO 9 BALL OPEN Season 1",
+          "is_nullable": false,
+          "column_position": 3
+        },
+        "tournament_type": {
+          "data_type": "text",
+          "sample_value": "double_elimination",
+          "is_nullable": false,
+          "column_position": 4
+        },
+        "game_format": {
+          "data_type": "text",
+          "sample_value": "9_ball",
+          "is_nullable": false,
+          "column_position": 5
+        },
+        "tier_level": {
+          "data_type": "integer",
+          "sample_value": 1,
+          "is_nullable": false,
+          "column_position": 6
+        },
+        "max_participants": {
+          "data_type": "integer",
+          "sample_value": 32,
+          "is_nullable": false,
+          "column_position": 7
+        },
+        "current_participants": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 8
+        },
+        "tournament_start": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-24T01:15:00+00:00",
+          "is_nullable": false,
+          "column_position": 9
+        },
+        "tournament_end": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-24T12:30:00+00:00",
+          "is_nullable": false,
+          "column_position": 10
+        },
+        "registration_start": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-22T09:46:29.732+00:00",
+          "is_nullable": false,
+          "column_position": 11
+        },
+        "registration_end": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-24T00:00:00+00:00",
+          "is_nullable": false,
+          "column_position": 12
+        },
+        "club_id": {
+          "data_type": "uuid",
+          "sample_value": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "is_nullable": false,
+          "column_position": 13
+        },
+        "venue_address": {
+          "data_type": "text",
+          "sample_value": "601 A Nguyễn An Ninh",
+          "is_nullable": false,
+          "column_position": 14
+        },
+        "entry_fee": {
+          "data_type": "integer",
+          "sample_value": 300000,
+          "is_nullable": false,
+          "column_position": 15
+        },
+        "prize_pool": {
+          "data_type": "integer",
+          "sample_value": 10000000,
+          "is_nullable": false,
+          "column_position": 16
+        },
+        "first_prize": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 17
+        },
+        "second_prize": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 18
+        },
+        "third_prize": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 19
+        },
+        "prize_distribution": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 20
+        },
+        "status": {
+          "data_type": "text",
+          "sample_value": "registration_open",
+          "is_nullable": false,
+          "column_position": 21
+        },
+        "management_status": {
+          "data_type": "text",
+          "sample_value": "draft",
+          "is_nullable": false,
+          "column_position": 22
+        },
+        "rules": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 23
+        },
+        "contact_info": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 24
+        },
+        "banner_image": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 25
+        },
+        "min_rank_requirement": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 26
+        },
+        "max_rank_requirement": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 27
+        },
+        "eligible_ranks": {
+          "data_type": "array",
+          "sample_value": [],
+          "is_nullable": false,
+          "column_position": 28
+        },
+        "allow_all_ranks": {
+          "data_type": "boolean",
+          "sample_value": true,
+          "is_nullable": false,
+          "column_position": 29
+        },
+        "requires_approval": {
+          "data_type": "boolean",
+          "sample_value": false,
+          "is_nullable": false,
+          "column_position": 30
+        },
+        "is_public": {
+          "data_type": "boolean",
+          "sample_value": true,
+          "is_nullable": false,
+          "column_position": 31
+        },
+        "has_third_place_match": {
+          "data_type": "boolean",
+          "sample_value": false,
+          "is_nullable": false,
+          "column_position": 32
+        },
+        "created_by": {
+          "data_type": "uuid",
+          "sample_value": "18f49e79-f402-46d1-90be-889006e9761c",
+          "is_nullable": false,
+          "column_position": 33
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-22T09:49:48.438668+00:00",
+          "is_nullable": false,
+          "column_position": 34
+        },
+        "updated_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-22T09:52:34.836923+00:00",
+          "is_nullable": false,
+          "column_position": 35
+        },
+        "venue_name": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 36
+        },
+        "start_date": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 37
+        },
+        "end_date": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 38
+        },
+        "registration_fee": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 39
+        },
+        "is_visible": {
+          "data_type": "boolean",
+          "sample_value": true,
+          "is_nullable": false,
+          "column_position": 40
+        },
+        "deleted_at": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 41
+        },
+        "tier": {
+          "data_type": "text",
+          "sample_value": "I",
+          "is_nullable": false,
+          "column_position": 42
+        },
+        "elo_multiplier": {
+          "data_type": "integer",
+          "sample_value": 1,
+          "is_nullable": false,
+          "column_position": 43
+        },
+        "live_stream_url": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 44
+        },
+        "sponsor_info": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 45
+        },
+        "spa_points_config": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 46
+        },
+        "elo_points_config": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 47
+        },
+        "comprehensive_rewards": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 48
+        },
+        "special_rules": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 49
+        },
+        "tournament_format_details": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 50
+        },
+        "physical_prizes": {
+          "data_type": "array",
+          "sample_value": [],
+          "is_nullable": false,
+          "column_position": 51
+        },
+        "winner_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 52
+        },
+        "parent_tournament_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 53
+        },
+        "tournament_format": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 54
+        },
+        "group_number": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 55
+        },
+        "group_assignment_method": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 56
+        }
+      },
+      "has_data": true
+    },
+    "tournament_registrations": {
+      "table_name": "tournament_registrations",
+      "columns": [
+        "id",
+        "tournament_id",
+        "user_id",
+        "registration_status",
+        "payment_status",
+        "registration_date",
+        "payment_date",
+        "notes",
+        "created_at",
+        "updated_at",
+        "player_id"
+      ],
+      "column_count": 11,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "fce564e3-ac69-42cc-a312-8bf2f67da9e3",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "tournament_id": {
+          "data_type": "uuid",
+          "sample_value": "7aba5a78-5c2b-4884-937d-99274220b019",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "user_id": {
+          "data_type": "uuid",
+          "sample_value": "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+          "is_nullable": false,
+          "column_position": 3
+        },
+        "registration_status": {
+          "data_type": "text",
+          "sample_value": "confirmed",
+          "is_nullable": false,
+          "column_position": 4
+        },
+        "payment_status": {
+          "data_type": "text",
+          "sample_value": "paid",
+          "is_nullable": false,
+          "column_position": 5
+        },
+        "registration_date": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-23T02:02:29.093+00:00",
+          "is_nullable": false,
+          "column_position": 6
+        },
+        "payment_date": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-23T02:02:29.093+00:00",
+          "is_nullable": false,
+          "column_position": 7
+        },
+        "notes": {
+          "data_type": "text",
+          "sample_value": "Added by admin via quick add",
+          "is_nullable": false,
+          "column_position": 8
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-23T02:02:30.202072+00:00",
+          "is_nullable": false,
+          "column_position": 9
+        },
+        "updated_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-23T02:02:30.202072+00:00",
+          "is_nullable": false,
+          "column_position": 10
+        },
+        "player_id": {
+          "data_type": "uuid",
+          "sample_value": "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+          "is_nullable": false,
+          "column_position": 11
+        }
+      },
+      "has_data": true
+    },
+    "tournament_matches": {
+      "table_name": "tournament_matches",
+      "columns": [],
+      "column_count": 0,
+      "column_details": {},
+      "has_data": false,
+      "note": "Table exists but is empty - column structure unknown"
+    },
+    "club_members": {
+      "table_name": "club_members",
+      "columns": [
+        "id",
+        "club_id",
+        "user_id",
+        "membership_type",
+        "membership_number",
+        "join_date",
+        "status",
+        "expiry_date",
+        "total_visits",
+        "last_visit",
+        "total_hours_played",
+        "preferred_table_types",
+        "preferred_time_slots",
+        "notification_preferences",
+        "membership_fee",
+        "outstanding_balance",
+        "created_at",
+        "updated_at",
+        "role"
+      ],
+      "column_count": 19,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "858f87d5-055d-4ab9-af63-9ea13d43ca23",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "club_id": {
+          "data_type": "uuid",
+          "sample_value": "8d883f90-0c54-4757-adba-25f1d5c02174",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "user_id": {
+          "data_type": "uuid",
+          "sample_value": "74f72a82-d447-4dfd-a5f8-36701963b5d1",
+          "is_nullable": false,
+          "column_position": 3
+        },
+        "membership_type": {
+          "data_type": "text",
+          "sample_value": "regular",
+          "is_nullable": false,
+          "column_position": 4
+        },
+        "membership_number": {
+          "data_type": "text",
+          "sample_value": "CLBC021746868",
+          "is_nullable": false,
+          "column_position": 5
+        },
+        "join_date": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-22T09:31:23.810402+00:00",
+          "is_nullable": false,
+          "column_position": 6
+        },
+        "status": {
+          "data_type": "text",
+          "sample_value": "active",
+          "is_nullable": false,
+          "column_position": 7
+        },
+        "expiry_date": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 8
+        },
+        "total_visits": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 9
+        },
+        "last_visit": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 10
+        },
+        "total_hours_played": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 11
+        },
+        "preferred_table_types": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 12
+        },
+        "preferred_time_slots": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 13
+        },
+        "notification_preferences": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 14
+        },
+        "membership_fee": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 15
+        },
+        "outstanding_balance": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 16
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-22T13:59:46.917509+00:00",
+          "is_nullable": false,
+          "column_position": 17
+        },
+        "updated_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-22T13:59:46.917509+00:00",
+          "is_nullable": false,
+          "column_position": 18
+        },
+        "role": {
+          "data_type": "text",
+          "sample_value": "member",
+          "is_nullable": false,
+          "column_position": 19
+        }
+      },
+      "has_data": true
+    },
+    "wallets": {
+      "table_name": "wallets",
+      "columns": [
+        "id",
+        "user_id",
+        "points_balance",
+        "total_earned",
+        "total_spent",
+        "created_at",
+        "updated_at",
+        "balance",
+        "status"
+      ],
+      "column_count": 9,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "c8a9f961-15f1-412c-8961-b53958e85d86",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "user_id": {
+          "data_type": "uuid",
+          "sample_value": "519cf7c9-e112-40b2-9e4d-0cd44783ec9e",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "points_balance": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 3
+        },
+        "total_earned": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 4
+        },
+        "total_spent": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 5
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-07-22T00:38:30.132097+00:00",
+          "is_nullable": false,
+          "column_position": 6
+        },
+        "updated_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-07-23T03:23:34.814432+00:00",
+          "is_nullable": false,
+          "column_position": 7
+        },
+        "balance": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 8
+        },
+        "status": {
+          "data_type": "text",
+          "sample_value": "active",
+          "is_nullable": false,
+          "column_position": 9
+        }
+      },
+      "has_data": true
+    },
+    "wallet_transactions": {
+      "table_name": "wallet_transactions",
+      "columns": [],
+      "column_count": 0,
+      "column_details": {},
+      "has_data": false,
+      "note": "Table exists but is empty - column structure unknown"
+    },
+    "ranks": {
+      "table_name": "ranks",
+      "columns": [
+        "id",
+        "code",
+        "rank_name",
+        "rank_order",
+        "elo_requirement",
+        "rank_color",
+        "description",
+        "created_at",
+        "updated_at",
+        "level"
+      ],
+      "column_count": 10,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "8cd47209-05e6-42c7-b8b4-2e59b2cb64e1",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "code": {
+          "data_type": "text",
+          "sample_value": "K",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "rank_name": {
+          "data_type": "text",
+          "sample_value": "Hạng K",
+          "is_nullable": false,
+          "column_position": 3
+        },
+        "rank_order": {
+          "data_type": "integer",
+          "sample_value": 1,
+          "is_nullable": false,
+          "column_position": 4
+        },
+        "elo_requirement": {
+          "data_type": "integer",
+          "sample_value": 1000,
+          "is_nullable": false,
+          "column_position": 5
+        },
+        "rank_color": {
+          "data_type": "text",
+          "sample_value": "text-slate-600",
+          "is_nullable": false,
+          "column_position": 6
+        },
+        "description": {
+          "data_type": "text",
+          "sample_value": "Hạng thấp nhất",
+          "is_nullable": false,
+          "column_position": 7
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-07-21T08:42:52.480869+00:00",
+          "is_nullable": false,
+          "column_position": 8
+        },
+        "updated_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-03T02:15:27.454384+00:00",
+          "is_nullable": false,
+          "column_position": 9
+        },
+        "level": {
+          "data_type": "integer",
+          "sample_value": 1,
+          "is_nullable": false,
+          "column_position": 10
+        }
+      },
+      "has_data": true
+    },
+    "elo_history": {
+      "table_name": "elo_history",
+      "columns": [
+        "id",
+        "user_id",
+        "elo_change",
+        "new_elo",
+        "reason",
+        "match_id",
+        "created_at"
+      ],
+      "column_count": 7,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "41332e4d-9211-472d-80c7-4a397edce6da",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "user_id": {
+          "data_type": "uuid",
+          "sample_value": "94527a17-1dd9-42f9-bcb7-6969329464e2",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "elo_change": {
+          "data_type": "integer",
+          "sample_value": 0,
+          "is_nullable": false,
+          "column_position": 3
+        },
+        "new_elo": {
+          "data_type": "integer",
+          "sample_value": 1000,
+          "is_nullable": false,
+          "column_position": 4
+        },
+        "reason": {
+          "data_type": "text",
+          "sample_value": "Initial ELO assignment",
+          "is_nullable": false,
+          "column_position": 5
+        },
+        "match_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 6
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-07-23T03:56:13.289879+00:00",
+          "is_nullable": false,
+          "column_position": 7
+        }
+      },
+      "has_data": true
+    },
+    "notifications": {
+      "table_name": "notifications",
+      "columns": [
+        "id",
+        "user_id",
+        "title",
+        "message",
+        "type",
+        "is_read",
+        "action_url",
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "auto_popup",
+        "priority",
+        "metadata",
+        "club_id",
+        "category",
+        "challenge_id",
+        "tournament_id",
+        "match_id",
+        "icon",
+        "action_text",
+        "scheduled_for",
+        "expires_at",
+        "is_archived"
+      ],
+      "column_count": 23,
+      "column_details": {
+        "id": {
+          "data_type": "uuid",
+          "sample_value": "ecc6c1c1-c8e9-4061-b754-385666040101",
+          "is_nullable": false,
+          "column_position": 1
+        },
+        "user_id": {
+          "data_type": "uuid",
+          "sample_value": "18f49e79-f402-46d1-90be-889006e9761c",
+          "is_nullable": false,
+          "column_position": 2
+        },
+        "title": {
+          "data_type": "text",
+          "sample_value": "Yêu cầu xác thực hạng mới",
+          "is_nullable": false,
+          "column_position": 3
+        },
+        "message": {
+          "data_type": "text",
+          "sample_value": "Có yêu cầu xác thực hạng K+ từ Sang tại CLB SBO POOL ARENA",
+          "is_nullable": false,
+          "column_position": 4
+        },
+        "type": {
+          "data_type": "text",
+          "sample_value": "rank_request",
+          "is_nullable": false,
+          "column_position": 5
+        },
+        "is_read": {
+          "data_type": "boolean",
+          "sample_value": false,
+          "is_nullable": false,
+          "column_position": 6
+        },
+        "action_url": {
+          "data_type": "text",
+          "sample_value": "/club-dashboard?tab=rank-verification",
+          "is_nullable": false,
+          "column_position": 7
+        },
+        "created_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-18T03:21:36.462148+00:00",
+          "is_nullable": false,
+          "column_position": 8
+        },
+        "updated_at": {
+          "data_type": "timestamp",
+          "sample_value": "2025-08-18T03:21:36.462148+00:00",
+          "is_nullable": false,
+          "column_position": 9
+        },
+        "deleted_at": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 10
+        },
+        "auto_popup": {
+          "data_type": "boolean",
+          "sample_value": true,
+          "is_nullable": false,
+          "column_position": 11
+        },
+        "priority": {
+          "data_type": "text",
+          "sample_value": "high",
+          "is_nullable": false,
+          "column_position": 12
+        },
+        "metadata": {
+          "data_type": "json",
+          "sample_value": {},
+          "is_nullable": false,
+          "column_position": 13
+        },
+        "club_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 14
+        },
+        "category": {
+          "data_type": "text",
+          "sample_value": "general",
+          "is_nullable": false,
+          "column_position": 15
+        },
+        "challenge_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 16
+        },
+        "tournament_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 17
+        },
+        "match_id": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 18
+        },
+        "icon": {
+          "data_type": "text",
+          "sample_value": "bell",
+          "is_nullable": false,
+          "column_position": 19
+        },
+        "action_text": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 20
+        },
+        "scheduled_for": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 21
+        },
+        "expires_at": {
+          "data_type": "null",
+          "sample_value": null,
+          "is_nullable": true,
+          "column_position": 22
+        },
+        "is_archived": {
+          "data_type": "boolean",
+          "sample_value": false,
+          "is_nullable": false,
+          "column_position": 23
+        }
+      },
+      "has_data": true
+    },
+    "analytics_events": {
+      "table_name": "analytics_events",
+      "columns": [],
+      "column_count": 0,
+      "column_details": {},
+      "has_data": false,
+      "note": "Table exists but is empty - column structure unknown"
+    },
+    "performance_metrics": {
+      "table_name": "performance_metrics",
+      "columns": [],
+      "column_count": 0,
+      "column_details": {},
+      "has_data": false,
+      "note": "Table exists but is empty - column structure unknown"
+    }
+  },
+  "column_details": {},
+  "constraints": {
+    "profiles": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "column": "user_id",
+          "references_table": "users",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "player_id",
+          "references_table": "players",
+          "references_column": "id",
+          "inferred": true
+        }
+      ],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "users": {
+      "primary_keys": [],
+      "foreign_keys": [],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "user_roles": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "column": "user_id",
+          "references_table": "users",
+          "references_column": "id",
+          "inferred": true
+        }
+      ],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "challenges": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "column": "challenger_id",
+          "references_table": "challengers",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "opponent_id",
+          "references_table": "opponents",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "club_id",
+          "references_table": "clubs",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "winner_id",
+          "references_table": "winners",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "challenger_player_id",
+          "references_table": "challenger_players",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "opponent_player_id",
+          "references_table": "opponent_players",
+          "references_column": "id",
+          "inferred": true
+        }
+      ],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "tournaments": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "column": "club_id",
+          "references_table": "clubs",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "winner_id",
+          "references_table": "winners",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "parent_tournament_id",
+          "references_table": "parent_tournaments",
+          "references_column": "id",
+          "inferred": true
+        }
+      ],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "tournament_registrations": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "column": "tournament_id",
+          "references_table": "tournaments",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "user_id",
+          "references_table": "users",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "player_id",
+          "references_table": "players",
+          "references_column": "id",
+          "inferred": true
+        }
+      ],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "tournament_matches": {
+      "primary_keys": [],
+      "foreign_keys": [],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "club_members": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "column": "club_id",
+          "references_table": "clubs",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "user_id",
+          "references_table": "users",
+          "references_column": "id",
+          "inferred": true
+        }
+      ],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "wallets": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "column": "user_id",
+          "references_table": "users",
+          "references_column": "id",
+          "inferred": true
+        }
+      ],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "wallet_transactions": {
+      "primary_keys": [],
+      "foreign_keys": [],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "ranks": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "elo_history": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "column": "user_id",
+          "references_table": "users",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "match_id",
+          "references_table": "matchs",
+          "references_column": "id",
+          "inferred": true
+        }
+      ],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "notifications": {
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "column": "user_id",
+          "references_table": "users",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "club_id",
+          "references_table": "clubs",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "challenge_id",
+          "references_table": "challenges",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "tournament_id",
+          "references_table": "tournaments",
+          "references_column": "id",
+          "inferred": true
+        },
+        {
+          "column": "match_id",
+          "references_table": "matchs",
+          "references_column": "id",
+          "inferred": true
+        }
+      ],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "analytics_events": {
+      "primary_keys": [],
+      "foreign_keys": [],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    },
+    "performance_metrics": {
+      "primary_keys": [],
+      "foreign_keys": [],
+      "unique_constraints": [],
+      "inferred_relationships": []
+    }
+  },
+  "indexes": {
+    "profiles": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "user_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "updated_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "email",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "player_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "users": [],
+    "user_roles": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "user_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "challenges": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "challenger_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "opponent_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "club_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "winner_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "updated_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "challenger_player_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "opponent_player_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "tournaments": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "club_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "updated_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "winner_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "parent_tournament_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "tournament_registrations": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "tournament_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "user_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "updated_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "player_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "tournament_matches": [],
+    "club_members": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "club_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "user_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "updated_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "wallets": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "user_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "updated_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "wallet_transactions": [],
+    "ranks": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "updated_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "elo_history": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "user_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "match_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "notifications": [
+      {
+        "column": "id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "user_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "created_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "updated_at",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "club_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "challenge_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "tournament_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      },
+      {
+        "column": "match_id",
+        "type": "inferred_index",
+        "reason": "Common index pattern"
+      }
+    ],
+    "analytics_events": [],
+    "performance_metrics": []
+  },
+  "triggers": {
+    "profiles": [
+      {
+        "trigger_name": "update_profiles_updated_at",
+        "event": "UPDATE",
+        "function": "update_updated_at_column",
+        "inferred": true
+      }
+    ],
+    "challenges": [
+      {
+        "trigger_name": "update_challenges_updated_at",
+        "event": "UPDATE",
+        "function": "update_updated_at_column",
+        "inferred": true
+      }
+    ],
+    "tournaments": [
+      {
+        "trigger_name": "update_tournaments_updated_at",
+        "event": "UPDATE",
+        "function": "update_updated_at_column",
+        "inferred": true
+      }
+    ],
+    "tournament_registrations": [
+      {
+        "trigger_name": "update_tournament_registrations_updated_at",
+        "event": "UPDATE",
+        "function": "update_updated_at_column",
+        "inferred": true
+      }
+    ],
+    "club_members": [
+      {
+        "trigger_name": "update_club_members_updated_at",
+        "event": "UPDATE",
+        "function": "update_updated_at_column",
+        "inferred": true
+      }
+    ],
+    "wallets": [
+      {
+        "trigger_name": "update_wallets_updated_at",
+        "event": "UPDATE",
+        "function": "update_updated_at_column",
+        "inferred": true
+      }
+    ],
+    "ranks": [
+      {
+        "trigger_name": "update_ranks_updated_at",
+        "event": "UPDATE",
+        "function": "update_updated_at_column",
+        "inferred": true
+      }
+    ],
+    "notifications": [
+      {
+        "trigger_name": "update_notifications_updated_at",
+        "event": "UPDATE",
+        "function": "update_updated_at_column",
+        "inferred": true
+      }
+    ]
+  },
+  "views": {},
+  "functions": {
+    "note": "Function discovery requires direct database access",
+    "potential_functions": [
+      "get_user_stats",
+      "calculate_elo",
+      "update_ranking",
+      "generate_bracket",
+      "process_payment"
+    ]
+  },
+  "summary": {
+    "total_tables_discovered": 74,
+    "tables_with_structure": 15,
+    "tables_with_data": 10,
+    "total_columns": 207,
+    "tables_accessible": 15
+  },
+  "data_completeness": {
+    "profiles": {
+      "row_count": 181,
+      "has_sample_data": true,
+      "sample_size": 5,
+      "column_count": 31,
+      "completeness_score": 90
+    },
+    "users": {
+      "row_count": 0,
+      "has_sample_data": false,
+      "sample_size": 0,
+      "column_count": 0,
+      "completeness_score": 0
+    },
+    "user_roles": {
+      "row_count": 97,
+      "has_sample_data": true,
+      "sample_size": 5,
+      "column_count": 5,
+      "completeness_score": 60
+    },
+    "challenges": {
+      "row_count": 10,
+      "has_sample_data": true,
+      "sample_size": 5,
+      "column_count": 36,
+      "completeness_score": 60
+    },
+    "tournaments": {
+      "row_count": 2,
+      "has_sample_data": true,
+      "sample_size": 2,
+      "column_count": 56,
+      "completeness_score": 30
+    },
+    "tournament_registrations": {
+      "row_count": 284,
+      "has_sample_data": true,
+      "sample_size": 5,
+      "column_count": 11,
+      "completeness_score": 90
+    },
+    "tournament_matches": {
+      "row_count": 0,
+      "has_sample_data": false,
+      "sample_size": 0,
+      "column_count": 0,
+      "completeness_score": 0
+    },
+    "club_members": {
+      "row_count": 10,
+      "has_sample_data": true,
+      "sample_size": 5,
+      "column_count": 19,
+      "completeness_score": 60
+    },
+    "wallets": {
+      "row_count": 186,
+      "has_sample_data": true,
+      "sample_size": 5,
+      "column_count": 9,
+      "completeness_score": 90
+    },
+    "wallet_transactions": {
+      "row_count": 0,
+      "has_sample_data": false,
+      "sample_size": 0,
+      "column_count": 0,
+      "completeness_score": 0
+    },
+    "ranks": {
+      "row_count": 12,
+      "has_sample_data": true,
+      "sample_size": 5,
+      "column_count": 10,
+      "completeness_score": 60
+    },
+    "elo_history": {
+      "row_count": 244,
+      "has_sample_data": true,
+      "sample_size": 5,
+      "column_count": 7,
+      "completeness_score": 90
+    },
+    "notifications": {
+      "row_count": 692,
+      "has_sample_data": true,
+      "sample_size": 5,
+      "column_count": 23,
+      "completeness_score": 90
+    },
+    "analytics_events": {
+      "row_count": 0,
+      "has_sample_data": false,
+      "sample_size": 0,
+      "column_count": 0,
+      "completeness_score": 0
+    },
+    "performance_metrics": {
+      "row_count": 0,
+      "has_sample_data": false,
+      "sample_size": 0,
+      "column_count": 0,
+      "completeness_score": 0
+    }
+  },
+  "verification_status": {
+    "schema_complete": true,
+    "all_tables_discovered": true,
+    "column_details_captured": true,
+    "data_accessibility_verified": false
+  }
+}

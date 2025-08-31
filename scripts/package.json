@@ -1,0 +1,17 @@
+{
+  "name": "sabo-pool-database-analyzer",
+  "version": "1.0.0",
+  "description": "Database synchronization analyzer for SABO Pool V12",
+  "type": "module",
+  "main": "database-analyzer.js",
+  "scripts": {
+    "analyze": "node database-analyzer.js",
+    "analyze-sync": "bash database-sync-analysis.sh"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.50.3",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": ["database", "supabase", "analysis", "synchronization"],
+  "author": "SABO Pool Team"
+}

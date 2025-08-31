@@ -1,6 +1,21 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useCallback, useMemo } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 
 // Enhanced caching strategies for database optimization
 export const useDatabaseOptimization = () => {
@@ -27,7 +42,7 @@ export const useDatabaseOptimization = () => {
     queryKey: getCacheKey('leaderboard-optimized', stableFilters),
     queryFn: async () => {
      // Use player_rankings since leaderboards was removed
-     const { data, error } = await supabase
+     // TODO: Replace with service call - const { data, error } = await supabase
       .from('player_rankings')
       .select(
        `
@@ -56,7 +71,7 @@ export const useDatabaseOptimization = () => {
    queryKey: ['leaderboard-stats'], // Simplified key
    queryFn: async () => {
     // Use player_rankings since leaderboards was removed
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('player_rankings')
      .select('id')
      .limit(1);
@@ -92,7 +107,7 @@ export const useDatabaseOptimization = () => {
      // Fetch only uncached profiles
      let freshProfiles = [];
      if (uncachedIds.length > 0) {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
        .from('profiles')
        .select(
         'user_id, display_name, full_name, skill_level, avatar_url, city, district'
@@ -164,7 +179,7 @@ export const useDatabaseOptimization = () => {
      await queryClient.prefetchQuery({
       queryKey: getCacheKey('leaderboard-optimized'),
       queryFn: async () => {
-       const { data, error } = await supabase.rpc(
+       const { data, error } = await tournamentService.callRPC(
         'optimize_leaderboard_query'
        );
        if (error) throw error;
@@ -178,7 +193,7 @@ export const useDatabaseOptimization = () => {
      await queryClient.prefetchQuery({
       queryKey: getCacheKey('leaderboard-stats'),
       queryFn: async () => {
-       const { data, error } = await supabase.rpc(
+       const { data, error } = await tournamentService.callRPC(
         'refresh_leaderboard_stats'
        );
        if (error) throw error;
@@ -192,7 +207,7 @@ export const useDatabaseOptimization = () => {
      await queryClient.prefetchQuery({
       queryKey: getCacheKey('top-players'),
       queryFn: async () => {
-       const { data, error } = await supabase
+       // TODO: Replace with service call - const { data, error } = await supabase
         .from('player_rankings')
         .select(
          'user_id, elo_points, spa_points, profiles(display_name, full_name, avatar_url)'

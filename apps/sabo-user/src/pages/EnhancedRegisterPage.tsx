@@ -8,7 +8,11 @@ import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
 import { useMilestoneEvents } from '@/hooks/useMilestoneEvents';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
+import { getCurrentUser } from '../services/userService';
 import {
  EnhancedAuthTabs,
  PhoneTabContent,
@@ -126,7 +130,7 @@ const EnhancedRegisterPage = () => {
     // This allows the user to login with phone + password later
     if (pendingPhoneData.password) {
      console.log('🔐 Setting password for phone-registered user...');
-     const { error: passwordError } = await supabase.auth.updateUser({
+// // //      const { error: passwordError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.updateUser({
       password: pendingPhoneData.password,
       data: {
        full_name: pendingPhoneData.fullName,
@@ -154,7 +158,7 @@ const EnhancedRegisterPage = () => {
     setTimeout(async () => {
      try {
       // Wait a bit for auth state to be ready, then trigger milestone
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getCurrentUser();
       if (user?.id) {
        console.log('🏆 Triggering account creation milestone for user:', user.id);
        await triggerAccountCreation(user.id);
@@ -290,7 +294,7 @@ const EnhancedRegisterPage = () => {
       >
        <div className='relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-indigo-500/40 shadow-md shadow-indigo-900/30'>
         <img
-         src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+// // // //          src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
          alt='SABO ARENA'
          className='w-full h-full object-cover transition-transform group-hover:scale-105'
         />

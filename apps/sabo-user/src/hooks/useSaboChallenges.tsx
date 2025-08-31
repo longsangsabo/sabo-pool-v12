@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -144,7 +147,7 @@ export function useSaboChallenges() {
    setLoading(true);
    setError(null);
 
-   const { data, error: fetchError } = await supabase
+//    const { data, error: fetchError } = await supabase
     .from('challenges')
     .select(
      `
@@ -250,7 +253,7 @@ export function useSaboChallenges() {
     expires_at: expiresAt.toISOString(),
    };
 
-   const { data, error: insertError } = await supabase
+//    const { data, error: insertError } = await supabase
     .from('challenges')
     .insert([newChallenge])
     .select(
@@ -324,7 +327,7 @@ export function useSaboChallenges() {
   if (!user) throw new Error('User not authenticated');
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('challenges')
     .update({
      status: 'accepted',
@@ -365,7 +368,7 @@ export function useSaboChallenges() {
  useEffect(() => {
   if (!user) return;
 
-  const subscription = supabase
+//   const subscription = supabase
    .channel('challenges_changes')
    .on(
     'postgres_changes',

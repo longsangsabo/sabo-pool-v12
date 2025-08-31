@@ -1,4 +1,8 @@
 import React from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, getUserTournaments } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance } from "../services/walletService";
 import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
@@ -55,7 +59,7 @@ const Home: React.FC = () => {
      <Link to='/' className='flex items-center gap-3 group'>
       <div className='relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-indigo-500/40 shadow-md shadow-indigo-900/30'>
        <img
-        src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+// // // //         src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
         alt='SABO ARENA'
         className='w-full h-full object-cover transition-transform group-hover:scale-105'
        />
@@ -170,7 +174,7 @@ const Home: React.FC = () => {
       {/* Image Container */}
       <div className='relative bg-slate-900/10 backdrop-blur-sm'>
        <img
-        src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/homepage-new.png'
+// // // //         src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/homepage-new.png'
         alt='SABO Arena Homepage'
         className='w-full h-auto object-contain drop-shadow-xl relative z-10'
         loading='lazy'

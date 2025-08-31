@@ -4,7 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import {
  Search,
  Users,
@@ -49,7 +53,7 @@ export const useClubMembers = (clubId: string) => {
    }
 
    // ✅ First get club members
-   const { data: clubMembersData, error: clubMembersError } = await supabase
+//    const { data: clubMembersData, error: clubMembersError } = await supabase
     .from('club_members')
     .select('user_id, join_date, status')
     .eq('club_id', clubId)
@@ -66,7 +70,7 @@ export const useClubMembers = (clubId: string) => {
    const userIds = clubMembersData.map(cm => cm.user_id);
 
    // ✅ Then get profiles for those users
-   const { data: profilesData, error: profilesError } = await supabase
+//    const { data: profilesData, error: profilesError } = await supabase
     .from('profiles')
     .select(`
      user_id,
@@ -121,7 +125,7 @@ export const useClubMembers = (clubId: string) => {
   fetchClubMembers();
 
   // ✅ Listen for profile changes (when ranks get updated)
-  const subscription = supabase
+//   const subscription = supabase
    .channel(`club_members_${clubId}`)
    .on(
     'postgres_changes',
@@ -289,7 +293,7 @@ const ClubMemberManagement = () => {
   const getClubId = async () => {
    if (!user) return;
 
-   const { data: clubData } = await supabase
+//    const { data: clubData } = await supabase
     .from('club_profiles')
     .select('id')
     .eq('user_id', user.id)

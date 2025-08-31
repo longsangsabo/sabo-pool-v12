@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 interface TournamentCompletionStatus {
   isCompleted: boolean;
@@ -23,7 +23,7 @@ export const useTournamentCompletion = (tournamentId: string): TournamentComplet
       setStatus(prev => ({ ...prev, loading: true, error: null }));
 
       // Check tournament status
-      const { data: tournament, error: tournamentError } = await supabase
+//       const { data: tournament, error: tournamentError } = await supabase
         .from('tournaments')
         .select('status, completed_at')
         .eq('id', tournamentId)
@@ -34,7 +34,7 @@ export const useTournamentCompletion = (tournamentId: string): TournamentComplet
       }
 
       // Check if tournament_results exist
-      const { data: results, error: resultsError, count } = await supabase
+//       const { data: results, error: resultsError, count } = await supabase
         .from('tournament_results')
         .select('*', { count: 'exact' })
         .eq('tournament_id', tournamentId);

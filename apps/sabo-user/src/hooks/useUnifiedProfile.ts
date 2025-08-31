@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { useAuth } from '@/hooks/useAuth';
 import { usePlayerDashboard } from '@/hooks/usePlayerDashboard';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
@@ -59,7 +59,7 @@ export const useUnifiedProfile = () => {
         let profile = null;
 
         const { data: existingProfile, error: profileFetchError } =
-          await supabase
+//           await supabase
             .from('profiles')
             .select('*')
             .eq('user_id', user.id)
@@ -76,7 +76,7 @@ export const useUnifiedProfile = () => {
 
         if (!existingProfile) {
           // Create profile with proper error handling
-          const { data: newProfile, error: createError } = await supabase
+//           const { data: newProfile, error: createError } = await supabase
             .from('profiles')
             .insert({
               user_id: user.id,
@@ -110,7 +110,7 @@ export const useUnifiedProfile = () => {
         // Step 2: Fetch club profile (optional, won't fail if not exists)
         let clubProfile = null;
         try {
-          const { data: clubData, error: clubError } = await supabase
+//           const { data: clubData, error: clubError } = await supabase
             .from('club_profiles')
             .select('*')
             .eq('user_id', user.id)
@@ -130,7 +130,7 @@ export const useUnifiedProfile = () => {
         let recentActivities = [];
         try {
           const [matchesResult, challengesResult] = await Promise.allSettled([
-            supabase
+//             supabase
               .from('matches')
               .select(
                 `
@@ -147,7 +147,7 @@ export const useUnifiedProfile = () => {
               .or(`player1_id.eq.${user.id},player2_id.eq.${user.id}`)
               .order('created_at', { ascending: false })
               .limit(10),
-            supabase
+//             supabase
               .from('challenges')
               .select(
                 `

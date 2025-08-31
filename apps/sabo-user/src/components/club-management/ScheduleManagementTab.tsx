@@ -37,7 +37,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import {
  Calendar,
  Clock,
@@ -115,7 +119,7 @@ const ScheduleManagementTab: React.FC<ScheduleManagementTabProps> = ({
   if (!clubId) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('test_schedules')
     .select(
      `
@@ -146,7 +150,7 @@ const ScheduleManagementTab: React.FC<ScheduleManagementTabProps> = ({
   if (!clubId) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_instructors')
     .select('id, full_name, specializations')
     .eq('club_id', clubId)
@@ -205,7 +209,7 @@ const ScheduleManagementTab: React.FC<ScheduleManagementTabProps> = ({
     scheduleData.cancellation_policy = values.cancellation_policy;
    }
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('test_schedules')
     .insert(scheduleData);
 
@@ -234,7 +238,7 @@ const ScheduleManagementTab: React.FC<ScheduleManagementTabProps> = ({
   newStatus: string
  ) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('test_schedules')
     .update({ status: newStatus })
     .eq('id', scheduleId);

@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
+import { getCurrentUser } from '../services/userService';
 import { UserProfile } from '../types/common';
 
 interface ProfileFormData {
@@ -21,15 +25,15 @@ export const useProfile = () => {
   setError('');
 
   try {
-   const { data: userData } = await supabase.auth.getUser();
+   const { data: userData } = await getCurrentUser();
    if (!userData.user) {
     throw new Error('No authenticated user');
    }
 
-   const { data, error: profileError } = await supabase
+//    const { data, error: profileError } = await supabase
     .from('profiles')
     .select('*')
-    .eq('user_id', userData.user.id)
+    .getByUserId(userData.user.id)
     .maybeSingle();
 
    if (profileError) {
@@ -37,10 +41,10 @@ export const useProfile = () => {
    }
 
    // Get updated player rankings data
-   const { data: rankingData } = await supabase
+//    const { data: rankingData } = await supabase
     .from('player_rankings')
     .select('*')
-    .eq('user_id', userData.user.id)
+    .getByUserId(userData.user.id)
     .maybeSingle();
 
    // Convert database profile to UserProfile format
@@ -75,16 +79,16 @@ export const useProfile = () => {
   setError('');
 
   try {
-   const { data: userData } = await supabase.auth.getUser();
+   const { data: userData } = await getCurrentUser();
    if (!userData.user) {
     throw new Error('No authenticated user');
    }
 
-   const { data, error: updateError } = await supabase
+//    const { data, error: updateError } = await supabase
     .from('profiles')
     .update(profileData)
-    .eq('user_id', userData.user.id)
-    .select()
+    .getByUserId(userData.user.id)
+    .getAll()
     .maybeSingle();
 
    if (updateError) {
@@ -92,10 +96,10 @@ export const useProfile = () => {
    }
 
    // Get player rankings data
-   const { data: rankingData } = await supabase
+//    const { data: rankingData } = await supabase
     .from('player_rankings')
     .select('*')
-    .eq('user_id', userData.user.id)
+    .getByUserId(userData.user.id)
     .maybeSingle();
 
    // Convert database profile to UserProfile format
@@ -144,7 +148,7 @@ export const useProfile = () => {
    profile.user_id
   );
 
-  const channel = supabase
+//   const channel = supabase
    .channel('profile-changes-enhanced')
    .on(
     'postgres_changes',
@@ -245,7 +249,7 @@ export const useProfile = () => {
 
   return () => {
    console.log('[useProfile] Cleaning up real-time subscription');
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [profile?.user_id]); // Depend on profile.user_id to avoid unnecessary re-subscriptions
 

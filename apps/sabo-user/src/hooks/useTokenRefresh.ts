@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import type { Session } from '@supabase/supabase-js';
+import { refreshSession } from '../services/userService';
+// import type { Session } from '@supabase/supabase-js';
 
 /**
  * Calculate delay (ms) before refreshing a token given its expires_at (seconds epoch).
@@ -23,7 +23,7 @@ export const calculateRefreshDelay = (
 
 /**
  * Hook that sets up proactive token refresh to avoid sudden logout / redirect.
- * Relies on supabase autoRefreshToken but adds early, user-friendly refresh.
+//  * Relies on supabase autoRefreshToken but adds early, user-friendly refresh.
  */
 export const useTokenRefresh = (session: Session | null) => {
   const timeoutRef = useRef<number | null>(null);
@@ -43,10 +43,8 @@ export const useTokenRefresh = (session: Session | null) => {
     const schedule = () => {
       timeoutRef.current = window.setTimeout(async () => {
         try {
-          const { data, error } = await supabase.auth.refreshSession();
-          if (error) {
-            console.warn('🔄 Token early refresh failed:', error.message);
-          } else if (data?.session?.expires_at) {
+          const data = await refreshSession();
+          if (data?.session?.expires_at) {
             // Reschedule with new expiry
             const nextDelay = calculateRefreshDelay(data.session.expires_at);
             if (nextDelay) schedule();

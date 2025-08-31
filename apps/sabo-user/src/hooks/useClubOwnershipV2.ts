@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { getUserClubProfile } from '../services/userService';
 
 export interface ClubOwnershipData {
   isClubOwner: boolean;
@@ -43,20 +43,7 @@ export const useClubOwnershipV2 = (): ClubOwnershipData => {
 
       try {
         // Use the new database function
-        const { data: ownershipData, error } = await supabase.rpc(
-          'get_user_club_profile',
-          { p_user_id: user.id }
-        );
-
-        if (error) {
-          console.error('Error checking club ownership:', error);
-          setData(prev => ({
-            ...prev,
-            loading: false,
-            error: error.message,
-          }));
-          return;
-        }
+        const ownershipData = await getUserClubProfile(user.id);
 
         const clubData = ownershipData?.[0];
 

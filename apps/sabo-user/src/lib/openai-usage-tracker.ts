@@ -1,4 +1,19 @@
-import { supabase } from '@/integrations/supabase/client';
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+// Removed supabase import - migrated to services
 
 export interface OpenAIUsageLog {
   model_id: string;
@@ -39,7 +54,7 @@ export function calculateOpenAICost(
 
 export async function logOpenAIUsage(usage: OpenAIUsageLog): Promise<void> {
   try {
-    const { error } = await supabase.from('openai_usage_logs' as any).insert([
+// // //     // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('openai_usage_logs' as any).create([
       {
         model_id: usage.model_id,
         task_type: usage.task_type,
@@ -64,7 +79,7 @@ export async function logOpenAIUsage(usage: OpenAIUsageLog): Promise<void> {
 }
 
 export async function getOpenAIUsageStats(days: number = 30) {
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
     .from('openai_usage_logs' as any)
     .select('*')
     .gte(
@@ -82,7 +97,7 @@ export async function getOpenAIUsageStats(days: number = 30) {
 }
 
 export async function getModelUsageStats() {
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
     .from('openai_usage_logs' as any)
     .select('model_id, request_type, total_tokens, cost_usd, created_at')
     .gte(
@@ -132,7 +147,7 @@ export async function getModelUsageStats() {
 }
 
 export async function getAIAssistantStats() {
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
     .from('openai_usage_logs' as any)
     .select(
       'model_id, request_type, total_tokens, cost_usd, user_id, created_at'

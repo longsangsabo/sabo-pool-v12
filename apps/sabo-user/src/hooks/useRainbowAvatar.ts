@@ -1,7 +1,13 @@
 import { useState, useCallback, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 
 export interface AvatarState {
@@ -95,10 +101,10 @@ export const useRainbowAvatar = (): UseRainbowAvatarReturn => {
       setAvatar(prev => ({ ...prev, isLoading: true, error: null }));
 
       // Load profile với avatar URL
-      const { data: profile, error: profileError } = await supabase
+//       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('avatar_url, verified_rank, display_name')
-        .eq('user_id', user.id)
+        .getByUserId(user.id)
         .single();
 
       if (profileError && profileError.code !== 'PGRST116') {
@@ -166,24 +172,24 @@ export const useRainbowAvatar = (): UseRainbowAvatarReturn => {
         const fileName = `${user.id}/avatar-${Date.now()}.${fileExt}`;
 
         // Upload file lên Supabase Storage
-        const { error: uploadError } = await supabase.storage
+// // //         const { error: uploadError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
           .from('avatars')
           .upload(fileName, file, { upsert: true });
 
         if (uploadError) throw uploadError;
 
         // Lấy public URL
-        const { data: urlData } = supabase.storage
+// // //         const { data: urlData } = // TODO: Replace with service call - supabase.storage
           .from('avatars')
           .getPublicUrl(fileName);
 
         const avatarUrl = urlData.publicUrl + '?t=' + new Date().getTime();
 
         // Cập nhật profile trong database
-        const { error: updateError } = await supabase
+//         const { error: updateError } = await supabase
           .from('profiles')
           .update({ avatar_url: avatarUrl })
-          .eq('user_id', user.id);
+          .getByUserId(user.id);
 
         if (updateError) throw updateError;
 
@@ -256,10 +262,10 @@ export const useRainbowAvatar = (): UseRainbowAvatarReturn => {
     if (!user?.id) return;
 
     try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('profiles')
         .update({ avatar_url: null })
-        .eq('user_id', user.id);
+        .getByUserId(user.id);
 
       if (error) throw error;
 

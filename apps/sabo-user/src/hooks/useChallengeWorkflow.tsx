@@ -1,6 +1,21 @@
 import { useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -88,7 +103,7 @@ export function useChallengeWorkflow() {
     userId: user?.id,
    });
 
-   const { data, error } = await supabase.functions.invoke(
+// // //    // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await supabase.functions.invoke(
     'challenge-score-update',
     {
      body: {
@@ -163,7 +178,7 @@ export function useChallengeWorkflow() {
   }) => {
    if (!user?.id) throw new Error('User not authenticated');
 
-   const { data, error } = await supabase.rpc('accept_challenge', {
+   const { data, error } = await tournamentService.callRPC('accept_challenge', {
     p_challenge_id: challengeId,
     p_user_id: user.id,
    });
@@ -202,14 +217,14 @@ export function useChallengeWorkflow() {
    scheduledTime: string;
   }) => {
    // Update challenge with scheduled time
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('challenges')
     .update({
      scheduled_time: scheduledTime,
      status: 'accepted',
     })
     .eq('id', challengeId)
-    .select()
+    .getAll()
     .single();
 
    if (error) throw error;

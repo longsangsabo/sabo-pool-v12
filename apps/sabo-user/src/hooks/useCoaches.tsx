@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from './useAuth';
 
 export interface Coach {

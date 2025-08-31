@@ -38,7 +38,11 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import {
  Trophy,
  Clock,
@@ -124,7 +128,7 @@ const RankVerificationTab: React.FC<RankVerificationTabProps> = ({
   if (!clubId) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('rank_verifications')
     .select(
      `
@@ -207,7 +211,7 @@ const RankVerificationTab: React.FC<RankVerificationTabProps> = ({
     updateData.verified_by = user?.id;
    }
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('rank_verifications')
     .update(updateData)
     .eq('id', selectedVerification.id);
@@ -216,7 +220,7 @@ const RankVerificationTab: React.FC<RankVerificationTabProps> = ({
 
    // Update user's verified rank if approved
    if (values.status === 'approved') {
-    await supabase
+//     await supabase
      .from('profiles')
      .update({ verified_rank: selectedVerification.requested_rank })
      .eq('user_id', selectedVerification.user_id);

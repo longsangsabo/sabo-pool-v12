@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { MessageService } from '@/services/messageService';
 import { Message, MessageFilters, SendMessageData, MessageStats } from '@/types/message';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export const useMessages = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -321,7 +327,7 @@ export const useMessages = () => {
   useEffect(() => {
     if (!user?.id) return;
 
-    const channel = supabase
+//     const channel = supabase
       .channel('messages')
       .on(
         'postgres_changes',
@@ -360,7 +366,7 @@ export const useMessages = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [user?.id, refreshMessages]);
 

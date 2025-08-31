@@ -4,7 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useFileUpload } from '@/hooks/useFileUpload';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { supabase } from "@/integrations/supabase/client";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -249,7 +256,7 @@ const EvidenceUpload = ({
             // Get proper image URL for preview
             const imageUrl = file.url.startsWith('http')
              ? file.url
-             : supabase.storage
+// //              : supabase.storage
                .from('rank-evidence')
                .getPublicUrl(file.url).data.publicUrl;
             setPreviewing(imageUrl);

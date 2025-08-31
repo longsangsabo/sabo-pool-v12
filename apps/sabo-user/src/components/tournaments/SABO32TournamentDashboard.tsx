@@ -25,6 +25,10 @@ import { SABO32QuickActions } from './SABO32QuickActions';
 import { SABO32MatchNavigator } from './SABO32MatchNavigator';
 import { useSABO32Realtime } from '@/hooks/useSABO32Realtime';
 import { supabase } from '@/integrations/supabase/client';
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface Match {

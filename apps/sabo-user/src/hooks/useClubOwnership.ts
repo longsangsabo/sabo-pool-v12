@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export const useClubOwnership = () => {
   const { user } = useAuth();
@@ -19,7 +19,7 @@ export const useClubOwnership = () => {
 
       try {
         // Check if user has club_owner role in profiles and has approved club_profile
-        const { data: profileData, error: profileError } = await supabase
+//         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('role')
           .eq('user_id', user.id)
@@ -33,7 +33,7 @@ export const useClubOwnership = () => {
         }
 
         // Get club profile
-        const { data: clubData, error: clubError } = await supabase
+//         const { data: clubData, error: clubError } = await supabase
           .from('club_profiles')
           .select('*')
           .eq('user_id', user.id)

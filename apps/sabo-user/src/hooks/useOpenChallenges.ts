@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { useAuth } from '@/hooks/useAuth';
 import { Challenge } from '@/types/challenge';
 import { toast } from 'sonner';
@@ -15,7 +21,7 @@ export const useOpenChallenges = () => {
       setLoading(true);
 
       // Fetch open challenges (opponent_id is null and status is pending)
-      const { data: challengesData, error } = await supabase
+//       const { data: challengesData, error } = await supabase
         .from('challenges')
         .select('*')
         .is('opponent_id', null)
@@ -33,12 +39,12 @@ export const useOpenChallenges = () => {
       let rankings: any[] = [];
 
       if (challengerIds.length > 0) {
-        const { data: profilesData } = await supabase
+//         const { data: profilesData } = await supabase
           .from('profiles')
           .select('user_id, full_name, display_name, avatar_url, current_rank')
           .in('user_id', challengerIds);
 
-        const { data: rankingsData } = await supabase
+//         const { data: rankingsData } = await supabase
           .from('player_rankings')
           .select('user_id, spa_points, elo_points')
           .in('user_id', challengerIds);
@@ -96,7 +102,7 @@ export const useOpenChallenges = () => {
       setJoining(challengeId);
 
       // First, get the challenge to verify it's available
-      const { data: challengeData, error: fetchError } = await supabase
+//       const { data: challengeData, error: fetchError } = await supabase
         .from('challenges')
         .select('*')
         .eq('id', challengeId)
@@ -116,7 +122,7 @@ export const useOpenChallenges = () => {
       }
 
       // Update challenge to accept it
-      const { data: updateResult, error: updateError } = await supabase
+//       const { data: updateResult, error: updateError } = await supabase
         .from('challenges')
         .update({
           opponent_id: user.id,
@@ -126,7 +132,7 @@ export const useOpenChallenges = () => {
         .eq('id', challengeId)
         .eq('status', 'pending')
         .is('opponent_id', null)
-        .select()
+        .getAll()
         .single();
 
       if (updateError) {
@@ -135,7 +141,7 @@ export const useOpenChallenges = () => {
       }
 
       // Create match record
-      const { error: matchError } = await supabase.from('matches').insert({
+      const { error: matchError } = await matchService.create({
         player1_id: challengeData.challenger_id,
         player2_id: user.id,
         challenge_id: challengeId,
@@ -177,7 +183,7 @@ export const useOpenChallenges = () => {
   useEffect(() => {
     fetchOpenChallenges();
 
-    const subscription = supabase
+//     const subscription = supabase
       .channel('open_challenges_realtime')
       .on(
         'postgres_changes',

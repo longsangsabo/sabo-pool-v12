@@ -22,7 +22,12 @@ import {
  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { getCurrentUser } from '../services/userService';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTheme } from '@/hooks/useTheme';
@@ -59,7 +64,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
    const {
     data: { user },
     error,
-   } = await supabase.auth.getUser();
+   } = await getCurrentUser();
    if (error) throw error;
    return user;
   },
@@ -71,10 +76,10 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   queryFn: async () => {
    if (!user?.id) return null;
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('profiles')
     .select('*')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    if (error) throw error;
@@ -89,10 +94,10 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   queryFn: async () => {
    if (!user?.id) return null;
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('wallets')
     .select('balance, points_balance')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    if (error && error.code !== 'PGRST116') throw error;
@@ -103,7 +108,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 
  const handleSignOut = async () => {
   try {
-   const { error } = await supabase.auth.signOut();
+   const { error } = await userService.signOut();
    if (error) throw error;
 
    toast.success('Đã đăng xuất thành công');
@@ -142,7 +147,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
       {/* SABO Logo */}
       <div className='relative'>
        <img
-        src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+// // // //         src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
         alt='SABO ARENA Logo'
         className='w-9 h-9 object-cover rounded-full'
        />

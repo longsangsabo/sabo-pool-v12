@@ -3,7 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { getCurrentUser } from '../services/userService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Trophy, Save } from 'lucide-react';
 
@@ -49,7 +54,7 @@ export function MatchScoreInput({
   try {
    const {
     data: { user },
-   } = await supabase.auth.getUser();
+   } = await getCurrentUser();
    if (!user) throw new Error('Not authenticated');
 
    console.log('🎯 Updating score using safe method:', {
@@ -59,7 +64,7 @@ export function MatchScoreInput({
     submittedBy: user.id,
    });
 
-   const { data, error } = await supabase.rpc('update_match_score_safe', {
+   const { data, error } = await tournamentService.callRPC('update_match_score_safe', {
     p_match_id: matchId,
     p_player1_score: player1Score,
     p_player2_score: player2Score,

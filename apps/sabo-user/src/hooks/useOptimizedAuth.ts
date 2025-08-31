@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
-import { User } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+// import { User } from '@supabase/supabase-js';
+// Removed supabase import - migrated to services
+import { getCurrentUser } from '../services/userService';
 
 interface OptimizedAuthState {
   user: User | null;
@@ -36,7 +37,7 @@ export const useOptimizedAuth = () => {
         try {
           const {
             data: { user },
-          } = await supabase.auth.getUser();
+          } = await getCurrentUser();
 
           let isAdmin = false;
           if (user) {
@@ -52,10 +53,10 @@ export const useOptimizedAuth = () => {
               isAdmin = cache.isAdmin || false;
             } else {
               // Fetch admin status and cache it
-              const { data: profile } = await supabase
+//               const { data: profile } = await supabase
                 .from('profiles')
                 .select('is_admin')
-                .eq('user_id', user.id)
+                .getByUserId(user.id)
                 .single();
 
               isAdmin = profile?.is_admin || false;
@@ -94,7 +95,7 @@ export const useOptimizedAuth = () => {
   // Optimized sign out function
   const signOut = useCallback(async () => {
     try {
-      await supabase.auth.signOut();
+      await userService.signOut();
 
       // Clear cache
       cacheRef.current = {};
@@ -132,7 +133,7 @@ export const useOptimizedAuth = () => {
     // Listen for auth changes with optimized handling
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+// // //     } = // TODO: Replace with service call - supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         cacheRef.current = {};
         setAuthState({

@@ -7,7 +7,11 @@ import {
  DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -49,7 +53,7 @@ export const SimpleRegistrationModal: React.FC<
    );
 
    // Check if user is already registered
-   const { data: existingRegistration, error: checkError } = await supabase
+//    const { data: existingRegistration, error: checkError } = await supabase
     .from('tournament_registrations')
     .select('*')
     .eq('tournament_id', tournament.id)
@@ -80,7 +84,7 @@ export const SimpleRegistrationModal: React.FC<
     notes: 'Thanh toán tiền mặt - đợi xác nhận từ CLB',
    };
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_registrations')
     .insert([registrationData])
     .select()

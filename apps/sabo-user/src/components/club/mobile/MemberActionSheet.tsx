@@ -12,7 +12,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, Shield, Crown, UserX, Loader2, Info } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { clubRoleUtils } from "@sabo/shared-utils"
@@ -67,7 +71,7 @@ export const MemberActionSheet: React.FC<MemberActionSheetProps> = ({
  const internalPromote = async () => {
   if (!member) return;
   try {
-   await supabase
+//    await supabase
     .from('club_members')
     .update({ role: 'moderator' } as any)
     .eq('user_id', member.id)
@@ -83,7 +87,7 @@ export const MemberActionSheet: React.FC<MemberActionSheetProps> = ({
  const internalDemote = async () => {
   if (!member) return;
   try {
-   await supabase
+//    await supabase
     .from('club_members')
     .update({ role: 'member' } as any)
     .eq('user_id', member.id)
@@ -104,7 +108,7 @@ export const MemberActionSheet: React.FC<MemberActionSheetProps> = ({
    return;
   }
   try {
-   await supabase
+//    await supabase
     .from('club_members')
     .update({ status: 'removed' })
     .eq('user_id', member.id)

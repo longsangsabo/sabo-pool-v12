@@ -18,7 +18,15 @@ import {
  getTierText,
  formatTournamentDateTime,
 } from "@sabo/shared-utils"
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { supabase } from "@/integrations/supabase/client";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { logSPAPoints, updateUserSPAPoints } from '@/services/tournamentService';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
 import { toast } from 'sonner';
@@ -61,7 +69,7 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
     const { data: allRegistrations, error: countError } = await supabase
      .from('tournament_registrations')
      .select('user_id, registration_status')
-     .eq('tournament_id', tournament.id)
+     .getByTournamentId(tournament.id)
      .eq('registration_status', 'confirmed'); // Only count confirmed registrations
 
     if (countError) {
@@ -75,8 +83,8 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
      const { data, error } = await supabase
       .from('tournament_registrations')
       .select('*')
-      .eq('tournament_id', tournament.id)
-      .eq('user_id', user.id)
+      .getByTournamentId(tournament.id)
+      .getByUserId(user.id)
       .maybeSingle();
 
      if (error && error.code !== 'PGRST116') {
@@ -114,7 +122,7 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
     const { data: tournamentPrizes, error: prizesError } = await supabase
      .from('tournament_prizes')
      .select('*')
-     .eq('tournament_id', tournament.id)
+     .getByTournamentId(tournament.id)
      .eq('is_visible', true)
      .order('prize_position');
 
@@ -135,14 +143,14 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
      const { data: pointConfig, error: pointError } = await supabase
       .from('tournament_point_configs')
       .select('*')
-      .eq('tournament_id', tournament.id)
+      .getByTournamentId(tournament.id)
       .maybeSingle();
 
      // Fetch physical prizes
      const { data: physicalPrizes, error: physicalError } = await supabase
       .from('tournament_physical_prizes')
       .select('*')
-      .eq('tournament_id', tournament.id);
+      .getByTournamentId(tournament.id);
 
      // Get SPA points from point config
      if (pointConfig && !pointError) {
@@ -192,7 +200,7 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
    const { data, error } = await supabase
     .from('player_rankings')
     .select('spa_points')
-    .eq('user_id', user?.id)
+    .getByUserId(user?.id)
     .maybeSingle();
 
    if (error || !data) return 0;
@@ -219,32 +227,22 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
    const { error: deleteError } = await supabase
     .from('tournament_registrations')
     .delete()
-    .eq('tournament_id', tournament.id)
-    .eq('user_id', user.id);
+    .getByTournamentId(tournament.id)
+    .getByUserId(user.id);
 
    if (deleteError) throw deleteError;
 
    // Apply SPA penalty (-20 points)
-   const currentSpaPoints = await getCurrentSpaPoints();
-   const { error: spaError } = await supabase
-    .from('player_rankings')
-    .update({
-     spa_points: Math.max(0, currentSpaPoints - 20),
-     updated_at: new Date().toISOString(),
-    })
-    .eq('user_id', user.id);
-
-   if (spaError) console.error('SPA penalty error:', spaError);
+   await updateUserSPAPoints(user.id, -20);
 
    // Log the penalty
-   await supabase.from('spa_points_log').insert({
-    user_id: user.id,
-    points: -20,
-    category: 'tournament_cancellation',
-    description: `Hủy đăng ký giải đấu: ${tournament.name}`,
-    reference_id: tournament.id,
-    reference_type: 'tournament',
-   });
+   await logSPAPoints(
+     user.id,
+     -20,
+     'tournament_cancellation',
+     `Hủy đăng ký giải đấu: ${tournament.name}`,
+     tournament.id
+   );
 
    setIsRegistered(false);
    toast.success('Đã hủy đăng ký thành công. Bạn bị trừ 20 điểm SPA.');
@@ -381,7 +379,7 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
    <div
     className='absolute inset-0 bg-cover bg-center opacity-30'
     style={{
-     backgroundImage: `url('https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/layout-card.jpg')`,
+// // //      backgroundImage: `url('https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/layout-card.jpg')`,
     }}
    />
 
@@ -404,14 +402,14 @@ const OptimizedTournamentCard: React.FC<OptimizedTournamentCardProps> = ({
      <img
       src={
        tournament.club?.logo_url ||
-       'https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/logo-sabo-arena.png'
+// // //        'https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/logo-sabo-arena.png'
       }
       alt={tournament.club?.name || 'CLB'}
       className='w-full h-full object-cover'
       onError={e => {
        // Fallback to default logo if club logo fails to load
        e.currentTarget.src =
-        'https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/logo-sabo-arena.png';
+// // //         'https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/logo-sabo-arena.png';
       }}
      />
     </div>

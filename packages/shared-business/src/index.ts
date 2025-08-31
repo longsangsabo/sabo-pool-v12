@@ -1,6 +1,15 @@
 // SABO Pool Arena - Shared Business Logic Package
 // Consolidated business logic services for all major features
 
+// ===== MOBILE-READY SERVICE LAYER =====
+// Core Services (Week 1-2)
+export * from './user';
+export * from './tournament';
+export * from './payment';
+
+// Mobile-Specific Services (Week 3)
+export * from './mobile';
+
 // ===== PHASE 2: HIGH PRIORITY BUSINESS LOGIC =====
 // User Management
 export * from './user';
@@ -10,6 +19,12 @@ export * from './club';
 
 // Challenge System
 export * from './challenge';
+
+// Tournament Management
+export * from './tournament';
+
+// Payment Processing
+export * from './payment';
 
 // ===== PHASE 3: MEDIUM PRIORITY BUSINESS LOGIC =====
 // Notification System

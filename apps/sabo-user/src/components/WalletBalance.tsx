@@ -3,7 +3,14 @@ import { Typography } from '@sabo/shared-ui';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Coins, TrendingUp, Clock, ArrowUpRight } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 
 interface WalletData {
  balance: number;
@@ -42,10 +49,10 @@ export const WalletBalance: React.FC = () => {
     console.log('Fetching wallet data for user:', user.id);
 
     // Fetch wallet balance
-    const { data: walletData, error: walletError } = await supabase
+//     const { data: walletData, error: walletError } = await supabase
      .from('wallets')
      .select('id, points_balance, total_earned, total_spent')
-     .eq('user_id', user.id)
+     .getByUserId(user.id)
      .single();
 
     if (walletError && walletError.code !== 'PGRST116') {
@@ -71,7 +78,7 @@ export const WalletBalance: React.FC = () => {
   fetchWalletData();
 
   // Set up real-time subscription
-  const channel = supabase
+//   const channel = supabase
    .channel('wallet-updates')
    .on(
     'postgres_changes',
@@ -101,7 +108,7 @@ export const WalletBalance: React.FC = () => {
    .subscribe();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [user]);
 

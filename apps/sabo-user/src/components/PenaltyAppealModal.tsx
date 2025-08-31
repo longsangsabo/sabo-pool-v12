@@ -8,7 +8,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import { FileText, AlertTriangle } from 'lucide-react';
 
@@ -45,7 +49,7 @@ const PenaltyAppealModal = ({
   setLoading(true);
 
   try {
-   const { error } = await (supabase as any)
+//    const { error } = await (supabase as any)
     .from('notifications')
     .update({
      title: appealReason.trim(),

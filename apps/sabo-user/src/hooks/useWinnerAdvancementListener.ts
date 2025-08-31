@@ -1,5 +1,11 @@
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { advanceWinner } from '@/utils/bracketAdvancement';
 
 export const useWinnerAdvancementListener = (tournamentId?: string) => {
@@ -27,7 +33,7 @@ export const useWinnerAdvancementListener = (tournamentId?: string) => {
     };
 
     // Listen to PostgreSQL notifications
-    const channel = supabase
+//     const channel = supabase
       .channel('winner-advancement')
       .on(
         'postgres_changes',
@@ -55,7 +61,7 @@ export const useWinnerAdvancementListener = (tournamentId?: string) => {
 
     return () => {
       console.log('🔌 Cleaning up winner advancement listener');
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [tournamentId]);
 };

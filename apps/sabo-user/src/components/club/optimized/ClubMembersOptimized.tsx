@@ -23,6 +23,11 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useClubRole } from '@/hooks/useClubRole';
 import { supabase } from '@/integrations/supabase/client';
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { approveRankRequest } from '../../../services/userService';
 import { toast } from 'sonner';
 import TrustScoreBadge from '@/components/TrustScoreBadge';
 
@@ -327,18 +332,7 @@ const ClubMembersOptimized: React.FC = () => {
    console.log('🔧 Processing approval with manual function...');
 
    // Use the manual approval function instead of direct update
-   const { data: approvalResult, error: approvalError } = await supabase.rpc(
-    'manual_approve_rank_request',
-    {
-     p_request_id: requestId,
-     p_approver_id: user.id
-    }
-   );
-
-   if (approvalError) {
-    console.error('❌ Error calling approval function:', approvalError);
-    throw new Error('Lỗi khi gọi function duyệt: ' + approvalError.message);
-   }
+   const approvalResult = await approveRankRequest(requestId, user.id);
 
    if (!approvalResult?.success) {
     console.error('❌ Approval function failed:', approvalResult);

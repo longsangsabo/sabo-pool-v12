@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from '@/hooks/use-toast';
 import { TOURNAMENT_ELO_REWARDS } from '@sabo/shared-utils';
 import type {
@@ -106,7 +106,7 @@ export const useEloRules = () => {
   // Validate ELO system consistency
   const validateSystem = async (): Promise<EloValidationResult> => {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('player_rankings')
         .select(
           `

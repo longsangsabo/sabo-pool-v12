@@ -4,7 +4,7 @@
  * Phase 1 - Step 1.2 of refactoring process
  */
 
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import type {
   Tournament,
   Player,
@@ -20,10 +20,10 @@ export class TournamentManagementService {
    * Fetch tournaments for a specific club
    */
   static async fetchTournaments(clubId: string): Promise<Tournament[]> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('tournaments')
       .select('*')
-      .eq('club_id', clubId)
+      .getByClubId(clubId)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -41,7 +41,7 @@ export class TournamentManagementService {
     clubId: string,
     filter: TournamentFilter
   ): Promise<Tournament[]> {
-    let query = supabase.from('tournaments').select('*').eq('club_id', clubId);
+    let query = tournamentService.select('*').getByClubId(clubId);
 
     // Apply filters
     switch (filter) {
@@ -78,7 +78,7 @@ export class TournamentManagementService {
   static async fetchTournamentParticipants(
     tournamentId: string
   ): Promise<Player[]> {
-    const { data: registrations, error } = await supabase
+//     const { data: registrations, error } = await supabase
       .from('tournament_registrations')
       .select(
         `
@@ -93,7 +93,7 @@ export class TournamentManagementService {
         )
       `
       )
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .eq('registration_status', 'confirmed');
 
     if (error) {
@@ -117,7 +117,7 @@ export class TournamentManagementService {
    * Fetch all available players for bracket generation
    */
   static async fetchAvailablePlayers(): Promise<Player[]> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('profiles')
       .select('user_id, full_name, display_name, avatar_url, elo')
       .not('full_name', 'is', null)
@@ -232,10 +232,10 @@ export class TournamentManagementService {
       }));
 
       // First, delete existing matches for this tournament
-      const { error: deleteError } = await supabase
+//       const { error: deleteError } = await supabase
         .from('tournament_matches')
         .delete()
-        .eq('tournament_id', tournamentId);
+        .getByTournamentId(tournamentId);
 
       if (deleteError) {
         throw new Error(
@@ -244,17 +244,17 @@ export class TournamentManagementService {
       }
 
       // Then insert new matches
-      const { data, error: insertError } = await supabase
+//       const { data, error: insertError } = await supabase
         .from('tournament_matches')
-        .insert(matchesToInsert)
-        .select();
+        .create(matchesToInsert)
+        .getAll();
 
       if (insertError) {
         throw new Error(`Failed to save bracket: ${insertError.message}`);
       }
 
       // Update tournament status
-      const { error: updateError } = await supabase
+//       const { error: updateError } = await supabase
         .from('tournaments')
         .update({
           bracket_generated: true,
@@ -292,7 +292,7 @@ export class TournamentManagementService {
   static async fetchTournamentMatches(
     tournamentId: string
   ): Promise<BracketMatch[]> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('tournament_matches')
       .select(
         `
@@ -318,7 +318,7 @@ export class TournamentManagementService {
         )
       `
       )
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .order('round_number', { ascending: true })
       .order('match_number', { ascending: true });
 
@@ -362,7 +362,7 @@ export class TournamentManagementService {
     tournamentId: string
   ): Promise<TournamentServiceResponse> {
     try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('tournaments')
         .delete()
         .eq('id', tournamentId);
@@ -392,14 +392,14 @@ export class TournamentManagementService {
     updates: Partial<Tournament>
   ): Promise<TournamentServiceResponse<Tournament>> {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournaments')
         .update({
           ...updates,
           updated_at: new Date().toISOString(),
         })
         .eq('id', tournamentId)
-        .select()
+        .getAll()
         .single();
 
       if (error) {

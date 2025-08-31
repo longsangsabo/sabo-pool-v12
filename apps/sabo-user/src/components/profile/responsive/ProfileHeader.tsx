@@ -5,7 +5,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Star, Shield, Trophy, Users, Camera, Upload } from 'lucide-react';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { useDropzone } from 'react-dropzone';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -31,7 +38,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     const fileExt = file.name.split('.').pop();
     const fileName = `cover-${user.id}-${Date.now()}.${fileExt}`;
 
-    const { error: uploadError } = await supabase.storage
+// // //     const { error: uploadError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
      .from('avatars')
      .upload(fileName, file);
 
@@ -39,12 +46,12 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
     const {
      data: { publicUrl },
-    } = supabase.storage.from('avatars').getPublicUrl(fileName);
+    } = storageService.upload('avatars').getPublicUrl(fileName);
 
-    const { error: updateError } = await supabase
+//     const { error: updateError } = await supabase
      .from('profiles')
      .update({ avatar_url: publicUrl } as any)
-     .eq('user_id', user.id);
+     .getByUserId(user.id);
 
     if (updateError) throw updateError;
 

@@ -1,5 +1,5 @@
 // Emergency fallback bracket generation function
-import { supabase } from '@/integrations/supabase/client';
+import { getTournamentRegistrations, getProfilesById, clearTournamentMatches, insertTournamentMatches, updateTournament } from '../services/tournamentService';
 import { getDisplayName } from '@/types/unified-profile';
 
 export async function generateBracketFallback(tournamentId, generationType = 'elo_based') {
@@ -8,35 +8,30 @@ export async function generateBracketFallback(tournamentId, generationType = 'el
     console.log('🛠️ Starting fallback bracket generation for tournament:', tournamentId);
     
     // 1. Get confirmed participants
-    const { data: registrations, error: regError } = await supabase
-      .from('tournament_registrations')
-      .select('user_id, created_at')
-      .eq('tournament_id', tournamentId)
-      .eq('registration_status', 'confirmed');
+    const { data: registrations, error: regError } = await getTournamentRegistrations(tournamentId);
     
     if (regError) {
-      throw new Error(`Failed to get registrations: ${regError.message}`);
+      throw new Error(`Failed to get registrations: ${regError}`);
     }
     
-    if (!registrations || registrations.length < 2) {
+    const confirmedRegistrations = registrations?.filter(r => r.registration_status === 'confirmed');
+    
+    if (!confirmedRegistrations || confirmedRegistrations.length < 2) {
       throw new Error('Need at least 2 confirmed participants');
     }
     
-    console.log(`👥 Found ${registrations.length} confirmed participants`);
+    console.log(`👥 Found ${confirmedRegistrations.length} confirmed participants`);
     
     // 2. Get profiles for seeding
-    const userIds = registrations.map(r => r.user_id);
-    const { data: profiles, error: profileError } = await supabase
-      .from('profiles')
-      .select('user_id, elo, full_name, display_name')
-      .in('user_id', userIds);
+    const userIds = confirmedRegistrations.map(r => r.user_id);
+    const { data: profiles, error: profileError } = await getProfilesById(userIds);
     
     if (profileError) {
-      console.warn('Could not load profiles, using basic seeding:', profileError.message);
+      console.warn('Could not load profiles, using basic seeding:', profileError);
     }
     
     // 3. Combine registration and profile data
-    const participants = registrations.map(reg => {
+    const participants = confirmedRegistrations.map(reg => {
       const profile = profiles?.find(p => p.user_id === reg.user_id);
       return {
         user_id: reg.user_id,
@@ -67,13 +62,10 @@ export async function generateBracketFallback(tournamentId, generationType = 'el
     console.log('🔢 Seeding order:', sortedParticipants.map(p => p.full_name));
     
     // 5. Clear existing matches first
-    const { error: deleteError } = await supabase
-      .from('tournament_matches')
-      .delete()
-      .eq('tournament_id', tournamentId);
+    const { error: deleteError } = await clearTournamentMatches(tournamentId);
     
     if (deleteError) {
-      console.warn('Could not clear existing matches:', deleteError.message);
+      console.warn('Could not clear existing matches:', deleteError);
     }
     
     // 6. Generate first round matches
@@ -103,25 +95,20 @@ export async function generateBracketFallback(tournamentId, generationType = 'el
     console.log(`⚡ Generated ${matches.length} first round matches`);
     
     // 7. Insert matches into database
-    const { error: insertError } = await supabase
-      .from('tournament_matches')
-      .insert(matches);
+    const { error: insertError } = await insertTournamentMatches(matches);
     
     if (insertError) {
-      throw new Error(`Failed to insert matches: ${insertError.message}`);
+      throw new Error(`Failed to insert matches: ${insertError}`);
     }
     
     // 8. Update tournament status
-    const { error: updateError } = await supabase
-      .from('tournaments')
-      .update({ 
-        status: 'in_progress',
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', tournamentId);
+    const { error: updateError } = await updateTournament(tournamentId, { 
+      status: 'in_progress',
+      updated_at: new Date().toISOString()
+    });
     
     if (updateError) {
-      console.warn('Could not update tournament status:', updateError.message);
+      console.warn('Could not update tournament status:', updateError);
     }
     
     console.log('✅ Bracket generation completed successfully!');

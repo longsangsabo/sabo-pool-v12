@@ -6,6 +6,8 @@ import { Crown, Trophy, Edit, Zap, Shield } from 'lucide-react';
 import UserAvatar from '@/components/UserAvatar';
 import { toast } from 'sonner';
 import { MatchStatusDebugInfo } from './MatchStatusDebugInfo';
+import { getCurrentUser } from '../../services/userService';
+import { submitMatchScore } from '../../services/tournamentService';
 
 interface Match {
  id: string;
@@ -420,14 +422,8 @@ export const DoubleEliminationMatchCard: React.FC<
           }
          );
 
-         const { supabase } = await import(
-          './integrations/supabase/client'
-         );
-
          // Get current user for submitted_by parameter
-         const {
-          data: { user },
-         } = await supabase.auth.getUser();
+         const user = await getCurrentUser();
          if (!user) {
           throw new Error(
            'User must be authenticated to submit scores'
@@ -438,23 +434,12 @@ export const DoubleEliminationMatchCard: React.FC<
          // This component should be updated to use useSABOScoreSubmission hook
          // for proper integration with the new SABO Tournament Engine
          
-         const { data, error } = await supabase.rpc(
-          'submit_sabo_match_score',
-          {
-           p_match_id: match.id,
-           p_player1_score: score1,
-           p_player2_score: score2,
-           p_submitted_by: user.id,
-          }
+         const data = await submitMatchScore(
+          match.id,
+          score1,
+          score2,
+          user.id
          );
-
-         if (error) {
-          console.error(
-           '❌ [DoubleEliminationMatchCard] RPC Error:',
-           error
-          );
-          throw error;
-         }
 
          console.log(
           '✅ [DoubleEliminationMatchCard] RPC Response:',

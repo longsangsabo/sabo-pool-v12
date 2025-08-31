@@ -8,7 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, RefreshCw, CheckCircle, Zap } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface SABO32AdvancementFixProps {
@@ -29,7 +33,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
   try {
    setIsFixing(true);
    
-   const { data: matches, error } = await (supabase as any)
+//    const { data: matches, error } = await (supabase as any)
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId)
@@ -86,7 +90,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
    setFixResult(null);
 
    // Call the SQL function
-   const { data, error } = await (supabase as any).rpc('fix_sabo32_advancement', {
+//    const { data, error } = await (supabase as any).rpc('fix_sabo32_advancement', {
     p_tournament_id: tournamentId
    });
 
@@ -114,7 +118,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
    setIsFixing(true);
    
    // Get all completed matches
-   const { data: matches, error } = await (supabase as any)
+//    const { data: matches, error } = await (supabase as any)
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId);
@@ -168,7 +172,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
 
    // Apply updates
    for (const update of updates) {
-    await (supabase as any)
+//     await (supabase as any)
      .from('sabo32_matches')
      .update(update)
      .eq('id', update.id);

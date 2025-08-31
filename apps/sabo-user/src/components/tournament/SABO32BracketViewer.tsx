@@ -4,7 +4,11 @@
 // =============================================
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -106,7 +110,7 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
  const fetchMatches = async () => {
   try {
    setLoading(true);
-   const { data: matchesData, error } = await (supabase as any)
+//    const { data: matchesData, error } = await (supabase as any)
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId)
@@ -126,7 +130,7 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
 
    let playerProfiles: any = {};
    if (playerIds.size > 0) {
-    const { data: profilesData, error: profilesError } = await supabase
+//     const { data: profilesData, error: profilesError } = await supabase
      .from('profiles')
      .select('user_id, full_name, display_name, avatar_url')
      .in('user_id', Array.from(playerIds));

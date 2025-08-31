@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Trophy, Loader2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import {
  AlertDialog,
@@ -46,7 +53,7 @@ const ForceCompleteTournamentButton: React.FC<
 
   try {
    // Use the new database function for accurate calculation
-   const { data, error } = await supabase.rpc(
+   const { data, error } = await tournamentService.callRPC(
     'complete_tournament_automatically',
     {
      p_tournament_id: tournamentId,

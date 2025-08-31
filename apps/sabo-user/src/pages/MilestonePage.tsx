@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import MilestoneCategoryTabs, { MilestoneCategory } from '@/components/milestones/MilestoneCategoryTabs';
 import MilestoneList from '@/components/milestones/MilestoneList';
 import { MilestoneData } from '@/components/milestones/MilestoneCard';
@@ -16,7 +19,7 @@ export const MilestonePage: React.FC = () => {
  const milestonesQuery = useQuery<MilestoneData[]>({
   queryKey: ['milestones-all'],
   queryFn: async () => {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('milestones')
     .select('*')
     .order('sort_order', { ascending: true });

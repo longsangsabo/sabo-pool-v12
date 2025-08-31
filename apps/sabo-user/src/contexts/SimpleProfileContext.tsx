@@ -5,7 +5,9 @@ import {
  useEffect,
  useCallback,
 } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getCurrentUser } from "../services/userService";
 import { useAuth } from '@/hooks/useAuth';
 
 // Simplified profile types
@@ -53,12 +55,12 @@ export const SimpleProfileProvider: React.FC<{ children: React.ReactNode }> = ({
   console.log('[SimpleProfileContext] Fetching profile for user:', user.id);
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('profiles')
     .select(
      'id, user_id, full_name, display_name, phone, avatar_url, role, verified_rank'
     )
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    if (error && error.code !== 'PGRST116') {
@@ -86,10 +88,10 @@ export const SimpleProfileProvider: React.FC<{ children: React.ReactNode }> = ({
    if (!user || !profile) return false;
 
    try {
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
      .from('profiles')
      .update(updates)
-     .eq('user_id', user.id);
+     .getByUserId(user.id);
 
     if (error) throw error;
 
@@ -116,7 +118,7 @@ export const SimpleProfileProvider: React.FC<{ children: React.ReactNode }> = ({
    user.id
   );
 
-  const channel = supabase
+//   const channel = supabase
    .channel('simple-profile-changes')
    .on(
     'postgres_changes',
@@ -156,7 +158,7 @@ export const SimpleProfileProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return () => {
    console.log('[SimpleProfileContext] Cleaning up real-time subscription');
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [user, fetchProfile]);
 

@@ -17,7 +17,7 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 // Navigation item interface
 export interface NavigationItem {
@@ -280,7 +280,7 @@ export const useNavigationBadges = () => {
   const { data: challengeCount } = useQuery({
     queryKey: ['pending-challenges-count'],
     queryFn: async () => {
-      const { count, error } = await supabase
+//       const { count, error } = await supabase
         .from('challenges')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'pending');
@@ -294,7 +294,7 @@ export const useNavigationBadges = () => {
   const { data: notificationCount } = useQuery({
     queryKey: ['notification-count'],
     queryFn: async () => {
-      const { count, error } = await supabase
+//       const { count, error } = await supabase
         .from('notifications')
         .select('*', { count: 'exact', head: true })
         .eq('is_read', false)

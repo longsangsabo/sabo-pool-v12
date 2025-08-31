@@ -50,13 +50,13 @@ const IntegratedScoreManager: React.FC<IntegratedScoreManagerProps> = ({
  // Update scores in challenges table only
  const handleScoreUpdate = async () => {
   try {
-   const { createClient } = await import('@supabase/supabase-js');
-   const supabase = createClient(
+//    const { createClient } = await import('@supabase/supabase-js');
+//    const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL!,
     import.meta.env.VITE_SUPABASE_ANON_KEY!
    );
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('challenges')
     .update({
      challenger_score: tempChallengerScore,
@@ -80,10 +80,10 @@ const IntegratedScoreManager: React.FC<IntegratedScoreManagerProps> = ({
  // Complete the challenge
  const handleCompleteChallenge = async () => {
   try {
-   const { createClient } = await import('@supabase/supabase-js');
+//    const { createClient } = await import('@supabase/supabase-js');
    
    // Use service key for completing challenges to set club confirmation
-   const supabase = createClient(
+//    const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL!,
     import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY!
    );
@@ -106,7 +106,7 @@ const IntegratedScoreManager: React.FC<IntegratedScoreManagerProps> = ({
    });
 
    // Step 1: Complete the challenge (simple update that always works)
-   const { error: step1Error } = await supabase
+//    const { error: step1Error } = await supabase
     .from('challenges')
     .update({ status: 'completed' })
     .eq('id', challengeId)
@@ -118,7 +118,7 @@ const IntegratedScoreManager: React.FC<IntegratedScoreManagerProps> = ({
    }
 
    // Step 2: Set additional fields separately to avoid constraint conflicts
-   const { error: step2Error } = await supabase
+//    const { error: step2Error } = await supabase
     .from('challenges')
     .update({
      winner_id: winnerId,

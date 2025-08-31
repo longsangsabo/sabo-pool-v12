@@ -11,7 +11,11 @@ import {
  Medal,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 
 interface BracketVisualizationProps {
  tournamentId: string;
@@ -61,7 +65,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
 
  // Real-time subscription để cập nhật thông tin người chơi
  useEffect(() => {
-  const channel = supabase
+//   const channel = supabase
    .channel('bracket-updates')
    .on(
     'postgres_changes',
@@ -102,7 +106,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
    console.log('🔍 Fetching bracket data for tournament:', tournamentId);
 
    // Get tournament data first
-   const { data: tournament, error: tournamentError } = await supabase
+//    const { data: tournament, error: tournamentError } = await supabase
     .from('tournaments')
     .select('*')
     .eq('id', tournamentId)
@@ -113,7 +117,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
    }
 
    // Get tournament registrations as participants
-   const { data: registrations, error: regError } = await supabase
+//    const { data: registrations, error: regError } = await supabase
     .from('tournament_registrations')
     .select(
      `
@@ -135,7 +139,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
    let profiles: any[] = [];
 
    if (userIds.length > 0) {
-    const { data: profileData, error: profileError } = await supabase
+//     const { data: profileData, error: profileError } = await supabase
      .from('profiles')
      .select('user_id, full_name, display_name, avatar_url, verified_rank')
      .in('user_id', userIds);
@@ -159,7 +163,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
     }) || [];
 
    // Get tournament matches with player details
-   const { data: matchesData, error: matchesError } = await supabase
+//    const { data: matchesData, error: matchesError } = await supabase
     .from('tournament_matches')
     .select(
      `
@@ -202,7 +206,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
    setMatches(enhancedMatches);
 
    // Check if bracket exists in tournament_brackets table
-   const { data: existingBracket, error: bracketError } = await supabase
+//    const { data: existingBracket, error: bracketError } = await supabase
     .from('tournament_brackets')
     .select('*')
     .eq('tournament_id', tournamentId)

@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 import { TournamentRewards, RewardPosition } from '@/types/tournament-extended';
 
@@ -31,10 +43,10 @@ export function useTournamentRewardsManager(tournamentId: string) {
         return [];
       }
 
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_prize_tiers')
         .select('*')
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .order('position');
 
       if (error) throw error;
@@ -47,7 +59,7 @@ export function useTournamentRewardsManager(tournamentId: string) {
         );
 
         // Call the populate function to create default rewards
-        const { error: functionError } = await supabase.rpc(
+        const { error: functionError } = await tournamentService.callRPC(
           'populate_default_tournament_rewards',
           {
             tournament_id_param: tournamentId,
@@ -58,10 +70,10 @@ export function useTournamentRewardsManager(tournamentId: string) {
           console.error('Error creating default rewards:', functionError);
         } else {
           // Fetch again after creating defaults
-          const { data: newData, error: newError } = await supabase
+//           const { data: newData, error: newError } = await supabase
             .from('tournament_prize_tiers')
             .select('*')
-            .eq('tournament_id', tournamentId)
+            .getByTournamentId(tournamentId)
             .order('position');
 
           if (!newError && newData) {
@@ -136,10 +148,10 @@ export function useTournamentRewardsManager(tournamentId: string) {
       // Start transaction-like operation
 
       // 1. Delete existing prize tiers
-      const { error: deleteError } = await supabase
+//       const { error: deleteError } = await supabase
         .from('tournament_prize_tiers')
         .delete()
-        .eq('tournament_id', tournamentId);
+        .getByTournamentId(tournamentId);
 
       if (deleteError) throw deleteError;
 
@@ -148,16 +160,16 @@ export function useTournamentRewardsManager(tournamentId: string) {
         const newTiers = convertToPrizeTiers(rewards);
         if (newTiers.length > 0) {
           // Only insert if we have valid tiers
-          const { error: insertError } = await supabase
+//           const { error: insertError } = await supabase
             .from('tournament_prize_tiers')
-            .insert(newTiers);
+            .create(newTiers);
 
           if (insertError) throw insertError;
         }
       }
 
       // Update tournament timestamp for tracking
-      const { error: updateError } = await supabase
+//       const { error: updateError } = await supabase
         .from('tournaments')
         .update({
           updated_at: new Date().toISOString(),
@@ -186,10 +198,10 @@ export function useTournamentRewardsManager(tournamentId: string) {
   // Delete specific position
   const deletePositionMutation = useMutation({
     mutationFn: async (position: number) => {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('tournament_prize_tiers')
         .delete()
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .eq('position', position);
 
       if (error) throw error;

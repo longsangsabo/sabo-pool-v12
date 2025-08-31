@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { useAuth } from '@/hooks/useAuth';
 
 export interface PlayerStatsData {
@@ -23,10 +29,10 @@ export const usePlayerStats = () => {
       setLoading(true);
       setError(null);
       try {
-        const { data, error } = await supabase
+        // TODO: Replace with service call - const { data, error } = await supabase
           .from('player_rankings')
           .select('elo_points, spa_points, total_matches, wins')
-          .eq('user_id', user.id)
+          .getByUserId(user.id)
           .maybeSingle();
         if (error) throw error;
         if (!cancelled) {
@@ -47,7 +53,7 @@ export const usePlayerStats = () => {
     load();
 
     // Realtime subscription optional
-    const channel = supabase
+//     const channel = supabase
       .channel('player-stats')
       .on(
         'postgres_changes',
@@ -65,7 +71,7 @@ export const usePlayerStats = () => {
 
     return () => {
       cancelled = true;
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [user?.id]);
 

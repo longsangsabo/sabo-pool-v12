@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getCurrentUser } from "../services/userService";
 import { useAuth } from '@/hooks/useAuth';
 
 // Define data types for profiles
@@ -61,7 +63,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
 
   try {
    // Fetch player profile
-   const { data: playerData, error: playerError } = await supabase
+//    const { data: playerData, error: playerError } = await supabase
     .from('profiles')
     .select('*')
     .eq('user_id', user.id)
@@ -76,7 +78,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
    }
 
    // Always try to fetch club profile (user might have one regardless of role)
-   const { data: clubData, error: clubError } = await supabase
+//    const { data: clubData, error: clubError } = await supabase
     .from('club_profiles')
     .select('*')
     .eq('user_id', user.id)

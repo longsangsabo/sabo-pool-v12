@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { toast } from 'sonner';
 
 export interface MatchResult {
@@ -35,9 +44,9 @@ export const useMatchResults = () => {
   setLoading(true);
   try {
    // Use tournament_matches table instead of non-existent match_results
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_matches')
-    .insert({
+    .create({
      player1_id: matchData.winner_id,
      player2_id: matchData.loser_id,
      winner_id: matchData.winner_id,
@@ -46,7 +55,7 @@ export const useMatchResults = () => {
      match_number: 1,
      status: 'completed',
     })
-    .select();
+    .getAll();
 
    if (error) throw error;
 
@@ -63,7 +72,7 @@ export const useMatchResults = () => {
 
  const getMatchResults = async (playerId?: string) => {
   try {
-   let query = supabase
+//    let query = supabase
     .from('tournament_matches')
     .select('*')
     .eq('status', 'completed');
@@ -84,7 +93,7 @@ export const useMatchResults = () => {
  const confirmMatchResult = async (matchId: string, playerId: string) => {
   try {
    // Simple update without complex confirmation logic
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_matches')
     .update({
      score_status: 'confirmed',
@@ -110,7 +119,7 @@ export const useMatchResults = () => {
  ) => {
   try {
    // Update status to disputed
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_matches')
     .update({
      score_status: 'disputed',
@@ -131,7 +140,7 @@ export const useMatchResults = () => {
 
  const verifyMatchResult = async (matchId: string, verifierId: string) => {
   try {
-   const { data, error } = await supabase.rpc('verify_match_result', {
+   const { data, error } = await tournamentService.callRPC('verify_match_result', {
     p_match_id: matchId,
     p_verifier_id: verifierId,
    });
@@ -153,10 +162,10 @@ export const useMatchResults = () => {
  ) => {
   try {
    // Get stats from player_rankings table
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('player_rankings')
     .select('*')
-    .eq('user_id', playerId)
+    .getByUserId(playerId)
     .single();
 
    if (error && error.code !== 'PGRST116') throw error;
@@ -180,7 +189,7 @@ export const useMatchResults = () => {
  const getClubStats = async (clubId: string) => {
   try {
    // Simple stats from tournament matches
-   const { count: totalMatches } = await supabase
+//    const { count: totalMatches } = await supabase
     .from('tournament_matches')
     .select('*', { count: 'exact', head: true });
 

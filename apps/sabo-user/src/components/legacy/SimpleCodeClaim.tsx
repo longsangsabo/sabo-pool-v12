@@ -1,11 +1,18 @@
 import { useState } from 'react';
+import { getCurrentUser } from '../../services/userService';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CheckCircle, AlertCircle } from 'lucide-react';{ useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from '../../services/userService';
 import { toast } from 'sonner';
 
 interface SimpleCodeClaimProps {
@@ -32,7 +39,7 @@ export function SimpleCodeClaim({ className }: SimpleCodeClaimProps) {
 
   try {
    // Get current user
-   const { data: { user }, error: userError } = await supabase.auth.getUser();
+   const { data: { user }, error: userError } = await getCurrentUser();
    
    if (userError || !user) {
     setLastClaimResult({
@@ -44,7 +51,7 @@ export function SimpleCodeClaim({ className }: SimpleCodeClaimProps) {
    }
 
    // Check if code exists and is available
-   const { data: claimData, error: claimError } = await supabase
+//    const { data: claimData, error: claimError } = await supabase
     .from('simple_legacy_claims')
     .select('*')
     .eq('claim_code', claimCode.trim())
@@ -80,7 +87,7 @@ export function SimpleCodeClaim({ className }: SimpleCodeClaimProps) {
    }
 
    // Claim the code
-   const { error: updateError } = await supabase
+//    const { error: updateError } = await supabase
     .from('simple_legacy_claims')
     .update({
      claimed_at: new Date().toISOString(),

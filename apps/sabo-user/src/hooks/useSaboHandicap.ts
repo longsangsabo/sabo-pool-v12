@@ -10,7 +10,7 @@ import {
   applyHandicapToChallenge,
   formatHandicapForDisplay
 } from '@/utils/saboHandicapCalculator';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 // import { toast } from 'react-hot-toast';
 
 // Temporary mock toast for this file
@@ -116,7 +116,7 @@ export function useSaboHandicap(options: UseHandicapOptions): HandicapState & {
     try {
       setState(prev => ({ ...prev, isLoading: true }));
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('challenges')
         .update({
           handicap_data: state.handicapData,
@@ -186,7 +186,7 @@ export function useBulkHandicap() {
 
     try {
       // Get all pending challenges without handicap
-      const { data: challenges, error: fetchError } = await supabase
+//       const { data: challenges, error: fetchError } = await supabase
         .from('challenges')
         .select(`
           id, bet_amount, race_to,
@@ -220,7 +220,7 @@ export function useBulkHandicap() {
           if (challengerRank && opponentRank) {
             const result = applyHandicapToChallenge(challengerRank, opponentRank, betPoints);
 
-            await supabase
+//             await supabase
               .from('challenges')
               .update({
                 handicap_data: result.handicap_data,

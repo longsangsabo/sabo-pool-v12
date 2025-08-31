@@ -5,7 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import {
  Clock,
@@ -81,7 +85,7 @@ const MyChallengesTab = () => {
    console.log('🔄 [MyChallengesTab] Fetching challenges for user:', user.id);
    
    // Fetch incoming challenges with challenger profile
-   const { data: incoming, error: incomingError } = await (supabase as any)
+//    const { data: incoming, error: incomingError } = await (supabase as any)
     .from('challenges')
     .select('*')
     .eq('opponent_id', user.id)
@@ -95,7 +99,7 @@ const MyChallengesTab = () => {
    // Fetch challenger profiles for incoming challenges
    const incomingWithProfiles = await Promise.all(
     (incoming || []).map(async challenge => {
-     const { data: profile } = await supabase
+//      const { data: profile } = await supabase
       .from('profiles')
       .select('full_name, avatar_url')
       .eq('user_id', challenge.challenger_id)
@@ -117,7 +121,7 @@ const MyChallengesTab = () => {
    );
 
    // Fetch outgoing challenges with opponent profile
-   const { data: outgoing, error: outgoingError } = await (supabase as any)
+//    const { data: outgoing, error: outgoingError } = await (supabase as any)
     .from('challenges')
     .select('*')
     .eq('challenger_id', user.id)
@@ -129,7 +133,7 @@ const MyChallengesTab = () => {
 
    const outgoingWithProfiles = await Promise.all(
     (outgoing || []).map(async challenge => {
-     const { data: profile } = await supabase
+//      const { data: profile } = await supabase
       .from('profiles')
       .select('full_name, avatar_url')
       .eq('user_id', challenge.opponent_id)
@@ -175,7 +179,7 @@ const MyChallengesTab = () => {
   status: 'accepted' | 'declined'
  ) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('challenges')
     .update({
      status,

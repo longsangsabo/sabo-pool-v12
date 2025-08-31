@@ -1,7 +1,17 @@
 import { useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -188,9 +198,9 @@ export function TournamentBracketGenerator({
     status: 'pending',
    }));
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_matches')
-    .insert(matchesToInsert);
+    .create(matchesToInsert);
 
    if (error) throw error;
 
@@ -244,10 +254,10 @@ export function TournamentBracketGenerator({
 
    if (isDoubleElimination) {
     // Get confirmed participants for SABO initialization
-    const { data: registrations, error: regError } = await supabase
+//     const { data: registrations, error: regError } = await supabase
      .from('tournament_registrations')
      .select('user_id')
-     .eq('tournament_id', tournamentId)
+     .getByTournamentId(tournamentId)
      .eq('payment_status', 'paid')
      .limit(16);
 
@@ -263,7 +273,7 @@ export function TournamentBracketGenerator({
     const playerIds = registrations.map(r => r.user_id);
 
     // Use SABO tournament initialization
-    const result = await supabase.rpc('initialize_sabo_tournament', {
+    const result = await tournamentService.callRPC('initialize_sabo_tournament', {
      p_tournament_id: tournamentId,
      p_player_ids: playerIds,
     });
@@ -271,7 +281,7 @@ export function TournamentBracketGenerator({
     error = result.error;
    } else {
     // Call single elimination bracket creation function
-    const result = await supabase.rpc(
+    const result = await tournamentService.callRPC(
      'generate_single_elimination_bracket' as any,
      {
       p_tournament_id: tournamentId,

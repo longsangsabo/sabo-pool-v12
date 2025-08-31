@@ -3,7 +3,7 @@
  */
 
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export const useAutoUpdateChallengeStatus = () => {
   useEffect(() => {
@@ -12,7 +12,7 @@ export const useAutoUpdateChallengeStatus = () => {
         const now = new Date();
         
         // Find accepted challenges that should be ongoing (past scheduled time)
-        const { data: challenges, error } = await supabase
+//         const { data: challenges, error } = await supabase
           .from('challenges')
           .select('id, scheduled_time, status')
           .eq('status', 'accepted')
@@ -29,7 +29,7 @@ export const useAutoUpdateChallengeStatus = () => {
           // Update challenges to ongoing status
           const challengeIds = challenges.map(c => c.id);
           
-          const { error: updateError } = await supabase
+//           const { error: updateError } = await supabase
             .from('challenges')
             .update({ status: 'ongoing' })
             .in('id', challengeIds);
@@ -60,7 +60,7 @@ export const useAutoUpdateChallengeStatus = () => {
  */
 export const updateChallengeToOngoing = async (challengeId: string) => {
   try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('challenges')
       .update({ status: 'ongoing' })
       .eq('id', challengeId)

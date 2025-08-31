@@ -1,6 +1,22 @@
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+
 import { useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 import { UnifiedProfile } from '@/types/unified-profile';
 import { useAuth } from '@/hooks/useAuth';
@@ -24,10 +40,10 @@ export function useMobileProfile() {
     if (!user) return;
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', user.id)
+        .getByUserId(user.id)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
@@ -41,7 +57,7 @@ export function useMobileProfile() {
 
         try {
           // Use upsert with ignoreDuplicates to handle the ON CONFLICT issue
-          const { data: newProfile, error: createError } = await supabase
+//           const { data: newProfile, error: createError } = await supabase
             .from('profiles')
             .upsert([{
               user_id: user.id,
@@ -55,7 +71,7 @@ export function useMobileProfile() {
             }], {
               ignoreDuplicates: true
             })
-            .select()
+            .getAll()
             .maybeSingle();
             
           if (createError) {
@@ -69,10 +85,10 @@ export function useMobileProfile() {
           } else {
             // ignoreDuplicates=true returns null when duplicate exists, so fetch again
 
-            const { data: existingProfile } = await supabase
+//             const { data: existingProfile } = await supabase
               .from('profiles')
               .select('*')
-              .eq('user_id', user.id)
+              .getByUserId(user.id)
               .single();
             actualData = existingProfile;
           }
@@ -137,19 +153,19 @@ export function useMobileProfile() {
         active_role: editingProfile.active_role,
       };
 
-      const { error: mutationError } = await supabase
+//       const { error: mutationError } = await supabase
         .from('profiles')
         .update(payload)
-        .eq('user_id', user.id);
+        .getByUserId(user.id);
 
       if (mutationError) {
         // ✅ BYPASS: Check if error is due to missing function
         if (mutationError.message?.includes('get_user_display_name')) {
           console.warn('⚠️ [MobileProfile] get_user_display_name error detected, using fallback update');
-          const { error: fallbackError } = await supabase
+//           const { error: fallbackError } = await supabase
             .from('profiles')
             .update(payload)
-            .eq('user_id', user.id);
+            .getByUserId(user.id);
           if (fallbackError) throw fallbackError;
         } else {
           throw mutationError;
@@ -197,7 +213,7 @@ export function useMobileProfile() {
       const fileName = `avatar-${user.id}-${Date.now()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
 
-      const { error } = await supabase.storage
+// // //       // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
         .from('avatars')
         .upload(filePath, file, {
           contentType: file.type,
@@ -215,7 +231,7 @@ export function useMobileProfile() {
 
             const altFilePath = bucketName === 'logo' ? fileName : filePath;
             
-            const { error: altError } = await supabase.storage
+// // //             const { error: altError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
               .from(bucketName)
               .upload(altFilePath, file, {
                 contentType: file.type,
@@ -224,7 +240,7 @@ export function useMobileProfile() {
             
             if (!altError) {
 
-              const { data: urlData } = supabase.storage
+// // //               const { data: urlData } = // TODO: Replace with service call - supabase.storage
                 .from(bucketName)
                 .getPublicUrl(altFilePath);
               
@@ -241,7 +257,7 @@ export function useMobileProfile() {
         throw error;
       }
 
-      const { data: urlData } = supabase.storage
+// // //       const { data: urlData } = // TODO: Replace with service call - supabase.storage
         .from('avatars')
         .getPublicUrl(filePath);
 
@@ -269,12 +285,12 @@ export function useMobileProfile() {
       const filePath = `${user.id}/${fileName}`; // ✅ Fixed: Use user_id folder structure
 
       // Check if bucket exists by listing first
-      const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
+// // //       const { data: buckets, error: bucketsError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage.listBuckets();
       if (bucketsError) {
         console.error('❌ [Avatar Upload] Error listing buckets:', bucketsError);
       }
 
-      const { error: uploadError } = await supabase.storage
+// // //       const { error: uploadError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
         .from('avatars')
         .upload(filePath, croppedImageBlob, {
           contentType: 'image/webp',
@@ -296,7 +312,7 @@ export function useMobileProfile() {
               // For alternative buckets, try different path structures
               const altFilePath = bucketName === 'logo' ? fileName : filePath;
               
-              const { error: altError } = await supabase.storage
+// // //               const { error: altError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
                 .from(bucketName)
                 .upload(altFilePath, croppedImageBlob, {
                   contentType: 'image/webp',
@@ -305,14 +321,14 @@ export function useMobileProfile() {
               
               if (!altError) {
 
-                const { data: urlData } = supabase.storage
+// // //                 const { data: urlData } = // TODO: Replace with service call - supabase.storage
                   .from(bucketName)
                   .getPublicUrl(altFilePath);
                 
                 const avatarUrl = urlData.publicUrl;
                 
                 // Validate alternative URL
-                if (avatarUrl && avatarUrl !== 'undefined' && avatarUrl.includes('supabase')) {
+//                 if (avatarUrl && avatarUrl !== 'undefined' && avatarUrl.includes('supabase')) {
                   const urlWithCache = `${avatarUrl}?t=${Date.now()}`;
 
                   await updateProfileAvatar(urlWithCache);
@@ -328,14 +344,14 @@ export function useMobileProfile() {
         throw uploadError;
       }
 
-      const { data: urlData } = supabase.storage
+// // //       const { data: urlData } = // TODO: Replace with service call - supabase.storage
         .from('avatars')
         .getPublicUrl(filePath);
 
       const avatarUrl = urlData.publicUrl;
 
       // Validate URL format
-      if (!avatarUrl || avatarUrl === 'undefined' || !avatarUrl.includes('supabase')) {
+//       if (!avatarUrl || avatarUrl === 'undefined' || !avatarUrl.includes('supabase')) {
         console.error('❌ [Avatar Upload] Invalid URL generated:', avatarUrl);
         throw new Error('Invalid avatar URL generated');
       }
@@ -356,10 +372,10 @@ export function useMobileProfile() {
   };
 
   const updateProfileAvatar = async (avatarUrl: string) => {
-    const { error: updateError } = await supabase
+//     const { error: updateError } = await supabase
       .from('profiles')
       .update({ avatar_url: avatarUrl })
-      .eq('user_id', user!.id);
+      .getByUserId(user!.id);
 
     if (updateError) throw updateError;
 

@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Trophy, Users } from 'lucide-react';
@@ -37,7 +41,7 @@ export function SingleEliminationBracket({
  const fetchMatches = async () => {
   setIsLoading(true);
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_matches')
     .select(
      `
@@ -80,7 +84,7 @@ export function SingleEliminationBracket({
   fetchMatches();
 
   // Set up real-time subscription
-  const subscription = supabase
+//   const subscription = supabase
    .channel('tournament_matches_changes')
    .on(
     'postgres_changes',

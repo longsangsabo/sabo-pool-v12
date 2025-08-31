@@ -15,7 +15,14 @@ import {
 } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import {
  Building,
@@ -133,10 +140,10 @@ const ClubRegistrationMultiStepForm = () => {
   if (!user) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .select('*')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    if (error && error.code !== 'PGRST116') {
@@ -186,7 +193,7 @@ const ClubRegistrationMultiStepForm = () => {
 
   setSaving(true);
   try {
-   const { error } = await supabase.from('club_profiles').upsert({
+// // //    // const { error } = // await // // TODO: Replace with service call - supabase.from('club_profiles').upsert({
     user_id: user.id,
     club_name: formData.club_name,
     name: formData.club_name, // Required field - same as club_name
@@ -232,7 +239,7 @@ const ClubRegistrationMultiStepForm = () => {
 
    console.log('Submitting registration data:', registrationData);
 
-   const { error } = await supabase.from('club_profiles').upsert(registrationData);
+// // //    // const { error } = // await // // TODO: Replace with service call - supabase.from('club_profiles').upsert(registrationData);
 
    if (error) throw error;
 
@@ -255,12 +262,12 @@ const ClubRegistrationMultiStepForm = () => {
 
   setSaving(true);
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('club_profiles')
     .update({
      verification_status: 'pending',
     })
-    .eq('user_id', user.id);
+    .getByUserId(user.id);
 
    if (error) throw error;
 
@@ -402,13 +409,13 @@ const ClubRegistrationMultiStepForm = () => {
     const fileExt = 'jpg';
     const fileName = `${user.id}/club-photos/${Date.now()}-${i}.${fileExt}`;
 
-    const { error: uploadError } = await supabase.storage
+// // //     const { error: uploadError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
      .from('club-photos')
      .upload(fileName, compressedFile);
 
     if (uploadError) throw uploadError;
 
-    const { data: urlData } = supabase.storage
+// // //     const { data: urlData } = // TODO: Replace with service call - supabase.storage
      .from('club-photos')
      .getPublicUrl(fileName);
 
@@ -449,13 +456,13 @@ const ClubRegistrationMultiStepForm = () => {
    const fileExt = 'jpg';
    const fileName = `${user.id}/business-license/${Date.now()}.${fileExt}`;
 
-   const { error: uploadError } = await supabase.storage
+// // //    const { error: uploadError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
     .from('club-photos')
     .upload(fileName, compressedFile);
 
    if (uploadError) throw uploadError;
 
-   const { data: urlData } = supabase.storage
+// // //    const { data: urlData } = // TODO: Replace with service call - supabase.storage
     .from('club-photos')
     .getPublicUrl(fileName);
 

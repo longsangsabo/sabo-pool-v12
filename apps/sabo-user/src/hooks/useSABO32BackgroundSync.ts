@@ -4,7 +4,7 @@
 // =============================================
 
 import { useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export const useSABO32BackgroundSync = (
   tournamentId: string, 
@@ -14,7 +14,7 @@ export const useSABO32BackgroundSync = (
   
   const fetchLatestData = useCallback(async () => {
     try {
-      const { data: matchesData, error } = await (supabase as any)
+//       const { data: matchesData, error } = await (supabase as any)
         .from('sabo32_matches')
         .select('*')
         .eq('tournament_id', tournamentId)
@@ -34,7 +34,7 @@ export const useSABO32BackgroundSync = (
 
       let playerProfiles: any = {};
       if (playerIds.size > 0) {
-        const { data: profilesData, error: profilesError } = await supabase
+//         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
           .select('user_id, full_name, display_name, avatar_url')
           .in('user_id', Array.from(playerIds));

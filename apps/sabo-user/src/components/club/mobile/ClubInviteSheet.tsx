@@ -12,7 +12,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { UserPlus, Loader2, Search } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface ClubInviteSheetProps {
@@ -46,7 +50,7 @@ export const ClubInviteSheet: React.FC<ClubInviteSheetProps> = ({
   if (!q) return;
   try {
    setLoading(true);
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('profiles')
     .select('user_id, display_name, full_name, avatar_url')
     .ilike('display_name', `%${q}%`)
@@ -63,7 +67,7 @@ export const ClubInviteSheet: React.FC<ClubInviteSheetProps> = ({
  const handleInvite = async (userId: string) => {
   try {
    setLoading(true);
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('club_members')
     .insert({ club_id: clubId, user_id: userId, status: 'pending' });
    if (error) throw error;

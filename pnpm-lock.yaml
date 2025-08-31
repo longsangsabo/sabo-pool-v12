@@ -208,6 +208,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.8
         version: 1.2.8(@types/react-dom@19.1.8)(@types/react@19.1.12)(react-dom@18.3.1)(react@18.3.1)
+      '@sabo-pool/shared-business':
+        specifier: workspace:*
+        version: link:../../packages/shared-business
       '@sabo/shared-auth':
         specifier: workspace:*
         version: link:../../packages/shared-auth
@@ -2335,7 +2338,7 @@ packages:
       '@standard-schema/utils': 0.3.0
       immer: 10.1.1
       react: 18.3.1
-      react-redux: 9.2.0(@types/react@19.1.12)(react@18.3.1)(redux@5.0.1)
+      react-redux: 9.2.0(@types/react@18.3.24)(react@18.3.1)(redux@5.0.1)
       redux: 5.0.1
       redux-thunk: 3.1.0(redux@5.0.1)
       reselect: 5.1.1

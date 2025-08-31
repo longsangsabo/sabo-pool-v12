@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 
 interface ClubTrustData {
@@ -28,10 +37,10 @@ export const useClubTrustScore = () => {
    setError(null);
 
    // Get club ID (remove trust_score since column doesn't exist)
-   const { data: clubData } = await supabase
+//    const { data: clubData } = await supabase
     .from('club_profiles')
     .select('id')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    if (!clubData) {
@@ -41,10 +50,10 @@ export const useClubTrustScore = () => {
    const clubId = clubData.id;
 
    // Get club members who were verified by this club
-   const { data: memberIds } = await supabase
+//    const { data: memberIds } = await supabase
     .from('rank_requests')
     .select('user_id')
-    .eq('club_id', clubId)
+    .getByClubId(clubId)
     .eq('status', 'approved');
 
    if (!memberIds || memberIds.length === 0) {
@@ -58,7 +67,7 @@ export const useClubTrustScore = () => {
 
    // Get member profiles with trust scores
    const userIds = memberIds.map(m => m.user_id);
-   const { data: memberProfiles } = await supabase
+//    const { data: memberProfiles } = await supabase
     .from('profiles')
     .select(
      `
@@ -114,17 +123,17 @@ export const useClubTrustScore = () => {
 
   const setupSubscriptions = async () => {
    // Get club ID for subscriptions
-   const { data: clubData } = await supabase
+//    const { data: clubData } = await supabase
     .from('club_profiles')
     .select('id')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    if (!clubData) return;
    clubId = clubData.id;
 
    // Subscribe to mutual ratings changes (affects trust scores)
-   const ratingsSubscription = supabase
+//    const ratingsSubscription = supabase
     .channel(`trust-scores-${clubId}`)
     .on(
      'postgres_changes',
@@ -175,7 +184,7 @@ export const useClubTrustScore = () => {
     .subscribe();
 
    return () => {
-    supabase.removeChannel(ratingsSubscription);
+    // removeChannel(ratingsSubscription);
    };
   };
 

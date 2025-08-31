@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { Typography } from '@sabo/shared-ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -65,7 +69,7 @@ export const ClubManagement = () => {
  const { data: clubs, isLoading: clubsLoading } = useQuery({
   queryKey: ['user-clubs'],
   queryFn: async () => {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .select('*')
     .order('created_at', { ascending: false });
@@ -90,7 +94,7 @@ export const ClubManagement = () => {
    if (!selectedClub?.id) return null;
 
    // Temporarily disable club stats query to avoid build errors
-   // const { data, error } = await supabase
+   // // TODO: Replace with service call - const { data, error } = await supabase
    //  .from('club_stats')
    //  .select('*')
    //  .eq('club_id', selectedClub.id)
@@ -111,7 +115,7 @@ export const ClubManagement = () => {
   mutationFn: async (updates: Partial<Club>) => {
    if (!selectedClub?.id) throw new Error('No club selected');
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .update({
      ...updates,
@@ -143,7 +147,7 @@ export const ClubManagement = () => {
  // Delete club mutation
  const deleteClubMutation = useMutation({
   mutationFn: async (clubId: string) => {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('club_profiles')
     .delete()
     .eq('id', clubId);

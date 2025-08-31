@@ -1,5 +1,8 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
 import { Tournament } from '@/types/tournament';
@@ -121,7 +124,7 @@ export const useTournamentRegistrationFlow = () => {
    }
 
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('tournament_registrations')
      .insert({
       tournament_id: tournament.id,
@@ -166,7 +169,7 @@ export const useTournamentRegistrationFlow = () => {
    }
 
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('tournament_registrations')
      .delete()
      .eq('tournament_id', tournament.id)
@@ -344,7 +347,7 @@ export const useTournamentRegistrationFlow = () => {
    if (!user?.id || tournamentIds.length === 0) return;
 
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('tournament_registrations')
      .select('tournament_id, registration_status')
      .eq('user_id', user.id)

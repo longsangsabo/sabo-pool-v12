@@ -1,6 +1,21 @@
 import { useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { toast } from 'sonner';
 
 export interface TournamentMatch {
@@ -58,7 +73,7 @@ export const useMatchManagement = (tournamentId: string) => {
  } = useQuery({
   queryKey: ['tournament-matches', tournamentId],
   queryFn: async () => {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_matches')
     .select(
      `
@@ -71,7 +86,7 @@ export const useMatchManagement = (tournamentId: string) => {
      )
     `
     )
-    .eq('tournament_id', tournamentId)
+    .getByTournamentId(tournamentId)
     .order('round_number', { ascending: true })
     .order('match_number', { ascending: true });
 
@@ -122,7 +137,7 @@ export const useMatchManagement = (tournamentId: string) => {
    });
 
    // Simple update - only tournament_matches table
-   const { data: match, error: matchError } = await supabase
+//    const { data: match, error: matchError } = await supabase
     .from('tournament_matches')
     .update({
      score_player1: player1Score,
@@ -133,7 +148,7 @@ export const useMatchManagement = (tournamentId: string) => {
      updated_at: new Date().toISOString(),
     })
     .eq('id', matchId)
-    .select()
+    .getAll()
     .single();
 
    if (matchError) {
@@ -173,14 +188,14 @@ export const useMatchManagement = (tournamentId: string) => {
   mutationFn: async (matchId: string) => {
    console.log('Restoring match:', matchId);
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_matches')
     .update({
      status: 'scheduled',
      updated_at: new Date().toISOString(),
     })
     .eq('id', matchId)
-    .select()
+    .getAll()
     .single();
 
    if (error) {
@@ -205,14 +220,14 @@ export const useMatchManagement = (tournamentId: string) => {
  // Start match
  const startMatchMutation = useMutation({
   mutationFn: async (matchId: string) => {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_matches')
     .update({
      status: 'in_progress',
      actual_start_time: new Date().toISOString(),
     })
     .eq('id', matchId)
-    .select()
+    .getAll()
     .single();
 
    if (error) throw error;
@@ -233,13 +248,13 @@ export const useMatchManagement = (tournamentId: string) => {
  // Cancel match
  const cancelMatchMutation = useMutation({
   mutationFn: async (matchId: string) => {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_matches')
     .update({
      status: 'cancelled',
     })
     .eq('id', matchId)
-    .select()
+    .getAll()
     .single();
 
    if (error) throw error;
@@ -275,7 +290,7 @@ export const useMatchManagement = (tournamentId: string) => {
     newPlayer2Score,
    });
 
-   const { data, error } = await supabase.rpc('edit_confirmed_score', {
+   const { data, error } = await tournamentService.callRPC('edit_confirmed_score', {
     p_match_id: matchId,
     p_new_player1_score: newPlayer1Score,
     p_new_player2_score: newPlayer2Score,

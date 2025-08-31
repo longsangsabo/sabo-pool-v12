@@ -15,7 +15,11 @@ import {
  Building2,
  ArrowRight,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import TrustScoreBadgeMock from '@/components/TrustScoreBadgeMock';
 import ProfileCompletionBadge from '@/components/profile/ProfileCompletionBadge';
@@ -89,7 +93,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   if (!user) return;
 
   try {
-   const { data: statsData, error } = await supabase
+//    const { data: statsData, error } = await supabase
     .from('player_rankings')
     .select('total_matches, wins, spa_points')
     .eq('user_id', user.id)
@@ -143,7 +147,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   if (!user) return;
 
   try {
-   const { data, error } = await (supabase as any)
+//    const { data, error } = await (supabase as any)
     .from('club_profiles')
     .select('id, verification_status')
     .eq('user_id', user.id)

@@ -3,7 +3,22 @@
  * Handles automatic winner progression in tournament brackets
  */
 
-import { supabase } from '@/integrations/supabase/client';
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+// Removed supabase import - migrated to services
 
 export interface AdvancementResult {
   success: boolean;
@@ -26,7 +41,7 @@ export async function advanceWinnerToNextRound(
     console.log('🎯 Using new fixed advance function for match:', matchId);
 
     // Get tournament ID first
-    const { data: matchData, error: matchError } = await supabase
+//     const { data: matchData, error: matchError } = await supabase
       .from('tournament_matches')
       .select('tournament_id')
       .eq('id', matchId)
@@ -41,7 +56,7 @@ export async function advanceWinnerToNextRound(
     }
 
     // Use proper repair function with tournament ID
-    const { data, error } = await supabase.rpc(
+    const { data, error } = await tournamentService.callRPC(
       'repair_double_elimination_bracket',
       {
         p_tournament_id: matchData.tournament_id,
@@ -75,10 +90,10 @@ export async function checkTournamentReadiness(
   beforeRound: number
 ): Promise<{ ready: boolean; incompleteMatches: number }> {
   try {
-    const { data: incompleteMatches, error } = await supabase
+//     const { data: incompleteMatches, error } = await supabase
       .from('tournament_matches')
       .select('id, round_number, match_number, status')
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .lt('round_number', beforeRound)
       .neq('status', 'completed');
 
@@ -107,10 +122,10 @@ export async function fixBracketProgression(
     console.log('🔧 Fixing bracket progression for tournament:', tournamentId);
 
     // Get all completed matches that need advancement
-    const { data: completedMatches, error: matchError } = await supabase
+//     const { data: completedMatches, error: matchError } = await supabase
       .from('tournament_matches')
       .select('*')
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .eq('status', 'completed')
       .not('winner_id', 'is', null)
       .order('round_number', { ascending: true })

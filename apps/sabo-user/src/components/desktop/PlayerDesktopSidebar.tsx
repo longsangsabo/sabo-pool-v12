@@ -27,7 +27,11 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import SPAPointsBadge from '@/components/SPAPointsBadge';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
@@ -208,7 +212,7 @@ export const PlayerDesktopSidebar: React.FC<PlayerDesktopSidebarProps> = ({
  const { data: notificationCount } = useQuery({
   queryKey: ['notification-count'],
   queryFn: async () => {
-   const { count, error } = await supabase
+//    const { count, error } = await supabase
     .from('notifications')
     .select('*', { count: 'exact', head: true })
     .eq('is_read', false)
@@ -224,7 +228,7 @@ export const PlayerDesktopSidebar: React.FC<PlayerDesktopSidebarProps> = ({
  const { data: challengeCount } = useQuery({
   queryKey: ['pending-challenges-count'],
   queryFn: async () => {
-   const { count, error } = await supabase
+//    const { count, error } = await supabase
     .from('challenges')
     .select('*', { count: 'exact', head: true })
     .eq('status', 'pending');
@@ -239,7 +243,7 @@ export const PlayerDesktopSidebar: React.FC<PlayerDesktopSidebarProps> = ({
  const { data: messageCount } = useQuery({
   queryKey: ['unread-messages-count'],
   queryFn: async () => {
-   const { count, error } = await supabase
+//    const { count, error } = await supabase
     .from('messages')
     .select('*', { count: 'exact', head: true })
     .eq('is_read', false);

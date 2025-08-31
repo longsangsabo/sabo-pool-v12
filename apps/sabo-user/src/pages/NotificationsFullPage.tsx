@@ -27,7 +27,10 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -74,7 +77,7 @@ export const NotificationsFullPage: React.FC = () => {
    setLoading(true);
    console.log('🔍 Fetching notifications for user:', user.id);
    
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('notifications')
     .select('*')
     .eq('user_id', user.id)
@@ -99,7 +102,7 @@ export const NotificationsFullPage: React.FC = () => {
  // Mark notification as read
  const markAsRead = async (notificationId: string) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .update({ is_read: true })
     .eq('id', notificationId)
@@ -123,7 +126,7 @@ export const NotificationsFullPage: React.FC = () => {
  // Mark all as read
  const markAllAsRead = async () => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .update({ is_read: true })
     .eq('user_id', user?.id)
@@ -146,7 +149,7 @@ export const NotificationsFullPage: React.FC = () => {
  // Delete notification
  const deleteNotification = async (notificationId: string) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .delete()
     .eq('id', notificationId)
@@ -172,7 +175,7 @@ export const NotificationsFullPage: React.FC = () => {
   if (selectedNotifications.length === 0) return;
 
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .delete()
     .in('id', selectedNotifications)
@@ -304,7 +307,7 @@ export const NotificationsFullPage: React.FC = () => {
  useEffect(() => {
   if (!user?.id) return;
 
-  const subscription = supabase
+//   const subscription = supabase
    .channel('notifications_page_realtime')
    .on(
     'postgres_changes',
@@ -567,7 +570,7 @@ export const NotificationsFullPage: React.FC = () => {
              created_at: new Date().toISOString()
             };
             
-            const { error } = await supabase
+            // TODO: Replace with service call - const { error } = await supabase
              .from('notifications')
              .insert([testNotification]);
             

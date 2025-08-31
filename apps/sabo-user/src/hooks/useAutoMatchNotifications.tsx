@@ -1,5 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
 
@@ -28,7 +37,7 @@ export const useAutoMatchNotifications = () => {
 
    try {
     // Get tournament details
-    const { data: tournament } = await supabase
+//     const { data: tournament } = await supabase
      .from('tournaments')
      .select('id, name, tournament_type')
      .eq('id', match.tournament_id)
@@ -37,10 +46,10 @@ export const useAutoMatchNotifications = () => {
     // Get opponent details
     const opponentId =
      match.player1_id === user.id ? match.player2_id : match.player1_id;
-    const { data: opponent } = await supabase
+//     const { data: opponent } = await supabase
      .from('profiles')
      .select('user_id, full_name, display_name, avatar_url, verified_rank')
-     .eq('user_id', opponentId)
+     .getByUserId(opponentId)
      .single();
 
     // Determine notification message and priority
@@ -71,9 +80,9 @@ export const useAutoMatchNotifications = () => {
     }
 
     // Create notification in database with auto_popup = true
-    const { data: notification, error } = await supabase
+//     const { data: notification, error } = await supabase
      .from('notifications')
-     .insert({
+     .create({
       user_id: user.id,
       title,
       message,
@@ -88,7 +97,7 @@ export const useAutoMatchNotifications = () => {
        notification_type: type,
       },
      })
-     .select()
+     .getAll()
      .single();
 
     if (error) {
@@ -117,7 +126,7 @@ export const useAutoMatchNotifications = () => {
  useEffect(() => {
   if (!user?.id) return;
 
-  const channel = supabase
+//   const channel = supabase
    .channel('tournament-match-notifications')
    .on(
     'postgres_changes',
@@ -177,7 +186,7 @@ export const useAutoMatchNotifications = () => {
    .subscribe();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [user?.id, createMatchNotification]);
 
@@ -190,7 +199,7 @@ export const useAutoMatchNotifications = () => {
     const in15Minutes = new Date();
     in15Minutes.setMinutes(in15Minutes.getMinutes() + 15);
 
-    const { data: upcomingMatches } = await supabase
+//     const { data: upcomingMatches } = await supabase
      .from('tournament_matches')
      .select('*')
      .or(`player1_id.eq.${user.id},player2_id.eq.${user.id}`)

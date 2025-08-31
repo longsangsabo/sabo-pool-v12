@@ -4,7 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import {
  AlertTriangle,
@@ -54,7 +58,7 @@ const PenaltyManagement = () => {
   if (!user) return;
 
   try {
-   const { data, error } = await (supabase as any)
+//    const { data, error } = await (supabase as any)
     .from('notifications')
     .select('*')
     .eq('user_id', user.id)

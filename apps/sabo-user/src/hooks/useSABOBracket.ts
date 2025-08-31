@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getCurrentUser } from '../services/userService';
 import { toast } from 'sonner';
 import { useTournamentMatches } from './useTournamentMatches';
 import { SABOLogicCore, type SABOMatch, type SABOOrganizedMatches } from '@/tournaments/sabo/SABOLogicCore';
@@ -31,7 +32,7 @@ export const useSABOBracket = (tournamentId: string) => {
     mutationFn: async ({ tournamentId }: CreateBracketParams) => {
       console.log('🏗️ Creating double elimination bracket:', tournamentId);
 
-      const { data, error } = await supabase.rpc(
+      const { data, error } = await tournamentService.callRPC(
         'repair_double_elimination_bracket',
         {
           p_tournament_id: tournamentId,
@@ -85,13 +86,13 @@ export const useSABOBracket = (tournamentId: string) => {
       // Get current user for submitted_by parameter
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await getCurrentUser();
       if (!user) {
         throw new Error('User must be authenticated to submit scores');
       }
 
       // Get match data
-      const { data: matchData, error: matchError } = await supabase
+//       const { data: matchData, error: matchError } = await supabase
         .from('tournament_matches')
         .select('*')
         .eq('id', matchId)
@@ -165,7 +166,7 @@ export const useSABOBracket = (tournamentId: string) => {
     mutationFn: async ({ matchId }: { matchId: string }) => {
       console.log('🎯 Manually advancing winner for match:', matchId);
 
-      const { data, error } = await supabase.rpc(
+      const { data, error } = await tournamentService.callRPC(
         'repair_double_elimination_bracket',
         {
           p_tournament_id: tournamentId,
@@ -196,7 +197,7 @@ export const useSABOBracket = (tournamentId: string) => {
     try {
       // Since get_double_elimination_status was removed in cleanup,
       // we'll use the tournament matches directly to assess status
-      const { data: tournament, error } = await supabase
+//       const { data: tournament, error } = await supabase
         .from('tournaments')
         .select('status')
         .eq('id', tournamentId)
@@ -221,7 +222,7 @@ export const useSABOBracket = (tournamentId: string) => {
       toast.loading('Repairing bracket structure...');
 
       // Repair the bracket structure
-      const { data, error } = await supabase.rpc(
+      const { data, error } = await tournamentService.callRPC(
         'repair_double_elimination_bracket',
         {
           p_tournament_id: tournamentId,

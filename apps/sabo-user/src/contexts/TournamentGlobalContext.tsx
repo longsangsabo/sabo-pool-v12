@@ -5,7 +5,9 @@ import {
  useCallback,
  useEffect,
 } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getCurrentUser } from "../services/userService";
 import { EnhancedTournament } from '@/types/tournament-extended';
 import {
  TournamentType,
@@ -81,7 +83,7 @@ export const TournamentGlobalProvider: React.FC<
     clubId
    );
 
-   const { data, error: fetchError } = await supabase
+//    const { data, error: fetchError } = await supabase
     .from('tournaments')
     .select(
      `
@@ -238,7 +240,7 @@ export const TournamentGlobalProvider: React.FC<
 
  // Real-time subscription
  useEffect(() => {
-  const channel = supabase
+//   const channel = supabase
    .channel('tournaments-global')
    .on(
     'postgres_changes',
@@ -254,7 +256,7 @@ export const TournamentGlobalProvider: React.FC<
    .subscribe();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [fetchTournaments]);
 

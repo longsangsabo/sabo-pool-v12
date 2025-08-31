@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import {
@@ -33,7 +42,7 @@ export const useChallenges = () => {
    console.log('✅ [useChallenges] Fetching challenges for user:', user.id);
 
    // ✅ CRITICAL FIX: Fetch ALL challenges including open ones from other users
-   const { data: challengesData, error: fetchError } = await supabase
+//    const { data: challengesData, error: fetchError } = await supabase
     .from('challenges')
     .select('*')
     .order('created_at', { ascending: false });
@@ -67,7 +76,7 @@ export const useChallenges = () => {
    let clubProfiles: any[] = [];
 
    if (userIds.size > 0) {
-    const { data: profilesData } = await supabase
+//     const { data: profilesData } = await supabase
      .from('profiles')
      .select(
       `
@@ -85,7 +94,7 @@ export const useChallenges = () => {
     profiles = profilesData || [];
 
     // Fetch player rankings for SPA points
-    const { data: rankingsData } = await supabase
+//     const { data: rankingsData } = await supabase
      .from('player_rankings')
      .select('user_id, spa_points, elo_points')
      .in('user_id', Array.from(userIds));
@@ -220,7 +229,7 @@ export const useChallenges = () => {
    /*
    // Check daily limit (2 challenges per day)
    const today = new Date().toISOString().split('T')[0];
-   const { data: todayChallenges, error: checkError } = await supabase
+//    const { data: todayChallenges, error: checkError } = await supabase
     .from('challenges')
     .select('id')
     .eq('challenger_id', user.id)
@@ -269,9 +278,9 @@ export const useChallenges = () => {
     required_rank_check: newChallenge.required_rank ? '✅ Has required_rank' : '❌ Missing required_rank'
    });
 
-   const { data, error: insertError } = await supabase
+//    const { data, error: insertError } = await supabase
     .from('challenges')
-    .insert([newChallenge])
+    .create([newChallenge])
     .select('*')
     .single();
 
@@ -290,20 +299,20 @@ export const useChallenges = () => {
    });
 
    // Fetch profile data separately for consistency
-   const { data: challengerProfile } = await supabase
+//    const { data: challengerProfile } = await supabase
     .from('profiles')
     .select(
      'user_id, full_name, display_name, verified_rank, elo, avatar_url'
     )
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .maybeSingle();
 
-   const { data: opponentProfile } = await supabase
+//    const { data: opponentProfile } = await supabase
     .from('profiles')
     .select(
      'user_id, full_name, display_name, verified_rank, elo, avatar_url'
     )
-    .eq('user_id', challengeData.opponent_id)
+    .getByUserId(challengeData.opponent_id)
     .maybeSingle();
 
    const enrichedChallenge = {
@@ -370,7 +379,7 @@ export const useChallenges = () => {
    );
 
    // ✅ Use the new database function for safe open challenge acceptance
-   const { data: result, error } = await supabase.rpc(
+   const { data: result, error } = await tournamentService.callRPC(
     'accept_open_challenge',
     {
      p_challenge_id: challengeId,
@@ -405,7 +414,7 @@ export const useChallenges = () => {
    // 🔔 NOTIFICATION: Handle challenge accepted event
    try {
     // Get challenge data for notification
-    const { data: challengeData, error: fetchError } = await supabase
+//     const { data: challengeData, error: fetchError } = await supabase
      .from('challenges')
      .select(`
       *,
@@ -465,7 +474,7 @@ export const useChallenges = () => {
    );
 
    // First, get the challenge to check if it's open or specific
-   const { data: challengeData, error: fetchError } = await supabase
+//    const { data: challengeData, error: fetchError } = await supabase
     .from('challenges')
     .select('*')
     .eq('id', challengeId)
@@ -528,7 +537,7 @@ export const useChallenges = () => {
    console.log('📤 Updating challenge with data:', updateData);
 
    // ✅ CRITICAL: Use transaction to ensure both challenge update and match creation succeed
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('challenges')
     .update(updateData)
     .eq('id', challengeId)
@@ -570,9 +579,9 @@ export const useChallenges = () => {
 
    console.log('📋 Final match data:', matchData);
 
-   const { data: matchRecord, error: matchError } = await supabase
+//    const { data: matchRecord, error: matchError } = await supabase
     .from('matches')
-    .insert([matchData])
+    .create([matchData])
     .select('*')
     .maybeSingle();
 
@@ -620,7 +629,7 @@ export const useChallenges = () => {
   }
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('challenges')
     .update({
      status: 'declined',
@@ -629,7 +638,7 @@ export const useChallenges = () => {
     .eq('id', challengeId)
     .eq('opponent_id', user.id) // Only opponent can decline
     .eq('status', 'pending') // Only pending challenges can be declined
-    .select()
+    .getAll()
     .single();
 
    if (error) {
@@ -643,16 +652,16 @@ export const useChallenges = () => {
    // 🔔 NOTIFICATION: Handle challenge declined event
    try {
     // Get challenger profile for notification
-    const { data: challengerProfile } = await supabase
+//     const { data: challengerProfile } = await supabase
      .from('profiles')
      .select('user_id, full_name')
-     .eq('user_id', data.challenger_id)
+     .getByUserId(data.challenger_id)
      .single();
 
-    const { data: opponentProfile } = await supabase
+//     const { data: opponentProfile } = await supabase
      .from('profiles')
      .select('user_id, full_name')
-     .eq('user_id', user.id)
+     .getByUserId(user.id)
      .single();
 
     if (challengerProfile) {
@@ -713,7 +722,7 @@ export const useChallenges = () => {
 
  const cancelChallenge = async (challengeId: string) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('challenges')
     .delete()
     .eq('id', challengeId);
@@ -743,7 +752,7 @@ export const useChallenges = () => {
   fetchChallenges();
 
   // ✅ Enhanced real-time subscription for better sync
-  const challengesSubscription = supabase
+//   const challengesSubscription = supabase
    .channel('user_challenges_realtime')
    .on(
     'postgres_changes',

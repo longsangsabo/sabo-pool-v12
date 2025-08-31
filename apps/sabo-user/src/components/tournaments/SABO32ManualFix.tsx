@@ -5,7 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Wrench, AlertTriangle, CheckCircle, Users, Trophy } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface SABO32ManualFixProps {
@@ -26,7 +30,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
    console.log('🔧 Starting manual SABO32 advancement fix...');
 
    // 1. Get all matches for this tournament
-   const { data: allMatches, error: matchesError } = await supabase
+//    const { data: allMatches, error: matchesError } = await supabase
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId)
@@ -90,7 +94,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
      );
      
      if (targetSF) {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
        .from('sabo32_matches')
        .update({ 
         player1_id: groupAFinal.winner_id,
@@ -116,7 +120,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
      );
      
      if (targetSF) {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
        .from('sabo32_matches')
        .update({ 
         player1_id: groupBFinal.winner_id,
@@ -144,7 +148,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
        ? { player2_id: semi.winner_id } 
        : { player1_id: semi.winner_id };
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
        .from('sabo32_matches')
        .update({ 
         ...updateData,

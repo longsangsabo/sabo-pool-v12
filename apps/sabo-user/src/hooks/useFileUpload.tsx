@@ -1,5 +1,14 @@
 import { useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { supabase } from '@/integrations/supabase/client';
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { toast } from 'sonner';
 
 interface UploadOptions {
@@ -80,7 +89,7 @@ export const useFileUpload = () => {
    );
 
    // Upload file
-   const { data, error } = await supabase.storage
+// //    const { data, error } = await supabase.storage
     .from(options.bucket)
     .upload(filePath, file, {
      cacheControl: '3600',
@@ -96,7 +105,7 @@ export const useFileUpload = () => {
    console.log('Upload successful:', data);
 
    // Get public URL
-   const { data: urlData } = supabase.storage
+// //    const { data: urlData } = supabase.storage
     .from(options.bucket)
     .getPublicUrl(filePath);
 
@@ -123,7 +132,7 @@ export const useFileUpload = () => {
   filePath: string
  ): Promise<boolean> => {
   try {
-   const { error } = await supabase.storage.from(bucket).remove([filePath]);
+   const { error } = await storageService.upload(bucket).remove([filePath]);
 
    if (error) {
     console.error('Delete error:', error);

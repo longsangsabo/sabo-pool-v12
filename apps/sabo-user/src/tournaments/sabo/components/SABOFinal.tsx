@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Trophy, Crown, Star, CheckCircle, AlertTriangle, Database } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 import type { SABOMatch } from '../SABOLogicCore';
 import { SABOMatchCard } from './SABOMatchCard';
@@ -38,7 +50,7 @@ export const SABOFinal: React.FC<SABOFinalProps> = ({
 
   setIsCompleting(true);
   try {
-   const { data, error } = await supabase.rpc('manual_complete_tournament', {
+   const { data, error } = await tournamentService.callRPC('manual_complete_tournament', {
     p_tournament_id: tournamentId
    });
 

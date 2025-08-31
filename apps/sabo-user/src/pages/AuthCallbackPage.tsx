@@ -6,7 +6,7 @@ import {
  getAuthSuccessMessage,
  getAuthErrorMessage,
  getSecureRedirectUrl,
-} from '@/utils/authConfig';
+} from '@/services/userService';
 
 const AuthCallbackPage = () => {
  const navigate = useNavigate();

@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 
 export const useSPABalance = () => {
  const { user } = useAuth();
@@ -18,10 +27,10 @@ export const useSPABalance = () => {
    try {
     console.log('Fetching SPA balance for user:', user.id);
 
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('player_rankings')
      .select('spa_points')
-     .eq('user_id', user.id)
+     .getByUserId(user.id)
      .single();
 
     if (error && error.code !== 'PGRST116') {
@@ -43,7 +52,7 @@ export const useSPABalance = () => {
   fetchBalance();
 
   // Set up real-time subscription for balance updates
-  const channel = supabase
+//   const channel = supabase
    .channel('spa-balance')
    .on(
     'postgres_changes',
@@ -63,7 +72,7 @@ export const useSPABalance = () => {
    .subscribe();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [user]);
 

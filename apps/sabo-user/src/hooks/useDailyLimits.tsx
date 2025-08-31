@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getDailyLimits, updateDailyLimits } from '../services/challengeService';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -24,15 +24,10 @@ export const useDailyLimits = () => {
 
    const today = new Date().toISOString().split('T')[0];
 
-   const { data, error } = await supabase
-    .from('daily_challenge_stats')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('challenge_date', today)
-    .single();
+   const { data, error } = await getDailyLimits(user.id);
 
-   if (error && error.code !== 'PGRST116') {
-    throw error;
+   if (error) {
+    throw new Error(error);
    }
 
    // Calculate time until midnight
@@ -79,19 +74,11 @@ export const useDailyLimits = () => {
 
    const today = new Date().toISOString().split('T')[0];
 
-   const { error } = await supabase.from('daily_challenge_stats').upsert(
-    {
-     user_id: user.id,
-     challenge_date: today,
+   const { error } = await updateDailyLimits(user.id, {
      challenge_count: 1,
-    },
-    {
-     onConflict: 'user_id,challenge_date',
-     ignoreDuplicates: false,
-    }
-   );
+   });
 
-   if (error) throw error;
+   if (error) throw new Error(error);
   },
   onSuccess: () => {
    queryClient.invalidateQueries({ queryKey: ['daily-limits'] });

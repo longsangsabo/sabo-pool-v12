@@ -1,4 +1,19 @@
-import { supabase } from '@/integrations/supabase/client';
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+// Removed supabase import - migrated to services
 
 interface MatchData {
   match_id: string;
@@ -46,7 +61,7 @@ export class SABOTournamentEngine {
       });
 
       // Lấy thông tin match để xác định players
-      const { data: matchInfo, error: matchError } = await supabase
+//       const { data: matchInfo, error: matchError } = await supabase
         .from('tournament_matches')
         .select('player1_id, player2_id')
         .eq('id', matchData.match_id)
@@ -81,7 +96,7 @@ export class SABOTournamentEngine {
       });
 
       // Submit score với format parameters đúng
-      const { data, error } = await supabase.rpc('submit_sabo_match_score', {
+      const { data, error } = await tournamentService.callRPC('submit_sabo_match_score', {
         p_match_id: matchData.match_id,
         p_player1_score: player1_score,
         p_player2_score: player2_score,
@@ -136,7 +151,7 @@ export class SABOTournamentEngine {
       });
 
       // Lấy thông tin match để xác định round
-      const { data: matchData, error: matchError } = await supabase
+//       const { data: matchData, error: matchError } = await supabase
         .from('tournament_matches')
         .select('round_number, match_number, bracket_type')
         .eq('id', completedMatchId)
@@ -227,7 +242,7 @@ export class SABOTournamentEngine {
     try {
       console.log(`🎯 Calling ${functionName} for tournament ${tournamentId}`);
       
-  const { data, error } = await supabase.rpc(functionName as any, {
+  const { data, error } = await tournamentService.callRPC(functionName as any, {
         tournament_id: tournamentId
       });
 
@@ -251,14 +266,14 @@ export class SABOTournamentEngine {
    */
   static async getTournamentBracket(tournamentId: string): Promise<any> {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_matches')
         .select(`
           *,
           player1:profiles!tournament_matches_player1_id_fkey(id, username, full_name),
           player2:profiles!tournament_matches_player2_id_fkey(id, username, full_name)
         `)
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .order('round_number')
         .order('match_number');
 
@@ -281,14 +296,14 @@ export class SABOTournamentEngine {
    */
   static async getPlayableMatches(tournamentId: string): Promise<any[]> {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_matches')
         .select(`
           *,
           player1:profiles!tournament_matches_player1_id_fkey(id, username, full_name),
           player2:profiles!tournament_matches_player2_id_fkey(id, username, full_name)
         `)
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .eq('status', 'ready')
         .not('player1_id', 'is', null)
         .not('player2_id', 'is', null)

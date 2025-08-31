@@ -17,7 +17,11 @@ import {
  Users,
  Target
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface SABO32QuickActionsProps {
@@ -42,7 +46,7 @@ export function SABO32QuickActions({
   
   try {
    // Find matches that can be auto-advanced (bye matches, etc.)
-   const { data: matches, error } = await (supabase as any)
+//    const { data: matches, error } = await (supabase as any)
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId)
@@ -56,7 +60,7 @@ export function SABO32QuickActions({
    for (const match of matches || []) {
     if (!match.player2_id && match.player1_id) {
      // Player 1 gets bye
-     await (supabase as any)
+//      await (supabase as any)
       .from('sabo32_matches')
       .update({
        status: 'completed',
@@ -69,7 +73,7 @@ export function SABO32QuickActions({
      advancedCount++;
     } else if (!match.player1_id && match.player2_id) {
      // Player 2 gets bye
-     await (supabase as any)
+//      await (supabase as any)
       .from('sabo32_matches')
       .update({
        status: 'completed',
@@ -103,7 +107,7 @@ export function SABO32QuickActions({
   
   try {
    // Fill pending matches with random scores for testing
-   const { data: pendingMatches, error } = await (supabase as any)
+//    const { data: pendingMatches, error } = await (supabase as any)
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId)
@@ -122,7 +126,7 @@ export function SABO32QuickActions({
     const finalScore1 = score1 === score2 ? score1 + 1 : score1;
     const winner_id = finalScore1 > score2 ? match.player1_id : match.player2_id;
 
-    await (supabase as any)
+//     await (supabase as any)
      .from('sabo32_matches')
      .update({
       score_player1: finalScore1,
@@ -157,7 +161,7 @@ export function SABO32QuickActions({
   setIsProcessing(true);
   
   try {
-   await (supabase as any)
+//    await (supabase as any)
     .from('sabo32_matches')
     .update({
      score_player1: 0,

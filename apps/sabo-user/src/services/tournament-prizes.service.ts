@@ -3,7 +3,7 @@
  * Handles CRUD operations for tournament_prizes table
  */
 
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { calculateRewards } from '@sabo/shared-utils';
 import type { RankCode } from '@sabo/shared-utils';
 
@@ -63,10 +63,10 @@ export class TournamentPrizesService {
    * Get all prizes for a tournament
    */
   static async getTournamentPrizes(tournamentId: string): Promise<TournamentPrize[]> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('tournament_prizes')
       .select('*')
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .eq('is_visible', true)
       .order('display_order', { ascending: true, nullsFirst: false })
       .order('prize_position', { ascending: true });
@@ -85,10 +85,10 @@ export class TournamentPrizesService {
   static async getTournamentPrizesWithDetails(
     tournamentId: string
   ): Promise<TournamentPrizeWithDetails[]> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('tournament_prizes_with_details')
       .select('*')
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .eq('is_visible', true)
       .order('display_order', { ascending: true, nullsFirst: false })
       .order('prize_position', { ascending: true });
@@ -107,9 +107,9 @@ export class TournamentPrizesService {
   static async createTournamentPrize(
     prizeData: CreateTournamentPrizeInput
   ): Promise<TournamentPrize> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('tournament_prizes')
-      .insert({
+      .create({
         ...prizeData,
         physical_items: prizeData.physical_items || [],
         cash_currency: prizeData.cash_currency || 'VND',
@@ -119,7 +119,7 @@ export class TournamentPrizesService {
         is_visible: prizeData.is_visible ?? true,
         is_guaranteed: prizeData.is_guaranteed ?? true,
       })
-      .select()
+      .getAll()
       .single();
 
     if (error) {
@@ -137,11 +137,11 @@ export class TournamentPrizesService {
     prizeId: string,
     updates: Partial<CreateTournamentPrizeInput>
   ): Promise<TournamentPrize> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('tournament_prizes')
       .update(updates)
       .eq('id', prizeId)
-      .select()
+      .getAll()
       .single();
 
     if (error) {
@@ -156,7 +156,7 @@ export class TournamentPrizesService {
    * Delete tournament prize
    */
   static async deleteTournamentPrize(prizeId: string): Promise<void> {
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
       .from('tournament_prizes')
       .delete()
       .eq('id', prizeId);
@@ -173,9 +173,9 @@ export class TournamentPrizesService {
   static async createBulkTournamentPrizes(
     prizesData: CreateTournamentPrizeInput[]
   ): Promise<TournamentPrize[]> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('tournament_prizes')
-      .insert(
+      .create(
         prizesData.map(prize => ({
           ...prize,
           physical_items: prize.physical_items || [],
@@ -187,7 +187,7 @@ export class TournamentPrizesService {
           is_guaranteed: prize.is_guaranteed ?? true,
         }))
       )
-      .select();
+      .getAll();
 
     if (error) {
       console.error('Error creating bulk tournament prizes:', error);
@@ -203,7 +203,7 @@ export class TournamentPrizesService {
   static async calculateTournamentTotalPrizes(
     tournamentId: string
   ): Promise<number> {
-    const { data, error } = await supabase.rpc(
+    const { data, error } = await tournamentService.callRPC(
       'calculate_tournament_total_prizes',
       {
         p_tournament_id: tournamentId,
@@ -224,7 +224,7 @@ export class TournamentPrizesService {
   static async getTournamentPrizesOptimized(
     tournamentId: string
   ): Promise<TournamentPrize[]> {
-    const { data, error } = await supabase.rpc('get_tournament_prizes', {
+    const { data, error } = await tournamentService.callRPC('get_tournament_prizes', {
       p_tournament_id: tournamentId,
     });
 

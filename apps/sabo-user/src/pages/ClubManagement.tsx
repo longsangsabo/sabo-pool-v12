@@ -17,7 +17,10 @@ import ClubChallengesTab from './pages/challenges/components/tabs/ClubChallenges
 import AdminTournamentResults from '@/components/tournament/AdminTournamentResults';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 
 const ClubManagement = () => {
  const { user } = useAuth();
@@ -29,7 +32,7 @@ const ClubManagement = () => {
    if (!user) return;
 
    try {
-    const { data: clubData } = await supabase
+//     const { data: clubData } = await supabase
      .from('club_profiles')
      .select('id')
      .eq('user_id', user.id)

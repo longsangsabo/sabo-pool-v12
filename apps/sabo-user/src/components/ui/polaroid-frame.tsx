@@ -1,5 +1,17 @@
 import { useState, useRef } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Camera, Upload, Check, X, Crop } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import './polaroid-frame.css';
@@ -205,7 +217,7 @@ const PolaroidFrame: React.FC<PolaroidFrameProps> = ({
    >
     {/* Polaroid Background PNG - Updated Layout */}
     <img
-     src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/layout1.png'
+// // // //      src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/layout1.png'
      alt='Polaroid Frame Background'
      className='w-full h-auto select-none pointer-events-none z-0 drop-shadow-lg'
      draggable={false}

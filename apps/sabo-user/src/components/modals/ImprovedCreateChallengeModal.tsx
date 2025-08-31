@@ -17,7 +17,11 @@ import {
 } from '@/components/ui/select';
 // Removed Badge (unused)
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import { useChallenges } from '@/hooks/useChallenges';
 import { toast } from 'sonner';
@@ -118,7 +122,7 @@ const ImprovedCreateChallengeModal = ({
    if (!user?.id) return;
 
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('profiles')
      .select('user_id, full_name, avatar_url, current_rank')
      .eq('user_id', user.id)
@@ -141,7 +145,7 @@ const ImprovedCreateChallengeModal = ({
  useEffect(() => {
   const fetchClubs = async () => {
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('club_profiles')
      .select('id, club_name, address')
      .order('club_name');
@@ -175,7 +179,7 @@ const ImprovedCreateChallengeModal = ({
 
   setSearching(true);
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('profiles')
     .select('user_id, full_name, avatar_url, current_rank')
     .ilike('full_name', `%${query}%`)

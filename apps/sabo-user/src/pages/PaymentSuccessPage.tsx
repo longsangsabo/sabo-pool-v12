@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { getCurrentUser } from '../services/userService';
 import { toast } from 'sonner';
 
 interface PaymentInfo {
@@ -46,11 +47,11 @@ const PaymentSuccessPage = () => {
    };
 
    // Mock membership upgrade since memberships table has different structure
-   const { data: user } = await supabase.auth.getUser();
+   const user = await getCurrentUser();
 
-   if (user.user) {
+   if (user) {
     // In a real app, we would update the membership here
-    console.log('Would update membership for user:', user.user.id);
+    console.log('Would update membership for user:', user.id);
    }
 
    setPaymentInfo(mockTransaction);

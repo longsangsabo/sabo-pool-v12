@@ -1,5 +1,21 @@
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 
 export interface SABOAdvancementResult {
@@ -23,7 +39,7 @@ export const useSABOAdvancement = () => {
         );
 
         // Use proper repair function for tournament advancement
-        const { data, error } = await supabase.rpc(
+        const { data, error } = await tournamentService.callRPC(
           'repair_double_elimination_bracket',
           {
             p_tournament_id: tournamentId,
@@ -66,7 +82,7 @@ export const useSABOAdvancement = () => {
         );
 
         // Use proper repair function for tournament advancement
-        const { data, error } = await supabase.rpc(
+        const { data, error } = await tournamentService.callRPC(
           'repair_double_elimination_bracket',
           {
             p_tournament_id: tournamentId,
@@ -109,7 +125,7 @@ export const useSABOAdvancement = () => {
         );
 
         // Use proper repair function for tournament advancement
-        const { data, error } = await supabase.rpc(
+        const { data, error } = await tournamentService.callRPC(
           'repair_double_elimination_bracket',
           {
             p_tournament_id: tournamentId,
@@ -152,7 +168,7 @@ export const useSABOAdvancement = () => {
         );
 
         // Use proper repair function for tournament advancement
-        const { data, error } = await supabase.rpc(
+        const { data, error } = await tournamentService.callRPC(
           'repair_double_elimination_bracket',
           {
             p_tournament_id: tournamentId,
@@ -195,7 +211,7 @@ export const useSABOAdvancement = () => {
         );
 
         // Use proper repair function for tournament advancement
-        const { data, error } = await supabase.rpc(
+        const { data, error } = await tournamentService.callRPC(
           'repair_double_elimination_bracket',
           {
             p_tournament_id: tournamentId,
@@ -238,7 +254,7 @@ export const useSABOAdvancement = () => {
         );
 
         // Use proper repair function for tournament advancement
-        const { data, error } = await supabase.rpc(
+        const { data, error } = await tournamentService.callRPC(
           'repair_double_elimination_bracket',
           {
             p_tournament_id: tournamentId,
@@ -281,7 +297,7 @@ export const useSABOAdvancement = () => {
         );
 
         // Use proper repair function for tournament advancement
-        const { data, error } = await supabase.rpc(
+        const { data, error } = await tournamentService.callRPC(
           'repair_double_elimination_bracket',
           {
             p_tournament_id: tournamentId,
@@ -321,7 +337,7 @@ export const useSABOAdvancement = () => {
         console.log('🔄 Finalizing tournament:', tournamentId);
 
         // Use proper repair function for tournament advancement
-        const { data, error } = await supabase.rpc(
+        const { data, error } = await tournamentService.callRPC(
           'repair_double_elimination_bracket',
           {
             p_tournament_id: tournamentId,
@@ -364,7 +380,7 @@ export const useSABOAdvancement = () => {
         console.log('🔄 Updating tournament status:', tournamentId);
 
         // Use proper repair function for tournament advancement
-        const { data, error } = await supabase.rpc(
+        const { data, error } = await tournamentService.callRPC(
           'repair_double_elimination_bracket',
           {
             p_tournament_id: tournamentId,

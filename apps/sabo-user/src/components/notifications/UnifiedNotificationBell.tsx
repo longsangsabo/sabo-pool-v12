@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Bell, X, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from '../../services/userService';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
@@ -154,7 +154,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
    }
    
    // Create fresh query to prevent caching
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('notifications')
     .select('*')
     .eq('user_id', user.id)
@@ -167,7 +167,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
     if (forceRefresh) {
      console.log('🔧 Force refresh detected error - checking auth state...');
      // Check if user is properly authenticated
-     const { data: authData } = await supabase.auth.getUser();
+     const { data: authData } = await getCurrentUser();
      if (!authData.user) {
       console.log('⚠️ User not authenticated - clearing badge');
       setNotifications([]);
@@ -213,7 +213,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
    setUnreadCount(prev => Math.max(0, prev - 1));
 
    // Then update database
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .update({ is_read: true })
     .eq('id', notificationId)
@@ -242,7 +242,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
    setUnreadCount(0);
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .update({ is_read: true })
     .eq('user_id', user?.id)
@@ -327,7 +327,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
     await fetchNotifications();
 
     // Subscribe to real-time notifications for both INSERT and UPDATE
-    subscription = supabase
+//     subscription = supabase
      .channel(`unified_notifications_${user.id}`) // Unique channel per user
      .on(
       'postgres_changes',

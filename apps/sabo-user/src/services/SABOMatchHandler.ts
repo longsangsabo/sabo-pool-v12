@@ -4,7 +4,7 @@
  * Uses unified tournament_matches table (renamed from tournament_matches)
  */
 
-import { supabaseService } from '@/integrations/supabase/service';
+// import { supabaseService } from '@/integrations/supabase/service';
 
 interface SABOMatch {
   id?: string;
@@ -55,7 +55,7 @@ export class SABOMatchHandler {
    */
   static async checkTableAccess(): Promise<boolean> {
     try {
-  const client: any = supabaseService || (await import('@/integrations/supabase/client')).supabase;
+//   const client: any = supabaseService || (await import('@/integrations/supabase/client')).supabase;
   const { error } = await client.from(this.TABLE_NAME).select('id').limit(1);
 
       if (error) {
@@ -162,7 +162,7 @@ export class SABOMatchHandler {
   static async clearExistingMatches(tournamentId: string): Promise<boolean> {
     try {
       console.log('🗑️ Clearing existing SABO matches...');
-  const client: any = supabaseService || (await import('@/integrations/supabase/client')).supabase;
+//   const client: any = supabaseService || (await import('@/integrations/supabase/client')).supabase;
   const { error } = await client.from(this.TABLE_NAME).delete().eq('tournament_id', tournamentId);
 
       if (error) {
@@ -199,7 +199,7 @@ export class SABOMatchHandler {
     await this.clearExistingMatches(tournamentId);
 
     // 3. Get club_id from tournament
-    const client: any = supabaseService || (await import('@/integrations/supabase/client')).supabase;
+//     const client: any = supabaseService || (await import('@/integrations/supabase/client')).supabase;
     const { data: tournament, error: tournamentError } = await client
       .from('tournaments')
       .select('club_id')
@@ -335,7 +335,7 @@ export class SABOMatchHandler {
    */
   static async getMatches(tournamentId: string): Promise<SABOMatch[]> {
     try {
-      const { data, error } = await supabaseService
+      // TODO: Replace with service call - const { data, error } = await supabaseService
         .from(this.TABLE_NAME)
         .select('*')
         .eq('tournament_id', tournamentId)

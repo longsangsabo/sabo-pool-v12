@@ -34,7 +34,11 @@ import {
 
 import { useAuth } from '@/hooks/useAuth';
 import { useTournaments } from '@/hooks/useTournaments';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 
 // Step components
 import { TournamentSelectionStep } from './registration-steps/TournamentSelectionStep';
@@ -271,7 +275,7 @@ export const TournamentRegistration: React.FC<TournamentRegistrationProps> = ({
 
   try {
    // Create registration record
-   const { data: registration, error: regError } = await supabase
+//    const { data: registration, error: regError } = await supabase
     .from('tournament_registrations')
     .insert({
      tournament_id: data.tournament_id,

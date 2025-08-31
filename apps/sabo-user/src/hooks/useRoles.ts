@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 interface RoleData {
   roles: string[];
@@ -37,16 +37,16 @@ export const useRoles = () => {
 
       try {
         // Use the new role functions from database
-        const { data: roles, error: rolesError } = await supabase
+//         const { data: roles, error: rolesError } = await supabase
           .rpc('get_user_roles', { _user_id: user.id });
 
-        const { data: primaryRole, error: primaryError } = await supabase
+//         const { data: primaryRole, error: primaryError } = await supabase
           .rpc('get_user_primary_role', { _user_id: user.id });
 
         if (rolesError || primaryError) {
           console.error('Error fetching roles:', rolesError || primaryError);
           // Fallback to old system if new system fails
-          const { data: profile, error: profileError } = await supabase
+//           const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('is_admin')
             .eq('user_id', user.id)

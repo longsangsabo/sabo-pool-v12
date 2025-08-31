@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { toast } from 'sonner';
 
 interface CompletedTournament {
@@ -47,7 +56,7 @@ export const useCompletedTournamentTemplates = () => {
  const fetchCompletedTournaments = async () => {
   setIsLoading(true);
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .select('*')
     .eq('status', 'completed')
@@ -89,10 +98,10 @@ export const useCompletedTournamentTemplates = () => {
   setIsLoading(true);
   try {
    // Simple query without complex joins
-   const { data: matchData, error: matchesError } = await supabase
+//    const { data: matchData, error: matchesError } = await supabase
     .from('tournament_matches')
     .select('*')
-    .eq('tournament_id', tournamentId)
+    .getByTournamentId(tournamentId)
     .order('round_number', { ascending: true })
     .order('match_number', { ascending: true });
 
@@ -107,19 +116,19 @@ export const useCompletedTournamentTemplates = () => {
    }));
 
    // Fetch tournament results
-   const { data: results, error: resultsError } = await supabase
+//    const { data: results, error: resultsError } = await supabase
     .from('tournament_results')
     .select('*')
-    .eq('tournament_id', tournamentId)
+    .getByTournamentId(tournamentId)
     .order('position', { ascending: true });
 
    if (resultsError) throw resultsError;
 
    // Fetch participants
-   const { data: participants, error: participantsError } = await supabase
+//    const { data: participants, error: participantsError } = await supabase
     .from('tournament_registrations')
     .select('*')
-    .eq('tournament_id', tournamentId);
+    .getByTournamentId(tournamentId);
 
    if (participantsError) throw participantsError;
 
@@ -151,7 +160,7 @@ export const useCompletedTournamentTemplates = () => {
 
  // Real-time subscription for new completed tournaments
  useEffect(() => {
-  const channel = supabase
+//   const channel = supabase
    .channel('completed_tournaments_updates')
    .on(
     'postgres_changes',
@@ -195,7 +204,7 @@ export const useCompletedTournamentTemplates = () => {
   fetchCompletedTournaments();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
    setIsConnected(false);
   };
  }, [selectedTournamentData?.tournament_id]);

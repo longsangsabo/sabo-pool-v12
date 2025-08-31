@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { toast } from 'sonner';
 
 export const useRealtimeTournamentSync = (tournamentId?: string) => {
@@ -22,7 +31,7 @@ export const useRealtimeTournamentSync = (tournamentId?: string) => {
   );
 
   // Create a comprehensive realtime channel for tournament updates
-  const channel = supabase
+//   const channel = supabase
    .channel(`tournament_sync_enhanced_${tournamentId || 'all'}`)
 
    // Listen to tournament status changes
@@ -227,7 +236,7 @@ export const useRealtimeTournamentSync = (tournamentId?: string) => {
 
   return () => {
    console.log('🔌 Cleaning up tournament sync');
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
    setIsConnected(false);
   };
  }, [tournamentId]);

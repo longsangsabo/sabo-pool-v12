@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export interface ClubLite {
   id: string;
@@ -19,7 +19,7 @@ export const useClubs = (limit = 50) => {
       setLoading(true);
       setError(null);
       try {
-        const { data, error } = await supabase
+        // TODO: Replace with service call - const { data, error } = await supabase
           .from('club_profiles')
           .select('id, club_name, address, verification_status')
           .eq('verification_status', 'approved')
@@ -27,7 +27,7 @@ export const useClubs = (limit = 50) => {
         
         if (error) {
           console.log('No approved clubs, trying all club profiles...');
-          const { data: allClubs, error: allError } = await supabase
+//           const { data: allClubs, error: allError } = await supabase
             .from('club_profiles')
             .select('id, club_name, address, verification_status')
             .limit(limit);

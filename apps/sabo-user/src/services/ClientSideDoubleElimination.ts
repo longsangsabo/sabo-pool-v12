@@ -3,8 +3,8 @@
  * Based on SABO tournament structure: 27 matches total
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import { supabaseService } from '@/integrations/supabase/service';
+// Removed supabase import - migrated to services
+// import { supabaseService } from '@/integrations/supabase/service';
 import { SABOMatchHandler } from './SABOMatchHandler';
 import { getDisplayName } from '@/types/unified-profile';
 
@@ -52,12 +52,12 @@ export class ClientSideDoubleElimination {
       // =============================================================
       try {
         console.log('🔌 Trying server-side RPC: generate_tournament_matches');
-        const { data: rpcData, error: rpcError } = await supabase
+//         const { data: rpcData, error: rpcError } = await supabase
           .rpc('generate_tournament_matches' as any, { p_tournament_id: this.tournamentId });
         if (!rpcError && rpcData && (rpcData as any).success) {
           console.log('✅ Server-side generation success:', rpcData);
           // Load matches vừa tạo
-          const { data: createdMatches } = await supabase
+//           const { data: createdMatches } = await supabase
             .from('tournament_matches')
             .select('id, round_number, match_number, player1_id, player2_id, status, bracket_type')
             .eq('tournament_id', this.tournamentId)
@@ -141,7 +141,7 @@ export class ClientSideDoubleElimination {
       // Approach 1: Try the standard query
       console.log('🔍 Approach 1: Standard query...');
       try {
-        const result = await supabase
+//         const result = await supabase
           .from('tournament_registrations')
           .select('user_id')
           .eq('tournament_id', this.tournamentId)
@@ -164,7 +164,7 @@ export class ClientSideDoubleElimination {
       if (regError && registrations.length === 0) {
         console.log('� Approach 2: Simplified query (no status filter)...');
         try {
-          const result = await supabase
+//           const result = await supabase
             .from('tournament_registrations')
             .select('user_id')
             .eq('tournament_id', this.tournamentId)
@@ -186,7 +186,7 @@ export class ClientSideDoubleElimination {
       if (regError && registrations.length === 0) {
         console.log('� Approach 3: Explicit column query...');
         try {
-          const result = await supabase
+//           const result = await supabase
             .from('tournament_registrations')
             .select('user_id, registration_status')
             .eq('tournament_id', this.tournamentId);
@@ -220,7 +220,7 @@ export class ClientSideDoubleElimination {
       const userIds = registrations.map(r => r.user_id);
       console.log('🔍 Querying profiles for user IDs:', userIds.slice(0, 3));
       
-      const { data: profiles, error: profileError } = await supabase
+//       const { data: profiles, error: profileError } = await supabase
         .from('profiles')
         .select('user_id, display_name, avatar_url, full_name, elo')
         .in('user_id', userIds);

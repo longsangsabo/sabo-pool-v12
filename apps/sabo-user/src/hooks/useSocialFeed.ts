@@ -1,4 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { supabase } from '@/integrations/supabase/client';
 import { safeRelationshipQuery } from '@/utils/relationshipMapper';
 import { getDisplayName } from '@/types/unified-profile';
@@ -391,9 +397,9 @@ export const useSocialFeed = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(matchesChannel);
-      supabase.removeChannel(challengesChannel);
-      supabase.removeChannel(tournamentsChannel);
+      // removeChannel(matchesChannel);
+      // removeChannel(challengesChannel);
+      // removeChannel(tournamentsChannel);
     };
   }, [fetchFeedData]);
 

@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 
 interface GameConfigStats {
   eloRules: number;
@@ -32,24 +38,24 @@ export const useGameConfigStats = () => {
       // Use existing tables instead of non-existent ones
       const [{ count: ranksCount }, { count: tournamentsCount }] =
         await Promise.all([
-          supabase.from('ranks').select('*', { count: 'exact', head: true }),
-          supabase
+// // //           // TODO: Replace with service call - supabase.from('ranks').select('*', { count: 'exact', head: true }),
+//           supabase
             .from('tournaments')
             .select('*', { count: 'exact', head: true }),
         ]);
 
       // Fetch system metrics
-      const { data: playerStats } = await supabase
+//       const { data: playerStats } = await supabase
         .from('profiles')
         .select('elo')
         .eq('role', 'player')
         .not('elo', 'is', null);
 
-      const { count: matchesCount } = await supabase
+//       const { count: matchesCount } = await supabase
         .from('tournament_matches')
         .select('*', { count: 'exact', head: true });
 
-      const { count: tournamentResultsCount } = await supabase
+//       const { count: tournamentResultsCount } = await supabase
         .from('tournament_results')
         .select('*', { count: 'exact', head: true });
 

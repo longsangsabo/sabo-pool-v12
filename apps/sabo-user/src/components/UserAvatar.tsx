@@ -1,11 +1,33 @@
 import { useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useQuery } from '@tanstack/react-query';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { RankBadge } from '@/components/ranking/RankBadge';
 import { getNormalizedRank } from '@/lib/rankUtils';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { getDisplayName } from '@/types/unified-profile';
 import { Loader2 } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useSocialProfile } from '@/hooks/useSocialProfile';
 
 interface User {
@@ -67,21 +89,21 @@ const UserAvatar = ({
    if (!userId) return null;
 
    // Fetch user profile data
-   const { data: profile, error: profileError } = await supabase
+//    const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select(
      'user_id, full_name, display_name, nickname, email, avatar_url, verified_rank, elo'
     )
-    .eq('user_id', userId)
+    .getByUserId(userId)
     .single();
 
    if (profileError) throw profileError;
 
    // Fetch player ranking data
-   const { data: ranking } = await supabase
+//    const { data: ranking } = await supabase
     .from('player_rankings')
     .select('current_rank, spa_points, elo_points')
-    .eq('user_id', userId)
+    .getByUserId(userId)
     .single();
 
    return {
@@ -102,7 +124,7 @@ const UserAvatar = ({
  useEffect(() => {
   if (!userId) return;
 
-  const channel = supabase
+//   const channel = supabase
    .channel('user-avatar-updates')
    .on(
     'postgres_changes',
@@ -127,7 +149,7 @@ const UserAvatar = ({
    .subscribe();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [userId, refetch]);
 

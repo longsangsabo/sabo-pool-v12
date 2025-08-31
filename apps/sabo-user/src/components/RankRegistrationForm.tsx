@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -87,7 +91,7 @@ const RankRegistrationForm = ({ onSuccess }: RankRegistrationFormProps) => {
  const fetchClubs = async () => {
   setLoading(true);
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .select('id, club_name, address, verification_status')
     .eq('verification_status', 'approved')
@@ -95,7 +99,7 @@ const RankRegistrationForm = ({ onSuccess }: RankRegistrationFormProps) => {
 
    if (error) {
     console.log('No verified clubs, trying all club profiles...');
-    const { data: allClubs, error: allError } = await supabase
+//     const { data: allClubs, error: allError } = await supabase
      .from('club_profiles')
      .select('id, club_name, address, verification_status')
      .order('club_name');
@@ -118,7 +122,7 @@ const RankRegistrationForm = ({ onSuccess }: RankRegistrationFormProps) => {
 
   try {
    // First get rank requests
-   const { data: requests, error: requestsError } = await supabase
+//    const { data: requests, error: requestsError } = await supabase
     .from('rank_requests')
     .select('*')
     .eq('user_id', user.id)
@@ -133,7 +137,7 @@ const RankRegistrationForm = ({ onSuccess }: RankRegistrationFormProps) => {
 
    // Get club data separately
    const clubIds = [...new Set(requests.map(req => req.club_id))];
-   const { data: clubs, error: clubsError } = await supabase
+//    const { data: clubs, error: clubsError } = await supabase
     .from('club_profiles')
     .select('id, club_name, address')
     .in('id', clubIds);

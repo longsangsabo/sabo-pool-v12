@@ -27,7 +27,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/hooks/useTheme';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useClubRole } from '@/hooks/useClubRole';
 
 interface ClubMobileHeaderProps {
@@ -48,7 +55,7 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({
  const { data: notificationCount } = useQuery({
   queryKey: ['club-notification-count'],
   queryFn: async () => {
-   const { count, error } = await supabase
+//    const { count, error } = await supabase
     .from('notifications')
     .select('*', { count: 'exact', head: true })
     .eq('is_read', false)
@@ -77,7 +84,7 @@ export const ClubMobileHeader: React.FC<ClubMobileHeaderProps> = ({
      <div className='flex items-center gap-2'>
       <div className='relative'>
        <img
-        src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+// // // //         src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
         alt='SABO ARENA Logo'
         className='w-8 h-8 object-cover rounded-full'
        />

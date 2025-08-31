@@ -2,7 +2,8 @@
 // 🏆 CHALLENGE NOTIFICATION SERVICE
 // =====================================================
 
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getCurrentUser } from '../services/userService';
 import {
   ChallengeNotification,
   ChallengeNotificationType,
@@ -39,9 +40,9 @@ export class ChallengeNotificationService {
     try {
       console.log('🔔 Creating notification:', data);
 
-      const { data: notification, error } = await supabase
+//       const { data: notification, error } = await supabase
         .from('notifications')
-        .insert({
+        .create({
           type: data.type,
           challenge_id: data.challengeId,
           user_id: data.userId,
@@ -54,7 +55,7 @@ export class ChallengeNotificationService {
           metadata: data.metadata || {},
           scheduled_for: data.scheduledFor?.toISOString()
         })
-        .select()
+        .getAll()
         .single();
 
       if (error) {
@@ -83,14 +84,14 @@ export class ChallengeNotificationService {
   async sendRealTimeNotification(userId: string, notification: ChallengeNotification): Promise<void> {
     try {
       // Send through Supabase realtime
-      await supabase.channel(`notifications:${userId}`).send({
+      await notificationService.subscribe(`notifications:${userId}`).send({
         type: 'broadcast',
         event: 'new_notification',
         payload: notification
       });
 
       // Show toast if it's for current user
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getCurrentUser();
       if (user?.id === userId) {
         const iconMap = {
           'trophy': '🏆',
@@ -137,9 +138,9 @@ export class ChallengeNotificationService {
         scheduled_for: batch.scheduledFor?.toISOString()
       }));
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('notifications')
-        .insert(notifications);
+        .create(notifications);
 
       if (error) {
         console.error('❌ Error sending batch notifications:', error);
@@ -186,10 +187,10 @@ export class ChallengeNotificationService {
     options?: PaginationOptions
   ): Promise<{ notifications: ChallengeNotification[], total: number }> {
     try {
-      let query = supabase
+//       let query = supabase
         .from('notifications')
         .select('*', { count: 'exact' })
-        .eq('user_id', userId);
+        .getByUserId(userId);
 
       // Apply filters
       if (filters?.isRead !== undefined) {
@@ -243,10 +244,10 @@ export class ChallengeNotificationService {
    */
   async getUnreadCount(userId: string): Promise<number> {
     try {
-      const { count, error } = await supabase
+//       const { count, error } = await supabase
         .from('notifications')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
+        .getByUserId(userId)
         .eq('is_read', false);
 
       if (error) {
@@ -267,47 +268,47 @@ export class ChallengeNotificationService {
   async getUserNotificationStats(userId: string): Promise<NotificationStats | null> {
     try {
       // Get total count
-      const { count: totalCount, error: totalError } = await supabase
+//       const { count: totalCount, error: totalError } = await supabase
         .from('notifications')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId);
+        .getByUserId(userId);
 
       if (totalError) throw totalError;
 
       // Get unread count
-      const { count: unreadCount, error: unreadError } = await supabase
+//       const { count: unreadCount, error: unreadError } = await supabase
         .from('notifications')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
+        .getByUserId(userId)
         .eq('is_read', false);
 
       if (unreadError) throw unreadError;
 
       // Get urgent count
-      const { count: urgentCount, error: urgentError } = await supabase
+//       const { count: urgentCount, error: urgentError } = await supabase
         .from('notifications')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
+        .getByUserId(userId)
         .eq('is_read', false)
         .eq('priority', 'urgent');
 
       if (urgentError) throw urgentError;
 
       // Get high priority count
-      const { count: highPriorityCount, error: highError } = await supabase
+//       const { count: highPriorityCount, error: highError } = await supabase
         .from('notifications')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
+        .getByUserId(userId)
         .eq('is_read', false)
         .eq('priority', 'high');
 
       if (highError) throw highError;
 
       // Get latest notification
-      const { data: latestNotif, error: latestError } = await supabase
+//       const { data: latestNotif, error: latestError } = await supabase
         .from('notifications')
         .select('created_at')
-        .eq('user_id', userId)
+        .getByUserId(userId)
         .order('created_at', { ascending: false })
         .limit(1)
         .single();
@@ -333,11 +334,11 @@ export class ChallengeNotificationService {
    */
   async markAsRead(notificationId: string, userId: string): Promise<boolean> {
     try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('notifications')
         .update({ is_read: true })
         .eq('id', notificationId)
-        .eq('user_id', userId);
+        .getByUserId(userId);
 
       if (error) {
         console.error('❌ Error marking notification as read:', error);
@@ -356,10 +357,10 @@ export class ChallengeNotificationService {
    */
   async markAllAsRead(userId: string): Promise<boolean> {
     try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('notifications')
         .update({ is_read: true })
-        .eq('user_id', userId)
+        .getByUserId(userId)
         .eq('is_read', false);
 
       if (error) {
@@ -379,11 +380,11 @@ export class ChallengeNotificationService {
    */
   async deleteNotification(notificationId: string, userId: string): Promise<boolean> {
     try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('notifications')
         .delete()
         .eq('id', notificationId)
-        .eq('user_id', userId);
+        .getByUserId(userId);
 
       if (error) {
         console.error('❌ Error deleting notification:', error);
@@ -408,7 +409,7 @@ export class ChallengeNotificationService {
   ): () => void {
     console.log('🔔 Subscribing to notifications for user:', userId);
 
-    this.realtimeSubscription = supabase
+//     this.realtimeSubscription = supabase
       .channel(`notifications:${userId}`)
       .on(
         'postgres_changes',
@@ -431,7 +432,7 @@ export class ChallengeNotificationService {
     return () => {
       console.log('🔔 Unsubscribing from notifications');
       if (this.realtimeSubscription) {
-        supabase.removeChannel(this.realtimeSubscription);
+        // removeChannel(this.realtimeSubscription);
         this.realtimeSubscription = null;
       }
     };
@@ -472,7 +473,7 @@ export class ChallengeNotificationService {
     challengeData: Record<string, any> = {}
   ): Promise<NotificationTemplate | null> {
     try {
-      const { data, error } = await supabase.rpc('get_notification_template', {
+      const { data, error } = await tournamentService.callRPC('get_notification_template', {
         template_type: templateType,
         challenge_data: challengeData
       });

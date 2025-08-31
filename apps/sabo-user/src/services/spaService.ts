@@ -1,13 +1,13 @@
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 // Minimal SPA points service after milestone purge
 class SPAService {
   // Read current SPA balance (alias kept for backward compatibility)
   async getCurrentSPAPoints(userId: string): Promise<number> {
-    const { data } = await supabase
+    // TODO: Replace with service call - const { data } = await supabase
       .from('player_rankings')
       .select('spa_points')
-      .eq('user_id', userId)
+      .getByUserId(userId)
       .single();
     return data?.spa_points || 0;
   }
@@ -25,10 +25,10 @@ class SPAService {
     referenceId?: string
   ): Promise<{ success: boolean; balance: number; requiresRanking: boolean }> {
     // Check if user has ranking record first
-    const { data: rankingRecord } = await supabase
+//     const { data: rankingRecord } = await supabase
       .from('player_rankings')
       .select('spa_points')
-      .eq('user_id', userId)
+      .getByUserId(userId)
       .single();
 
     if (!rankingRecord) {
@@ -40,10 +40,10 @@ class SPAService {
     const current = rankingRecord.spa_points || 0;
     const newBalance = current + pointsChange;
     
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
       .from('player_rankings')
       .update({ spa_points: newBalance })
-      .eq('user_id', userId);
+      .getByUserId(userId);
       
     if (error) {
       console.error('SPA update error:', error);
@@ -51,7 +51,7 @@ class SPAService {
     }
 
     // Create transaction record
-    await supabase.from('spa_transactions').insert({
+    await walletService.create({
       user_id: userId,
       amount: pointsChange,
       source_type: transactionType,

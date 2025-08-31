@@ -1,5 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { Challenge } from '@/types/challenge';
@@ -85,7 +94,7 @@ export const useEnhancedChallengesV3 = () => {
     });
     
     // Update expired challenges in database
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
      .from('challenges')
      .update({ 
       status: 'expired',
@@ -155,7 +164,7 @@ export const useEnhancedChallengesV3 = () => {
    console.log('🔄 [useEnhancedChallengesV3] Fetching all challenges...');
 
    // Fetch ALL challenges from the system
-   const { data: challengesData, error: fetchError } = await supabase
+//    const { data: challengesData, error: fetchError } = await supabase
     .from('challenges')
     .select('*')
     .order('created_at', { ascending: false });
@@ -178,11 +187,11 @@ export const useEnhancedChallengesV3 = () => {
 
    // Fetch profiles and rankings in parallel
    const [profilesResponse, rankingsResponse] = await Promise.all([
-    supabase
+//     supabase
      .from('profiles')
      .select('user_id, full_name, display_name, verified_rank, elo, avatar_url, current_rank')
      .in('user_id', Array.from(userIds)),
-    supabase
+//     supabase
      .from('player_rankings')
      .select('user_id, spa_points, elo_points')
      .in('user_id', Array.from(userIds))
@@ -233,15 +242,15 @@ export const useEnhancedChallengesV3 = () => {
     // ✅ Fallback: Direct load current user if not found in batch
     console.log('⚠️ Current user not found in batch, loading directly...');
     const [directProfile, directRanking] = await Promise.all([
-     supabase
+//      supabase
       .from('profiles')
       .select('user_id, full_name, display_name, verified_rank, elo, avatar_url, current_rank')
-      .eq('user_id', user.id)
+      .getByUserId(user.id)
       .single(),
-     supabase
+//      supabase
       .from('player_rankings')
       .select('spa_points, elo_points')
-      .eq('user_id', user.id)
+      .getByUserId(user.id)
       .single()
     ]);
 
@@ -486,7 +495,7 @@ export const useEnhancedChallengesV3 = () => {
    });
 
    // First, let's check the challenge status before calling the function
-   const { data: challengeCheck } = await supabase
+//    const { data: challengeCheck } = await supabase
     .from('challenges')
     .select('id, status, opponent_id, challenger_id, expires_at, bet_points')
     .eq('id', challengeId)
@@ -494,7 +503,7 @@ export const useEnhancedChallengesV3 = () => {
    
    console.log('🔍 Pre-validation challenge data:', challengeCheck);
 
-   const { data: result, error } = await supabase.rpc('accept_open_challenge', {
+   const { data: result, error } = await tournamentService.callRPC('accept_open_challenge', {
     p_challenge_id: challengeId,
     p_user_id: user.id,
    });
@@ -568,7 +577,7 @@ export const useEnhancedChallengesV3 = () => {
    }, 2000); // Wait 2 seconds before refreshing
   };
 
-  const challengesSubscription = supabase
+//   const challengesSubscription = supabase
    .channel('enhanced_challenges_v3_realtime')
    .on(
     'postgres_changes',

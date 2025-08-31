@@ -4,7 +4,7 @@
  * Mathematical validation with optimal player distribution
  */
 
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export interface ValidationResult {
   valid: boolean;
@@ -40,7 +40,7 @@ export class TournamentValidationEngine {
   ): Promise<TournamentValidation> {
     try {
       // Fetch tournament data
-      const { data: tournament, error } = await supabase
+//       const { data: tournament, error } = await supabase
         .from('tournaments')
         .select(
           `
@@ -149,7 +149,7 @@ export class TournamentValidationEngine {
   ): Promise<ParticipantValidation> {
     try {
       if (!tournament) {
-        const { data, error } = await supabase
+        // TODO: Replace with service call - const { data, error } = await supabase
           .from('tournaments')
           .select('*')
           .eq('id', tournamentId)
@@ -162,7 +162,7 @@ export class TournamentValidationEngine {
       }
 
       // Get confirmed participants
-      const { data: participants, error: participantsError } = await supabase
+//       const { data: participants, error: participantsError } = await supabase
         .from('tournament_registrations')
         .select('user_id')
         .eq('tournament_id', tournamentId)

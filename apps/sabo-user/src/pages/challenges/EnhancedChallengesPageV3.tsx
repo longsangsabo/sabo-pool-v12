@@ -24,7 +24,10 @@ import { useAutoUpdateChallengeStatus } from '@/hooks/useAutoUpdateChallengeStat
 import { EnhancedCommunityTab } from '@/pages/challenges/components/tabs/EnhancedCommunityTab';
 import { EnhancedMyTab } from '@/pages/challenges/components/tabs/EnhancedMyTab';
 import ImprovedCreateChallengeModal from '@/components/modals/ImprovedCreateChallengeModal';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { useAutoTransitionChallenges } from '@/hooks/useAutoTransitionChallenges';
 
 const EnhancedChallengesPageV3: React.FC = () => {
@@ -120,7 +123,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
    console.log('Current user ID:', user.id);
 
    // First, check if the challenge exists and belongs to the user
-   const { data: challengeCheck, error: checkError } = await supabase
+//    const { data: challengeCheck, error: checkError } = await supabase
     .from('challenges')
     .select('id, challenger_id, status')
     .eq('id', challengeId)
@@ -141,7 +144,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
    }
 
    // Update challenge status to declined (cancelled equivalent)
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('challenges')
     .update({ status: 'declined' })
     .eq('id', challengeId)

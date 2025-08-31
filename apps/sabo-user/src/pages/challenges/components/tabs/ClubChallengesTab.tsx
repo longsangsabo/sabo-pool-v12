@@ -8,7 +8,10 @@ import { Challenge } from '@/types/challenge';
 import EnhancedChallengeCard, { EnhancedChallengeCardGrid } from '@/components/challenges/EnhancedChallengeCard';
 import ClubApprovalCard from '@/components/challenges/ClubApprovalCard';
 import { useClubAdminCheck } from '@/hooks/useClubAdminCheck';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { cn } from '@/lib/utils';
 
 interface ClubChallengesTabProps {
@@ -33,7 +36,7 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
  useEffect(() => {
   const fetchClubChallenges = async () => {
    try {
-    let query = supabase
+//     let query = supabase
      .from('challenges')
      .select(`
       *,

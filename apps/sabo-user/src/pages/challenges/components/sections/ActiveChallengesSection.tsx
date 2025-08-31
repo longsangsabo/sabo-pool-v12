@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { Clock, MapPin, MessageSquare, Ban, Users, Target } from 'lucide-react';
@@ -95,7 +98,7 @@ const ActiveChallengesSection: React.FC<ActiveChallengesSectionProps> = ({
 
    for (const challenge of challenges) {
     if (challenge.club_id && user?.id) {
-     const { data } = await supabase
+     // TODO: Replace with service call - const { data } = await supabase
       .from('club_profiles')
       .select('user_id')
       .eq('id', challenge.club_id)
@@ -121,7 +124,7 @@ const ActiveChallengesSection: React.FC<ActiveChallengesSectionProps> = ({
 
   try {
    // Update challenge status to cancelled with reason
-   const { error: updateError } = await supabase
+//    const { error: updateError } = await supabase
     .from('challenges')
     .update({
      status: 'cancelled',
@@ -144,7 +147,7 @@ const ActiveChallengesSection: React.FC<ActiveChallengesSectionProps> = ({
      : selectedChallengeForCancel.challenger?.full_name;
 
    // Create notification for opponent
-   const { error: notificationError } = await supabase
+//    const { error: notificationError } = await supabase
     .from('notifications')
     .insert({
      user_id: opponentId,

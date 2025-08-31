@@ -11,7 +11,11 @@ import {
  ArrowRight,
  RefreshCw,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface TournamentAutomationStatusProps {
@@ -43,7 +47,7 @@ export const TournamentAutomationStatus: React.FC<
 
  const fetchMatchStatus = async () => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_matches')
     .select(
      `
@@ -115,7 +119,7 @@ export const TournamentAutomationStatus: React.FC<
   fetchMatchStatus();
 
   // Subscribe to real-time updates
-  const subscription = supabase
+//   const subscription = supabase
    .channel('tournament_matches_status')
    .on(
     'postgres_changes',

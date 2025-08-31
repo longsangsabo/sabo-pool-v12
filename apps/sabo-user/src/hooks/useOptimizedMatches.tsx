@@ -1,5 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 
 interface Player {
  name: string;
@@ -51,7 +60,7 @@ export const useOptimizedMatches = () => {
 
  const fetchLiveMatches = useCallback(async () => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('matches')
     .select(
      `
@@ -88,7 +97,7 @@ export const useOptimizedMatches = () => {
    });
 
    // Fetch profiles with fallback
-   const { data: profiles } = await supabase
+//    const { data: profiles } = await supabase
     .from('profiles')
     .select('user_id, full_name, avatar_url, verified_rank')
     .in('user_id', Array.from(playerIds));
@@ -134,7 +143,7 @@ export const useOptimizedMatches = () => {
   try {
    // Query both scheduled matches and accepted challenges that should become matches
    const [scheduledMatches, acceptedChallenges] = await Promise.all([
-    supabase
+//     supabase
      .from('matches')
      .select(
       `
@@ -149,7 +158,7 @@ export const useOptimizedMatches = () => {
      .order('scheduled_time', { ascending: true })
      .limit(3),
 
-    supabase
+//     supabase
      .from('challenges')
      .select(
       `
@@ -207,7 +216,7 @@ export const useOptimizedMatches = () => {
    });
 
    // Fetch profiles with fallback
-   const { data: profiles } = await supabase
+//    const { data: profiles } = await supabase
     .from('profiles')
     .select('user_id, full_name, avatar_url, verified_rank')
     .in('user_id', Array.from(playerIds));
@@ -247,7 +256,7 @@ export const useOptimizedMatches = () => {
 
  const fetchRecentResults = useCallback(async () => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('matches')
     .select(
      `
@@ -285,7 +294,7 @@ export const useOptimizedMatches = () => {
    });
 
    // Fetch profiles with fallback, skip match results for now to avoid join issues
-   const { data: profiles } = await supabase
+//    const { data: profiles } = await supabase
     .from('profiles')
     .select('user_id, full_name, avatar_url, verified_rank')
     .in('user_id', Array.from(playerIds));
@@ -387,7 +396,7 @@ export const useOptimizedMatches = () => {
  useEffect(() => {
   refreshAll();
 
-  const matchesSubscription = supabase
+//   const matchesSubscription = supabase
    .channel('optimized-matches')
    .on(
     'postgres_changes',
@@ -402,7 +411,7 @@ export const useOptimizedMatches = () => {
    )
    .subscribe();
 
-  const challengesSubscription = supabase
+//   const challengesSubscription = supabase
    .channel('optimized-challenges')
    .on(
     'postgres_changes',
@@ -421,8 +430,8 @@ export const useOptimizedMatches = () => {
    .subscribe();
 
   return () => {
-   supabase.removeChannel(matchesSubscription);
-   supabase.removeChannel(challengesSubscription);
+   // removeChannel(matchesSubscription);
+   // removeChannel(challengesSubscription);
   };
  }, [refreshAll]);
 

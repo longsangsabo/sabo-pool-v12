@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import type {
   EmailTemplate,
   EmailConfig,

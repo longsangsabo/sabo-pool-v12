@@ -25,7 +25,11 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import {
  DropdownMenu,
  DropdownMenuContent,
@@ -177,7 +181,7 @@ export const ClubMobileNavigation: React.FC = () => {
  const { data: notificationCount } = useQuery({
   queryKey: ['club-notifications-count'],
   queryFn: async () => {
-   const { count, error } = await supabase
+//    const { count, error } = await supabase
     .from('notifications')
     .select('*', { count: 'exact', head: true })
     .eq('is_read', false)
@@ -192,7 +196,7 @@ export const ClubMobileNavigation: React.FC = () => {
  const { data: verificationCount } = useQuery({
   queryKey: ['club-verification-count'],
   queryFn: async () => {
-   const { count, error } = await supabase
+//    const { count, error } = await supabase
     .from('rank_verifications')
     .select('*', { count: 'exact', head: true })
     .eq('status', 'pending');

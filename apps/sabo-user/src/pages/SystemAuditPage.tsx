@@ -1,5 +1,17 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Helmet } from 'react-helmet-async';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +31,10 @@ import {
  Server,
  Clock,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { useAuth } from '@/hooks/useAuth';
 
 interface AuditResult {
@@ -133,15 +148,15 @@ const SystemAuditPage = () => {
  const checkSupabaseConnection = async () => {
   console.log('Checking Supabase connection...');
 
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+//   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+//   const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseKey) {
+//   if (!supabaseUrl || !supabaseKey) {
    throw new Error('Missing Supabase environment variables');
   }
 
   // Test basic connection
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
    .from('profiles')
    .select('count')
    .limit(1);
@@ -151,7 +166,7 @@ const SystemAuditPage = () => {
   }
 
   return {
-   url: supabaseUrl,
+//    url: supabaseUrl,
    connected: true,
    hasData: !!data,
   };
@@ -164,7 +179,7 @@ const SystemAuditPage = () => {
    const {
     data: { session },
     error,
-   } = await supabase.auth.getSession();
+   } = await userService.getSession();
 
    if (error) {
     throw new Error(`Auth check failed: ${error.message}`);

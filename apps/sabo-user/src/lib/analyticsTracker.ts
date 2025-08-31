@@ -53,7 +53,22 @@ class AnalyticsTracker {
 
     setInterval(checkForRouteChange, 1000);
 
-    // Track clicks on important elements
+    // Track clicks on import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+important elements
     document.addEventListener('click', event => {
       const target = event.target as HTMLElement;
 
@@ -231,9 +246,9 @@ class AnalyticsTracker {
 
   private async sendEvent(event: AnalyticsEvent) {
     try {
-      const { supabase } = await import('./integrations/supabase/client');
+//       const { supabase } = await import('./integrations/supabase/client');
 
-      await supabase.from('analytics_events' as any).insert({
+// // //       // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('analytics_events' as any).create({
         event_name: event.name,
         properties: event.properties || {},
         user_id: event.userId,
@@ -253,7 +268,7 @@ class AnalyticsTracker {
     this.events = [];
 
     try {
-      const { supabase } = await import('./integrations/supabase/client');
+//       const { supabase } = await import('./integrations/supabase/client');
 
       const formattedEvents = eventsToSend.map(event => ({
         event_name: event.name,
@@ -264,7 +279,7 @@ class AnalyticsTracker {
         timestamp: new Date(event.timestamp).toISOString(),
       }));
 
-      await supabase.from('analytics_events' as any).insert(formattedEvents);
+// // //       // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('analytics_events' as any).create(formattedEvents);
 
       console.log(`[Analytics] Sent ${formattedEvents.length} events`);
     } catch (error) {

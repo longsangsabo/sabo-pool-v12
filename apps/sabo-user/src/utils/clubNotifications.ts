@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+// Club notifications utility - No supabase imports needed for this functionality
 
 interface ClubNotificationData {
   club_name: string;

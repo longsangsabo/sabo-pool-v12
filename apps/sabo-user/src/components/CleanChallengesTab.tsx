@@ -6,7 +6,11 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Users, Clock, Trophy, Target, Shield, Check, X, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface CleanChallengesTabProps {
@@ -81,7 +85,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
    // Use correct functions for add/subtract
    if (challengerIsWinner) {
     // Challenger wins - ADD points to challenger, SUBTRACT from opponent
-    const { data: challengerResult, error: challengerError } = await supabase
+//     const { data: challengerResult, error: challengerError } = await supabase
      .rpc('update_spa_points', {
       p_user_id: challenger_id,
       p_points: winnerAmount,
@@ -97,7 +101,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
     console.log('✅ Challenger (winner) SPA updated:', challengerResult);
 
     // Subtract from opponent using correct function
-    const { data: opponentResult, error: opponentError } = await supabase
+//     const { data: opponentResult, error: opponentError } = await supabase
      .rpc('subtract_spa_points', {
       p_user_id: opponent_id,
       p_points_to_subtract: loserAmount
@@ -111,7 +115,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
 
    } else {
     // Opponent wins - ADD points to opponent, SUBTRACT from challenger
-    const { data: opponentResult, error: opponentError } = await supabase
+//     const { data: opponentResult, error: opponentError } = await supabase
      .rpc('update_spa_points', {
       p_user_id: opponent_id,
       p_points: winnerAmount,
@@ -127,7 +131,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
     console.log('✅ Opponent (winner) SPA updated:', opponentResult);
 
     // Subtract from challenger using correct function
-    const { data: challengerResult, error: challengerError } = await supabase
+//     const { data: challengerResult, error: challengerError } = await supabase
      .rpc('subtract_spa_points', {
       p_user_id: challenger_id,
       p_points_to_subtract: loserAmount
@@ -162,7 +166,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
    console.log(`🎯 Club approval: ${approved ? 'APPROVED' : 'REJECTED'} challenge ${challengeId}`);
 
    // Update challenge status directly
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('challenges')
     .update({
      club_confirmed: approved,
@@ -184,7 +188,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
     console.log('🎉 Challenge approved - processing SPA transfer...');
     
     // Get the challenge details for SPA processing and notifications
-    const { data: challengeForSpa } = await supabase
+//     const { data: challengeForSpa } = await supabase
      .from('challenges')
      .select('*')
      .eq('id', challengeId)
@@ -227,7 +231,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
      });
      
      // Insert notifications
-     const { error: notificationError } = await supabase
+//      const { error: notificationError } = await supabase
       .from('notifications')
       .insert(notifications);
       
@@ -269,7 +273,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
   try {
    // console.log('🔄 Fetching challenges...');
    
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('challenges')
     .select(`
      *,

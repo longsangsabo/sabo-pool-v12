@@ -1,4 +1,10 @@
 import { useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Button } from '@/components/ui/button';
 import {
  Card,
@@ -10,6 +16,12 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Copy, ExternalLink, CheckCircle } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { toast } from 'sonner';
 
 export const OAuthSetupGuide = () => {
@@ -21,7 +33,7 @@ export const OAuthSetupGuide = () => {
  };
 
  const redirectUrl =
-  'https://knxevbkkkiadgppxbphh.supabase.co/auth/v1/callback';
+// // // //   'https://knxevbkkkiadgppxbphh.supabase.co/auth/v1/callback';
  const siteUrl = window.location.origin;
 
  if (!showGuide) {
@@ -50,14 +62,14 @@ export const OAuthSetupGuide = () => {
     </CardDescription>
    </CardHeader>
    <CardContent>
-    <Tabs defaultValue='supabase' className='w-full'>
+//     <Tabs defaultValue='supabase' className='w-full'>
      <TabsList className='grid w-full grid-cols-3'>
-      <TabsTrigger value='supabase'>1. Supabase</TabsTrigger>
+//       <TabsTrigger value='supabase'>1. Supabase</TabsTrigger>
       <TabsTrigger value='google'>2. Google</TabsTrigger>
       <TabsTrigger value='facebook'>3. Facebook</TabsTrigger>
      </TabsList>
 
-     <TabsContent value='supabase' className='space-y-4'>
+//      <TabsContent value='supabase' className='space-y-4'>
       <Alert>
        <CheckCircle className='h-4 w-4' />
        <AlertDescription>
@@ -72,7 +84,7 @@ export const OAuthSetupGuide = () => {
         
         onClick={() =>
          window.open(
-          'https://supabase.com/dashboard/project/f5355f18-6802-404b-9d2c-539e6dccb10c/auth/providers',
+// // //           'https://supabase.com/dashboard/project/f5355f18-6802-404b-9d2c-539e6dccb10c/auth/providers',
           '_blank'
          )
         }
@@ -141,7 +153,7 @@ export const OAuthSetupGuide = () => {
        <ul className='list-disc list-inside ml-4 space-y-1'>
         <li>User Type: External</li>
         <li>App name: SABO Pool Arena</li>
-        <li>Authorized domains: knxevbkkkiadgppxbphh.supabase.co</li>
+// // // //         <li>Authorized domains: knxevbkkkiadgppxbphh.supabase.co</li>
         <li>Scopes: email, profile, openid</li>
        </ul>
 
@@ -240,14 +252,14 @@ export const OAuthSetupGuide = () => {
         <p className='font-medium'>App Domains:</p>
         <div className='flex items-center gap-2'>
          <code className='bg-white px-2 py-1 rounded text-body-small flex-1'>
-          knxevbkkkiadgppxbphh.supabase.co
+// // // //           knxevbkkkiadgppxbphh.supabase.co
          </code>
          <Button
           
           variant='ghost'
           onClick={() =>
            copyToClipboard(
-            'knxevbkkkiadgppxbphh.supabase.co',
+// // // //             'knxevbkkkiadgppxbphh.supabase.co',
             'App Domain'
            )
           }

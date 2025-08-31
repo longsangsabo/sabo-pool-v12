@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { Tournament } from '@/types/tournament';
 
 interface UseRealtimeTournamentProps {
@@ -23,7 +29,7 @@ export const useRealtimeTournament = ({
       setLoading(true);
       setError(null);
 
-      const { data, error: fetchError } = await supabase
+//       const { data, error: fetchError } = await supabase
         .from('tournaments')
         .select('*')
         .eq('id', id)
@@ -66,7 +72,7 @@ export const useRealtimeTournament = ({
       tournamentId
     );
 
-    const channel = supabase
+//     const channel = supabase
       .channel(`tournament_updates_${tournamentId}`)
       .on(
         'postgres_changes',
@@ -125,7 +131,7 @@ export const useRealtimeTournament = ({
         '🔄 Cleaning up real-time subscription for tournament:',
         tournamentId
       );
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [tournamentId]);
 

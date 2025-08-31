@@ -5,8 +5,11 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { getCurrentUser } from "../services/userService";
+import { getTournament, createTournament } from "../services/tournamentService";
+import { getUserProfile } from "../services/profileService";
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 import { TournamentManagementService } from '@/services/tournament-management.service';
 import type {
@@ -35,10 +38,10 @@ export const useTournamentManagementHub = (): UseTournamentManagementReturn => {
     if (!user) return;
 
     try {
-      const { data: clubData, error: clubError } = await supabase
+//       const { data: clubData, error: clubError } = await supabase
         .from('club_profiles')
         .select('id')
-        .eq('user_id', user.id)
+        .getByUserId(user.id)
         .single();
 
       if (clubError) {
@@ -106,7 +109,7 @@ export const useTournamentManagementHub = (): UseTournamentManagementReturn => {
   useEffect(() => {
     if (!clubId) return;
 
-    const channel = supabase
+//     const channel = supabase
       .channel('tournament-updates')
       .on(
         'postgres_changes',
@@ -125,7 +128,7 @@ export const useTournamentManagementHub = (): UseTournamentManagementReturn => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [clubId, fetchTournaments]);
 

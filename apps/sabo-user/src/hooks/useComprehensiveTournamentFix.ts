@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 
 interface TournamentHealthStats {
@@ -43,7 +49,7 @@ export const useComprehensiveTournamentFix = () => {
     try {
       console.log('🏥 Checking tournament advancement health...');
 
-      const { data, error } = await supabase.rpc(
+      const { data, error } = await tournamentService.callRPC(
         'check_tournament_advancement_health'
       );
 
@@ -81,7 +87,7 @@ export const useComprehensiveTournamentFix = () => {
       console.log('🔧 Starting comprehensive tournament fix...');
       toast.loading('Đang sửa chữa tất cả tournaments có vấn đề...');
 
-      const { data, error } = await supabase.rpc(
+      const { data, error } = await tournamentService.callRPC(
         'fix_all_unadvanced_tournaments'
       );
 

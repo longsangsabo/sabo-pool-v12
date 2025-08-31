@@ -4,10 +4,26 @@
 // =============================================
 
 import { useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import { RefreshCw, Wrench } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 
 interface SABO32AdvancementFixerProps {
  tournamentId: string;
@@ -32,7 +48,7 @@ export const SABO32AdvancementFixer: React.FC<SABO32AdvancementFixerProps> = ({
    console.log('🔧 Starting SABO-32 advancement fix for tournament:', tournamentId);
    
    // Call the SQL function
-   const { data, error } = await supabase.rpc('fix_sabo32_advancement', {
+   const { data, error } = await tournamentService.callRPC('fix_sabo32_advancement', {
     p_tournament_id: tournamentId
    });
 

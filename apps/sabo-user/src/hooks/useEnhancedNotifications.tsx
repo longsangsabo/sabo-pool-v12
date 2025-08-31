@@ -1,5 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from './useAuth';
 
 interface NotificationSummary {
@@ -30,7 +39,7 @@ export const useEnhancedNotifications = () => {
 
   setLoading(true);
   try {
-   const { data, error } = await supabase.rpc('get_notification_summary', {
+   const { data, error } = await tournamentService.callRPC('get_notification_summary', {
     p_user_id: user.id,
    });
 
@@ -59,7 +68,7 @@ export const useEnhancedNotifications = () => {
    if (!notificationIds.length) return;
 
    try {
-    const { error } = await supabase.rpc('mark_notifications_read', {
+    const { error } = await tournamentService.callRPC('mark_notifications_read', {
      p_user_id: user.id,
      p_notification_ids: notificationIds,
     });
@@ -135,7 +144,7 @@ export const useEnhancedNotifications = () => {
   fetchNotificationSummary();
 
   // Set up real-time subscription
-  const channel = supabase
+//   const channel = supabase
    .channel(`notifications-${user.id}`)
    .on(
     'postgres_changes',
@@ -164,7 +173,7 @@ export const useEnhancedNotifications = () => {
 
   return () => {
    console.log('Cleaning up enhanced notification subscription');
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [user?.id, fetchNotificationSummary]);
 

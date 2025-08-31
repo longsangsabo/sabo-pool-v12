@@ -1,10 +1,25 @@
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
 import { useTournament } from './useTournament';
 import { useTournamentRegistrations } from './useTournamentRegistrations';
 import { useTournamentMatches } from './useTournamentMatches';
 import { useModuleLoading } from '@/contexts/LoadingStateContext';
 import { useModuleError } from '@/contexts/ErrorStateContext';
 import { useAutoAdvancement } from './useAutoAdvancement';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 /**
  * Unified hook that combines all tournament-related functionality
@@ -99,7 +114,7 @@ export const useUnifiedTournamentState = (tournamentId?: string) => {
       if (effectiveTournamentId) {
         // First try bracket repair for consistency using new coordinator
         try {
-          const { data: repairResult } = await supabase.rpc(
+          const { data: repairResult } = await tournamentService.callRPC(
             'repair_double_elimination_bracket',
             {
               p_tournament_id: tournamentId,

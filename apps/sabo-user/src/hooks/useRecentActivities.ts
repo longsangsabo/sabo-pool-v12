@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { useAuth } from '@/hooks/useAuth';
 
 export interface RecentActivity {
@@ -28,7 +28,7 @@ export const useRecentActivities = () => {
       setError(null);
       try {
         // Get recent matches (simple query without relations for now)
-        const { data: matches, error: matchError } = await supabase
+//         const { data: matches, error: matchError } = await supabase
           .from('matches')
           .select('id, created_at, status, winner_id, player1_id, player2_id')
           .or(`player1_id.eq.${user.id},player2_id.eq.${user.id}`)
@@ -45,7 +45,7 @@ export const useRecentActivities = () => {
           if (match.player2_id) playerIds.add(match.player2_id);
         });
 
-        const { data: players, error: playersError } = await supabase
+//         const { data: players, error: playersError } = await supabase
           .from('profiles')
           .select('user_id, full_name')
           .in('user_id', Array.from(playerIds));
@@ -59,7 +59,7 @@ export const useRecentActivities = () => {
         });
 
         // Get recent tournament registrations (avoid PostgREST relationship)
-        const { data: tournamentRegistrations, error: tournamentRegError } = await supabase
+//         const { data: tournamentRegistrations, error: tournamentRegError } = await supabase
           .from('tournament_registrations')
           .select('id, created_at, tournament_id')
           .eq('user_id', user.id)
@@ -72,7 +72,7 @@ export const useRecentActivities = () => {
         let tournamentNames = new Map();
         if (tournamentRegistrations && tournamentRegistrations.length > 0) {
           const tournamentIds = tournamentRegistrations.map(tr => tr.tournament_id);
-          const { data: tournamentData, error: tournamentDataError } = await supabase
+//           const { data: tournamentData, error: tournamentDataError } = await supabase
             .from('tournaments')
             .select('id, name')
             .in('id', tournamentIds);
@@ -85,7 +85,7 @@ export const useRecentActivities = () => {
         }
 
         // Get recent profile updates
-        const { data: profile, error: profileError } = await supabase
+//         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('updated_at')
           .eq('user_id', user.id)

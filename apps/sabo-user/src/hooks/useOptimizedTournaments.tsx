@@ -4,9 +4,18 @@ import {
  useMutation,
  useQueryClient,
 } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { toast } from 'sonner';
 import { useMemo } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useAuth } from './useAuth';
 
 // Enhanced React Query configuration for tournaments
@@ -46,7 +55,7 @@ export const useOptimizedTournaments = (filters: TournamentFilters = {}) => {
    const offset = pageParam * PAGE_SIZE;
 
    // Use the optimized database function if available
-   let query = supabase.from('tournaments').select(
+   let query = tournamentService.select(
     `
      *,
      current_participants,
@@ -103,7 +112,7 @@ export const useOptimizedTournament = (id: string) => {
  return useQuery({
   queryKey: TOURNAMENT_QUERY_KEYS.detail(id),
   queryFn: async () => {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .select(
      `
@@ -146,7 +155,7 @@ export const useTournamentPrefetch = () => {
   queryClient.prefetchQuery({
    queryKey: TOURNAMENT_QUERY_KEYS.detail(id),
    queryFn: async () => {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('tournaments')
      .select('*')
      .eq('id', id)
@@ -163,7 +172,7 @@ export const useTournamentPrefetch = () => {
   queryClient.prefetchInfiniteQuery({
    queryKey: TOURNAMENT_QUERY_KEYS.list(filters),
    queryFn: async () => {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('tournaments')
      .select('*')
      .order('tournament_start', { ascending: true })
@@ -199,23 +208,23 @@ export const useOptimizedTournamentRegistration = () => {
    action: 'register' | 'unregister';
   }) => {
    if (action === 'register') {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('tournament_registrations')
-     .insert({
+     .create({
       tournament_id: tournamentId,
       user_id: user?.id || '',
       registration_status: 'confirmed',
      })
-     .select()
+     .getAll()
      .single();
 
     if (error) throw error;
     return data;
    } else {
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
      .from('tournament_registrations')
      .delete()
-     .eq('tournament_id', tournamentId);
+     .getByTournamentId(tournamentId);
 
     if (error) throw error;
     return null;

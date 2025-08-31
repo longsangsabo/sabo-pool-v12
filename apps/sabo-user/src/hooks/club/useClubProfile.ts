@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export interface ClubProfileData {
   id: string;
@@ -19,7 +19,7 @@ export interface ClubProfileData {
 export const fetchClubProfile = async (
   clubId: string
 ): Promise<ClubProfileData | null> => {
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .select('*')
     .eq('id', clubId)

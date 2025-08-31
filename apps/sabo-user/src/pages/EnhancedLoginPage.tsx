@@ -1,6 +1,24 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Helmet } from 'react-helmet-async';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -17,8 +35,17 @@ import { AuthDivider } from '@/components/auth/AuthDivider';
 import { OAuthSetupGuide } from '@/components/auth/OAuthSetupGuide';
 import { PhoneOtpDialog } from '@/components/auth/PhoneOtpDialog';
 import { handleAuthError } from '@sabo/shared-utils';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { Moon, Sun, ArrowLeft } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 
 const EnhancedLoginPage = () => {
  // Phone login state
@@ -72,11 +99,11 @@ const EnhancedLoginPage = () => {
      navigate(effectiveRedirect, { replace: true });
      return;
     }
-    const sb: any = supabase;
+//     const sb: any = supabase;
     const ownerResult = await sb
      .from('club_members')
      .select('club_id')
-     .eq('user_id', user.id)
+     .getByUserId(user.id)
      .eq('role', 'owner')
      .eq('status', 'active')
      .limit(1);
@@ -88,7 +115,7 @@ const EnhancedLoginPage = () => {
     const clubResult = await sb
      .from('club_profiles')
      .select('id')
-     .eq('user_id', user.id)
+     .getByUserId(user.id)
      .maybeSingle();
     const clubProfile = clubResult?.data as any | null;
     navigate(clubProfile ? '/club-management' : '/dashboard', {
@@ -141,11 +168,11 @@ const EnhancedLoginPage = () => {
     if (uid) {
      try {
       // Use any to avoid deep generic instantiation issues
-      const sb: any = supabase;
+//       const sb: any = supabase;
       const ownerResult = await sb
        .from('club_members')
        .select('club_id')
-       .eq('user_id', uid)
+       .getByUserId(uid)
        .eq('role', 'owner')
        .eq('status', 'active')
        .limit(1);
@@ -158,7 +185,7 @@ const EnhancedLoginPage = () => {
        const clubResult = await sb
         .from('club_profiles')
         .select('id')
-        .eq('user_id', uid)
+        .getByUserId(uid)
         .maybeSingle();
        const clubProfile = clubResult?.data as any | null;
        navigate(clubProfile ? '/club-management' : '/dashboard', {
@@ -206,11 +233,11 @@ const EnhancedLoginPage = () => {
     const uid = data?.user?.id;
     if (uid) {
      try {
-      const sb: any = supabase;
+//       const sb: any = supabase;
       const ownerResult = await sb
        .from('club_members')
        .select('club_id')
-       .eq('user_id', uid)
+       .getByUserId(uid)
        .eq('role', 'owner')
        .eq('status', 'active')
        .limit(1);
@@ -223,7 +250,7 @@ const EnhancedLoginPage = () => {
        const clubResult = await sb
         .from('club_profiles')
         .select('id')
-        .eq('user_id', uid)
+        .getByUserId(uid)
         .maybeSingle();
        const clubProfile = clubResult?.data as any | null;
        navigate(clubProfile ? '/club-management' : '/dashboard', {
@@ -295,7 +322,7 @@ const EnhancedLoginPage = () => {
       >
        <div className='relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-indigo-500/40 shadow-md shadow-indigo-900/30'>
         <img
-         src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+// // // //          src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
          alt='SABO ARENA'
          className='w-full h-full object-cover transition-transform group-hover:scale-105'
         />

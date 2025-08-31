@@ -1,3 +1,10 @@
+import { userService } from "../services/userService";
+import { profileService } from "../services/profileService";
+import { tournamentService } from "../services/tournamentService";
+import { clubService } from "../services/clubService";
+import { rankingService } from "../services/rankingService";
+import { statisticsService } from "../services/statisticsService";
+import { dashboardService } from "../services/dashboardService";
 // Debug utility for forcing tournament UI refresh
 // This can be called from browser console if UI doesn't update
 
@@ -12,10 +19,10 @@ export const debugTournamentRefresh = () => {
   }
 
   // Method 2: Clear Supabase channels and reconnect
-  if ((window as any).supabase) {
+//   if ((window as any).supabase) {
     console.log('✅ Refreshing Supabase real-time connections...');
-    const supabase = (window as any).supabase;
-    supabase.removeAllChannels();
+//     const supabase = (window as any).supabase;
+    // removeAllChannels();
   }
 
   // Method 3: Force page reload
@@ -34,16 +41,16 @@ if (typeof window !== 'undefined') {
 }
 
 export const logTournamentState = async () => {
-  if (!(window as any).supabase) {
+//   if (!(window as any).supabase) {
     console.error('❌ Supabase not available');
     return;
   }
 
-  const supabase = (window as any).supabase;
+//   const supabase = (window as any).supabase;
 
   try {
     // Get latest tournament
-    const { data: tournaments } = await supabase
+//     const { data: tournaments } = await supabase
       .from('tournaments')
       .select('*')
       .eq('tournament_type', 'double_elimination')
@@ -59,10 +66,10 @@ export const logTournamentState = async () => {
     console.log('🏆 Current tournament:', tournaments[0].name, tournamentId);
 
     // Get all matches
-    const { data: matches } = await supabase
+//     const { data: matches } = await supabase
       .from('tournament_matches')
       .select('*')
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .order('round_number')
       .order('match_number');
 

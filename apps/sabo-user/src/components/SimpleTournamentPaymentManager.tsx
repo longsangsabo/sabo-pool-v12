@@ -10,7 +10,11 @@ import {
  SelectValue,
 } from '@/components/ui/select';
 import { CreditCard, Users, Trophy, DollarSign } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -34,7 +38,7 @@ const SimpleTournamentPaymentManager: React.FC = () => {
   if (!user) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .select('id, name, max_participants, status, entry_fee, prize_pool')
     .eq('club_id', user.id)

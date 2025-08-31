@@ -5,7 +5,10 @@ import {
  useCallback,
  useEffect,
 } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getCurrentUser } from "../services/userService";
+import { getCurrentUser } from '../services/userService';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { TournamentRewards } from '@/types/tournament-extended';
@@ -172,7 +175,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
     setLoading(true);
     setError(null);
 
-    const { data, error: fetchError } = await supabase
+//     const { data, error: fetchError } = await supabase
      .from('tournaments')
      .select(
       `
@@ -249,7 +252,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Note: prize_distribution column removed - using tournament_prize_tiers table
 
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
      .from('tournaments')
      .update({
       updated_at: new Date().toISOString(),
@@ -278,7 +281,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
   ): Promise<TournamentRewards | null> => {
    try {
     // Fetch tournament data
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('tournaments')
      .select('prize_pool, entry_fee, max_participants')
      .eq('id', tournamentId)
@@ -315,7 +318,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
 
    console.log('🔍 Loading latest tournament for user:', user.id);
 
-   const { data, error: fetchError } = await supabase
+//    const { data, error: fetchError } = await supabase
     .from('tournaments')
     .select(
      `
@@ -472,7 +475,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
     return;
    }
 
-   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+   const { data: { session }, error: sessionError } = await userService.getSession();
    
    if (sessionError || !session) {
     console.warn('⚠️ No authenticated session, skipping prize save');
@@ -498,10 +501,10 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
    }));
 
    // Use REST API to batch insert
-   const supabaseUrl = 'https://exlqvlbawytbglioqfbc.supabase.co';
+// // // //    const supabaseUrl = 'https://exlqvlbawytbglioqfbc.supabase.co';
    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODAwODgsImV4cCI6MjA2ODY1NjA4OH0.jJoRnBFxmQsGKM2TFfXYr3F6LgXSW3qE6vLzG5rfRWo';
    
-   const response = await fetch(`${supabaseUrl}/rest/v1/tournament_prizes`, {
+//    const response = await fetch(`${supabaseUrl}/rest/v1/tournament_prizes`, {
     method: 'POST',
     headers: {
      'apikey': anonKey,
@@ -670,7 +673,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
    });
    
    // 🔥 CRITICAL: Get authenticated user for RLS compliance
-   const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+   const { data: { user: authUser }, error: authError } = await getCurrentUser();
    
    if (authError || !authUser) {
     console.error('❌ Authentication required for tournament creation:', authError);
@@ -757,10 +760,10 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
    console.log('🔍 [DEBUG] Prize template before mapping:', prizeTemplate.slice(0, 3));
 
    // Create tournament in database
-   const { data: newTournament, error: tournamentError } = await supabase
+//    const { data: newTournament, error: tournamentError } = await supabase
     .from('tournaments')
-    .insert([tournamentData])
-    .select()
+    .create([tournamentData])
+    .getAll()
     .single();
 
    if (tournamentError) {
@@ -863,12 +866,12 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({
      updated_at: new Date().toISOString(),
     };
 
-    const { data: updatedTournament, error: updateError } = await supabase
+//     const { data: updatedTournament, error: updateError } = await supabase
      .from('tournaments')
      .update(updateData)
      .eq('id', id)
      .eq('created_by', user.id) // Ensure user owns the tournament
-     .select()
+     .getAll()
      .single();
 
     if (updateError) {

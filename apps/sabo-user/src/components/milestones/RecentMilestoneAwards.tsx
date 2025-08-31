@@ -1,7 +1,11 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
+import { getRecentMilestoneAwards } from '../../services/milestoneService';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Trophy, Star, Target, Calendar } from 'lucide-react';
 
 interface AwardRow {
  milestone_id: string | undefined;
@@ -16,8 +20,8 @@ interface AwardRow {
 }
 
 async function fetchRecentAwards(): Promise<AwardRow[]> {
- const { data, error } = await supabase.rpc<any>('recent_milestone_awards', { p_limit: 10 });
- if (error) throw error;
+ const { data, error } = await getRecentMilestoneAwards(10);
+ if (error) throw new Error(error);
  return (data as AwardRow[]) || [];
 }
 

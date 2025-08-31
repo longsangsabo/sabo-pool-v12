@@ -1,5 +1,14 @@
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { useSimpleProfile } from '@/contexts/SimpleProfileContext';
 import { toast } from 'sonner';
@@ -20,7 +29,7 @@ export const useRankNotificationAutomation = () => {
   );
 
   // Listen for rank approval notifications
-  const notificationChannel = supabase
+//   const notificationChannel = supabase
    .channel('rank-approval-notifications')
    .on(
     'postgres_changes',
@@ -86,7 +95,7 @@ export const useRankNotificationAutomation = () => {
    console.log(
     '[RankNotificationAutomation] Cleaning up notification listener'
    );
-   supabase.removeChannel(notificationChannel);
+   // removeChannel(notificationChannel);
   };
  }, [user, refreshProfile]);
 

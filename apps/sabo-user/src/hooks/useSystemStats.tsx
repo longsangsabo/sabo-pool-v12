@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 
 interface SystemStats {
  activePlayers: number;
@@ -25,7 +28,7 @@ export const useSystemStats = () => {
    setStats(prev => ({ ...prev, loading: true, error: null }));
 
    // Get active players count from player_rankings
-   const { count: activePlayersCount } = await supabase
+//    const { count: activePlayersCount } = await supabase
     .from('player_rankings')
     .select('*', { count: 'exact', head: true })
     .gt('total_matches', 0);
@@ -35,19 +38,19 @@ export const useSystemStats = () => {
    startOfMonth.setDate(1);
    startOfMonth.setHours(0, 0, 0, 0);
 
-   const { count: totalMatchesCount } = await supabase
+//    const { count: totalMatchesCount } = await supabase
     .from('tournament_matches')
     .select('*', { count: 'exact', head: true })
     .gte('created_at', startOfMonth.toISOString())
     .eq('status', 'completed');
 
    // Get total clubs
-   const { count: totalClubsCount } = await supabase
+//    const { count: totalClubsCount } = await supabase
     .from('club_profiles')
     .select('*', { count: 'exact', head: true });
 
    // Get average trust score from player_rankings
-   const { data: trustScores } = await supabase
+//    const { data: trustScores } = await supabase
     .from('player_rankings')
     .select('spa_points');
 

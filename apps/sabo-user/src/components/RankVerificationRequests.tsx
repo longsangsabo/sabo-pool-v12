@@ -4,7 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { getRankVerificationRequests, updateVerificationRequest, approveVerificationRequest, rejectVerificationRequest } from '../services/verificationService';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { createNotification } from '../services/notificationService';
 import { toast } from 'sonner';
 import {
  Trophy,
@@ -53,10 +62,10 @@ const RankVerificationRequests = () => {
 
   try {
    // Get club profile first
-   const { data: clubData, error: clubError } = await (supabase as any)
+//    const { data: clubData, error: clubError } = await (supabase as any)
     .from('club_profiles')
     .select('id')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    if (clubError || !clubData) {
@@ -66,10 +75,10 @@ const RankVerificationRequests = () => {
    }
 
    // Get verification requests for this club with profile information
-   const { data, error } = await (supabase as any)
+//    const { data, error } = await (supabase as any)
     .from('rank_requests')
     .select('*')
-    .eq('club_id', clubData.id)
+    .getByClubId(clubData.id)
     .in('status', ['pending', 'testing'])
     .order('created_at', { ascending: false });
 
@@ -81,10 +90,10 @@ const RankVerificationRequests = () => {
    // Get profile information separately for each request
    const requestsWithProfiles = await Promise.all(
     (data || []).map(async (request: any) => {
-     const { data: profile } = await (supabase as any)
+//      const { data: profile } = await (supabase as any)
       .from('profiles')
       .select('full_name, phone, display_name')
-      .eq('user_id', request.user_id)
+      .getByUserId(request.user_id)
       .single();
 
      return {
@@ -110,7 +119,7 @@ const RankVerificationRequests = () => {
 
   try {
    // Use the new database function to avoid ambiguous column reference issues
-   const { data, error } = await (supabase as any).rpc(
+//    const { data, error } = await (supabase as any).rpc(
     'update_rank_verification_simple',
     {
      p_request_id: requestId,
@@ -180,7 +189,7 @@ const RankVerificationRequests = () => {
    }
 
    // Update rank request record
-   const { error: verificationError } = await (supabase as any)
+//    const { error: verificationError } = await (supabase as any)
     .from('rank_requests')
     .update(updateData)
     .eq('id', requestId);
@@ -194,12 +203,12 @@ const RankVerificationRequests = () => {
    if (status === 'approved') {
     const request = requests.find(r => r.id === requestId);
     if (request) {
-     const { error: profileError } = await (supabase as any)
+//      const { error: profileError } = await (supabase as any)
       .from('profiles')
       .update({
        verified_rank: request.requested_rank.toString(),
       })
-      .eq('user_id', request.user_id);
+      .getByUserId(request.user_id);
 
      if (profileError) {
       console.error('Error updating profile rank:', profileError);
@@ -211,10 +220,10 @@ const RankVerificationRequests = () => {
       // Create a feed post about the rank verification
       try {
        // Get club info
-       const { data: clubData } = await (supabase as any)
+//        const { data: clubData } = await (supabase as any)
         .from('club_profiles')
         .select('id, club_name')
-        .eq('user_id', user?.id)
+        .getByUserId(user?.id)
         .single();
 
        // Get player name
@@ -228,7 +237,7 @@ const RankVerificationRequests = () => {
        const postContent = `🎉 Chúc mừng ${playerName} đã được ${clubName} chính thức xác nhận hạng ${rankInfo.name}!\n\n✨ ${rankInfo.description}\n\n#RankVerification #${request.requested_rank} #SABOPOOL`;
 
        // Create a notification instead of a post since posts table doesn't exist
-       await supabase.from('notifications').insert({
+       await notificationService.create({
         user_id: request.user_id,
         type: 'rank_verified',
         title: 'Hạng đã được xác nhận',

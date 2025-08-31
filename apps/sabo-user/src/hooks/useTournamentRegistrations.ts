@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 
 interface Player {
   id?: string;
@@ -45,10 +51,10 @@ export const useTournamentRegistrations = (tournamentId: string) => {
       console.log('🔍 Fetching registrations for tournament:', tournamentId);
 
       // First, fetch tournament registrations without foreign key join
-      const { data: registrations, error: fetchError } = await supabase
+//       const { data: registrations, error: fetchError } = await supabase
         .from('tournament_registrations')
         .select('*')
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .order('created_at', { ascending: true });
 
       if (fetchError) {
@@ -70,7 +76,7 @@ export const useTournamentRegistrations = (tournamentId: string) => {
       const userIds = [...new Set(registrations.map(reg => reg.user_id))];
 
       // Fetch user profiles separately (may fail due to RLS, handle gracefully)
-      const { data: profiles, error: profilesError } = await supabase
+//       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('id, user_id, full_name, display_name, avatar_url, verified_rank')
         .in('user_id', userIds);
@@ -79,7 +85,7 @@ export const useTournamentRegistrations = (tournamentId: string) => {
         console.warn('⚠️ Error fetching profiles (likely RLS), using player_rankings as fallback:', profilesError);
         
         // Try player_rankings as fallback for user data
-        const { data: rankings, error: rankingsError } = await supabase
+//         const { data: rankings, error: rankingsError } = await supabase
           .from('player_rankings')
           .select('user_id, user_name, current_rank, verified_rank')
           .in('user_id', userIds);
@@ -150,7 +156,7 @@ export const useTournamentRegistrations = (tournamentId: string) => {
       tournamentId
     );
 
-    const channel = supabase
+//     const channel = supabase
       .channel(`tournament-registrations-${tournamentId}`)
       .on(
         'postgres_changes',
@@ -171,7 +177,7 @@ export const useTournamentRegistrations = (tournamentId: string) => {
 
     return () => {
       console.log('🔄 Cleaning up registration real-time subscription');
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [tournamentId]);
 

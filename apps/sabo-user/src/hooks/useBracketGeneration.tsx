@@ -1,6 +1,13 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { createClient } from '@supabase/supabase-js';
+import { getCurrentUser } from "../services/userService";
+import { getTournament, createTournament } from "../services/tournamentService";
+import { getUserProfile } from "../services/profileService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
+import { getCurrentUser } from '../services/userService';
+// import { createClient } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import {
  callTournamentFunction,
@@ -74,14 +81,14 @@ export const useBracketGeneration = () => {
     // Get current user for transaction context
     const {
      data: { user },
-    } = await supabase.auth.getUser();
+    } = await getCurrentUser();
     if (!user) {
      toast.error('Bạn cần đăng nhập để tạo bảng đấu');
      return { error: 'Authentication required' };
     }
 
     // Get tournament info to determine type
-    const { data: tournament, error: tournamentError } = await supabase
+//     const { data: tournament, error: tournamentError } = await supabase
      .from('tournaments')
      .select('tournament_type')
      .eq('id', tournamentId)
@@ -96,10 +103,10 @@ export const useBracketGeneration = () => {
     // Use SABO double elimination function 
     if (tournament.tournament_type === 'double_elimination' || tournament.tournament_type === 'sabo_double_elimination') {
      // Get confirmed participants for SABO initialization
-     const { data: registrations, error: regError } = await supabase
+//      const { data: registrations, error: regError } = await supabase
       .from('tournament_registrations')
       .select('user_id')
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .eq('registration_status', 'confirmed')
       .limit(32); // Support both 16 and 32 players
 
@@ -138,9 +145,9 @@ export const useBracketGeneration = () => {
        }));
 
        // Insert matches into SABO-32 table using any type workaround
-       const { error: insertError } = await (supabase as any)
+//        const { error: insertError } = await (supabase as any)
         .from('sabo32_matches')
-        .insert(matchInserts);
+        .create(matchInserts);
 
        if (insertError) {
         console.error('Error inserting SABO-32 matches:', insertError);
@@ -167,7 +174,7 @@ export const useBracketGeneration = () => {
 
      // Use the correct SABO function
      try {
-      const { data: result, error: bracketError } = await supabase.rpc(
+      const { data: result, error: bracketError } = await tournamentService.callRPC(
        'generate_sabo_tournament_bracket',
        { 
         p_tournament_id: tournamentId,
@@ -250,10 +257,10 @@ export const useBracketGeneration = () => {
 
     // For legacy double elimination types, get participants and try fallback functions
     if (tournament.tournament_type === 'double_elimination') {
-     const { data: registrations, error: regError } = await supabase
+//      const { data: registrations, error: regError } = await supabase
       .from('tournament_registrations')
       .select('user_id')
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .eq('registration_status', 'confirmed')
       .limit(16);
 
@@ -289,7 +296,7 @@ export const useBracketGeneration = () => {
         };
        }
 
-       const { data, error } = await supabase.rpc(funcName as any, params);
+       const { data, error } = await tournamentService.callRPC(funcName as any, params);
 
        if (error) {
         console.warn(`❌ ${funcName} failed:`, error.message);
@@ -304,7 +311,7 @@ export const useBracketGeneration = () => {
 
         // Send notification
         try {
-         await supabase.rpc('send_enhanced_notification', {
+         await tournamentService.callRPC('send_enhanced_notification', {
           p_user_id: user.id,
           p_title: 'Giải đấu Double Elimination đã được khởi tạo',
           p_message: `Giải đấu với ${resultData.matches_created || resultData.total_matches || '27'} trận đấu đã được khởi tạo thành công bằng ${funcName}`,
@@ -363,7 +370,7 @@ export const useBracketGeneration = () => {
 
       // Send notification using enhanced notification system
       try {
-       await supabase.rpc('send_enhanced_notification', {
+       await tournamentService.callRPC('send_enhanced_notification', {
         p_user_id: user.id,
         p_title: 'Bảng đấu đã được tạo',
         p_message: `Bảng đấu giải Tournament đã được tạo với ${data.matches_created || data.total_matches || 0} trận đấu`,
@@ -422,10 +429,10 @@ export const useBracketGeneration = () => {
 
  const fetchBracketData = useCallback(async (tournamentId: string) => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_brackets')
     .select('*')
-    .eq('tournament_id', tournamentId)
+    .getByTournamentId(tournamentId)
     .single();
 
    if (error && error.code !== 'PGRST116') {
@@ -442,7 +449,7 @@ export const useBracketGeneration = () => {
  const fetchSeeding = useCallback(async (tournamentId: string) => {
   try {
    // Since tournament_seeding doesn't exist, get from tournament_registrations
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_registrations')
     .select(
      `
@@ -456,7 +463,7 @@ export const useBracketGeneration = () => {
      )
     `
     )
-    .eq('tournament_id', tournamentId)
+    .getByTournamentId(tournamentId)
     .eq('payment_status', 'paid')
     .order('registration_date');
 

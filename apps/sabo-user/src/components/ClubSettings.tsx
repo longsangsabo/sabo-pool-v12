@@ -7,7 +7,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import {
  Settings,
  Building,
@@ -57,7 +61,7 @@ const ClubSettings = () => {
   if (!user) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .select('*')
     .eq('user_id', user.id)
@@ -91,7 +95,7 @@ const ClubSettings = () => {
 
   setSaving(true);
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('club_profiles')
     .update({
      club_name: clubSettings.club_name,

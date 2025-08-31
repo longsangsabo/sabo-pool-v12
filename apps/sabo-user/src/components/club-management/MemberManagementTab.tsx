@@ -1,4 +1,10 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,9 +40,19 @@ import {
  SelectValue,
 } from '@/components/ui/select';
 import { useForm } from 'react-hook-form';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import {
  Users,
  Plus,
@@ -111,7 +127,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
   if (!clubId) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_members')
     .select(
      `
@@ -123,7 +139,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
      )
     `
     )
-    .eq('club_id', clubId)
+    .getByClubId(clubId)
     .order('join_date', { ascending: false });
 
    if (error) throw error;
@@ -165,14 +181,14 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
  const fetchAvailableUsers = async () => {
   try {
    // Get users who are not already members of this club
-   const { data: existingMembers } = await supabase
+//    const { data: existingMembers } = await supabase
     .from('club_members')
     .select('user_id')
-    .eq('club_id', clubId);
+    .getByClubId(clubId);
 
    const existingUserIds = existingMembers?.map(m => m.user_id) || [];
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('profiles')
     .select('user_id, full_name, phone, verified_rank')
     .not('user_id', 'in', `(${existingUserIds.join(',')})`);
@@ -192,10 +208,10 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
 
   try {
    // Check if user is admin
-   const { data: profile } = await supabase
+//    const { data: profile } = await supabase
     .from('profiles')
     .select('is_admin')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    if (profile?.is_admin) {
@@ -204,10 +220,10 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
    }
 
    // Check if user is owner of SABO/SBO clubs
-   const { data: clubData } = await supabase
+//    const { data: clubData } = await supabase
     .from('club_profiles')
     .select('club_name, verification_status')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .eq('verification_status', 'approved');
 
    const isSaboClubOwner = clubData?.some(club => 
@@ -238,7 +254,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
   try {
    const membershipNumber = `CLB${clubId.slice(-6).toUpperCase()}${Date.now().toString().slice(-4)}`;
 
-   const { error } = await supabase.from('club_members').insert({
+   const { error } = await clubService.create({
     club_id: clubId,
     user_id: values.user_id,
     membership_type: values.membership_type,
@@ -272,7 +288,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
   newStatus: string
  ) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('club_members')
     .update({ status: newStatus })
     .eq('id', memberId);

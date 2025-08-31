@@ -9,7 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import { Star, AlertTriangle } from 'lucide-react';
 
@@ -63,7 +67,7 @@ const PostMatchRatingModal = ({
   setLoading(true);
 
   try {
-   const { error } = await (supabase as any).from('notifications').insert({
+//    const { error } = await (supabase as any).from('notifications').insert({
     user_id: opponentId,
     type: 'rating',
     title: `Đánh giá từ trận đấu`,

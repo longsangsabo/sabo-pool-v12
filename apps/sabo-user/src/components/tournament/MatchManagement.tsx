@@ -11,7 +11,11 @@ import {
  DialogTitle,
 } from '@/components/ui/dialog';
 import { AlertCircle, Trophy, Clock, User, Edit3, Save, X } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface Match {
@@ -47,7 +51,7 @@ export const MatchManagement: React.FC<MatchManagementProps> = ({
 
  const fetchMatches = async () => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_matches')
     .select(
      `
@@ -102,7 +106,7 @@ export const MatchManagement: React.FC<MatchManagementProps> = ({
    );
 
    // Update match with scores and winner - this will trigger the database automation
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_matches')
     .update({
      score_player1: scorePlayer1,

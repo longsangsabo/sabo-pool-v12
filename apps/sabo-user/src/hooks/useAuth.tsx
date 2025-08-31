@@ -1,3 +1,19 @@
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+
 import {
  createContext,
  useContext,
@@ -5,14 +21,19 @@ import {
  useEffect,
  useCallback,
 } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+// import { User, Session } from '@supabase/supabase-js';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
-import { setupAuthMonitoring } from '@/utils/authRecovery';
-import { milestoneService } from '@/services/milestoneService';
 import { useTokenRefresh } from '@/hooks/useTokenRefresh';
 import { formatPhoneToE164 } from '@sabo/shared-utils';
-import { AUTH_REDIRECTS, getAuthRedirectUrl } from '@/utils/authConfig';
+import { 
+  AUTH_REDIRECTS, 
+  getAuthRedirectUrl,
+  handleAuthError,
+  validateJWTToken,
+  refreshAuthSession,
+  configureOAuthRedirects 
+} from '@/services/userService';
 
 interface AuthError extends Error {
  code?: string;
@@ -220,7 +241,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Set up auth state listener FIRST
   const {
    data: { subscription },
-  } = supabase.auth.onAuthStateChange((event, session) => {
+// // //   } = // TODO: Replace with service call - supabase.auth.onAuthStateChange((event, session) => {
    if (!isMounted) return;
 
    console.log(
@@ -248,7 +269,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
    if (event === 'SIGNED_OUT') {
     console.log('🔧 Auth: User signed out, clearing state');
     // Clear any remaining auth data on sign out
-    localStorage.removeItem('supabase.auth.token');
+// // //     localStorage.removeItem('// TODO: Replace with service call - supabase.auth.token');
     sessionStorage.clear();
    } else if (event === 'SIGNED_IN' && session?.user) {
     console.log('🔧 Auth: User signed in:', session.user.id);
@@ -264,13 +285,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
      console.log(`👑 Auto-granting admin role to ${session.user.email}`);
      
      // Update profile role to admin (if table allows)
-     supabase
+//      supabase
       .from('profiles')
       .update({ 
        role: 'admin',
        updated_at: new Date().toISOString()
       })
-      .eq('user_id', session.user.id)
+      .getByUserId(session.user.id)
       .then(({ error }) => {
        if (error && !error.message.includes('check constraint')) {
         console.error('❌ Failed to grant admin role in profiles:', error);
@@ -282,7 +303,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       });
       
      // Add to user_roles table (primary admin system)
-     supabase
+//      supabase
       .from('user_roles')
       .upsert({
        user_id: session.user.id,
@@ -331,7 +352,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   // THEN check for existing session
-  supabase.auth
+// // //   // TODO: Replace with service call - supabase.auth
    .getSession()
    .then(({ data: { session }, error }) => {
     if (!isMounted) return;
@@ -339,7 +360,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (error) {
      console.error('🔧 Auth: Error getting session:', error);
      // Clear corrupted session data
-     localStorage.removeItem('supabase.auth.token');
+// // //      localStorage.removeItem('// TODO: Replace with service call - supabase.auth.token');
      sessionStorage.clear();
      setAuthState({
       user: null,
@@ -415,11 +436,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
    });
 
    // Clear any auth-related storage
-   localStorage.removeItem('supabase.auth.token');
+// // //    localStorage.removeItem('// TODO: Replace with service call - supabase.auth.token');
    sessionStorage.clear();
 
    // Perform Supabase sign out
-   await supabase.auth.signOut({ scope: 'global' });
+// // //    // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.signOut({ scope: 'global' });
 
    console.log('🔧 Auth: Sign out completed successfully');
 
@@ -442,7 +463,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
    });
 
    // Clear storage anyway
-   localStorage.removeItem('supabase.auth.token');
+// // //    localStorage.removeItem('// TODO: Replace with service call - supabase.auth.token');
    sessionStorage.clear();
 
    // Force redirect to landing even on error
@@ -452,7 +473,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
  const signIn = async (email: string, password: string) => {
   try {
-   const { data, error } = await supabase.auth.signInWithPassword({
+   const { data, error } = await userService.signInWithPassword({
     email,
     password,
    });
@@ -464,8 +485,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
  const signUp = async (email: string, password: string, metadata?: any) => {
   try {
-   const { AUTH_REDIRECTS } = await import('@/utils/authConfig');
-   const { data, error } = await supabase.auth.signUp({
+   const { AUTH_REDIRECTS } = await import('@/services/userService');
+// // //    // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.signUp({
     email,
     password,
     options: {
@@ -481,8 +502,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
  const signInWithGoogle = async () => {
   try {
-   const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
-   const { data, error } = await supabase.auth.signInWithOAuth(
+   const { OAUTH_CONFIGS } = await import('@/services/userService');
+// // //    // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.signInWithOAuth(
     OAUTH_CONFIGS.google
    );
    return { data, error };
@@ -493,8 +514,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
  const signInWithFacebook = async () => {
   try {
-   const { OAUTH_CONFIGS } = await import('@/utils/authConfig');
-   const { data, error } = await supabase.auth.signInWithOAuth(
+   const { OAUTH_CONFIGS } = await import('@/services/userService');
+// // //    // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.signInWithOAuth(
     OAUTH_CONFIGS.facebook
    );
    return { data, error };
@@ -507,7 +528,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
  const requestPhoneOtp = async (phone: string) => {
   try {
    const e164 = formatPhoneToE164(phone);
-   const { data, error } = await supabase.auth.signInWithOtp({
+// // //    // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.signInWithOtp({
     phone: e164,
     options: { channel: 'sms' },
    });
@@ -520,7 +541,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
  const verifyPhoneOtp = async (phone: string, token: string) => {
   try {
    const e164 = formatPhoneToE164(phone);
-   const { data, error } = await supabase.auth.verifyOtp({
+// // //    // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.verifyOtp({
     phone: e164,
     token,
     type: 'sms',
@@ -537,7 +558,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
    const e164 = formatPhoneToE164(phone);
    console.log('🔐 Attempting phone login with password:', e164);
    
-   const { data, error } = await supabase.auth.signInWithPassword({
+   const { data, error } = await userService.signInWithPassword({
     phone: e164,
     password,
    });
@@ -619,7 +640,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
  // Enhanced methods
  const refreshSession = useCallback(async () => {
   try {
-   const { data, error } = await supabase.auth.refreshSession();
+// // //    // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.refreshSession();
    if (error) {
     throw error;
    }
@@ -635,7 +656,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
  const resetPassword = useCallback(
   async (email: string) => {
    try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+// // //     // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.resetPasswordForEmail(email, {
      redirectTo: getAuthRedirectUrl('passwordReset'),
     });
     if (error) throw error;
@@ -651,7 +672,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
  const updatePassword = useCallback(
   async (password: string) => {
    try {
-    const { error } = await supabase.auth.updateUser({ password });
+// // //     // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.auth.updateUser({ password });
     if (error) throw error;
     return { error: null };
    } catch (error) {

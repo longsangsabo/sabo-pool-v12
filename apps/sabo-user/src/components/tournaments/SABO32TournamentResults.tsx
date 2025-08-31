@@ -4,7 +4,11 @@
 // =============================================
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Medal, Star, Award, Users, Calendar } from 'lucide-react';
@@ -48,7 +52,7 @@ export function SABO32TournamentResults({ tournamentId, tournament }: SABO32Resu
    setLoading(true);
 
    // Fetch all matches with player profiles
-   const { data: matches, error: matchesError } = await (supabase as any)
+//    const { data: matches, error: matchesError } = await (supabase as any)
     .from('sabo32_matches')
     .select(`
      *,

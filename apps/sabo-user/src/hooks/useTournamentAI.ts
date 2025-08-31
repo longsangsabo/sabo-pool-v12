@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { Tournament, Player } from '@/types/tournament-management';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 
 interface OptimizationResult {
@@ -68,7 +68,7 @@ export const useTournamentAI = () => {
     async (tournament: Tournament) => {
       try {
         // Fetch historical data
-        const { data: historicalTournaments, error } = await supabase
+//         const { data: historicalTournaments, error } = await supabase
           .from('tournaments')
           .select('*')
           .eq('tournament_type', tournament.tournament_type)

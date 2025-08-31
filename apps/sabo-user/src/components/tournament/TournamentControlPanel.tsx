@@ -17,7 +17,7 @@ import {
 import { useTournaments } from '@/hooks/useTournaments';
 import { useTournamentMatches } from '@/hooks/useTournamentMatches';
 import { useRealtimeTournamentSync } from '@/hooks/useRealtimeTournamentSync';
-import { supabase } from '@/integrations/supabase/client';
+import { recoverTournamentAutomation, startTournament } from '../../services/tournamentService';
 import { toast } from 'sonner';
 
 interface TournamentControlPanelProps {
@@ -64,28 +64,7 @@ export const TournamentControlPanel: React.FC<TournamentControlPanelProps> = ({
   try {
    setIsStarting(true);
 
-   // Update tournament status to ongoing
-   const { error: statusError } = await supabase
-    .from('tournaments')
-    .update({
-     status: 'ongoing',
-     updated_at: new Date().toISOString(),
-    })
-    .eq('id', tournamentId);
-
-   if (statusError) throw statusError;
-
-   // Update first round matches to ready status
-   const { error: matchError } = await supabase
-    .from('tournament_matches')
-    .update({
-     status: 'scheduled',
-     updated_at: new Date().toISOString(),
-    })
-    .eq('tournament_id', tournamentId)
-    .eq('round_number', 1);
-
-   if (matchError) throw matchError;
+   await startTournament(tournamentId);
 
    toast.success('🚀 Giải đấu đã bắt đầu! Các trận vòng 1 đã sẵn sàng.');
 
@@ -105,14 +84,7 @@ export const TournamentControlPanel: React.FC<TournamentControlPanelProps> = ({
    setIsRecovering(true);
 
    // Call recovery function
-   const { data, error } = await supabase.rpc(
-    'recover_tournament_automation',
-    {
-     p_tournament_id: tournamentId,
-    }
-   );
-
-   if (error) throw error;
+   const data = await recoverTournamentAutomation(tournamentId);
 
    toast.success('🔧 Đã khôi phục automation thành công!');
    refetchMatches();

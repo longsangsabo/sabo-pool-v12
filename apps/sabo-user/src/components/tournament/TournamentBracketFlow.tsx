@@ -19,7 +19,11 @@ import TournamentResults from './TournamentResults';
 import { TournamentAutomationStatus } from './TournamentAutomationStatus';
 import { TournamentAutomationTest } from './TournamentAutomationTest';
 import { useBracketGeneration } from '@/hooks/useBracketGeneration';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface TournamentBracketFlowProps {
@@ -70,7 +74,7 @@ export const TournamentBracketFlow: React.FC<TournamentBracketFlowProps> = ({
 
  const handleStartTournament = async () => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournaments')
     .update({
      status: 'ongoing',

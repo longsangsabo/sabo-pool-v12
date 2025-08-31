@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 
 interface TournamentStats {
@@ -40,7 +40,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
       console.log('🔄 Loading initial tournament data for:', tournamentId);
 
       // Load tournament registrations with user profiles
-      const { data: registrations, error } = await supabase
+//       const { data: registrations, error } = await supabase
         .from('tournament_registrations')
         .select(
           `
@@ -60,7 +60,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
 
       // Fetch user profiles separately to avoid relationship conflicts
       const userIds = registrations?.map(r => r.user_id).filter(Boolean) || [];
-      const { data: profiles } = await supabase
+//       const { data: profiles } = await supabase
         .from('profiles')
         .select(
           'user_id, full_name, display_name, avatar_url, elo, verified_rank'
@@ -130,7 +130,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
 
   const handleNewRegistration = useCallback(async (registration: any) => {
     // Fetch user profile for the new registration
-    const { data: profile } = await supabase
+//     const { data: profile } = await supabase
       .from('profiles')
       .select(
         'user_id, full_name, display_name, avatar_url, elo, verified_rank'
@@ -246,7 +246,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
     );
 
     // Subscribe to tournament_registrations changes
-    const registrationChannel = supabase
+//     const registrationChannel = supabase
       .channel(`tournament_registrations_${tournamentId}`)
       .on(
         'postgres_changes',
@@ -261,7 +261,7 @@ export const useTournamentRealtime = (tournamentId: string) => {
       .subscribe();
 
     // Subscribe to tournament changes
-    const tournamentChannel = supabase
+//     const tournamentChannel = supabase
       .channel(`tournament_${tournamentId}`)
       .on(
         'postgres_changes',

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getSecureRedirectUrl } from '@/utils/authConfig';
+import { getSecureRedirectUrl } from '@/services/userService';
 
 export interface User {
   id: string;

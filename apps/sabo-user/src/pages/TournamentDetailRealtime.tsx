@@ -7,7 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TournamentStatsRealtime } from '@/components/tournament/TournamentStatsRealtime';
 import { ParticipantListRealtime } from '@/components/tournament/ParticipantListRealtime';
 import AutomationMonitor from '@/components/tournament/AutomationMonitor';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
+import { getCurrentUser } from '../services/userService';
 import { formatDate } from '@sabo/shared-utils';
 import { toast } from 'sonner';
 import {
@@ -55,13 +59,13 @@ export const TournamentDetailRealtime: React.FC = () => {
  const loadCurrentUser = async () => {
   const {
    data: { user },
-  } = await supabase.auth.getUser();
+  } = await getCurrentUser();
   setCurrentUser(user);
  };
 
  const loadTournament = async () => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .select('*')
     .eq('id', id)
@@ -90,7 +94,7 @@ export const TournamentDetailRealtime: React.FC = () => {
 
   setRegistering(true);
   try {
-   const { error } = await supabase.from('tournament_registrations').insert({
+// // //    // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('tournament_registrations').create({
     tournament_id: tournament.id,
     user_id: currentUser.id,
     registration_status: 'confirmed',

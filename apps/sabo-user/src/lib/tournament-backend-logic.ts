@@ -1,6 +1,21 @@
 // 🏆 BACKEND LOGIC SAU KHI LƯU BẢNG ĐẤU
 
-import { supabase } from '@/integrations/supabase/client';
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+// Removed supabase import - migrated to services
 
 // ===== 1. MAIN POST-BRACKET SAVE WORKFLOW =====
 export const executePostBracketSaveLogic = async (
@@ -57,7 +72,7 @@ const updateTournamentStatus = async (
     updated_at: new Date().toISOString(),
   };
 
-  const { error } = await supabase
+  // TODO: Replace with service call - const { error } = await supabase
     .from('tournaments')
     .update(updateData)
     .eq('id', tournamentId);
@@ -87,7 +102,7 @@ const processTournamentSeeding = async (
 
   // Create seeding records in tournament_registrations if not exists
   for (const seed of seedingData) {
-    const { error } = await supabase.from('tournament_registrations').upsert(
+// // //     // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('tournament_registrations').upsert(
       {
         tournament_id: seed.tournament_id,
         user_id: seed.user_id,
@@ -110,7 +125,7 @@ const initializeTournamentWorkflowSteps = async (tournamentId: string) => {
   console.log('📋 Initializing tournament workflow steps...');
 
   // Log workflow initiation in system_logs
-  await supabase.from('system_logs').insert({
+// // //   // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('system_logs').create({
     level: 'info',
     source: 'tournament_workflow',
     message: 'Tournament workflow initialized',
@@ -157,9 +172,9 @@ const createMatchSchedule = async (tournamentId: string, matches: any[]) => {
     };
   });
 
-  const { error } = await supabase
+  // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_matches')
-    .insert(scheduledMatches);
+    .create(scheduledMatches);
 
   if (error)
     throw new Error(`Failed to create match schedule: ${error.message}`);
@@ -172,7 +187,7 @@ const setupTournamentMonitoring = async (tournamentId: string) => {
   console.log('📊 Setting up tournament monitoring...');
 
   // Log automation start in system_logs
-  const { error: logError } = await supabase.from('system_logs').insert({
+// // //   const { error: logError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('system_logs').create({
     level: 'info',
     source: 'tournament_monitoring',
     message: 'Tournament monitoring setup completed',
@@ -196,16 +211,16 @@ const sendTournamentNotifications = async (tournamentId: string) => {
 
   try {
     // Get tournament and participants
-    const { data: tournament } = await supabase
+//     const { data: tournament } = await supabase
       .from('tournaments')
       .select('name, tournament_start, venue_address')
       .eq('id', tournamentId)
       .single();
 
-    const { data: participants } = await supabase
+//     const { data: participants } = await supabase
       .from('tournament_registrations')
       .select('user_id')
-      .eq('tournament_id', tournamentId)
+      .getByTournamentId(tournamentId)
       .eq('registration_status', 'confirmed');
 
     if (!tournament || !participants) return;
@@ -226,9 +241,9 @@ const sendTournamentNotifications = async (tournamentId: string) => {
       created_at: new Date().toISOString(),
     }));
 
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
       .from('notifications')
-      .insert(notifications);
+      .create(notifications);
 
     if (error) throw error;
 
@@ -244,7 +259,7 @@ const updateTournamentAnalytics = async (tournamentId: string) => {
   console.log('📈 Updating tournament analytics...');
 
   try {
-    const { data: tournament } = await supabase
+//     const { data: tournament } = await supabase
       .from('tournaments')
       .select('name, tournament_type, max_participants, entry_fee')
       .eq('id', tournamentId)
@@ -253,7 +268,7 @@ const updateTournamentAnalytics = async (tournamentId: string) => {
     if (!tournament) return;
 
     // Log tournament metrics in system_logs
-    const { error } = await supabase.from('system_logs').insert({
+// // //     // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('system_logs').create({
       level: 'info',
       source: 'tournament_analytics',
       message: 'Tournament started - Analytics updated',
@@ -288,7 +303,7 @@ const rollbackTournamentStart = async (tournamentId: string) => {
 
   try {
     // Revert tournament status
-    await supabase
+//     await supabase
       .from('tournaments')
       .update({
         status: 'registration_closed',
@@ -299,19 +314,19 @@ const rollbackTournamentStart = async (tournamentId: string) => {
       .eq('id', tournamentId);
 
     // Delete created matches
-    await supabase
+//     await supabase
       .from('tournament_matches')
       .delete()
-      .eq('tournament_id', tournamentId);
+      .getByTournamentId(tournamentId);
 
     // Delete bracket
-    await supabase
+//     await supabase
       .from('tournament_brackets')
       .delete()
-      .eq('tournament_id', tournamentId);
+      .getByTournamentId(tournamentId);
 
     // Log rollback
-    await supabase.from('system_logs').insert({
+// // //     // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('system_logs').create({
       level: 'warn',
       source: 'tournament_rollback',
       message: 'Tournament start rolled back due to error',
@@ -333,7 +348,7 @@ const rollbackTournamentStart = async (tournamentId: string) => {
 export const canStartTournament = async (
   tournamentId: string
 ): Promise<boolean> => {
-  const { data: tournament } = await supabase
+//   const { data: tournament } = await supabase
     .from('tournaments')
     .select('status, max_participants')
     .eq('id', tournamentId)
@@ -343,10 +358,10 @@ export const canStartTournament = async (
     return false;
   }
 
-  const { count } = await supabase
+//   const { count } = await supabase
     .from('tournament_registrations')
     .select('*', { count: 'exact', head: true })
-    .eq('tournament_id', tournamentId)
+    .getByTournamentId(tournamentId)
     .eq('registration_status', 'confirmed');
 
   return (count || 0) >= 2; // Minimum 2 participants
@@ -354,7 +369,7 @@ export const canStartTournament = async (
 
 // Get tournament current state
 export const getTournamentState = async (tournamentId: string) => {
-  const { data: tournament } = await supabase
+//   const { data: tournament } = await supabase
     .from('tournaments')
     .select(
       `

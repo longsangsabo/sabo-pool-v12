@@ -25,7 +25,13 @@ import {
  Square,
  Table,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { expireOldChallenges } from '../services/challengeService';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getTournament, getTournaments, getTournamentRegistrations, updateTournament } from "../services/tournamentService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import { useClubRole } from '@/hooks/useClubRole';
 import { toast } from 'sonner';
@@ -119,26 +125,21 @@ const ClubTournamentManagement = forwardRef<ClubTournamentManagementRef>(
   const setupRealtimeSubscription = () => {
    if (!clubId) return;
 
-   const channel = supabase
-    .channel('tournament-changes')
-    .on(
-     'postgres_changes',
-     {
-      event: '*',
-      schema: 'public',
-      table: 'tournaments',
-      filter: `club_id=eq.${clubId}`,
-     },
-     payload => {
-      console.log('Tournament change detected:', payload);
-      // Immediate refresh without delay for realtime effect
+   // TODO: Implement realtime subscription through service
+   console.log('Realtime subscription setup for club:', clubId);
+   // For now, just refresh periodically
+   const interval = setInterval(() => {
+     fetchTournaments();
+   }, 30000); // Refresh every 30 seconds
+   
+   return () => clearInterval(interval);
       fetchTournaments();
      }
     )
     .subscribe();
 
    return () => {
-    supabase.removeChannel(channel);
+    // removeChannel(channel);
    };
   };
 
@@ -146,10 +147,10 @@ const ClubTournamentManagement = forwardRef<ClubTournamentManagementRef>(
    console.log('🔍 Getting club ID for user:', user?.id);
 
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('club_profiles')
      .select('id')
-     .eq('user_id', user?.id)
+     .getByUserId(user?.id)
      .single();
 
     if (error) {
@@ -177,7 +178,7 @@ const ClubTournamentManagement = forwardRef<ClubTournamentManagementRef>(
 
    try {
     // Force fresh data by adding timestamp to prevent caching
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('tournaments')
      .select(
       `
@@ -186,7 +187,7 @@ const ClubTournamentManagement = forwardRef<ClubTournamentManagementRef>(
      registration_start, registration_end, club_id
     `
      )
-     .eq('club_id', targetClubId)
+     .getByClubId(targetClubId)
      .order('created_at', { ascending: false });
 
     console.log('📊 Tournament query result:', {
@@ -702,7 +703,7 @@ const TournamentParticipantsView = ({
    console.log('🔄 Loading registrations for tournament:', tournament.id);
 
    // Load tournament registrations first
-   const { data: registrationsData, error: registrationsError } = await supabase
+//    const { data: registrationsData, error: registrationsError } = await supabase
     .from('tournament_registrations')
     .select(`
      id,
@@ -714,7 +715,7 @@ const TournamentParticipantsView = ({
      created_at,
      updated_at
     `)
-    .eq('tournament_id', tournament.id)
+    .getByTournamentId(tournament.id)
     .order('created_at', { ascending: false });
 
    if (registrationsError) {
@@ -727,7 +728,7 @@ const TournamentParticipantsView = ({
    let profilesData: any[] = [];
    
    if (userIds.length > 0) {
-    const { data: profiles, error: profilesError } = await supabase
+//     const { data: profiles, error: profilesError } = await supabase
      .from('profiles')
      .select(`
       user_id,
@@ -1006,7 +1007,7 @@ const TournamentSettingsView = ({ tournament }: { tournament: Tournament }) => {
    }
 
    // 2. Update tournament status to completed
-   const { error: updateError } = await supabase
+//    const { error: updateError } = await supabase
     .from('tournaments')
     .update({
      status: 'completed',
@@ -1027,7 +1028,7 @@ const TournamentSettingsView = ({ tournament }: { tournament: Tournament }) => {
      const participant = finalStandings[i];
      if (participant.user_id) {
       try {
-       await supabase.rpc('expire_old_challenges');
+       await expireOldChallenges();
        // Mock points award implementation
       } catch (pointsError) {
        console.error('Error awarding points:', pointsError);

@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Calendar, Users, Trophy, Edit, Crown, Send } from 'lucide-react';
 import UserAvatar from '@/components/UserAvatar';
 import { toast } from 'sonner';
+import { submitMatchScore } from '../../services/tournamentService';
 
 interface Match {
  id: string;
@@ -427,28 +428,14 @@ export const EnhancedMatchCard: React.FC<EnhancedMatchCardProps> = ({
          );
 
          // Use the RPC function for proper tournament progression
-         const { supabase } = await import(
-          './integrations/supabase/client'
-         );
          // ⚠️ DEPRECATED: Direct RPC call replaced by SABOTournamentEngine
          // This component should be updated to use useSABOScoreSubmission hook
-         const { data, error } = await supabase.rpc(
-          'submit_sabo_match_score',
-          {
-           p_match_id: match.id,
-           p_player1_score: score1,
-           p_player2_score: score2,
-           p_submitted_by: currentUserId,
-          }
+         const data = await submitMatchScore(
+          match.id,
+          score1,
+          score2,
+          currentUserId
          );
-
-         if (error) {
-          console.error(
-           '❌ [EnhancedMatchCard] Error calling submit_match_score RPC:',
-           error
-          );
-          throw error;
-         }
 
          console.log('✅ [EnhancedMatchCard] RPC response:', data);
 

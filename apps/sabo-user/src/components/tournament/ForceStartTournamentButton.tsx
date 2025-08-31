@@ -13,7 +13,11 @@ import {
  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 // Tournament service removed - using direct Supabase calls instead
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface ForceStartTournamentButtonProps {
@@ -58,7 +62,7 @@ const ForceStartTournamentButton: React.FC<ForceStartTournamentButtonProps> = ({
    setLoading(true);
 
    // Update tournament status and start time
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournaments')
     .update({
      status: 'ongoing',

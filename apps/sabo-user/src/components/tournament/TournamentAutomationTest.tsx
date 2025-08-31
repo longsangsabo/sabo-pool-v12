@@ -4,7 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Play, Zap, CheckCircle, AlertTriangle } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface TournamentAutomationTestProps {
@@ -26,7 +30,7 @@ export const TournamentAutomationTest: React.FC<
    toast.info('🧪 Bắt đầu test automation system...');
 
    // Get first incomplete match
-   const { data: incompleteMatches, error: matchError } = await supabase
+//    const { data: incompleteMatches, error: matchError } = await supabase
     .from('tournament_matches')
     .select('*')
     .eq('tournament_id', tournamentId)
@@ -53,7 +57,7 @@ export const TournamentAutomationTest: React.FC<
    setTestResults(prev => [...prev, `🏆 Setting winner: ${winnerId}`]);
 
    // Simulate match completion by updating scores and winner
-   const { error: updateError } = await supabase
+//    const { error: updateError } = await supabase
     .from('tournament_matches')
     .update({
      score_player1: 5,
@@ -75,7 +79,7 @@ export const TournamentAutomationTest: React.FC<
    // Wait a bit for automation to run
    setTimeout(async () => {
     // Check if next round match was created/updated
-    const { data: nextMatches, error: nextError } = await supabase
+//     const { data: nextMatches, error: nextError } = await supabase
      .from('tournament_matches')
      .select('*')
      .eq('tournament_id', tournamentId)
@@ -125,7 +129,7 @@ export const TournamentAutomationTest: React.FC<
    toast.info('🔄 Đang reset test data...');
 
    // Reset all matches to scheduled status
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_matches')
     .update({
      status: 'scheduled',

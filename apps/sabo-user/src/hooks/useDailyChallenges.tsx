@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 
 export const useDailyChallenges = () => {
@@ -14,7 +17,7 @@ export const useDailyChallenges = () => {
   try {
    const today = new Date().toISOString().split('T')[0];
 
-   const { count, error } = await supabase
+//    const { count, error } = await supabase
     .from('spa_points_log')
     .select('*', { count: 'exact' })
     .eq('user_id', user.id)

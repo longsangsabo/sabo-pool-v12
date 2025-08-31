@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { repairDoubleEliminationBracket } from '../services/tournamentService';
 import { toast } from 'sonner';
 
 interface RepairBracketParams {
@@ -21,21 +21,7 @@ export const useBracketRepair = () => {
 
   const repairBracket = useMutation({
     mutationFn: async ({ tournamentId }: RepairBracketParams) => {
-      console.log(
-        '🔧 Starting simplified bracket repair for tournament:',
-        tournamentId
-      );
-
-      // Use proper repair function with tournament ID
-      const { data, error } = await supabase.rpc(
-        'repair_double_elimination_bracket',
-        {
-          p_tournament_id: tournamentId,
-        }
-      );
-
-      if (error) throw error;
-      return data as RepairResult;
+      return await repairDoubleEliminationBracket(tournamentId) as RepairResult;
     },
     onSuccess: data => {
       console.log('✅ Bracket repair completed:', data);

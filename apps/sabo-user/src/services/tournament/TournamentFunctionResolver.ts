@@ -4,7 +4,22 @@
  * Uses 10 working SABO functions for tournament management
  */
 
-import { supabase } from '@/integrations/supabase/client';
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+// Removed supabase import - migrated to services
 
 // Official SABO Functions (✅ VERIFIED WORKING)
 export const SABO_OFFICIAL_FUNCTIONS = {
@@ -101,7 +116,7 @@ export async function validateFunction(
   }
 
   try {
-    const { data, error } = await supabase.rpc('pg_get_function_name' as any, {
+    const { data, error } = await tournamentService.callRPC('pg_get_function_name' as any, {
       function_name: functionName,
     });
 
@@ -126,7 +141,7 @@ export async function callTournamentFunction<T = any>(
 ): Promise<{ data: T | null; error: any; usedFunction: string }> {
   // Try primary function first
   try {
-    const { data, error } = await supabase.rpc(functionName as any, params);
+    const { data, error } = await tournamentService.callRPC(functionName as any, params);
 
     if (!error) {
       return { data: data as T, error: null, usedFunction: functionName };
@@ -142,7 +157,7 @@ export async function callTournamentFunction<T = any>(
       for (const fallback of fallbacks) {
         try {
           const { data: fallbackData, error: fallbackError } =
-            await supabase.rpc(fallback as any, params);
+            await tournamentService.callRPC(fallback as any, params);
 
           if (!fallbackError) {
             console.info(`Successfully used fallback function: ${fallback}`);

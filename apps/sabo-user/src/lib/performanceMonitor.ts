@@ -1,3 +1,18 @@
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
 import type {
   PerformanceMetric,
   APICallMetric,
@@ -206,9 +221,9 @@ class PerformanceMonitor {
 
   private async sendMetric(metric: PerformanceMetric) {
     try {
-      const { supabase } = await import('./integrations/supabase/client');
+//       const { supabase } = await import('./integrations/supabase/client');
 
-      await supabase.from('performance_metrics' as any).insert({
+// // //       // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('performance_metrics' as any).create({
         metric_name: metric.name,
         metric_value: metric.value,
         metadata: metric.metadata || {},
@@ -222,9 +237,9 @@ class PerformanceMonitor {
 
   private async sendAPIMetric(apiCall: APICallMetric) {
     try {
-      const { supabase } = await import('./integrations/supabase/client');
+//       const { supabase } = await import('./integrations/supabase/client');
 
-      await supabase.from('api_performance_metrics' as any).insert({
+// // //       // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('api_performance_metrics' as any).create({
         endpoint: apiCall.endpoint,
         method: apiCall.method,
         duration: apiCall.duration,
@@ -240,7 +255,7 @@ class PerformanceMonitor {
   public async sendAllMetrics() {
     if (this.metrics.length > 0) {
       try {
-        const { supabase } = await import('./integrations/supabase/client');
+//         const { supabase } = await import('./integrations/supabase/client');
 
         const formattedMetrics = this.metrics.map(metric => ({
           metric_name: metric.name,
@@ -250,9 +265,9 @@ class PerformanceMonitor {
           timestamp: new Date(metric.timestamp).toISOString(),
         }));
 
-        await supabase
+//         await supabase
           .from('performance_metrics' as any)
-          .insert(formattedMetrics);
+          .create(formattedMetrics);
         this.metrics = [];
       } catch (error) {
         console.error('Failed to send performance metrics:', error);
@@ -261,7 +276,7 @@ class PerformanceMonitor {
 
     if (this.apiCalls.length > 0) {
       try {
-        const { supabase } = await import('./integrations/supabase/client');
+//         const { supabase } = await import('./integrations/supabase/client');
 
         const formattedAPIMetrics = this.apiCalls.map(call => ({
           endpoint: call.endpoint,
@@ -272,9 +287,9 @@ class PerformanceMonitor {
           timestamp: new Date(call.timestamp).toISOString(),
         }));
 
-        await supabase
+//         await supabase
           .from('api_performance_metrics' as any)
-          .insert(formattedAPIMetrics);
+          .create(formattedAPIMetrics);
         this.apiCalls = [];
       } catch (error) {
         console.error('Failed to send API metrics:', error);

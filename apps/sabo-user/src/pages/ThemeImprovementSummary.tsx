@@ -254,12 +254,12 @@ const ThemeImprovementSummary = () => {
       </p>
       <div className="flex justify-center gap-4">
        <ThemeToggle variant="button" />
-       <button 
+       <Button 
         onClick={() => window.open('/theme-demo', '_blank')}
         className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
        >
         View Theme Demo
-       </button>
+       </Button>
       </div>
      </div>
     </StandardCard>

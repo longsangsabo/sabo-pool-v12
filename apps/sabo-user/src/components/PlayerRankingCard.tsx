@@ -185,12 +185,12 @@ export const PlayerRankingCard: React.FC<PlayerRankingCardProps> = ({
      {/* Action Buttons */}
      {onPromote && player.promotion_ready && (
       <div className='flex gap-2 mt-4'>
-       <button
+       <Button
         onClick={() => onPromote(player.id)}
         variant="default"
        >
         Xem xét lên hạng
-       </button>
+       </Button>
       </div>
      )}
     </div>

@@ -49,7 +49,7 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
     </DialogHeader>
     <div className='space-y-4'>
      <div className='flex gap-2'>
-      <button
+      <Button
        onClick={() => setChangeType('up')}
        className={`flex-1 py-2 text-body-small-medium rounded-md border transition ${
         changeType === 'up'
@@ -62,8 +62,8 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
        }`}
       >
        Tăng hạng
-      </button>
-      <button
+      </Button>
+      <Button
        onClick={() => setChangeType('down')}
        className={`flex-1 py-2 text-body-small-medium rounded-md border transition ${
         changeType === 'down'
@@ -76,7 +76,7 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
        }`}
       >
        Giảm hạng
-      </button>
+      </Button>
      </div>
 
      <div>

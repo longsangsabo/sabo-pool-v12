@@ -18,7 +18,7 @@ const DiscoveryStats = ({
  return (
   <div className='px-4 mb-4 relative z-20'>
    {/* User Stats Row */}
-   <div className='flex justify-center space-x-6 text-white text-body-small mb-3'>
+   <div className='flex justify-center space-x-6 text-foreground text-body-small mb-3'>
     <div className='text-center'>
      <div className='font-bold text-lg'>{userPoints}</div>
      <div className='opacity-80 text-xs'>Điểm của bạn</div>
@@ -37,16 +37,16 @@ const DiscoveryStats = ({
 
    {/* Current Player Preview */}
    {currentPlayer && (
-    <div className='bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-white'>
+    <div className='bg-background/10 backdrop-blur-sm rounded-lg px-4 py-2 text-foreground'>
      <div className='flex items-center justify-between text-sm'>
       <div className='flex items-center space-x-2'>
-       <div className='w-6 h-6 bg-white/20 rounded-full flex items-center justify-center'>
+       <div className='w-6 h-6 bg-background/20 rounded-full flex items-center justify-center'>
         <Users className='w-3 h-3' />
        </div>
        <span className='font-semibold'>{currentPlayer.display_name || currentPlayer.full_name}</span>
        <Badge
         variant='secondary'
-        className='text-caption bg-white/20 border-none'
+        className='text-caption bg-background/20 border-none'
        >
         {currentPlayer.current_rank}
        </Badge>

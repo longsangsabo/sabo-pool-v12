@@ -391,7 +391,7 @@ export const TournamentRegistration: React.FC<TournamentRegistrationProps> = ({
      const isClickable = currentStep >= step.id;
 
      return (
-      <button
+      <Button
        key={step.id}
        onClick={() => isClickable && setCurrentStep(step.id)}
        disabled={!isClickable}

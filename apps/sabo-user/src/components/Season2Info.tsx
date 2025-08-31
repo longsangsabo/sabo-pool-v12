@@ -73,7 +73,7 @@ export const Season2Info: React.FC = () => {
  return (
   <div className='space-y-6'>
    {/* Season Header */}
-   <Card className='bg-gradient-to-r from-blue-600 to-purple-600 text-white'>
+   <Card className='bg-gradient-to-r from-blue-600 to-purple-600 text-foreground'>
     <CardHeader>
      <CardTitle className='flex items-center gap-2 text-2xl'>
       <Trophy className='w-8 h-8' />
@@ -233,7 +233,7 @@ export const Season2Info: React.FC = () => {
         className='flex items-center justify-between p-3 bg-neutral-50 rounded-lg'
        >
         <div className='flex items-center gap-3'>
-         <div className='w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm'>
+         <div className='w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-foreground font-bold text-sm'>
           {prize.rank_min}
          </div>
          <div>

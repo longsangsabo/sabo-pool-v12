@@ -156,7 +156,7 @@ const AuthToastItem: React.FC<AuthToastItemProps> = ({ toast, onRemove }) => {
 
      {/* Action button */}
      {toast.action && (
-      <button
+      <Button
        onClick={toast.action.onClick}
        className={`
         mt-2 text-body-small-medium underline hover:no-underline
@@ -165,12 +165,12 @@ const AuthToastItem: React.FC<AuthToastItemProps> = ({ toast, onRemove }) => {
        `}
       >
        {toast.action.label}
-      </button>
+      </Button>
      )}
     </div>
 
     {/* Close button */}
-    <button
+    <Button
      onClick={handleRemove}
      className='flex-shrink-0 ml-3 p-1 hover:bg-black/5 rounded-full transition-colors duration-200'
     >
@@ -185,7 +185,7 @@ const AuthToastItem: React.FC<AuthToastItemProps> = ({ toast, onRemove }) => {
        clipRule='evenodd'
       />
      </svg>
-    </button>
+    </Button>
    </div>
   </div>
  );

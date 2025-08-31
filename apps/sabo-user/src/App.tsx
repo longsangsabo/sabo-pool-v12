@@ -104,6 +104,7 @@ const StandardizedChallengesPage = lazy(() => import('./pages/StandardizedChalle
 const StandardizedProfilePage = lazy(() => import('./pages/StandardizedProfilePage'));
 // Demo pages removed for production
 const ThemeImprovementSummary = lazy(() => import('./pages/ThemeImprovementSummary'));
+const ThemeTestPage = lazy(() => import('./pages/ThemeTestPage'));
 
 // Admin components - REMOVED - Now redirects to separate admin app
 // const AdminRouter = lazy(() => import('./router/AdminRouter'));
@@ -267,6 +268,9 @@ const AppContent = () => {
       <Route path='standardized-tournaments' element={<StandardizedTournamentsPage />} />
       <Route path='standardized-challenges' element={<StandardizedChallengesPage />} />
       <Route path='standardized-profile' element={<StandardizedProfilePage />} />
+      
+      {/* Theme System Testing */}
+      <Route path='theme-test' element={<ThemeTestPage />} />
      </Route>
 
     {/* Social Profile - Public route accessible without login */}

@@ -262,12 +262,12 @@ const AuthPage = () => {
        >
         Về trang đăng nhập
        </Button>
-       <button
+       <Button
         onClick={() => setEmailSent(false)}
         className='text-body-small text-muted-foreground hover:text-foreground'
        >
         Gửi lại email
-       </button>
+       </Button>
       </CardContent>
      </Card>
     </div>
@@ -337,7 +337,7 @@ const AuthPage = () => {
          className='w-full h-11'
         >
          {loading ? 'Đang gửi...' : 'Gửi email khôi phục'}
-        </button>
+        </Button>
        </form>
       )}
 
@@ -357,7 +357,7 @@ const AuthPage = () => {
            required
            disabled={loading}
           />
-          <button
+          <Button
            type='button'
            onClick={() => setShowPassword(!showPassword)}
            className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'
@@ -367,7 +367,7 @@ const AuthPage = () => {
            ) : (
             <Eye className='h-4 w-4' />
            )}
-          </button>
+          </Button>
          </div>
         </div>
         <div className='space-y-2'>
@@ -389,7 +389,7 @@ const AuthPage = () => {
          className='w-full h-11'
         >
          {loading ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
-        </button>
+        </Button>
        </form>
       )}
 
@@ -477,7 +477,7 @@ const AuthPage = () => {
              required
              disabled={loading}
             />
-            <button
+            <Button
              type='button'
              onClick={() => setShowPassword(!showPassword)}
              className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'
@@ -487,7 +487,7 @@ const AuthPage = () => {
              ) : (
               <Eye className='h-4 w-4' />
              )}
-            </button>
+            </Button>
            </div>
           </div>
 
@@ -526,7 +526,7 @@ const AuthPage = () => {
            ) : (
             'Đăng nhập với SĐT'
            )}
-          </button>
+          </Button>
          </form>
         </TabsContent>
 
@@ -588,7 +588,7 @@ const AuthPage = () => {
              required
              disabled={loading}
             />
-            <button
+            <Button
              type='button'
              onClick={() => setShowPassword(!showPassword)}
              className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'
@@ -598,7 +598,7 @@ const AuthPage = () => {
              ) : (
               <Eye className='h-4 w-4' />
              )}
-            </button>
+            </Button>
            </div>
           </div>
 
@@ -637,7 +637,7 @@ const AuthPage = () => {
            ) : (
             'Đăng nhập với Email'
            )}
-          </button>
+          </Button>
          </form>
         </TabsContent>
        </Tabs>
@@ -648,21 +648,21 @@ const AuthPage = () => {
       {/* Mode-specific footer links */}
       {mode === 'login' && (
        <>
-        <button
+        <Button
          onClick={() => navigate('/auth/forgot-password')}
          className='text-body-small text-primary hover:text-primary/80 transition-colors'
         >
          Quên mật khẩu?
-        </button>
+        </Button>
 
         <div className='text-body-small text-muted-foreground'>
          Chưa có tài khoản?{' '}
-         <button
+         <Button
           onClick={() => navigate('/auth/register')}
           className='text-primary hover:text-primary/80 font-medium transition-colors'
          >
           Đăng ký ngay
-         </button>
+         </Button>
         </div>
        </>
       )}
@@ -670,22 +670,22 @@ const AuthPage = () => {
       {mode === 'register' && (
        <div className='text-body-small text-muted-foreground'>
         Đã có tài khoản?{' '}
-        <button
+        <Button
          onClick={() => navigate('/auth/login')}
          className='text-primary hover:text-primary/80 font-medium transition-colors'
         >
          Đăng nhập
-        </button>
+        </Button>
        </div>
       )}
 
       {(mode === 'forgot-password' || mode === 'reset-password') && (
-       <button
+       <Button
         onClick={() => navigate('/auth/login')}
         className='text-body-small text-primary hover:text-primary/80 transition-colors'
        >
         ← Về trang đăng nhập
-       </button>
+       </Button>
       )}
 
       <Link

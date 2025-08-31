@@ -51,7 +51,7 @@ export const TechButton: React.FC<TechButtonProps> = ({
  className,
  fullWidth = false,
 }) => (
- <button
+ <Button
   className={cn(
    'sabo-tech-button',
    `tech-btn-${size}`,
@@ -66,7 +66,7 @@ export const TechButton: React.FC<TechButtonProps> = ({
   <div className='tech-btn-border'></div>
   <span className='tech-btn-text'>{children}</span>
   <div className='tech-btn-glow'></div>
- </button>
+ </Button>
 );
 
 export interface TechInputProps {
@@ -252,9 +252,9 @@ export const TechModal: React.FC<TechModalProps> = ({
      {title && (
       <div className='tech-modal-header'>
        <h2 className='tech-modal-title'>{title}</h2>
-       <button className='tech-modal-close' onClick={onClose}>
+       <Button className='tech-modal-close' onClick={onClose}>
         ×
-       </button>
+       </Button>
       </div>
      )}
      <div className='tech-modal-body'>{children}</div>

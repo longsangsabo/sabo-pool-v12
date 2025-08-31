@@ -252,7 +252,7 @@ export const CreateChatModal: React.FC<CreateChatModalProps> = ({
         {filteredUsers.map(user => {
          const isSelected = selectedUsers.some(u => u.id === user.id);
          return (
-          <button
+          <Button
            key={user.id}
            onClick={() => handleUserSelect(user)}
            className={`w-full flex items-center gap-3 p-2 rounded-lg transition-colors ${

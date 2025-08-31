@@ -75,9 +75,9 @@ export const SaboTechButton: React.FC<{
  className?: string;
  onClick?: () => void;
 }> = ({ children, className, onClick }) => (
- <button className={cn('sabo-tech-button', className)} onClick={onClick}>
+ <Button className={cn('sabo-tech-button', className)} onClick={onClick}>
   {children}
- </button>
+ </Button>
 );
 
 export const SaboTechCard: React.FC<{

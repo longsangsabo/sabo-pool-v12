@@ -56,7 +56,7 @@ const EnhancedPlayerCard = ({
 
  return (
   <div
-   className='absolute inset-0 bg-white rounded-2xl shadow-2xl overflow-hidden'
+   className='absolute inset-0 bg-background rounded-2xl shadow-2xl overflow-hidden'
    style={{
     transform: `scale(${1 - index * 0.05}) translateY(${index * 10}px)`,
     zIndex: 10 - index,
@@ -75,13 +75,13 @@ const EnhancedPlayerCard = ({
     {/* Online Status */}
     <div className='absolute top-4 right-4 flex items-center space-x-2'>
      <div className='w-3 h-3 bg-green-400 rounded-full animate-pulse'></div>
-     <span className='text-white text-body-small font-semibold bg-black/30 px-2 py-1 rounded-full'>
+     <span className='text-foreground text-body-small font-semibold bg-black/30 px-2 py-1 rounded-full'>
       Đang online
      </span>
     </div>
 
     {/* Basic Info */}
-    <div className='absolute bottom-4 left-4 text-white'>
+    <div className='absolute bottom-4 left-4 text-foreground'>
      <h2 className='text-heading-bold'>
       {player.display_name || player.full_name}
       {player.age ? `, ${player.age}` : ''}
@@ -172,13 +172,13 @@ const EnhancedPlayerCard = ({
 
     {/* Challenge Button */}
     {onChallenge && (
-     <button
+     <Button
       onClick={onChallenge}
-      className='w-full mt-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:from-blue-600 hover:to-purple-700 transition-colors'
+      className='w-full mt-4 bg-gradient-to-r from-blue-500 to-purple-600 text-foreground py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:from-blue-600 hover:to-purple-700 transition-colors'
      >
       <Zap className='w-5 h-5' />
       <span>Thách đấu</span>
-     </button>
+     </Button>
     )}
    </div>
   </div>

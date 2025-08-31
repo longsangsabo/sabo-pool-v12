@@ -219,7 +219,7 @@ const HelpPage = () => {
         {categories.map(category => {
          const Icon = category.icon;
          return (
-          <button
+          <Button
            key={category.id}
            onClick={() => setSelectedCategory(category.id)}
            className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${

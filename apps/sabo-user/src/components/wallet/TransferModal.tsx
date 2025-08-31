@@ -202,7 +202,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
       {searchResults.length > 0 && (
        <div className='border rounded-lg max-h-48 overflow-y-auto'>
         {searchResults.map(user => (
-         <button
+         <Button
           key={user.id}
           onClick={() => handleUserSelect(user)}
           className='w-full flex items-center gap-3 p-3 hover:bg-neutral-50 transition-colors'

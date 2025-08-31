@@ -62,23 +62,23 @@ export const ReAuthModal: React.FC = () => {
       required
      />
      <div className='flex gap-2 pt-2'>
-      <button
+      <Button
        type='button'
        onClick={() => setOpen(false)}
        className='flex-1 text-body-small border rounded px-3 py-2 hover:bg-muted'
        disabled={loading}
       >
        Để sau
-      </button>
-      <button
+      </Button>
+      <Button
        type='submit'
        disabled={loading}
        className='flex-1 text-body-small rounded px-3 py-2 bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50'
       >
        {loading ? 'Đang đăng nhập...' : 'Đăng nhập lại'}
-      </button>
+      </Button>
      </div>
-     <button
+     <Button
       type='button'
       onClick={() =>
        (window.location.href =
@@ -88,7 +88,7 @@ export const ReAuthModal: React.FC = () => {
       className='w-full text-caption underline text-muted-foreground hover:text-foreground'
      >
       Chuyển đến trang đăng nhập đầy đủ
-     </button>
+     </Button>
     </form>
    </div>
   </div>

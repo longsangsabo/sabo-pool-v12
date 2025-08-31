@@ -198,12 +198,12 @@ const FeedPage = () => {
             </h4>
             <p className='text-neutral-700 mt-1'>{post.content}</p>
             <div className='flex items-center gap-4 mt-3 text-body-small text-neutral-500'>
-             <button className='flex items-center gap-1 hover:text-primary-600'>
+             <Button className='flex items-center gap-1 hover:text-primary-600'>
               <span>👍</span> {post.likes || 0}
-             </button>
-             <button className='flex items-center gap-1 hover:text-primary-600'>
+             </Button>
+             <Button className='flex items-center gap-1 hover:text-primary-600'>
               <span>💬</span> {post.comments || 0}
-             </button>
+             </Button>
              <span>{post.time}</span>
             </div>
            </div>
@@ -246,7 +246,7 @@ const FeedPage = () => {
             onClick={() => handleJoinTournament(tournament.id)}
            >
             Tham gia
-           </button>
+           </Button>
           </div>
          </CardContent>
         </Card>
@@ -285,7 +285,7 @@ const FeedPage = () => {
             }
            >
             Chấp nhận
-           </button>
+           </Button>
            <Button
             
             variant='outline'
@@ -294,7 +294,7 @@ const FeedPage = () => {
             }
            >
             Từ chối
-           </button>
+           </Button>
           </div>
          </CardContent>
         </Card>
@@ -311,7 +311,7 @@ const FeedPage = () => {
       onClick={() => toast.info('Tính năng tạo bài viết đang phát triển')}
      >
       <Plus className='h-6 w-6' />
-     </button>
+     </Button>
     </div>
    </div>
   </>

@@ -66,7 +66,7 @@ export const TournamentSettingsSection: React.FC<
 
     <div className='grid grid-cols-4 gap-1'>
      {PARTICIPANT_SLOTS.map(slot => (
-      <button
+      <Button
        key={slot}
        type='button'
        onClick={() => handleParticipantsChange(slot.toString())}
@@ -78,7 +78,7 @@ export const TournamentSettingsSection: React.FC<
       >
        <div className='text-body-small font-semibold'>{slot}</div>
        <div className='text-caption text-muted-foreground'>người</div>
-      </button>
+      </Button>
      ))}
     </div>
 
@@ -184,7 +184,7 @@ export const TournamentSettingsSection: React.FC<
 
     <div className='grid grid-cols-2 gap-2'>
      {Object.entries(TOURNAMENT_FORMATS).map(([key, label]) => (
-      <button
+      <Button
        key={key}
        type='button'
        onClick={() =>
@@ -205,7 +205,7 @@ export const TournamentSettingsSection: React.FC<
         {key === 'round_robin' && 'Đấu vòng tròn'}
         {key === 'swiss' && 'Đấu cùng điểm'}
        </div>
-      </button>
+      </Button>
      ))}
     </div>
 
@@ -225,7 +225,7 @@ export const TournamentSettingsSection: React.FC<
 
     <div className='grid grid-cols-4 gap-1'>
      {Object.entries(GAME_FORMATS).map(([key, label]) => (
-      <button
+      <Button
        key={key}
        type='button'
        onClick={() =>
@@ -240,7 +240,7 @@ export const TournamentSettingsSection: React.FC<
        }`}
       >
        <div className='text-caption-medium'>{label}</div>
-      </button>
+      </Button>
      ))}
     </div>
 

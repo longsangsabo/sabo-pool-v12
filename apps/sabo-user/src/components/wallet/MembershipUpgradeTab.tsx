@@ -196,7 +196,7 @@ export const MembershipUpgradeTab: React.FC<MembershipUpgradeTabProps> = ({
        Chọn thời hạn:
       </span>
       <div className='flex bg-neutral-100 rounded-lg p-1'>
-       <button
+       <Button
         onClick={() => setSelectedDuration('month')}
         className={`px-4 py-2 rounded-md text-body-small-medium transition-colors ${
          selectedDuration === 'month'
@@ -206,7 +206,7 @@ export const MembershipUpgradeTab: React.FC<MembershipUpgradeTabProps> = ({
        >
         Hàng tháng
        </Button>
-       <button
+       <Button
         onClick={() => setSelectedDuration('year')}
         className={`px-4 py-2 rounded-md text-body-small-medium transition-colors ${
          selectedDuration === 'year'

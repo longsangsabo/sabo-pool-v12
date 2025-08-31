@@ -197,26 +197,26 @@ const AuthErrorFallback: React.FC<AuthErrorFallbackProps> = ({
 
     {/* Action buttons */}
     <div className='mt-8 space-y-3'>
-     <button
+     <Button
       onClick={onRetry}
       className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-body-small-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
      >
       Thử lại
-     </button>
+     </Button>
 
-     <button
+     <Button
       onClick={onReload}
       className='w-full flex justify-center py-2 px-4 border border-neutral-300 rounded-md shadow-sm text-body-small-medium text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
      >
       Tải lại trang
-     </button>
+     </Button>
 
-     <button
+     <Button
       onClick={onGoHome}
       className='w-full flex justify-center py-2 px-4 border border-neutral-300 rounded-md shadow-sm text-body-small-medium text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
      >
       Về trang chủ
-     </button>
+     </Button>
     </div>
 
     {/* Support info */}

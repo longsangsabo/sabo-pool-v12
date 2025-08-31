@@ -164,7 +164,7 @@ export const MemberActionSheet: React.FC<MemberActionSheetProps> = ({
        </Button>
       </div>
       <div className='space-y-2'>
-       <button
+       <Button
         disabled={disabled || !canPromote || isOwner}
         onClick={() =>
          member && onPromote ? onPromote(member.id) : internalPromote()
@@ -174,7 +174,7 @@ export const MemberActionSheet: React.FC<MemberActionSheetProps> = ({
         <Crown className='mobile-icon-secondary text-amber-500' /> Thăng
         cấp
        </Button>
-       <button
+       <Button
         disabled={disabled || !canDemote || isOwner}
         onClick={() =>
          member && onDemote ? onDemote(member.id) : internalDemote()
@@ -184,14 +184,14 @@ export const MemberActionSheet: React.FC<MemberActionSheetProps> = ({
         <Shield className='mobile-icon-secondary text-slate-500' /> Giảm
         quyền
        </Button>
-       <button
+       <Button
         disabled={disabled}
         onClick={() => member && onViewProfile?.(member.id)}
         className='list-action-item'
        >
         <User className='mobile-icon-secondary text-blue-500' /> Hồ sơ
        </Button>
-       <button
+       <Button
         disabled={disabled || !canRemove || isOwner}
         onClick={() =>
          member && (onRemove ? onRemove(member.id) : internalRemove())

@@ -136,7 +136,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       <h3 className='font-medium text-neutral-900'>Chọn cách chia sẻ</h3>
       <div className='space-y-2'>
        {shareOptions.map(option => (
-        <button
+        <Button
          key={option.id}
          onClick={() =>
           setSelectedType(option.id as 'public' | 'friends')
@@ -170,7 +170,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       </h3>
       <div className='grid grid-cols-3 gap-2'>
        {socialPlatforms.map(platform => (
-        <button
+        <Button
          key={platform.name}
          onClick={platform.action}
          className={`p-3 rounded-lg text-white ${platform.color} transition-colors`}
@@ -188,7 +188,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
      <div className='space-y-3'>
       <h3 className='font-medium text-neutral-900'>Tùy chọn khác</h3>
       <div className='space-y-2'>
-       <button
+       <Button
         onClick={handleCopyLink}
         className='w-full flex items-center gap-3 p-3 rounded-lg border border-neutral-200 hover:bg-neutral-50 transition-colors'
        >
@@ -211,7 +211,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         </div>
        </Button>
 
-       <button
+       <Button
         onClick={handleDirectMessage}
         className='w-full flex items-center gap-3 p-3 rounded-lg border border-neutral-200 hover:bg-neutral-50 transition-colors'
        >
@@ -226,7 +226,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         </div>
        </Button>
 
-       <button
+       <Button
         onClick={handleEmail}
         className='w-full flex items-center gap-3 p-3 rounded-lg border border-neutral-200 hover:bg-neutral-50 transition-colors'
        >

@@ -255,14 +255,14 @@ const ClubMemberCard = ({ member, onViewDetails }: ClubMemberCardProps) => {
 
      <div className='flex gap-1'>
       {onViewDetails && (
-       <button
+       <Button
         onClick={() => onViewDetails(member.id)}
         className='text-caption text-primary-600 hover:text-primary-800 px-2 py-1 border border-primary-200 rounded'
        >
         Xem
-       </button>
+       </Button>
       )}
-      <button
+      <Button
        onClick={() => sendMessage(member.id, member.display_name)}
        className='text-caption text-neutral-600 hover:text-neutral-800 px-2 py-1 border border-neutral-200 rounded'
       >
@@ -348,7 +348,7 @@ const ClubMemberManagement = () => {
       <p className='text-error-800'>
        Lỗi tải danh sách thành viên: {error}
       </p>
-      <button
+      <Button
        onClick={refetch}
        className='mt-2 text-error-600 hover:text-error-800 underline'
       >

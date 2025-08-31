@@ -61,7 +61,7 @@ export const ProfileTabsMobile: React.FC<ProfileTabsMobileProps> = ({
       ? 'text-slate-300 hover:text-white'
       : 'text-slate-600 hover:text-slate-900';
     return (
-     <button
+     <Button
       key={tab.key}
       className={`flex-1 px-2 py-3 text-body-small-medium transition-all duration-200 ${isActive ? `${activeClasses} border-${color}-400` : inactiveClasses}`}
       onClick={() => onChange(tab.key)}
@@ -82,7 +82,7 @@ export const ProfileTabsMobile: React.FC<ProfileTabsMobileProps> = ({
        />
       </div>
       <div className='text-caption font-semibold'>{tab.label}</div>
-     </button>
+     </Button>
     );
    })}
   </div>

@@ -24,7 +24,7 @@ export const MilestoneCategoryTabs: React.FC<Props> = ({ value, onChange, counts
    {tabs.map(tab => {
     const active = tab === value;
     return (
-     <button
+     <Button
       key={tab}
       onClick={() => onChange(tab)}
       className={cn('px-3 py-1.5 rounded-md transition-colors flex items-center gap-1',
@@ -33,7 +33,7 @@ export const MilestoneCategoryTabs: React.FC<Props> = ({ value, onChange, counts
       {typeof counts[tab] === 'number' && (
        <span className={cn('text-[10px] rounded px-1.5 py-0.5 bg-muted-foreground/10', active && 'bg-primary-foreground/20')}>{counts[tab]}</span>
       )}
-     </button>
+     </Button>
     );
    })}
   </div>

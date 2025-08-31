@@ -899,12 +899,12 @@ const ClubRegistrationMultiStepForm = () => {
              alt={`Club photo ${index + 1}`}
              className='w-full h-24 object-cover rounded-lg border'
             />
-            <button
+            <Button
              onClick={() => removePhoto(index)}
              variant="destructive"
             >
              ×
-            </button>
+            </Button>
            </div>
           ))}
          </div>

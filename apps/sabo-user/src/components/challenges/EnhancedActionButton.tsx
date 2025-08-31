@@ -214,7 +214,7 @@ export const ActionContextMenu: React.FC<ActionContextMenuProps> = ({
        const IconComponent = config.icon ? iconMap[config.icon as keyof typeof iconMap] : Zap;
        
        return (
-        <button
+        <Button
          key={action}
          onClick={() => handleAction(action)}
          className="w-full flex items-center gap-2 px-3 py-2 text-body-small hover:bg-accent rounded-sm transition-colors"

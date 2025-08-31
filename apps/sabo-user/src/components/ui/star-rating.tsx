@@ -38,7 +38,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
     const isFilled = starValue <= value;
 
     return (
-     <button
+     <Button
       key={index}
       type='button'
       onClick={() => handleStarClick(starValue)}
@@ -58,7 +58,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
          : 'text-gray-300 hover:text-yellow-400'
        )}
       />
-     </button>
+     </Button>
     );
    })}
   </div>

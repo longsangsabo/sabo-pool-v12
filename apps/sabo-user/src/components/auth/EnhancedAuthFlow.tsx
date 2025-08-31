@@ -145,16 +145,16 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
     exit={{ opacity: 0, scale: 0.9 }}
     className='w-full max-w-md'
    >
-    <Card className='bg-white shadow-xl'>
+    <Card className='bg-card shadow-xl'>
      <CardHeader className='text-center pb-4'>
-      <CardTitle className='text-heading-bold text-neutral-900'>
+      <CardTitle className='text-heading-bold text-foreground'>
        {step === 'auth'
         ? '🎱 Chào mừng đến SABO'
         : step === 'location'
          ? '📍 Cài đặt vị trí'
          : '📝 Hoàn tất đăng ký'}
       </CardTitle>
-      <p className='text-neutral-600 text-body-small mt-2'>
+      <p className='text-muted-foreground text-body-small mt-2'>
        {step === 'auth'
         ? 'Nền tảng thi đấu Billiards hàng đầu Việt Nam'
         : step === 'location'
@@ -183,7 +183,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
             <div>
              <Label htmlFor='email'>Email</Label>
              <div className='relative'>
-              <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+              <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
               <Input
                id='email'
                type='email'
@@ -208,7 +208,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
             <div>
              <Label htmlFor='password'>Mật khẩu</Label>
              <div className='relative'>
-              <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+              <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
               <Input
                id='password'
                type={showPassword ? 'text' : 'password'}
@@ -222,17 +222,17 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
                }
                className='pl-12 pr-12'
               />
-              <button
+              <Button
                type='button'
                onClick={() => setShowPassword(!showPassword)}
-               className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+               className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground'
               >
                {showPassword ? (
                 <EyeOff className='w-4 h-4' />
                ) : (
                 <Eye className='w-4 h-4' />
                )}
-              </button>
+              </Button>
              </div>
              {errors.password && (
               <p className='text-body-small text-red-500 mt-1'>
@@ -263,7 +263,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
             <div>
              <Label htmlFor='fullName'>Họ và tên *</Label>
              <div className='relative'>
-              <User className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+              <User className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
               <Input
                id='fullName'
                placeholder='Nguyễn Văn A'
@@ -287,7 +287,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
             <div>
              <Label htmlFor='phone'>Số điện thoại *</Label>
              <div className='relative'>
-              <Phone className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+              <Phone className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
               <Input
                id='phone'
                placeholder='0901234567'
@@ -311,7 +311,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
             <div>
              <Label htmlFor='signupEmail'>Email *</Label>
              <div className='relative'>
-              <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+              <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
               <Input
                id='signupEmail'
                type='email'
@@ -336,7 +336,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
             <div>
              <Label htmlFor='signupPassword'>Mật khẩu *</Label>
              <div className='relative'>
-              <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+              <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
               <Input
                id='signupPassword'
                type={showPassword ? 'text' : 'password'}
@@ -350,17 +350,17 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
                }
                className='pl-12 pr-12'
               />
-              <button
+              <Button
                type='button'
                onClick={() => setShowPassword(!showPassword)}
-               className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+               className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground'
               >
                {showPassword ? (
                 <EyeOff className='w-4 h-4' />
                ) : (
                 <Eye className='w-4 h-4' />
                )}
-              </button>
+              </Button>
              </div>
              {errors.password && (
               <p className='text-body-small text-red-500 mt-1'>
@@ -374,7 +374,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
               Xác nhận mật khẩu *
              </Label>
              <div className='relative'>
-              <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+              <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
               <Input
                id='confirmPassword'
                type='password'
@@ -464,12 +464,12 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
       {step === 'auth' && (
        <div className='mt-4 text-center'>
         {onClose && (
-         <button
+         <Button
           onClick={onClose}
           className='text-body-small text-neutral-500 hover:text-neutral-700'
          >
           Đóng
-         </button>
+         </Button>
         )}
        </div>
       )}

@@ -105,18 +105,18 @@ const PaymentSuccessPage = () => {
       Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.
      </p>
      <div className='space-y-3'>
-      <button
+      <Button
        onClick={handleRetry}
        className='w-full bg-primary-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors'
       >
        Thử lại
-      </button>
-      <button
+      </Button>
+      <Button
        onClick={handleGoHome}
        className='w-full border border-neutral-300 text-neutral-700 px-6 py-3 rounded-md hover:bg-neutral-50 transition-colors'
       >
        Về trang chủ
-      </button>
+      </Button>
      </div>
     </div>
    </div>
@@ -163,18 +163,18 @@ const PaymentSuccessPage = () => {
     )}
 
     <div className='space-y-3'>
-     <button
+     <Button
       onClick={handleContinue}
       className='w-full bg-primary-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors'
      >
       Xem gói hội viên
-     </button>
-     <button
+     </Button>
+     <Button
       onClick={handleGoHome}
       className='w-full border border-neutral-300 text-neutral-700 px-6 py-3 rounded-md hover:bg-neutral-50 transition-colors'
      >
       Về trang chủ
-     </button>
+     </Button>
     </div>
    </div>
   </div>

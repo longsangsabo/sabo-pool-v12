@@ -80,7 +80,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   return (
    <div className={`relative ${className}`}>
     <div className='theme-toggle-container'>
-     <button
+     <Button
       className='theme-toggle-btn'
       onClick={() => document.documentElement.classList.toggle('dark')}
      >
@@ -97,7 +97,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         d='M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z'
        />
       </svg>
-     </button>
+     </Button>
     </div>
 
     <TechCard className='mx-4 my-6' variant='premium'>

@@ -280,7 +280,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
 
      <div className='flex flex-wrap gap-2 mt-4'>
       {filters.map(filter => (
-       <button
+       <Button
         key={filter.id}
         onClick={() => setSelectedFilter(filter.id)}
         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-body-small-medium transition-colors ${

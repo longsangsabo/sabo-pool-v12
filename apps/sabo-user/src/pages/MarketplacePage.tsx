@@ -154,9 +154,9 @@ const MarketplacePage = () => {
         alt={item.title}
         className='w-full h-48 object-cover rounded-t-lg'
        />
-       <button className='absolute top-2 right-2 p-2 bg-white rounded-full shadow-sm hover:bg-neutral-50'>
+       <Button className='absolute top-2 right-2 p-2 bg-white rounded-full shadow-sm hover:bg-neutral-50'>
         <Heart className='w-4 h-4 text-neutral-600' />
-       </button>
+       </Button>
        <Badge
         className={`absolute top-2 left-2 ${getConditionColor(item.condition)}`}
        >

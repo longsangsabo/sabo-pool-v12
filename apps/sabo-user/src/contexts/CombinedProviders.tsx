@@ -6,7 +6,8 @@ import { AppProviders } from './AppProviders';
 import { AvatarProvider } from './AvatarContext';
 
 import { AuthErrorBoundary } from '@/components/error/AuthErrorBoundary';
-import { ThemeProvider } from '@/hooks/useTheme';
+// UPDATED: Use unified ThemeProvider from shared-ui
+import { ThemeProvider } from '@sabo/shared-ui/theme';
 import { AuthProvider } from '@/hooks/useAuth';
 import { useServiceWorker } from '@/hooks/useServiceWorker';
 
@@ -25,7 +26,8 @@ const CombinedProvidersComponent: React.FC<CombinedProvidersProps> = ({
  }
  return (
   <AuthErrorBoundary>
-   <ThemeProvider defaultTheme='dark' storageKey='sabo-ui-theme'>
+   {/* UPDATED: Use unified mobile-first ThemeProvider */}
+   <ThemeProvider defaultTheme='system' storageKey='sabo-theme'>
     <AuthProvider>
      <AvatarProvider>
       <LanguageProvider>

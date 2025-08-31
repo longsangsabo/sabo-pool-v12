@@ -134,12 +134,12 @@ class LazyComponentErrorBoundary extends React.Component<
        <p className='text-muted-foreground mb-2'>
         Không thể tải thành phần
        </p>
-       <button
+       <Button
         onClick={() => this.setState({ hasError: false })}
         className='text-primary hover:underline'
        >
         Thử lại
-       </button>
+       </Button>
       </div>
      </div>
     )

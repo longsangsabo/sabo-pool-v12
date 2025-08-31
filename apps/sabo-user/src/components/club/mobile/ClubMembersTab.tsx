@@ -143,61 +143,61 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
       <Typography variant="heading" >Thành viên</Typography>
      </div>
      {isOwner && (
-      <button
+      <Button
        onClick={onInvite}
        className='text-[11px] font-medium text-primary hover:underline px-2 py-1 rounded-md'
       >
        + Mời
-      </button>
+      </Button>
      )}
     </div>
     {/* Filters */}
     <div className='space-y-1'>
      <div className='mobile-filter-bar'>
-      <button
+      <Button
        onClick={() => setStatusFilter('all')}
        className={`mobile-filter-chip ${statusFilter === 'all' ? 'mobile-filter-chip-active' : ''}`}
       >
        Tất cả
-      </button>
-      <button
+      </Button>
+      <Button
        onClick={() => setStatusFilter('member')}
        className={`mobile-filter-chip ${statusFilter === 'member' ? 'mobile-filter-chip-active' : ''}`}
       >
        Hoạt động
-      </button>
-      <button
+      </Button>
+      <Button
        onClick={() => setStatusFilter('pending')}
        className={`mobile-filter-chip ${statusFilter === 'pending' ? 'mobile-filter-chip-active' : ''}`}
       >
        Chờ duyệt
-      </button>
+      </Button>
      </div>
      <div className='mobile-filter-bar'>
-      <button
+      <Button
        onClick={() => setRoleFilter('all')}
        className={`mobile-filter-chip ${roleFilter === 'all' ? 'mobile-filter-chip-alt-active' : ''}`}
       >
        Role: All
-      </button>
-      <button
+      </Button>
+      <Button
        onClick={() => setRoleFilter('owner')}
        className={`mobile-filter-chip ${roleFilter === 'owner' ? 'mobile-filter-chip-alt-active' : ''}`}
       >
        Owner
-      </button>
-      <button
+      </Button>
+      <Button
        onClick={() => setRoleFilter('moderator')}
        className={`mobile-filter-chip ${roleFilter === 'moderator' ? 'mobile-filter-chip-alt-active' : ''}`}
       >
        Mod
-      </button>
-      <button
+      </Button>
+      <Button
        onClick={() => setRoleFilter('member')}
        className={`mobile-filter-chip ${roleFilter === 'member' ? 'mobile-filter-chip-alt-active' : ''}`}
       >
        Member
-      </button>
+      </Button>
      </div>
     </div>
     {/* Search */}
@@ -239,7 +239,7 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
      {filtered.map((m: MemberItem) => {
       const role = (m.role || 'member').toLowerCase();
       return (
-       <button
+       <Button
         key={m.id}
         onClick={() => {
          // Navigate to social profile instead of member sheet
@@ -270,7 +270,7 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
          </div>
         </div>
         <ClubStatusBadge status={m.status} role={m.role} />
-       </button>
+       </Button>
       );
      })}
      {/* Load more trigger */}
@@ -284,12 +284,12 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
     </div>
     {/* Invite CTA */}
     <div className='pt-2 flex justify-center'>
-     <button
+     <Button
       onClick={onInvite}
       className='text-[12px] font-medium text-primary hover:underline flex items-center gap-1 mobile-touch-target'
      >
       + Mời thành viên
-     </button>
+     </Button>
     </div>
    </div>
   </TabsContent>

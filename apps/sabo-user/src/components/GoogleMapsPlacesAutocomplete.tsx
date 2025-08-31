@@ -182,7 +182,7 @@ const GoogleMapsPlacesAutocomplete = ({
    {showDropdown && predictions.length > 0 && (
     <div className='absolute z-50 w-full mt-1 bg-white border border-neutral-200 rounded-md shadow-lg max-h-60 overflow-y-auto'>
      {predictions.map(prediction => (
-      <button
+      <Button
        key={prediction.place_id}
        onClick={() => handlePredictionClick(prediction)}
        className='w-full px-4 py-3 text-left hover:bg-neutral-50 border-b border-gray-100 last:border-b-0 flex items-start space-x-3'
@@ -196,7 +196,7 @@ const GoogleMapsPlacesAutocomplete = ({
          {prediction.structured_formatting.secondary_text}
         </div>
        </div>
-      </button>
+      </Button>
      ))}
     </div>
    )}

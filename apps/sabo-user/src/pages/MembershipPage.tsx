@@ -70,7 +70,7 @@ const MembershipPage = () => {
     <div className='mb-8'>
      <div className='border-b border-neutral-200'>
       <nav className='-mb-px flex space-x-8'>
-       <button
+       <Button
         onClick={() => setActiveTab('individual')}
         className={`flex items-center py-2 px-1 border-b-2 font-medium text-body-small ${
          activeTab === 'individual'
@@ -80,8 +80,8 @@ const MembershipPage = () => {
        >
         <User className='w-4 h-4 mr-2' />
         Cá nhân
-       </button>
-       <button
+       </Button>
+       <Button
         onClick={() => setActiveTab('club')}
         className={`flex items-center py-2 px-1 border-b-2 font-medium text-body-small ${
          activeTab === 'club'
@@ -91,7 +91,7 @@ const MembershipPage = () => {
        >
         <Building className='w-4 h-4 mr-2' />
         Câu lạc bộ
-       </button>
+       </Button>
       </nav>
      </div>
     </div>

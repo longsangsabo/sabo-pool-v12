@@ -181,7 +181,7 @@ export function SABO32MatchNavigator({
       const isSelected = match.id === currentMatchId;
       
       return (
-       <button
+       <Button
         key={match.id}
         onClick={() => onMatchSelect(match.id)}
         className={cn(

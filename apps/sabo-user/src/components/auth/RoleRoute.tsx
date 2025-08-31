@@ -72,18 +72,18 @@ export const RoleRoute: React.FC<RoleRouteProps> = ({
       Quyền yêu cầu: {requiredRole || requiredRoles?.join(requireAll ? ' và ' : ' hoặc ') || 'Không xác định'}
      </p>
      <div className='space-x-4'>
-      <button
+      <Button
        onClick={() => window.history.back()}
        className='px-4 py-2 bg-neutral-500 text-white rounded hover:bg-gray-600'
       >
        Quay lại
-      </button>
-      <button
+      </Button>
+      <Button
        onClick={() => window.location.href = '/dashboard'}
        variant="default"
       >
        Về Dashboard
-      </button>
+      </Button>
      </div>
     </div>
    </div>

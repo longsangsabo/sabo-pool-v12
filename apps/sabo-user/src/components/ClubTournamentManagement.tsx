@@ -1111,7 +1111,7 @@ const TournamentSettingsView = ({ tournament }: { tournament: Tournament }) => {
          </div>
         </div>
 
-        <div className='bg-white rounded p-4 border'>
+        <div className='bg-background rounded p-4 border'>
          <h4 className='font-medium mb-2'>
           Quy trình bắt đầu giải đấu:
          </h4>
@@ -1148,7 +1148,7 @@ const TournamentSettingsView = ({ tournament }: { tournament: Tournament }) => {
       </CardHeader>
       <CardContent>
        <div className='space-y-4'>
-        <div className='bg-white rounded p-4 border'>
+        <div className='bg-background rounded p-4 border'>
          <Typography variant="heading" >Quy trình đóng giải đấu:</Typography>
          <ol className='text-body-small text-muted-foreground space-y-1 list-decimal list-inside'>
           <li>Kiểm tra tất cả trận đấu đã hoàn thành</li>

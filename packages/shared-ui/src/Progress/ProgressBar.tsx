@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '../lib/utils';
-import { SPACING_TOKENS } from '@shared/design-tokens';
+// import { SPACING_TOKENS } from '@shared/design-tokens';
 
 interface ProgressBarProps {
   progress: number; // 0-100

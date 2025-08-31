@@ -506,7 +506,7 @@ export const EnhancedTournamentDetailsModal: React.FC<
          ? 'border-gray-600 bg-neutral-800/30' 
          : 'border-neutral-200 bg-neutral-50/30'
        }`}>
-        <button
+        <Button
          onClick={() => setActiveTab('bracket')}
          className={`flex items-center justify-center gap-2 p-3 rounded-lg transition-colors ${
           theme === 'dark'
@@ -521,8 +521,8 @@ export const EnhancedTournamentDetailsModal: React.FC<
            {matches.length}
           </span>
          )}
-        </button>
-        <button
+        </Button>
+        <Button
          onClick={() => setActiveTab('results')}
          className={`flex items-center justify-center gap-2 p-3 rounded-lg transition-colors ${
           theme === 'dark'
@@ -537,7 +537,7 @@ export const EnhancedTournamentDetailsModal: React.FC<
            {results.length}
           </span>
          )}
-        </button>
+        </Button>
        </div>
       )}
      </TabsContent>

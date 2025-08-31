@@ -209,8 +209,8 @@ const EvidenceUpload = ({
       <div className='mt-4'>
        <div className='w-full bg-neutral-200 rounded-full h-2'>
         <div
-         className='bg-primary h-2 rounded-full transition-all duration-300'
-         className="progress-bar-dynamic w-full"
+         className="bg-primary h-2 rounded-full transition-all duration-300"
+         style={{ width: `${progress}%` }}
         />
        </div>
        <p className='text-body-small text-muted-foreground mt-2'>

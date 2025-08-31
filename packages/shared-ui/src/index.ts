@@ -6,16 +6,21 @@
 // Utility functions
 export * from './lib/utils';
 
-// Core Components (legacy)
-export * from './components/button';
+// === THEME SYSTEM ===
+export * from './theme';
+
+// Core Components (legacy - will be phased out)
+export { Button, buttonVariants, type ButtonProps } from './components/button';
 export * from './components/card';
 export * from './components/input';
 export * from './components/badge';
 export * from './components/loading';
 
-// New Design System Components
-export * from './components/Button/Button';
-export * from './components/Button/variants';
+// New Design System Components (v2.0)
+export { 
+  Button as DesignSystemButton, 
+  type ButtonProps as DesignSystemButtonProps 
+} from './components/Button/Button';
 
 // Typography System
 export * from './components/Typography/variants';
@@ -30,13 +35,7 @@ export * from './components/Form/variants';
 export const SharedUIVersion = '2.0.0';
 export const ComponentsReady = true;
 export const DesignSystemReady = true;
-
-// Re-export commonly used components and patterns
-export { Button } from './components/button';
-export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './components/card';
-export { Input } from './components/input';
-export { Badge } from './components/badge';
-export { Loading } from './components/loading';
+export const ThemeSystemReady = true;
 
 // Progress Components
 export { ProgressBar } from './Progress/ProgressBar';

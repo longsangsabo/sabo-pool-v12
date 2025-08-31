@@ -80,24 +80,24 @@ const LoginPage: React.FC = () => {
          className="w-full pl-12 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
          placeholder="Enter your password"
         />
-        <button
+        <Button
          type="button"
          onClick={() => setShowPassword(!showPassword)}
          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
         >
          {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-        </button>
+        </Button>
        </div>
       </div>
 
       {/* Submit Button */}
-      <button
+      <Button
        type="submit"
        disabled={loading}
        className="w-full bg-primary-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition-colors"
       >
        {loading ? 'Signing in...' : 'Sign In'}
-      </button>
+      </Button>
      </form>
 
      {/* Links */}

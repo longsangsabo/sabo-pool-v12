@@ -8,9 +8,9 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../lib/utils';
 
-// Button variants sử dụng design tokens
+// Button variants sử dụng CSS variables từ theme system
 const buttonVariants = cva(
-  // Base styles sử dụng design tokens
+  // Base styles sử dụng theme variables
   [
     'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md',
     'font-medium transition-colors duration-200',
@@ -21,47 +21,47 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Primary - Main brand action
+        // Primary - Main brand action (theme-aware)
         default: [
-          'bg-primary-500 text-white',
-          'hover:bg-primary-600',
-          'focus-visible:ring-primary-500/50',
+          'bg-primary text-primary-foreground',
+          'hover:bg-primary/90',
+          'focus-visible:ring-ring',
           'shadow-sm hover:shadow-md'
         ],
-        // Destructive - Delete/danger actions  
+        // Destructive - Delete/danger actions (theme-aware)
         destructive: [
-          'bg-error-500 text-white',
-          'hover:bg-error-600',
-          'focus-visible:ring-error-500/50',
+          'bg-destructive text-destructive-foreground',
+          'hover:bg-destructive/90',
+          'focus-visible:ring-ring',
           'shadow-sm hover:shadow-md'
         ],
-        // Outline - Secondary actions
+        // Outline - Secondary actions (theme-aware)
         outline: [
-          'border border-neutral-200 bg-white text-neutral-900',
-          'hover:bg-neutral-50 hover:border-neutral-300',
-          'focus-visible:ring-primary-500/50',
+          'border border-input bg-background text-foreground',
+          'hover:bg-accent hover:text-accent-foreground',
+          'focus-visible:ring-ring',
           'shadow-sm hover:shadow-md'
         ],
-        // Secondary - Less prominent actions
+        // Secondary - Less prominent actions (theme-aware)
         secondary: [
-          'bg-neutral-100 text-neutral-900',
-          'hover:bg-neutral-200',
-          'focus-visible:ring-primary-500/50',
+          'bg-secondary text-secondary-foreground',
+          'hover:bg-secondary/80',
+          'focus-visible:ring-ring',
           'shadow-sm hover:shadow-md'
         ],
-        // Ghost - Minimal actions
+        // Ghost - Minimal actions (theme-aware)
         ghost: [
-          'text-neutral-600',
-          'hover:bg-neutral-100 hover:text-neutral-900',
-          'focus-visible:ring-primary-500/50'
+          'text-foreground',
+          'hover:bg-accent hover:text-accent-foreground',
+          'focus-visible:ring-ring'
         ],
       },
       size: {
-        // Sizes sử dụng spacing tokens
-        sm: 'h-8 px-3 text-xs',      // 32px height, 12px padding
-        default: 'h-10 px-4 text-sm',  // 40px height, 16px padding
-        lg: 'h-12 px-6 text-base',     // 48px height, 24px padding
-        icon: 'h-10 w-10',             // Square for icons
+        // Mobile-first sizes - ensuring 44px minimum touch target
+        sm: 'h-9 px-3 text-xs min-h-[36px]',      // 36px height (acceptable for small)
+        default: 'h-11 px-4 text-sm min-h-[44px]',  // 44px height (mobile standard)
+        lg: 'h-12 px-6 text-base min-h-[48px]',     // 48px height (large touch target)
+        icon: 'h-11 w-11 min-h-[44px] min-w-[44px]', // Square 44px for mobile accessibility
       },
     },
     defaultVariants: {
@@ -120,4 +120,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
-export type { ButtonProps };

@@ -64,7 +64,7 @@ const MarketplaceItemCard = ({
        className='w-full h-full object-cover group-hover:scale-105 transition-transform'
       />
      ) : (
-      <div className='w-full h-full flex items-center justify-center text-gray-400'>
+      <div className='w-full h-full flex items-center justify-center text-muted-foreground'>
        <div className='text-center'>
         <div className='text-4xl mb-2'>🎱</div>
         <div className='text-sm'>Chưa có ảnh</div>
@@ -74,12 +74,12 @@ const MarketplaceItemCard = ({
 
      {/* Favorite Button */}
      {onFavorite && (
-      <button
+      <Button
        onClick={e => {
         e.stopPropagation();
         onFavorite(item.id);
        }}
-       className='absolute top-2 right-2 p-2 bg-white/80 hover:bg-white rounded-full shadow-sm transition-colors'
+       className='absolute top-2 right-2 p-2 bg-background/80 hover:bg-background rounded-full shadow-sm transition-colors'
       >
        <Heart
         className={`w-4 h-4 ${
@@ -88,7 +88,7 @@ const MarketplaceItemCard = ({
           : 'text-neutral-500 hover:text-red-500'
         }`}
        />
-      </button>
+      </Button>
      )}
 
      {/* Condition Badge */}

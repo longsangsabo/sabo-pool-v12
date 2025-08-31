@@ -23,9 +23,9 @@ const TournamentErrorDisplay = ({ error, onRetry }: { error?: string; onRetry?: 
  <div className="text-red-500 p-4 text-center">
   {error || 'Có lỗi xảy ra'}
   {onRetry && (
-   <button onClick={onRetry} className="ml-2 text-blue-500 underline">
+   <Button onClick={onRetry} className="ml-2 text-blue-500 underline">
     Thử lại
-   </button>
+   </Button>
   )}
  </div>
 );

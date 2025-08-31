@@ -32,7 +32,7 @@ export const MobileAuthLayout: React.FC<MobileAuthLayoutProps> = ({
      <div className="flex items-center justify-between">
       {/* Back button */}
       {onBack && (
-       <button
+       <Button
         onClick={onBack}
         className="p-2 -ml-2 text-neutral-600 hover:text-neutral-900 transition-colors duration-200"
         aria-label="Quay lại"
@@ -40,7 +40,7 @@ export const MobileAuthLayout: React.FC<MobileAuthLayoutProps> = ({
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-       </button>
+       </Button>
       )}
 
       {/* Title */}
@@ -297,7 +297,7 @@ export const MobileAuthButton: React.FC<MobileAuthButtonProps> = ({
   : "transform active:scale-95";
 
  return (
-  <button
+  <Button
    type={type}
    onClick={onClick}
    disabled={disabled || loading}
@@ -311,6 +311,6 @@ export const MobileAuthButton: React.FC<MobileAuthButtonProps> = ({
    ) : (
     children
    )}
-  </button>
+  </Button>
  );
 };

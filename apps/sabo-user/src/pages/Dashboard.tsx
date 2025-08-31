@@ -195,12 +195,12 @@ const Dashboard = () => {
      {error && (
       <div className={`text-center py-8 ${conditionalClasses('bg-slate-800/40', 'bg-white/40')} backdrop-blur-md rounded-lg border ${getClasses('border')}`}>
        <p className='text-body-small text-red-400 font-medium'>{error}</p>
-       <button
+       <Button
         onClick={refreshFeed}
         className={`text-body-small ${getClasses('textSecondary')} hover:${getClasses('textPrimary')} ${conditionalClasses('bg-slate-700/50 hover:bg-slate-700/70', 'bg-white/50 hover:bg-white/70')} px-4 py-2 rounded-md mt-3 transition-colors`}
        >
         Thử lại
-       </button>
+       </Button>
       </div>
      )}
 

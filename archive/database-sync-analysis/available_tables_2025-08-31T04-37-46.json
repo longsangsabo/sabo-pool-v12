@@ -1,0 +1,132 @@
+[
+  {
+    "table_name": "profiles",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "users",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "user_roles",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "user_preferences",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "challenges",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "challenge_participants",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "game_sessions",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "shots",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "tournaments",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "tournament_brackets",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "tournament_registrations",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "clubs",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "club_members",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "club_settings",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "wallets",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "wallet_transactions",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "payment_transactions",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "ranks",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "rank_requirements",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "ranking_history",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "notifications",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "system_events",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "analytics_events",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "achievements",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "leaderboards",
+    "accessible": true,
+    "row_count": 0
+  },
+  {
+    "table_name": "settings",
+    "accessible": true,
+    "row_count": 0
+  }
+]

@@ -1,69 +1,20 @@
-/**
- * @sabo/shared-types
- * Comprehensive TypeScript interfaces and types for SABO Arena
- * 
- * Consolidated and optimized type definitions for:
- * - User authentication and profiles
- * - Game mechanics (tournaments, challenges, clubs)
- * - Common utilities and API responses
- */
+// SABO Pool V12 - Shared Types Index
+// Main export file for all shared types
 
-// ===== CORE EXPORTS =====
+// Database types
+export * from './database';
 
-// User and authentication types
-export * from './user';
+// Enum types
+export * from './enums';
 
-// Game-related types (tournaments, challenges, clubs)
-export * from './game';
+// Relationship types
+export * from './relationships';
 
-// Common utility types and interfaces
-export * from './common';
-
-// ===== CONVENIENCE RE-EXPORTS =====
-
-// User types
-export type {
-  User,
-  Session,
-  UserRole,
-  AuthState,
-  AuthResponse,
-  SignInCredentials,
-  SignUpCredentials,
-  UnifiedProfile,
-  PublicProfile,
-  PlayerStats,
-  SkillLevel,
-} from './user';
-
-// Game types
-export type {
-  Tournament,
-  TournamentStatus,
-  TournamentType,
-  TournamentRegistration,
-  TournamentMatch,
-  Challenge,
-  ChallengeStatus,
-  Club,
-  ClubStatus,
-  GameFormat,
-  MatchStatus,
-} from './game';
-
-// Common types
-export type {
-  ApiResponse,
-  PaginatedResponse,
-  DatabaseRow,
-  FilterOptions,
-  PaginationOptions,
-  Notification,
-  NotificationType,
-  Theme,
-  Language,
-  AsyncState,
-  LoadingState,
-  FormError,
-  ValidationResult,
-} from './common';
+// Utility types
+export interface DatabaseGenerationMetadata {
+  totalTables: 74;
+  tablesWithData: 10;
+  tablesInferred: 64;
+  generatedAt: '2025-08-31T04:57:50.759Z';
+  version: '1.0.0';
+}

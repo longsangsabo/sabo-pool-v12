@@ -1,0 +1,28 @@
+{
+  "profiles": [],
+  "challenges": [],
+  "tournaments": [],
+  "wallets": [],
+  "user_roles": [],
+  "notifications": [
+    {
+      "column": "challenge_id",
+      "references": "challenges",
+      "type": "foreign_key"
+    },
+    {
+      "column": "tournament_id",
+      "references": "tournaments",
+      "type": "foreign_key"
+    }
+  ],
+  "tournament_registrations": [
+    {
+      "column": "tournament_id",
+      "references": "tournaments",
+      "type": "foreign_key"
+    }
+  ],
+  "club_members": [],
+  "ranks": []
+}

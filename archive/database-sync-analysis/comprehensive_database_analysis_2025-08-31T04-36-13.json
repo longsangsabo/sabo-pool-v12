@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-08-31T04:36:13.404Z",
+  "database_url": "https://exlqvlbawytbglioqfbc.supabase.co",
+  "tables": [],
+  "columns": [],
+  "indexes": [],
+  "foreign_keys": [],
+  "rls_policies": [],
+  "functions": [],
+  "views": [],
+  "row_counts": {},
+  "codebase_references": {
+    "type_files": [],
+    "table_references": {},
+    "migration_files": [],
+    "schema_files": []
+  },
+  "synchronization_status": {},
+  "summary": {
+    "total_tables": 0,
+    "total_columns": 0,
+    "total_indexes": 0,
+    "total_foreign_keys": 0,
+    "total_rls_policies": 0,
+    "total_functions": 0,
+    "total_views": 0,
+    "tables_with_data": 0,
+    "tables_without_rls": 0
+  },
+  "recommendations": [
+    "Kiểm tra các bảng không có RLS policies",
+    "Xác minh foreign key relationships",
+    "Đồng bộ TypeScript types với database schema",
+    "Kiểm tra performance của các indexes",
+    "Review các bảng có data count = 0"
+  ]
+}

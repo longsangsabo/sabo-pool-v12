@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SABO Arena Mobile",
-    "slug": "sabo-arena-mobile",
+    "name": "SABO Pool Arena",
+    "slug": "sabo-pool-arena",
     "version": "1.0.0",
     "orientation": "portrait",
     "platforms": [
@@ -15,18 +15,47 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.sabo.arena.mobile"
+      "bundleIdentifier": "com.sabopool.arena",
+      "buildNumber": "1",
+      "infoPlist": {
+        "UILaunchStoryboardName": "SplashScreen",
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLName": "sabopool",
+            "CFBundleURLSchemes": [
+              "sabopool"
+            ]
+          }
+        ]
+      }
     },
     "android": {
-      "package": "com.sabo.arena.mobile"
+      "package": "com.sabopool.arena",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ]
     },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
       "expo-font",
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "sabopool-arena-mobile"
+      }
+    },
+    "owner": "longsangsabo"
   }
 }

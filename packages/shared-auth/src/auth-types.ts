@@ -5,25 +5,16 @@ import { User as SupabaseUser, Session as SupabaseSession } from '@supabase/supa
 
 export type UserRole = 'user' | 'admin' | 'super_admin' | 'moderator';
 
-export interface User extends SupabaseUser {
+export interface User extends Omit<SupabaseUser, 'app_metadata'> {
   id: string;
   email?: string;
   phone?: string;
-  user_metadata?: {
-    full_name?: string;
-    avatar_url?: string;
-    username?: string;
-    referral_code?: string;
-    provider?: string;
-  };
   app_metadata?: {
     provider?: string;
     role?: UserRole;
     is_admin?: boolean;
     is_super_admin?: boolean;
   };
-  created_at: string;
-  updated_at: string;
 }
 
 export interface UserProfile {

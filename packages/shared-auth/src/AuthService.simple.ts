@@ -3,14 +3,14 @@
  * Quick fix for mobile deployment readiness
  */
 
-import { SupabaseClient, Session } from '@supabase/supabase-js';
+import { SupabaseClient, User as SupabaseUser, Session } from '@supabase/supabase-js';
 import { AuthError } from './AuthError';
-import { User, AuthResponse } from './auth-types';
+import { User, UserProfile, AuthResponse, AuthConfigOptions } from './auth-types';
 
 export class AuthService {
   private supabase: SupabaseClient;
 
-  constructor(supabaseClient: SupabaseClient) {
+  constructor(supabaseClient: SupabaseClient, config: AuthConfigOptions = {}) {
     this.supabase = supabaseClient;
   }
 

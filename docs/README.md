@@ -1,87 +1,121 @@
-# 📚 Sabo Pool V12 Documentation
+# 📚 SABO Arena Documentation
 
-Welcome to the comprehensive documentation for Sabo Pool V12 project.
+> **Simplified documentation for SABO Arena billiards tournament platform**
 
-## 🗂️ Documentation Categories
+## 🎯 What is SABO Arena?
 
-### 🚀 [Getting Started](./01-getting-started/)
-New to the project? Start here for quick onboarding and setup.
-- [Quick Start Guide](./01-getting-started/quick-start.md) - 5-minute setup
-- [Onboarding Checklist](./01-getting-started/onboarding-checklist.md) - Complete checklist
-- [Environment Setup](./01-getting-started/onboarding-guide.md) - Development environment
+**SABO Arena** là nền tảng quản lý giải đấu bi-da với 5 tính năng chính:
+- 🏆 **Tournament System** - SABO Double Elimination tournaments
+- ⚔️ **Challenge System** - 1v1 challenges với ELO ranking  
+- 💰 **Payment Integration** - VNPay cho tournament fees
+- 📊 **Real-time Updates** - Live brackets và notifications
+- 📱 **Mobile-First Design** - Responsive user experience
 
-### 🎨 [Design System](./02-design-system/)
-UI components, design tokens, and styling guidelines.
-- [Style Editing Guide](./02-design-system/style-editing.md) - How to edit styles
-- [Component Library](./02-design-system/components.md) - All UI components
-- [Design Tokens](./02-design-system/design-tokens.md) - Colors, fonts, spacing
-- [CSS Cheat Sheet](./02-design-system/css-cheat-sheet.md) - Quick reference
+## 🚀 Quick Start (5 minutes)
 
-### 🏗️ [Architecture](./03-architecture/)
-System architecture and technical documentation.
-- [System Overview](./03-architecture/overview.md) - High-level architecture
-- [Tech Stack](./03-architecture/tech-stack.md) - Technologies used
-- [Project Structure](./03-architecture/project-structure.md) - Codebase organization
+```bash
+# 1. Install
+pnpm install
 
-### ⚙️ [Development](./04-development/)
-Development guidelines and best practices.
-- [Coding Standards](./04-development/coding-standards.md) - Code style & conventions
-- [Development Guidelines](./04-development/guidelines.md) - Best practices
+# 2. Environment
+cp .env.example .env
+# Configure Supabase credentials
 
-### 🚀 [Deployment](./05-deployment/)
-Deployment guides and operations.
-- [Deployment Guide](./05-deployment/deployment-guide.md) - How to deploy
-- [CI/CD Setup](./05-deployment/ci-cd-setup.md) - Continuous integration
-- [Monitoring](./05-deployment/monitoring.md) - Performance monitoring
+# 3. Start development
+pnpm dev
+# User platform: http://localhost:8080
+# Admin interface: http://localhost:8081
+```
 
-### 📡 [API Documentation](./06-api/)
-API endpoints and integration guides.
-- [API Overview](./06-api/api-overview.md) - API architecture
-- [Authentication](./06-api/authentication.md) - Auth & callbacks
+**Complete setup**: [Getting Started Guide](./01-getting-started/)
 
-### 🔧 [Tools & Scripts](./07-tools/)
-Development tools and automation.
-- [Auto-Reference System](./07-tools/auto-reference-system.md) - Design system automation
+## 📖 Documentation Structure
 
-### 📋 [Features](./08-features/)
-Feature documentation and business requirements.
-- [User Features](./08-features/user-features.md) - User-facing features
-- [Business Logic](./08-features/business-logic.md) - Business requirements
+### 🚀 **Development** 
+- **[Getting Started](./01-getting-started/)** - Setup và onboarding
+- **[Development](./04-development/)** - Coding standards và guidelines
+- **[Deployment](./05-deployment/)** - CI/CD và production deployment
 
-### 📊 [Reports](./09-reports/)
-Progress reports and analysis.
-- Migration reports and audits
+### 🎨 **Design & UI**
+- **[Design System](./02-design-system/)** - Components, tokens, và styling
+- **[Architecture](./03-architecture/)** - System overview và tech stack
 
-### 🗂️ [Archive](./10-archive/)
-Archived and deprecated documentation.
+### � **Integration**
+- **[API Documentation](./06-api/)** - Backend integration và authentication
+- **[Tools & Scripts](./07-tools/)** - Development tools và automation
+
+### 📊 **Reference**
+- **[Features Overview](./08-features/)** - Core functionality documentation
+- **[Reports](./09-reports/)** - Development progress và audit reports
+- **[Reference Guides](./10-reference/)** - Technical analysis và optimization
+
+## 🏗️ Architecture Overview
+
+```
+User Platform (8080)    Admin Interface (8081)
+       ↓                        ↓
+    React 18 + TypeScript + Tailwind CSS
+       ↓                        ↓
+  Shared Business Logic (packages/shared-*)
+       ↓                        ↓
+    Supabase (Database + Auth + Real-time)
+       ↓
+    VNPay Payment Gateway
+```
+
+## 🎯 Core Features
+
+| Feature | Description | Status |
+|---------|-------------|---------|
+| **Tournament System** | SABO Double Elimination với brackets | ✅ Complete |
+| **Challenge System** | 1v1 challenges với ELO calculation | ✅ Complete |
+| **Ranking System** | ELO + SPA points leaderboards | ✅ Complete |
+| **Payment Integration** | VNPay cho tournament registration | ✅ Complete |
+| **Real-time Updates** | Live brackets và notifications | ✅ Complete |
+| **Admin Interface** | Tournament và user management | ✅ Complete |
+
+## � For Different Roles
+
+### 🔧 **Developers**
+1. Start with [Quick Start](./01-getting-started/quick-start.md)
+2. Follow [Coding Standards](./04-development/coding-standards.md)
+3. Use [Design System](./02-design-system/) for consistent UI
+
+### 🎨 **Designers**  
+1. Review [Design Tokens](./02-design-system/design-tokens.md)
+2. Check [Component Library](./02-design-system/components.md)
+3. Follow [Style Guidelines](./02-design-system/style-editing.md)
+
+### 🚀 **DevOps**
+1. Setup [CI/CD Pipeline](./05-deployment/ci-cd-setup.md)
+2. Configure [Monitoring](./05-deployment/monitoring.md)
+3. Follow [Deployment Guide](./05-deployment/deployment-guide.md)
+
+### 📊 **Product Managers**
+1. Review [System Overview](../SYSTEM_OVERVIEW.md)
+2. Check [Features Documentation](./08-features/)
+3. Monitor [Progress Reports](./09-reports/)
 
 ## 🔍 Quick Find
 
-### For New Developers:
-1. [Quick Start Guide](./01-getting-started/quick-start.md) - Get up and running in 5 minutes
-2. [Onboarding Checklist](./01-getting-started/onboarding-checklist.md) - Complete setup checklist
-
-### For UI/UX Work:
-1. [Style Editing Guide](./02-design-system/style-editing.md) - How to edit styles properly
-2. [CSS Cheat Sheet](./02-design-system/css-cheat-sheet.md) - Quick reference for daily work
-3. [Design Tokens](./02-design-system/design-tokens.md) - All design variables
-
-### For Feature Development:
-1. [Component Library](./02-design-system/components.md) - Available UI components
-2. [API Documentation](./06-api/api-overview.md) - Backend integration
-3. [Coding Standards](./04-development/coding-standards.md) - Code guidelines
-
-### For Deployment:
-1. [Deployment Guide](./05-deployment/deployment-guide.md) - Step-by-step deployment
-2. [CI/CD Setup](./05-deployment/ci-cd-setup.md) - Automation setup
+| Need | Go To |
+|------|-------|
+| **Start developing** | [Quick Start](./01-getting-started/quick-start.md) |
+| **API integration** | [API Overview](./06-api/api-overview.md) |
+| **UI components** | [Component Library](./02-design-system/components.md) |
+| **Deployment** | [Deployment Guide](./05-deployment/deployment-guide.md) |
+| **Business logic** | [Architecture Overview](./03-architecture/overview.md) |
+| **Troubleshooting** | [Archive](./99-archive/) |
 
 ## 📞 Need Help?
 
-- **Can't find what you're looking for?** Check the [Archive](./10-archive/) for older documentation
-- **Found an issue?** Please update the documentation and help others
-- **Need to add new docs?** Follow the [naming conventions](./10-archive/reorganization-plan.md)
+- **Development Issues**: Check [Development Guidelines](./04-development/guidelines.md)
+- **Design Questions**: Review [Design System](./02-design-system/)
+- **Deployment Problems**: See [Deployment](./05-deployment/)
+- **Legacy Issues**: Check [Archive](./99-archive/)
 
 ---
 
-**Last Updated**: $(date)  
-**Maintained by**: Development Team
+**🎯 Goal**: Simple, maintainable documentation that helps teams be productive
+
+**Last Updated**: August 31, 2025 | **Status**: Production Ready

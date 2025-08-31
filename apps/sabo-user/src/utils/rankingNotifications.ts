@@ -32,7 +32,7 @@ export function showRankPromotionNotification({
     description: `Bạn đã thăng hạng từ ${formatRankDisplay(oldRank)} lên ${formatRankDisplay(newRank)}! ELO hiện tại: ${newElo}`,
     duration: 8000,
     className:
-      'bg-gradient-to-r from-green-500 to-green-600 text-white border-green-600',
+      'bg-gradient-to-r from-green-500 to-green-600 text-var(--color-background) border-green-600',
   });
 }
 
@@ -54,7 +54,7 @@ export function showEloEarnedNotification({
     title: `${emoji} ELO ${isPositive ? 'tăng' : 'giảm'}!`,
     description: `${isPositive ? '+' : ''}${earnedElo} điểm ELO từ ${source}. Tổng: ${newTotal}`,
     duration: 5000,
-    className: `bg-gradient-to-r ${color} text-white`,
+    className: `bg-gradient-to-r ${color} text-var(--color-background)`,
   });
 }
 
@@ -73,7 +73,7 @@ export function showSPAEarnedNotification({
     description: `+${earnedSpa} SPA Points từ ${source}. Tổng: ${newTotal.toLocaleString('vi-VN')}`,
     duration: 4000,
     className:
-      'bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-yellow-600',
+      'bg-gradient-to-r from-yellow-500 to-orange-500 text-var(--color-background) border-yellow-600',
   });
 }
 
@@ -88,7 +88,7 @@ export function showSPADailyLimitWarning(currentDaily: number, limit: number) {
       title: '⚠️ Gần đạt giới hạn SPA',
       description: `Còn ${remaining} SPA Points có thể kiếm hôm nay từ thách đấu`,
       duration: 6000,
-      className: 'bg-gradient-to-r from-amber-500 to-orange-500 text-white',
+      className: 'bg-gradient-to-r from-amber-500 to-orange-500 text-var(--color-background)',
     });
   } else if (remaining <= 0) {
     toast({
@@ -96,7 +96,7 @@ export function showSPADailyLimitWarning(currentDaily: number, limit: number) {
       description:
         'Bạn đã kiếm đủ SPA Points từ thách đấu hôm nay. Quay lại vào ngày mai!',
       duration: 6000,
-      className: 'bg-gradient-to-r from-red-500 to-red-600 text-white',
+      className: 'bg-gradient-to-r from-red-500 to-red-600 text-var(--color-background)',
     });
   }
 }
@@ -113,7 +113,7 @@ export function showMilestoneCompletedNotification(
     description: `Bạn đã đạt được "${milestoneName}". Phần thưởng: ${reward}`,
     duration: 7000,
     className:
-      'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-purple-600',
+      'bg-gradient-to-r from-purple-500 to-pink-500 text-var(--color-background) border-purple-600',
   });
 }
 
@@ -128,7 +128,7 @@ export function showWinStreakNotification(
     title: '🔥 Chuỗi thắng!',
     description: `${streakCount} trận thắng liên tiếp! Bonus: +${bonusPoints} SPA Points`,
     duration: 5000,
-    className: 'bg-gradient-to-r from-orange-500 to-red-500 text-white',
+    className: 'bg-gradient-to-r from-orange-500 to-red-500 text-var(--color-background)',
   });
 }
 
@@ -140,6 +140,6 @@ export function showComebackNotification(bonusPoints: number) {
     title: '💪 Comeback thành công!',
     description: `Thắng ngược từ thế bất lợi! Bonus: +${bonusPoints} SPA Points`,
     duration: 6000,
-    className: 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white',
+    className: 'bg-gradient-to-r from-emerald-500 to-teal-500 text-var(--color-background)',
   });
 }

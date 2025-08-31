@@ -27,7 +27,7 @@ export const SPAPointsBadge: React.FC = () => {
  return (
   <Badge
    variant='outline'
-   className='bg-gradient-to-r from-yellow-50 to-orange-50 text-warning-700 border-yellow-200 hover:from-yellow-100 hover:to-orange-100'
+   className='bg-gradient-to-r from-yellow-50 to-orange-50 text-warning-700 border-warning hover:from-yellow-100 hover:to-orange-100'
   >
    <Coins className='w-3 h-3 mr-1' />
    <span className='font-medium'>{balance} SPA</span>

@@ -154,7 +154,7 @@ Thời gian: ${formatDateTime(selectedTournament?.tournament_start)}
 
    {/* Payment Action (if required) */}
    {watchedData.payment_method === 'vnpay' && paymentUrl && (
-    <Card className='border-yellow-200 bg-warning-50 dark:bg-yellow-900/10 dark:border-yellow-800'>
+    <Card className='border-warning bg-warning-50 dark:bg-yellow-900/10 dark:border-yellow-800'>
      <CardContent className='p-6 text-center'>
       <div className='space-y-4'>
        <div className='flex justify-center'>
@@ -169,7 +169,7 @@ Thời gian: ${formatDateTime(selectedTournament?.tournament_start)}
         </p>
         <Button
          onClick={handlePayNow}
-         className='bg-yellow-600 hover:bg-yellow-700 text-white'
+         className='bg-yellow-600 hover:bg-yellow-700 text-var(--color-background)'
         >
          <ExternalLink className='h-4 w-4 mr-2' />
          Thanh toán ngay

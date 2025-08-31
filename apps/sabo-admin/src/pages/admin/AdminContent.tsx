@@ -130,7 +130,7 @@ export default function AdminContent() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">📝 Content Management</h1>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+        <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700 flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Create Content
         </button>
@@ -138,40 +138,40 @@ export default function AdminContent() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Content</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Content</p>
               <p className="text-2xl font-bold">{content.length}</p>
             </div>
             <FileText className="h-8 w-8 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Published</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Published</p>
               <p className="text-2xl font-bold">{content.filter(c => c.status === 'published').length}</p>
             </div>
             <Eye className="h-8 w-8 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Views</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Views</p>
               <p className="text-2xl font-bold">{content.reduce((sum, c) => sum + c.views, 0)}</p>
             </div>
             <Calendar className="h-8 w-8 text-purple-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Featured</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Featured</p>
               <p className="text-2xl font-bold">{content.filter(c => c.featured).length}</p>
             </div>
             <Tag className="h-8 w-8 text-orange-500" />
@@ -180,7 +180,7 @@ export default function AdminContent() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
+      <div className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -218,7 +218,7 @@ export default function AdminContent() {
       {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
         {content.map((item) => (
-          <div key={item.id} className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+          <div key={item.id} className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow overflow-hidden">
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -241,7 +241,7 @@ export default function AdminContent() {
 
               <h3 className="font-semibold text-lg mb-2 line-clamp-2">{item.title}</h3>
               
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <div className="text-sm text-neutral dark:text-gray-400 mb-4">
                 <p>By {item.author}</p>
                 <p>Created: {item.createdAt}</p>
                 <p>Updated: {item.updatedAt}</p>
@@ -257,14 +257,14 @@ export default function AdminContent() {
               </div>
 
               <div className="flex gap-2">
-                <button className="flex-1 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center gap-1">
+                <button className="flex-1 px-3 py-2 bg-blue-600 text-var(--color-background) rounded hover:bg-blue-700 flex items-center justify-center gap-1">
                   <Edit className="h-4 w-4" />
                   Edit
                 </button>
-                <button className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
+                <button className="px-3 py-2 bg-gray-600 text-var(--color-background) rounded hover:bg-gray-700">
                   <Eye className="h-4 w-4" />
                 </button>
-                <button className="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                <button className="px-3 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
@@ -275,35 +275,35 @@ export default function AdminContent() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2 flex items-center gap-2">
             <Image className="h-5 w-5" />
             Media Library
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Manage images and files</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Manage images and files</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             Open Media Library
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2 flex items-center gap-2">
             <Tag className="h-5 w-5" />
             Tag Management
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Organize content with tags</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Organize content with tags</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             Manage Tags
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2 flex items-center gap-2">
             <Calendar className="h-5 w-5" />
             Content Calendar
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Schedule content publication</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Schedule content publication</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             View Calendar
           </button>
         </div>

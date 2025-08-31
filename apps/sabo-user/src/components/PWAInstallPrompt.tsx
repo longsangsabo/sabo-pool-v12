@@ -90,7 +90,7 @@ const PWAInstallPrompt = () => {
     <CardContent className='p-4'>
      <div className='flex items-start gap-3'>
       <div className='bg-gradient-to-br from-primary to-primary/80 p-2 rounded-xl shadow-sm'>
-       <Smartphone className='h-5 w-5 text-white' />
+       <Smartphone className='h-5 w-5 text-var(--color-background)' />
       </div>
       <div className='flex-1'>
        <h3 className='font-semibold text-body-small mb-1 flex items-center gap-1'>

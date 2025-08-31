@@ -58,7 +58,7 @@ export const MessageList: React.FC<MessageListProps> = ({
  const getMessageTypeIcon = (messageType: string) => {
   switch (messageType) {
    case 'system':
-    return <Settings className="h-4 w-4 text-blue-500" />;
+    return <Settings className="h-4 w-4 text-primary-500" />;
    case 'tournament':
     return <Trophy className="h-4 w-4 text-yellow-500" />;
    case 'announcement':
@@ -297,13 +297,13 @@ export const MessageList: React.FC<MessageListProps> = ({
           {/* Status Icons */}
           <div className="flex items-center gap-1">
            {message.status === 'unread' && type === 'inbox' && (
-            <Mail className="h-4 w-4 text-blue-500" />
+            <Mail className="h-4 w-4 text-primary-500" />
            )}
            {message.priority !== 'normal' && getPriorityBadge(message.priority)}
           </div>
 
           {/* Timestamp */}
-          <span className="text-caption text-muted-foreground ml-auto whitespace-nowrap">
+          <span className="text-caption text-muted-foreground ml-auto var(--color-background)space-nowrap">
            <Clock className="h-3 w-3 inline mr-1" />
            {format(new Date(message.created_at), 'dd/MM/yyyy HH:mm', { locale: vi })}
           </span>

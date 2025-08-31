@@ -86,9 +86,8 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
 
  return (
   <div 
-   className={`card-avatar-container ${className}`}
+   className={`card-avatar-container ${className} ${onClick ? 'cursor-pointer' : 'cursor-default'}`}
    onClick={onClick}
-   style={{ cursor: onClick ? 'pointer' : 'default' }}
   >
    <div
     className={`card-avatar-frame ${sizeConfig[size].width} ${sizeConfig[size].height}`}
@@ -97,15 +96,14 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
     <div className='card-border'>
      {/* Main Image Area with Nickname Overlay */}
      <div
-      className='image-area'
+      className={`image-area ${onAvatarChange ? 'cursor-pointer' : 'cursor-default'}`}
       onClick={onAvatarChange ? () => fileInputRef.current?.click() : undefined}
-      style={{ cursor: onAvatarChange ? 'pointer' : 'default' }}
      >
       {currentAvatar && currentAvatar.trim() !== '' ? (
        <img 
         src={currentAvatar} 
         alt='Avatar' 
-        className='avatar-image'
+        className='avatar-image block relative z-[2] bg-transparent'
         onError={(e) => {
          console.error('❌ Avatar load error:', currentAvatar);
          // Hide the broken image and show placeholder
@@ -119,25 +117,12 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
         onLoad={() => {
          console.log('✅ Avatar loaded successfully:', currentAvatar);
         }}
-        style={{ 
-         backgroundColor: 'transparent',
-         display: 'block',
-         position: 'relative',
-         zIndex: 2
-        }}
        />
       ) : null}
       
       {/* Always render placeholder, but hide it when avatar loads successfully */}
       <div 
-       className='avatar-placeholder'
-       style={{ 
-        display: (currentAvatar && currentAvatar.trim() !== '') ? 'none' : 'flex',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        zIndex: 1
-       }}
+       className={`avatar-placeholder absolute top-0 left-0 z-[1] ${(currentAvatar && currentAvatar.trim() !== '') ? 'hidden' : 'flex'}`}
       >
        <div className='placeholder-content'>
         <Camera className='w-8 h-8 text-gray-400 mb-2' />
@@ -157,7 +142,7 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
           fontSize: '2rem', // Tăng lên 2rem cho rõ ràng hơn
           lineHeight: 1.1, // Tăng line-height cho tiếng Việt
           background:
-           'linear-gradient(to right, #1d4ed8, #7c3aed, #1e40af, var(--color-white))', // Thêm white để sáng hơn
+           'linear-gradient(to right, rgb(29_78_216), rgb(124_58_237), rgb(30_64_175), var(--color-white))', // Thêm white để sáng hơn
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
@@ -220,60 +205,28 @@ const CardAvatar: React.FC<CardAvatarProps> = ({
      <div className='stats-row'>
       <div className='stat-item'>
        <Crown
-        className='stat-icon'
-        style={{
-         color: '#1f2937',
-         stroke: '#1f2937',
-         fill: '#1f2937',
-         width: '16px',
-         height: '16px',
-         margin: '0 auto 4px',
-        }}
+        className='stat-icon w-4 h-4 mx-auto mb-1 text-gray-800 stroke-gray-800 fill-gray-800'
        />
        <div className='stat-label'>ELO</div>
        <div className='stat-value'>{elo}</div>
       </div>
       <div className='stat-item'>
        <Diamond
-        className='stat-icon'
-        style={{
-         color: '#1f2937',
-         stroke: '#1f2937',
-         fill: '#1f2937',
-         width: '16px',
-         height: '16px',
-         margin: '0 auto 4px',
-        }}
+        className='stat-icon w-4 h-4 mx-auto mb-1 text-gray-800 stroke-gray-800 fill-gray-800'
        />
        <div className='stat-label'>SPA</div>
        <div className='stat-value'>{spa}</div>
       </div>
       <div className='stat-item'>
        <BarChart3
-        className='stat-icon'
-        style={{
-         color: '#1f2937',
-         stroke: '#1f2937',
-         fill: '#1f2937',
-         width: '16px',
-         height: '16px',
-         margin: '0 auto 4px',
-        }}
+        className='stat-icon w-4 h-4 mx-auto mb-1 text-gray-800 stroke-gray-800 fill-gray-800'
        />
        <div className='stat-label'>XH</div>
        <div className='stat-value'>{ranking > 0 ? `#${ranking}` : 'N/A'}</div>
       </div>
       <div className='stat-item'>
        <Swords
-        className='stat-icon'
-        style={{
-         color: '#1f2937',
-         stroke: '#1f2937',
-         fill: '#1f2937',
-         width: '16px',
-         height: '16px',
-         margin: '0 auto 4px',
-        }}
+        className='stat-icon w-4 h-4 mx-auto mb-1 text-gray-800 stroke-gray-800 fill-gray-800'
        />
        <div className='stat-label'>TRẬN</div>
        <div className='stat-value'>{matches}</div>

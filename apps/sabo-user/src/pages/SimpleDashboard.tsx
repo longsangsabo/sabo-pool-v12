@@ -33,7 +33,7 @@ const SimpleDashboard = () => {
          <h1 className='text-title font-bold text-yellow-400'>
           SABO Pool Arena
          </h1>
-         <p className='text-green-200 text-sm'>
+         <p className='text-success-200 text-sm'>
           Chào mừng bạn đến với trang chủ
          </p>
         </div>
@@ -42,7 +42,7 @@ const SimpleDashboard = () => {
         <Link to='/login'>
          <Button
           variant='outline'
-          className='text-white border-white hover:bg-white hover:text-green-900'
+          className='text-var(--color-background) border-var(--color-background) hover:bg-var(--color-background) hover:text-green-900'
          >
           Đăng nhập
          </Button>
@@ -60,10 +60,10 @@ const SimpleDashboard = () => {
     {/* Nội dung chính */}
     <main className='container mx-auto px-4 py-16'>
      <div className='text-center mb-12'>
-      <h2 className='text-4xl md:text-6xl font-bold text-white mb-6'>
+      <h2 className='text-4xl md:text-6xl font-bold text-var(--color-background) mb-6'>
        Chào Mừng Đến SABO Pool Arena
       </h2>
-      <p className='text-title text-green-200 mb-8 max-w-2xl mx-auto'>
+      <p className='text-title text-success-200 mb-8 max-w-2xl mx-auto'>
        Hệ thống quản lý và đặt bàn bi-a hiện đại, chuyên nghiệp
       </p>
 
@@ -112,10 +112,10 @@ const SimpleDashboard = () => {
         <div className='w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-4'>
          <span className='text-2xl'>🎱</span>
         </div>
-        <CardTitle className='text-white'>Website CLB</CardTitle>
+        <CardTitle className='text-var(--color-background)'>Website CLB</CardTitle>
        </CardHeader>
        <CardContent className='text-center'>
-        <p className='text-green-200 mb-4'>
+        <p className='text-success-200 mb-4'>
          Website đơn giản cho khách hàng xem thông tin và đặt bàn
         </p>
         <Link to='/simple-club'>
@@ -131,10 +131,10 @@ const SimpleDashboard = () => {
         <div className='w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center mx-auto mb-4'>
          <span className='text-2xl'>📅</span>
         </div>
-        <CardTitle className='text-white'>Đặt Bàn Online</CardTitle>
+        <CardTitle className='text-var(--color-background)'>Đặt Bàn Online</CardTitle>
        </CardHeader>
        <CardContent className='text-center'>
-        <p className='text-green-200 mb-4'>
+        <p className='text-success-200 mb-4'>
          Đặt bàn bi-a nhanh chóng và tiện lợi
         </p>
         <Link to='/simple-booking'>
@@ -150,14 +150,14 @@ const SimpleDashboard = () => {
         <div className='w-16 h-16 bg-purple-400 rounded-full flex items-center justify-center mx-auto mb-4'>
          <span className='text-2xl'>👥</span>
         </div>
-        <CardTitle className='text-white'>Quản Lý</CardTitle>
+        <CardTitle className='text-var(--color-background)'>Quản Lý</CardTitle>
        </CardHeader>
        <CardContent className='text-center'>
-        <p className='text-green-200 mb-4'>
+        <p className='text-success-200 mb-4'>
          Hệ thống quản lý dành cho quản trị viên
         </p>
         <Link to='/login'>
-         <Button className='bg-purple-400 text-white hover:bg-info-500 w-full'>
+         <Button className='bg-purple-400 text-var(--color-background) hover:bg-info-500 w-full'>
           Đăng nhập
          </Button>
         </Link>
@@ -174,14 +174,14 @@ const SimpleDashboard = () => {
         </CardTitle>
        </CardHeader>
        <CardContent className='space-y-3'>
-        <p className='text-white'>📞 Hotline: 0901 234 567</p>
-        <p className='text-white'>
+        <p className='text-var(--color-background)'>📞 Hotline: 0901 234 567</p>
+        <p className='text-var(--color-background)'>
          ⏰ Giờ mở cửa: 8:00 - 24:00 hàng ngày
         </p>
-        <p className='text-white'>
+        <p className='text-var(--color-background)'>
          📍 Địa chỉ: 123 Đường Nguyễn Huệ, Q.1, TP.HCM
         </p>
-        <p className='text-green-200 text-body-small mt-4'>
+        <p className='text-success-200 text-body-small mt-4'>
          Liên hệ với chúng tôi để được hỗ trợ tốt nhất!
         </p>
        </CardContent>

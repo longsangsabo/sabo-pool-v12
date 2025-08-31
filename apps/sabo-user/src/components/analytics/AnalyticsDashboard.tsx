@@ -225,7 +225,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
        {data.overview.totalMatches}
       </div>
       <p className='text-caption text-muted-foreground'>
-       <TrendingUp className='h-3 w-3 inline text-green-500' />
+       <TrendingUp className='h-3 w-3 inline text-success-500' />
        +12% so với tháng trước
       </p>
      </CardContent>
@@ -239,7 +239,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
      <CardContent>
       <div className='text-heading-bold'>{data.overview.winRate}%</div>
       <p className='text-caption text-muted-foreground'>
-       <TrendingUp className='h-3 w-3 inline text-green-500' />
+       <TrendingUp className='h-3 w-3 inline text-success-500' />
        +2.5% so với tháng trước
       </p>
      </CardContent>
@@ -255,7 +255,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
        {formatCurrency(data.overview.totalEarnings)}
       </div>
       <p className='text-caption text-muted-foreground'>
-       <TrendingUp className='h-3 w-3 inline text-green-500' />
+       <TrendingUp className='h-3 w-3 inline text-success-500' />
        +15% so với tháng trước
       </p>
      </CardContent>

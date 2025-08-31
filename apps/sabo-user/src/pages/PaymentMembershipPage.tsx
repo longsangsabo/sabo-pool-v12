@@ -147,7 +147,7 @@ const PaymentMembershipPage = () => {
       <ul className='list-none space-y-2 mt-2'>
        {selectedPlan.features.map((feature, index) => (
         <li key={index} className='flex items-center gap-2'>
-         <CheckCircle className='w-4 h-4 text-green-500' />
+         <CheckCircle className='w-4 h-4 text-success-500' />
          {feature}
         </li>
        ))}

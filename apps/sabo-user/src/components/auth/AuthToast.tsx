@@ -71,7 +71,7 @@ const AuthToastItem: React.FC<AuthToastItemProps> = ({ toast, onRemove }) => {
   const typeStyles = {
    success: 'bg-success-50/90 border-success-200 text-success-800',
    error: 'bg-error-50/90 border-error-200 text-error-800',
-   warning: 'bg-warning-50/90 border-yellow-200 text-warning-800',
+   warning: 'bg-warning-50/90 border-warning text-warning-800',
    info: 'bg-primary-50/90 border-primary-200 text-primary-800',
   };
   return `${baseStyles} ${typeStyles[toast.type]}`;
@@ -79,10 +79,10 @@ const AuthToastItem: React.FC<AuthToastItemProps> = ({ toast, onRemove }) => {
 
  const getIconColor = () => {
   const colors = {
-   success: 'text-green-500',
-   error: 'text-red-500',
+   success: 'text-success-500',
+   error: 'text-error-500',
    warning: 'text-yellow-500',
-   info: 'text-blue-500',
+   info: 'text-primary-500',
   };
   return colors[toast.type];
  };
@@ -172,7 +172,7 @@ const AuthToastItem: React.FC<AuthToastItemProps> = ({ toast, onRemove }) => {
     {/* Close button */}
     <Button
      onClick={handleRemove}
-     className='flex-shrink-0 ml-3 p-1 hover:bg-black/5 rounded-full transition-colors duration-200'
+     className='flex-shrink-0 ml-3 p-1 hover:bg-var(--color-foreground)/5 rounded-full transition-colors duration-200'
     >
      <svg
       className='w-4 h-4 opacity-60'

@@ -150,7 +150,7 @@ const ClubSettings = () => {
    <Card>
     <CardContent className='pt-6'>
      <div className='text-center py-8 text-muted-foreground'>
-      <AlertTriangle className='w-12 h-12 mx-auto mb-4 text-red-500' />
+      <AlertTriangle className='w-12 h-12 mx-auto mb-4 text-error-500' />
       <p className='font-medium'>Không tìm thấy thông tin CLB</p>
       <p className='text-body-small mt-1'>
        Vui lòng liên hệ admin để được hỗ trợ
@@ -355,7 +355,7 @@ const ClubSettings = () => {
      </CardTitle>
     </CardHeader>
     <CardContent>
-     <div className='bg-warning-50 border border-yellow-200 rounded-lg p-4'>
+     <div className='bg-warning-50 border border-warning rounded-lg p-4'>
       <div className='flex items-start gap-3'>
        <AlertTriangle className='w-5 h-5 text-warning-600 mt-0.5' />
        <div>

@@ -120,7 +120,7 @@ const ClubApprovalManagement: React.FC = () => {
         <p className="text-body-small-neutral dark:text-gray-400">Đã phê duyệt hôm nay</p>
         <p className="text-heading-bold text-success-600">8</p>
        </div>
-       <CheckCircle2 className="w-8 h-8 text-green-500" />
+       <CheckCircle2 className="w-8 h-8 text-success-500" />
       </div>
      </CardContent>
     </Card>
@@ -132,7 +132,7 @@ const ClubApprovalManagement: React.FC = () => {
         <p className="text-body-small-neutral dark:text-gray-400">Tranh chấp</p>
         <p className="text-heading-bold text-error-600">2</p>
        </div>
-       <AlertTriangle className="w-8 h-8 text-red-500" />
+       <AlertTriangle className="w-8 h-8 text-error-500" />
       </div>
      </CardContent>
     </Card>
@@ -144,7 +144,7 @@ const ClubApprovalManagement: React.FC = () => {
         <p className="text-body-small-neutral dark:text-gray-400">SPA đã chuyển</p>
         <p className="text-heading-bold text-primary-600">2,450</p>
        </div>
-       <TrendingUp className="w-8 h-8 text-blue-500" />
+       <TrendingUp className="w-8 h-8 text-primary-500" />
       </div>
      </CardContent>
     </Card>

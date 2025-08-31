@@ -187,7 +187,7 @@ const AuthErrorFallback: React.FC<AuthErrorFallbackProps> = ({
         <summary className='text-caption text-error-600 cursor-pointer'>
          Stack trace
         </summary>
-        <pre className='text-caption text-error-600 mt-1 whitespace-pre-wrap'>
+        <pre className='text-caption text-error-600 mt-1 var(--color-background)space-pre-wrap'>
          {error.stack}
         </pre>
        </details>
@@ -199,21 +199,21 @@ const AuthErrorFallback: React.FC<AuthErrorFallbackProps> = ({
     <div className='mt-8 space-y-3'>
      <Button
       onClick={onRetry}
-      className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-body-small-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+      className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-body-small-medium text-var(--color-background) bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
      >
       Thử lại
      </Button>
 
      <Button
       onClick={onReload}
-      className='w-full flex justify-center py-2 px-4 border border-neutral-300 rounded-md shadow-sm text-body-small-medium text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+      className='w-full flex justify-center py-2 px-4 border border-neutral-300 rounded-md shadow-sm text-body-small-medium text-neutral-700 bg-var(--color-background) hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
      >
       Tải lại trang
      </Button>
 
      <Button
       onClick={onGoHome}
-      className='w-full flex justify-center py-2 px-4 border border-neutral-300 rounded-md shadow-sm text-body-small-medium text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+      className='w-full flex justify-center py-2 px-4 border border-neutral-300 rounded-md shadow-sm text-body-small-medium text-neutral-700 bg-var(--color-background) hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
      >
       Về trang chủ
      </Button>

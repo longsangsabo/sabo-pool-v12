@@ -70,7 +70,7 @@ const EmailVerificationBanner = () => {
     <div className='flex items-center'>
      <div className='flex-shrink-0'>
       {emailSent ? (
-       <Check className='h-5 w-5 text-green-500' />
+       <Check className='h-5 w-5 text-success-500' />
       ) : (
        <Mail className='h-5 w-5 text-blue-400' />
       )}

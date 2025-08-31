@@ -26,13 +26,13 @@ export const DARK_MODE_CLASSES = {
   borderCard: 'border-slate-600',
   
   // Interactive elements
-  buttonPrimary: 'bg-blue-600 hover:bg-blue-700 text-white',
+  buttonPrimary: 'bg-blue-600 hover:bg-blue-700 text-var(--color-background)',
   buttonSecondary: 'bg-slate-700/50 hover:bg-slate-700 text-slate-200',
   
   // Status colors
-  statusOnline: 'bg-green-500',
-  statusOffline: 'bg-gray-500',
-  statusLive: 'bg-red-500',
+  statusOnline: 'bg-success-background0',
+  statusOffline: 'bg-neutral-background0',
+  statusLive: 'bg-error-background0',
   
   // Badges and tags
   badge: 'bg-slate-700/50 text-slate-200',
@@ -40,7 +40,7 @@ export const DARK_MODE_CLASSES = {
   
   // Navigation
   navBackground: 'bg-slate-900/95 backdrop-blur border-slate-800',
-  navActive: 'text-blue-400 bg-blue-500/10',
+  navActive: 'text-blue-400 bg-primary-background0/10',
   navInactive: 'text-slate-400 hover:text-slate-300',
   
   // Feed components
@@ -51,44 +51,44 @@ export const DARK_MODE_CLASSES = {
 
 // LIGHT MODE CLASSES - NO GRAY BACKGROUNDS, ONLY WHITE/TRANSPARENT
 export const LIGHT_MODE_CLASSES = {
-  // Backgrounds (pure white or transparent only)
-  background: 'bg-white',
-  backgroundBlur: 'bg-white/70 backdrop-blur-sm', // Transparent white
-  backgroundCard: 'bg-white/70', // Transparent white for feed cards
-  backgroundCardSecondary: 'bg-white/50', // More transparent white for story section
-  backgroundOverlay: 'bg-black/5', // Very subtle overlay
+  // Backgrounds (pure var(--color-background) or transparent only)
+  background: 'bg-var(--color-background)',
+  backgroundBlur: 'bg-var(--color-background)/70 backdrop-blur-sm', // Transparent var(--color-background)
+  backgroundCard: 'bg-var(--color-background)/70', // Transparent var(--color-background) for feed cards
+  backgroundCardSecondary: 'bg-var(--color-background)/50', // More transparent var(--color-background) for story section
+  backgroundOverlay: 'bg-var(--color-foreground)/5', // Very subtle overlay
   
   // Text colors (high contrast for light background)
   textPrimary: 'text-slate-900', // Changed from gray to slate
   textSecondary: 'text-slate-700', // Changed from gray to slate
   textMuted: 'text-slate-600', // Changed from gray to slate
-  textAccent: 'text-blue-600',
+  textAccent: 'text-primary',
   
-  // Borders and dividers (white/transparent only)
-  border: 'border-white/30', // Transparent white border
-  borderCard: 'border-white/20', // More transparent white border
+  // Borders and dividers (var(--color-background)/transparent only)
+  border: 'border-var(--color-background)/30', // Transparent var(--color-background) border
+  borderCard: 'border-var(--color-background)/20', // More transparent var(--color-background) border
   
   // Interactive elements (no gray backgrounds)
-  buttonPrimary: 'bg-blue-600 hover:bg-blue-700 text-white',
-  buttonSecondary: 'bg-white/90 hover:bg-white text-slate-800 border border-white/40',
+  buttonPrimary: 'bg-blue-600 hover:bg-blue-700 text-var(--color-background)',
+  buttonSecondary: 'bg-var(--color-background)/90 hover:bg-var(--color-background) text-slate-800 border border-var(--color-background)/40',
   
   // Status colors
-  statusOnline: 'bg-green-500',
+  statusOnline: 'bg-success-background0',
   statusOffline: 'bg-slate-400', // Changed from gray to slate
-  statusLive: 'bg-red-500',
+  statusLive: 'bg-error-background0',
   
-  // Badges and tags (white/transparent only)
-  badge: 'bg-white/70 text-slate-800 border border-white/40',
-  badgeAccent: 'bg-blue-50/80 text-blue-700 border border-blue-200/60',
+  // Badges and tags (var(--color-background)/transparent only)
+  badge: 'bg-var(--color-background)/70 text-slate-800 border border-var(--color-background)/40',
+  badgeAccent: 'bg-primary-background/80 text-blue-700 border border-primary/60',
   
-  // Navigation (white/transparent only)
-  navBackground: 'bg-white/95 backdrop-blur border-white/40',
-  navActive: 'text-blue-600 bg-blue-50/90',
+  // Navigation (var(--color-background)/transparent only)
+  navBackground: 'bg-var(--color-background)/95 backdrop-blur border-var(--color-background)/40',
+  navActive: 'text-primary bg-primary-background/90',
   navInactive: 'text-slate-600 hover:text-slate-800',
   
   // Feed components (PURE WHITE/TRANSPARENT - NO GRAY)
-  feedBackground: 'bg-white/60 backdrop-blur-sm', // Pure transparent white
-  feedStats: 'bg-white/50 text-slate-700', // Pure transparent white
+  feedBackground: 'bg-var(--color-background)/60 backdrop-blur-sm', // Pure transparent var(--color-background)
+  feedStats: 'bg-var(--color-background)/50 text-slate-700', // Pure transparent var(--color-background)
   feedInteraction: 'text-slate-500 hover:text-slate-700'
 } as const;
 

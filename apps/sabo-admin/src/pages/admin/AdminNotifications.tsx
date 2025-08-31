@@ -132,7 +132,7 @@ export default function AdminNotifications() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">🔔 Notifications</h1>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+        <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700 flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Create Notification
         </button>
@@ -140,40 +140,40 @@ export default function AdminNotifications() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Sent</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Sent</p>
               <p className="text-2xl font-bold">{getTotalSent()}</p>
             </div>
             <Send className="h-8 w-8 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Read Rate</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Read Rate</p>
               <p className="text-2xl font-bold">{getReadRate()}%</p>
             </div>
             <CheckCircle className="h-8 w-8 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Scheduled</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Scheduled</p>
               <p className="text-2xl font-bold">{notifications.filter(n => n.status === 'scheduled').length}</p>
             </div>
             <Clock className="h-8 w-8 text-purple-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Drafts</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Drafts</p>
               <p className="text-2xl font-bold">{notifications.filter(n => n.status === 'draft').length}</p>
             </div>
             <Edit className="h-8 w-8 text-orange-500" />
@@ -182,7 +182,7 @@ export default function AdminNotifications() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
+      <div className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
         <div className="flex gap-4 items-center">
           <span className="text-sm font-medium">Filters:</span>
           
@@ -214,7 +214,7 @@ export default function AdminNotifications() {
       {/* Notifications List */}
       <div className="space-y-4 mb-8">
         {notifications.map((notification) => (
-          <div key={notification.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div key={notification.id} className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-start gap-3 flex-1">
                 <div className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export default function AdminNotifications() {
                 
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg mb-2">{notification.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-3">{notification.message}</p>
+                  <p className="text-neutral dark:text-gray-400 mb-3">{notification.message}</p>
                   
                   <div className="flex flex-wrap gap-4 text-sm">
                     <div className="flex items-center gap-1">
@@ -270,10 +270,10 @@ export default function AdminNotifications() {
                 </span>
                 
                 <div className="flex gap-2 mt-2">
-                  <button className="p-2 text-gray-500 hover:text-blue-600">
+                  <button className="p-2 text-gray-500 hover:text-primary">
                     <Edit className="h-4 w-4" />
                   </button>
-                  <button className="p-2 text-gray-500 hover:text-red-600">
+                  <button className="p-2 text-gray-500 hover:text-error">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
@@ -285,26 +285,26 @@ export default function AdminNotifications() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📧 Email Campaign</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Create targeted email campaigns</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Create targeted email campaigns</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             Create Campaign
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📱 Push Notifications</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Send instant push notifications</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Send instant push notifications</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             Send Push
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📊 Analytics</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">View notification performance</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">View notification performance</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             View Analytics
           </button>
         </div>

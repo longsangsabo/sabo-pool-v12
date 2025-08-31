@@ -202,7 +202,7 @@ const ClubMemberCard = ({ member, onViewDetails }: ClubMemberCardProps) => {
  };
 
  return (
-  <div className='bg-white border border-neutral-200 rounded-lg p-4 hover:shadow-md transition-shadow'>
+  <div className='bg-var(--color-background) border border-neutral-200 rounded-lg p-4 hover:shadow-md transition-shadow'>
    <div className='flex items-center justify-between'>
     <div className='flex items-center space-x-3'>
      {/* Avatar */}

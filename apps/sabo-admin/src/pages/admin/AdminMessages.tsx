@@ -123,7 +123,7 @@ export default function AdminMessages() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">💬 Messages</h1>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+        <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700 flex items-center gap-2">
           <Send className="h-4 w-4" />
           Compose Message
         </button>
@@ -131,40 +131,40 @@ export default function AdminMessages() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Messages</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Messages</p>
               <p className="text-2xl font-bold">{messages.length}</p>
             </div>
             <MessageSquare className="h-8 w-8 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Unread</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Unread</p>
               <p className="text-2xl font-bold">{getUnreadCount()}</p>
             </div>
             <MessageSquare className="h-8 w-8 text-red-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">High Priority</p>
+              <p className="text-sm text-neutral dark:text-gray-400">High Priority</p>
               <p className="text-2xl font-bold">{getHighPriorityCount()}</p>
             </div>
             <Calendar className="h-8 w-8 text-orange-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Starred</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Starred</p>
               <p className="text-2xl font-bold">{getStarredCount()}</p>
             </div>
             <Star className="h-8 w-8 text-yellow-500" />
@@ -176,7 +176,7 @@ export default function AdminMessages() {
         {/* Messages List */}
         <div className="lg:col-span-2">
           {/* Filters */}
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
+          <div className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -220,7 +220,7 @@ export default function AdminMessages() {
             {messages.map((message) => (
               <div 
                 key={message.id} 
-                className={`bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 border-l-4 ${
+                className={`bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-neutral-background dark:hover:bg-gray-700 border-l-4 ${
                   message.status === 'unread' ? 'border-l-red-500' : 'border-l-transparent'
                 }`}
                 onClick={() => setSelectedMessage(message)}
@@ -243,7 +243,7 @@ export default function AdminMessages() {
                 </div>
 
                 <h3 className="font-semibold mb-2">{message.subject}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-3">{message.content}</p>
+                <p className="text-neutral dark:text-gray-400 text-sm line-clamp-2 mb-3">{message.content}</p>
 
                 <div className="flex items-center justify-between">
                   <div className="flex gap-2">
@@ -256,13 +256,13 @@ export default function AdminMessages() {
                   </div>
                   
                   <div className="flex gap-2">
-                    <button className="p-1 text-gray-500 hover:text-blue-600">
+                    <button className="p-1 text-gray-500 hover:text-primary">
                       <Reply className="h-4 w-4" />
                     </button>
-                    <button className="p-1 text-gray-500 hover:text-green-600">
+                    <button className="p-1 text-gray-500 hover:text-success">
                       <Forward className="h-4 w-4" />
                     </button>
-                    <button className="p-1 text-gray-500 hover:text-red-600">
+                    <button className="p-1 text-gray-500 hover:text-error">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -273,8 +273,8 @@ export default function AdminMessages() {
         </div>
 
         {/* Message Detail */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
             <h2 className="text-lg font-semibold">
               {selectedMessage ? 'Message Details' : 'Select a Message'}
             </h2>
@@ -314,7 +314,7 @@ export default function AdminMessages() {
                   </div>
                 </div>
 
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div className="border-t border-neutral dark:border-gray-700 pt-6">
                   <h4 className="font-medium mb-4">Quick Reply</h4>
                   <textarea 
                     placeholder="Type your reply..."
@@ -322,11 +322,11 @@ export default function AdminMessages() {
                     rows={4}
                   />
                   <div className="flex gap-2">
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2">
+                    <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded hover:bg-blue-700 flex items-center gap-2">
                       <Send className="h-4 w-4" />
                       Send Reply
                     </button>
-                    <button className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
+                    <button className="px-4 py-2 bg-gray-600 text-var(--color-background) rounded hover:bg-gray-700">
                       Mark as Read
                     </button>
                   </div>
@@ -344,26 +344,26 @@ export default function AdminMessages() {
 
       {/* Quick Actions */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📧 Auto-Reply</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Set up automated responses</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Set up automated responses</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             Configure Auto-Reply
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📋 Templates</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Manage message templates</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Manage message templates</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             Manage Templates
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📊 Message Analytics</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">View response times and metrics</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">View response times and metrics</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             View Analytics
           </button>
         </div>

@@ -138,7 +138,7 @@ const SimpleClubBookingPage = () => {
  };
 
  const themeClasses = isHighContrast
-  ? 'bg-black text-white'
+  ? 'bg-var(--color-foreground) text-var(--color-background)'
   : 'bg-gradient-to-br from-green-900 via-green-800 to-green-900';
 
  if (bookingStep === 3) {

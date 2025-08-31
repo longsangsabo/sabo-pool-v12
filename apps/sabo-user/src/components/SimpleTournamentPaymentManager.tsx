@@ -110,7 +110,7 @@ const SimpleTournamentPaymentManager: React.FC = () => {
          </Badge>
         </div>
         <div className='text-center'>
-         <Users className='h-6 w-6 mx-auto mb-1 text-blue-500' />
+         <Users className='h-6 w-6 mx-auto mb-1 text-primary-500' />
          <p className='text-body-small text-muted-foreground'>Tối đa</p>
          <p className='font-semibold'>
           {selectedTournamentData.max_participants}

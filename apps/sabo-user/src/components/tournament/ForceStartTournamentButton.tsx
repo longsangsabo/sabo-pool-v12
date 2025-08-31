@@ -131,7 +131,7 @@ const ForceStartTournamentButton: React.FC<ForceStartTournamentButtonProps> = ({
      <AlertDialogCancel>Hủy</AlertDialogCancel>
      <AlertDialogAction
       onClick={handleForceStart}
-      className='bg-orange-600 hover:bg-orange-700 text-white'
+      className='bg-orange-600 hover:bg-orange-700 text-var(--color-background)'
       disabled={loading}
      >
       {loading ? (

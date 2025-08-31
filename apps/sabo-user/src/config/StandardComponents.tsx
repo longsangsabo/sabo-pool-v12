@@ -37,23 +37,23 @@ const StandardCard: React.FC<StandardCardProps> = ({
 
  const variants = {
   default: getThemedValue(
-   'bg-white border-neutral-200 text-neutral-900',
+   'bg-var(--color-background) border-neutral-200 text-neutral-900',
    'bg-neutral-800 border-gray-700 text-gray-100'
   ) + ' rounded-lg border shadow-sm',
   compact: getThemedValue(
-   'bg-white border-neutral-200 text-neutral-900',
+   'bg-var(--color-background) border-neutral-200 text-neutral-900',
    'bg-neutral-800 border-gray-700 text-gray-100'
   ) + ' rounded-md border shadow-sm',
   feature: getThemedValue(
-   'bg-white border-neutral-200 text-neutral-900 hover:shadow-lg',
+   'bg-var(--color-background) border-neutral-200 text-neutral-900 hover:shadow-lg',
    'bg-neutral-800 border-gray-700 text-gray-100 hover:shadow-2xl'
   ) + ' rounded-xl border shadow-md transition-shadow',
   tournament: getThemedValue(
-   'bg-white border-neutral-200 text-neutral-900 hover:shadow-md',
+   'bg-var(--color-background) border-neutral-200 text-neutral-900 hover:shadow-md',
    'bg-neutral-800 border-gray-700 text-gray-100 hover:shadow-xl'
   ) + ' rounded-lg border shadow-sm transition-all duration-200',
   challenge: getThemedValue(
-   'bg-white border-neutral-200 text-neutral-900 border-l-blue-500 hover:shadow-md',
+   'bg-var(--color-background) border-neutral-200 text-neutral-900 border-l-blue-500 hover:shadow-md',
    'bg-neutral-800 border-gray-700 text-gray-100 border-l-blue-400 hover:shadow-xl'
   ) + ' rounded-lg border-l-4 shadow-sm transition-all'
  };
@@ -143,11 +143,11 @@ const StandardStatusBadge: React.FC<StandardStatusBadgeProps> = ({
   const configs = {
    tournament: {
     upcoming: { 
-     color: getThemedValue('bg-primary-100 text-primary-800', 'bg-blue-900 text-blue-200'), 
+     color: getThemedValue('bg-primary-100 text-primary-800', 'bg-blue-900 text-primary-200'), 
      text: 'Sắp diễn ra' 
     },
     registration_open: { 
-     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-green-200'), 
+     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-success-200'), 
      text: 'Đăng ký' 
     },
     ongoing: { 
@@ -159,7 +159,7 @@ const StandardStatusBadge: React.FC<StandardStatusBadgeProps> = ({
      text: 'Hoàn thành' 
     },
     cancelled: { 
-     color: getThemedValue('bg-error-100 text-error-800', 'bg-red-900 text-red-200'), 
+     color: getThemedValue('bg-error-100 text-error-800', 'bg-red-900 text-error-200'), 
      text: 'Đã hủy' 
     },
     locked: { 
@@ -169,7 +169,7 @@ const StandardStatusBadge: React.FC<StandardStatusBadgeProps> = ({
    },
    challenge: {
     open: { 
-     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-green-200'), 
+     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-success-200'), 
      text: 'Mở' 
     },
     pending: { 
@@ -177,7 +177,7 @@ const StandardStatusBadge: React.FC<StandardStatusBadgeProps> = ({
      text: 'Chờ phản hồi' 
     },
     accepted: { 
-     color: getThemedValue('bg-primary-100 text-primary-800', 'bg-blue-900 text-blue-200'), 
+     color: getThemedValue('bg-primary-100 text-primary-800', 'bg-blue-900 text-primary-200'), 
      text: 'Đã chấp nhận' 
     },
     in_progress: { 
@@ -189,7 +189,7 @@ const StandardStatusBadge: React.FC<StandardStatusBadgeProps> = ({
      text: 'Hoàn thành' 
     },
     declined: { 
-     color: getThemedValue('bg-error-100 text-error-800', 'bg-red-900 text-red-200'), 
+     color: getThemedValue('bg-error-100 text-error-800', 'bg-red-900 text-error-200'), 
      text: 'Từ chối' 
     },
     expired: { 
@@ -199,7 +199,7 @@ const StandardStatusBadge: React.FC<StandardStatusBadgeProps> = ({
    },
    user: {
     online: { 
-     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-green-200'), 
+     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-success-200'), 
      text: 'Trực tuyến' 
     },
     offline: { 
@@ -211,13 +211,13 @@ const StandardStatusBadge: React.FC<StandardStatusBadgeProps> = ({
      text: 'Vắng mặt' 
     },
     busy: { 
-     color: getThemedValue('bg-error-100 text-error-800', 'bg-red-900 text-red-200'), 
+     color: getThemedValue('bg-error-100 text-error-800', 'bg-red-900 text-error-200'), 
      text: 'Bận' 
     }
    },
    general: {
     active: { 
-     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-green-200'), 
+     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-success-200'), 
      text: 'Hoạt động' 
     },
     inactive: { 
@@ -229,11 +229,11 @@ const StandardStatusBadge: React.FC<StandardStatusBadgeProps> = ({
      text: 'Chờ xử lý' 
     },
     success: { 
-     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-green-200'), 
+     color: getThemedValue('bg-success-100 text-success-800', 'bg-green-900 text-success-200'), 
      text: 'Thành công' 
     },
     error: { 
-     color: getThemedValue('bg-error-100 text-error-800', 'bg-red-900 text-red-200'), 
+     color: getThemedValue('bg-error-100 text-error-800', 'bg-red-900 text-error-200'), 
      text: 'Lỗi' 
     },
     warning: { 
@@ -312,7 +312,7 @@ const StandardUserProfile: React.FC<StandardUserProfileProps> = ({
      </Avatar>
      {showStatus && (
       <div className={cn(
-       'absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white',
+       'absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-var(--color-background)',
        status === 'online' ? 'bg-success-500' :
        status === 'away' ? 'bg-warning-500' :
        status === 'busy' ? 'bg-error-500' : 'bg-gray-400'
@@ -353,7 +353,7 @@ const StandardUserProfile: React.FC<StandardUserProfileProps> = ({
     </Avatar>
     {showStatus && (
      <div className={cn(
-      'absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white',
+      'absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-var(--color-background)',
       status === 'online' ? 'bg-success-500' :
       status === 'away' ? 'bg-warning-500' :
       status === 'busy' ? 'bg-error-500' : 'bg-gray-400'
@@ -413,10 +413,10 @@ const StandardStatsGrid: React.FC<StandardStatsGridProps> = ({
 
  const getColorClasses = (color: string = 'blue') => {
   const colors = {
-   blue: { bg: 'bg-primary-50', text: 'text-primary-600', icon: 'text-blue-500' },
-   green: { bg: 'bg-success-50', text: 'text-success-600', icon: 'text-green-500' },
+   blue: { bg: 'bg-primary-50', text: 'text-primary-600', icon: 'text-primary-500' },
+   green: { bg: 'bg-success-50', text: 'text-success-600', icon: 'text-success-500' },
    yellow: { bg: 'bg-warning-50', text: 'text-warning-600', icon: 'text-yellow-500' },
-   red: { bg: 'bg-error-50', text: 'text-error-600', icon: 'text-red-500' },
+   red: { bg: 'bg-error-50', text: 'text-error-600', icon: 'text-error-500' },
    gray: { bg: 'bg-neutral-50', text: 'text-neutral-600', icon: 'text-neutral-500' }
   };
   return colors[color as keyof typeof colors] || colors.blue;

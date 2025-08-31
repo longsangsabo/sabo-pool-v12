@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { TabsContent } from '@/components/ui/tabs';
@@ -135,7 +135,7 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
       <div className='relative'>
        <Users className='mobile-icon-secondary text-emerald-500' />
        {filtered.length > 0 && (
-        <span className='absolute -top-1 -right-1 bg-error-500 text-white text-[12px] font-semibold rounded-full h-4 w-4 flex items-center justify-center'>
+        <span className='absolute -top-1 -right-1 bg-error-500 text-var(--color-background) text-[12px] font-semibold rounded-full h-4 w-4 flex items-center justify-center'>
          {filtered.length}
         </span>
        )}
@@ -247,7 +247,7 @@ export const ClubMembersTab: React.FC<ClubMembersTabProps> = ({
          // Keep original callback for backward compatibility
          onMemberClick?.(m.id);
         }}
-        className={`mobile-list-item mobile-list-item-hover w-full text-left group ${dark ? 'mobile-card-glass' : 'bg-white'}`}
+        className={`mobile-list-item mobile-list-item-hover w-full text-left group ${dark ? 'mobile-card-glass' : 'bg-var(--color-background)'}`}
        >
         <Avatar className='mobile-avatar-medium cursor-pointer'>
          <AvatarImage src={m.avatar_url} />

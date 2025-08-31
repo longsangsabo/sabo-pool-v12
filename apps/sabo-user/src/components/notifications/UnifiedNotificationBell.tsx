@@ -308,9 +308,9 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
  const getPriorityColor = (priority: string) => {
   const colorMap: Record<string, string> = {
    low: 'bg-neutral-100 text-neutral-800 dark:bg-gray-700 dark:text-gray-200',
-   medium: 'bg-primary-100 text-primary-800 dark:bg-blue-900/50 dark:text-blue-200',
+   medium: 'bg-primary-100 text-primary-800 dark:bg-blue-900/50 dark:text-primary-200',
    high: 'bg-warning-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-200',
-   urgent: 'bg-error-100 text-error-800 dark:bg-red-900/50 dark:text-red-200',
+   urgent: 'bg-error-100 text-error-800 dark:bg-red-900/50 dark:text-error-200',
   };
 
   return colorMap[priority] || 'bg-neutral-100 text-neutral-800 dark:bg-gray-700 dark:text-gray-200';
@@ -502,13 +502,12 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
   return (
    <div
     ref={dropdownRef}
-    className={`absolute right-0 top-full mt-2 ${dropdownWidth} bg-white dark:bg-neutral-800 rounded-lg shadow-xl dark:shadow-2xl border border-neutral-200 dark:border-gray-700 z-50`}
-    style={{ zIndex: 9999 }}
+    className={`absolute right-0 top-full mt-2 ${dropdownWidth} bg-var(--color-background) dark:bg-neutral-800 rounded-lg shadow-xl dark:shadow-2xl border border-neutral-200 dark:border-gray-700 z-[9999]`}
    >
     {/* Header */}
     <div className="border-b border-neutral-200 dark:border-gray-700 px-4 py-3">
      <div className="flex items-center justify-between">
-      <h3 className={`font-semibold text-neutral-900 dark:text-white ${isCompact ? 'text-sm' : ''}`}>Thông báo</h3>
+      <h3 className={`font-semibold text-neutral-900 dark:text-var(--color-background) ${isCompact ? 'text-sm' : ''}`}>Thông báo</h3>
       <div className="flex items-center gap-2">
        <Button
         variant="ghost"
@@ -524,7 +523,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
          variant="ghost"
          
          onClick={markAllAsRead}
-         className="text-caption h-6 px-2 text-neutral-600 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white"
+         className="text-caption h-6 px-2 text-neutral-600 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-var(--color-background)"
         >
          Đánh dấu đã đọc
         </Button>
@@ -569,7 +568,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
           </div>
           <div className="flex-1 min-w-0">
            <div className="flex items-center gap-2 mb-1">
-            <h4 className={`${isCompact ? 'text-xs' : 'text-sm'} font-medium truncate text-neutral-900 dark:text-white`}>
+            <h4 className={`${isCompact ? 'text-xs' : 'text-sm'} font-medium truncate text-neutral-900 dark:text-var(--color-background)`}>
              {notification.title}
             </h4>
             {!notification.is_read && (
@@ -617,7 +616,7 @@ export const UnifiedNotificationBell: React.FC<UnifiedNotificationBellProps> = (
     {unreadCount > 0 && (
      <Badge
       variant="destructive"
-      className={`absolute -top-1 -right-1 ${variant === 'mobile' ? 'h-4 w-4' : 'h-5 w-5'} rounded-full p-0 flex items-center justify-center text-caption bg-error-500 dark:bg-error-600 text-white`}
+      className={`absolute -top-1 -right-1 ${variant === 'mobile' ? 'h-4 w-4' : 'h-5 w-5'} rounded-full p-0 flex items-center justify-center text-caption bg-error-500 dark:bg-error-600 text-var(--color-background)`}
      >
       {unreadCount > 9 ? '9+' : unreadCount}
      </Badge>

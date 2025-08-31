@@ -146,7 +146,7 @@ const Navigation = () => {
         <Circle className='w-6 h-6 text-primary-foreground font-bold' />
        </div>
        <div className='hidden sm:flex flex-col'>
-        <span className='text-title font-black text-foreground'>SABO</span>
+        <span className='text-title font-var(--color-foreground) text-foreground'>SABO</span>
         <span className='text-body-small text-primary font-bold -mt-1'>
          ARENA
         </span>

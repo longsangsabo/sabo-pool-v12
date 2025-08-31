@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 // Removed supabase import - migrated to services
 import { getUserProfile, updateUserProfile } from "../services/profileService";

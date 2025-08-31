@@ -294,7 +294,7 @@ const DiscoveryPage: React.FC = () => {
              <AvatarFallback>{player.username[0]}</AvatarFallback>
             </Avatar>
             {player.is_online && (
-             <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-success-500 rounded-full border-2 border-white'></div>
+             <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-success-500 rounded-full border-2 border-var(--color-background)'></div>
             )}
            </div>
            <div>

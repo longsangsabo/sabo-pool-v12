@@ -137,7 +137,7 @@ const RainbowAvatar = forwardRef<HTMLDivElement, RainbowAvatarProps>(
       style={{ clipPath: clipPath !== 'none' ? clipPath : undefined }}
      >
       <AvatarImage src={src} alt={alt} />
-      <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold'>
+      <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-var(--color-background) font-semibold'>
        {fallback}
       </AvatarFallback>
      </Avatar>

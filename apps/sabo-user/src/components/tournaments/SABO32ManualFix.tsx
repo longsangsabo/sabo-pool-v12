@@ -229,7 +229,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
        <div>
         <div className="text-caption-medium mb-2">Group A Finals:</div>
         {analysis.groupAFinals.map((final: any) => (
-         <div key={final.id} className="text-caption p-2 bg-white dark:bg-neutral-800 rounded border">
+         <div key={final.id} className="text-caption p-2 bg-var(--color-background) dark:bg-neutral-800 rounded border">
           <Badge variant={final.completed ? "default" : "secondary"} className="mr-2">
            {final.sabo_match_id}
           </Badge>
@@ -247,7 +247,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
        <div>
         <div className="text-caption-medium mb-2">Group B Finals:</div>
         {analysis.groupBFinals.map((final: any) => (
-         <div key={final.id} className="text-caption p-2 bg-white dark:bg-neutral-800 rounded border">
+         <div key={final.id} className="text-caption p-2 bg-var(--color-background) dark:bg-neutral-800 rounded border">
           <Badge variant={final.completed ? "default" : "secondary"} className="mr-2">
            {final.sabo_match_id}
           </Badge>
@@ -268,7 +268,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
        <div className="text-caption-medium mb-2">Cross-Bracket Status:</div>
        <div className="space-y-1">
         {analysis.crossSemis.map((semi: any) => (
-         <div key={semi.id} className="text-caption p-2 bg-white dark:bg-neutral-800 rounded border">
+         <div key={semi.id} className="text-caption p-2 bg-var(--color-background) dark:bg-neutral-800 rounded border">
           <Badge variant="outline" className="mr-2">{semi.sabo_match_id}</Badge>
           <span className={semi.player1_id ? "text-success-600" : "text-neutral-500"}>
            Player 1: {semi.player1_id ? "Set" : "TBD"}
@@ -280,7 +280,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
          </div>
         ))}
         {analysis.crossFinal.map((final: any) => (
-         <div key={final.id} className="text-caption p-2 bg-white dark:bg-neutral-800 rounded border">
+         <div key={final.id} className="text-caption p-2 bg-var(--color-background) dark:bg-neutral-800 rounded border">
           <Badge variant="outline" className="mr-2">{final.sabo_match_id}</Badge>
           <span className={final.player1_id ? "text-success-600" : "text-neutral-500"}>
            Player 1: {final.player1_id ? "Set" : "TBD"}

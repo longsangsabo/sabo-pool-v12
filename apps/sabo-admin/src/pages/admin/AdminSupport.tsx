@@ -191,7 +191,7 @@ export default function AdminSupport() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">🎧 Support Center</h1>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+        <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700 flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Create Ticket
         </button>
@@ -199,40 +199,40 @@ export default function AdminSupport() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Open Tickets</p>
-              <p className="text-2xl font-bold text-red-600">{getOpenTickets()}</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Open Tickets</p>
+              <p className="text-2xl font-bold text-error">{getOpenTickets()}</p>
             </div>
             <AlertTriangle className="h-8 w-8 text-red-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">In Progress</p>
-              <p className="text-2xl font-bold text-yellow-600">{getInProgressTickets()}</p>
+              <p className="text-sm text-neutral dark:text-gray-400">In Progress</p>
+              <p className="text-2xl font-bold text-warning">{getInProgressTickets()}</p>
             </div>
             <Clock className="h-8 w-8 text-yellow-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Urgent</p>
-              <p className="text-2xl font-bold text-red-600">{getUrgentTickets()}</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Urgent</p>
+              <p className="text-2xl font-bold text-error">{getUrgentTickets()}</p>
             </div>
             <HelpCircle className="h-8 w-8 text-red-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Tickets</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Tickets</p>
               <p className="text-2xl font-bold">{tickets.length}</p>
             </div>
             <MessageSquare className="h-8 w-8 text-blue-500" />
@@ -244,7 +244,7 @@ export default function AdminSupport() {
         {/* Tickets List */}
         <div className="space-y-6">
           {/* Filters */}
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <div className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg shadow">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -288,7 +288,7 @@ export default function AdminSupport() {
             {tickets.map((ticket) => (
               <div 
                 key={ticket.id} 
-                className={`bg-white dark:bg-gray-800 rounded-lg shadow p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 border-l-4 ${
+                className={`bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow p-6 cursor-pointer hover:bg-neutral-background dark:hover:bg-gray-700 border-l-4 ${
                   ticket.priority === 'urgent' ? 'border-l-red-500' : 
                   ticket.status === 'open' ? 'border-l-yellow-500' : 'border-l-transparent'
                 }`}
@@ -311,7 +311,7 @@ export default function AdminSupport() {
                 </div>
 
                 <h3 className="font-semibold mb-2">{ticket.subject}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-3">{ticket.description}</p>
+                <p className="text-neutral dark:text-gray-400 text-sm line-clamp-2 mb-3">{ticket.description}</p>
 
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex gap-2">
@@ -329,7 +329,7 @@ export default function AdminSupport() {
                 </div>
 
                 {ticket.assignee && (
-                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="mt-2 text-sm text-neutral dark:text-gray-400">
                     Assigned to: {ticket.assignee}
                   </div>
                 )}
@@ -339,8 +339,8 @@ export default function AdminSupport() {
         </div>
 
         {/* Ticket Detail */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
             <h2 className="text-lg font-semibold">
               {selectedTicket ? 'Ticket Details' : 'Select a Ticket'}
             </h2>
@@ -353,7 +353,7 @@ export default function AdminSupport() {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h3 className="text-xl font-semibold">{selectedTicket.ticketNumber}</h3>
-                      <p className="text-gray-600 dark:text-gray-400">{selectedTicket.subject}</p>
+                      <p className="text-neutral dark:text-gray-400">{selectedTicket.subject}</p>
                     </div>
                     <div className="flex gap-2">
                       <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(selectedTicket.status)}`}>
@@ -372,7 +372,7 @@ export default function AdminSupport() {
                         <User className="h-4 w-4 text-gray-400" />
                         <div>
                           <p className="font-medium">{selectedTicket.customer}</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{selectedTicket.email}</p>
+                          <p className="text-sm text-neutral dark:text-gray-400">{selectedTicket.email}</p>
                         </div>
                       </div>
                     </div>
@@ -388,7 +388,7 @@ export default function AdminSupport() {
 
                   <div className="mb-6">
                     <h4 className="font-medium mb-2">Description:</h4>
-                    <p className="text-gray-600 dark:text-gray-400">{selectedTicket.description}</p>
+                    <p className="text-neutral dark:text-gray-400">{selectedTicket.description}</p>
                   </div>
 
                   <div className="mb-6">
@@ -398,7 +398,7 @@ export default function AdminSupport() {
                         <div key={message.id} className={`flex ${message.isStaff ? 'justify-end' : 'justify-start'}`}>
                           <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                             message.isStaff 
-                              ? 'bg-blue-600 text-white' 
+                              ? 'bg-blue-600 text-var(--color-background)' 
                               : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                           }`}>
                             <div className="font-medium text-sm mb-1">{message.sender}</div>
@@ -410,7 +410,7 @@ export default function AdminSupport() {
                     </div>
                   </div>
 
-                  <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                  <div className="border-t border-neutral dark:border-gray-700 pt-6">
                     <h4 className="font-medium mb-4">Reply to Customer</h4>
                     <textarea 
                       placeholder="Type your reply..."
@@ -418,13 +418,13 @@ export default function AdminSupport() {
                       rows={3}
                     />
                     <div className="flex gap-2">
-                      <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                      <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded hover:bg-blue-700">
                         Send Reply
                       </button>
-                      <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                      <button className="px-4 py-2 bg-green-600 text-var(--color-background) rounded hover:bg-green-700">
                         Mark Resolved
                       </button>
-                      <button className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
+                      <button className="px-4 py-2 bg-gray-600 text-var(--color-background) rounded hover:bg-gray-700">
                         Assign
                       </button>
                     </div>
@@ -443,26 +443,26 @@ export default function AdminSupport() {
 
       {/* Quick Actions */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📚 Knowledge Base</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Manage help articles and FAQs</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Manage help articles and FAQs</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             Manage Knowledge Base
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📊 Support Analytics</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">View support metrics and performance</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">View support metrics and performance</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             View Analytics
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">⚙️ Support Settings</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Configure support workflows and rules</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Configure support workflows and rules</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             Configure Settings
           </button>
         </div>

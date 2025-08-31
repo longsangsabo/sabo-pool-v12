@@ -32,7 +32,7 @@ export const ReAuthModal: React.FC = () => {
 
  if (!open) return null;
  return (
-  <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4'>
+  <div className='fixed inset-0 z-50 flex items-center justify-center bg-var(--color-foreground)/60 p-4'>
    <div className='bg-background border rounded-lg shadow-xl w-full max-w-sm p-6 space-y-4'>
     <h2 className='text-body-large-semibold'>Phiên đăng nhập đã hết hạn</h2>
     <p className='text-body-small text-muted-foreground'>

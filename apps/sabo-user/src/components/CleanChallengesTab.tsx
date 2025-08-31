@@ -372,8 +372,8 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
       opponentScore !== null && opponentScore !== undefined && (
       <div className={`text-body-small font-mono p-3 rounded-lg border-2 ${
        challenge.status === 'completed' 
-        ? 'bg-success-50 dark:bg-green-950 border-success-200 dark:border-green-800 text-success-800 dark:text-green-200' 
-        : 'bg-primary-50 dark:bg-blue-950 border-primary-200 dark:border-blue-800 text-primary-800 dark:text-blue-200'
+        ? 'bg-success-50 dark:bg-green-950 border-success-200 dark:border-green-800 text-success-800 dark:text-success-200' 
+        : 'bg-primary-50 dark:bg-blue-950 border-primary-200 dark:border-blue-800 text-primary-800 dark:text-primary-200'
       }`}>
        <div className="flex justify-between items-center">
         <span className="font-semibold">
@@ -532,7 +532,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
       title="Đang diễn ra"
       icon={Target}
       challenges={activeChallenges}
-      color="text-red-500"
+      color="text-error-500"
      />
     </TabsContent>
 
@@ -541,7 +541,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
       title="Sắp tới"
       icon={Clock}
       challenges={pendingChallenges}
-      color="text-blue-500"
+      color="text-primary-500"
      />
     </TabsContent>
 
@@ -550,7 +550,7 @@ const CleanChallengesTab: React.FC<CleanChallengesTabProps> = ({ clubId }) => {
       title="Hoàn thành"
       icon={Trophy}
       challenges={completedChallenges}
-      color="text-green-500"
+      color="text-success-500"
      />
     </TabsContent>
    </Tabs>

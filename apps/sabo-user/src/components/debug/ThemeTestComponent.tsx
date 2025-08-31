@@ -46,7 +46,7 @@ export const ThemeTestComponent: React.FC = () => {
               {isDark ? 'Dark Mode' : 'Light Mode'}
             </span>
             {isSystem && (
-              <span className="px-2 py-1 rounded bg-blue-200 text-blue-800">
+              <span className="px-2 py-1 rounded bg-primary-200 text-blue-800">
                 System
               </span>
             )}

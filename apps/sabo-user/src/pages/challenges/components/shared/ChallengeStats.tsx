@@ -105,7 +105,7 @@ const ChallengeStats: React.FC<ChallengeStatsProps> = ({
          </div>
 
          <div className='flex items-center gap-1 text-xs'>
-          <TrendingUp className='w-3 h-3 text-green-500' />
+          <TrendingUp className='w-3 h-3 text-success-500' />
           <span className='text-success-600 font-medium'>
            {stat.trend}
           </span>

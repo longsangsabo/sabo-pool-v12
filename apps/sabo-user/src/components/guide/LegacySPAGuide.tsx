@@ -37,15 +37,15 @@ export const LegacySPAGuide: React.FC = () => {
      </CardHeader>
      <CardContent className='space-y-3'>
       <div className='flex items-center gap-2'>
-       <CheckCircle className='w-4 h-4 text-green-500' />
+       <CheckCircle className='w-4 h-4 text-success-500' />
        <span>Đăng ký tài khoản mới trên SABO Arena</span>
       </div>
       <div className='flex items-center gap-2'>
-       <CheckCircle className='w-4 h-4 text-green-500' />
+       <CheckCircle className='w-4 h-4 text-success-500' />
        <span>Xác nhận email (nếu cần)</span>
       </div>
       <div className='flex items-center gap-2'>
-       <CheckCircle className='w-4 h-4 text-green-500' />
+       <CheckCircle className='w-4 h-4 text-success-500' />
        <span>Hoàn tất thông tin profile</span>
       </div>
      </CardContent>
@@ -60,15 +60,15 @@ export const LegacySPAGuide: React.FC = () => {
      </CardHeader>
      <CardContent className='space-y-3'>
       <div className='flex items-center gap-2'>
-       <ArrowRight className='w-4 h-4 text-blue-500' />
+       <ArrowRight className='w-4 h-4 text-primary-500' />
        <span>Vào trang <code>/leaderboard</code></span>
       </div>
       <div className='flex items-center gap-2'>
-       <ArrowRight className='w-4 h-4 text-blue-500' />
+       <ArrowRight className='w-4 h-4 text-primary-500' />
        <span>Chọn tab "SPA Leaderboard"</span>
       </div>
       <div className='flex items-center gap-2'>
-       <ArrowRight className='w-4 h-4 text-blue-500' />
+       <ArrowRight className='w-4 h-4 text-primary-500' />
        <span>Tìm tên của bạn trong 45 players</span>
       </div>
      </CardContent>
@@ -171,19 +171,19 @@ export const LegacySPAGuide: React.FC = () => {
      </CardHeader>
      <CardContent className='space-y-2'>
       <div className='flex items-center gap-2'>
-       <CheckCircle className='w-4 h-4 text-green-500' />
+       <CheckCircle className='w-4 h-4 text-success-500' />
        <span>Tên có trong legacy database?</span>
       </div>
       <div className='flex items-center gap-2'>
-       <CheckCircle className='w-4 h-4 text-green-500' />
+       <CheckCircle className='w-4 h-4 text-success-500' />
        <span>Facebook URL hợp lệ?</span>
       </div>
       <div className='flex items-center gap-2'>
-       <CheckCircle className='w-4 h-4 text-green-500' />
+       <CheckCircle className='w-4 h-4 text-success-500' />
        <span>Chưa bị claim bởi ai khác?</span>
       </div>
       <div className='flex items-center gap-2'>
-       <CheckCircle className='w-4 h-4 text-green-500' />
+       <CheckCircle className='w-4 h-4 text-success-500' />
        <span>User đã đăng ký tài khoản?</span>
       </div>
      </CardContent>

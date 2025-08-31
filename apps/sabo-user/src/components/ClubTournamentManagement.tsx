@@ -4,7 +4,7 @@ import React, {
  forwardRef,
  useImperativeHandle,
 } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -1160,7 +1160,7 @@ const TournamentSettingsView = ({ tournament }: { tournament: Tournament }) => {
          </ol>
         </div>
 
-        <div className='bg-warning-50 border border-yellow-200 rounded p-3'>
+        <div className='bg-warning-50 border border-warning rounded p-3'>
          <p className='text-body-small text-warning-800'>
           ⚠️ <strong>Lưu ý:</strong> Sau khi đóng giải đấu, bạn không
           thể thay đổi kết quả nữa.
@@ -1226,7 +1226,7 @@ const TournamentSettingsView = ({ tournament }: { tournament: Tournament }) => {
        </div>
 
        {!canStart && tournament.status === 'registration_open' && (
-        <div className='border rounded-lg p-4 bg-warning-50 border-yellow-200'>
+        <div className='border rounded-lg p-4 bg-warning-50 border-warning'>
          <h4 className='font-medium mb-2 text-warning-800'>
           Chờ đủ người tham gia
          </h4>

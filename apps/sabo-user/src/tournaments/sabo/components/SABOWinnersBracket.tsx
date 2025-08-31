@@ -154,7 +154,7 @@ export const SABOWinnersBracket: React.FC<SABOWinnersBracketProps> = ({
      )}
 
      {/* Winners Bracket Summary */}
-     <div className='mt-4 p-3 bg-warning-100 dark:bg-yellow-900/30 rounded-lg border border-yellow-200'>
+     <div className='mt-4 p-3 bg-warning-100 dark:bg-yellow-900/30 rounded-lg border border-warning'>
       <p className='text-caption text-muted-foreground'>
        <strong>Winners Path:</strong> Win every match to reach the Grand
        Final. One loss sends you to the Losers Bracket for a second

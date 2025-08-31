@@ -423,9 +423,9 @@ const SystemAuditPage = () => {
  const getStatusIcon = (status: string) => {
   switch (status) {
    case 'success':
-    return <CheckCircle className='h-4 w-4 text-green-500' />;
+    return <CheckCircle className='h-4 w-4 text-success-500' />;
    case 'error':
-    return <XCircle className='h-4 w-4 text-red-500' />;
+    return <XCircle className='h-4 w-4 text-error-500' />;
    case 'warning':
     return <AlertTriangle className='h-4 w-4 text-yellow-500' />;
    default:
@@ -440,7 +440,7 @@ const SystemAuditPage = () => {
    case 'error':
     return 'bg-error-50 border-error-200';
    case 'warning':
-    return 'bg-warning-50 border-yellow-200';
+    return 'bg-warning-50 border-warning';
    default:
     return 'bg-neutral-50 border-neutral-200';
   }
@@ -457,10 +457,10 @@ const SystemAuditPage = () => {
      {/* Header */}
      <div className='flex items-center justify-between mb-6'>
       <div>
-       <h1 className='text-3xl font-bold text-white mb-2'>
+       <h1 className='text-3xl font-bold text-var(--color-background) mb-2'>
         🔍 System Audit Dashboard
        </h1>
-       <p className='text-green-200'>
+       <p className='text-success-200'>
         Comprehensive system health and connectivity check
        </p>
       </div>
@@ -478,7 +478,7 @@ const SystemAuditPage = () => {
        <Button
         onClick={() => (window.location.href = '/')}
         variant='outline'
-        className='text-white border-white hover:bg-white hover:text-green-900'
+        className='text-var(--color-background) border-var(--color-background) hover:bg-var(--color-background) hover:text-green-900'
        >
         Back to Home
        </Button>
@@ -560,25 +560,25 @@ const SystemAuditPage = () => {
       <TabsList className='bg-green-800 border-green-700'>
        <TabsTrigger
         value='all'
-        className='text-white data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
+        className='text-var(--color-background) data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
        >
         All Tests ({auditResults.length})
        </TabsTrigger>
        <TabsTrigger
         value='errors'
-        className='text-white data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
+        className='text-var(--color-background) data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
        >
         Errors ({auditResults.filter(r => r.status === 'error').length})
        </TabsTrigger>
        <TabsTrigger
         value='connectivity'
-        className='text-white data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
+        className='text-var(--color-background) data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
        >
         Connectivity
        </TabsTrigger>
        <TabsTrigger
         value='database'
-        className='text-white data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
+        className='text-var(--color-background) data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
        >
         Database
        </TabsTrigger>
@@ -651,7 +651,7 @@ const SystemAuditPage = () => {
        {auditResults.filter(r => r.status === 'error').length === 0 ? (
         <Card>
          <CardContent className='p-8 text-center'>
-          <CheckCircle className='h-12 w-12 mx-auto mb-4 text-green-500' />
+          <CheckCircle className='h-12 w-12 mx-auto mb-4 text-success-500' />
           <p className='text-success-600 font-semibold'>
            No errors found!
           </p>
@@ -664,7 +664,7 @@ const SystemAuditPage = () => {
           <Card key={index} className='bg-error-50 border-error-200'>
            <CardContent className='p-4'>
             <div className='flex items-center gap-3'>
-             <XCircle className='h-5 w-5 text-red-500' />
+             <XCircle className='h-5 w-5 text-error-500' />
              <div className='flex-1'>
               <h3 className='font-semibold text-error-800'>
                {result.category}: {result.test}

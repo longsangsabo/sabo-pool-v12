@@ -371,7 +371,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
     <Card>
      <CardContent className='pt-6'>
       <div className='text-center'>
-       <Users className='w-8 h-8 mx-auto mb-2 text-blue-500' />
+       <Users className='w-8 h-8 mx-auto mb-2 text-primary-500' />
        <p className='text-heading-bold'>{stats.total}</p>
        <p className='text-body-small text-muted-foreground'>Tổng thành viên</p>
       </div>
@@ -380,7 +380,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
     <Card>
      <CardContent className='pt-6'>
       <div className='text-center'>
-       <UserCheck className='w-8 h-8 mx-auto mb-2 text-green-500' />
+       <UserCheck className='w-8 h-8 mx-auto mb-2 text-success-500' />
        <p className='text-heading-bold'>{stats.active}</p>
        <p className='text-body-small text-muted-foreground'>Đang hoạt động</p>
       </div>
@@ -400,7 +400,7 @@ const MemberManagementTab: React.FC<MemberManagementTabProps> = ({
     <Card>
      <CardContent className='pt-6'>
       <div className='text-center'>
-       <div className='w-8 h-8 mx-auto mb-2 bg-warning-500 rounded-full flex items-center justify-center text-white font-bold'>
+       <div className='w-8 h-8 mx-auto mb-2 bg-warning-500 rounded-full flex items-center justify-center text-var(--color-background) font-bold'>
         ₫
        </div>
        <p className='text-heading-bold'>

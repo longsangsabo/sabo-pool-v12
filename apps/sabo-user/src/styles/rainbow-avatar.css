@@ -35,7 +35,7 @@
   /* Rainbow Color Palette */
   --rainbow-red: #ff4646;
   --rainbow-orange: #ffb446;
-  --rainbow-yellow: #fff846;
+  --rainbow-yellow: var(--color-white)846;
   --rainbow-green: #64ff64;
   --rainbow-blue: #4682ff;
   --rainbow-purple: #b446ff;
@@ -1515,7 +1515,7 @@ Development Notes:
     45deg,
     #ff4646,
     #ffb446,
-    #fff846,
+    var(--color-white)846,
     #64ff64,
     #4682ff,
     #b446ff,
@@ -1523,7 +1523,7 @@ Development Notes:
   );
   --effect-neon: linear-gradient(45deg, #0ff, #f0f, #ff0, #0f0);
   --effect-fire: linear-gradient(45deg, #ff4500, #ff6347, #ffa500, #ff0);
-  --effect-water: linear-gradient(45deg, #00bfff, #1e90ff, #4169e1, #0000cd);
+  --effect-water: linear-gradient(45deg, #00bfff, #1e90ff, #4169e1, var(--color-black)0cd);
   --effect-earth: linear-gradient(45deg, #8b4513, #daa520, #cd853f, #d2691e);
 
   /* Premium Effect Colors */

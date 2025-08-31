@@ -48,9 +48,9 @@ export const SABO_DESIGN_TOKENS = {
       100: '#e0f2fe',
       200: '#bae6fd',
       300: '#7dd3fc',
-      400: '#38bdf8',
-      500: '#0ea5e9', // Main brand color
-      600: '#0284c7',
+      400: 'var(--color-info-light)',
+      500: 'var(--color-info)', // Main brand color
+      600: 'var(--color-info-dark)',
       700: '#0369a1',
       800: '#075985',
       900: '#0c4a6e',
@@ -58,15 +58,15 @@ export const SABO_DESIGN_TOKENS = {
     
     // Secondary colors for accents
     secondary: {
-      50: '#f8fafc',
-      100: '#f1f5f9',
-      200: '#e2e8f0',
+      50: 'hsl(var(--muted))',
+      100: 'hsl(var(--accent))',
+      200: 'hsl(var(--border))',
       300: '#cbd5e1',
       400: '#94a3b8',
-      500: '#64748b',
+      500: 'hsl(var(--muted-foreground))',
       600: '#475569',
       700: '#334155',
-      800: '#1e293b',
+      800: 'hsl(var(--foreground))',
       900: '#0f172a',
     },
     
@@ -90,9 +90,9 @@ export const SABO_DESIGN_TOKENS = {
       100: '#fef3c7',
       200: '#fde68a',
       300: '#fcd34d',
-      400: '#fbbf24',
-      500: '#f59e0b',
-      600: '#d97706',
+      400: 'var(--color-warning-light)',
+      500: 'var(--color-warning)',
+      600: 'var(--color-warning-dark)',
       700: '#b45309',
       800: '#92400e',
       900: '#78350f',
@@ -102,11 +102,11 @@ export const SABO_DESIGN_TOKENS = {
     error: {
       50: '#fef2f2',
       100: '#fee2e2',
-      200: '#fecaca',
+      200: 'var(--color-error-background)',
       300: '#fca5a5',
-      400: '#f87171',
+      400: 'var(--color-error-light)',
       500: '#ef4444',
-      600: '#dc2626',
+      600: 'var(--color-error-dark)',
       700: '#b91c1c',
       800: '#991b1b',
       900: '#7f1d1d',
@@ -124,39 +124,39 @@ export const SABO_DESIGN_TOKENS = {
       light: {
         // Text colors for light mode
         text: {
-          primary: '#1f2937',     // Almost black for main text
-          secondary: '#6b7280',   // Gray for secondary text  
-          muted: '#9ca3af',      // Light gray for muted text
-          inverse: '#ffffff',     // White text for dark backgrounds
+          primary: '#1f2937',     // Almost var(--color-foreground) for main text
+          secondary: 'var(--color-neutral-dark)',   // Gray for secondary text  
+          muted: 'var(--color-neutral)',      // Light gray for muted text
+          inverse: 'var(--color-background)',     // White text for dark backgrounds
         },
         // Background colors for light mode
         background: {
-          primary: '#ffffff',     // Main background
+          primary: 'var(--color-background)',     // Main background
           secondary: '#f9fafb',   // Secondary background
-          muted: '#f3f4f6',      // Muted background
+          muted: 'var(--color-neutral-background)',      // Muted background
           overlay: 'rgba(0, 0, 0, 0.8)',
-          card: '#ffffff',
-          elevated: '#ffffff',
+          card: 'var(--color-background)',
+          elevated: 'var(--color-background)',
           hover: '#f9fafb',
         },
         // Border colors for light mode
         border: {
           primary: '#e5e7eb',     // Main borders
-          secondary: '#d1d5db',   // Secondary borders
-          muted: '#f3f4f6',      // Subtle borders
+          secondary: 'var(--color-neutral-light)',   // Secondary borders
+          muted: 'var(--color-neutral-background)',      // Subtle borders
         }
       },
       dark: {
         // Text colors for dark mode
         text: {
-          primary: '#f9fafb',     // Almost white for main text
-          secondary: '#d1d5db',   // Light gray for secondary text
-          muted: '#9ca3af',      // Gray for muted text
-          inverse: '#111827',     // Dark text for light backgrounds
+          primary: '#f9fafb',     // Almost var(--color-background) for main text
+          secondary: 'var(--color-neutral-light)',   // Light gray for secondary text
+          muted: 'var(--color-neutral)',      // Gray for muted text
+          inverse: 'var(--color-neutral-foreground)',     // Dark text for light backgrounds
         },
         // Background colors for dark mode
         background: {
-          primary: '#111827',     // Main dark background
+          primary: 'var(--color-neutral-foreground)',     // Main dark background
           secondary: '#1f2937',   // Secondary dark background
           muted: '#374151',      // Muted dark background
           overlay: 'rgba(0, 0, 0, 0.9)',
@@ -175,16 +175,16 @@ export const SABO_DESIGN_TOKENS = {
     
     // Background system (deprecated - use semantic instead)
     background: {
-      primary: '#ffffff',
-      secondary: '#f8fafc',
-      muted: '#f1f5f9',
+      primary: 'var(--color-background)',
+      secondary: 'hsl(var(--muted))',
+      muted: 'hsl(var(--accent))',
       overlay: 'rgba(0, 0, 0, 0.8)',
-      card: '#ffffff',
+      card: 'var(--color-background)',
       gradient: {
-        primary: 'linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%)',
+        primary: 'linear-gradient(135deg, var(--color-info) 0%, var(--color-primary) 100%)',
         success: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-        warning: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-        dark: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
+        warning: 'linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%)',
+        dark: 'linear-gradient(135deg, #1f2937 0%, var(--color-neutral-foreground) 100%)',
       }
     }
   },
@@ -272,7 +272,7 @@ export const SABO_DESIGN_TOKENS = {
     // Card standardization with theme support
     card: {
       light: {
-        background: '#ffffff',
+        background: 'var(--color-background)',
         border: '1px solid #e5e7eb',
         shadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
         hover: {
@@ -320,19 +320,19 @@ export const SABO_DESIGN_TOKENS = {
       variants: {
         primary: {
           light: {
-            background: '#0ea5e9',
-            color: '#ffffff',
+            background: 'var(--color-info)',
+            color: 'var(--color-background)',
             border: 'none',
             hover: {
-              background: '#0284c7',
+              background: 'var(--color-info-dark)',
             }
           },
           dark: {
-            background: '#0ea5e9',
-            color: '#ffffff', 
+            background: 'var(--color-info)',
+            color: 'var(--color-background)', 
             border: 'none',
             hover: {
-              background: '#38bdf8',
+              background: 'var(--color-info-light)',
             }
           }
         },
@@ -340,9 +340,9 @@ export const SABO_DESIGN_TOKENS = {
           light: {
             background: '#f9fafb',
             color: '#374151',
-            border: '1px solid #d1d5db',
+            border: '1px solid var(--color-neutral-light)',
             hover: {
-              background: '#f3f4f6',
+              background: 'var(--color-neutral-background)',
             }
           },
           dark: {
@@ -370,12 +370,12 @@ export const SABO_DESIGN_TOKENS = {
         desktop: '40px',
       },
       light: {
-        background: '#ffffff',
-        border: '1px solid #d1d5db',
+        background: 'var(--color-background)',
+        border: '1px solid var(--color-neutral-light)',
         color: '#1f2937',
-        placeholder: '#9ca3af',
+        placeholder: 'var(--color-neutral)',
         focus: {
-          borderColor: '#0ea5e9',
+          borderColor: 'var(--color-info)',
           boxShadow: '0 0 0 3px rgb(14 165 233 / 0.1)',
         }
       },
@@ -383,9 +383,9 @@ export const SABO_DESIGN_TOKENS = {
         background: '#374151',
         border: '1px solid #4b5563',
         color: '#f9fafb',
-        placeholder: '#9ca3af',
+        placeholder: 'var(--color-neutral)',
         focus: {
-          borderColor: '#38bdf8',
+          borderColor: 'var(--color-info-light)',
           boxShadow: '0 0 0 3px rgb(56 189 248 / 0.2)',
         }
       }
@@ -465,7 +465,7 @@ export const generateTailwindClasses = () => {
     },
     
     // Standardized component classes
-    card: 'bg-white border border-gray-200 rounded-lg shadow-sm',
+    card: 'bg-var(--color-background) border border-neutral rounded-lg shadow-sm',
     cardHeader: 'p-4 md:p-6',
     cardContent: 'p-4 md:p-6 pt-0',
     button: 'rounded-md font-medium transition-colors duration-200',

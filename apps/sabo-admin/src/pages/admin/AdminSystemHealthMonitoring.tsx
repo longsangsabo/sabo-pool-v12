@@ -204,7 +204,7 @@ export default function AdminSystemHealthMonitoring() {
             <p className="text-gray-300">{error}</p>
             <button
               onClick={fetchSystemMetrics}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700 transition-colors"
             >
               Retry
             </button>
@@ -215,7 +215,7 @@ export default function AdminSystemHealthMonitoring() {
   }
 
   return (
-    <div className="text-white p-8">
+    <div className="text-var(--color-background) p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -232,7 +232,7 @@ export default function AdminSystemHealthMonitoring() {
             <button
               onClick={fetchSystemMetrics}
               disabled={loading}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-var(--color-background) rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               Refresh
@@ -244,84 +244,84 @@ export default function AdminSystemHealthMonitoring() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Database</h3>
+              <h3 className="text-lg font-semibold text-var(--color-background)">Database</h3>
               {getStatusIcon(metrics.database.status)}
             </div>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-400">Response Time</span>
-                <span className="text-white">{metrics.database.responseTime}ms</span>
+                <span className="text-var(--color-background)">{metrics.database.responseTime}ms</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Connections</span>
-                <span className="text-white">{metrics.database.connectionCount}</span>
+                <span className="text-var(--color-background)">{metrics.database.connectionCount}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Tables</span>
-                <span className="text-white">{metrics.database.tableCount}</span>
+                <span className="text-var(--color-background)">{metrics.database.tableCount}</span>
               </div>
             </div>
           </div>
 
           <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Application</h3>
+              <h3 className="text-lg font-semibold text-var(--color-background)">Application</h3>
               {getStatusIcon(metrics.application.status)}
             </div>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-400">Uptime</span>
-                <span className="text-white">{formatUptime(metrics.application.uptime)}</span>
+                <span className="text-var(--color-background)">{formatUptime(metrics.application.uptime)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Requests/min</span>
-                <span className="text-white">{metrics.application.requestsPerMinute}</span>
+                <span className="text-var(--color-background)">{metrics.application.requestsPerMinute}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Error Rate</span>
-                <span className="text-white">{metrics.application.errorRate.toFixed(2)}%</span>
+                <span className="text-var(--color-background)">{metrics.application.errorRate.toFixed(2)}%</span>
               </div>
             </div>
           </div>
 
           <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Performance</h3>
+              <h3 className="text-lg font-semibold text-var(--color-background)">Performance</h3>
               <Monitor className="h-5 w-5 text-blue-400" />
             </div>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-400">CPU Usage</span>
-                <span className="text-white">{metrics.performance.cpuUsage}%</span>
+                <span className="text-var(--color-background)">{metrics.performance.cpuUsage}%</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Memory</span>
-                <span className="text-white">{metrics.performance.memoryUsage}%</span>
+                <span className="text-var(--color-background)">{metrics.performance.memoryUsage}%</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Disk</span>
-                <span className="text-white">{metrics.performance.diskUsage}%</span>
+                <span className="text-var(--color-background)">{metrics.performance.diskUsage}%</span>
               </div>
             </div>
           </div>
 
           <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">User Activity</h3>
+              <h3 className="text-lg font-semibold text-var(--color-background)">User Activity</h3>
               <Users className="h-5 w-5 text-green-400" />
             </div>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-400">Active Today</span>
-                <span className="text-white">{metrics.userActivity.activeToday}</span>
+                <span className="text-var(--color-background)">{metrics.userActivity.activeToday}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">New Users</span>
-                <span className="text-white">{metrics.userActivity.newRegistrations}</span>
+                <span className="text-var(--color-background)">{metrics.userActivity.newRegistrations}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">In Tournaments</span>
-                <span className="text-white">{metrics.userActivity.tournamentParticipants}</span>
+                <span className="text-var(--color-background)">{metrics.userActivity.tournamentParticipants}</span>
               </div>
             </div>
           </div>
@@ -330,12 +330,12 @@ export default function AdminSystemHealthMonitoring() {
         {/* Detailed Performance Metrics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
-            <h3 className="text-xl font-bold text-white mb-4">🚀 Response Times</h3>
+            <h3 className="text-xl font-bold text-var(--color-background) mb-4">🚀 Response Times</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-400">Average Response Time</span>
-                  <span className="text-white">{metrics.performance.avgResponseTime}ms</span>
+                  <span className="text-var(--color-background)">{metrics.performance.avgResponseTime}ms</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2">
                   <div 
@@ -347,7 +347,7 @@ export default function AdminSystemHealthMonitoring() {
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-400">95th Percentile</span>
-                  <span className="text-white">{metrics.performance.p95ResponseTime}ms</span>
+                  <span className="text-var(--color-background)">{metrics.performance.p95ResponseTime}ms</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2">
                   <div 
@@ -360,12 +360,12 @@ export default function AdminSystemHealthMonitoring() {
           </div>
 
           <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
-            <h3 className="text-xl font-bold text-white mb-4">💾 Resource Usage</h3>
+            <h3 className="text-xl font-bold text-var(--color-background) mb-4">💾 Resource Usage</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-400">CPU Usage</span>
-                  <span className="text-white">{metrics.performance.cpuUsage}%</span>
+                  <span className="text-var(--color-background)">{metrics.performance.cpuUsage}%</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2">
                   <div 
@@ -380,7 +380,7 @@ export default function AdminSystemHealthMonitoring() {
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-400">Memory Usage</span>
-                  <span className="text-white">{metrics.performance.memoryUsage}%</span>
+                  <span className="text-var(--color-background)">{metrics.performance.memoryUsage}%</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2">
                   <div 
@@ -395,7 +395,7 @@ export default function AdminSystemHealthMonitoring() {
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-400">Disk Usage</span>
-                  <span className="text-white">{metrics.performance.diskUsage}%</span>
+                  <span className="text-var(--color-background)">{metrics.performance.diskUsage}%</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2">
                   <div 
@@ -413,7 +413,7 @@ export default function AdminSystemHealthMonitoring() {
 
         {/* System Alerts */}
         <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
-          <h3 className="text-xl font-bold text-white mb-4">⚠️ System Alerts</h3>
+          <h3 className="text-xl font-bold text-var(--color-background) mb-4">⚠️ System Alerts</h3>
           <div className="space-y-3">
             {metrics.database.status !== 'healthy' && (
               <div className="flex items-center gap-3 p-3 bg-yellow-900/20 border border-yellow-700 rounded">

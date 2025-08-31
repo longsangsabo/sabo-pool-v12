@@ -337,7 +337,7 @@ const RankVerificationRequests = () => {
     ) : (
      <div className='space-y-4'>
       {/* Warning */}
-      <div className='bg-warning-50 border border-yellow-200 rounded-lg p-4'>
+      <div className='bg-warning-50 border border-warning rounded-lg p-4'>
        <div className='flex'>
         <AlertTriangle className='w-5 h-5 text-warning-600 mr-2 flex-shrink-0 mt-0.5' />
         <div className='text-body-small text-warning-800'>
@@ -474,7 +474,7 @@ const TestingActions = ({
      
      onClick={() => setShowScheduling(true)}
      disabled={processing}
-     className='w-full bg-primary-600 hover:bg-blue-700'
+     className='w-full bg-primary-600 hover:bg-primary-700'
     >
      <Calendar className='w-4 h-4 mr-2' />
      Hẹn lịch test tại quán
@@ -566,7 +566,7 @@ const TestingActions = ({
      
      onClick={handleScheduleTest}
      disabled={!scheduledDate || !scheduledTime}
-     className='bg-primary-600 hover:bg-blue-700'
+     className='bg-primary-600 hover:bg-primary-700'
     >
      Xác nhận lịch hẹn
     </Button>

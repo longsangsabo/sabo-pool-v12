@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -121,7 +121,7 @@ const RankVerificationTab = () => {
     return (
      <Badge
       variant='outline'
-      className='bg-warning-50 text-warning-700 border-yellow-200'
+      className='bg-warning-50 text-warning-700 border-warning'
      >
       <Clock className='w-3 h-3 mr-1' />
       Chờ duyệt
@@ -267,7 +267,7 @@ const RankVerificationTab = () => {
             handleStatusUpdate(request.id, 'on_site_test')
            }
            disabled={processing === request.id}
-           className='bg-primary-600 hover:bg-blue-700'
+           className='bg-primary-600 hover:bg-primary-700'
           >
            <Trophy className='w-4 h-4 mr-1' />
            Chấp nhận test

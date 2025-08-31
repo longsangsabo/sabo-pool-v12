@@ -324,7 +324,7 @@ const RankVerificationTab: React.FC<RankVerificationTabProps> = ({
     <Card>
      <CardContent className='pt-6'>
       <div className='text-center'>
-       <Clock className='w-8 h-8 mx-auto mb-2 text-blue-500' />
+       <Clock className='w-8 h-8 mx-auto mb-2 text-primary-500' />
        <p className='text-heading-bold'>{stats.pending}</p>
        <p className='text-body-small text-muted-foreground'>Chờ xử lý</p>
       </div>
@@ -333,7 +333,7 @@ const RankVerificationTab: React.FC<RankVerificationTabProps> = ({
     <Card>
      <CardContent className='pt-6'>
       <div className='text-center'>
-       <CheckCircle className='w-8 h-8 mx-auto mb-2 text-green-500' />
+       <CheckCircle className='w-8 h-8 mx-auto mb-2 text-success-500' />
        <p className='text-heading-bold'>{stats.approved}</p>
        <p className='text-body-small text-muted-foreground'>Đã duyệt</p>
       </div>

@@ -260,13 +260,13 @@ const EnhancedRegisterPage = () => {
     <title>ĐĂNG KÝ - SABO ARENA</title>
    </Helmet>
 
-   <div className='min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center p-4 transition-colors duration-300'>
+   <div className='min-h-screen bg-gradient-to-br from-slate-50 via-var(--color-background) to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center p-4 transition-colors duration-300'>
     {/* Theme Toggle Button */}
     <Button
      variant='ghost'
      
      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-     className='fixed top-4 right-4 z-50 h-10 w-10 rounded-full border border-slate-300/60 bg-white/40 hover:bg-slate-100 hover:border-slate-400 dark:border-slate-700/50 dark:bg-slate-800/40 dark:hover:border-slate-500 dark:hover:bg-slate-800/60 transition-colors'
+     className='fixed top-4 right-4 z-50 h-10 w-10 rounded-full border border-slate-300/60 bg-var(--color-background)/40 hover:bg-slate-100 hover:border-slate-400 dark:border-slate-700/50 dark:bg-slate-800/40 dark:hover:border-slate-500 dark:hover:bg-slate-800/60 transition-colors'
      aria-label='Chuyển giao diện'
     >
      {theme === 'light' ? (
@@ -285,7 +285,7 @@ const EnhancedRegisterPage = () => {
      <span className='text-body-small-medium'>Về trang chủ</span>
     </Link>
 
-    <div className='bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-slate-200/70 dark:border-slate-700/60 p-8 w-full max-w-md transition-colors duration-300'>
+    <div className='bg-var(--color-background)/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-slate-200/70 dark:border-slate-700/60 p-8 w-full max-w-md transition-colors duration-300'>
      {/* Logo and Brand */}
      <div className='text-center mb-8'>
       <Link
@@ -335,7 +335,7 @@ const EnhancedRegisterPage = () => {
          value={phoneFullName}
          onChange={e => setPhoneFullName(e.target.value)}
          placeholder='Họ và tên'
-         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
+         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-var(--color-background) dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
          required
          disabled={loading}
         />
@@ -344,7 +344,7 @@ const EnhancedRegisterPage = () => {
          value={phone}
          onChange={e => setPhone(e.target.value)}
          placeholder='0961167717'
-         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
+         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-var(--color-background) dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
          required
          disabled={loading}
          maxLength={10}
@@ -355,7 +355,7 @@ const EnhancedRegisterPage = () => {
          value={phonePassword}
          onChange={e => setPhonePassword(e.target.value)}
          placeholder='Mật khẩu (ít nhất 6 ký tự)'
-         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
+         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-var(--color-background) dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
          required
          disabled={loading}
         />
@@ -364,7 +364,7 @@ const EnhancedRegisterPage = () => {
          value={phoneConfirmPassword}
          onChange={e => setPhoneConfirmPassword(e.target.value)}
          placeholder='Xác nhận mật khẩu'
-         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
+         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-var(--color-background) dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
          required
          disabled={loading}
         />
@@ -377,9 +377,9 @@ const EnhancedRegisterPage = () => {
          <Button
           type='submit'
           disabled={loading || !phoneTermsAccepted}
-          className='w-full h-12 text-body-large rounded-[11px] border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
+          className='w-full h-12 text-body-large rounded-[11px] border-transparent bg-var(--color-background)/60 backdrop-blur hover:bg-var(--color-background)/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
          >
-          <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
+          <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,var(--color-background),transparent_60%)] transition-opacity'></span>
           <span className='relative'>
            {loading ? 'Đang đăng ký...' : 'Đăng ký'}
           </span>
@@ -395,7 +395,7 @@ const EnhancedRegisterPage = () => {
          value={emailFullName}
          onChange={e => setEmailFullName(e.target.value)}
          placeholder='Họ và tên'
-         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
+         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-var(--color-background) dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
          required
          disabled={loading}
         />
@@ -404,7 +404,7 @@ const EnhancedRegisterPage = () => {
          value={email}
          onChange={e => setEmail(e.target.value)}
          placeholder='Email'
-         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
+         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-var(--color-background) dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
          required
          disabled={loading}
         />
@@ -413,7 +413,7 @@ const EnhancedRegisterPage = () => {
          value={emailPassword}
          onChange={e => setEmailPassword(e.target.value)}
          placeholder='Mật khẩu (ít nhất 6 ký tự)'
-         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
+         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-var(--color-background) dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
          required
          disabled={loading}
         />
@@ -422,7 +422,7 @@ const EnhancedRegisterPage = () => {
          value={emailConfirmPassword}
          onChange={e => setEmailConfirmPassword(e.target.value)}
          placeholder='Xác nhận mật khẩu'
-         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
+         className='w-full h-12 text-body-large border-2 border-slate-300 dark:border-slate-600 bg-var(--color-background) dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl transition-colors'
          required
          disabled={loading}
         />
@@ -435,9 +435,9 @@ const EnhancedRegisterPage = () => {
          <Button
           type='submit'
           disabled={loading || !emailTermsAccepted}
-          className='w-full h-12 text-body-large rounded-[11px] border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
+          className='w-full h-12 text-body-large rounded-[11px] border-transparent bg-var(--color-background)/60 backdrop-blur hover:bg-var(--color-background)/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-semibold relative overflow-hidden transition-colors disabled:opacity-50'
          >
-          <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
+          <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,var(--color-background),transparent_60%)] transition-opacity'></span>
           <span className='relative'>
            {loading ? 'Đang đăng ký...' : 'Đăng ký'}
           </span>

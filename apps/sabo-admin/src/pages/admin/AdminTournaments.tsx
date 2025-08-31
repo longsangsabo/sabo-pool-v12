@@ -99,17 +99,17 @@ export default function AdminTournaments() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'registration_open':
-        return 'bg-green-500/10 text-green-400 border-green-400';
+        return 'bg-success-background0/10 text-green-400 border-green-400';
       case 'registration_closed':
-        return 'bg-yellow-500/10 text-yellow-400 border-yellow-400';
+        return 'bg-warning-background0/10 text-yellow-400 border-yellow-400';
       case 'ongoing':
-        return 'bg-blue-500/10 text-blue-400 border-blue-400';
+        return 'bg-primary-background0/10 text-blue-400 border-blue-400';
       case 'completed':
-        return 'bg-gray-500/10 text-gray-400 border-gray-400';
+        return 'bg-neutral-background0/10 text-gray-400 border-gray-400';
       case 'cancelled':
-        return 'bg-red-500/10 text-red-400 border-red-400';
+        return 'bg-error-background0/10 text-red-400 border-red-400';
       default:
-        return 'bg-gray-500/10 text-gray-400 border-gray-400';
+        return 'bg-neutral-background0/10 text-gray-400 border-gray-400';
     }
   };
 
@@ -172,18 +172,18 @@ export default function AdminTournaments() {
 
   const handleDeleteTournament = async (tournamentId: string, tournamentName: string) => {
     const confirmed = window.confirm(
-      `Are you sure you want to permanently delete tournament "${tournamentName}"?\n\n` +
+      `Are you sure you want to permanently delete tournament"${tournamentName}"?\n\n` +
         `⚠️ WARNING: This action will:\n` +
         `• Permanently delete all tournament data\n` +
         `• Delete all participant registrations\n` +
         `• Delete all matches and results\n` +
         `• CANNOT be undone!\n\n` +
-        `Type "DELETE" to confirm:`
+        `Type"DELETE" to confirm:`
     );
 
     if (!confirmed) return;
 
-    const confirmText = prompt('Type "DELETE" to confirm permanent deletion:');
+    const confirmText = prompt('Type"DELETE" to confirm permanent deletion:');
     if (confirmText !== 'DELETE') {
       alert('Cancellation: Tournament not deleted due to incorrect confirmation');
       return;
@@ -227,14 +227,14 @@ export default function AdminTournaments() {
 
   if (error) {
     return (
-      <div className="text-white p-8">
+      <div className="text-var(--color-background) p-8">
         <div className="max-w-7xl mx-auto">
           <div className="bg-red-900/20 border border-red-700 rounded-lg p-6">
             <h2 className="text-xl font-bold text-red-400 mb-2">Tournament Management Error</h2>
             <p className="text-gray-300">{error}</p>
             <button
               onClick={loadTournaments}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700 transition-colors"
             >
               Retry
             </button>
@@ -245,11 +245,11 @@ export default function AdminTournaments() {
   }
 
   return (
-    <div className="text-white p-8">
+    <div className="text-var(--color-background) p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className='mb-6'>
-          <h1 className='text-3xl font-bold text-white mb-2'>
+          <h1 className='text-3xl font-bold text-var(--color-background) mb-2'>
             🏆 Tournament Management
           </h1>
           <p className='text-gray-400'>
@@ -265,7 +265,7 @@ export default function AdminTournaments() {
               placeholder='Search tournaments...'
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className='w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              className='w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             />
           </div>
 
@@ -273,7 +273,7 @@ export default function AdminTournaments() {
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              className="w-48 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-48 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-var(--color-background) appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Status</option>
               <option value="registration_open">Registration Open</option>
@@ -288,7 +288,7 @@ export default function AdminTournaments() {
           <button
             onClick={loadTournaments}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-var(--color-background) rounded transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             {loading ? 'Loading...' : 'Refresh'}
@@ -296,7 +296,7 @@ export default function AdminTournaments() {
 
           <button
             onClick={() => setIsQuickAddModalOpen(true)}
-            className='flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition-colors'
+            className='flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-var(--color-background) rounded transition-colors'
             disabled={loading}
           >
             <Zap className='h-4 w-4' />
@@ -312,8 +312,8 @@ export default function AdminTournaments() {
           </div>
         ) : filteredTournaments.length === 0 ? (
           <div className='text-center py-12'>
-            <Trophy className='h-12 w-12 text-gray-600 mx-auto mb-4' />
-            <h3 className='text-lg font-medium text-white mb-2'>
+            <Trophy className='h-12 w-12 text-neutral mx-auto mb-4' />
+            <h3 className='text-lg font-medium text-var(--color-background) mb-2'>
               No tournaments found
             </h3>
             <p className='text-gray-400'>
@@ -333,7 +333,7 @@ export default function AdminTournaments() {
                 <div className="p-6 border-b border-gray-700">
                   <div className='flex items-start justify-between'>
                     <div className='flex-1'>
-                      <h3 className='text-lg font-bold text-white line-clamp-2 mb-2'>
+                      <h3 className='text-lg font-bold text-var(--color-background) line-clamp-2 mb-2'>
                         {tournament.name}
                       </h3>
                       <div className='flex items-center gap-2'>
@@ -351,19 +351,19 @@ export default function AdminTournaments() {
                       <button
                         onClick={() => openParticipantModal(tournament)}
                         title='Manage participants'
-                        className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+                        className="p-2 text-gray-400 hover:text-var(--color-background) hover:bg-gray-700 rounded transition-colors"
                       >
                         <UserPlus className='h-4 w-4' />
                       </button>
                       <button
                         title='View details'
-                        className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+                        className="p-2 text-gray-400 hover:text-var(--color-background) hover:bg-gray-700 rounded transition-colors"
                       >
                         <Eye className='h-4 w-4' />
                       </button>
                       <button
                         title='Settings'
-                        className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+                        className="p-2 text-gray-400 hover:text-var(--color-background) hover:bg-gray-700 rounded transition-colors"
                       >
                         <Settings className='h-4 w-4' />
                       </button>
@@ -387,7 +387,7 @@ export default function AdminTournaments() {
                       <Users className='h-4 w-4 text-blue-400' />
                       <span className='text-sm text-gray-300'>Participants</span>
                     </div>
-                    <span className='font-medium text-white'>
+                    <span className='font-medium text-var(--color-background)'>
                       {tournament.current_participants}/{tournament.max_participants}
                     </span>
                   </div>
@@ -411,7 +411,7 @@ export default function AdminTournaments() {
                       <DollarSign className='h-4 w-4 text-green-400' />
                       <span className='text-sm text-gray-300'>Entry Fee</span>
                     </div>
-                    <span className='font-medium text-white'>
+                    <span className='font-medium text-var(--color-background)'>
                       {tournament.entry_fee === 0
                         ? 'Free'
                         : formatCurrency(tournament.entry_fee)}
@@ -451,10 +451,8 @@ export default function AdminTournaments() {
                     </div>
                     <div className='w-full bg-gray-700 rounded-full h-2'>
                       <div
-                        className='bg-blue-500 h-2 rounded-full transition-all duration-300'
-                        style={{
-                          width: `${Math.min((tournament.current_participants / tournament.max_participants) * 100, 100)}%`,
-                        }}
+                        className='bg-primary-background0 h-2 rounded-full transition-all duration-300'
+                        style={{ width: `${Math.min((tournament.current_participants / tournament.max_participants) * 100, 100)}%` }}
                       />
                     </div>
                   </div>
@@ -466,9 +464,9 @@ export default function AdminTournaments() {
 
         {/* Placeholder Modals - Would be implemented with proper tournament management components */}
         {isParticipantModalOpen && selectedTournament && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-var(--color-foreground)/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-2xl w-full mx-4">
-              <h3 className="text-lg font-bold text-white mb-4">
+              <h3 className="text-lg font-bold text-var(--color-background) mb-4">
                 Manage Participants: {selectedTournament.name}
               </h3>
               <p className="text-gray-400 mb-4">
@@ -487,9 +485,9 @@ export default function AdminTournaments() {
         )}
 
         {isQuickAddModalOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-var(--color-foreground)/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-bold text-white mb-4">Quick Add User</h3>
+              <h3 className="text-lg font-bold text-var(--color-background) mb-4">Quick Add User</h3>
               <p className="text-gray-400 mb-4">
                 Quick add user functionality would be implemented here
               </p>

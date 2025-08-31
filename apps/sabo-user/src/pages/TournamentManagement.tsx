@@ -216,7 +216,7 @@ export default function TournamentManagement() {
 
       {tournament.status === 'ongoing' && (
        <div className='text-center p-4 bg-success-50 dark:bg-green-950 rounded-lg'>
-        <h3 className='font-semibold text-success-800 dark:text-green-200'>
+        <h3 className='font-semibold text-success-800 dark:text-success-200'>
          Tournament is Live!
         </h3>
         <p className='text-body-small text-success-600 dark:text-green-300'>
@@ -246,7 +246,7 @@ export default function TournamentManagement() {
 
       {tournament.status === 'completed' && (
        <div className='text-center p-4 bg-primary-50 dark:bg-blue-950 rounded-lg'>
-        <h3 className='font-semibold text-primary-800 dark:text-blue-200'>
+        <h3 className='font-semibold text-primary-800 dark:text-primary-200'>
          Tournament Completed!
         </h3>
         <p className='text-body-small text-primary-600 dark:text-blue-300'>

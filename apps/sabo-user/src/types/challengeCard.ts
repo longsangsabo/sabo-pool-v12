@@ -168,21 +168,21 @@ export const avatarSizeConfig: Record<AvatarSize, { width: string; height: strin
 // Design system color palette
 export const challengeColors = {
   status: {
-    pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    accepted: 'bg-blue-100 text-blue-800 border-blue-200',
-    live: 'bg-red-100 text-red-800 border-red-200',
-    ongoing: 'bg-red-100 text-red-800 border-red-200',
-    completed: 'bg-green-100 text-green-800 border-green-200',
-    cancelled: 'bg-gray-100 text-gray-800 border-gray-200',
-    expired: 'bg-gray-100 text-gray-600 border-gray-200',
-    declined: 'bg-gray-100 text-gray-600 border-gray-200',
+    pending: 'bg-yellow-100 text-yellow-800 border-warning',
+    accepted: 'bg-blue-100 text-blue-800 border-primary',
+    live: 'bg-red-100 text-red-800 border-error',
+    ongoing: 'bg-red-100 text-red-800 border-error',
+    completed: 'bg-green-100 text-green-800 border-success',
+    cancelled: 'bg-gray-100 text-gray-800 border-neutral',
+    expired: 'bg-gray-100 text-neutral border-neutral',
+    declined: 'bg-gray-100 text-neutral border-neutral',
   },
   cards: {
     default: 'bg-card border-border hover:border-border/80',
     highlighted: 'bg-primary/5 border-primary/20 shadow-lg ring-2 ring-primary/10',
     urgent: 'bg-orange-50 border-orange-200 shadow-md',
-    live: 'bg-red-50 border-red-200 shadow-md',
-    completed: 'bg-green-50 border-green-200',
+    live: 'bg-error-background border-error shadow-md',
+    completed: 'bg-success-background border-success',
   },
   buttons: {
     primary: 'bg-primary hover:bg-primary/90 text-primary-foreground',

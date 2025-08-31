@@ -173,7 +173,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         <Button
          key={platform.name}
          onClick={platform.action}
-         className={`p-3 rounded-lg text-white ${platform.color} transition-colors`}
+         className={`p-3 rounded-lg text-var(--color-background) ${platform.color} transition-colors`}
         >
          <div className='flex flex-col items-center gap-1'>
           {platform.icon}

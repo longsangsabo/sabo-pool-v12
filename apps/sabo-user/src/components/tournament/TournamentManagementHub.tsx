@@ -1877,7 +1877,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
           </CardHeader>
           <CardContent>
            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-warning-50 rounded-lg border border-yellow-200">
+            <div className="text-center p-3 bg-warning-50 rounded-lg border border-warning">
              <div className="text-heading-bold text-warning-600">
               {selectedTournament.current_participants}
              </div>
@@ -2156,7 +2156,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
               <Button 
                
                onClick={() => confirmPayment(participant.id)}
-               className="bg-primary-600 hover:bg-blue-700"
+               className="bg-primary-600 hover:bg-primary-700"
               >
                <CreditCard className="w-4 h-4 mr-1" />
                Xác nhận TT

@@ -1,4 +1,5 @@
 import React from 'react';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Helmet } from 'react-helmet-async';
 
 const SEOHead: React.FC = () => (
@@ -12,7 +13,7 @@ const SEOHead: React.FC = () => (
   <meta name='apple-mobile-web-app-capable' content='yes' />
   <meta
    name='apple-mobile-web-app-status-bar-style'
-   content='black-translucent'
+   content='var(--color-foreground)-translucent'
   />
   <meta name='apple-mobile-web-app-title' content='SABO' />
   <meta name='format-detection' content='telephone=no' />

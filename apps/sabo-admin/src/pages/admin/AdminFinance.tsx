@@ -99,7 +99,7 @@ export default function AdminFinance() {
   }
 
   const getTransactionColor = (type: string) => {
-    return type === 'income' ? 'text-green-600' : 'text-red-600'
+    return type === 'income' ? 'text-success' : 'text-error'
   }
 
   const getStatusColor = (status: string) => {
@@ -126,7 +126,7 @@ export default function AdminFinance() {
             <option value="monthly">Monthly</option>
             <option value="yearly">Yearly</option>
           </select>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+          <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700 flex items-center gap-2">
             <Download className="h-4 w-4" />
             Export Report
           </button>
@@ -135,61 +135,61 @@ export default function AdminFinance() {
 
       {/* Financial Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Revenue</p>
               <p className="text-xl font-bold">{formatCurrency(financialData.totalRevenue)}</p>
             </div>
             <DollarSign className="h-8 w-8 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Monthly Revenue</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Monthly Revenue</p>
               <p className="text-xl font-bold">{formatCurrency(financialData.monthlyRevenue)}</p>
             </div>
             <Calendar className="h-8 w-8 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Revenue Growth</p>
-              <p className="text-xl font-bold text-green-600">+{financialData.revenueGrowth}%</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Revenue Growth</p>
+              <p className="text-xl font-bold text-success">+{financialData.revenueGrowth}%</p>
             </div>
             <TrendingUp className="h-8 w-8 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Expenses</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Expenses</p>
               <p className="text-xl font-bold">{formatCurrency(financialData.totalExpenses)}</p>
             </div>
             <TrendingDown className="h-8 w-8 text-red-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Net Profit</p>
-              <p className="text-xl font-bold text-green-600">{formatCurrency(financialData.netProfit)}</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Net Profit</p>
+              <p className="text-xl font-bold text-success">{formatCurrency(financialData.netProfit)}</p>
             </div>
             <BarChart3 className="h-8 w-8 text-purple-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Profit Margin</p>
-              <p className="text-xl font-bold text-green-600">{financialData.profitMargin}%</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Profit Margin</p>
+              <p className="text-xl font-bold text-success">{financialData.profitMargin}%</p>
             </div>
             <PieChart className="h-8 w-8 text-orange-500" />
           </div>
@@ -198,8 +198,8 @@ export default function AdminFinance() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Revenue Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
             <h2 className="text-lg font-semibold">Revenue vs Expenses</h2>
           </div>
           <div className="p-6">
@@ -208,27 +208,27 @@ export default function AdminFinance() {
                 <div key={index} className="flex flex-col items-center gap-2 flex-1">
                   <div className="flex flex-col gap-1 w-full">
                     <div 
-                      className="bg-green-500 rounded-t"
+                      className="bg-success-background0 rounded-t"
                       style={{ height: `${(data.revenue / 40000) * 200}px` }}
                       title={`Revenue: ${formatCurrency(data.revenue)}`}
                     ></div>
                     <div 
-                      className="bg-red-500 rounded-b"
+                      className="bg-error-background0 rounded-b"
                       style={{ height: `${(data.expenses / 40000) * 200}px` }}
                       title={`Expenses: ${formatCurrency(data.expenses)}`}
                     ></div>
                   </div>
-                  <span className="text-xs text-gray-600 dark:text-gray-400">{data.month}</span>
+                  <span className="text-xs text-neutral dark:text-gray-400">{data.month}</span>
                 </div>
               ))}
             </div>
             <div className="flex justify-center gap-6 mt-4">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded"></div>
+                <div className="w-3 h-3 bg-success-background0 rounded"></div>
                 <span className="text-sm">Revenue</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-red-500 rounded"></div>
+                <div className="w-3 h-3 bg-error-background0 rounded"></div>
                 <span className="text-sm">Expenses</span>
               </div>
             </div>
@@ -236,8 +236,8 @@ export default function AdminFinance() {
         </div>
 
         {/* Revenue Sources */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
             <h2 className="text-lg font-semibold">Revenue Sources</h2>
           </div>
           <div className="p-6">
@@ -246,7 +246,7 @@ export default function AdminFinance() {
                 <span>Tournament Fees</span>
                 <div className="flex items-center gap-2">
                   <div className="w-24 bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full" style={{ width: '45%' }}></div>
+                    <div className="bg-blue-600 h-2 rounded-full w-[45%]"></div>
                   </div>
                   <span className="text-sm font-medium">45%</span>
                 </div>
@@ -255,7 +255,7 @@ export default function AdminFinance() {
                 <span>Membership Fees</span>
                 <div className="flex items-center gap-2">
                   <div className="w-24 bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full" style={{ width: '30%' }}></div>
+                    <div className="bg-green-600 h-2 rounded-full w-[30%]"></div>
                   </div>
                   <span className="text-sm font-medium">30%</span>
                 </div>
@@ -264,7 +264,7 @@ export default function AdminFinance() {
                 <span>Advertising</span>
                 <div className="flex items-center gap-2">
                   <div className="w-24 bg-gray-200 rounded-full h-2">
-                    <div className="bg-purple-600 h-2 rounded-full" style={{ width: '15%' }}></div>
+                    <div className="bg-purple-600 h-2 rounded-full w-[15%]"></div>
                   </div>
                   <span className="text-sm font-medium">15%</span>
                 </div>
@@ -273,7 +273,7 @@ export default function AdminFinance() {
                 <span>Sponsorships</span>
                 <div className="flex items-center gap-2">
                   <div className="w-24 bg-gray-200 rounded-full h-2">
-                    <div className="bg-orange-600 h-2 rounded-full" style={{ width: '10%' }}></div>
+                    <div className="bg-orange-600 h-2 rounded-full w-[10%]"></div>
                   </div>
                   <span className="text-sm font-medium">10%</span>
                 </div>
@@ -284,13 +284,13 @@ export default function AdminFinance() {
       </div>
 
       {/* Recent Transactions */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+        <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
           <h2 className="text-lg font-semibold">Recent Transactions</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+            <thead className="bg-neutral-background dark:bg-gray-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                   Date
@@ -311,7 +311,7 @@ export default function AdminFinance() {
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {transactions.map((transaction) => (
-                <tr key={transaction.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr key={transaction.id} className="hover:bg-neutral-background dark:hover:bg-gray-700">
                   <td className="px-6 py-4 text-sm">{transaction.date}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
@@ -343,26 +343,26 @@ export default function AdminFinance() {
 
       {/* Quick Actions */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📊 Financial Reports</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Generate detailed financial reports</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Generate detailed financial reports</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             Generate Report
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">💳 Payment Methods</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Manage payment gateways and methods</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Manage payment gateways and methods</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             Manage Payments
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📈 Forecasting</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">View revenue and expense forecasts</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">View revenue and expense forecasts</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             View Forecast
           </button>
         </div>

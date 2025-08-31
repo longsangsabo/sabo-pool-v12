@@ -71,13 +71,13 @@ export const CurrentSeasonCard: React.FC<CurrentSeasonCardProps> = ({
  const getStatusColor = (status: string) => {
   switch (status) {
    case 'ongoing':
-    return 'bg-success-500 text-white';
+    return 'bg-success-500 text-var(--color-background)';
    case 'completed':
-    return 'bg-neutral-500 text-white';
+    return 'bg-neutral-500 text-var(--color-background)';
    case 'upcoming':
-    return 'bg-primary-500 text-white';
+    return 'bg-primary-500 text-var(--color-background)';
    default:
-    return 'bg-neutral-500 text-white';
+    return 'bg-neutral-500 text-var(--color-background)';
   }
  };
 
@@ -120,7 +120,7 @@ export const CurrentSeasonCard: React.FC<CurrentSeasonCardProps> = ({
 
  if (!currentSeason) {
   return (
-   <Card className={`border-yellow-200 bg-warning-50 ${className}`}>
+   <Card className={`border-warning bg-warning-50 ${className}`}>
     <CardContent className='p-6 text-center'>
      <Clock className='h-12 w-12 text-yellow-500 mx-auto mb-4' />
      <p className='text-warning-800 font-medium'>
@@ -307,9 +307,9 @@ export const CurrentSeasonCard: React.FC<CurrentSeasonCardProps> = ({
                </span>
                {player.rank_change !== 0 &&
                 (player.rank_change > 0 ? (
-                 <TrendingUp className='h-3 w-3 text-green-500' />
+                 <TrendingUp className='h-3 w-3 text-success-500' />
                 ) : (
-                 <TrendingDown className='h-3 w-3 text-red-500' />
+                 <TrendingDown className='h-3 w-3 text-error-500' />
                 ))}
                <span className='text-sm'>
                 → {player.current_rank}
@@ -324,9 +324,9 @@ export const CurrentSeasonCard: React.FC<CurrentSeasonCardProps> = ({
                </span>
                {player.points_change !== 0 &&
                 (player.points_change > 0 ? (
-                 <TrendingUp className='h-3 w-3 text-green-500' />
+                 <TrendingUp className='h-3 w-3 text-success-500' />
                 ) : (
-                 <TrendingDown className='h-3 w-3 text-red-500' />
+                 <TrendingDown className='h-3 w-3 text-error-500' />
                 ))}
                <span className='text-sm'>
                 → {player.current_points}

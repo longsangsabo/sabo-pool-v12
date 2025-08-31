@@ -280,13 +280,13 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
  const getStatusIcon = (status: string) => {
   switch (status) {
    case 'available':
-    return <CheckCircle className='h-4 w-4 text-green-500' />;
+    return <CheckCircle className='h-4 w-4 text-success-500' />;
    case 'occupied':
-    return <XCircle className='h-4 w-4 text-red-500' />;
+    return <XCircle className='h-4 w-4 text-error-500' />;
    case 'maintenance':
     return <AlertCircle className='h-4 w-4 text-orange-500' />;
    case 'reserved':
-    return <Clock className='h-4 w-4 text-blue-500' />;
+    return <Clock className='h-4 w-4 text-primary-500' />;
    default:
     return <AlertCircle className='h-4 w-4 text-neutral-500' />;
   }

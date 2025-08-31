@@ -180,7 +180,7 @@ const TournamentPlayerAvatar: React.FC<TournamentPlayerAvatarProps> = ({
    <div
     className={`${getSizeClasses(size)} bg-error-100 rounded-full flex items-center justify-center relative`}
    >
-    <span className='text-red-500 text-xs'>!</span>
+    <span className='text-error-500 text-xs'>!</span>
    </div>
   );
  }
@@ -202,7 +202,7 @@ const TournamentPlayerAvatar: React.FC<TournamentPlayerAvatarProps> = ({
    {showRank && (
     <Badge
      variant='secondary'
-     className='absolute -bottom-1 -right-1 h-5 min-w-[20px] text-[10px] font-bold px-1 py-0 bg-gradient-to-br from-yellow-400 to-orange-500 text-white border-0'
+     className='absolute -bottom-1 -right-1 h-5 min-w-[20px] text-[10px] font-bold px-1 py-0 bg-gradient-to-br from-yellow-400 to-orange-500 text-var(--color-background) border-0'
     >
      {getPlayerRank()}
     </Badge>

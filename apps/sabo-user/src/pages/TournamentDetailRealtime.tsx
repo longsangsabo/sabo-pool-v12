@@ -205,7 +205,7 @@ export const TournamentDetailRealtime: React.FC = () => {
      >
       {registering ? (
        <>
-        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-var(--color-background) mr-2'></div>
         Đang đăng ký...
        </>
       ) : (
@@ -239,7 +239,7 @@ export const TournamentDetailRealtime: React.FC = () => {
 
        <div className='grid grid-cols-2 gap-4'>
         <div className='flex items-center gap-3'>
-         <Calendar className='h-5 w-5 text-blue-500' />
+         <Calendar className='h-5 w-5 text-primary-500' />
          <div>
           <div className='font-medium'>Thời gian thi đấu</div>
           <div className='text-body-small text-neutral-500'>
@@ -250,7 +250,7 @@ export const TournamentDetailRealtime: React.FC = () => {
 
         {tournament.venue_address && (
          <div className='flex items-center gap-3'>
-          <MapPin className='h-5 w-5 text-red-500' />
+          <MapPin className='h-5 w-5 text-error-500' />
           <div>
            <div className='font-medium'>Địa điểm</div>
            <div className='text-body-small text-neutral-500'>
@@ -261,7 +261,7 @@ export const TournamentDetailRealtime: React.FC = () => {
         )}
 
         <div className='flex items-center gap-3'>
-         <DollarSign className='h-5 w-5 text-green-500' />
+         <DollarSign className='h-5 w-5 text-success-500' />
          <div>
           <div className='font-medium'>Phí tham gia</div>
           <div className='text-body-small text-neutral-500'>

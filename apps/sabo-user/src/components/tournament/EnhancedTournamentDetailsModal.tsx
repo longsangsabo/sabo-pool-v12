@@ -128,13 +128,13 @@ export const EnhancedTournamentDetailsModal: React.FC<
    <DialogContent className={`${isMobile ? 'max-w-[95vw] max-h-[95vh] p-3' : 'max-w-6xl max-h-[90vh]'} overflow-y-auto ${
     theme === 'dark' 
      ? 'bg-neutral-900/95 border-gray-700 backdrop-blur-lg' 
-     : 'bg-white/95 border-neutral-200 backdrop-blur-lg'
+     : 'bg-var(--color-background)/95 border-neutral-200 backdrop-blur-lg'
    }`}>
     <DialogHeader className={`space-y-4 ${isMobile ? 'space-y-2' : ''}`}>
      <div className={`flex ${isMobile ? 'flex-col gap-3' : 'items-start justify-between'}`}>
       <div className='space-y-2'>
        <DialogTitle className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold ${
-        theme === 'dark' ? 'text-white' : 'text-neutral-900'
+        theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'
        }`}>
         {tournament.name}
        </DialogTitle>
@@ -165,7 +165,7 @@ export const EnhancedTournamentDetailsModal: React.FC<
        </div>
       </div>
       <Badge
-       className={`${getStatusColor(tournament.status)} text-white ${isMobile ? 'self-start text-xs' : ''}`}
+       className={`${getStatusColor(tournament.status)} text-var(--color-background) ${isMobile ? 'self-start text-xs' : ''}`}
       >
        {getStatusText(tournament.status)}
       </Badge>
@@ -192,8 +192,8 @@ export const EnhancedTournamentDetailsModal: React.FC<
         value='overview'
         className={`${
          theme === 'dark' 
-          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-          : 'data-[state=active]:bg-white data-[state=active]:text-neutral-900'
+          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-var(--color-background)' 
+          : 'data-[state=active]:bg-var(--color-background) data-[state=active]:text-neutral-900'
         }`}
        >
         Tổng quan
@@ -202,8 +202,8 @@ export const EnhancedTournamentDetailsModal: React.FC<
         value='participants'
         className={`${
          theme === 'dark' 
-          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-          : 'data-[state=active]:bg-white data-[state=active]:text-neutral-900'
+          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-var(--color-background)' 
+          : 'data-[state=active]:bg-var(--color-background) data-[state=active]:text-neutral-900'
         }`}
        >
         Người tham gia
@@ -217,8 +217,8 @@ export const EnhancedTournamentDetailsModal: React.FC<
         value='bracket'
         className={`${
          theme === 'dark' 
-          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-          : 'data-[state=active]:bg-white data-[state=active]:text-neutral-900'
+          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-var(--color-background)' 
+          : 'data-[state=active]:bg-var(--color-background) data-[state=active]:text-neutral-900'
         }`}
        >
         Bảng đấu{' '}
@@ -228,8 +228,8 @@ export const EnhancedTournamentDetailsModal: React.FC<
         value='results'
         className={`${
          theme === 'dark' 
-          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-          : 'data-[state=active]:bg-white data-[state=active]:text-neutral-900'
+          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-var(--color-background)' 
+          : 'data-[state=active]:bg-var(--color-background) data-[state=active]:text-neutral-900'
         }`}
        >
         Kết quả{' '}
@@ -249,8 +249,8 @@ export const EnhancedTournamentDetailsModal: React.FC<
         value='overview'
         className={`text-caption py-2 px-2 ${
          theme === 'dark' 
-          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-          : 'data-[state=active]:bg-white data-[state=active]:text-neutral-900'
+          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-var(--color-background)' 
+          : 'data-[state=active]:bg-var(--color-background) data-[state=active]:text-neutral-900'
         }`}
        >
         Tổng quan
@@ -259,8 +259,8 @@ export const EnhancedTournamentDetailsModal: React.FC<
         value='participants'
         className={`text-caption py-2 px-2 ${
          theme === 'dark' 
-          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white' 
-          : 'data-[state=active]:bg-white data-[state=active]:text-neutral-900'
+          ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-var(--color-background)' 
+          : 'data-[state=active]:bg-var(--color-background) data-[state=active]:text-neutral-900'
         }`}
        >
         Thành viên
@@ -282,30 +282,30 @@ export const EnhancedTournamentDetailsModal: React.FC<
          : 'border-neutral-200 bg-neutral-50/30'
        }`}>
         <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold flex items-center gap-2 ${
-         theme === 'dark' ? 'text-white' : 'text-neutral-900'
+         theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'
         }`}>
          <Trophy className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} text-amber-500`} />
          Thông tin giải đấu
         </h3>
         <div className={`space-y-3 ${isMobile ? 'text-xs' : 'text-sm'}`}>
          <div className='flex items-center gap-2'>
-          <Target className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-blue-500`} />
+          <Target className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-primary-500`} />
           <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>Loại giải:</span>
-          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'}`}>
            {tournament.tournament_type}
           </span>
          </div>
          <div className='flex items-center gap-2'>
           <Activity className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-purple-500`} />
           <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>Hình thức:</span>
-          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'}`}>
            {tournament.game_format}
           </span>
          </div>
          <div className='flex items-center gap-2'>
           <Star className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-indigo-500`} />
           <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>Cấp độ:</span>
-          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'}`}>
            Tier {tournament.tier_level}
           </span>
          </div>
@@ -335,37 +335,37 @@ export const EnhancedTournamentDetailsModal: React.FC<
          : 'border-neutral-200 bg-neutral-50/30'
        }`}>
         <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold flex items-center gap-2 ${
-         theme === 'dark' ? 'text-white' : 'text-neutral-900'
+         theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'
         }`}>
-         <Calendar className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} text-green-500`} />
+         <Calendar className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} text-success-500`} />
          Lịch trình
         </h3>
         <div className={`space-y-3 ${isMobile ? 'text-xs' : 'text-sm'}`}>
          <div className='flex items-center gap-2'>
-          <Clock className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-blue-500`} />
+          <Clock className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-primary-500`} />
           <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>Mở đăng ký:</span>
-          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'} ${isMobile ? 'text-[10px]' : ''}`}>
+          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'} ${isMobile ? 'text-[10px]' : ''}`}>
            {formatSafeDate(tournament.registration_start)}
           </span>
          </div>
          <div className='flex items-center gap-2'>
           <Clock className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-orange-500`} />
           <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>Đóng đăng ký:</span>
-          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'} ${isMobile ? 'text-[10px]' : ''}`}>
+          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'} ${isMobile ? 'text-[10px]' : ''}`}>
            {formatSafeDate(tournament.registration_end)}
           </span>
          </div>
          <div className='flex items-center gap-2'>
-          <Zap className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-green-500`} />
+          <Zap className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-success-500`} />
           <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>Bắt đầu:</span>
-          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'} ${isMobile ? 'text-[10px]' : ''}`}>
+          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'} ${isMobile ? 'text-[10px]' : ''}`}>
            {formatSafeDate(tournament.tournament_start)}
           </span>
          </div>
          <div className='flex items-center gap-2'>
           <Trophy className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-amber-500`} />
           <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>Kết thúc:</span>
-          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'} ${isMobile ? 'text-[10px]' : ''}`}>
+          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'} ${isMobile ? 'text-[10px]' : ''}`}>
            {formatSafeDate(tournament.tournament_end)}
           </span>
          </div>
@@ -379,18 +379,18 @@ export const EnhancedTournamentDetailsModal: React.FC<
          : 'border-neutral-200 bg-neutral-50/30'
        }`}>
         <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold flex items-center gap-2 ${
-         theme === 'dark' ? 'text-white' : 'text-neutral-900'
+         theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'
         }`}>
          <BarChart3 className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} text-indigo-500`} />
          Thống kê
         </h3>
         <div className={`space-y-3 ${isMobile ? 'text-xs' : 'text-sm'}`}>
          <div className='flex items-center gap-2'>
-          <Users className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-blue-500`} />
+          <Users className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-primary-500`} />
           <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>
            Người tham gia:
           </span>
-          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+          <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'}`}>
            {confirmedParticipants} / {tournament.max_participants}
           </span>
          </div>
@@ -399,15 +399,15 @@ export const EnhancedTournamentDetailsModal: React.FC<
            <div className='flex items-center gap-2'>
             <Award className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-yellow-500`} />
             <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>Trận đấu:</span>
-            <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+            <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'}`}>
              {matches.filter(m => m.status === 'completed').length}{' '}
              / {matches.length}
             </span>
            </div>
            <div className='flex items-center gap-2'>
-            <TrendingUp className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-green-500`} />
+            <TrendingUp className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-success-500`} />
             <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>Tiến độ:</span>
-            <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+            <span className={`font-medium ml-auto ${theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'}`}>
              {matches.length > 0
               ? Math.round(
                 (matches.filter(m => m.status === 'completed')
@@ -431,9 +431,9 @@ export const EnhancedTournamentDetailsModal: React.FC<
          : 'border-neutral-200 bg-neutral-50/30'
        }`}>
         <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold flex items-center gap-2 ${
-         theme === 'dark' ? 'text-white' : 'text-neutral-900'
+         theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'
         }`}>
-         <MapPin className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} text-red-500`} />
+         <MapPin className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} text-error-500`} />
          Địa điểm
         </h3>
         <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'} ${isMobile ? 'text-xs' : ''}`}>
@@ -442,7 +442,7 @@ export const EnhancedTournamentDetailsModal: React.FC<
         {tournament.contact_info && (
          <div className='pt-2 border-t border-neutral-200 dark:border-gray-600'>
           <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium mb-1 ${
-           theme === 'dark' ? 'text-white' : 'text-neutral-900'
+           theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'
           }`}>Liên hệ:</p>
           <p className={`${isMobile ? 'text-xs' : 'text-sm'} ${
            theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'
@@ -464,12 +464,12 @@ export const EnhancedTournamentDetailsModal: React.FC<
            : 'border-neutral-200 bg-neutral-50/30'
          }`}>
           <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold flex items-center gap-2 ${
-           theme === 'dark' ? 'text-white' : 'text-neutral-900'
+           theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'
           }`}>
            <FileText className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} text-slate-500`} />
            Mô tả
           </h3>
-          <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'} whitespace-pre-wrap ${
+          <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'} var(--color-background)space-pre-wrap ${
            isMobile ? 'text-caption leading-relaxed' : ''
           }`}>
            {tournament.description}
@@ -484,12 +484,12 @@ export const EnhancedTournamentDetailsModal: React.FC<
            : 'border-neutral-200 bg-neutral-50/30'
          }`}>
           <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold flex items-center gap-2 ${
-           theme === 'dark' ? 'text-white' : 'text-neutral-900'
+           theme === 'dark' ? 'text-var(--color-background)' : 'text-neutral-900'
           }`}>
            <Award className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} text-orange-500`} />
            Luật chơi
           </h3>
-          <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'} whitespace-pre-wrap ${
+          <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'} var(--color-background)space-pre-wrap ${
            isMobile ? 'text-caption leading-relaxed' : ''
           }`}>
            {tournament.rules}
@@ -510,14 +510,14 @@ export const EnhancedTournamentDetailsModal: React.FC<
          onClick={() => setActiveTab('bracket')}
          className={`flex items-center justify-center gap-2 p-3 rounded-lg transition-colors ${
           theme === 'dark'
-           ? 'bg-gray-700 hover:bg-gray-600 text-white'
+           ? 'bg-gray-700 hover:bg-gray-600 text-var(--color-background)'
            : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-900'
          }`}
         >
          <Target className="h-4 w-4" />
          <span className="text-body-small-medium">Bảng đấu</span>
          {matches.length > 0 && (
-          <span className="text-caption bg-primary-500 text-white rounded-full px-2 py-0.5">
+          <span className="text-caption bg-primary-500 text-var(--color-background) rounded-full px-2 py-0.5">
            {matches.length}
           </span>
          )}
@@ -526,14 +526,14 @@ export const EnhancedTournamentDetailsModal: React.FC<
          onClick={() => setActiveTab('results')}
          className={`flex items-center justify-center gap-2 p-3 rounded-lg transition-colors ${
           theme === 'dark'
-           ? 'bg-gray-700 hover:bg-gray-600 text-white'
+           ? 'bg-gray-700 hover:bg-gray-600 text-var(--color-background)'
            : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-900'
          }`}
         >
          <Trophy className="h-4 w-4" />
          <span className="text-body-small-medium">Kết quả</span>
          {results.length > 0 && (
-          <span className="text-caption bg-success-500 text-white rounded-full px-2 py-0.5">
+          <span className="text-caption bg-success-500 text-var(--color-background) rounded-full px-2 py-0.5">
            {results.length}
           </span>
          )}

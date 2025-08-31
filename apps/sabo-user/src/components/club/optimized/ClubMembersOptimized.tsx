@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -677,10 +677,10 @@ const ClubMembersOptimized: React.FC = () => {
             <div className='ml-4'>
              {notification.type ===
               'rank_verification_request' && (
-              <UserCheck className='w-5 h-5 text-blue-500' />
+              <UserCheck className='w-5 h-5 text-primary-500' />
              )}
              {notification.type === 'new_match' && (
-              <Trophy className='w-5 h-5 text-green-500' />
+              <Trophy className='w-5 h-5 text-success-500' />
              )}
              {notification.type === 'club_member_joined' && (
               <Users className='w-5 h-5 text-purple-500' />

@@ -34,7 +34,7 @@ export interface AvatarState {
     | 'diamond-silver'
     | 'chrome-metal'
     | 'frost-silver'
-    | 'white-gold'
+    | 'var(--color-background)-gold'
     | 'silver-holographic'
     | 'base'
     | 'neon'

@@ -412,7 +412,7 @@ export const TournamentRegistration: React.FC<TournamentRegistrationProps> = ({
          isActive
           ? 'bg-primary text-primary-foreground'
           : isCompleted
-           ? 'bg-success-500 text-white'
+           ? 'bg-success-500 text-var(--color-background)'
            : 'bg-muted'
         }`}
        >

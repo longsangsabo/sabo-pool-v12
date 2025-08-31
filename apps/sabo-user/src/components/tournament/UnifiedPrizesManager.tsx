@@ -512,7 +512,7 @@ export const UnifiedPrizesManager: React.FC<UnifiedPrizesManagerProps> = ({
        <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
          {getPositionIcon(prize.position)}
-         <Badge variant="secondary" className="font-mono text-body-small px-3 py-1 bg-white/70">
+         <Badge variant="secondary" className="font-mono text-body-small px-3 py-1 bg-var(--color-background)/70">
           #{prize.position}
          </Badge>
          <div>
@@ -546,7 +546,7 @@ export const UnifiedPrizesManager: React.FC<UnifiedPrizesManagerProps> = ({
            
            variant="outline"
            onClick={() => handleEditPrize(prize)}
-           className="bg-white/50 hover:bg-white/80"
+           className="bg-var(--color-background)/50 hover:bg-var(--color-background)/80"
           >
            <Edit2 className="w-4 h-4" />
           </Button>
@@ -554,7 +554,7 @@ export const UnifiedPrizesManager: React.FC<UnifiedPrizesManagerProps> = ({
            
            variant="outline"
            onClick={() => handleDeletePrize(prize.id)}
-           className="bg-white/50 hover:bg-error-50 hover:text-error-600"
+           className="bg-var(--color-background)/50 hover:bg-error-50 hover:text-error-600"
           >
            <Trash2 className="w-4 h-4" />
           </Button>

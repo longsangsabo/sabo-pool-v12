@@ -449,7 +449,7 @@ export function TournamentBracketGenerator({
      <div className="grid gap-2">
       {description.requirements.map((req, index) => (
        <div key={index} className="flex items-start gap-2 text-body-small">
-        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+        <CheckCircle className="h-4 w-4 text-success-500 mt-0.5 flex-shrink-0" />
         <span className="text-muted-foreground">{req}</span>
        </div>
       ))}

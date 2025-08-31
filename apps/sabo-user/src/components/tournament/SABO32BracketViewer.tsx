@@ -261,7 +261,7 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
       </div>
      </div>
      <div>
-      <h4 className="font-semibold mb-3 text-warning-600 dark:text-yellow-400 bg-warning-50 dark:bg-yellow-900/20 p-3 rounded-lg border border-yellow-200 dark:border-yellow-700">🏆 Finals</h4>
+      <h4 className="font-semibold mb-3 text-warning-600 dark:text-yellow-400 bg-warning-50 dark:bg-yellow-900/20 p-3 rounded-lg border border-warning dark:border-yellow-700">🏆 Finals</h4>
       <div className="space-y-2">
        {finals.map(renderMatchCard)}
       </div>
@@ -302,7 +302,7 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
   <div className="space-y-4 relative">
    {/* 🎯 Visual indicator when refreshing */}
    {isRefreshing && (
-    <div className="fixed top-4 right-4 z-50 bg-primary-100 dark:bg-blue-900/50 border border-primary-300 dark:border-blue-700 text-primary-800 dark:text-blue-200 px-4 py-2 rounded-lg shadow-lg">
+    <div className="fixed top-4 right-4 z-50 bg-primary-100 dark:bg-blue-900/50 border border-primary-300 dark:border-blue-700 text-primary-800 dark:text-primary-200 px-4 py-2 rounded-lg shadow-lg">
      <div className="flex items-center gap-2">
       <RefreshCw className="w-4 h-4 animate-spin" />
       <span className="text-body-small-medium">Updating brackets...</span>
@@ -361,7 +361,7 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
     <TabsContent value="groupA" className="form-spacing">
      <Card className="border-success-200 dark:border-green-700">
       <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
-       <CardTitle className="text-body-large text-success-800 dark:text-green-200">Group A - Double Elimination</CardTitle>
+       <CardTitle className="text-body-large text-success-800 dark:text-success-200">Group A - Double Elimination</CardTitle>
       </CardHeader>
       <CardContent className="card-spacing">
        {renderGroupBracket('A')}
@@ -372,7 +372,7 @@ export const SABO32BracketViewer: React.FC<SABO32BracketViewerProps> = ({ tourna
     <TabsContent value="groupB" className="form-spacing">
      <Card className="border-primary-200 dark:border-blue-700">
       <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
-       <CardTitle className="text-body-large text-primary-800 dark:text-blue-200">Group B - Double Elimination</CardTitle>
+       <CardTitle className="text-body-large text-primary-800 dark:text-primary-200">Group B - Double Elimination</CardTitle>
       </CardHeader>
       <CardContent className="card-spacing">
        {renderGroupBracket('B')}

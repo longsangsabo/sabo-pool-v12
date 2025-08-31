@@ -145,7 +145,7 @@ export const TournamentControlPanel: React.FC<TournamentControlPanelProps> = ({
    <CardContent className='space-y-6'>
     {/* Tournament Statistics */}
     <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-     <div className='flex items-center gap-2 p-3 bg-white/50 rounded-lg'>
+     <div className='flex items-center gap-2 p-3 bg-var(--color-background)/50 rounded-lg'>
       <Trophy className='h-4 w-4 text-warning-600' />
       <div>
        <div className='text-body-small-medium'>
@@ -155,7 +155,7 @@ export const TournamentControlPanel: React.FC<TournamentControlPanelProps> = ({
       </div>
      </div>
 
-     <div className='flex items-center gap-2 p-3 bg-white/50 rounded-lg'>
+     <div className='flex items-center gap-2 p-3 bg-var(--color-background)/50 rounded-lg'>
       <Clock className='h-4 w-4 text-primary-600' />
       <div>
        <div className='text-body-small-medium'>{readyMatches}</div>
@@ -163,7 +163,7 @@ export const TournamentControlPanel: React.FC<TournamentControlPanelProps> = ({
       </div>
      </div>
 
-     <div className='flex items-center gap-2 p-3 bg-white/50 rounded-lg'>
+     <div className='flex items-center gap-2 p-3 bg-var(--color-background)/50 rounded-lg'>
       <Users className='h-4 w-4 text-success-600' />
       <div>
        <div className='text-body-small-medium'>
@@ -173,7 +173,7 @@ export const TournamentControlPanel: React.FC<TournamentControlPanelProps> = ({
       </div>
      </div>
 
-     <div className='flex items-center gap-2 p-3 bg-white/50 rounded-lg'>
+     <div className='flex items-center gap-2 p-3 bg-var(--color-background)/50 rounded-lg'>
       <Zap className='h-4 w-4 text-info-600' />
       <div>
        <div className='text-body-small-medium'>{progressPercentage}%</div>
@@ -203,7 +203,7 @@ export const TournamentControlPanel: React.FC<TournamentControlPanelProps> = ({
      <div className='p-3 bg-primary-50 dark:bg-blue-900/20 rounded-lg border border-primary-200'>
       <div className='flex items-center gap-2'>
        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600' />
-       <span className='text-body-small-medium text-primary-800 dark:text-blue-200'>
+       <span className='text-body-small-medium text-primary-800 dark:text-primary-200'>
         {automationActivity.lastAction || 'Processing automation...'}
        </span>
       </div>
@@ -220,7 +220,7 @@ export const TournamentControlPanel: React.FC<TournamentControlPanelProps> = ({
       >
        {isStarting ? (
         <div className='flex items-center gap-2'>
-         <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white' />
+         <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-var(--color-background)' />
          Đang bắt đầu...
         </div>
        ) : (
@@ -274,7 +274,7 @@ export const TournamentControlPanel: React.FC<TournamentControlPanelProps> = ({
          Automation Issue Detected
         </div>
         <div className='text-caption text-warning-700 dark:text-orange-300 mt-1'>
-         Some matches are missing player assignments. Click "Khôi phục
+         Some matches are missing player assignments. Click"Khôi phục
          automation" to fix.
         </div>
        </div>

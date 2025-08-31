@@ -98,7 +98,7 @@ const PaymentSuccessPage = () => {
   return (
    <div className='min-h-screen bg-neutral-50 flex items-center justify-center'>
     <div className='max-w-md mx-auto text-center px-4'>
-     <XCircle className='w-16 h-16 mx-auto text-red-500 mb-4' />
+     <XCircle className='w-16 h-16 mx-auto text-error-500 mb-4' />
      <h2 className='text-heading-semibold text-neutral-900 mb-2'>
       Thanh toán thất bại
      </h2>
@@ -108,7 +108,7 @@ const PaymentSuccessPage = () => {
      <div className='space-y-3'>
       <Button
        onClick={handleRetry}
-       className='w-full bg-primary-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors'
+       className='w-full bg-primary-600 text-var(--color-background) px-6 py-3 rounded-md hover:bg-primary-700 transition-colors'
       >
        Thử lại
       </Button>
@@ -127,7 +127,7 @@ const PaymentSuccessPage = () => {
  return (
   <div className='min-h-screen bg-neutral-50 flex items-center justify-center'>
    <div className='max-w-md mx-auto text-center px-4'>
-    <CheckCircle className='w-16 h-16 mx-auto text-green-500 mb-4' />
+    <CheckCircle className='w-16 h-16 mx-auto text-success-500 mb-4' />
     <h2 className='text-heading-semibold text-neutral-900 mb-2'>
      Thanh toán thành công!
     </h2>
@@ -138,7 +138,7 @@ const PaymentSuccessPage = () => {
     </p>
 
     {paymentInfo && (
-     <div className='bg-white rounded-lg shadow-sm border p-4 mb-6 text-left'>
+     <div className='bg-var(--color-background) rounded-lg shadow-sm border p-4 mb-6 text-left'>
       <h3 className='font-medium text-neutral-900 mb-2'>
        Thông tin thanh toán
       </h3>
@@ -166,7 +166,7 @@ const PaymentSuccessPage = () => {
     <div className='space-y-3'>
      <Button
       onClick={handleContinue}
-      className='w-full bg-primary-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors'
+      className='w-full bg-primary-600 text-var(--color-background) px-6 py-3 rounded-md hover:bg-primary-700 transition-colors'
      >
       Xem gói hội viên
      </Button>

@@ -265,7 +265,7 @@ const ClubStatsDashboard = () => {
          {stats?.active_members || 0}
         </p>
        </div>
-       <Users className='w-8 h-8 text-blue-500' />
+       <Users className='w-8 h-8 text-primary-500' />
       </div>
      </CardContent>
     </Card>
@@ -279,7 +279,7 @@ const ClubStatsDashboard = () => {
          {stats?.verified_members || 0}
         </p>
        </div>
-       <Shield className='w-8 h-8 text-green-500' />
+       <Shield className='w-8 h-8 text-success-500' />
       </div>
      </CardContent>
     </Card>

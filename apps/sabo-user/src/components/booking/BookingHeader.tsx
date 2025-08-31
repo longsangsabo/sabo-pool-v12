@@ -38,7 +38,7 @@ const BookingHeader = ({
        variant='ghost'
        
        onClick={onToggleContrast}
-       className='text-green-200 hover:bg-success-700 min-h-[44px]'
+       className='text-success-200 hover:bg-success-700 min-h-[44px]'
       >
        {isHighContrast ? '🌞' : '🌙'}
       </Button>

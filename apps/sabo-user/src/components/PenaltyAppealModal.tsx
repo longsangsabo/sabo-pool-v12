@@ -116,7 +116,7 @@ const PenaltyAppealModal = ({
      </div>
 
      {/* Warning */}
-     <div className='bg-warning-50 border border-yellow-200 rounded-lg p-3'>
+     <div className='bg-warning-50 border border-warning rounded-lg p-3'>
       <div className='flex'>
        <AlertTriangle className='w-4 h-4 text-warning-600 mr-2 flex-shrink-0 mt-0.5' />
        <div className='text-caption text-warning-800'>

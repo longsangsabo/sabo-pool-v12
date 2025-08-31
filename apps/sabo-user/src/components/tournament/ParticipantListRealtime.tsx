@@ -70,7 +70,7 @@ export const ParticipantListRealtime: React.FC<
     return (
      <Badge
       variant='outline'
-      className='bg-warning-100 text-warning-800 border-yellow-200'
+      className='bg-warning-100 text-warning-800 border-warning'
      >
       <Clock className='w-3 h-3 mr-1' />
       Chờ xác nhận
@@ -128,8 +128,8 @@ export const ParticipantListRealtime: React.FC<
        {displayedParticipants.map((participant, index) => (
         <div
          key={participant.id}
-         className='flex items-center p-3 bg-white border rounded-lg hover:shadow-sm transition-all duration-200 animate-fadeIn'
-         className="animation-delay-dynamic" style={{ "--animation-delay": `${index * 0.1}s` }}
+         className='flex items-center p-3 bg-var(--color-background) border rounded-lg hover:shadow-sm transition-all duration-200 animate-fadeIn'
+         className="animation-delay-dynamic" style={{"--animation-delay": `${index * 0.1}s` }}
         >
          <div className='relative'>
           <Avatar className='h-10 w-10'>
@@ -149,8 +149,8 @@ export const ParticipantListRealtime: React.FC<
            </AvatarFallback>
           </Avatar>
           {participant.registration_status === 'confirmed' && (
-           <div className='absolute -top-1 -right-1 w-4 h-4 bg-success-500 rounded-full border-2 border-white'>
-            <UserCheck className='w-2 h-2 text-white m-0.5' />
+           <div className='absolute -top-1 -right-1 w-4 h-4 bg-success-500 rounded-full border-2 border-var(--color-background)'>
+            <UserCheck className='w-2 h-2 text-var(--color-background) m-0.5' />
            </div>
           )}
          </div>

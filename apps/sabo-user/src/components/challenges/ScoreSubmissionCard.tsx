@@ -352,7 +352,7 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
            <Eye className="w-5 h-5 text-primary-600 dark:text-blue-400" />
           </div>
           <div className="flex-1">
-           <h4 className="font-semibold text-primary-800 dark:text-blue-200">
+           <h4 className="font-semibold text-primary-800 dark:text-primary-200">
             {needsMyConfirmation ? 'Bạn cần xác nhận tỷ số' : 'Chờ đối thủ xác nhận'}
            </h4>
            <p className="text-body-small text-primary-700 dark:text-blue-300">
@@ -362,7 +362,7 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
          </div>
 
          {/* Score Display */}
-         <div className="bg-white dark:bg-neutral-800/50 rounded-lg p-4 border border-blue-100 dark:border-blue-800">
+         <div className="bg-var(--color-background) dark:bg-neutral-800/50 rounded-lg p-4 border border-blue-100 dark:border-blue-800">
           <div className="grid grid-cols-3 items-center gap-4">
            <div className="text-center">
             <div className="text-body-small-medium text-neutral-600 dark:text-gray-400 mb-1">
@@ -413,7 +413,7 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
             </Button>
            ) : (
             <div className="space-y-3">
-             <div className="p-3 bg-warning-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+             <div className="p-3 bg-warning-50 dark:bg-yellow-900/20 border border-warning dark:border-yellow-700 rounded-lg">
               <div className="text-body-small text-warning-800 dark:text-yellow-200 font-medium mb-2">
                ⚠️ Xác nhận cuối cùng
               </div>
@@ -471,7 +471,7 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
          <Trophy className="w-5 h-5 text-success-600 dark:text-green-400" />
         </div>
         <div className="flex-1">
-         <h4 className="font-semibold text-success-800 dark:text-green-200">
+         <h4 className="font-semibold text-success-800 dark:text-success-200">
           🎉 Trận đấu đã hoàn thành
          </h4>
          <p className="text-body-small text-success-700 dark:text-green-300">
@@ -485,7 +485,7 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
        </div>
 
        {/* Final Score Display */}
-       <div className="bg-white dark:bg-neutral-800/50 rounded-lg p-4 border border-green-100 dark:border-green-800">
+       <div className="bg-var(--color-background) dark:bg-neutral-800/50 rounded-lg p-4 border border-green-100 dark:border-green-800">
         <div className="text-center mb-3">
          <div className="text-body-small-medium text-neutral-600 dark:text-gray-400">Kết quả cuối cùng</div>
         </div>
@@ -502,7 +502,7 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
            {challenge.challenger_score || 0}
           </div>
           {(challenge.challenger_score || 0) > (challenge.opponent_score || 0) && (
-           <Badge className="bg-warning-100 text-warning-800 border-yellow-200">
+           <Badge className="bg-warning-100 text-warning-800 border-warning">
             <Trophy className="w-3 h-3 mr-1" />
             Thắng
            </Badge>
@@ -525,7 +525,7 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
            {challenge.opponent_score || 0}
           </div>
           {(challenge.opponent_score || 0) > (challenge.challenger_score || 0) && (
-           <Badge className="bg-warning-100 text-warning-800 border-yellow-200">
+           <Badge className="bg-warning-100 text-warning-800 border-warning">
             <Trophy className="w-3 h-3 mr-1" />
             Thắng
            </Badge>
@@ -538,7 +538,7 @@ export const ScoreSubmissionCard: React.FC<ScoreSubmissionProps> = ({
        <div className="flex items-center justify-between p-3 bg-primary-50 dark:bg-blue-900/20 border border-primary-200 dark:border-blue-700 rounded-lg">
         <div className="flex items-center gap-2">
          <ArrowRight className="w-4 h-4 text-primary-600 dark:text-blue-400" />
-         <span className="text-body-small-medium text-primary-800 dark:text-blue-200">
+         <span className="text-body-small-medium text-primary-800 dark:text-primary-200">
           Chuyển điểm SPA
          </span>
         </div>

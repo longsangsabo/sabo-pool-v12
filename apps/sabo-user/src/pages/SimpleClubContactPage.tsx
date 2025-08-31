@@ -102,10 +102,10 @@ const SimpleClubContactPage = () => {
        {/* Contact Form */}
        <Card className='bg-green-800 border-green-700'>
         <CardHeader>
-         <CardTitle className='text-white text-heading text-center'>
+         <CardTitle className='text-var(--color-background) text-heading text-center'>
           Gửi tin nhắn cho chúng tôi
          </CardTitle>
-         <p className='text-green-200 text-center'>
+         <p className='text-success-200 text-center'>
           Chúng tôi sẽ phản hồi trong vòng 30 phút
          </p>
         </CardHeader>
@@ -114,7 +114,7 @@ const SimpleClubContactPage = () => {
           <div className='space-y-2'>
            <Label
             htmlFor='contact-name'
-            className='text-white text-body-large font-medium'
+            className='text-var(--color-background) text-body-large font-medium'
            >
             Họ tên *
            </Label>
@@ -125,7 +125,7 @@ const SimpleClubContactPage = () => {
              handleInputChange('name', e.target.value)
             }
             placeholder='Nguyễn Văn An'
-            className='bg-success-700 border-green-600 text-white text-body-large min-h-[44px]'
+            className='bg-success-700 border-green-600 text-var(--color-background) text-body-large min-h-[44px]'
             required
            />
           </div>
@@ -133,7 +133,7 @@ const SimpleClubContactPage = () => {
           <div className='space-y-2'>
            <Label
             htmlFor='contact-phone'
-            className='text-white text-body-large font-medium'
+            className='text-var(--color-background) text-body-large font-medium'
            >
             Số điện thoại *
            </Label>
@@ -145,7 +145,7 @@ const SimpleClubContactPage = () => {
             }
             placeholder='0901234567'
             type='tel'
-            className='bg-success-700 border-green-600 text-white text-body-large min-h-[44px]'
+            className='bg-success-700 border-green-600 text-var(--color-background) text-body-large min-h-[44px]'
             required
            />
           </div>
@@ -153,7 +153,7 @@ const SimpleClubContactPage = () => {
           <div className='space-y-2'>
            <Label
             htmlFor='contact-email'
-            className='text-white text-body-large font-medium'
+            className='text-var(--color-background) text-body-large font-medium'
            >
             Email (tùy chọn)
            </Label>
@@ -165,14 +165,14 @@ const SimpleClubContactPage = () => {
             }
             placeholder='your@email.com'
             type='email'
-            className='bg-success-700 border-green-600 text-white text-body-large min-h-[44px]'
+            className='bg-success-700 border-green-600 text-var(--color-background) text-body-large min-h-[44px]'
            />
           </div>
 
           <div className='space-y-2'>
            <Label
             htmlFor='contact-message'
-            className='text-white text-body-large font-medium'
+            className='text-var(--color-background) text-body-large font-medium'
            >
             Tin nhắn *
            </Label>
@@ -183,7 +183,7 @@ const SimpleClubContactPage = () => {
              handleInputChange('message', e.target.value)
             }
             placeholder='Tôi muốn hỏi về...'
-            className='bg-success-700 border-green-600 text-white text-body-large min-h-[120px] resize-none'
+            className='bg-success-700 border-green-600 text-var(--color-background) text-body-large min-h-[120px] resize-none'
             required
            />
           </div>
@@ -211,7 +211,7 @@ const SimpleClubContactPage = () => {
         {/* Quick Contact */}
         <Card className='bg-green-800 border-green-700'>
          <CardHeader>
-          <CardTitle className='text-white text-2xl'>
+          <CardTitle className='text-var(--color-background) text-2xl'>
            Liên hệ nhanh
           </CardTitle>
          </CardHeader>
@@ -221,10 +221,10 @@ const SimpleClubContactPage = () => {
             <Phone className='h-6 w-6 text-green-900' />
            </div>
            <div>
-            <p className='text-white font-semibold text-lg'>
+            <p className='text-var(--color-background) font-semibold text-lg'>
              Hotline 24/7
             </p>
-            <p className='text-green-200'>0901 234 567</p>
+            <p className='text-success-200'>0901 234 567</p>
             <Button
              variant='outline'
              
@@ -241,12 +241,12 @@ const SimpleClubContactPage = () => {
             <MessageCircle className='h-6 w-6 text-green-900' />
            </div>
            <div>
-            <p className='text-white font-semibold text-lg'>Zalo</p>
-            <p className='text-green-200'>0901 234 567</p>
+            <p className='text-var(--color-background) font-semibold text-lg'>Zalo</p>
+            <p className='text-success-200'>0901 234 567</p>
             <Button
              variant='outline'
              
-             className='mt-2 border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white min-h-[40px]'
+             className='mt-2 border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-var(--color-background) min-h-[40px]'
              onClick={() =>
               window.open('https://zalo.me/0901234567')
              }
@@ -261,7 +261,7 @@ const SimpleClubContactPage = () => {
         {/* Location & Hours */}
         <Card className='bg-green-800 border-green-700'>
          <CardHeader>
-          <CardTitle className='text-white text-2xl'>
+          <CardTitle className='text-var(--color-background) text-2xl'>
            Thông tin cơ sở
           </CardTitle>
          </CardHeader>
@@ -269,11 +269,11 @@ const SimpleClubContactPage = () => {
           <div className='flex items-start space-x-3'>
            <MapPin className='h-6 w-6 text-yellow-400 mt-1' />
            <div>
-            <p className='text-white font-medium text-lg'>
+            <p className='text-var(--color-background) font-medium text-lg'>
              Địa chỉ:
             </p>
-            <p className='text-green-200'>123 Đường Nguyễn Huệ</p>
-            <p className='text-green-200'>Quận 1, TP.HCM</p>
+            <p className='text-success-200'>123 Đường Nguyễn Huệ</p>
+            <p className='text-success-200'>Quận 1, TP.HCM</p>
             <Button
              variant='outline'
              
@@ -292,10 +292,10 @@ const SimpleClubContactPage = () => {
           <div className='flex items-start space-x-3'>
            <Clock className='h-6 w-6 text-yellow-400 mt-1' />
            <div>
-            <p className='text-white font-medium text-lg'>
+            <p className='text-var(--color-background) font-medium text-lg'>
              Giờ mở cửa:
             </p>
-            <p className='text-green-200'>
+            <p className='text-success-200'>
              Thứ 2 - Chủ nhật: 8:00 - 23:00
             </p>
             <p className='text-yellow-400 font-medium'>
@@ -307,8 +307,8 @@ const SimpleClubContactPage = () => {
           <div className='flex items-start space-x-3'>
            <Mail className='h-6 w-6 text-yellow-400 mt-1' />
            <div>
-            <p className='text-white font-medium text-lg'>Email:</p>
-            <p className='text-green-200'>info@clbbiasaigon.com</p>
+            <p className='text-var(--color-background) font-medium text-lg'>Email:</p>
+            <p className='text-success-200'>info@clbbiasaigon.com</p>
            </div>
           </div>
          </CardContent>
@@ -317,7 +317,7 @@ const SimpleClubContactPage = () => {
         {/* FAQ */}
         <Card className='bg-green-800 border-green-700'>
          <CardHeader>
-          <CardTitle className='text-white text-2xl'>
+          <CardTitle className='text-var(--color-background) text-2xl'>
            Câu hỏi thường gặp
           </CardTitle>
          </CardHeader>
@@ -326,7 +326,7 @@ const SimpleClubContactPage = () => {
            <p className='text-yellow-400 font-medium'>
             Có cần đặt bàn trước không?
            </p>
-           <p className='text-green-200 text-sm'>
+           <p className='text-success-200 text-sm'>
             Khuyến khích đặt trước, đặc biệt vào cuối tuần và giờ
             cao điểm.
            </p>
@@ -335,7 +335,7 @@ const SimpleClubContactPage = () => {
            <p className='text-yellow-400 font-medium'>
             Có dịch vụ gì khác không?
            </p>
-           <p className='text-green-200 text-sm'>
+           <p className='text-success-200 text-sm'>
             Có đồ uống, thức ăn nhẹ và dịch vụ hướng dẫn cho người
             mới.
            </p>
@@ -344,7 +344,7 @@ const SimpleClubContactPage = () => {
            <p className='text-yellow-400 font-medium'>
             Giá cả như thế nào?
            </p>
-           <p className='text-green-200 text-sm'>
+           <p className='text-success-200 text-sm'>
             25k/giờ (8h-17h) và 35k/giờ (17h-23h). Giá đã bao gồm cơ
             và bi.
            </p>

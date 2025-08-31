@@ -7,21 +7,21 @@
 
 /* Light mode (default) with beautiful gradient backgrounds */
 .light {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-muted: #f3f4f6;
+  --bg-primary: var(--color-white);
+  --bg-secondary: var(--color-gray-50);
+  --bg-muted: var(--color-gray-100);
   --bg-accent: #f0f9ff;
-  --bg-card: #ffffff;
-  --bg-elevated: #ffffff;
+  --bg-card: var(--color-white);
+  --bg-elevated: var(--color-white);
   
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
-  --text-muted: #9ca3af;
+  --text-primary: var(--color-gray-800);
+  --text-secondary: var(--color-gray-500);
+  --text-muted: var(--color-gray-400);
   --text-accent: #0ea5e9;
   
-  --border-primary: #e5e7eb;
-  --border-secondary: #d1d5db;
-  --border-muted: #f3f4f6;
+  --border-primary: var(--color-gray-200);
+  --border-secondary: var(--color-gray-300);
+  --border-muted: var(--color-gray-100);
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
@@ -42,21 +42,21 @@
 
 /* Dark mode */
 .dark {
-  --bg-primary: #111827;
-  --bg-secondary: #1f2937;
-  --bg-muted: #374151;
+  --bg-primary: var(--color-gray-900);
+  --bg-secondary: var(--color-gray-800);
+  --bg-muted: var(--color-gray-700);
   --bg-accent: #1e3a8a;
-  --bg-card: #1f2937;
-  --bg-elevated: #374151;
+  --bg-card: var(--color-gray-800);
+  --bg-elevated: var(--color-gray-700);
   
-  --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --text-muted: #9ca3af;
-  --text-accent: #60a5fa;
+  --text-primary: var(--color-gray-50);
+  --text-secondary: var(--color-gray-300);
+  --text-muted: var(--color-gray-400);
+  --text-accent: var(--color-primary-400);
   
-  --border-primary: #374151;
-  --border-secondary: #4b5563;
-  --border-muted: #1f2937;
+  --border-primary: var(--color-gray-700);
+  --border-secondary: var(--color-gray-600);
+  --border-muted: var(--color-gray-800);
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
@@ -166,15 +166,15 @@ body {
 
 /* Badge theme adjustments for better contrast in dark mode */
 .dark .bg-blue-100 { background-color: #1e3a8a; }
-.dark .text-blue-800 { color: #93c5fd; }
+.dark .text-blue-800 { color: var(--color-primary-300); }
 .dark .bg-green-100 { background-color: #14532d; }
 .dark .text-green-800 { color: #86efac; }
 .dark .bg-yellow-100 { background-color: #78350f; }
 .dark .text-yellow-800 { color: #fde047; }
 .dark .bg-red-100 { background-color: #7f1d1d; }
 .dark .text-red-800 { color: #fca5a5; }
-.dark .bg-gray-100 { background-color: #374151; }
-.dark .text-gray-800 { color: #d1d5db; }
+.dark .bg-gray-100 { background-color: var(--color-gray-700); }
+.dark .text-gray-800 { color: var(--color-gray-300); }
 .dark .bg-purple-100 { background-color: #581c87; }
 .dark .text-purple-800 { color: #c4b5fd; }
 .dark .bg-orange-100 { background-color: #9a3412; }

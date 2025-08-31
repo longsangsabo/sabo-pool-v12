@@ -86,7 +86,7 @@ const PaymentClubMembershipPage = () => {
   <div className='min-h-screen bg-neutral-100 py-6 flex flex-col justify-center sm:py-12'>
    <div className='relative py-3 sm:max-w-xl sm:mx-auto'>
     <div className='absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl'></div>
-    <div className='relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20'>
+    <div className='relative px-4 py-10 bg-var(--color-background) shadow-lg sm:rounded-3xl sm:p-20'>
      <div className='max-w-md mx-auto'>
       <div>
        <h1 className='text-heading-semibold'>Đăng ký thành viên CLB</h1>
@@ -194,7 +194,7 @@ const PaymentClubMembershipPage = () => {
          Quay lại
         </Button>
         <Button
-         className='bg-gradient-to-r from-blue-400 to-blue-600 text-white w-32'
+         className='bg-gradient-to-r from-blue-400 to-blue-600 text-var(--color-background) w-32'
          onClick={handlePayment}
          disabled={isProcessing || !selectedPlan || !selectedClub}
         >

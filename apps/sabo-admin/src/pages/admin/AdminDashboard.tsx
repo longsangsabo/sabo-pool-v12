@@ -143,7 +143,7 @@ export default function AdminDashboard() {
         case 'warning':
           return 'border-orange-500 bg-orange-500/10';
         case 'success':
-          return 'border-green-500 bg-green-500/10';
+          return 'border-green-500 bg-success-background0/10';
         default:
           return 'border-border bg-card';
       }
@@ -165,14 +165,14 @@ export default function AdminDashboard() {
 
   if (error) {
     return (
-      <div className="text-white p-8">
+      <div className="text-var(--color-background) p-8">
         <div className="max-w-7xl mx-auto">
           <div className="bg-red-900/20 border border-red-700 rounded-lg p-6">
             <h2 className="text-xl font-bold text-red-400 mb-2">Dashboard Error</h2>
             <p className="text-gray-300">{error}</p>
             <button
               onClick={fetchDashboardData}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700 transition-colors"
             >
               Retry
             </button>
@@ -280,7 +280,7 @@ export default function AdminDashboard() {
             {activeTab === 'tournaments' && (
               <div className="bg-gray-800 border border-gray-700 rounded-lg">
                 <div className="p-6 border-b border-gray-700">
-                  <h2 className="text-xl font-bold text-white">All Tournaments</h2>
+                  <h2 className="text-xl font-bold text-var(--color-background)">All Tournaments</h2>
                   <p className="text-gray-400">Complete list of tournaments with their current status</p>
                 </div>
                 <div className="p-6">
@@ -291,7 +291,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : tournaments.length === 0 ? (
                     <div className="text-center py-12">
-                      <Trophy className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                      <Trophy className="h-16 w-16 text-neutral mx-auto mb-4" />
                       <p className="text-gray-400">No tournaments found</p>
                     </div>
                   ) : (
@@ -302,7 +302,7 @@ export default function AdminDashboard() {
                           className='flex items-center justify-between p-4 border border-gray-700 rounded-lg bg-gray-900'
                         >
                           <div>
-                            <h4 className='font-medium text-white'>{tournament.name}</h4>
+                            <h4 className='font-medium text-var(--color-background)'>{tournament.name}</h4>
                             <div className='flex items-center gap-2 mt-1'>
                               <span className="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded border border-gray-600">
                                 {tournament.status}
@@ -316,7 +316,7 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                           <div className='text-right'>
-                            <p className='text-sm font-medium text-white'>
+                            <p className='text-sm font-medium text-var(--color-background)'>
                               {tournament.completed_matches}/
                               {tournament.total_matches} matches
                             </p>
@@ -344,16 +344,16 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-gray-800 border border-gray-700 rounded-lg">
                   <div className="p-6 border-b border-gray-700">
-                    <h3 className="text-lg font-bold text-white">Tournament Progress</h3>
+                    <h3 className="text-lg font-bold text-var(--color-background)">Tournament Progress</h3>
                   </div>
                   <div className="p-6 space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400">Active Tournaments</span>
-                      <span className="text-white font-bold">{stats.active_tournaments}</span>
+                      <span className="text-var(--color-background) font-bold">{stats.active_tournaments}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400">Total Matches Played</span>
-                      <span className="text-white font-bold">{stats.completed_matches}</span>
+                      <span className="text-var(--color-background) font-bold">{stats.completed_matches}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400">Pending Repairs</span>
@@ -366,16 +366,16 @@ export default function AdminDashboard() {
 
                 <div className="bg-gray-800 border border-gray-700 rounded-lg">
                   <div className="p-6 border-b border-gray-700">
-                    <h3 className="text-lg font-bold text-white">System Overview</h3>
+                    <h3 className="text-lg font-bold text-var(--color-background)">System Overview</h3>
                   </div>
                   <div className="p-6 space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400">Total Tournaments</span>
-                      <span className="text-white font-bold">{stats.total_tournaments}</span>
+                      <span className="text-var(--color-background) font-bold">{stats.total_tournaments}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400">Completion Rate</span>
-                      <span className="text-white font-bold">
+                      <span className="text-var(--color-background) font-bold">
                         {stats.total_tournaments > 0 ? 
                           Math.round(((stats.total_tournaments - stats.active_tournaments) / stats.total_tournaments) * 100)
                           : 0}%
@@ -390,34 +390,34 @@ export default function AdminDashboard() {
             {activeTab === 'system' && (
               <div className="bg-gray-800 border border-gray-700 rounded-lg">
                 <div className="p-6 border-b border-gray-700">
-                  <h3 className="text-lg font-bold text-white">System Health</h3>
+                  <h3 className="text-lg font-bold text-var(--color-background)">System Health</h3>
                   <p className="text-gray-400">Current system health and performance status</p>
                 </div>
                 <div className="p-6 space-y-4">
                   <div className='flex items-center justify-between'>
                     <span className='text-sm font-medium text-gray-300'>Database Connection</span>
-                    <span className='px-2 py-1 text-xs bg-green-500/10 text-green-400 border border-green-400 rounded flex items-center gap-1'>
+                    <span className='px-2 py-1 text-xs bg-success-background0/10 text-green-400 border border-green-400 rounded flex items-center gap-1'>
                       <CheckCircle className='h-3 w-3' />
                       Healthy
                     </span>
                   </div>
                   <div className='flex items-center justify-between'>
                     <span className='text-sm font-medium text-gray-300'>Admin Authentication</span>
-                    <span className='px-2 py-1 text-xs bg-green-500/10 text-green-400 border border-green-400 rounded flex items-center gap-1'>
+                    <span className='px-2 py-1 text-xs bg-success-background0/10 text-green-400 border border-green-400 rounded flex items-center gap-1'>
                       <CheckCircle className='h-3 w-3' />
                       Active
                     </span>
                   </div>
                   <div className='flex items-center justify-between'>
                     <span className='text-sm font-medium text-gray-300'>Tournament System</span>
-                    <span className='px-2 py-1 text-xs bg-green-500/10 text-green-400 border border-green-400 rounded flex items-center gap-1'>
+                    <span className='px-2 py-1 text-xs bg-success-background0/10 text-green-400 border border-green-400 rounded flex items-center gap-1'>
                       <Activity className='h-3 w-3' />
                       Running
                     </span>
                   </div>
                   <div className='flex items-center justify-between'>
                     <span className='text-sm font-medium text-gray-300'>Admin Dashboard</span>
-                    <span className='px-2 py-1 text-xs bg-green-500/10 text-green-400 border border-green-400 rounded flex items-center gap-1'>
+                    <span className='px-2 py-1 text-xs bg-success-background0/10 text-green-400 border border-green-400 rounded flex items-center gap-1'>
                       <Settings className='h-3 w-3' />
                       Operational
                     </span>

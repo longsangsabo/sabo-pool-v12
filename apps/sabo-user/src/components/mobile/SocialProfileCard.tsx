@@ -209,7 +209,7 @@ const SocialProfileCard: React.FC = () => {
  if (loading) {
   return (
    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-    <div className="text-center text-white">
+    <div className="text-center text-var(--color-background)">
      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
      <h2 className="text-body-large-semibold mb-2">Đang tải thông tin</h2>
      <p className="text-slate-400">Vui lòng chờ trong giây lát...</p>
@@ -221,7 +221,7 @@ const SocialProfileCard: React.FC = () => {
  if (!profile) {
   return (
    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-    <div className="text-center text-white">
+    <div className="text-center text-var(--color-background)">
      <h2 className="text-title font-bold mb-2">Không tìm thấy người chơi</h2>
      <Button onClick={() => navigate('/')} variant="outline">
       Về trang chủ
@@ -240,7 +240,7 @@ const SocialProfileCard: React.FC = () => {
    <Button
     variant="ghost"
     onClick={() => navigate(-1)}
-    className="mb-6 text-white hover:bg-white/10"
+    className="mb-6 text-var(--color-background) hover:bg-var(--color-background)/10"
    >
     <ArrowLeft className="w-4 h-4 mr-2" />
     Quay lại
@@ -285,7 +285,7 @@ const SocialProfileCard: React.FC = () => {
      <div className="flex gap-3 mt-6">
       <Button
        onClick={handleChallenge}
-       className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-semibold py-3 transition-all duration-200"
+       className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-var(--color-background) font-semibold py-3 transition-all duration-200"
       >
        <Trophy className="w-4 h-4 mr-2" />
        Thách đấu
@@ -293,7 +293,7 @@ const SocialProfileCard: React.FC = () => {
       <Button
        onClick={handleMessage}
        variant="outline"
-       className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:text-white py-3 transition-all duration-200"
+       className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:text-var(--color-background) py-3 transition-all duration-200"
       >
        <MessageCircle className="w-4 h-4 mr-2" />
        Nhắn tin
@@ -307,7 +307,7 @@ const SocialProfileCard: React.FC = () => {
       <p className="text-slate-400 mb-4">Đăng nhập để thách đấu và nhắn tin</p>
       <Button
        onClick={() => navigate('/auth/login')}
-       className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold py-3 px-6 transition-all duration-200"
+       className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-var(--color-background) font-semibold py-3 px-6 transition-all duration-200"
       >
        Đăng nhập
       </Button>
@@ -319,7 +319,7 @@ const SocialProfileCard: React.FC = () => {
      <Button
       onClick={() => navigate('/profile')}
       variant="outline"
-      className="w-full mt-6 border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:text-white py-3 transition-all duration-200"
+      className="w-full mt-6 border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:text-var(--color-background) py-3 transition-all duration-200"
      >
       Chỉnh sửa hồ sơ
      </Button>

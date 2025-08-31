@@ -132,9 +132,7 @@ const DashboardPage = () => {
     </div>
 
     {/* Wallet Balance - From original DashboardPage.tsx */}
-    <div
-     className='mb-8 animate-fade-in'
-     style={{ animationDelay: '100ms' }}
+    <div className='mb-8 animate-fade-in [animation-delay:100ms]'
     >
      <Suspense fallback={<DashboardSkeleton />}>
       <EnhancedWalletBalance />
@@ -157,8 +155,7 @@ const DashboardPage = () => {
        return (
         <Card
          key={stat.title}
-         className='transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-slide-in-up'
-         style={{ animationDelay: `${index * 100 + 200}ms` }}
+         className={`transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-slide-in-up [animation-delay:${index * 100 + 200}ms]`}
         >
          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <CardTitle className='text-body-small-medium'>
@@ -189,8 +186,7 @@ const DashboardPage = () => {
         return (
          <Card
           key={stat.title}
-          className='min-w-[150px] shadow-sm animate-slide-in-up'
-          style={{ animationDelay: `${index * 100 + 200}ms` }}
+          className={`min-w-[150px] shadow-sm animate-slide-in-up [animation-delay:${index * 100 + 200}ms]`}
          >
           <CardContent className='p-4'>
            <div className='flex items-center justify-between mb-2'>
@@ -222,15 +218,14 @@ const DashboardPage = () => {
         <Link
          key={action.label}
          to={action.route}
-         className='block animate-slide-in-up'
-         style={{ animationDelay: `${index * 100 + 400}ms` }}
+         className={`block animate-slide-in-up [animation-delay:${index * 100 + 400}ms]`}
         >
          <Card className='transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer'>
           <CardContent className='p-6 text-center'>
            <div
             className={`inline-flex p-3 rounded-full ${action.color} mb-3`}
            >
-            <Icon className='h-6 w-6 text-white' />
+            <Icon className='h-6 w-6 text-var(--color-background)' />
            </div>
            <h4 className='font-medium text-neutral-900 mb-1'>
             {action.label}
@@ -247,9 +242,7 @@ const DashboardPage = () => {
     </div>
 
     {/* Recent Activities - From DashboardOverview.tsx */}
-    <div
-     className='mb-8 animate-fade-in'
-     style={{ animationDelay: '600ms' }}
+    <div className='mb-8 animate-fade-in [animation-delay:600ms]'
     >
      <Card className='shadow-sm'>
       <CardHeader>
@@ -280,7 +273,7 @@ const DashboardPage = () => {
     </div>
 
     {/* Upcoming Schedule - From DashboardOverview.tsx */}
-    <div className='animate-fade-in' style={{ animationDelay: '700ms' }}>
+    <div className='animate-fade-in [animation-delay:700ms]'>
      <Card className='shadow-sm'>
       <CardHeader>
        <CardTitle className='flex items-center gap-2 text-lg'>

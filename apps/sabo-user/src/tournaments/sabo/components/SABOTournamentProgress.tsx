@@ -64,7 +64,7 @@ export const SABOTournamentProgress: React.FC<SABOTournamentProgressProps> = ({
  };
 
  return (
-  <div className='bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-gray-800 p-6 shadow-sm'>
+  <div className='bg-var(--color-background) dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-gray-800 p-6 shadow-sm'>
    <h3 className='text-body-large-semibold mb-4 flex items-center'>
     <Target className='w-5 h-5 mr-2 text-primary-600' />
     Tournament Progress

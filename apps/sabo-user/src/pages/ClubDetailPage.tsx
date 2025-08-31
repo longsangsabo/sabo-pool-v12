@@ -303,8 +303,8 @@ const ClubDetailPage = () => {
         className='w-full h-full object-cover'
        />
       )}
-      <div className='absolute inset-0 bg-black bg-opacity-40'></div>
-      <div className='absolute bottom-6 left-6 text-white'>
+      <div className='absolute inset-0 bg-var(--color-foreground) bg-opacity-40'></div>
+      <div className='absolute bottom-6 left-6 text-var(--color-background)'>
        <h1 className='text-3xl font-bold mb-2'>{club.name}</h1>
        <div className='flex items-center space-x-4 text-sm'>
         <div className='flex items-center'>
@@ -456,7 +456,7 @@ const ClubDetailPage = () => {
                   className='w-10 h-10 rounded-full object-cover'
                  />
                 ) : (
-                 <span className='text-white font-medium'>
+                 <span className='text-var(--color-background) font-medium'>
                   {member.full_name?.charAt(0) || '?'}
                  </span>
                 )}
@@ -695,7 +695,7 @@ const ClubDetailPage = () => {
            <div className='flex-shrink-0'>
             {index < 3 ? (
              <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center text-caption font-bold text-white ${
+              className={`w-6 h-6 rounded-full flex items-center justify-center text-caption font-bold text-var(--color-background) ${
                index === 0
                 ? 'bg-warning-500'
                 : index === 1
@@ -712,7 +712,7 @@ const ClubDetailPage = () => {
             )}
            </div>
            <div className='w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center'>
-            <span className='text-white text-caption-medium'>
+            <span className='text-var(--color-background) text-caption-medium'>
              {member.full_name?.charAt(0) || '?'}
             </span>
            </div>

@@ -38,7 +38,7 @@ const RankInfo: React.FC<RankInfoProps> = ({
      <ul className='space-y-1'>
       {rankInfo.requirements.map((req, index) => (
        <li key={index} className='flex items-center text-sm'>
-        <CheckCircle className='w-4 h-4 text-green-500 mr-2 flex-shrink-0' />
+        <CheckCircle className='w-4 h-4 text-success-500 mr-2 flex-shrink-0' />
         {req}
        </li>
       ))}
@@ -62,7 +62,7 @@ const RankInfo: React.FC<RankInfoProps> = ({
      <ul className='text-caption space-y-1'>
       {rankInfo.requirements.map((req, index) => (
        <li key={index} className='flex items-center'>
-        <CheckCircle className='w-3 h-3 text-green-500 mr-1 flex-shrink-0' />
+        <CheckCircle className='w-3 h-3 text-success-500 mr-1 flex-shrink-0' />
         {req}
        </li>
       ))}

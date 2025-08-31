@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -53,7 +53,7 @@ export const ClubMobileDrawer: React.FC<ClubMobileDrawerProps> = ({
 
   return (
     <div className='fixed inset-0 z-50'>
-      <div className='absolute inset-0 bg-black/50' onClick={onClose} />
+      <div className='absolute inset-0 bg-var(--color-foreground)/50' onClick={onClose} />
       <div className='absolute left-0 top-0 h-full w-80 bg-card shadow-lg'>
         <div className='p-4 border-b border-border'>
           <div className='flex items-center justify-between'>

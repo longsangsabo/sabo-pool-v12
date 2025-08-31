@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import {
  Sheet,
  SheetContent,
@@ -193,7 +193,7 @@ export const MemberActionSheet: React.FC<MemberActionSheetProps> = ({
         onClick={() => member && onViewProfile?.(member.id)}
         className='list-action-item'
        >
-        <User className='mobile-icon-secondary text-blue-500' /> Hồ sơ
+        <User className='mobile-icon-secondary text-primary-500' /> Hồ sơ
        </Button>
        <Button
         disabled={disabled || !canRemove || isOwner}

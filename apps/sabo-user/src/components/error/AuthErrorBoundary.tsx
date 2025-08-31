@@ -87,7 +87,7 @@ const AuthErrorFallback: React.FC<AuthErrorFallbackProps> = ({
        <summary className='cursor-pointer hover:text-foreground'>
         Chi tiết lỗi (Development)
        </summary>
-       <pre className='mt-2 whitespace-pre-wrap break-all bg-muted p-2 rounded'>
+       <pre className='mt-2 var(--color-background)space-pre-wrap break-all bg-muted p-2 rounded'>
         {error.message}
        </pre>
       </details>

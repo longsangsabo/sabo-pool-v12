@@ -52,8 +52,8 @@ const DiscoveryFilters = ({
  };
 
  return (
-  <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end'>
-   <div className='w-full bg-white rounded-t-2xl p-4 max-h-[80vh] overflow-y-auto'>
+  <div className='fixed inset-0 z-50 bg-var(--color-foreground)/50 backdrop-blur-sm flex items-end'>
+   <div className='w-full bg-var(--color-background) rounded-t-2xl p-4 max-h-[80vh] overflow-y-auto'>
     <Card className='border-0 shadow-none'>
      <CardHeader className='pb-4'>
       <div className='flex items-center justify-between'>

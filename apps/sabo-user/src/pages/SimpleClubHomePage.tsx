@@ -29,7 +29,7 @@ const SimpleClubHomePage = () => {
          <h1 className='text-title font-bold text-yellow-400'>
           SABO Pool Arena
          </h1>
-         <p className='text-green-200 text-sm'>
+         <p className='text-success-200 text-sm'>
           Chuyên nghiệp • Uy tín
          </p>
         </div>
@@ -37,25 +37,25 @@ const SimpleClubHomePage = () => {
        <nav className='hidden md:flex space-x-6'>
         <Link
          to='/simple-club'
-         className='text-green-200 hover:text-yellow-400 transition-colors'
+         className='text-success-200 hover:text-yellow-400 transition-colors'
         >
          Trang chủ
         </Link>
         <Link
          to='/simple-booking'
-         className='text-green-200 hover:text-yellow-400 transition-colors'
+         className='text-success-200 hover:text-yellow-400 transition-colors'
         >
          Đặt bàn
         </Link>
         <Link
          to='/simple-about'
-         className='text-green-200 hover:text-yellow-400 transition-colors'
+         className='text-success-200 hover:text-yellow-400 transition-colors'
         >
          Giới thiệu
         </Link>
         <Link
          to='/simple-contact'
-         className='text-green-200 hover:text-yellow-400 transition-colors'
+         className='text-success-200 hover:text-yellow-400 transition-colors'
         >
          Liên hệ
         </Link>
@@ -67,10 +67,10 @@ const SimpleClubHomePage = () => {
     {/* Hero Section */}
     <section className='py-16 px-4'>
      <div className='container mx-auto text-center'>
-      <h2 className='text-4xl md:text-6xl font-bold text-white mb-6'>
+      <h2 className='text-4xl md:text-6xl font-bold text-var(--color-background) mb-6'>
        Chơi Bi-a Đẳng Cấp
       </h2>
-      <p className='text-title text-green-200 mb-8 max-w-2xl mx-auto'>
+      <p className='text-title text-success-200 mb-8 max-w-2xl mx-auto'>
        12 bàn bi-a cao cấp • Không gian thoáng mát • Giá cả hợp lý
       </p>
       <Link to='/simple-booking'>
@@ -91,12 +91,12 @@ const SimpleClubHomePage = () => {
        <Card className='bg-green-800 border-green-700 text-center'>
         <CardHeader className='pb-3'>
          <Clock className='h-8 w-8 text-yellow-400 mx-auto mb-2' />
-         <CardTitle className='text-white text-lg'>
+         <CardTitle className='text-var(--color-background) text-lg'>
           Giờ mở cửa
          </CardTitle>
         </CardHeader>
         <CardContent>
-         <p className='text-green-200 font-medium'>8:00 - 23:00</p>
+         <p className='text-success-200 font-medium'>8:00 - 23:00</p>
          <p className='text-green-300 text-sm'>Thứ 2 - Chủ nhật</p>
         </CardContent>
        </Card>
@@ -104,7 +104,7 @@ const SimpleClubHomePage = () => {
        <Card className='bg-green-800 border-green-700 text-center'>
         <CardHeader className='pb-3'>
          <Users className='h-8 w-8 text-yellow-400 mx-auto mb-2' />
-         <CardTitle className='text-white text-lg'>
+         <CardTitle className='text-var(--color-background) text-lg'>
           Bàn trống
          </CardTitle>
         </CardHeader>
@@ -117,7 +117,7 @@ const SimpleClubHomePage = () => {
        <Card className='bg-green-800 border-green-700 text-center'>
         <CardHeader className='pb-3'>
          <Star className='h-8 w-8 text-yellow-400 mx-auto mb-2' />
-         <CardTitle className='text-white text-lg'>Đánh giá</CardTitle>
+         <CardTitle className='text-var(--color-background) text-lg'>Đánh giá</CardTitle>
         </CardHeader>
         <CardContent>
          <p className='text-yellow-400 font-bold text-2xl'>4.8/5</p>
@@ -128,10 +128,10 @@ const SimpleClubHomePage = () => {
        <Card className='bg-green-800 border-green-700 text-center'>
         <CardHeader className='pb-3'>
          <Phone className='h-8 w-8 text-yellow-400 mx-auto mb-2' />
-         <CardTitle className='text-white text-lg'>Hotline</CardTitle>
+         <CardTitle className='text-var(--color-background) text-lg'>Hotline</CardTitle>
         </CardHeader>
         <CardContent>
-         <p className='text-green-200 font-medium'>0901 234 567</p>
+         <p className='text-success-200 font-medium'>0901 234 567</p>
          <p className='text-green-300 text-sm'>Hỗ trợ 24/7</p>
         </CardContent>
        </Card>
@@ -142,7 +142,7 @@ const SimpleClubHomePage = () => {
     {/* Pricing */}
     <section className='py-12 px-4 bg-green-800/50'>
      <div className='container mx-auto'>
-      <h3 className='text-3xl font-bold text-white text-center mb-8'>
+      <h3 className='text-3xl font-bold text-var(--color-background) text-center mb-8'>
        Bảng Giá Rõ Ràng
       </h3>
       <div className='grid md:grid-cols-2 gap-8 max-w-4xl mx-auto'>
@@ -151,10 +151,10 @@ const SimpleClubHomePage = () => {
          <CardTitle className='text-yellow-400 text-2xl'>
           Giờ Vàng
          </CardTitle>
-         <p className='text-green-200'>8:00 - 17:00</p>
+         <p className='text-success-200'>8:00 - 17:00</p>
         </CardHeader>
         <CardContent className='text-center'>
-         <p className='text-4xl font-bold text-white mb-2'>25.000đ</p>
+         <p className='text-4xl font-bold text-var(--color-background) mb-2'>25.000đ</p>
          <p className='text-green-300'>mỗi giờ</p>
         </CardContent>
        </Card>
@@ -164,10 +164,10 @@ const SimpleClubHomePage = () => {
          <CardTitle className='text-yellow-400 text-2xl'>
           Giờ Cao Điểm
          </CardTitle>
-         <p className='text-green-200'>17:00 - 23:00</p>
+         <p className='text-success-200'>17:00 - 23:00</p>
         </CardHeader>
         <CardContent className='text-center'>
-         <p className='text-4xl font-bold text-white mb-2'>35.000đ</p>
+         <p className='text-4xl font-bold text-var(--color-background) mb-2'>35.000đ</p>
          <p className='text-green-300'>mỗi giờ</p>
         </CardContent>
        </Card>
@@ -178,10 +178,10 @@ const SimpleClubHomePage = () => {
     {/* Call to Action */}
     <section className='py-16 px-4 text-center'>
      <div className='container mx-auto'>
-      <h3 className='text-3xl font-bold text-white mb-4'>
+      <h3 className='text-3xl font-bold text-var(--color-background) mb-4'>
        Sẵn sàng chơi bi-a?
       </h3>
-      <p className='text-green-200 mb-8 text-lg'>
+      <p className='text-success-200 mb-8 text-lg'>
        Đặt bàn ngay để không bỏ lỡ cơ hội
       </p>
       <div className='flex flex-col sm:flex-row gap-4 justify-center'>
@@ -209,7 +209,7 @@ const SimpleClubHomePage = () => {
      <div className='container mx-auto text-center'>
       <div className='flex items-center justify-center space-x-2 mb-4'>
        <MapPin className='h-5 w-5 text-yellow-400' />
-       <p className='text-green-200'>
+       <p className='text-success-200'>
         123 Đường Nguyễn Huệ, Q.1, TP.HCM
        </p>
       </div>

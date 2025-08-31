@@ -43,7 +43,7 @@ const ClubDashboardOverview = () => {
    <Card>
     <CardContent className='pt-6'>
      <div className='text-center py-8'>
-      <AlertCircle className='w-12 h-12 text-red-500 mx-auto mb-4' />
+      <AlertCircle className='w-12 h-12 text-error-500 mx-auto mb-4' />
       <p className='text-error-600 font-medium'>Lỗi kết nối database</p>
       <p className='text-body-small text-muted-foreground mt-1'>{error}</p>
       <Button onClick={refreshData} className='mt-4'>
@@ -60,12 +60,12 @@ const ClubDashboardOverview = () => {
   switch (status) {
    case 'connected':
    case 'active':
-    return 'text-green-500';
+    return 'text-success-500';
    case 'disconnected':
    case 'inactive':
     return 'text-yellow-500';
    case 'error':
-    return 'text-red-500';
+    return 'text-error-500';
    default:
     return 'text-neutral-500';
   }
@@ -304,7 +304,7 @@ const ClubDashboardOverview = () => {
     <Card className='ultra-compact-content-card'>
      <CardHeader className='pb-2'>
       <CardTitle className='flex items-center gap-2 text-base'>
-       <CheckCircle className='w-4 h-4 text-blue-500' />
+       <CheckCircle className='w-4 h-4 text-primary-500' />
        Thông báo gần đây
       </CardTitle>
      </CardHeader>

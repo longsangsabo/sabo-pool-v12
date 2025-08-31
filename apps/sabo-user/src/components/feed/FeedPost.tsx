@@ -141,13 +141,13 @@ export const FeedPost: React.FC<FeedPostProps> = ({
  const getPostIcon = () => {
   switch (post.type) {
    case 'event':
-    return <Calendar className='h-4 w-4 text-blue-500' />;
+    return <Calendar className='h-4 w-4 text-primary-500' />;
    case 'challenge':
-    return <Target className='h-4 w-4 text-red-500' />;
+    return <Target className='h-4 w-4 text-error-500' />;
    case 'achievement':
     return <Trophy className='h-4 w-4 text-yellow-500' />;
    case 'match_result':
-    return <Users className='h-4 w-4 text-green-500' />;
+    return <Users className='h-4 w-4 text-success-500' />;
    default:
     return null;
   }
@@ -190,7 +190,7 @@ export const FeedPost: React.FC<FeedPostProps> = ({
     return (
      <div className='space-y-3'>
       <div className='flex items-center gap-2'>
-       <Calendar className='h-4 w-4 text-blue-500' />
+       <Calendar className='h-4 w-4 text-primary-500' />
        <span className='font-medium'>{post.event?.title}</span>
       </div>
       <div className='flex items-center gap-2 text-body-small-neutral'>
@@ -220,7 +220,7 @@ export const FeedPost: React.FC<FeedPostProps> = ({
     return (
      <div className='space-y-3'>
       <div className='flex items-center gap-2'>
-       <Target className='h-4 w-4 text-red-500' />
+       <Target className='h-4 w-4 text-error-500' />
        <span className='font-medium'>{post.challenge?.title}</span>
       </div>
       <div className='flex items-center justify-between'>
@@ -418,7 +418,7 @@ export const FeedPost: React.FC<FeedPostProps> = ({
         variant='ghost'
         
         onClick={handleLike}
-        className={`flex items-center gap-2 ${post.is_liked ? 'text-red-500' : 'text-neutral-600'}`}
+        className={`flex items-center gap-2 ${post.is_liked ? 'text-error-500' : 'text-neutral-600'}`}
        >
         <Heart
          className={`h-4 w-4 ${post.is_liked ? 'fill-current' : ''}`}
@@ -471,7 +471,7 @@ export const FeedPost: React.FC<FeedPostProps> = ({
         variant='ghost'
         
         onClick={handleBookmark}
-        className={`${post.is_bookmarked ? 'text-blue-500' : 'text-neutral-600'}`}
+        className={`${post.is_bookmarked ? 'text-primary-500' : 'text-neutral-600'}`}
        >
         <Bookmark
          className={`h-4 w-4 ${post.is_bookmarked ? 'fill-current' : ''}`}

@@ -32,7 +32,7 @@ const PaymentResultPage = () => {
   switch (status) {
    case 'success':
     return {
-     icon: <CheckCircle className='h-16 w-16 text-green-500' />,
+     icon: <CheckCircle className='h-16 w-16 text-success-500' />,
      title: 'Thanh toán thành công!',
      message:
       'Tài khoản của bạn đã được nâng cấp lên Premium. Bạn có thể sử dụng tất cả tính năng cao cấp ngay bây giờ.',
@@ -40,7 +40,7 @@ const PaymentResultPage = () => {
     };
    case 'failed':
     return {
-     icon: <XCircle className='h-16 w-16 text-red-500' />,
+     icon: <XCircle className='h-16 w-16 text-error-500' />,
      title: 'Thanh toán thất bại',
      message:
       'Giao dịch không thể hoàn tất. Vui lòng thử lại hoặc liên hệ hỗ trợ nếu vấn đề tiếp tục xảy ra.',

@@ -80,7 +80,7 @@ const AuthCallbackPage = () => {
 
  return (
   <div className='min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 flex items-center justify-center'>
-   <div className='text-center text-white max-w-md mx-auto p-6'>
+   <div className='text-center text-var(--color-background) max-w-md mx-auto p-6'>
     <div className='animate-spin rounded-full h-16 w-16 border-b-2 border-yellow-400 mx-auto mb-6'></div>
 
     <h1 className='text-title-semibold mb-2'>
@@ -101,11 +101,7 @@ const AuthCallbackPage = () => {
     {/* Progress bar */}
     <div className='w-full bg-blue-800/50 rounded-full h-1 mt-4'>
      <div
-      className='bg-yellow-400 h-1 rounded-full transition-all duration-3000 ease-out'
-      style={{
-       width: isProcessing ? '100%' : '0%',
-       transition: 'width 3s ease-out',
-      }}
+      className={`bg-yellow-400 h-1 rounded-full transition-all duration-[3000ms] ease-out ${isProcessing ? 'w-full' : 'w-0'}`}
      />
     </div>
    </div>

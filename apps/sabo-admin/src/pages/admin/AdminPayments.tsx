@@ -126,7 +126,7 @@ export default function AdminPayments() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">💳 Payment Management</h1>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+        <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700 flex items-center gap-2">
           <Download className="h-4 w-4" />
           Export Payments
         </button>
@@ -134,40 +134,40 @@ export default function AdminPayments() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Payments</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Payments</p>
               <p className="text-2xl font-bold">{formatCurrency(getTotalPayments())}</p>
             </div>
             <CreditCard className="h-8 w-8 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Processing Fees</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Processing Fees</p>
               <p className="text-2xl font-bold">{formatCurrency(getTotalFees())}</p>
             </div>
             <AlertTriangle className="h-8 w-8 text-orange-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Success Rate</p>
-              <p className="text-2xl font-bold text-green-600">{(100 - parseFloat(getFailureRate())).toFixed(1)}%</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Success Rate</p>
+              <p className="text-2xl font-bold text-success">{(100 - parseFloat(getFailureRate())).toFixed(1)}%</p>
             </div>
             <CheckCircle className="h-8 w-8 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Pending</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Pending</p>
               <p className="text-2xl font-bold">{payments.filter(p => p.status === 'pending').length}</p>
             </div>
             <Clock className="h-8 w-8 text-yellow-500" />
@@ -176,7 +176,7 @@ export default function AdminPayments() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
+      <div className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -216,14 +216,14 @@ export default function AdminPayments() {
       </div>
 
       {/* Payments Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-8">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-8">
+        <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
           <h2 className="text-lg font-semibold">Recent Payments</h2>
         </div>
         
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+            <thead className="bg-neutral-background dark:bg-gray-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Transaction ID
@@ -250,7 +250,7 @@ export default function AdminPayments() {
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {payments.map((payment) => (
-                <tr key={payment.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr key={payment.id} className="hover:bg-neutral-background dark:hover:bg-gray-700">
                   <td className="px-6 py-4">
                     <div>
                       <div className="font-medium text-sm">{payment.transactionId}</div>
@@ -265,7 +265,7 @@ export default function AdminPayments() {
                       <div className="font-medium">{formatCurrency(payment.amount, payment.currency)}</div>
                       <div className="text-xs text-gray-500">Fee: {formatCurrency(payment.fees)}</div>
                       {payment.refundAmount && (
-                        <div className="text-xs text-blue-600">Refunded: {formatCurrency(payment.refundAmount)}</div>
+                        <div className="text-xs text-primary">Refunded: {formatCurrency(payment.refundAmount)}</div>
                       )}
                     </div>
                   </td>
@@ -281,16 +281,16 @@ export default function AdminPayments() {
                   <td className="px-6 py-4 text-sm">{payment.date}</td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                      <button className="px-3 py-1 bg-blue-600 text-var(--color-background) rounded text-sm hover:bg-blue-700">
                         View
                       </button>
                       {payment.status === 'completed' && (
-                        <button className="px-3 py-1 bg-orange-600 text-white rounded text-sm hover:bg-orange-700">
+                        <button className="px-3 py-1 bg-orange-600 text-var(--color-background) rounded text-sm hover:bg-orange-700">
                           Refund
                         </button>
                       )}
                       {payment.status === 'failed' && (
-                        <button className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700">
+                        <button className="px-3 py-1 bg-green-600 text-var(--color-background) rounded text-sm hover:bg-green-700">
                           Retry
                         </button>
                       )}
@@ -305,8 +305,8 @@ export default function AdminPayments() {
 
       {/* Payment Methods Configuration */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
             <h2 className="text-lg font-semibold">Payment Methods</h2>
           </div>
           <div className="p-6 space-y-4">
@@ -320,13 +320,13 @@ export default function AdminPayments() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Active</span>
-                <button className="px-3 py-1 bg-gray-600 text-white rounded text-sm">Configure</button>
+                <button className="px-3 py-1 bg-gray-600 text-var(--color-background) rounded text-sm">Configure</button>
               </div>
             </div>
 
             <div className="flex items-center justify-between p-4 border rounded">
               <div className="flex items-center gap-3">
-                <div className="h-6 w-6 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">P</div>
+                <div className="h-6 w-6 bg-blue-600 rounded flex items-center justify-center text-var(--color-background) text-xs font-bold">P</div>
                 <div>
                   <div className="font-medium">PayPal</div>
                   <div className="text-sm text-gray-500">PayPal payments</div>
@@ -334,13 +334,13 @@ export default function AdminPayments() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Active</span>
-                <button className="px-3 py-1 bg-gray-600 text-white rounded text-sm">Configure</button>
+                <button className="px-3 py-1 bg-gray-600 text-var(--color-background) rounded text-sm">Configure</button>
               </div>
             </div>
 
             <div className="flex items-center justify-between p-4 border rounded">
               <div className="flex items-center gap-3">
-                <div className="h-6 w-6 bg-purple-600 rounded flex items-center justify-center text-white text-xs font-bold">S</div>
+                <div className="h-6 w-6 bg-purple-600 rounded flex items-center justify-center text-var(--color-background) text-xs font-bold">S</div>
                 <div>
                   <div className="font-medium">Stripe</div>
                   <div className="text-sm text-gray-500">Stripe payment processing</div>
@@ -348,14 +348,14 @@ export default function AdminPayments() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Active</span>
-                <button className="px-3 py-1 bg-gray-600 text-white rounded text-sm">Configure</button>
+                <button className="px-3 py-1 bg-gray-600 text-var(--color-background) rounded text-sm">Configure</button>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
             <h2 className="text-lg font-semibold">Payment Analytics</h2>
           </div>
           <div className="p-6">
@@ -364,7 +364,7 @@ export default function AdminPayments() {
                 <span>Credit Card</span>
                 <div className="flex items-center gap-2">
                   <div className="w-24 bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full" style={{ width: '60%' }}></div>
+                    <div className="bg-blue-600 h-2 rounded-full w-[60%]"></div>
                   </div>
                   <span className="text-sm font-medium">60%</span>
                 </div>
@@ -374,7 +374,7 @@ export default function AdminPayments() {
                 <span>PayPal</span>
                 <div className="flex items-center gap-2">
                   <div className="w-24 bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full" style={{ width: '25%' }}></div>
+                    <div className="bg-green-600 h-2 rounded-full" className="w-1/4"></div>
                   </div>
                   <span className="text-sm font-medium">25%</span>
                 </div>
@@ -384,7 +384,7 @@ export default function AdminPayments() {
                 <span>Stripe</span>
                 <div className="flex items-center gap-2">
                   <div className="w-24 bg-gray-200 rounded-full h-2">
-                    <div className="bg-purple-600 h-2 rounded-full" style={{ width: '15%' }}></div>
+                    <div className="bg-purple-600 h-2 rounded-full w-[15%]"></div>
                   </div>
                   <span className="text-sm font-medium">15%</span>
                 </div>
@@ -393,7 +393,7 @@ export default function AdminPayments() {
             
             <div className="mt-6 pt-6 border-t">
               <h3 className="font-medium mb-4">Transaction Volume (Last 30 days)</h3>
-              <div className="text-2xl font-bold text-green-600 mb-2">{formatCurrency(45280)}</div>
+              <div className="text-2xl font-bold text-success mb-2">{formatCurrency(45280)}</div>
               <div className="text-sm text-gray-500">+12.5% from last month</div>
             </div>
           </div>
@@ -402,26 +402,26 @@ export default function AdminPayments() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">🔄 Bulk Refunds</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Process multiple refunds at once</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Process multiple refunds at once</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             Process Refunds
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📊 Payment Reports</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Generate detailed payment reports</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Generate detailed payment reports</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             Generate Report
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">⚙️ Gateway Settings</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Configure payment gateway settings</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Configure payment gateway settings</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             Manage Settings
           </button>
         </div>

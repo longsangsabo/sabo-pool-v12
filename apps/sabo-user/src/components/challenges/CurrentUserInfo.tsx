@@ -25,7 +25,7 @@ const CurrentUserInfo: React.FC<CurrentUserInfoProps> = ({
 
  return (
   <div className="bg-primary-50/50 dark:bg-blue-950/20 border border-primary-200/50 dark:border-blue-800/30 rounded-lg p-3 mt-3">
-   <h4 className="text-body-small-medium text-primary-800 dark:text-blue-200 mb-2">
+   <h4 className="text-body-small-medium text-primary-800 dark:text-primary-200 mb-2">
     Thông tin của bạn
    </h4>
    <div className="grid grid-cols-2 gap-3 text-body-small">
@@ -39,7 +39,7 @@ const CurrentUserInfo: React.FC<CurrentUserInfoProps> = ({
     )}
     {userProfile.spa_points !== undefined && (
      <div className="flex items-center gap-2">
-      <Coins className="w-4 h-4 text-blue-500" />
+      <Coins className="w-4 h-4 text-primary-500" />
       <span className="text-neutral-700 dark:text-gray-300">
        SPA: <span className="font-medium">{userProfile.spa_points.toLocaleString()}</span>
       </span>

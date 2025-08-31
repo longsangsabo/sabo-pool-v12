@@ -233,7 +233,7 @@ export function SABO32ProgressTracker({ tournamentId }: SABO32ProgressProps) {
     
     <Card>
      <CardContent className="p-4 text-center">
-      <Clock className="w-8 h-8 mx-auto mb-2 text-blue-500" />
+      <Clock className="w-8 h-8 mx-auto mb-2 text-primary-500" />
       <div className="text-heading-bold">{Math.round(stats.averageMatchDuration)}</div>
       <div className="text-body-small text-muted-foreground">Avg Min/Match</div>
      </CardContent>
@@ -241,7 +241,7 @@ export function SABO32ProgressTracker({ tournamentId }: SABO32ProgressProps) {
     
     <Card>
      <CardContent className="p-4 text-center">
-      <CheckCircle className="w-8 h-8 mx-auto mb-2 text-green-500" />
+      <CheckCircle className="w-8 h-8 mx-auto mb-2 text-success-500" />
       <div className="text-title font-bold">
        {stats.estimatedCompletion.split(' ')[1]}
       </div>

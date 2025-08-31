@@ -176,7 +176,7 @@ export const RecentActivities: React.FC<RecentActivitiesProps> = ({
       className={`overflow-hidden ${
        theme === 'dark'
         ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
-        : 'bg-white border-slate-200'
+        : 'bg-var(--color-background) border-slate-200'
       }`}
      >
     <CardHeader className='pb-4 border-b border-slate-200/10'>

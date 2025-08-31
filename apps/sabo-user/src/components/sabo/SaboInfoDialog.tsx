@@ -56,13 +56,13 @@ const SaboInfoDialog: React.FC<SaboInfoDialogProps> = ({ isOpen, onClose }) => {
    <DialogContent className={`max-w-5xl max-h-[90vh] overflow-y-auto ${
     isDark 
      ? 'bg-slate-900/95 border-slate-700 text-slate-100' 
-     : 'bg-white border-slate-200 text-slate-900'
+     : 'bg-var(--color-background) border-slate-200 text-slate-900'
    }`}>
     <DialogHeader>
      <DialogTitle className={`flex items-center gap-2 ${
       isDark ? 'text-slate-100' : 'text-slate-900'
      }`}>
-      <Trophy className='w-5 h-5 text-blue-500' />
+      <Trophy className='w-5 h-5 text-primary-500' />
       Hệ thống Handicap SABO - Tài Liệu Tham Chiếu
      </DialogTitle>
     </DialogHeader>
@@ -71,7 +71,7 @@ const SaboInfoDialog: React.FC<SaboInfoDialogProps> = ({ isOpen, onClose }) => {
      {/* Tổng Quan */}
      <div className='space-y-3'>
       <div className='flex items-center gap-2'>
-       <Info className='w-4 h-4 text-blue-500' />
+       <Info className='w-4 h-4 text-primary-500' />
        <h3 className={`font-semibold text-body-large ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>🎯 Tổng Quan</h3>
       </div>
       <div className={`text-body-small leading-relaxed p-4 rounded-lg border ${
@@ -115,7 +115,7 @@ const SaboInfoDialog: React.FC<SaboInfoDialogProps> = ({ isOpen, onClose }) => {
           }`}>
            {rank}
           </Badge>
-          <span className='font-medium text-blue-500'>
+          <span className='font-medium text-primary-500'>
            {rankEloMapping[rank]?.elo} ELO
           </span>
          </div>
@@ -141,7 +141,7 @@ const SaboInfoDialog: React.FC<SaboInfoDialogProps> = ({ isOpen, onClose }) => {
      {/* Cấu Hình Handicap */}
      <div className='space-y-3'>
       <div className='flex items-center gap-2'>
-       <BarChart3 className='w-4 h-4 text-green-500' />
+       <BarChart3 className='w-4 h-4 text-success-500' />
        <h3 className={`font-semibold text-body-large ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>⚖️ Cấu Hình Handicap Theo Mức Cược</h3>
       </div>
       <div className='overflow-x-auto'>
@@ -171,19 +171,19 @@ const SaboInfoDialog: React.FC<SaboInfoDialogProps> = ({ isOpen, onClose }) => {
          {betConfigurations.map((config, index) => (
           <tr key={config.points} className={
            index % 2 === 0 
-            ? (isDark ? 'bg-slate-800/20' : 'bg-white')
+            ? (isDark ? 'bg-slate-800/20' : 'bg-var(--color-background)')
             : (isDark ? 'bg-slate-700/20' : 'bg-slate-50')
           }>
-           <td className={`border p-2 font-medium text-blue-500 ${
+           <td className={`border p-2 font-medium text-primary-500 ${
             isDark ? 'border-slate-600' : 'border-slate-300'
            }`}>{config.points}</td>
            <td className={`border p-2 ${
             isDark ? 'border-slate-600 text-slate-300' : 'border-slate-300 text-slate-700'
            }`}>{config.raceTo}</td>
-           <td className={`border p-2 font-medium text-green-500 ${
+           <td className={`border p-2 font-medium text-success-500 ${
             isDark ? 'border-slate-600' : 'border-slate-300'
            }`}>{config.handicap1}</td>
-           <td className={`border p-2 font-medium text-green-500 ${
+           <td className={`border p-2 font-medium text-success-500 ${
             isDark ? 'border-slate-600' : 'border-slate-300'
            }`}>{config.handicap05}</td>
            <td className={`border p-2 ${
@@ -284,7 +284,7 @@ const SaboInfoDialog: React.FC<SaboInfoDialogProps> = ({ isOpen, onClose }) => {
      {/* Scenarios Thực Tế */}
      <div className='space-y-3'>
       <div className='flex items-center gap-2'>
-       <Gamepad2 className='w-4 h-4 text-red-500' />
+       <Gamepad2 className='w-4 h-4 text-error-500' />
        <h3 className={`font-semibold text-body-large ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>🎮 Các Scenario Thực Tế</h3>
       </div>
       <div className='grid gap-3'>

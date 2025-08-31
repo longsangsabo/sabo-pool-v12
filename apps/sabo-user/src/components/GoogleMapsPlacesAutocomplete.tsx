@@ -147,7 +147,7 @@ const GoogleMapsPlacesAutocomplete = ({
   return (
    <div className='space-y-2'>
     <Label>Google Maps API Key</Label>
-    <div className='p-3 bg-warning-50 border border-yellow-200 rounded-md'>
+    <div className='p-3 bg-warning-50 border border-warning rounded-md'>
      <p className='text-body-small text-warning-800'>
       Vui lòng cấu hình VITE_GOOGLE_PLACES_KEY trong file .env để sử dụng
       tính năng tìm kiếm CLB trên Google Maps.
@@ -180,7 +180,7 @@ const GoogleMapsPlacesAutocomplete = ({
 
    {/* Dropdown with predictions */}
    {showDropdown && predictions.length > 0 && (
-    <div className='absolute z-50 w-full mt-1 bg-white border border-neutral-200 rounded-md shadow-lg max-h-60 overflow-y-auto'>
+    <div className='absolute z-50 w-full mt-1 bg-var(--color-background) border border-neutral-200 rounded-md shadow-lg max-h-60 overflow-y-auto'>
      {predictions.map(prediction => (
       <Button
        key={prediction.place_id}

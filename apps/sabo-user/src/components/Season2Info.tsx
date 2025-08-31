@@ -79,7 +79,7 @@ export const Season2Info: React.FC = () => {
       <Trophy className='w-8 h-8' />
       {currentSeasonInfo.season_name}
      </CardTitle>
-     <CardDescription className='text-blue-100'>
+     <CardDescription className='text-primary-100'>
       Thời gian:{' '}
       {new Date(currentSeasonInfo.start_date).toLocaleDateString('vi-VN')}{' '}
       - {new Date(currentSeasonInfo.end_date).toLocaleDateString('vi-VN')}
@@ -91,19 +91,19 @@ export const Season2Info: React.FC = () => {
        <div className='text-heading-bold'>
         {currentSeasonInfo.total_participants || 0}
        </div>
-       <div className='text-body-small text-blue-100'>Người tham gia</div>
+       <div className='text-body-small text-primary-100'>Người tham gia</div>
       </div>
       <div className='text-center'>
        <div className='text-heading-bold'>
         {currentSeasonInfo.total_matches || 0}
        </div>
-       <div className='text-body-small text-blue-100'>Trận đấu</div>
+       <div className='text-body-small text-primary-100'>Trận đấu</div>
       </div>
       <div className='text-center'>
        <div className='text-heading-bold'>
         {(currentSeasonInfo.registration_fee || 0).toLocaleString()}đ
        </div>
-       <div className='text-body-small text-blue-100'>Phí đăng ký</div>
+       <div className='text-body-small text-primary-100'>Phí đăng ký</div>
       </div>
       <div className='text-center'>
        <Badge variant='secondary' className='text-primary-600'>

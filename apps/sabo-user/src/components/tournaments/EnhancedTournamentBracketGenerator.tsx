@@ -104,8 +104,8 @@ export function EnhancedTournamentBracketGenerator({
     title: 'SABO Double Elimination',
     subtitle: 'Professional tournament with Winners & Losers brackets',
     color: 'from-blue-500 to-purple-600',
-    bgColor: 'bg-blue-50 dark:bg-blue-950/20',
-    textColor: 'text-blue-700 dark:text-blue-300',
+    bgColor: 'bg-primary-50 dark:bg-blue-950/20',
+    textColor: 'text-primary-700 dark:text-blue-300',
     badgeVariant: 'default' as const,
     requirements: [
      'Exactly 16 participants required',
@@ -121,7 +121,7 @@ export function EnhancedTournamentBracketGenerator({
    title: 'Single Elimination',
    subtitle: 'Classic tournament format with immediate elimination',
    color: 'from-green-500 to-teal-600',
-   bgColor: 'bg-green-50 dark:bg-green-950/20',
+   bgColor: 'bg-success-50 dark:bg-green-950/20',
    textColor: 'text-green-700 dark:text-green-300',
    badgeVariant: 'secondary' as const,
    requirements: [
@@ -156,7 +156,7 @@ export function EnhancedTournamentBracketGenerator({
   
   if (!isValidCount) {
    return {
-    color: 'bg-red-500',
+    color: 'bg-error-500',
     text: 'Invalid participant count',
     variant: 'destructive' as const,
     canGenerate: false
@@ -164,7 +164,7 @@ export function EnhancedTournamentBracketGenerator({
   }
   
   return {
-   color: 'bg-green-500',
+   color: 'bg-success-500',
    text: 'Ready to generate',
    variant: 'default' as const,
    canGenerate: true
@@ -349,7 +349,7 @@ export function EnhancedTournamentBracketGenerator({
      <div className="grid gap-2">
       {config.requirements.map((req, index) => (
        <div key={index} className="flex items-start gap-2 text-sm">
-        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+        <CheckCircle className="h-4 w-4 text-success-500 mt-0.5 flex-shrink-0" />
         <span className="text-muted-foreground">{req}</span>
        </div>
       ))}

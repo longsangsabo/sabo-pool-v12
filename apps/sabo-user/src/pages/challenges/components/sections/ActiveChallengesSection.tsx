@@ -264,7 +264,7 @@ const ActiveChallengesSection: React.FC<ActiveChallengesSectionProps> = ({
             challenge.score_confirmation_status === 'score_entered'
            ) {
             return (
-             <Badge className='bg-warning-500 text-white'>
+             <Badge className='bg-warning-500 text-var(--color-background)'>
               Chờ xác nhận tỷ số
              </Badge>
             );
@@ -273,13 +273,13 @@ const ActiveChallengesSection: React.FC<ActiveChallengesSectionProps> = ({
             'score_confirmed'
            ) {
             return (
-             <Badge className='bg-warning-500 text-white'>
+             <Badge className='bg-warning-500 text-var(--color-background)'>
               Chờ CLB xác nhận
              </Badge>
             );
            } else {
             return (
-             <Badge className='bg-primary-500 text-white'>
+             <Badge className='bg-primary-500 text-var(--color-background)'>
               Đang diễn ra
              </Badge>
             );
@@ -329,7 +329,7 @@ const ActiveChallengesSection: React.FC<ActiveChallengesSectionProps> = ({
         )}
 
         {challenge.score_confirmation_status === 'score_confirmed' && (
-         <div className='p-3 bg-warning-50 border border-yellow-200 rounded-lg'>
+         <div className='p-3 bg-warning-50 border border-warning rounded-lg'>
           <p className='text-body-small text-warning-800 font-medium'>
            Tỷ số đã xác nhận: {challenge.challenger_final_score || 0}{' '}
            - {challenge.opponent_final_score || 0}

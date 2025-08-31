@@ -107,10 +107,10 @@ export const SeasonHistoryTab: React.FC<SeasonHistoryTabProps> = ({
  };
 
  const getRankBadgeColor = (rank: number) => {
-  if (rank <= 3) return 'bg-warning-500 text-white';
-  if (rank <= 10) return 'bg-primary-500 text-white';
-  if (rank <= 50) return 'bg-success-500 text-white';
-  return 'bg-neutral-500 text-white';
+  if (rank <= 3) return 'bg-warning-500 text-var(--color-background)';
+  if (rank <= 10) return 'bg-primary-500 text-var(--color-background)';
+  if (rank <= 50) return 'bg-success-500 text-var(--color-background)';
+  return 'bg-neutral-500 text-var(--color-background)';
  };
 
  const formatPoints = (points: number) => {
@@ -176,7 +176,7 @@ export const SeasonHistoryTab: React.FC<SeasonHistoryTabProps> = ({
        <Card>
         <CardContent className='p-6'>
          <div className='flex items-center space-x-2'>
-          <Users className='h-5 w-5 text-blue-500' />
+          <Users className='h-5 w-5 text-primary-500' />
           <div>
            <p className='text-body-small-medium text-neutral-600'>
             Tổng người chơi
@@ -208,7 +208,7 @@ export const SeasonHistoryTab: React.FC<SeasonHistoryTabProps> = ({
        <Card>
         <CardContent className='p-6'>
          <div className='flex items-center space-x-2'>
-          <TrendingUp className='h-5 w-5 text-green-500' />
+          <TrendingUp className='h-5 w-5 text-success-500' />
           <div>
            <p className='text-body-small-medium text-neutral-600'>
             Điểm trung bình
@@ -224,7 +224,7 @@ export const SeasonHistoryTab: React.FC<SeasonHistoryTabProps> = ({
        <Card>
         <CardContent className='p-6'>
          <div className='flex items-center space-x-2'>
-          <Target className='h-5 w-5 text-red-500' />
+          <Target className='h-5 w-5 text-error-500' />
           <div>
            <p className='text-body-small-medium text-neutral-600'>
             Điểm thấp nhất

@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { getTrustScoreInfo, formatTrustScore } from "@sabo/shared-utils"
+import { getTrustScoreInfo, formatTrustScore } from"@sabo/shared-utils"
 
 interface TrustScoreBadgeProps {
  score: number;

@@ -43,7 +43,7 @@ export const TournamentAwardsTab: React.FC<TournamentAwardsTabProps> = ({
    case 3:
     return <Award className='h-5 w-5 text-amber-600' />;
    default:
-    return <Gift className='h-5 w-5 text-blue-500' />;
+    return <Gift className='h-5 w-5 text-primary-500' />;
   }
  };
 

@@ -230,11 +230,11 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
     {/* Fix Result */}
     {fixResult && (
      <div className="p-4 rounded-lg bg-success-50 dark:bg-green-900/20 border border-success-200 dark:border-green-700">
-      <div className="flex items-center gap-2 text-success-800 dark:text-green-200">
+      <div className="flex items-center gap-2 text-success-800 dark:text-success-200">
        <CheckCircle className="w-4 h-4" />
        <span className="font-medium">Kết quả sửa:</span>
       </div>
-      <pre className="text-caption mt-2 whitespace-pre-wrap text-success-700 dark:text-green-300">
+      <pre className="text-caption mt-2 var(--color-background)space-pre-wrap text-success-700 dark:text-green-300">
        {fixResult}
       </pre>
      </div>
@@ -256,7 +256,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
       
       onClick={runAdvancementFix}
       disabled={isFixing}
-      className="bg-primary-600 hover:bg-blue-700"
+      className="bg-primary-600 hover:bg-primary-700"
      >
       <Zap className="w-4 h-4 mr-2" />
       Auto Fix (SQL)

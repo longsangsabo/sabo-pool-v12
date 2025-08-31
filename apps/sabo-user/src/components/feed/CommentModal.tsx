@@ -180,8 +180,8 @@ export const CommentModal: React.FC<CommentModalProps> = ({
       <Button
        onClick={() => handleLikeComment(comment.id)}
        className={`flex items-center gap-1 text-caption ${
-        comment.is_liked ? 'text-red-500' : 'text-neutral-500'
-       } hover:text-red-500 transition-colors`}
+        comment.is_liked ? 'text-error-500' : 'text-neutral-500'
+       } hover:text-error-500 transition-colors`}
       >
        <Heart
         className={`h-3 w-3 ${comment.is_liked ? 'fill-current' : ''}`}
@@ -192,7 +192,7 @@ export const CommentModal: React.FC<CommentModalProps> = ({
       {!isReply && (
        <Button
         onClick={() => handleReply(comment.id)}
-        className='flex items-center gap-1 text-caption-neutral hover:text-blue-500 transition-colors'
+        className='flex items-center gap-1 text-caption-neutral hover:text-primary-500 transition-colors'
        >
         <Reply className='h-3 w-3' />
         <span>Trả lời</span>
@@ -201,7 +201,7 @@ export const CommentModal: React.FC<CommentModalProps> = ({
 
       <Button
        onClick={() => handleReportComment(comment.id)}
-       className='flex items-center gap-1 text-caption-neutral hover:text-red-500 transition-colors'
+       className='flex items-center gap-1 text-caption-neutral hover:text-error-500 transition-colors'
       >
        <Flag className='h-3 w-3' />
        <span>Báo cáo</span>

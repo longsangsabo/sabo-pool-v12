@@ -1,4 +1,5 @@
 import React from 'react';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -243,7 +244,7 @@ export const MessageStats: React.FC<MessageStatsProps> = ({ stats }) => {
     <CardContent>
      <div className="space-y-3">
       {stats.unread_count > 10 && (
-       <div className="flex items-center gap-3 p-3 bg-warning-50 border border-yellow-200 rounded-lg">
+       <div className="flex items-center gap-3 p-3 bg-warning-50 border border-warning rounded-lg">
         <Clock className="h-5 w-5 text-warning-600" />
         <div>
          <p className="text-body-small-medium">Bạn có {stats.unread_count} tin nhắn chưa đọc</p>

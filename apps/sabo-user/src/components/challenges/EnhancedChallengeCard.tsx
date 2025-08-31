@@ -332,7 +332,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
    case 'upcoming': 
     return 'border-primary-200/30 dark:border-blue-800/30 bg-primary-50/20 dark:bg-blue-950/10 shadow-lg shadow-blue-500/5 dark:shadow-blue-500/15 backdrop-blur-md';
    case 'open': 
-    return 'border-yellow-200/30 dark:border-yellow-800/30 bg-warning-50/20 dark:bg-yellow-950/10 shadow-lg shadow-yellow-500/5 dark:shadow-yellow-500/15 backdrop-blur-md';
+    return 'border-warning/30 dark:border-yellow-800/30 bg-warning-50/20 dark:bg-yellow-950/10 shadow-lg shadow-yellow-500/5 dark:shadow-yellow-500/15 backdrop-blur-md';
    default: 
     return 'border-border/30 dark:border-border/20 bg-transparent backdrop-blur-md';
   }
@@ -348,7 +348,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
   >
    <Card 
     className={cn(
-     'transition-all duration-300 hover:shadow-lg dark:hover:shadow-black/25 cursor-pointer',
+     'transition-all duration-300 hover:shadow-lg dark:hover:shadow-var(--color-foreground)/25 cursor-pointer',
      'border backdrop-blur-sm',
      getVariantStyles(),
      isSelected && 'ring-2 ring-primary/50 dark:ring-primary/60',
@@ -713,7 +713,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
            return (
             <Button
              
-             className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 dark:from-emerald-400 dark:to-green-500 dark:hover:from-emerald-500 dark:hover:to-green-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+             className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 dark:from-emerald-400 dark:to-green-500 dark:hover:from-emerald-500 dark:hover:to-green-600 text-var(--color-background) border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
              onClick={(e) => {
               console.log('🎯 [DEBUG] Join button clicked!');
               e.stopPropagation();
@@ -744,7 +744,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
           {isCreator && (
            <Button
             
-            className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 dark:from-red-400 dark:to-red-500 dark:hover:from-red-500 dark:hover:to-red-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+            className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 dark:from-red-400 dark:to-red-500 dark:hover:from-red-500 dark:hover:to-red-600 text-var(--color-background) border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             onClick={(e) => {
              e.stopPropagation();
              handleCancelChallenge();
@@ -761,7 +761,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
         {(challenge.status === 'pending' && challenge.opponent_id) && (
          <Button
           
-          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-400 dark:to-blue-500 dark:hover:from-blue-500 dark:hover:to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-400 dark:to-blue-500 dark:hover:from-blue-500 dark:hover:to-blue-600 text-var(--color-background) border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
           onClick={(e) => {
            e.stopPropagation();
            handleStartMatch();
@@ -775,7 +775,7 @@ const EnhancedChallengeCard: React.FC<FlexibleEnhancedChallengeCardProps> = ({
         {challenge.status === 'accepted' && (
          <Button
           
-          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-400 dark:to-blue-500 dark:hover:from-blue-500 dark:hover:to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-400 dark:to-blue-500 dark:hover:from-blue-500 dark:hover:to-blue-600 text-var(--color-background) border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
           onClick={(e) => {
            e.stopPropagation();
            handleStartMatch();

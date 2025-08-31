@@ -200,7 +200,7 @@ export const MembershipUpgradeTab: React.FC<MembershipUpgradeTabProps> = ({
         onClick={() => setSelectedDuration('month')}
         className={`px-4 py-2 rounded-md text-body-small-medium transition-colors ${
          selectedDuration === 'month'
-          ? 'bg-white text-primary-600 shadow-sm'
+          ? 'bg-var(--color-background) text-primary-600 shadow-sm'
           : 'text-neutral-600 hover:text-neutral-900'
         }`}
        >
@@ -210,7 +210,7 @@ export const MembershipUpgradeTab: React.FC<MembershipUpgradeTabProps> = ({
         onClick={() => setSelectedDuration('year')}
         className={`px-4 py-2 rounded-md text-body-small-medium transition-colors ${
          selectedDuration === 'year'
-          ? 'bg-white text-primary-600 shadow-sm'
+          ? 'bg-var(--color-background) text-primary-600 shadow-sm'
           : 'text-neutral-600 hover:text-neutral-900'
         }`}
        >
@@ -235,7 +235,7 @@ export const MembershipUpgradeTab: React.FC<MembershipUpgradeTabProps> = ({
      >
       {plan.popular && (
        <div className='absolute -top-3 left-1/2 transform -translate-x-1/2'>
-        <Badge className='bg-primary-500 text-white'>
+        <Badge className='bg-primary-500 text-var(--color-background)'>
          <Star className='h-3 w-3 mr-1' />
          Phổ biến
         </Badge>
@@ -244,7 +244,7 @@ export const MembershipUpgradeTab: React.FC<MembershipUpgradeTabProps> = ({
 
       {plan.recommended && (
        <div className='absolute -top-3 left-1/2 transform -translate-x-1/2'>
-        <Badge className='bg-info-500 text-white'>
+        <Badge className='bg-info-500 text-var(--color-background)'>
          <Sparkles className='h-3 w-3 mr-1' />
          Khuyến nghị
         </Badge>
@@ -324,7 +324,7 @@ export const MembershipUpgradeTab: React.FC<MembershipUpgradeTabProps> = ({
          plan.id === currentPlan
           ? 'bg-neutral-100 text-gray-400 cursor-not-allowed'
           : plan.id === 'premium'
-           ? 'bg-primary-600 hover:bg-blue-700'
+           ? 'bg-primary-600 hover:bg-primary-700'
            : plan.id === 'pro'
             ? 'bg-purple-600 hover:bg-purple-700'
             : 'bg-gray-600 hover:bg-gray-700'

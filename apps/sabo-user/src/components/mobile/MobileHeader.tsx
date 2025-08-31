@@ -155,7 +155,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 
       {/* Title with gradient */}
       <div className='flex flex-col'>
-       <h1 className='font-black text-body-large bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent leading-none tracking-tight'>
+       <h1 className='font-var(--color-foreground) text-body-large bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent leading-none tracking-tight'>
         SABO
        </h1>
        <span className='text-caption font-bold text-muted-foreground leading-none tracking-wider'>
@@ -219,7 +219,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             e.currentTarget.style.display = 'none';
            }}
           />
-          <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold'>
+          <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-600 text-var(--color-background) font-semibold'>
            {profile?.display_name?.[0] ||
             profile?.full_name?.[0] ||
             'U'}
@@ -259,7 +259,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
          Tin nhắn
          <Badge
           variant='secondary'
-          className='ml-auto w-5 h-5 text-caption p-0 flex items-center justify-center bg-primary-500 text-white'
+          className='ml-auto w-5 h-5 text-caption p-0 flex items-center justify-center bg-primary-500 text-var(--color-background)'
          >
           {messageUnreadCount || 0}
          </Badge>

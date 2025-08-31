@@ -252,7 +252,7 @@ const RankTestModal = ({
        <p className='text-primary-700 mb-4 font-medium'>
         {rankInfo.description}
        </p>
-       <div className='bg-white rounded-lg p-3 border border-primary-200'>
+       <div className='bg-var(--color-background) rounded-lg p-3 border border-primary-200'>
         <h4 className='font-semibold mb-3 text-primary-800 flex items-center gap-2'>
          <CheckCircle className='w-4 h-4' />
          Yêu cầu kiểm tra chi tiết:
@@ -260,7 +260,7 @@ const RankTestModal = ({
         <ul className='space-y-2'>
          {rankInfo.requirements.map((req, index) => (
           <li key={index} className='flex items-start text-sm'>
-           <CheckCircle className='w-4 h-4 text-green-500 mr-3 flex-shrink-0 mt-0.5' />
+           <CheckCircle className='w-4 h-4 text-success-500 mr-3 flex-shrink-0 mt-0.5' />
            <span className='text-neutral-700'>{req}</span>
           </li>
          ))}
@@ -269,7 +269,7 @@ const RankTestModal = ({
       </div>
 
       {/* Warning */}
-      <div className='bg-warning-50 border border-yellow-200 rounded-lg p-4'>
+      <div className='bg-warning-50 border border-warning rounded-lg p-4'>
        <div className='flex'>
         <AlertTriangle className='w-5 h-5 text-warning-600 mr-2 flex-shrink-0 mt-0.5' />
         <div className='text-sm'>
@@ -290,7 +290,7 @@ const RankTestModal = ({
        </Button>
        <Button
         onClick={handleStartTest}
-        className='bg-primary-600 hover:bg-blue-700'
+        className='bg-primary-600 hover:bg-primary-700'
        >
         <PlayCircle className='w-4 h-4 mr-2' />
         Bắt đầu test ngay
@@ -483,7 +483,7 @@ const RankTestModal = ({
             />
             <Button
              onClick={() => removePhoto(index)}
-             className='absolute -top-1 -right-1 bg-error-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-caption opacity-0 group-hover:opacity-100 transition-opacity'
+             className='absolute -top-1 -right-1 bg-error-500 text-var(--color-background) rounded-full w-5 h-5 flex items-center justify-center text-caption opacity-0 group-hover:opacity-100 transition-opacity'
             >
              <X className='w-3 h-3' />
             </Button>

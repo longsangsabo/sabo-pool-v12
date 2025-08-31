@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { TabsContent } from '@/components/ui/tabs';
 import { Activity, Loader2 } from 'lucide-react';
 import ClubEmptyState from './ClubEmptyState';
@@ -51,7 +51,7 @@ export const ClubActivitiesTab: React.FC<ClubActivitiesTabProps> = ({
     className={`mobile-card-standard p-3 ${dark ? 'mobile-card-glass' : ''} mobile-spacing-group`}
    >
     <h3 className='mobile-heading-tertiary flex items-center gap-2'>
-     <Activity className='mobile-icon-secondary text-blue-500' />
+     <Activity className='mobile-icon-secondary text-primary-500' />
      Hoạt động gần đây
     </h3>
     {isLoading && (
@@ -70,10 +70,10 @@ export const ClubActivitiesTab: React.FC<ClubActivitiesTabProps> = ({
      {activities.map(a => (
       <div
        key={a.id}
-       className={`mobile-list-item mobile-list-item-hover text-body-small ${dark ? 'mobile-card-glass' : 'bg-white'}`}
+       className={`mobile-list-item mobile-list-item-hover text-body-small ${dark ? 'mobile-card-glass' : 'bg-var(--color-background)'}`}
       >
        <div className='w-8 h-8 rounded-md flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 flex-shrink-0'>
-        <Activity className='mobile-icon-secondary text-blue-500' />
+        <Activity className='mobile-icon-secondary text-primary-500' />
        </div>
        <div className='flex-1 min-w-0'>
         <p className='truncate font-medium'>{a.content}</p>

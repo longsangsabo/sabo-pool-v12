@@ -48,7 +48,7 @@ const ClubsPage = () => {
          <div className='flex justify-between items-start mb-2'>
           <CardTitle className='text-xl'>{club.name}</CardTitle>
           {(club as any).is_sabo_owned && (
-           <Badge className='bg-gradient-to-r from-yellow-400 to-yellow-600 text-black'>
+           <Badge className='bg-gradient-to-r from-yellow-400 to-yellow-600 text-var(--color-foreground)'>
             SABO Official
            </Badge>
           )}
@@ -94,7 +94,7 @@ const ClubsPage = () => {
 
          <div className='flex gap-2 pt-2'>
           <Button
-           className='flex-1 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold'
+           className='flex-1 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-var(--color-foreground) font-bold'
            
           >
            Đặt Bàn
@@ -109,7 +109,7 @@ const ClubsPage = () => {
      </div>
 
      <div className='mt-12 text-center'>
-      <Button className='bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold'>
+      <Button className='bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-var(--color-foreground) font-bold'>
        Xem Thêm CLB
       </Button>
      </div>

@@ -94,7 +94,7 @@ const EnhancedSettingsPage = () => {
  return (
   <div className='min-h-screen bg-neutral-50'>
    {/* Header with Logout Button */}
-   <div className='bg-white border-b border-neutral-200 px-4 py-4'>
+   <div className='bg-var(--color-background) border-b border-neutral-200 px-4 py-4'>
     <div className='flex items-center justify-between'>
      <h1 className='text-title font-bold text-neutral-900'>Cài đặt</h1>
      <Button

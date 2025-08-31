@@ -114,7 +114,7 @@ export default function AdminMedia() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">📁 Media Library</h1>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+        <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700 flex items-center gap-2">
           <Upload className="h-4 w-4" />
           Upload Files
         </button>
@@ -122,40 +122,40 @@ export default function AdminMedia() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Files</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Files</p>
               <p className="text-2xl font-bold">{mediaFiles.length}</p>
             </div>
             <File className="h-8 w-8 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Size</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Size</p>
               <p className="text-2xl font-bold">{getTotalSize()}</p>
             </div>
             <Image className="h-8 w-8 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Images</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Images</p>
               <p className="text-2xl font-bold">{mediaFiles.filter(f => f.type === 'image').length}</p>
             </div>
             <Video className="h-8 w-8 text-purple-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Folders</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Folders</p>
               <p className="text-2xl font-bold">{folders.length - 1}</p>
             </div>
             <Folder className="h-8 w-8 text-orange-500" />
@@ -164,7 +164,7 @@ export default function AdminMedia() {
       </div>
 
       {/* Filters and Controls */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
+      <div className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
         <div className="flex flex-wrap gap-4 items-center justify-between">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="relative">
@@ -206,13 +206,13 @@ export default function AdminMedia() {
           <div className="flex gap-2">
             <button 
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-blue-600 text-var(--color-background)' : 'bg-gray-200 dark:bg-gray-700'}`}
             >
               <Grid className="h-4 w-4" />
             </button>
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+              className={`p-2 rounded ${viewMode === 'list' ? 'bg-blue-600 text-var(--color-background)' : 'bg-gray-200 dark:bg-gray-700'}`}
             >
               <List className="h-4 w-4" />
             </button>
@@ -224,7 +224,7 @@ export default function AdminMedia() {
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
           {mediaFiles.map((file) => (
-            <div key={file.id} className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+            <div key={file.id} className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow overflow-hidden">
               <div className="aspect-video bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                 {file.type === 'image' ? (
                   <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500"></div>
@@ -241,7 +241,7 @@ export default function AdminMedia() {
                   </span>
                 </div>
                 
-                <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                <div className="text-xs text-neutral dark:text-gray-400 space-y-1">
                   <p>Size: {file.size}</p>
                   <p>Folder: {file.folder}</p>
                   {file.dimensions && <p>Dimensions: {file.dimensions}</p>}
@@ -250,11 +250,11 @@ export default function AdminMedia() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <button className="flex-1 px-3 py-2 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">
+                  <button className="flex-1 px-3 py-2 bg-blue-600 text-var(--color-background) rounded text-xs hover:bg-blue-700">
                     <Download className="h-3 w-3 inline mr-1" />
                     Download
                   </button>
-                  <button className="px-3 py-2 bg-red-600 text-white rounded text-xs hover:bg-red-700">
+                  <button className="px-3 py-2 bg-red-600 text-var(--color-background) rounded text-xs hover:bg-red-700">
                     <Trash2 className="h-3 w-3" />
                   </button>
                 </div>
@@ -263,9 +263,9 @@ export default function AdminMedia() {
           ))}
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-8">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-8">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+            <thead className="bg-neutral-background dark:bg-gray-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                   File
@@ -286,7 +286,7 @@ export default function AdminMedia() {
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {mediaFiles.map((file) => (
-                <tr key={file.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr key={file.id} className="hover:bg-neutral-background dark:hover:bg-gray-700">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       {getFileIcon(file.type)}
@@ -305,10 +305,10 @@ export default function AdminMedia() {
                   <td className="px-6 py-4 text-sm">{file.uploadedAt}</td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                      <button className="px-3 py-1 bg-blue-600 text-var(--color-background) rounded text-sm hover:bg-blue-700">
                         Download
                       </button>
-                      <button className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">
+                      <button className="px-3 py-1 bg-red-600 text-var(--color-background) rounded text-sm hover:bg-red-700">
                         Delete
                       </button>
                     </div>
@@ -322,26 +322,26 @@ export default function AdminMedia() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📤 Bulk Upload</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Upload multiple files at once</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Upload multiple files at once</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             Bulk Upload
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">🗂️ Organize Folders</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Create and manage folder structure</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Create and manage folder structure</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             Manage Folders
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">🔍 Advanced Search</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Search by metadata and properties</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Search by metadata and properties</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             Advanced Search
           </button>
         </div>

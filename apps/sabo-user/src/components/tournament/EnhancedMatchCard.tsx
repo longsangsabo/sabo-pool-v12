@@ -136,12 +136,7 @@ export const EnhancedMatchCard: React.FC<EnhancedMatchCardProps> = ({
 
  return (
   <Card
-   className={`relative bg-gradient-to-br from-card via-card/90 to-muted/10 border border-border/60 rounded-xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer hover:border-primary/40 group ${className}`}
-   style={{
-    background:
-     'linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)/0.3) 100%)',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-   }}
+   className={`relative bg-gradient-to-br from-card via-card/90 to-muted/10 border border-border/60 rounded-xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer hover:border-primary/40 group shadow-sm ${className}`}
    data-match-id={match.id}
   >
    <CardContent className='p-6'>
@@ -157,7 +152,7 @@ export const EnhancedMatchCard: React.FC<EnhancedMatchCardProps> = ({
      {/* Table Badge */}
      {(match.assigned_table?.table_number ||
       match.assigned_table_number) && (
-      <div className='bg-emerald-500 text-white px-3 py-1 rounded-full text-body-small font-semibold shadow-sm'>
+      <div className='bg-emerald-500 text-var(--color-background) px-3 py-1 rounded-full text-body-small font-semibold shadow-sm'>
        Bàn{' '}
        {match.assigned_table?.table_number ||
         match.assigned_table_number}
@@ -228,7 +223,7 @@ export const EnhancedMatchCard: React.FC<EnhancedMatchCardProps> = ({
           min='0'
           max='50'
           step='1'
-          className='w-20 px-3 py-2 border border-primary-300 rounded-md text-center font-bold bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg'
+          className='w-20 px-3 py-2 border border-primary-300 rounded-md text-center font-bold bg-var(--color-background) focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg'
           placeholder='0'
           value={player1Score}
           onChange={e => setPlayer1Score(e.target.value)}
@@ -309,7 +304,7 @@ export const EnhancedMatchCard: React.FC<EnhancedMatchCardProps> = ({
           min='0'
           max='50'
           step='1'
-          className='w-20 px-3 py-2 border border-purple-300 rounded-md text-center font-bold bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-lg'
+          className='w-20 px-3 py-2 border border-purple-300 rounded-md text-center font-bold bg-var(--color-background) focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-lg'
           placeholder='0'
           value={player2Score}
           onChange={e => setPlayer2Score(e.target.value)}

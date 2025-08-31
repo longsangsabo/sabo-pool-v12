@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -155,7 +155,7 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
     label: 'Trận tổ chức',
     value: club?.total_matches ?? 0,
     icon: Target,
-    accent: 'text-blue-500',
+    accent: 'text-primary-500',
    },
    {
     label: 'Giải đấu',
@@ -236,7 +236,7 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
  return (
   <div className='mobile-container pb-24 px-4'>
    {/* Header */}
-   <Card className={`${dark ? 'mobile-card-glass' : 'bg-white/80'} mb-4`}>
+   <Card className={`${dark ? 'mobile-card-glass' : 'bg-var(--color-background)/80'} mb-4`}>
     <CardContent className='flex flex-col items-center p-6'>
      <div className='relative'>
       <Avatar className='w-24 h-24 mb-3 ring-2 ring-primary/30 shadow-md'>
@@ -249,13 +249,13 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
          e.currentTarget.style.display = 'none';
         }}
        />
-       <AvatarFallback className='bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-500 text-white text-3xl font-bold'>
+       <AvatarFallback className='bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-500 text-var(--color-background) text-3xl font-bold'>
         {club.name.charAt(0).toUpperCase()}
        </AvatarFallback>
       </Avatar>
       {club.verified && (
        <div className='absolute -bottom-1 -right-1'>
-        <span className='inline-flex items-center gap-1 bg-emerald-600 text-white text-[12px] font-semibold px-2 py-0.5 rounded shadow'>
+        <span className='inline-flex items-center gap-1 bg-emerald-600 text-var(--color-background) text-[12px] font-semibold px-2 py-0.5 rounded shadow'>
          <CheckCircle2 className='mobile-icon-small' /> VERIFIED
         </span>
        </div>
@@ -364,7 +364,7 @@ export const ClubProfileMobile: React.FC<ClubProfileMobileProps> = ({
          <span>{club.total_tournaments ?? 0} giải đấu</span>
         </div>
         <div className='flex items-center gap-2'>
-         <Target className='mobile-icon-small text-blue-500' />
+         <Target className='mobile-icon-small text-primary-500' />
          <span>{club.total_matches ?? 0} trận</span>
         </div>
         <div className='flex items-center gap-2'>

@@ -177,7 +177,7 @@ export const TournamentPreview: React.FC<TournamentPreviewProps> = ({
       {tournament.rules && (
        <div>
         <h4 className='font-medium mb-2'>Luật lệ giải đấu</h4>
-        <p className='text-body-small text-muted-foreground whitespace-pre-wrap'>
+        <p className='text-body-small text-muted-foreground var(--color-background)space-pre-wrap'>
          {tournament.rules}
         </p>
        </div>

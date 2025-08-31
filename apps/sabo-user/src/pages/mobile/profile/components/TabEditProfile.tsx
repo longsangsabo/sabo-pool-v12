@@ -28,7 +28,7 @@ export const TabEditProfile: React.FC<Props> = ({
       className={`w-full px-3 py-2 text-body-small rounded-md border outline-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
       value={editingProfile?.display_name || ''}
       onChange={e => onChange('display_name', e.target.value)}
@@ -41,7 +41,7 @@ export const TabEditProfile: React.FC<Props> = ({
       className={`w-full px-3 py-2 text-body-small rounded-md border outline-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
       value={editingProfile?.phone || ''}
       onChange={e => onChange('phone', e.target.value)}
@@ -54,7 +54,7 @@ export const TabEditProfile: React.FC<Props> = ({
       className={`w-full px-3 py-2 text-body-small rounded-md border outline-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
       value={editingProfile?.city || ''}
       onChange={e => onChange('city', e.target.value)}
@@ -67,7 +67,7 @@ export const TabEditProfile: React.FC<Props> = ({
       className={`w-full px-3 py-2 text-body-small rounded-md border outline-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
       value={editingProfile?.district || ''}
       onChange={e => onChange('district', e.target.value)}
@@ -80,7 +80,7 @@ export const TabEditProfile: React.FC<Props> = ({
       className={`w-full px-3 py-2 text-body-small rounded-md border outline-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
       value={editingProfile?.skill_level || 'beginner'}
       onChange={e => onChange('skill_level', e.target.value as any)}
@@ -98,7 +98,7 @@ export const TabEditProfile: React.FC<Props> = ({
       className={`w-full px-3 py-2 text-body-small rounded-md border outline-none resize-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
       value={editingProfile?.bio || ''}
       onChange={e => onChange('bio', e.target.value)}

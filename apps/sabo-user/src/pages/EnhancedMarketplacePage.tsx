@@ -66,7 +66,7 @@ const EnhancedMarketplacePage = () => {
     <div className='container mx-auto px-4'>
      <Card>
       <CardContent className='p-8 text-center'>
-       <div className='text-red-500 mb-4'>⚠️</div>
+       <div className='text-error-500 mb-4'>⚠️</div>
        <h3 className='text-body-large font-medium mb-2'>Có lỗi xảy ra</h3>
        <p className='text-neutral-600 mb-4'>{error}</p>
        <Button onClick={() => fetchItems()}>Thử lại</Button>

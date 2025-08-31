@@ -527,7 +527,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
         </span>
        </div>
        {getTabValidation('basic-info').isValid && (
-        <CheckCircle className='h-3 w-3 text-green-500 ml-1' />
+        <CheckCircle className='h-3 w-3 text-success-500 ml-1' />
        )}
       </TabsTrigger>
       <TabsTrigger
@@ -542,7 +542,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
         </span>
        </div>
        {getTabValidation('financial').isValid && (
-        <CheckCircle className='h-3 w-3 text-green-500 ml-1' />
+        <CheckCircle className='h-3 w-3 text-success-500 ml-1' />
        )}
       </TabsTrigger>
      </TabsList>
@@ -929,7 +929,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
          )}
 
          {/* Rewards Table */}
-        <div className='border border-emerald-200 rounded-lg bg-white p-4'>
+        <div className='border border-emerald-200 rounded-lg bg-var(--color-background) p-4'>
          <div className='flex items-center justify-between mb-4'>
           <div className='flex items-center gap-3'>
            <h4 className='font-medium'>

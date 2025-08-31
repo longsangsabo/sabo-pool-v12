@@ -55,7 +55,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
    // Update meta theme-color for mobile browsers
    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
    if (metaThemeColor) {
-    metaThemeColor.setAttribute('content', theme === 'dark' ? '#111827' : '#ffffff');
+    metaThemeColor.setAttribute('content', theme === 'dark' ? 'var(--color-gray-900)' : 'var(--color-var(--color-background))');
    }
   }
  }, [theme]);

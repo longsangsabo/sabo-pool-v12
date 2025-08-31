@@ -118,7 +118,7 @@ export const MilestoneProgress: React.FC<MilestoneProgressProps> = ({ theme, onV
    <Card className={`overflow-hidden ${
     theme === 'dark'
      ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
-     : 'bg-white border-slate-200'
+     : 'bg-var(--color-background) border-slate-200'
    }`}>
     <CardContent className='p-6'>
      <div className='animate-pulse space-y-4'>
@@ -141,7 +141,7 @@ export const MilestoneProgress: React.FC<MilestoneProgressProps> = ({ theme, onV
   <Card className={`overflow-hidden ${
    theme === 'dark'
     ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
-    : 'bg-white border-slate-200'
+    : 'bg-var(--color-background) border-slate-200'
   }`}>
    <CardHeader className='pb-4 border-b border-slate-200/10'>
     <CardTitle className={`text-body font-semibold flex items-center justify-between ${
@@ -204,7 +204,7 @@ export const MilestoneProgress: React.FC<MilestoneProgressProps> = ({ theme, onV
         {/* Header */}
         <div className='flex items-center gap-3 mb-3'>
          <div className={`w-10 h-10 rounded-lg flex items-center justify-center relative ${
-          theme === 'dark' ? 'bg-slate-700/50' : 'bg-white'
+          theme === 'dark' ? 'bg-slate-700/50' : 'bg-var(--color-background)'
          }`}>
           <Icon className={`w-5 h-5 ${
            playerMilestone.is_completed 
@@ -213,7 +213,7 @@ export const MilestoneProgress: React.FC<MilestoneProgressProps> = ({ theme, onV
           }`} />
           {playerMilestone.is_completed && (
            <div className='absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center'>
-            <CheckCircle className='w-3 h-3 text-white' />
+            <CheckCircle className='w-3 h-3 text-var(--color-background)' />
            </div>
           )}
          </div>

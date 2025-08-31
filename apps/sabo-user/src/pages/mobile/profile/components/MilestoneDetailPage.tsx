@@ -128,7 +128,7 @@ export const MilestoneDetailPage: React.FC<MilestoneDetailPageProps> = ({ theme,
    <Card className={`overflow-hidden transition-all duration-200 hover:scale-[1.02] ${
     theme === 'dark'
      ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
-     : 'bg-white border-slate-200'
+     : 'bg-var(--color-background) border-slate-200'
    }`}>
     <CardContent className='p-6'>
      {/* Header */}
@@ -144,7 +144,7 @@ export const MilestoneDetailPage: React.FC<MilestoneDetailPageProps> = ({ theme,
         }`} />
         {isCompleted && (
          <div className='absolute -top-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center'>
-          <CheckCircle className='w-3 h-3 text-white' />
+          <CheckCircle className='w-3 h-3 text-var(--color-background)' />
          </div>
         )}
        </div>
@@ -319,7 +319,7 @@ export const MilestoneDetailPage: React.FC<MilestoneDetailPageProps> = ({ theme,
     
     {/* Stats for current category */}
     <div className='grid grid-cols-2 md:grid-cols-4 gap-3 mb-6'>
-     <Card className={theme === 'dark' ? 'bg-slate-900/40 border-slate-700/50' : 'bg-white border-slate-200'}>
+     <Card className={theme === 'dark' ? 'bg-slate-900/40 border-slate-700/50' : 'bg-var(--color-background) border-slate-200'}>
       <CardContent className='p-3 text-center'>
        <div className={`text-title font-bold ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
         {stats.total}
@@ -330,7 +330,7 @@ export const MilestoneDetailPage: React.FC<MilestoneDetailPageProps> = ({ theme,
       </CardContent>
      </Card>
      
-     <Card className={theme === 'dark' ? 'bg-slate-900/40 border-slate-700/50' : 'bg-white border-slate-200'}>
+     <Card className={theme === 'dark' ? 'bg-slate-900/40 border-slate-700/50' : 'bg-var(--color-background) border-slate-200'}>
       <CardContent className='p-3 text-center'>
        <div className={`text-title font-bold ${theme === 'dark' ? 'text-emerald-300' : 'text-emerald-600'}`}>
         {stats.completed}
@@ -341,7 +341,7 @@ export const MilestoneDetailPage: React.FC<MilestoneDetailPageProps> = ({ theme,
       </CardContent>
      </Card>
      
-     <Card className={theme === 'dark' ? 'bg-slate-900/40 border-slate-700/50' : 'bg-white border-slate-200'}>
+     <Card className={theme === 'dark' ? 'bg-slate-900/40 border-slate-700/50' : 'bg-var(--color-background) border-slate-200'}>
       <CardContent className='p-3 text-center'>
        <div className={`text-title font-bold ${theme === 'dark' ? 'text-amber-300' : 'text-amber-600'}`}>
         {stats.inProgress}
@@ -352,7 +352,7 @@ export const MilestoneDetailPage: React.FC<MilestoneDetailPageProps> = ({ theme,
       </CardContent>
      </Card>
      
-     <Card className={theme === 'dark' ? 'bg-slate-900/40 border-slate-700/50' : 'bg-white border-slate-200'}>
+     <Card className={theme === 'dark' ? 'bg-slate-900/40 border-slate-700/50' : 'bg-var(--color-background) border-slate-200'}>
       <CardContent className='p-3 text-center'>
        <div className={`text-title font-bold ${theme === 'dark' ? 'text-blue-300' : 'text-primary-600'}`}>
         {stats.totalSPA}
@@ -375,11 +375,11 @@ export const MilestoneDetailPage: React.FC<MilestoneDetailPageProps> = ({ theme,
        variant={isActive ? 'default' : 'ghost'}
        
        onClick={() => setSelectedCategory(category.key)}
-       className={`flex items-center gap-2 whitespace-nowrap ${
+       className={`flex items-center gap-2 var(--color-background)space-nowrap ${
         isActive
          ? theme === 'dark' 
           ? 'bg-slate-700 text-slate-100' 
-          : 'bg-slate-900 text-white'
+          : 'bg-slate-900 text-var(--color-background)'
          : theme === 'dark'
           ? 'text-slate-300 hover:text-slate-100 hover:bg-slate-800'
           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'

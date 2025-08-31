@@ -52,19 +52,19 @@ export const RankBadge: React.FC<RankBadgeProps> = ({
   const firstLetter = code.charAt(0);
   switch (firstLetter) {
    case 'K':
-    return 'bg-slate-500 text-white border-slate-600';
+    return 'bg-slate-500 text-var(--color-background) border-slate-600';
    case 'I':
-    return 'bg-amber-500 text-white border-amber-600';
+    return 'bg-amber-500 text-var(--color-background) border-amber-600';
    case 'H':
-    return 'bg-success-500 text-white border-green-600';
+    return 'bg-success-500 text-var(--color-background) border-green-600';
    case 'G':
-    return 'bg-primary-500 text-white border-blue-600';
+    return 'bg-primary-500 text-var(--color-background) border-blue-600';
    case 'F':
-    return 'bg-info-500 text-white border-purple-600';
+    return 'bg-info-500 text-var(--color-background) border-purple-600';
    case 'E':
-    return 'bg-error-500 text-white border-red-600';
+    return 'bg-error-500 text-var(--color-background) border-red-600';
    default:
-    return 'bg-neutral-500 text-white border-gray-600';
+    return 'bg-neutral-500 text-var(--color-background) border-gray-600';
   }
  };
 
@@ -92,7 +92,7 @@ export const RankBadge: React.FC<RankBadgeProps> = ({
   return (
    <div className='relative group'>
     {badge}
-    <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 text-white text-body-small rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10'>
+    <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 text-var(--color-background) text-body-small rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 var(--color-background)space-nowrap z-10'>
      {rankInfo.name}
      <div className='absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900'></div>
     </div>

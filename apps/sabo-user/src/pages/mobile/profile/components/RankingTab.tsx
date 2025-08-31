@@ -11,7 +11,7 @@ const RankingTab: React.FC<RankingTabProps> = ({ theme }) => {
   <div className="p-6 space-y-6">
    <Card className={theme === 'dark' 
     ? 'bg-slate-800/50 border-slate-700/50' 
-    : 'bg-white border-slate-200'
+    : 'bg-var(--color-background) border-slate-200'
    }>
     <CardHeader>
      <CardTitle className={`flex items-center gap-2 ${
@@ -29,7 +29,7 @@ const RankingTab: React.FC<RankingTabProps> = ({ theme }) => {
        <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
          <div className="w-8 h-8 rounded-full bg-warning-500 flex items-center justify-center">
-          <Trophy className="w-4 h-4 text-white" />
+          <Trophy className="w-4 h-4 text-var(--color-background)" />
          </div>
          <div>
           <div className={`font-semibold ${
@@ -58,7 +58,7 @@ const RankingTab: React.FC<RankingTabProps> = ({ theme }) => {
        <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
          <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center">
-          <Users className="w-4 h-4 text-white" />
+          <Users className="w-4 h-4 text-var(--color-background)" />
          </div>
          <div>
           <div className={`font-semibold ${
@@ -87,7 +87,7 @@ const RankingTab: React.FC<RankingTabProps> = ({ theme }) => {
        <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
          <div className="w-8 h-8 rounded-full bg-success-500 flex items-center justify-center">
-          <Target className="w-4 h-4 text-white" />
+          <Target className="w-4 h-4 text-var(--color-background)" />
          </div>
          <div>
           <div className={`font-semibold ${

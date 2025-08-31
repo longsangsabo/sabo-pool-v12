@@ -29,8 +29,8 @@ const SimpleBookingPage = () => {
     </header>
 
     <main className='container mx-auto px-4 py-16 text-center'>
-     <h1 className='text-4xl font-bold text-white mb-6'>Đặt Bàn Bi-a</h1>
-     <p className='text-title text-green-200 mb-8'>
+     <h1 className='text-4xl font-bold text-var(--color-background) mb-6'>Đặt Bàn Bi-a</h1>
+     <p className='text-title text-success-200 mb-8'>
       Tính năng đặt bàn đang được phát triển
      </p>
 
@@ -39,14 +39,14 @@ const SimpleBookingPage = () => {
       <h2 className='text-heading-bold text-yellow-400 mb-4'>
        Sắp ra mắt!
       </h2>
-      <p className='text-green-200 mb-6'>
+      <p className='text-success-200 mb-6'>
        Hệ thống đặt bàn trực tuyến sẽ sớm được hoàn thiện
       </p>
 
       <div className='space-y-4'>
        <p className='text-yellow-400 font-semibold'>Liên hệ đặt bàn:</p>
-       <p className='text-white'>📞 Hotline: 0901 234 567</p>
-       <p className='text-white'>⏰ Giờ mở cửa: 8:00 - 24:00</p>
+       <p className='text-var(--color-background)'>📞 Hotline: 0901 234 567</p>
+       <p className='text-var(--color-background)'>⏰ Giờ mở cửa: 8:00 - 24:00</p>
       </div>
      </div>
 

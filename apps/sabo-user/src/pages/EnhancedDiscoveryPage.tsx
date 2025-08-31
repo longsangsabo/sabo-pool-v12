@@ -13,7 +13,14 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'sonner';
+import { toast           duration: 0.3,
+          type: 'spring',
+          stiffness: 200,
+          damping: 20,
+         }}
+         className='absolute inset-0'
+         style={{ zIndex: 10 - index }}
+        >sonner';
 import { useDiscovery } from '@/hooks/useDiscovery';
 import { useProfile } from '@/hooks/useProfile';
 
@@ -167,8 +174,8 @@ const EnhancedDiscoveryPage = () => {
  if (loading) {
   return (
    <div className='flex items-center justify-center h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500'>
-    <div className='text-center text-white'>
-     <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4'></div>
+    <div className='text-center text-var(--color-background)'>
+     <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-var(--color-background) mx-auto mb-4'></div>
      <p className='text-body-large-semibold'>Đang tìm đối thủ...</p>
      <p className='text-body-small opacity-80 mt-2'>Vui lòng chờ một chút</p>
     </div>
@@ -179,12 +186,12 @@ const EnhancedDiscoveryPage = () => {
  return (
   <div className='h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 relative overflow-hidden'>
    {/* Header */}
-   <div className='flex justify-between items-center p-4 pt-12 text-white relative z-20'>
+   <div className='flex justify-between items-center p-4 pt-12 text-var(--color-background) relative z-20'>
     <Button
      variant='ghost'
      
      onClick={() => navigate(-1)}
-     className='text-white hover:bg-white/20'
+     className='text-var(--color-background) hover:bg-var(--color-background)/20'
     >
      <ArrowLeft className='w-6 h-6' />
     </Button>
@@ -192,7 +199,7 @@ const EnhancedDiscoveryPage = () => {
      <h1 className='text-title font-bold'>Tìm đối thủ</h1>
      <Badge
       variant='secondary'
-      className='mt-1 bg-white/20 text-white border-none'
+      className='mt-1 bg-var(--color-background)/20 text-var(--color-background) border-none'
      >
       <Users className='w-3 h-3 mr-1' />
       {remainingPlayers} người
@@ -203,7 +210,7 @@ const EnhancedDiscoveryPage = () => {
       variant='ghost'
       
       onClick={refreshPlayers}
-      className='text-white hover:bg-white/20'
+      className='text-var(--color-background) hover:bg-var(--color-background)/20'
      >
       <RefreshCw className='w-5 h-5' />
      </Button>
@@ -211,7 +218,7 @@ const EnhancedDiscoveryPage = () => {
       variant='ghost'
       
       onClick={() => setShowFilters(true)}
-      className='text-white hover:bg-white/20'
+      className='text-var(--color-background) hover:bg-var(--color-background)/20'
      >
       <Filter className='w-5 h-5' />
      </Button>
@@ -236,7 +243,7 @@ const EnhancedDiscoveryPage = () => {
         animate={{ opacity: 1, scale: 1 }}
         className='absolute inset-0 flex items-center justify-center'
        >
-        <div className='bg-white rounded-2xl p-8 text-center shadow-2xl'>
+        <div className='bg-var(--color-background) rounded-2xl p-8 text-center shadow-2xl'>
          <Users className='w-16 h-16 mx-auto mb-4 text-gray-400' />
          <h3 className='text-title font-bold text-neutral-800 mb-2'>
           Không có đối thủ
@@ -317,7 +324,7 @@ const EnhancedDiscoveryPage = () => {
       }
       variant="destructive"
      >
-      <X className='w-6 h-6 text-white' />
+      <X className='w-6 h-6 text-var(--color-background)' />
      </motion.button>
 
      <motion.button
@@ -326,7 +333,7 @@ const EnhancedDiscoveryPage = () => {
       onClick={() => handleSwipe('up', transformedPlayers[currentIndex])}
       variant="default"
      >
-      <Star className='w-5 h-5 text-white' />
+      <Star className='w-5 h-5 text-var(--color-background)' />
      </motion.button>
 
      <motion.button
@@ -337,13 +344,13 @@ const EnhancedDiscoveryPage = () => {
       }
       className='w-16 h-16 bg-success-500 rounded-full shadow-lg flex items-center justify-center hover:bg-success-600 transition-colors'
      >
-      <Zap className='w-8 h-8 text-white' />
+      <Zap className='w-8 h-8 text-var(--color-background)' />
      </motion.button>
     </div>
    )}
 
    {/* Enhanced Swipe Instructions */}
-   <div className='absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white text-center text-body-small opacity-70 z-20'>
+   <div className='absolute bottom-8 left-1/2 transform -translate-x-1/2 text-var(--color-background) text-center text-body-small opacity-70 z-20'>
     <div className='flex items-center justify-center space-x-4'>
      <div className='flex items-center'>
       <X className='w-4 h-4 mr-1 text-red-400' />

@@ -197,14 +197,14 @@ class ResponsiveErrorBoundary extends Component<Props, State> {
          <div className='space-y-2 text-body-small font-mono'>
           <div>
            <strong>Stack Trace:</strong>
-           <pre className='mt-1 whitespace-pre-wrap text-xs'>
+           <pre className='mt-1 var(--color-background)space-pre-wrap text-xs'>
             {this.state.error.stack}
            </pre>
           </div>
           {this.state.errorInfo && (
            <div>
             <strong>Component Stack:</strong>
-            <pre className='mt-1 whitespace-pre-wrap text-xs'>
+            <pre className='mt-1 var(--color-background)space-pre-wrap text-xs'>
              {this.state.errorInfo.componentStack}
             </pre>
            </div>

@@ -127,7 +127,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
    id: 'keo',
    title: 'Kèo',
    icon: Target,
-   color: 'text-blue-500 dark:text-blue-400',
+   color: 'text-primary-500 dark:text-blue-400',
    bgColor: 'bg-transparent',
    data: keoData,
    variant: 'open' as const,
@@ -137,7 +137,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
    id: 'live',
    title: 'Live',
    icon: Flame,
-   color: 'text-red-500 dark:text-red-400',
+   color: 'text-error-500 dark:text-red-400',
    bgColor: 'bg-transparent',
    data: liveData,
    variant: 'live' as const,
@@ -157,7 +157,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
    id: 'xong',
    title: 'Xong',
    icon: Trophy,
-   color: 'text-green-500 dark:text-green-400',
+   color: 'text-success-500 dark:text-green-400',
    bgColor: 'bg-transparent',
    data: xongData,
    variant: 'completed' as const,
@@ -346,10 +346,10 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
            value={tab.id}
            className={cn(
             'flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 relative',
-            'data-[state=active]:bg-white/10 data-[state=active]:shadow-sm backdrop-blur-sm',
+            'data-[state=active]:bg-var(--color-background)/10 data-[state=active]:shadow-sm backdrop-blur-sm',
             'data-[state=active]:border data-[state=active]:border-border/30',
-            'hover:bg-white/5 dark:hover:bg-white/5',
-            isActive && 'dark:bg-white/10 dark:border-border/30'
+            'hover:bg-var(--color-background)/5 dark:hover:bg-var(--color-background)/5',
+            isActive && 'dark:bg-var(--color-background)/10 dark:border-border/30'
            )}
           >
            <div className="relative">
@@ -364,7 +364,7 @@ const EnhancedCommunityTab: React.FC<EnhancedCommunityTabProps> = ({
             </div>
             {/* Badge on top of icon */}
             {tab.data.length > 0 && (
-             <span className="absolute -top-1 -right-1 bg-error-500 text-white text-caption rounded-full w-4 h-4 flex items-center justify-center font-bold text-[10px] shadow-lg animate-pulse">
+             <span className="absolute -top-1 -right-1 bg-error-500 text-var(--color-background) text-caption rounded-full w-4 h-4 flex items-center justify-center font-bold text-[10px] shadow-lg animate-pulse">
               {tab.data.length}
              </span>
             )}

@@ -18,13 +18,13 @@ export const MobileLiveIndicator: React.FC<MobileLiveIndicatorProps> = ({
  const getIndicatorColor = () => {
   switch (type) {
    case 'live_match':
-    return 'bg-error-500 text-white';
+    return 'bg-error-500 text-var(--color-background)';
    case 'live_tournament':
-    return 'bg-info-500 text-white';
+    return 'bg-info-500 text-var(--color-background)';
    case 'live_challenge':
-    return 'bg-warning-500 text-white';
+    return 'bg-warning-500 text-var(--color-background)';
    default:
-    return 'bg-error-500 text-white';
+    return 'bg-error-500 text-var(--color-background)';
   }
  };
 

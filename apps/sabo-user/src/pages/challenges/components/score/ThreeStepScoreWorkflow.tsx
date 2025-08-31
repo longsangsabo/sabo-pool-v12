@@ -689,7 +689,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
            }
            className='object-cover'
           />
-          <AvatarFallback className='text-body-large-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white'>
+          <AvatarFallback className='text-body-large-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-var(--color-background)'>
            {workflowState.canClubConfirm && challengerProfile
             ? challengerProfile.full_name?.[0] || 'C'
             : challenge.challenger?.full_name?.[0] || 'C'}
@@ -773,7 +773,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
            }
            className='object-cover'
           />
-          <AvatarFallback className='text-body-large-semibold bg-gradient-to-br from-green-500 to-teal-600 text-white'>
+          <AvatarFallback className='text-body-large-semibold bg-gradient-to-br from-green-500 to-teal-600 text-var(--color-background)'>
            {workflowState.canClubConfirm && opponentProfile
             ? opponentProfile.full_name?.[0] || 'O'
             : challenge.opponent?.full_name?.[0] || 'O'}

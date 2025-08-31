@@ -47,7 +47,7 @@ export const OptimizedAvatar: React.FC<OptimizedAvatarProps> = ({
       data-error={hasError}
      />
     )}
-    <AvatarFallback className="avatar-fallback bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+    <AvatarFallback className="avatar-fallback bg-gradient-to-br from-blue-500 to-purple-600 text-var(--color-background) font-semibold">
      {fallback || alt?.[0]?.toUpperCase() || 'U'}
     </AvatarFallback>
    </Avatar>

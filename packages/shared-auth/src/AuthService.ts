@@ -23,8 +23,8 @@ import {
   User,
   UserProfile,
   AuthResponse,
-  OAuthConfig,
-  PhoneAuthConfig,
+  // OAuthConfig, - unused
+  // PhoneAuthConfig, - unused
   AuthConfigOptions,
   UserRole,
   PermissionContext,

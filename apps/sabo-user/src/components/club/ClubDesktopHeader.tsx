@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -39,9 +39,9 @@ export const ClubDesktopHeader: React.FC<ClubDesktopHeaderProps> = ({
       <Menu className='h-5 w-5' />
      </Button>
      
-     <Typography variant="heading">
+     <Heading level={2} variant="title">
       {clubProfile?.club_name || t('club.management')}
-     </Typography>
+     </Heading>
      
      <Badge variant='secondary' className='hidden sm:inline-flex'>
       {t('club.admin')}

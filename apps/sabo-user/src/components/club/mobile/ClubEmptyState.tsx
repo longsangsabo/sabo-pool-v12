@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -29,7 +29,7 @@ export const ClubEmptyState: React.FC<ClubEmptyStateProps> = ({
   >
    {Icon && (
     <div className='w-12 h-12 rounded-full flex items-center justify-center mb-4 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600'>
-     <Icon className='w-6 h-6 text-blue-500' />
+     <Icon className='w-6 h-6 text-primary-500' />
     </div>
    )}
    <Typography variant="heading" >{title}</Typography>

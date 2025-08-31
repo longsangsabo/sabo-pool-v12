@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -329,8 +329,8 @@ const ClubRegistrationMultiStepForm = () => {
     canvas.width = targetSize;
     canvas.height = targetSize;
 
-    // Set white background to prevent transparency/black issues
-    ctx.fillStyle = 'var(--color-white)';
+    // Set var(--color-background) background to prevent transparency/var(--color-foreground) issues
+    ctx.fillStyle = 'var(--color-var(--color-background))';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Calculate crop dimensions (center crop to square)
@@ -568,7 +568,7 @@ const ClubRegistrationMultiStepForm = () => {
     {/* Step 1: Basic Info */}
     {currentStep === 1 && (
      <div className='space-y-4'>
-      <Typography variant="heading" >Bước 1: Thông tin cơ bản</Typography>
+      <Heading variant="title">Bước 1: Thông tin cơ bản</Heading>
 
       <div>
        <label className='block text-body-small-medium text-neutral-700 mb-2'>
@@ -921,7 +921,7 @@ const ClubRegistrationMultiStepForm = () => {
         <div className='text-body-small text-neutral-500'>
          Đã tải: {formData.photos.length}/10 ảnh
          {formData.photos.length < 3 && (
-          <span className='text-red-500 ml-2'>
+          <span className='text-error-500 ml-2'>
            (Cần tối thiểu 3 ảnh)
           </span>
          )}
@@ -1119,7 +1119,7 @@ const ClubRegistrationMultiStepForm = () => {
         disabled={
          saving || !validateStep(3) || formData.status === 'pending'
         }
-        className='bg-primary-600 hover:bg-blue-700'
+        className='bg-primary-600 hover:bg-primary-700'
        >
         {saving ? 'Đang gửi...' : 'Gửi đăng ký'}
        </Button>

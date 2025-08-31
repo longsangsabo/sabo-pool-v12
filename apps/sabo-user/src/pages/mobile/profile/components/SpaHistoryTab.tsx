@@ -566,7 +566,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
       className={`px-3 py-2 rounded-lg border text-body-small outline-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
      >
       <option value="all">Tất cả nguồn</option>
@@ -581,7 +581,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
       className={`px-3 py-2 rounded-lg border text-body-small outline-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
      >
       <option value="all">Tất cả loại</option>
@@ -608,7 +608,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
      <Card className={
       theme === 'dark'
        ? 'bg-slate-900/40 border-slate-700/50'
-       : 'bg-white border-slate-200'
+       : 'bg-var(--color-background) border-slate-200'
      }>
       <CardContent className="p-6 text-center">
        <DollarSign className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
@@ -630,7 +630,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
        <Card key={transaction.id} className={
         theme === 'dark'
          ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm hover:bg-slate-800/40 transition-colors'
-         : 'bg-white border-slate-200 hover:bg-slate-50 transition-colors'
+         : 'bg-var(--color-background) border-slate-200 hover:bg-slate-50 transition-colors'
        }>
         <CardContent className="content-spacing">
          <div className="flex items-start justify-between">
@@ -708,7 +708,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
           }`}>
            <details>
             <summary className="cursor-pointer">Chi tiết giao dịch</summary>
-            <pre className="mt-2 whitespace-pre-wrap text-caption">
+            <pre className="mt-2 var(--color-background)space-pre-wrap text-caption">
              {JSON.stringify(transaction.metadata, null, 2)}
             </pre>
            </details>

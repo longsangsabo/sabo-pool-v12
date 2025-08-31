@@ -43,39 +43,39 @@ export default function AdminOverview() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-green-100 dark:bg-green-900 p-6 rounded-lg">
           <h3 className="text-xl font-bold text-green-800 dark:text-green-200">Production Ready</h3>
-          <p className="text-3xl font-bold text-green-600 dark:text-green-400">{productionReady.length}</p>
+          <p className="text-3xl font-bold text-success dark:text-green-400">{productionReady.length}</p>
           <p className="text-green-700 dark:text-green-300">Fully functional pages</p>
         </div>
         
         <div className="bg-yellow-100 dark:bg-yellow-900 p-6 rounded-lg">
           <h3 className="text-xl font-bold text-yellow-800 dark:text-yellow-200">Basic Implementation</h3>
-          <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{basicImplementation.length}</p>
+          <p className="text-3xl font-bold text-warning dark:text-yellow-400">{basicImplementation.length}</p>
           <p className="text-yellow-700 dark:text-yellow-300">Simple interfaces</p>
         </div>
         
         <div className="bg-red-100 dark:bg-red-900 p-6 rounded-lg">
           <h3 className="text-xl font-bold text-red-800 dark:text-red-200">Future Development</h3>
-          <p className="text-3xl font-bold text-red-600 dark:text-red-400">{placeholders.length}</p>
+          <p className="text-3xl font-bold text-error dark:text-red-400">{placeholders.length}</p>
           <p className="text-red-700 dark:text-red-300">Placeholder pages</p>
         </div>
       </div>
 
       {/* Production Ready Pages */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-green-600">✅ Production Ready Pages</h2>
+        <h2 className="text-2xl font-bold mb-4 text-success">✅ Production Ready Pages</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {productionReady.map(page => (
-            <div key={page.path} className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-green-200 dark:border-green-700">
+            <div key={page.path} className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg border border-success dark:border-green-700">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-green-700 dark:text-green-300">{page.name}</h3>
                 <NavLink 
                   to={page.path}
-                  className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+                  className="px-3 py-1 bg-green-600 text-var(--color-background) rounded text-sm hover:bg-green-700"
                 >
                   Visit
                 </NavLink>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{page.description}</p>
+              <p className="text-sm text-neutral dark:text-gray-400">{page.description}</p>
             </div>
           ))}
         </div>
@@ -84,20 +84,20 @@ export default function AdminOverview() {
       {/* Basic Implementation */}
       {basicImplementation.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 text-yellow-600">🟡 Basic Implementation</h2>
+          <h2 className="text-2xl font-bold mb-4 text-warning">🟡 Basic Implementation</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {basicImplementation.map(page => (
-              <div key={page.path} className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-yellow-200 dark:border-yellow-700">
+              <div key={page.path} className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg border border-warning dark:border-yellow-700">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-bold text-yellow-700 dark:text-yellow-300">{page.name}</h3>
                   <NavLink 
                     to={page.path}
-                    className="px-3 py-1 bg-yellow-600 text-white rounded text-sm hover:bg-yellow-700"
+                    className="px-3 py-1 bg-yellow-600 text-var(--color-background) rounded text-sm hover:bg-yellow-700"
                   >
                     Visit
                   </NavLink>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{page.description}</p>
+                <p className="text-sm text-neutral dark:text-gray-400">{page.description}</p>
               </div>
             ))}
           </div>
@@ -106,20 +106,20 @@ export default function AdminOverview() {
 
       {/* Future Development */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-red-600">🔴 Future Development</h2>
+        <h2 className="text-2xl font-bold mb-4 text-error">🔴 Future Development</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {placeholders.map(page => (
-            <div key={page.path} className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-red-200 dark:border-red-700">
+            <div key={page.path} className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg border border-error dark:border-red-700">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-red-700 dark:text-red-300">{page.name}</h3>
                 <NavLink 
                   to={page.path}
-                  className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+                  className="px-3 py-1 bg-red-600 text-var(--color-background) rounded text-sm hover:bg-red-700"
                 >
                   Preview
                 </NavLink>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{page.description}</p>
+              <p className="text-sm text-neutral dark:text-gray-400">{page.description}</p>
             </div>
           ))}
         </div>

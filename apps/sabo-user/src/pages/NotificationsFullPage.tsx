@@ -252,9 +252,9 @@ export const NotificationsFullPage: React.FC = () => {
  const getPriorityColor = (priority: string) => {
   const colorMap: Record<string, string> = {
    low: 'bg-neutral-100 text-neutral-800 dark:bg-gray-700 dark:text-gray-200',
-   medium: 'bg-primary-100 text-primary-800 dark:bg-blue-900/50 dark:text-blue-200',
+   medium: 'bg-primary-100 text-primary-800 dark:bg-blue-900/50 dark:text-primary-200',
    high: 'bg-warning-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-200',
-   urgent: 'bg-error-100 text-error-800 dark:bg-red-900/50 dark:text-red-200',
+   urgent: 'bg-error-100 text-error-800 dark:bg-red-900/50 dark:text-error-200',
   };
 
   return colorMap[priority] || 'bg-neutral-100 text-neutral-800 dark:bg-gray-700 dark:text-gray-200';
@@ -462,7 +462,7 @@ export const NotificationsFullPage: React.FC = () => {
      <div className="flex gap-2 overflow-x-auto pb-2">
       <DropdownMenu>
        <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="whitespace-nowrap">
+        <Button variant="outline" className="var(--color-background)space-nowrap">
          <Filter className="w-4 h-4 mr-1" />
          Mức độ
          {filters.priority !== 'all' && (
@@ -492,7 +492,7 @@ export const NotificationsFullPage: React.FC = () => {
 
       <DropdownMenu>
        <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="whitespace-nowrap">
+        <Button variant="outline" className="var(--color-background)space-nowrap">
          Loại
          {filters.type !== 'all' && (
           <Badge variant="secondary" className="ml-1 text-caption">1</Badge>

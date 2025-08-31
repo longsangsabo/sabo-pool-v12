@@ -41,7 +41,7 @@ const AboutPage = () => {
 
    <div className='pt-16'>
     {/* Hero Section */}
-    <div className='bg-gradient-to-br from-blue-700 via-blue-600 to-emerald-600 text-white py-20'>
+    <div className='bg-gradient-to-br from-blue-700 via-blue-600 to-emerald-600 text-var(--color-background) py-20'>
      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
       <h1 className='text-4xl md:text-6xl font-bold mb-6'>
        Về SABO ARENA
@@ -54,7 +54,7 @@ const AboutPage = () => {
     </div>
 
     {/* Stats Section */}
-    <div className='py-16 bg-white'>
+    <div className='py-16 bg-var(--color-background)'>
      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
       <div className='grid grid-cols-2 md:grid-cols-4 gap-8'>
        {stats.map((stat, index) => {
@@ -104,7 +104,7 @@ const AboutPage = () => {
     </div>
 
     {/* Team Section */}
-    <div className='py-16 bg-white'>
+    <div className='py-16 bg-var(--color-background)'>
      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
       <div className='text-center mb-12'>
        <h2 className='text-3xl font-bold text-neutral-900 mb-4'>

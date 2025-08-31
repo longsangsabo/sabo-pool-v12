@@ -320,7 +320,7 @@ const ScheduleManagementTab: React.FC<ScheduleManagementTabProps> = ({
     <Card>
      <CardContent className='pt-6'>
       <div className='text-center'>
-       <Calendar className='w-8 h-8 mx-auto mb-2 text-blue-500' />
+       <Calendar className='w-8 h-8 mx-auto mb-2 text-primary-500' />
        <p className='text-heading-bold'>{stats.total}</p>
        <p className='text-body-small text-muted-foreground'>Tổng lịch test</p>
       </div>
@@ -329,7 +329,7 @@ const ScheduleManagementTab: React.FC<ScheduleManagementTabProps> = ({
     <Card>
      <CardContent className='pt-6'>
       <div className='text-center'>
-       <Clock className='w-8 h-8 mx-auto mb-2 text-green-500' />
+       <Clock className='w-8 h-8 mx-auto mb-2 text-success-500' />
        <p className='text-heading-bold'>{stats.available}</p>
        <p className='text-body-small text-muted-foreground'>Có thể đặt</p>
       </div>

@@ -151,7 +151,7 @@ export const SimpleRegistrationModal: React.FC<
      </div>
 
      {/* Payment Info */}
-     <div className='bg-warning-50 p-4 rounded-lg border border-yellow-200'>
+     <div className='bg-warning-50 p-4 rounded-lg border border-warning'>
       <h3 className='font-medium text-yellow-900 mb-2 flex items-center'>
        💵 Thanh toán tiền mặt
       </h3>

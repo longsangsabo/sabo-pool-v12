@@ -83,7 +83,7 @@ const BookingForm = ({
     <div className='grid md:grid-cols-2 gap-4'>
      <div className='space-y-2'>
       <Label
-       className={`${isHighContrast ? 'text-white' : 'text-white'} text-body-large font-medium`}
+       className={`${isHighContrast ? 'text-var(--color-background)' : 'text-var(--color-background)'} text-body-large font-medium`}
       >
        Họ và tên *
       </Label>
@@ -99,7 +99,7 @@ const BookingForm = ({
 
      <div className='space-y-2'>
       <Label
-       className={`${isHighContrast ? 'text-white' : 'text-white'} text-body-large font-medium`}
+       className={`${isHighContrast ? 'text-var(--color-background)' : 'text-var(--color-background)'} text-body-large font-medium`}
       >
        Số điện thoại *
       </Label>
@@ -118,7 +118,7 @@ const BookingForm = ({
     {/* Date Selection */}
     <div className='space-y-2'>
      <Label
-      className={`${isHighContrast ? 'text-white' : 'text-white'} text-body-large font-medium`}
+      className={`${isHighContrast ? 'text-var(--color-background)' : 'text-var(--color-background)'} text-body-large font-medium`}
      >
       Chọn ngày *
      </Label>
@@ -153,7 +153,7 @@ const BookingForm = ({
     <div className='grid md:grid-cols-2 gap-4'>
      <div className='space-y-2'>
       <Label
-       className={`${isHighContrast ? 'text-white' : 'text-white'} text-body-large font-medium`}
+       className={`${isHighContrast ? 'text-var(--color-background)' : 'text-var(--color-background)'} text-body-large font-medium`}
       >
        Giờ bắt đầu *
       </Label>
@@ -176,7 +176,7 @@ const BookingForm = ({
 
      <div className='space-y-2'>
       <Label
-       className={`${isHighContrast ? 'text-white' : 'text-white'} text-body-large font-medium`}
+       className={`${isHighContrast ? 'text-var(--color-background)' : 'text-var(--color-background)'} text-body-large font-medium`}
       >
        Thời gian chơi
       </Label>
@@ -211,7 +211,7 @@ const BookingForm = ({
     {/* Notification Method */}
     <div className='space-y-2'>
      <Label
-      className={`${isHighContrast ? 'text-white' : 'text-white'} text-body-large font-medium`}
+      className={`${isHighContrast ? 'text-var(--color-background)' : 'text-var(--color-background)'} text-body-large font-medium`}
      >
       Phương thức nhận thông báo
      </Label>
@@ -222,19 +222,19 @@ const BookingForm = ({
      >
       <div className='flex items-center space-x-2'>
        <RadioGroupItem value='sms' id='sms' />
-       <Label htmlFor='sms' className='text-white'>
+       <Label htmlFor='sms' className='text-var(--color-background)'>
         📱 SMS
        </Label>
       </div>
       <div className='flex items-center space-x-2'>
        <RadioGroupItem value='zalo' id='zalo' />
-       <Label htmlFor='zalo' className='text-white'>
+       <Label htmlFor='zalo' className='text-var(--color-background)'>
         💬 Zalo
        </Label>
       </div>
       <div className='flex items-center space-x-2'>
        <RadioGroupItem value='call' id='call' />
-       <Label htmlFor='call' className='text-white'>
+       <Label htmlFor='call' className='text-var(--color-background)'>
         📞 Gọi điện
        </Label>
       </div>
@@ -245,12 +245,12 @@ const BookingForm = ({
     {formData.timeSlot && formData.duration && (
      <div className='bg-success-700 rounded-lg p-4'>
       <div className='flex justify-between items-center'>
-       <span className='text-white text-lg'>Tổng tiền:</span>
+       <span className='text-var(--color-background) text-lg'>Tổng tiền:</span>
        <span className='text-yellow-400 text-heading-bold'>
         {calculatePrice().toLocaleString('vi-VN')}đ
        </span>
       </div>
-      <p className='text-green-200 text-body-small mt-2'>
+      <p className='text-success-200 text-body-small mt-2'>
        * Giá {formData.timeSlot < '17:00' ? 'giờ thường' : 'giờ vàng'}:{' '}
        {formData.timeSlot < '17:00' ? '25,000đ' : '35,000đ'}/giờ
       </p>

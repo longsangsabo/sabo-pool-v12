@@ -171,7 +171,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     )}
 
     {user && user.id === profile?.user_id && (
-     <div className='absolute inset-0 bg-black/10 hover:bg-black/20 transition-opacity duration-300'>
+     <div className='absolute inset-0 bg-var(--color-foreground)/10 hover:bg-var(--color-foreground)/20 transition-opacity duration-300'>
       <div className='absolute inset-0 flex items-center justify-center'>
        <div
         className={`sabo-tech-card bg-card/80 text-foreground px-4 py-2 flex items-center gap-2 transition-opacity duration-300 ${
@@ -223,7 +223,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
      </div>
 
      <div className='flex-1 space-y-3'>
-      <div className='bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-sm'>
+      <div className='bg-var(--color-background)/90 backdrop-blur-sm rounded-lg p-4 shadow-sm'>
        <h1 className='text-3xl font-bold text-neutral-900 mb-2'>
         {profile?.display_name || profile?.full_name || 'Người dùng'}
        </h1>

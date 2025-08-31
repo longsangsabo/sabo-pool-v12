@@ -84,8 +84,8 @@ const MarketplaceItemCard = ({
        <Heart
         className={`w-4 h-4 ${
          isFavorited
-          ? 'fill-red-500 text-red-500'
-          : 'text-neutral-500 hover:text-red-500'
+          ? 'fill-red-500 text-error-500'
+          : 'text-neutral-500 hover:text-error-500'
         }`}
        />
       </Button>

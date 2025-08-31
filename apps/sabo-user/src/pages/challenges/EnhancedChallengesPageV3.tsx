@@ -267,7 +267,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
         onClick={handleRefresh}
         variant="outline"
         
-        className="rounded-full bg-black/40 dark:bg-black/50 backdrop-blur-lg border-gray-600 dark:border-gray-500"
+        className="rounded-full bg-var(--color-foreground)/40 dark:bg-var(--color-foreground)/50 backdrop-blur-lg border-gray-600 dark:border-gray-500"
         disabled={isRefreshing}
        >
         <RefreshCw
@@ -305,14 +305,14 @@ const EnhancedChallengesPageV3: React.FC = () => {
    {/* Main Content */}
    <div ref={scrollRef} className="content-spacing">
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-     <TabsList className="grid w-full grid-cols-2 mb-6 bg-black/40 dark:bg-black/50 backdrop-blur-lg border border-gray-600/30 dark:border-gray-500/20">
+     <TabsList className="grid w-full grid-cols-2 mb-6 bg-var(--color-foreground)/40 dark:bg-var(--color-foreground)/50 backdrop-blur-lg border border-gray-600/30 dark:border-gray-500/20">
       <TabsTrigger value="community" className="relative group">
        <span className="flex items-center gap-2">
-        <Users className="w-4 h-4 text-blue-500 group-data-[state=active]:text-primary-600" />
+        <Users className="w-4 h-4 text-primary-500 group-data-[state=active]:text-primary-600" />
         <span className="text-primary-600 group-data-[state=active]:text-primary-700 font-medium">Cộng đồng</span>
        </span>
        {(communityStats.keo + communityStats.live + communityStats.sapToi + communityStats.xong) > 0 && (
-        <span className="absolute -top-1 -right-1 bg-error-500 text-white text-caption rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
+        <span className="absolute -top-1 -right-1 bg-error-500 text-var(--color-background) text-caption rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
          {communityStats.keo + communityStats.live + communityStats.sapToi + communityStats.xong}
         </span>
        )}
@@ -323,7 +323,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
         <span className="text-amber-600 group-data-[state=active]:text-amber-700 font-medium">Của tôi</span>
        </span>
        {(myStats.doiDoiThu + myStats.sapToi + myStats.hoanThanh) > 0 && (
-        <span className="absolute -top-1 -right-1 bg-error-500 text-white text-caption rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
+        <span className="absolute -top-1 -right-1 bg-error-500 text-var(--color-background) text-caption rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
          {myStats.doiDoiThu + myStats.sapToi + myStats.hoanThanh}
         </span>
        )}
@@ -375,7 +375,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
     >
      <Button
       
-      className="rounded-full shadow-lg bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-white border-0"
+      className="rounded-full shadow-lg bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-var(--color-background) border-0"
       onClick={handleCreateChallenge}
      >
       <Flame className="w-6 h-6 mr-2 animate-pulse" />
@@ -387,7 +387,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
      <Button
       variant="outline"
       
-      className="rounded-full shadow-lg bg-black/40 dark:bg-black/50 backdrop-blur-lg"
+      className="rounded-full shadow-lg bg-var(--color-foreground)/40 dark:bg-var(--color-foreground)/50 backdrop-blur-lg"
      >
       <MessageCircle className="w-4 h-4 mr-2" />
       Hỗ trợ
@@ -396,7 +396,7 @@ const EnhancedChallengesPageV3: React.FC = () => {
    </div>
 
    {/* Bottom Stats Bar */}
-   <div className="sticky bottom-0 bg-black/40 backdrop-blur-lg border-t border-gray-600/20 p-4">
+   <div className="sticky bottom-0 bg-var(--color-foreground)/40 backdrop-blur-lg border-t border-gray-600/20 p-4">
     <div className="flex justify-around text-center">
      <motion.div whileHover={{ scale: 1.1 }}>
       <p className="text-body-large font-bold text-foreground flex items-center justify-center gap-1">
@@ -406,14 +406,14 @@ const EnhancedChallengesPageV3: React.FC = () => {
       <p className="text-caption text-muted-foreground">Tổng kèo</p>
      </motion.div>
      <motion.div whileHover={{ scale: 1.1 }}>
-      <p className="text-body-large font-bold text-red-500 flex items-center justify-center gap-1">
+      <p className="text-body-large font-bold text-error-500 flex items-center justify-center gap-1">
        <Flame className="w-4 h-4" />
        {communityStats.live}
       </p>
       <p className="text-caption text-muted-foreground">Đang live</p>
      </motion.div>
      <motion.div whileHover={{ scale: 1.1 }}>
-      <p className="text-body-large font-bold text-green-500 flex items-center justify-center gap-1">
+      <p className="text-body-large font-bold text-success-500 flex items-center justify-center gap-1">
        <Trophy className="w-4 h-4" />
        {myStats.hoanThanh}
       </p>

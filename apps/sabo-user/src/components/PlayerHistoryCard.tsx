@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { useSeasonHistory } from '../hooks/useSeasonHistory';
 import { SeasonHistory, UserBestSeason } from '../types/seasonHistory';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -63,10 +63,10 @@ export const PlayerHistoryCard: React.FC<PlayerHistoryCardProps> = ({
  };
 
  const getRankBadgeColor = (rank: number) => {
-  if (rank <= 3) return 'bg-warning-500 text-white';
-  if (rank <= 10) return 'bg-primary-500 text-white';
-  if (rank <= 50) return 'bg-success-500 text-white';
-  return 'bg-neutral-500 text-white';
+  if (rank <= 3) return 'bg-warning-500 text-var(--color-background)';
+  if (rank <= 10) return 'bg-primary-500 text-var(--color-background)';
+  if (rank <= 50) return 'bg-success-500 text-var(--color-background)';
+  return 'bg-neutral-500 text-var(--color-background)';
  };
 
  const formatPoints = (points: number) => {
@@ -92,9 +92,9 @@ export const PlayerHistoryCard: React.FC<PlayerHistoryCardProps> = ({
  const getTrendIcon = (trend: string) => {
   switch (trend) {
    case 'improving':
-    return <TrendingUp className='h-4 w-4 text-green-500' />;
+    return <TrendingUp className='h-4 w-4 text-success-500' />;
    case 'declining':
-    return <TrendingUp className='h-4 w-4 text-red-500 rotate-180' />;
+    return <TrendingUp className='h-4 w-4 text-error-500 rotate-180' />;
    default:
     return <Target className='h-4 w-4 text-neutral-500' />;
   }

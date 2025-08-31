@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Typography } from '@sabo/shared-ui';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TrendingUp, Users, Star, RefreshCw } from 'lucide-react';

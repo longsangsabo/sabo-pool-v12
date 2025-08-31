@@ -1,4 +1,5 @@
 import React from 'react';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
  Home,
@@ -236,7 +237,7 @@ export const ClubMobileNavigation: React.FC = () => {
        className={cn(
         'relative flex flex-col items-center justify-center flex-1 py-2 px-2 rounded-xl transition-all duration-300 ease-in-out transform',
         isActive
-         ? 'text-white bg-gradient-to-b from-primary to-primary/80 shadow-md scale-105'
+         ? 'text-var(--color-background) bg-gradient-to-b from-primary to-primary/80 shadow-md scale-105'
          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:scale-105 active:scale-95'
        )}
       >
@@ -267,7 +268,7 @@ export const ClubMobileNavigation: React.FC = () => {
          verificationCount > 0 && (
           <Badge
            variant='secondary'
-           className='absolute -top-1 -right-1 w-4 h-4 text-caption p-0 flex items-center justify-center bg-amber-500 text-white animate-pulse'
+           className='absolute -top-1 -right-1 w-4 h-4 text-caption p-0 flex items-center justify-center bg-amber-500 text-var(--color-background) animate-pulse'
           >
            {verificationCount > 9 ? '9+' : verificationCount}
           </Badge>
@@ -277,7 +278,7 @@ export const ClubMobileNavigation: React.FC = () => {
         className={cn(
          'text-caption mt-1.5 font-medium truncate w-full text-center transition-all duration-300',
          isActive
-          ? 'text-white font-semibold drop-shadow-sm'
+          ? 'text-var(--color-background) font-semibold drop-shadow-sm'
           : 'text-muted-foreground group-hover:text-foreground'
         )}
        >
@@ -352,7 +353,7 @@ export const ClubMobileNavigation: React.FC = () => {
               verificationCount > 0 && (
                <Badge
                 variant='secondary'
-                className='bg-amber-500 text-white text-caption px-1.5 py-0.5'
+                className='bg-amber-500 text-var(--color-background) text-caption px-1.5 py-0.5'
                >
                 {verificationCount}
                </Badge>

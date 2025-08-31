@@ -154,7 +154,7 @@ const MarketplacePage = () => {
         alt={item.title}
         className='w-full h-48 object-cover rounded-t-lg'
        />
-       <Button className='absolute top-2 right-2 p-2 bg-white rounded-full shadow-sm hover:bg-neutral-50'>
+       <Button className='absolute top-2 right-2 p-2 bg-var(--color-background) rounded-full shadow-sm hover:bg-neutral-50'>
         <Heart className='w-4 h-4 text-neutral-600' />
        </Button>
        <Badge
@@ -197,7 +197,7 @@ const MarketplacePage = () => {
        <div className='flex items-center justify-between mb-3'>
         <div className='flex items-center space-x-2'>
          <div className='w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center'>
-          <span className='text-white text-caption-medium'>
+          <span className='text-var(--color-background) text-caption-medium'>
            {item.seller.name.charAt(0)}
           </span>
          </div>

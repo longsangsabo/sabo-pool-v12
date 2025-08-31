@@ -261,7 +261,7 @@ const MyChallengesTab = () => {
 
     <TabsContent value='incoming' className='space-y-4'>
      {incomingChallenges.length === 0 ? (
-      <Card className='bg-white'>
+      <Card className='bg-var(--color-background)'>
        <CardContent className='text-center py-8'>
         <MessageCircle className='w-12 h-12 text-gray-300 mx-auto mb-4' />
         <p className='text-neutral-500'>Không có thách đấu nào</p>
@@ -271,7 +271,7 @@ const MyChallengesTab = () => {
       incomingChallenges.map(challenge => (
        <Card
         key={challenge.id}
-        className='border-l-4 border-l-blue-500 bg-white'
+        className='border-l-4 border-l-blue-500 bg-var(--color-background)'
        >
         <CardHeader>
          <div className='flex justify-between items-start'>
@@ -358,7 +358,7 @@ const MyChallengesTab = () => {
 
     <TabsContent value='outgoing' className='space-y-4'>
      {outgoingChallenges.length === 0 ? (
-      <Card className='bg-white'>
+      <Card className='bg-var(--color-background)'>
        <CardContent className='text-center py-8'>
         <Trophy className='w-12 h-12 text-gray-300 mx-auto mb-4' />
         <p className='text-neutral-500'>Chưa gửi thách đấu nào</p>
@@ -366,7 +366,7 @@ const MyChallengesTab = () => {
       </Card>
      ) : (
       outgoingChallenges.map(challenge => (
-       <Card key={challenge.id} className='bg-white'>
+       <Card key={challenge.id} className='bg-var(--color-background)'>
         <CardHeader>
          <div className='flex justify-between items-start'>
           <div className='flex items-center space-x-3'>

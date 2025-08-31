@@ -17,7 +17,7 @@ const TestAutoExpirePage: React.FC = () => {
     <AutoExpireTestComponent />
     
     <div className="mt-8 max-w-4xl mx-auto">
-     <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-gray-700">
+     <div className="bg-var(--color-background) dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-gray-700">
       <h2 className="text-title-semibold mb-4">📋 Test Instructions</h2>
       <div className="space-y-3 text-body-small-neutral dark:text-gray-400">
        <div className="flex items-start gap-2">

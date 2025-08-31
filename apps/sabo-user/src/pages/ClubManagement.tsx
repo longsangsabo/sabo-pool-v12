@@ -177,7 +177,7 @@ const ClubManagement = () => {
         <Card>
          <CardContent className='pt-6'>
           <div className='text-center'>
-           <Users className='w-8 h-8 mx-auto mb-2 text-blue-500' />
+           <Users className='w-8 h-8 mx-auto mb-2 text-primary-500' />
            <p className='text-heading-bold'>0</p>
            <p className='text-body-small text-muted-foreground'>
             Lịch test tuần này
@@ -188,7 +188,7 @@ const ClubManagement = () => {
         <Card>
          <CardContent className='pt-6'>
           <div className='text-center'>
-           <Calendar className='w-8 h-8 mx-auto mb-2 text-green-500' />
+           <Calendar className='w-8 h-8 mx-auto mb-2 text-success-500' />
            <p className='text-heading-bold'>0</p>
            <p className='text-body-small text-muted-foreground'>
             Hạng đã duyệt tháng này

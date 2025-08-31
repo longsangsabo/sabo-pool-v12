@@ -54,11 +54,11 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
        className={`flex-1 py-2 text-body-small-medium rounded-md border transition ${
         changeType === 'up'
          ? theme === 'dark'
-          ? 'bg-emerald-600 text-white border-emerald-500'
-          : 'bg-emerald-500 text-white border-emerald-500'
+          ? 'bg-emerald-600 text-var(--color-background) border-emerald-500'
+          : 'bg-emerald-500 text-var(--color-background) border-emerald-500'
          : theme === 'dark'
           ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-          : 'bg-white border-slate-300 text-slate-600 hover:bg-slate-50'
+          : 'bg-var(--color-background) border-slate-300 text-slate-600 hover:bg-slate-50'
        }`}
       >
        Tăng hạng
@@ -68,11 +68,11 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
        className={`flex-1 py-2 text-body-small-medium rounded-md border transition ${
         changeType === 'down'
          ? theme === 'dark'
-          ? 'bg-rose-600 text-white border-rose-500'
-          : 'bg-rose-500 text-white border-rose-500'
+          ? 'bg-rose-600 text-var(--color-background) border-rose-500'
+          : 'bg-rose-500 text-var(--color-background) border-rose-500'
          : theme === 'dark'
           ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-          : 'bg-white border-slate-300 text-slate-600 hover:bg-slate-50'
+          : 'bg-var(--color-background) border-slate-300 text-slate-600 hover:bg-slate-50'
        }`}
       >
        Giảm hạng
@@ -85,7 +85,7 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
        className={`w-full px-3 py-2 text-body-small rounded-md border outline-none transition ${
         theme === 'dark'
          ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-emerald-400'
-         : 'bg-white border-slate-300 text-slate-800 focus:border-emerald-500'
+         : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-emerald-500'
        }`}
        value={selectedClubId}
        onChange={e => setSelectedClubId(e.target.value)}
@@ -107,7 +107,7 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
        className={`w-full px-3 py-2 text-body-small rounded-md border outline-none transition ${
         theme === 'dark'
          ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-emerald-400'
-         : 'bg-white border-slate-300 text-slate-800 focus:border-emerald-500'
+         : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-emerald-500'
        }`}
        value={requestedRank}
        onChange={e => setRequestedRank(e.target.value)}
@@ -128,7 +128,7 @@ export const RankRequestModal: React.FC<RankRequestModalProps> = ({
        className={`w-full px-3 py-2 text-body-small rounded-md border outline-none resize-none transition ${
         theme === 'dark'
          ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-emerald-400'
-         : 'bg-white border-slate-300 text-slate-800 focus:border-emerald-500'
+         : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-emerald-500'
        }`}
        value={rankReason}
        onChange={e => setRankReason(e.target.value)}

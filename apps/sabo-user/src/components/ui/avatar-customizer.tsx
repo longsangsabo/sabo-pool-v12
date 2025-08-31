@@ -162,7 +162,7 @@ export const AvatarCustomizer: React.FC<AvatarCustomizerProps> = ({
    desc: 'Viền bạc với hiệu ứng sương giá tinh tế',
   },
   {
-   value: 'white-gold',
+   value: 'var(--color-background)-gold',
    label: 'White Gold',
    icon: '🥇',
    category: 'premium',
@@ -290,8 +290,8 @@ export const AvatarCustomizer: React.FC<AvatarCustomizerProps> = ({
         />
 
         {avatar.isUploading && (
-         <div className='absolute inset-0 bg-black/50 rounded-full flex items-center justify-center'>
-          <div className='animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent' />
+         <div className='absolute inset-0 bg-var(--color-foreground)/50 rounded-full flex items-center justify-center'>
+          <div className='animate-spin rounded-full h-6 w-6 border-2 border-var(--color-background) border-t-transparent' />
          </div>
         )}
        </div>

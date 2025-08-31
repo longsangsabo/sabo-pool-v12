@@ -76,7 +76,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
       'Quay lại để xem kết quả đăng ký',
      ],
      note: 'Giao dịch được bảo mật bởi VNPAY. Phí xử lý 2% sẽ được tính thêm.',
-     icon: <Shield className='h-4 w-4 text-green-500' />,
+     icon: <Shield className='h-4 w-4 text-success-500' />,
     };
    case 'cash':
     return {
@@ -100,7 +100,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
       'Gửi biên lai qua email hoặc tin nhắn',
      ],
      note: 'Thông tin tài khoản sẽ được gửi qua email sau khi đăng ký.',
-     icon: <Info className='h-4 w-4 text-blue-500' />,
+     icon: <Info className='h-4 w-4 text-primary-500' />,
     };
    default:
     return null;

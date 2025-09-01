@@ -1,166 +1,139 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/theme/app_theme.dart';
+import 'package:flutter/services.dart';
+import 'screens/home_screen.dart';
+import 'screens/tournament_screen.dart';
+import 'screens/club_screen.dart';
+import 'screens/challenges_screen.dart';
+import 'screens/profile_screen_optimized.dart';
 
 void main() {
-  runApp(
-    const ProviderScope(
-      child: SaboArenaApp(),
+  WidgetsFlutterBinding.ensureInitialized();
+  // Set mobile UI style
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color(0xFF1a1a1a),
+      systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
+
+  runApp(const MyApp());
 }
 
-/// SABO Arena Mobile App - Modern Flutter Setup
-class SaboArenaApp extends StatelessWidget {
-  const SaboArenaApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SABO Arena',
-      theme: SaboTheme.darkTheme, // Sử dụng theme system mới
+      title: 'SABO Pool Arena',
       debugShowCheckedModeBanner: false,
-      home: const WelcomeScreen(),
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+        primaryColor: const Color(0xFF2196F3),
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1a1a1a),
+          elevation: 0,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Color(0xFF1a1a1a),
+          selectedItemColor: Color(0xFF2196F3),
+          unselectedItemColor: Colors.grey,
+          type: BottomNavigationBarType.fixed,
+          elevation: 8,
+        ),
+      ),
+      home: const MainNavigationScreen(),
     );
   }
 }
 
-/// Temporary Welcome Screen - sẽ thay bằng proper screens sau
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+class MainNavigationScreen extends StatefulWidget {
+  const MainNavigationScreen({super.key});
+
+  @override
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+}
+
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const TournamentScreenEnhanced(),
+    const ClubScreen(),
+    const ChallengesScreen(),
+    const ProfileScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF0F172A), // AppColors.background
-              Color(0xFF1E293B), // AppColors.backgroundSecondary
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Logo placeholder
-                Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3B82F6), // AppColors.primary500
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: const Icon(
-                    Icons.sports_esports,
-                    size: 64,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 32),
-
-                // Welcome text
-                Text(
-                  'Welcome to SABO Arena',
-                  style: Theme.of(context).textTheme.displayMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-
-                Text(
-                  'The ultimate pool tournament platform',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: const Color(0xFF94A3B8), // AppColors.foregroundMuted
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 48),
-
-                // CTA Buttons
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('🚀 Ready to build SABO Arena Mobile!'),
-                        ),
-                      );
-                    },
-                    child: const Text('Get Started'),
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () {},
-                    child: const Text('Learn More'),
-                  ),
-                ),
-
-                const SizedBox(height: 48),
-
-                // Feature highlights
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildFeatureItem(
-                      context,
-                      Icons.emoji_events,
-                      'Tournaments',
-                    ),
-                    _buildFeatureItem(
-                      context,
-                      Icons.sports_score,
-                      'Challenges',
-                    ),
-                    _buildFeatureItem(
-                      context,
-                      Icons.leaderboard,
-                      'Rankings',
-                    ),
-                  ],
-                ),
-              ],
+      backgroundColor: const Color(0xFF121212),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _screens,
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
             ),
-          ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          backgroundColor: const Color(0xFF1a1a1a),
+          selectedItemColor: const Color(0xFF2196F3),
+          unselectedItemColor: Colors.grey[600],
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
+          elevation: 0,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded, size: 24),
+              activeIcon: Icon(Icons.home_rounded, size: 26),
+              label: 'Trang chủ',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.emoji_events_rounded, size: 24),
+              activeIcon: Icon(Icons.emoji_events_rounded, size: 26),
+              label: 'Giải đấu',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sports_bar_rounded, size: 24),
+              activeIcon: Icon(Icons.sports_bar_rounded, size: 26),
+              label: 'Câu lạc bộ',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sports_esports_rounded, size: 24),
+              activeIcon: Icon(Icons.sports_esports_rounded, size: 26),
+              label: 'Thách đấu',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_rounded, size: 24),
+              activeIcon: Icon(Icons.person_rounded, size: 26),
+              label: 'Cá nhân',
+            ),
+          ],
         ),
       ),
-    );
-  }
-
-  Widget _buildFeatureItem(BuildContext context, IconData icon, String label) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: const Color(0xFF1E293B), // AppColors.card
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0xFF334155).withOpacity(0.2), // AppColors.border
-            ),
-          ),
-          child: Icon(
-            icon,
-            size: 24,
-            color: const Color(0xFF3B82F6), // AppColors.primary500
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ],
     );
   }
 }

@@ -1,8 +1,8 @@
 // lib/shared/widgets/sabo_button.dart
 import 'package:flutter/material.dart';
-import 'package:sabo_flutter/core/design_system/design_tokens.dart';
-import 'package:sabo_flutter/core/design_system/component_variants.dart';
-import 'package:sabo_flutter/core/design_system/typography_system.dart';
+import '../../core/design_system/design_tokens.dart';
+import '../../core/design_system/component_variants.dart';
+import '../../core/design_system/typography_system.dart';
 
 /// SABO Arena Button - Copy exact từ web component system
 class SaboButton extends StatelessWidget {

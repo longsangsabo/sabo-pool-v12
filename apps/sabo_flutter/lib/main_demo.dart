@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/theme/app_theme.dart';
-import 'core/design_system/design_tokens.dart';
-import 'core/design_system/typography_system.dart';
+import 'package:sabo_flutter/core/theme/app_theme.dart';
+import 'package:sabo_flutter/core/design_system/design_tokens.dart';
+import 'package:sabo_flutter/core/design_system/typography_system.dart';
 
 void main() {
   runApp(
@@ -101,12 +101,12 @@ class DesignSystemDemoScreen extends StatelessWidget {
             // Primary colors
             Text('Primary Colors', style: SaboTypographySystem.h4),
             const SizedBox(height: 16),
-            Row(
+            const Row(
               children: [
                 _ColorBox(SaboDesignTokens.colorPrimary400, 'Primary 400'),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _ColorBox(SaboDesignTokens.colorPrimary600, 'Primary 600'),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _ColorBox(SaboDesignTokens.colorPrimary800, 'Primary 800'),
               ],
             ),
@@ -116,12 +116,12 @@ class DesignSystemDemoScreen extends StatelessWidget {
             // Secondary colors
             Text('Secondary Colors', style: SaboTypographySystem.h4),
             const SizedBox(height: 16),
-            Row(
+            const Row(
               children: [
                 _ColorBox(SaboDesignTokens.colorSecondary400, 'Secondary 400'),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _ColorBox(SaboDesignTokens.colorSecondary600, 'Secondary 600'),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _ColorBox(SaboDesignTokens.colorSecondary800, 'Secondary 800'),
               ],
             ),
@@ -131,14 +131,14 @@ class DesignSystemDemoScreen extends StatelessWidget {
             // Semantic colors
             Text('Semantic Colors', style: SaboTypographySystem.h4),
             const SizedBox(height: 16),
-            Row(
+            const Row(
               children: [
                 _ColorBox(SaboDesignTokens.colorSuccess600, 'Success'),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _ColorBox(SaboDesignTokens.colorWarning600, 'Warning'),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _ColorBox(SaboDesignTokens.colorError600, 'Error'),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _ColorBox(SaboDesignTokens.colorInfo600, 'Info'),
               ],
             ),
@@ -183,7 +183,7 @@ class DesignSystemDemoScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Card(
               child: Padding(
-                padding: EdgeInsets.all(SaboDesignTokens.spacingLg),
+                padding: const EdgeInsets.all(SaboDesignTokens.spacingLg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -250,7 +250,7 @@ class DesignSystemDemoScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Container(
-              padding: EdgeInsets.all(SaboDesignTokens.spacingMd),
+              padding: const EdgeInsets.all(SaboDesignTokens.spacingMd),
               decoration: BoxDecoration(
                 color: SaboDesignTokens.colorNeutral800,
                 borderRadius: BorderRadius.circular(SaboDesignTokens.borderRadiusBase),
@@ -262,22 +262,22 @@ class DesignSystemDemoScreen extends StatelessWidget {
                     'Spacing Examples',
                     style: SaboTypographySystem.h5,
                   ),
-                  SizedBox(height: SaboDesignTokens.spacingSm),
+                  const SizedBox(height: SaboDesignTokens.spacingSm),
                   Text(
                     'XS: ${SaboDesignTokens.spacingXs}px',
                     style: SaboTypographySystem.bodyMd,
                   ),
-                  SizedBox(height: SaboDesignTokens.spacingSm),
+                  const SizedBox(height: SaboDesignTokens.spacingSm),
                   Text(
                     'SM: ${SaboDesignTokens.spacingSm}px',
                     style: SaboTypographySystem.bodyMd,
                   ),
-                  SizedBox(height: SaboDesignTokens.spacingSm),
+                  const SizedBox(height: SaboDesignTokens.spacingSm),
                   Text(
                     'MD: ${SaboDesignTokens.spacingMd}px',
                     style: SaboTypographySystem.bodyMd,
                   ),
-                  SizedBox(height: SaboDesignTokens.spacingSm),
+                  const SizedBox(height: SaboDesignTokens.spacingSm),
                   Text(
                     'LG: ${SaboDesignTokens.spacingLg}px',
                     style: SaboTypographySystem.bodyMd,

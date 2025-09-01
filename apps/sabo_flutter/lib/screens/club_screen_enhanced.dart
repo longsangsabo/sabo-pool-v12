@@ -119,7 +119,6 @@ class _ClubScreenState extends State<ClubScreen> {
               ),
             ),
           ),
-          
           Column(
             children: [
               const SizedBox(height: 40),
@@ -128,7 +127,6 @@ class _ClubScreenState extends State<ClubScreen> {
               Expanded(child: _buildClubList()),
             ],
           ),
-          
           if (_showScrollToTop)
             Positioned(
               bottom: 20,
@@ -257,10 +255,12 @@ class _ClubScreenState extends State<ClubScreen> {
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFF4CAF50) : const Color(0xFF2D3748),
           borderRadius: BorderRadius.circular(20),
-          border: isSelected ? null : Border.all(
-            color: Colors.white.withAlpha(100),
-            width: 1,
-          ),
+          border: isSelected
+              ? null
+              : Border.all(
+                  color: Colors.white.withAlpha(100),
+                  width: 1,
+                ),
         ),
         child: Text(
           label,
@@ -277,16 +277,19 @@ class _ClubScreenState extends State<ClubScreen> {
 
   Widget _buildClubList() {
     final filteredClubs = _clubs.where((club) {
-      final matchesSearch = club['name'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          club['description'].toLowerCase().contains(_searchQuery.toLowerCase());
-      
+      final matchesSearch =
+          club['name'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              club['description']
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase());
+
       bool matchesFilter = true;
       if (_selectedFilter == 'sabo') {
         matchesFilter = club['is_sabo_owned'] == true;
       } else if (_selectedFilter == 'price') {
         matchesFilter = club['hourly_rate'] <= 60000;
       }
-      
+
       return matchesSearch && matchesFilter;
     }).toList();
 
@@ -339,10 +342,14 @@ class _ClubScreenState extends State<ClubScreen> {
                           ),
                           if (club['is_sabo_owned'])
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFFFFA726), Color(0xFFFF9800)],
+                                  colors: [
+                                    Color(0xFFFFA726),
+                                    Color(0xFFFF9800)
+                                  ],
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -371,21 +378,29 @@ class _ClubScreenState extends State<ClubScreen> {
               ],
             ),
           ),
-          
+
           // Club details
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                _buildDetailRow('Địa chỉ', club['address'], Icons.location_on, const Color(0xFF4CAF50)),
-                _buildDetailRow('Điện thoại', club['phone'], Icons.phone, const Color(0xFF2196F3)),
-                _buildDetailRow('Giá giờ', '${_formatPrice(club['hourly_rate'])}/giờ', Icons.attach_money, const Color(0xFFFFA726)),
-                _buildDetailRow('Số bàn', '${club['available_tables']} bàn', Icons.table_restaurant, const Color(0xFF9C27B0)),
-                _buildDetailRow('Đánh giá', '${club['priority_score']} ⭐', Icons.star, const Color(0xFFFF9800)),
+                _buildDetailRow('Địa chỉ', club['address'], Icons.location_on,
+                    const Color(0xFF4CAF50)),
+                _buildDetailRow('Điện thoại', club['phone'], Icons.phone,
+                    const Color(0xFF2196F3)),
+                _buildDetailRow(
+                    'Giá giờ',
+                    '${_formatPrice(club['hourly_rate'])}/giờ',
+                    Icons.attach_money,
+                    const Color(0xFFFFA726)),
+                _buildDetailRow('Số bàn', '${club['available_tables']} bàn',
+                    Icons.table_restaurant, const Color(0xFF9C27B0)),
+                _buildDetailRow('Đánh giá', '${club['priority_score']} ⭐',
+                    Icons.star, const Color(0xFFFF9800)),
               ],
             ),
           ),
-          
+
           // Action buttons
           Container(
             padding: const EdgeInsets.all(16),
@@ -428,7 +443,8 @@ class _ClubScreenState extends State<ClubScreen> {
     );
   }
 
-  Widget _buildDetailRow(String label, String value, IconData icon, Color color) {
+  Widget _buildDetailRow(
+      String label, String value, IconData icon, Color color) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -513,7 +529,8 @@ class _ClubScreenState extends State<ClubScreen> {
                         ),
                         if (club['is_sabo_owned'])
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
                                 colors: [Color(0xFFFFA726), Color(0xFFFF9800)],
@@ -540,11 +557,19 @@ class _ClubScreenState extends State<ClubScreen> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    _buildDetailRow('Địa chỉ', club['address'], Icons.location_on, const Color(0xFF4CAF50)),
-                    _buildDetailRow('Điện thoại', club['phone'], Icons.phone, const Color(0xFF2196F3)),
-                    _buildDetailRow('Giá giờ', '${_formatPrice(club['hourly_rate'])}/giờ', Icons.attach_money, const Color(0xFFFFA726)),
-                    _buildDetailRow('Số bàn', '${club['available_tables']} bàn', Icons.table_restaurant, const Color(0xFF9C27B0)),
-                    _buildDetailRow('Đánh giá', '${club['priority_score']} ⭐', Icons.star, const Color(0xFFFF9800)),
+                    _buildDetailRow('Địa chỉ', club['address'],
+                        Icons.location_on, const Color(0xFF4CAF50)),
+                    _buildDetailRow('Điện thoại', club['phone'], Icons.phone,
+                        const Color(0xFF2196F3)),
+                    _buildDetailRow(
+                        'Giá giờ',
+                        '${_formatPrice(club['hourly_rate'])}/giờ',
+                        Icons.attach_money,
+                        const Color(0xFFFFA726)),
+                    _buildDetailRow('Số bàn', '${club['available_tables']} bàn',
+                        Icons.table_restaurant, const Color(0xFF9C27B0)),
+                    _buildDetailRow('Đánh giá', '${club['priority_score']} ⭐',
+                        Icons.star, const Color(0xFFFF9800)),
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,

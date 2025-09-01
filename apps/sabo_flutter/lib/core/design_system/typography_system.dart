@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'design_tokens.dart';
+import 'package:sabo_flutter/core/design_system/design_tokens.dart';
 
 class SaboTypographySystem {
   // Base text theme using Google Fonts
@@ -164,7 +164,7 @@ class SaboTypographySystem {
   // Gradient Text (using foreground paint)
   static TextStyle get gradientText => h1.copyWith(
     foreground: Paint()
-      ..shader = LinearGradient(
+      ..shader = const LinearGradient(
         colors: [
           SaboDesignTokens.colorPrimary600,
           SaboDesignTokens.colorSecondary600,

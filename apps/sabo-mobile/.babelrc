@@ -1,9 +1,0 @@
-{
-  "presets": [
-    ["babel-preset-expo", { "jsxImportSource": "react" }]
-  ],
-  "plugins": [
-    "@babel/plugin-syntax-jsx",
-    "react-native-reanimated/plugin"
-  ]
-}

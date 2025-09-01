@@ -5,15 +5,14 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Core imports
-import 'providers/real_auth_provider.dart';
-import 'models/auth_state_simple.dart';
+import 'providers/auth_provider.dart';
 
 // Screen imports
 import 'screens/home_screen.dart';
 import 'screens/tournament_screen.dart';
 import 'screens/club_screen.dart';
 import 'screens/challenges_screen.dart';
-import 'screens/profile_screen_simple.dart';
+import 'screens/profile_screen_optimized.dart';
 import 'screens/auth_screen.dart';
 import 'screens/auth/onboarding_screen.dart';
 import 'screens/auth/otp_verification_screen.dart';
@@ -54,7 +53,7 @@ class MyApp extends ConsumerWidget {
       debugLogDiagnostics: true,
       redirect: (context, state) {
         // Get current auth and onboarding status
-        final authState = ref.read(realAuthStateProvider);
+        final authState = ref.read(authStateProvider);
         final onboardingAsync = ref.read(onboardingProvider);
         
         // Handle loading states
@@ -341,7 +340,7 @@ class OnboardingScreenWrapper extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return OnboardingScreen(
       onCompleted: () async {
-        await ref.read(realAuthStateProvider.notifier).completeOnboarding();
+        await ref.read(authStateProvider.notifier).completeOnboarding();
         if (context.mounted) {
           context.go('/auth/login');
         }
@@ -357,7 +356,7 @@ class AuthScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(realAuthStateProvider, (previous, next) {
+    ref.listen(authStateProvider, (previous, next) {
       next.when(
         initial: () {},
         loading: () {},
@@ -391,19 +390,20 @@ class AuthScreenWrapper extends ConsumerWidget {
     return AuthScreen(
       mode: mode,
       onSubmit: (data) async {
-        final authNotifier = ref.read(realAuthStateProvider.notifier);
+        final authNotifier = ref.read(authStateProvider.notifier);
         
         if (mode == 'login') {
           await authNotifier.login(
-            email: data['identifier'] ?? '',
+            identifier: data['identifier'] ?? '',
             password: data['password'] ?? '',
+            method: data['method'] ?? 'phone',
           );
         } else if (mode == 'register') {
           await authNotifier.register(
             fullName: data['fullName'] ?? '',
-            email: data['identifier'] ?? '',
+            identifier: data['identifier'] ?? '',
             password: data['password'] ?? '',
-            phone: data['phone'],
+            method: data['method'] ?? 'phone',
           );
         }
       },
@@ -418,8 +418,9 @@ class PasswordResetScreenWrapper extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PasswordResetScreen(
       onSubmit: (identifier, method) async {
-        await ref.read(realAuthStateProvider.notifier).sendPasswordReset(
-          email: identifier,
+        await ref.read(authStateProvider.notifier).sendPasswordReset(
+          identifier: identifier,
+          method: method,
         );
       },
     );
@@ -445,7 +446,7 @@ class OTPVerificationScreenWrapper extends ConsumerWidget {
       email: email,
       verificationType: verificationType,
       onVerify: (otp) async {
-        await ref.read(realAuthStateProvider.notifier).verifyOTP(
+        await ref.read(authStateProvider.notifier).verifyOTP(
           otp: otp,
           identifier: verificationType == 'phone' ? phoneNumber : email,
           verificationType: verificationType,
@@ -548,7 +549,7 @@ class HomeScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(realAuthStateProvider);
+    final authState = ref.watch(authStateProvider);
     return const HomeScreen();
   }
 }
@@ -585,8 +586,15 @@ class ProfileScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(realAuthStateProvider);
+    final authState = ref.watch(authStateProvider);
     
-    return const ProfileScreen();
+    return ProfileScreen(
+      onLogout: () async {
+        await ref.read(authStateProvider.notifier).logout();
+        if (context.mounted) {
+          context.go('/auth/login');
+        }
+      },
+    );
   }
 }

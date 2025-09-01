@@ -1,60 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../providers/auth_provider.dart';
 
-// Core imports
-import 'providers/real_auth_provider.dart';
-import 'models/auth_state_simple.dart';
+/// Enhanced GoRouter configuration with authentication guards
+class AppRouter {
+  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-// Screen imports
-import 'screens/home_screen.dart';
-import 'screens/tournament_screen.dart';
-import 'screens/club_screen.dart';
-import 'screens/challenges_screen.dart';
-import 'screens/profile_screen_simple.dart';
-import 'screens/auth_screen.dart';
-import 'screens/auth/onboarding_screen.dart';
-import 'screens/auth/otp_verification_screen.dart';
-import 'screens/auth/password_reset_screen.dart';
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // Set mobile UI style
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color(0xFF1a1a1a),
-      systemNavigationBarIconBrightness: Brightness.light,
-    ),
-  );
-
-  runApp(const ProviderScope(child: MyApp()));
-}
-
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp.router(
-      title: 'SABO Pool Arena',
-      debugShowCheckedModeBanner: false,
-      routerConfig: _createRouter(ref),
-      theme: _buildTheme(),
-    );
-  }
-
-  GoRouter _createRouter(WidgetRef ref) {
+  static GoRouter createRouter(WidgetRef ref) {
     return GoRouter(
+      navigatorKey: _rootNavigatorKey,
       initialLocation: '/splash',
       debugLogDiagnostics: true,
       redirect: (context, state) {
         // Get current auth and onboarding status
-        final authState = ref.read(realAuthStateProvider);
+        final authState = ref.read(authStateProvider);
         final onboardingAsync = ref.read(onboardingProvider);
         
         // Handle loading states
@@ -67,9 +28,6 @@ class MyApp extends ConsumerWidget {
         
         // Current location
         final location = state.uri.path;
-        
-        // Debug logging
-        debugPrint('Router redirect: $location | Onboarding: $onboardingCompleted | Auth: $isAuthenticated');
         
         // Splash screen logic
         if (location == '/splash') {
@@ -102,7 +60,7 @@ class MyApp extends ConsumerWidget {
         }
         
         // Protected routes
-        if (!isAuthenticated && !location.startsWith('/auth') && !location.startsWith('/onboarding') && location != '/splash') {
+        if (!isAuthenticated) {
           return '/auth/login';
         }
         
@@ -153,6 +111,7 @@ class MyApp extends ConsumerWidget {
         
         // Main app shell with bottom navigation
         ShellRoute(
+          navigatorKey: _shellNavigatorKey,
           builder: (context, state, child) => MainNavigationWrapper(child: child),
           routes: [
             GoRoute(
@@ -189,39 +148,6 @@ class MyApp extends ConsumerWidget {
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(error: state.error),
-    );
-  }
-
-  ThemeData _buildTheme() {
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.dark,
-      primarySwatch: Colors.blue,
-      primaryColor: const Color(0xFF2196F3),
-      scaffoldBackgroundColor: const Color(0xFF121212),
-      textTheme: GoogleFonts.interTextTheme(),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF1a1a1a),
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: Color(0xFF1a1a1a),
-        selectedItemColor: Color(0xFF2196F3),
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        elevation: 8,
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF2196F3),
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 0,
-        ),
-      ),
     );
   }
 }
@@ -324,6 +250,10 @@ class ErrorScreen extends StatelessWidget {
             const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () => context.go('/home'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2196F3),
+                foregroundColor: Colors.white,
+              ),
               child: const Text('Về trang chủ'),
             ),
           ],
@@ -333,20 +263,15 @@ class ErrorScreen extends StatelessWidget {
   }
 }
 
-// Screen Wrappers with Riverpod integration
+// Screen wrappers will be imported from their respective files
+// These are placeholders for the wrapper classes
 class OnboardingScreenWrapper extends ConsumerWidget {
   const OnboardingScreenWrapper({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return OnboardingScreen(
-      onCompleted: () async {
-        await ref.read(realAuthStateProvider.notifier).completeOnboarding();
-        if (context.mounted) {
-          context.go('/auth/login');
-        }
-      },
-    );
+    // Import the actual OnboardingScreen
+    return Container(); // Placeholder
   }
 }
 
@@ -357,57 +282,8 @@ class AuthScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(realAuthStateProvider, (previous, next) {
-      next.when(
-        initial: () {},
-        loading: () {},
-        authenticated: (user, token) {
-          context.go('/home');
-        },
-        unauthenticated: () {},
-        otpVerified: () {
-          // Navigate to complete registration or login
-          context.go('/home');
-        },
-        passwordResetSent: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Email đặt lại mật khẩu đã được gửi!'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        },
-        error: (message) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              backgroundColor: Colors.red,
-            ),
-          );
-        },
-      );
-    });
-
-    return AuthScreen(
-      mode: mode,
-      onSubmit: (data) async {
-        final authNotifier = ref.read(realAuthStateProvider.notifier);
-        
-        if (mode == 'login') {
-          await authNotifier.login(
-            email: data['identifier'] ?? '',
-            password: data['password'] ?? '',
-          );
-        } else if (mode == 'register') {
-          await authNotifier.register(
-            fullName: data['fullName'] ?? '',
-            email: data['identifier'] ?? '',
-            password: data['password'] ?? '',
-            phone: data['phone'],
-          );
-        }
-      },
-    );
+    // Import the actual AuthScreen
+    return Container(); // Placeholder
   }
 }
 
@@ -416,13 +292,8 @@ class PasswordResetScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PasswordResetScreen(
-      onSubmit: (identifier, method) async {
-        await ref.read(realAuthStateProvider.notifier).sendPasswordReset(
-          email: identifier,
-        );
-      },
-    );
+    // Import the actual PasswordResetScreen
+    return Container(); // Placeholder
   }
 }
 
@@ -440,107 +311,21 @@ class OTPVerificationScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return OTPVerificationScreen(
-      phoneNumber: phoneNumber,
-      email: email,
-      verificationType: verificationType,
-      onVerify: (otp) async {
-        await ref.read(realAuthStateProvider.notifier).verifyOTP(
-          otp: otp,
-          identifier: verificationType == 'phone' ? phoneNumber : email,
-          verificationType: verificationType,
-        );
-      },
-    );
+    // Import the actual OTPVerificationScreen
+    return Container(); // Placeholder
   }
 }
 
-class MainNavigationWrapper extends ConsumerStatefulWidget {
+class MainNavigationWrapper extends ConsumerWidget {
   final Widget child;
   
   const MainNavigationWrapper({super.key, required this.child});
 
   @override
-  ConsumerState<MainNavigationWrapper> createState() => _MainNavigationWrapperState();
-}
-
-class _MainNavigationWrapperState extends ConsumerState<MainNavigationWrapper> {
-  int _selectedIndex = 0;
-
-  final List<NavigationItem> _navItems = [
-    NavigationItem(icon: Icons.home_rounded, label: 'Trang chủ', route: '/home'),
-    NavigationItem(icon: Icons.emoji_events_rounded, label: 'Giải đấu', route: '/tournaments'),
-    NavigationItem(icon: Icons.sports_bar_rounded, label: 'Câu lạc bộ', route: '/clubs'),
-    NavigationItem(icon: Icons.sports_esports_rounded, label: 'Thách đấu', route: '/challenges'),
-    NavigationItem(icon: Icons.person_rounded, label: 'Cá nhân', route: '/profile'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final currentLocation = GoRouterState.of(context).uri.path;
-    
-    // Update selected index based on current route
-    for (int i = 0; i < _navItems.length; i++) {
-      if (currentLocation == _navItems[i].route) {
-        if (_selectedIndex != i) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              setState(() {
-                _selectedIndex = i;
-              });
-            }
-          });
-        }
-        break;
-      }
-    }
-
-    return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      body: widget.child,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _selectedIndex,
-          onTap: (index) {
-            context.go(_navItems[index].route);
-          },
-          backgroundColor: const Color(0xFF1a1a1a),
-          selectedItemColor: const Color(0xFF2196F3),
-          unselectedItemColor: Colors.grey[600],
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          elevation: 0,
-          items: _navItems.map((item) => BottomNavigationBarItem(
-            icon: Icon(item.icon, size: 24),
-            activeIcon: Icon(item.icon, size: 26),
-            label: item.label,
-          )).toList(),
-        ),
-      ),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Import the actual MainNavigationScreen
+    return Container(); // Placeholder
   }
-}
-
-class NavigationItem {
-  final IconData icon;
-  final String label;
-  final String route;
-
-  NavigationItem({
-    required this.icon,
-    required this.label,
-    required this.route,
-  });
 }
 
 class HomeScreenWrapper extends ConsumerWidget {
@@ -548,8 +333,8 @@ class HomeScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(realAuthStateProvider);
-    return const HomeScreen();
+    // Import the actual HomeScreen
+    return Container(); // Placeholder
   }
 }
 
@@ -558,7 +343,8 @@ class TournamentScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const TournamentScreenEnhanced();
+    // Import the actual TournamentScreen
+    return Container(); // Placeholder
   }
 }
 
@@ -567,7 +353,8 @@ class ClubScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const ClubScreen();
+    // Import the actual ClubScreen
+    return Container(); // Placeholder
   }
 }
 
@@ -576,7 +363,8 @@ class ChallengesScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const ChallengesScreen();
+    // Import the actual ChallengesScreen
+    return Container(); // Placeholder
   }
 }
 
@@ -585,8 +373,7 @@ class ProfileScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(realAuthStateProvider);
-    
-    return const ProfileScreen();
+    // Import the actual ProfileScreen
+    return Container(); // Placeholder
   }
 }

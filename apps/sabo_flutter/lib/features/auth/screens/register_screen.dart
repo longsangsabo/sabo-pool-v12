@@ -4,7 +4,9 @@ import '../../../shared/providers/auth_provider.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({super.key});
+  final Function(String username, String email, String password)? onRegister;
+  
+  const RegisterScreen({super.key, this.onRegister});
 
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();

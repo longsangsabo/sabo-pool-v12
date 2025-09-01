@@ -6,12 +6,13 @@ import '../components/profile/profile_tabs_mobile.dart';
 import '../features/payment/screens/wallet_screen.dart';
 
 // Optimized Mobile Profile Screen - Port từ OptimizedMobileProfile.tsx
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends ConsumerWidget {
+  final Function()? onLogout;
+  
+  const ProfileScreen({super.key, this.onLogout});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
 
 class _ProfileScreenState extends State<ProfileScreen>
     with TickerProviderStateMixin {
@@ -623,6 +624,45 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
             ],
           ),
+          
+          const SizedBox(height: 24),
+          
+          // Logout button
+          if (onLogout != null)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Đăng xuất'),
+                      content: const Text('Bạn có chắc chắn muốn đăng xuất?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Hủy'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            onLogout!();
+                          },
+                          child: const Text('Đăng xuất'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[600],
+                ),
+                child: const Text(
+                  'Đăng xuất',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
         ],
       ),
     );

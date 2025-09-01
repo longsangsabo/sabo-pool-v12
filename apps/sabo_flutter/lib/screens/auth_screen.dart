@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+// Import new auth screens
+import 'auth/otp_verification_screen.dart';
+import 'auth/password_reset_screen.dart';
+
 class AuthScreen extends StatefulWidget {
   final String mode; // 'login', 'register', 'forgot-password', 'reset-password'
+  final Function(Map<String, String>)? onSubmit;
 
   const AuthScreen({
     super.key,
     this.mode = 'login',
+    this.onSubmit,
   });
 
   @override
@@ -149,23 +155,41 @@ class _AuthScreenState extends State<AuthScreen>
     });
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      if (widget.mode == 'forgot-password') {
-        setState(() {
-          _emailSent = true;
-        });
-        _showSuccess('Email khôi phục mật khẩu đã được gửi!');
-      } else if (widget.mode == 'reset-password') {
-        _showSuccess('Mật khẩu đã được cập nhật thành công!');
-        context.go('/auth/login');
+      if (widget.onSubmit != null) {
+        // Use provided callback
+        final data = {
+          'identifier': _activeTab == 'phone' ? _phoneController.text : _emailController.text,
+          'password': _passwordController.text,
+          'method': _activeTab,
+          'fullName': _fullNameController.text,
+        };
+        await widget.onSubmit!(data);
       } else {
-        final successMessage = widget.mode == 'login' 
-            ? 'Đăng nhập thành công!' 
-            : 'Đăng ký thành công!';
-        _showSuccess(successMessage);
-        context.go('/');
+        // Fallback to old logic
+        await Future.delayed(const Duration(seconds: 2));
+
+        if (widget.mode == 'forgot-password') {
+          // Navigate to enhanced password reset screen
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const PasswordResetScreen(),
+            ),
+          );
+        } else if (widget.mode == 'reset-password') {
+          _showSuccess('Mật khẩu đã được cập nhật thành công!');
+          context.go('/auth/login');
+        } else if (widget.mode == 'login' || widget.mode == 'register') {
+          // Navigate to OTP verification screen
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => OTPVerificationScreen(
+                phoneNumber: _phoneController.text,
+                email: _emailController.text,
+                verificationType: _activeTab, // 'phone' or 'email'
+              ),
+            ),
+          );
+        }
       }
     } catch (error) {
       _showError('Có lỗi xảy ra: $error');
@@ -463,7 +487,13 @@ class _AuthScreenState extends State<AuthScreen>
       children: [
         if (widget.mode == 'login') ...[
           TextButton(
-            onPressed: () => context.go('/auth/forgot-password'),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const PasswordResetScreen(),
+                ),
+              );
+            },
             child: const Text('Quên mật khẩu?'),
           ),
           const SizedBox(height: 8),

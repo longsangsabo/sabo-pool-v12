@@ -30,7 +30,7 @@ catalogs:
     
     # Utilities
     "date-fns": "^3.6.0"
-    sonner: "^1.5.0"
+    sonner: "^2.0.7"
     
     # Linting & Dev Tools
     eslint: "^8.57.0"

@@ -9,6 +9,7 @@ import 'screens/profile_screen_optimized.dart';
 import 'screens/auth_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/rankings_leaderboard_screen.dart';
+import 'design_system/themes/sabo_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,25 +72,7 @@ class MyApp extends StatelessWidget {
       title: 'SABO Pool Arena',
       debugShowCheckedModeBanner: false,
       routerConfig: _router,
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        primarySwatch: Colors.blue,
-        primaryColor: const Color(0xFF2196F3),
-        scaffoldBackgroundColor: const Color(0xFF121212),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1a1a1a),
-          elevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle.light,
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Color(0xFF1a1a1a),
-          selectedItemColor: Color(0xFF2196F3),
-          unselectedItemColor: Colors.grey,
-          type: BottomNavigationBarType.fixed,
-          elevation: 8,
-        ),
-      ),
+      theme: SaboTheme.darkTheme,
     );
   }
 }

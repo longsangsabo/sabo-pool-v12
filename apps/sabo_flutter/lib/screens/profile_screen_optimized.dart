@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../types/unified_profile.dart';
 import '../components/profile/mobile_card_avatar.dart';
 import '../components/profile/profile_tabs_mobile.dart';
+import '../features/payment/screens/wallet_screen.dart';
 
 // Optimized Mobile Profile Screen - Port từ OptimizedMobileProfile.tsx
 class ProfileScreen extends StatefulWidget {
@@ -178,6 +179,18 @@ class _ProfileScreenState extends State<ProfileScreen>
     });
   }
 
+  void _handleWalletTap() {
+    // Navigate to wallet screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WalletScreen(
+          userId: _profile?.userId ?? 'user_1',
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -218,6 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                             ranking: _ranking?.rankingPosition ?? 0,
                             matches: _stats?.totalMatches ?? 0,
                             isDark: isDark,
+                            onWalletTap: _handleWalletTap,
                           ),
                         ),
 

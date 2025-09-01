@@ -57,6 +57,8 @@ class Avatar extends StatelessWidget {
               color: Colors.black.withOpacity(0.3),
               blurRadius: 12,
               spreadRadius: 2,
+            ),
+        ],
         border: Border.all(
           color: isDark
               ? Colors.grey.shade700.withOpacity(0.5)

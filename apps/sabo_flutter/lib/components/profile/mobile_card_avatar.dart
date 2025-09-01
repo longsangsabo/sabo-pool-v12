@@ -12,6 +12,7 @@ class MobileCardAvatar extends StatelessWidget {
   final int ranking;
   final int matches;
   final bool isDark;
+  final VoidCallback? onWalletTap; // Add wallet callback
 
   const MobileCardAvatar({
     super.key,
@@ -25,6 +26,7 @@ class MobileCardAvatar extends StatelessWidget {
     required this.ranking,
     required this.matches,
     required this.isDark,
+    this.onWalletTap, // Add optional wallet callback
   });
 
   @override
@@ -61,11 +63,14 @@ class MobileCardAvatar extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            // Avatar Section
+      child: Stack(
+        children: [
+          // Main content
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              children: [
+                // Avatar Section
             GestureDetector(
               onTap: uploading ? null : onAvatarChange,
               child: Stack(
@@ -189,6 +194,112 @@ class MobileCardAvatar extends StatelessWidget {
             ),
           ],
         ),
+      ),
+          
+          // Wallet Button - Top Right Corner
+          if (onWalletTap != null)
+            Positioned(
+              top: 16,
+              right: 16,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isDark 
+                    ? const Color(0xFF1e293b).withOpacity(0.8)
+                    : Colors.white.withOpacity(0.9),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.account_balance_wallet_outlined,
+                    color: isDark ? Colors.blue[300] : Colors.blue[600],
+                    size: 20,
+                  ),
+                  iconSize: 32,
+                  padding: const EdgeInsets.all(8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  color: isDark ? const Color(0xFF1e293b) : Colors.white,
+                  elevation: 8,
+                  onSelected: (value) {
+                    if (value == 'wallet') {
+                      onWalletTap!();
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem<String>(
+                      value: 'wallet',
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.account_balance_wallet,
+                            color: isDark ? Colors.blue[300] : Colors.blue[600],
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Ví SABO',
+                            style: TextStyle(
+                              color: isDark ? Colors.white : Colors.grey[900],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'history',
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.history,
+                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Lịch sử giao dịch',
+                            style: TextStyle(
+                              color: isDark ? Colors.grey[300] : Colors.grey[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'topup',
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.add_circle_outline,
+                            color: isDark ? Colors.green[400] : Colors.green[600],
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Nạp tiền',
+                            style: TextStyle(
+                              color: isDark ? Colors.green[300] : Colors.green[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

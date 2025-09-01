@@ -7,6 +7,8 @@ import 'screens/club_screen.dart';
 import 'screens/challenges_screen.dart';
 import 'screens/profile_screen_optimized.dart';
 import 'screens/auth_screen.dart';
+import 'screens/settings_screen.dart';
+import 'screens/rankings_leaderboard_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +49,15 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/auth/reset-password',
       builder: (context, state) => const AuthScreen(mode: 'reset-password'),
+    ),
+    // Profile & Settings routes with shared logic
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: '/rankings',
+      builder: (context, state) => const RankingsLeaderboardScreen(currentUserId: 'demo-user-123'),
     ),
   ],
 );

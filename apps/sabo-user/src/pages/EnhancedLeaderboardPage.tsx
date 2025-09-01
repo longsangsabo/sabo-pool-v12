@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -192,7 +195,7 @@ const EnhancedLeaderboardPage = () => {
    return 'border-purple-200 bg-info-50 text-purple-800';
   if (rank.startsWith('F')) return 'border-error-200 bg-error-50 text-error-800';
   if (rank.startsWith('G'))
-   return 'border-yellow-200 bg-warning-50 text-warning-800';
+   return 'border-warning bg-warning-50 text-warning-800';
   if (rank.startsWith('H'))
    return 'border-success-200 bg-success-50 text-success-800';
   if (rank.startsWith('I')) return 'border-primary-200 bg-primary-50 text-primary-800';
@@ -415,10 +418,10 @@ const EnhancedLeaderboardPage = () => {
           </th>
          </tr>
         </thead>
-        <tbody className='bg-white divide-y divide-gray-200'>
+        <tbody className='bg-var(--color-background) divide-y divide-gray-200'>
          {rankings.map((ranking, index) => (
           <tr key={ranking.id} className='hover:bg-neutral-50'>
-           <td className='px-6 py-4 whitespace-nowrap'>
+           <td className='px-6 py-4 var(--color-background)space-nowrap'>
             <div className='flex items-center'>
              {index < 3 ? (
               <div
@@ -446,7 +449,7 @@ const EnhancedLeaderboardPage = () => {
             </div>
            </td>
 
-           <td className='px-6 py-4 whitespace-nowrap'>
+           <td className='px-6 py-4 var(--color-background)space-nowrap'>
             <div className='flex items-center'>
              <div className='w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center mr-3'>
               {ranking.user_profiles?.avatar_url ? (
@@ -456,7 +459,7 @@ const EnhancedLeaderboardPage = () => {
                 className='w-10 h-10 rounded-full object-cover'
                />
               ) : (
-               <span className='text-white font-medium'>
+               <span className='text-var(--color-background) font-medium'>
                 {ranking.user_profiles?.full_name?.charAt(0) ||
                  '?'}
                </span>
@@ -477,7 +480,7 @@ const EnhancedLeaderboardPage = () => {
             </div>
            </td>
 
-           <td className='px-6 py-4 whitespace-nowrap'>
+           <td className='px-6 py-4 var(--color-background)space-nowrap'>
             <div className='text-body-small text-neutral-900'>
              {ranking.user_profiles?.provinces?.name ||
               'Chưa cập nhật'}
@@ -491,11 +494,11 @@ const EnhancedLeaderboardPage = () => {
             </div>
            </td>
 
-           <td className='px-6 py-4 whitespace-nowrap text-body-small text-neutral-900'>
+           <td className='px-6 py-4 var(--color-background)space-nowrap text-body-small text-neutral-900'>
             {ranking.user_profiles?.clubs?.name || 'Chưa có CLB'}
            </td>
 
-           <td className='px-6 py-4 whitespace-nowrap'>
+           <td className='px-6 py-4 var(--color-background)space-nowrap'>
             <span
              className={`inline-flex items-center px-3 py-1 rounded-full text-body-small-medium border ${getRankColor(ranking.current_rank)}`}
             >
@@ -503,11 +506,11 @@ const EnhancedLeaderboardPage = () => {
             </span>
            </td>
 
-           <td className='px-6 py-4 whitespace-nowrap text-body-small-medium text-neutral-900'>
+           <td className='px-6 py-4 var(--color-background)space-nowrap text-body-small-medium text-neutral-900'>
             {ranking.current_points.toLocaleString('vi-VN')}
            </td>
 
-           <td className='px-6 py-4 whitespace-nowrap text-body-small-medium'>
+           <td className='px-6 py-4 var(--color-background)space-nowrap text-body-small-medium'>
             <div className='flex space-x-2'>
              <Link to={`/players/${ranking.user_id}`}>
               <Button variant='ghost' >

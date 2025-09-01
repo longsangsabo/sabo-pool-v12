@@ -347,7 +347,7 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
       className='flex-1'
      >
       {isLoading ? (
-       <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+       <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-var(--color-background) mr-2'></div>
       ) : (
        <Search className='h-4 w-4 mr-2' />
       )}

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useAuth } from './useAuth';
-import { cleanupAuthState, checkAuthConflicts } from '@/utils/authStateCleanup';
+import { cleanupAuthState, checkAuthConflicts } from '@/services/userService';
 
 /**
  * Monitor auth state for issues and auto-recovery

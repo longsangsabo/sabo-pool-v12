@@ -24,7 +24,7 @@ export const IndividualMembershipTab: React.FC<
   <div className='space-y-8'>
    {/* Current Plan */}
    {currentMembership && (
-    <div className='bg-white rounded-lg shadow-sm border p-6'>
+    <div className='bg-var(--color-background) rounded-lg shadow-sm border p-6'>
      <h2 className='text-title-semibold text-neutral-900 mb-4'>
       Gói hiện tại
      </h2>
@@ -70,7 +70,7 @@ export const IndividualMembershipTab: React.FC<
    {/* Pricing Plans */}
    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
     {/* Free Plan */}
-    <div className='bg-white rounded-lg shadow-sm border p-6'>
+    <div className='bg-var(--color-background) rounded-lg shadow-sm border p-6'>
      <div className='text-center mb-6'>
       <h3 className='text-title-semibold text-neutral-900'>Free Member</h3>
       <div className='mt-4'>
@@ -81,23 +81,23 @@ export const IndividualMembershipTab: React.FC<
 
      <ul className='space-y-3 mb-6'>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Tạo hồ sơ cá nhân</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Xem bảng xếp hạng</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Tham gia thách đấu</span>
       </li>
       <li className='flex items-center'>
-       <X className='w-4 h-4 text-red-500 mr-3' />
+       <X className='w-4 h-4 text-error-500 mr-3' />
        <span className='text-body-small text-gray-400'>Tham gia giải đấu</span>
       </li>
       <li className='flex items-center'>
-       <X className='w-4 h-4 text-red-500 mr-3' />
+       <X className='w-4 h-4 text-error-500 mr-3' />
        <span className='text-body-small text-gray-400'>Giảm giá giờ chơi</span>
       </li>
      </ul>
@@ -114,9 +114,9 @@ export const IndividualMembershipTab: React.FC<
     </div>
 
     {/* Premium Plan */}
-    <div className='bg-white rounded-lg shadow-sm border-2 border-blue-500 p-6 relative'>
+    <div className='bg-var(--color-background) rounded-lg shadow-sm border-2 border-blue-500 p-6 relative'>
      <div className='absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-      <span className='bg-primary-500 text-white px-3 py-1 rounded-full text-caption-medium'>
+      <span className='bg-primary-500 text-var(--color-background) px-3 py-1 rounded-full text-caption-medium'>
        Phổ biến nhất
       </span>
      </div>
@@ -133,25 +133,25 @@ export const IndividualMembershipTab: React.FC<
 
      <ul className='space-y-3 mb-6'>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>
         Tất cả tính năng Free
        </span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Tham gia giải đấu</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Giảm 20% giờ chơi</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Ưu tiên đặt bàn</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>
         Thông báo khuyến mãi
        </span>
@@ -170,7 +170,7 @@ export const IndividualMembershipTab: React.FC<
     </div>
 
     {/* VIP Plan */}
-    <div className='bg-white rounded-lg shadow-sm border p-6'>
+    <div className='bg-var(--color-background) rounded-lg shadow-sm border p-6'>
      <div className='text-center mb-6'>
       <h3 className='text-title-semibold text-neutral-900'>VIP Member</h3>
       <div className='mt-4'>
@@ -181,25 +181,25 @@ export const IndividualMembershipTab: React.FC<
 
      <ul className='space-y-3 mb-6'>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>
         Tất cả tính năng Premium
        </span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Giảm 30% giờ chơi</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Huấn luyện cá nhân</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Tham gia giải VIP</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Hỗ trợ ưu tiên</span>
       </li>
      </ul>

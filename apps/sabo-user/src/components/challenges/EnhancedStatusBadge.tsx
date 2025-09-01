@@ -52,7 +52,7 @@ const EnhancedStatusBadge: React.FC<EnhancedStatusBadgeProps> = ({
   red: 'bg-error-100 text-error-800 border-error-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800',
   green: 'bg-success-100 text-success-800 border-success-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800',
   blue: 'bg-primary-100 text-primary-800 border-primary-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800',
-  yellow: 'bg-warning-100 text-warning-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800',
+  yellow: 'bg-warning-100 text-warning-800 border-warning dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800',
   gray: 'bg-neutral-100 text-neutral-800 border-neutral-200 dark:bg-neutral-900/20 dark:text-gray-300 dark:border-gray-700',
   purple: 'bg-info-100 text-purple-800 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800',
   orange: 'bg-warning-100 text-orange-800 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800',

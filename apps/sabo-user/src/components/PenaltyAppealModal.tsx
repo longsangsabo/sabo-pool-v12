@@ -8,7 +8,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import { FileText, AlertTriangle } from 'lucide-react';
 
@@ -45,7 +49,7 @@ const PenaltyAppealModal = ({
   setLoading(true);
 
   try {
-   const { error } = await (supabase as any)
+//    const { error } = await (supabase as any)
     .from('notifications')
     .update({
      title: appealReason.trim(),
@@ -112,7 +116,7 @@ const PenaltyAppealModal = ({
      </div>
 
      {/* Warning */}
-     <div className='bg-warning-50 border border-yellow-200 rounded-lg p-3'>
+     <div className='bg-warning-50 border border-warning rounded-lg p-3'>
       <div className='flex'>
        <AlertTriangle className='w-4 h-4 text-warning-600 mr-2 flex-shrink-0 mt-0.5' />
        <div className='text-caption text-warning-800'>

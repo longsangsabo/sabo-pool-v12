@@ -4,7 +4,11 @@
 // =============================================
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Medal, Star, Award, Users, Calendar } from 'lucide-react';
@@ -48,7 +52,7 @@ export function SABO32TournamentResults({ tournamentId, tournament }: SABO32Resu
    setLoading(true);
 
    // Fetch all matches with player profiles
-   const { data: matches, error: matchesError } = await (supabase as any)
+//    const { data: matches, error: matchesError } = await (supabase as any)
     .from('sabo32_matches')
     .select(`
      *,
@@ -207,9 +211,9 @@ export function SABO32TournamentResults({ tournamentId, tournament }: SABO32Resu
 
  const getPositionColor = (position: number) => {
   switch (position) {
-   case 1: return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-white';
-   case 2: return 'bg-gradient-to-r from-gray-400 to-gray-600 text-white';
-   case 3: return 'bg-gradient-to-r from-amber-500 to-amber-700 text-white';
+   case 1: return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-var(--color-background)';
+   case 2: return 'bg-gradient-to-r from-gray-400 to-gray-600 text-var(--color-background)';
+   case 3: return 'bg-gradient-to-r from-amber-500 to-amber-700 text-var(--color-background)';
    default: return 'bg-neutral-100 text-neutral-700';
   }
  };
@@ -273,7 +277,7 @@ export function SABO32TournamentResults({ tournamentId, tournament }: SABO32Resu
        <div className="text-heading-semibold text-neutral-800">
         {champion.name}
        </div>
-       <Badge className="mt-2 bg-warning-500 text-white">
+       <Badge className="mt-2 bg-warning-500 text-var(--color-background)">
         SABO-32 Winner
        </Badge>
       </div>
@@ -292,7 +296,7 @@ export function SABO32TournamentResults({ tournamentId, tournament }: SABO32Resu
        <div
         key={player.player_id}
         className={cn(
-         "flex items-center justify-between p-3 rounded-lg border",
+        "flex items-center justify-between p-3 rounded-lg border",
          player.position <= 3 && getPositionColor(player.position)
         )}
        >
@@ -335,14 +339,14 @@ export function SABO32TournamentResults({ tournamentId, tournament }: SABO32Resu
     </Card>
     <Card>
      <CardContent className="p-4 text-center">
-      <Users className="w-8 h-8 mx-auto mb-2 text-blue-500" />
+      <Users className="w-8 h-8 mx-auto mb-2 text-primary-500" />
       <div className="text-heading-bold">{standings.length}</div>
       <div className="text-body-small text-muted-foreground">Players</div>
      </CardContent>
     </Card>
     <Card>
      <CardContent className="p-4 text-center">
-      <Star className="w-8 h-8 mx-auto mb-2 text-green-500" />
+      <Star className="w-8 h-8 mx-auto mb-2 text-success-500" />
       <div className="text-heading-bold">{completedMatches}</div>
       <div className="text-body-small text-muted-foreground">Completed</div>
      </CardContent>

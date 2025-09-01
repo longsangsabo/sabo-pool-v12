@@ -4,7 +4,7 @@ export const AuthDivider = () => (
    <div className='w-full border-t border-neutral-300' />
   </div>
   <div className='relative flex justify-center text-sm'>
-   <span className='px-3 bg-white text-neutral-500'>——— hoặc ———</span>
+   <span className='px-3 bg-var(--color-background) text-neutral-500'>——— hoặc ———</span>
   </div>
  </div>
 );

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 interface TournamentForTemplate {
   id: string;
@@ -25,7 +25,7 @@ export const useTournamentsForTemplates = () => {
     setError(null);
 
     try {
-      const { data, error: fetchError } = await supabase
+//       const { data, error: fetchError } = await supabase
         .from('tournaments')
         .select(
           'id, name, status, tournament_type, max_participants, current_participants, created_at, tournament_start, entry_fee, description, club_id'

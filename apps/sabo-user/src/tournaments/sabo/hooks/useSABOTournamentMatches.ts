@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { supabaseService } from '@/integrations/supabase/service';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+// import { supabaseService } from '@/integrations/supabase/service';
 import { useProfileCache } from '@/hooks/useProfileCache';
 import { useAuth } from '@/hooks/useAuth';
 import type { SABOMatch } from '../SABOLogicCore';
@@ -35,15 +41,15 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
       // Use service client to bypass RLS issues
       console.log('🔧 Using service client to bypass RLS for SABO matches...');
       
-      if (!supabaseService) {
+//       if (!supabaseService) {
         console.error('❌ Service client not available, falling back to regular client');
         throw new Error('Service client not configured');
       }
       
-      const result = await supabaseService
+//       const result = await supabaseService
         .from('tournament_matches')
         .select('*')
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .order('round_number', { ascending: true })
         .order('match_number', { ascending: true });
           
@@ -198,7 +204,7 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
       }, 300); // ✅ Reduced from 800ms to 300ms for faster UI response
     };
 
-    const channel = supabase
+//     const channel = supabase
       .channel(`sabo-tournament-${tournamentId}`)
       .on(
         'postgres_changes',
@@ -315,7 +321,7 @@ export const useSABOTournamentMatches = (tournamentId: string) => {
     return () => {
       console.log('🔄 Cleaning up SABO real-time subscription');
       clearTimeout(debounceTimer);
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [tournamentId, loadMatches]);
 

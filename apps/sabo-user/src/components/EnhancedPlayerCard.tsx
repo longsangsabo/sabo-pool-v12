@@ -70,12 +70,12 @@ const EnhancedPlayerCard = ({
      alt={player.display_name || player.full_name}
      onClick={handleAvatarClick}
     />
-    <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent' />
+    <div className='absolute inset-0 bg-gradient-to-t from-var(--color-foreground)/60 via-transparent to-transparent' />
 
     {/* Online Status */}
     <div className='absolute top-4 right-4 flex items-center space-x-2'>
      <div className='w-3 h-3 bg-green-400 rounded-full animate-pulse'></div>
-     <span className='text-foreground text-body-small font-semibold bg-black/30 px-2 py-1 rounded-full'>
+     <span className='text-foreground text-body-small font-semibold bg-var(--color-foreground)/30 px-2 py-1 rounded-full'>
       Đang online
      </span>
     </div>
@@ -124,7 +124,7 @@ const EnhancedPlayerCard = ({
        <Badge
         key={time}
         variant='secondary'
-        className='bg-green-200 text-success-800 text-xs'
+        className='bg-success-200 text-success-800 text-xs'
        >
         {getTimeLabel(time)}
        </Badge>

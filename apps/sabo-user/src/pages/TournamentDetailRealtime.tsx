@@ -7,7 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TournamentStatsRealtime } from '@/components/tournament/TournamentStatsRealtime';
 import { ParticipantListRealtime } from '@/components/tournament/ParticipantListRealtime';
 import AutomationMonitor from '@/components/tournament/AutomationMonitor';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
+import { getCurrentUser } from '../services/userService';
 import { formatDate } from '@sabo/shared-utils';
 import { toast } from 'sonner';
 import {
@@ -55,13 +59,13 @@ export const TournamentDetailRealtime: React.FC = () => {
  const loadCurrentUser = async () => {
   const {
    data: { user },
-  } = await supabase.auth.getUser();
+  } = await getCurrentUser();
   setCurrentUser(user);
  };
 
  const loadTournament = async () => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .select('*')
     .eq('id', id)
@@ -90,7 +94,7 @@ export const TournamentDetailRealtime: React.FC = () => {
 
   setRegistering(true);
   try {
-   const { error } = await supabase.from('tournament_registrations').insert({
+// // //    // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('tournament_registrations').create({
     tournament_id: tournament.id,
     user_id: currentUser.id,
     registration_status: 'confirmed',
@@ -201,7 +205,7 @@ export const TournamentDetailRealtime: React.FC = () => {
      >
       {registering ? (
        <>
-        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-var(--color-background) mr-2'></div>
         Đang đăng ký...
        </>
       ) : (
@@ -235,7 +239,7 @@ export const TournamentDetailRealtime: React.FC = () => {
 
        <div className='grid grid-cols-2 gap-4'>
         <div className='flex items-center gap-3'>
-         <Calendar className='h-5 w-5 text-blue-500' />
+         <Calendar className='h-5 w-5 text-primary-500' />
          <div>
           <div className='font-medium'>Thời gian thi đấu</div>
           <div className='text-body-small text-neutral-500'>
@@ -246,7 +250,7 @@ export const TournamentDetailRealtime: React.FC = () => {
 
         {tournament.venue_address && (
          <div className='flex items-center gap-3'>
-          <MapPin className='h-5 w-5 text-red-500' />
+          <MapPin className='h-5 w-5 text-error-500' />
           <div>
            <div className='font-medium'>Địa điểm</div>
            <div className='text-body-small text-neutral-500'>
@@ -257,7 +261,7 @@ export const TournamentDetailRealtime: React.FC = () => {
         )}
 
         <div className='flex items-center gap-3'>
-         <DollarSign className='h-5 w-5 text-green-500' />
+         <DollarSign className='h-5 w-5 text-success-500' />
          <div>
           <div className='font-medium'>Phí tham gia</div>
           <div className='text-body-small text-neutral-500'>

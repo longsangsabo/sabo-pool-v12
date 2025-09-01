@@ -1,4 +1,10 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import {
  Dialog,
  DialogContent,
@@ -15,7 +21,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { StarRating } from '@/components/ui/star-rating';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
+import { createNotification } from '../services/notificationService';
 import { toast } from 'sonner';
 import { Challenge } from '@/types/challenge';
 import {
@@ -71,18 +81,18 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
  const loadPlayerProfiles = async () => {
   try {
    const [challengerData, opponentData, clubData] = await Promise.all([
-    supabase
+//     supabase
      .from('profiles')
      .select('user_id, full_name, avatar_url, verified_rank')
-     .eq('user_id', challenge.challenger_id)
+     .getByUserId(challenge.challenger_id)
      .single(),
-    supabase
+//     supabase
      .from('profiles')
      .select('user_id, full_name, avatar_url, verified_rank')
-     .eq('user_id', challenge.opponent_id)
+     .getByUserId(challenge.opponent_id)
      .single(),
     challenge.club_id
-     ? supabase
+//      ? supabase
        .from('club_profiles')
        .select('id, user_id, club_name')
        .eq('id', challenge.club_id)
@@ -197,7 +207,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
    console.log('BEFORE status:', challenge.score_confirmation_status);
    console.log('Submitting scores:', { challengerScore, opponentScore });
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('challenges')
     .update({
      status: 'completed',
@@ -219,7 +229,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
    const currentPlayerName = user?.user_metadata?.full_name || 'Đối thủ';
 
    if (otherPlayerId) {
-    await supabase.from('notifications').insert({
+    await notificationService.create({
      user_id: otherPlayerId,
      type: 'score_confirmation_needed',
      title: '🎱 Cần xác nhận tỷ số',
@@ -272,7 +282,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
     updates.score_confirmation_timestamp = null;
    }
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('challenges')
     .update(updates)
     .eq('id', challenge.id);
@@ -313,7 +323,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
      : challenge.opponent_id;
 
    // Update challenge with potentially edited scores
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('challenges')
     .update({
      club_confirmed: true,
@@ -355,9 +365,9 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
     }
 
     if (ratings.length > 0) {
-     const { error: ratingsError } = await supabase
+//      const { error: ratingsError } = await supabase
       .from('mutual_ratings')
-      .insert(ratings);
+      .create(ratings);
 
      if (ratingsError) {
       console.error('Error saving player ratings:', ratingsError);
@@ -371,7 +381,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
    // Notify both players
    const score = `${finalChallengerScore}-${finalOpponentScore}`;
    await Promise.all([
-    supabase.from('notifications').insert({
+    notificationService.create({
      user_id: challenge.challenger_id,
      type: 'challenge_result_confirmed',
      title: 'Kết quả thách đấu đã được xác nhận',
@@ -382,7 +392,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
       winner: winnerId === challenge.challenger_id ? 'you' : 'opponent',
      },
     }),
-    supabase.from('notifications').insert({
+    notificationService.create({
      user_id: challenge.opponent_id,
      type: 'challenge_result_confirmed',
      title: 'Kết quả thách đấu đã được xác nhận',
@@ -426,20 +436,20 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
  ) => {
   try {
    // Get player profiles for email data
-   const { data: challengerProfile } = await supabase
+//    const { data: challengerProfile } = await supabase
     .from('profiles')
     .select('full_name, email')
-    .eq('user_id', challenge.challenger_id)
+    .getByUserId(challenge.challenger_id)
     .single();
 
-   const { data: opponentProfile } = await supabase
+//    const { data: opponentProfile } = await supabase
     .from('profiles')
     .select('full_name, email')
-    .eq('user_id', challenge.opponent_id)
+    .getByUserId(challenge.opponent_id)
     .single();
 
    const { data: clubProfile } = challenge.club_id
-    ? await supabase
+//     ? await supabase
       .from('club_profiles')
       .select('club_name')
       .eq('id', challenge.club_id)
@@ -477,7 +487,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
 
     // Send to all recipients
     for (const recipient of emails) {
-     await supabase.functions.invoke('send-score-confirmation-email', {
+// // //      // TODO: Replace with service call - await supabase.functions.invoke('send-score-confirmation-email', {
       body: {
        challenge_id: challenge.id,
        recipient_email: recipient.email,
@@ -511,7 +521,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
 
     // Send to all recipients
     for (const recipient of emails) {
-     await supabase.functions.invoke('send-score-confirmation-email', {
+// // //      // TODO: Replace with service call - await supabase.functions.invoke('send-score-confirmation-email', {
       body: {
        challenge_id: challenge.id,
        recipient_email: recipient.email,
@@ -536,7 +546,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
     return;
    }
 
-   await supabase.functions.invoke('send-score-confirmation-email', {
+// // //    // TODO: Replace with service call - await supabase.functions.invoke('send-score-confirmation-email', {
     body: {
      challenge_id: challenge.id,
      recipient_email: recipientEmail,
@@ -679,7 +689,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
            }
            className='object-cover'
           />
-          <AvatarFallback className='text-body-large-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white'>
+          <AvatarFallback className='text-body-large-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-var(--color-background)'>
            {workflowState.canClubConfirm && challengerProfile
             ? challengerProfile.full_name?.[0] || 'C'
             : challenge.challenger?.full_name?.[0] || 'C'}
@@ -763,7 +773,7 @@ const ThreeStepScoreWorkflow: React.FC<ThreeStepScoreWorkflowProps> = ({
            }
            className='object-cover'
           />
-          <AvatarFallback className='text-body-large-semibold bg-gradient-to-br from-green-500 to-teal-600 text-white'>
+          <AvatarFallback className='text-body-large-semibold bg-gradient-to-br from-green-500 to-teal-600 text-var(--color-background)'>
            {workflowState.canClubConfirm && opponentProfile
             ? opponentProfile.full_name?.[0] || 'O'
             : challenge.opponent?.full_name?.[0] || 'O'}

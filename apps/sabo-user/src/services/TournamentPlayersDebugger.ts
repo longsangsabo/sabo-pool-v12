@@ -3,7 +3,7 @@
  * Quick fix for "Failed to load players" issue
  */
 
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export class TournamentPlayersDebugger {
   static async debugTournamentPlayers(tournamentId: string) {
@@ -12,7 +12,7 @@ export class TournamentPlayersDebugger {
 
     try {
       // 1. Check if tournament exists
-      const { data: tournament, error: tournamentError } = await supabase
+//       const { data: tournament, error: tournamentError } = await supabase
         .from('tournaments')
         .select('id, name, tournament_type')
         .eq('id', tournamentId)
@@ -21,7 +21,7 @@ export class TournamentPlayersDebugger {
       console.log('🏆 Tournament:', tournament, tournamentError);
 
       // 2. Check tournament_registrations directly
-      const { data: registrations, error: regError } = await supabase
+//       const { data: registrations, error: regError } = await supabase
         .from('tournament_registrations')
         .select('*')
         .eq('tournament_id', tournamentId);
@@ -30,7 +30,7 @@ export class TournamentPlayersDebugger {
       console.log('📝 Registrations data:', registrations);
 
       // 3. Check confirmed registrations
-      const { data: confirmedRegs, error: confirmedError } = await supabase
+//       const { data: confirmedRegs, error: confirmedError } = await supabase
         .from('tournament_registrations')
         .select('*')
         .eq('tournament_id', tournamentId)
@@ -39,7 +39,7 @@ export class TournamentPlayersDebugger {
       console.log('✅ Confirmed registrations:', confirmedRegs?.length, confirmedError);
 
       // 4. Check profiles table access
-      const { data: profilesTest, error: profilesError } = await supabase
+//       const { data: profilesTest, error: profilesError } = await supabase
         .from('profiles')
         .select('id, full_name, elo')
         .limit(5);
@@ -47,7 +47,7 @@ export class TournamentPlayersDebugger {
       console.log('👤 Profiles test:', profilesTest?.length, profilesError);
 
       // 5. Test the original query
-      const { data: originalQuery, error: originalError } = await supabase
+//       const { data: originalQuery, error: originalError } = await supabase
         .from('tournament_registrations')
         .select(`
           user_id,
@@ -63,7 +63,7 @@ export class TournamentPlayersDebugger {
       console.log('🔧 Original query result:', originalQuery, originalError);
 
       // 6. Test alternative query
-      const { data: altQuery, error: altError } = await supabase
+//       const { data: altQuery, error: altError } = await supabase
         .from('tournament_registrations')
         .select(`
           user_id,
@@ -99,7 +99,7 @@ export class TournamentPlayersDebugger {
 
     try {
       // Try method 1: Join query
-      const { data: joinData, error: joinError } = await supabase
+//       const { data: joinData, error: joinError } = await supabase
         .from('tournament_registrations')
         .select(`
           user_id,
@@ -124,7 +124,7 @@ export class TournamentPlayersDebugger {
       }
 
       // Try method 2: Separate queries
-      const { data: registrations, error: regError } = await supabase
+//       const { data: registrations, error: regError } = await supabase
         .from('tournament_registrations')
         .select('user_id')
         .eq('tournament_id', tournamentId)
@@ -137,7 +137,7 @@ export class TournamentPlayersDebugger {
       }
 
       const userIds = registrations.map(r => r.user_id);
-      const { data: profiles, error: profilesError } = await supabase
+//       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('id, full_name, elo')
         .in('id', userIds);

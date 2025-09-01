@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { useAuth } from '@/hooks/useAuth';
 
 export interface PlayerRankingData {
@@ -23,7 +23,7 @@ export const usePlayerRanking = () => {
       setError(null);
       try {
         // Get player ranking from materialized view
-        const { data: playerData, error: playerError } = await supabase
+//         const { data: playerData, error: playerError } = await supabase
           .from('mv_leaderboard_stats')
           .select('ranking_position')
           .eq('user_id', user.id)
@@ -32,7 +32,7 @@ export const usePlayerRanking = () => {
         if (playerError) throw playerError;
 
         // Get total number of ranked players
-        const { count: totalPlayers, error: countError } = await supabase
+//         const { count: totalPlayers, error: countError } = await supabase
           .from('mv_leaderboard_stats')
           .select('*', { count: 'exact', head: true });
 

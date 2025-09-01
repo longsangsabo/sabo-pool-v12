@@ -63,55 +63,55 @@ export default function AdminAnalytics() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Users</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Users</p>
               <p className="text-2xl font-bold">{analytics.platformMetrics.totalUsers.toLocaleString()}</p>
             </div>
             <Users className="h-8 w-8 text-blue-500" />
           </div>
-          <p className="text-sm text-green-600 mt-2">↗ +15% from last month</p>
+          <p className="text-sm text-success mt-2">↗ +15% from last month</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Active Users</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Active Users</p>
               <p className="text-2xl font-bold">{analytics.platformMetrics.activeUsers.toLocaleString()}</p>
             </div>
             <TrendingUp className="h-8 w-8 text-green-500" />
           </div>
-          <p className="text-sm text-green-600 mt-2">↗ +8% from last month</p>
+          <p className="text-sm text-success mt-2">↗ +8% from last month</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Tournaments</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Tournaments</p>
               <p className="text-2xl font-bold">{analytics.platformMetrics.totalTournaments}</p>
             </div>
             <Target className="h-8 w-8 text-purple-500" />
           </div>
-          <p className="text-sm text-green-600 mt-2">↗ +22% from last month</p>
+          <p className="text-sm text-success mt-2">↗ +22% from last month</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Revenue</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Revenue</p>
               <p className="text-2xl font-bold">${analytics.platformMetrics.revenue.toLocaleString()}</p>
             </div>
             <BarChart3 className="h-8 w-8 text-orange-500" />
           </div>
-          <p className="text-sm text-green-600 mt-2">↗ +18% from last month</p>
+          <p className="text-sm text-success mt-2">↗ +18% from last month</p>
         </div>
       </div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* User Growth Chart */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4">User Growth</h3>
           <div className="space-y-4">
             {analytics.userGrowth.map((data, index) => (
@@ -132,18 +132,18 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Tournament Types */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4">Tournament Statistics</h3>
           <div className="space-y-4">
             {analytics.tournamentStats.map((stat, index) => (
-              <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-2">
+              <div key={index} className="border-b border-neutral dark:border-gray-700 pb-2">
                 <div className="flex justify-between items-center">
                   <span className="font-medium">{stat.type}</span>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">{stat.count} tournaments</span>
+                  <span className="text-sm text-neutral dark:text-gray-400">{stat.count} tournaments</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Revenue:</span>
-                  <span className="font-medium text-green-600">${stat.revenue.toLocaleString()}</span>
+                  <span className="text-neutral dark:text-gray-400">Revenue:</span>
+                  <span className="font-medium text-success">${stat.revenue.toLocaleString()}</span>
                 </div>
               </div>
             ))}
@@ -152,12 +152,12 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Top Clubs */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+      <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-4">Top Performing Clubs</h3>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
+              <tr className="border-b border-neutral dark:border-gray-700">
                 <th className="text-left py-2">Club Name</th>
                 <th className="text-left py-2">Members</th>
                 <th className="text-left py-2">Activity Score</th>

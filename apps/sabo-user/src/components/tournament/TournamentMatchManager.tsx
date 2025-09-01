@@ -156,7 +156,7 @@ export const TournamentMatchManager: React.FC<TournamentMatchManagerProps> = ({
     </CardHeader>
     <CardContent>
      <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
-      <div className='flex items-center gap-2 p-3 bg-white/50 rounded-lg'>
+      <div className='flex items-center gap-2 p-3 bg-var(--color-background)/50 rounded-lg'>
        <Trophy className='h-4 w-4 text-neutral-600' />
        <div>
         <div className='text-body-small-medium'>{stats.total}</div>
@@ -164,7 +164,7 @@ export const TournamentMatchManager: React.FC<TournamentMatchManagerProps> = ({
        </div>
       </div>
 
-      <div className='flex items-center gap-2 p-3 bg-white/50 rounded-lg'>
+      <div className='flex items-center gap-2 p-3 bg-var(--color-background)/50 rounded-lg'>
        <CheckCircle className='h-4 w-4 text-success-600' />
        <div>
         <div className='text-body-small-medium'>{stats.completed}</div>
@@ -172,7 +172,7 @@ export const TournamentMatchManager: React.FC<TournamentMatchManagerProps> = ({
        </div>
       </div>
 
-      <div className='flex items-center gap-2 p-3 bg-white/50 rounded-lg'>
+      <div className='flex items-center gap-2 p-3 bg-var(--color-background)/50 rounded-lg'>
        <Clock className='h-4 w-4 text-warning-600' />
        <div>
         <div className='text-body-small-medium'>{stats.ready}</div>
@@ -180,7 +180,7 @@ export const TournamentMatchManager: React.FC<TournamentMatchManagerProps> = ({
        </div>
       </div>
 
-      <div className='flex items-center gap-2 p-3 bg-white/50 rounded-lg'>
+      <div className='flex items-center gap-2 p-3 bg-var(--color-background)/50 rounded-lg'>
        <Users className='h-4 w-4 text-primary-600' />
        <div>
         <div className='text-body-small-medium'>
@@ -192,7 +192,7 @@ export const TournamentMatchManager: React.FC<TournamentMatchManagerProps> = ({
        </div>
       </div>
 
-      <div className='flex items-center gap-2 p-3 bg-white/50 rounded-lg'>
+      <div className='flex items-center gap-2 p-3 bg-var(--color-background)/50 rounded-lg'>
        <AlertCircle className='h-4 w-4 text-info-600' />
        <div>
         <div className='text-body-small-medium'>{stats.ongoing}</div>

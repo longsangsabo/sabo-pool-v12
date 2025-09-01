@@ -3,7 +3,7 @@
  * This can be called from admin panel or debug tools
  */
 
-import { supabase } from '@/integrations/supabase/client';
+import { cleanupExpiredChallenges, deepCleanupChallenges } from '../services/challengeService';
 
 export interface CleanupResult {
   success: boolean;
@@ -20,7 +20,7 @@ export const manualCleanupExpiredChallenges = async (): Promise<CleanupResult> =
   try {
     console.log('🧹 Starting manual cleanup of expired challenges...');
     
-    const { data: result, error } = await supabase.rpc('enhanced_cleanup_expired_challenges');
+    const { data: result, error } = await cleanupExpiredChallenges();
     
     if (error) {
       console.error('❌ Cleanup error:', error);
@@ -58,7 +58,7 @@ export const manualDeepCleanup = async (): Promise<CleanupResult> => {
   try {
     console.log('🗑️ Starting manual deep cleanup...');
     
-    const { data: result, error } = await supabase.rpc('deep_cleanup_challenges');
+    const { data: result, error } = await deepCleanupChallenges();
     
     if (error) {
       console.error('❌ Deep cleanup error:', error);
@@ -95,7 +95,7 @@ export const manualDeepCleanup = async (): Promise<CleanupResult> => {
  */
 export const checkExpiredChallenges = async () => {
   try {
-    const { data: expiredChallenges, error } = await supabase
+//     const { data: expiredChallenges, error } = await supabase
       .from('challenges')
       .select('id, status, expires_at, created_at, challenger_id, opponent_id')
       .in('status', ['pending', 'open'])
@@ -121,7 +121,7 @@ export const checkExpiredChallenges = async () => {
 export const getCleanupStats = async () => {
   try {
     // Get total challenges by status
-    const { data: statusCounts, error: statusError } = await supabase
+//     const { data: statusCounts, error: statusError } = await supabase
       .from('challenges')
       .select('status')
       .then(result => {
@@ -138,7 +138,7 @@ export const getCleanupStats = async () => {
     if (statusError) throw statusError;
     
     // Get recent cleanup logs
-    const { data: recentLogs, error: logsError } = await supabase
+//     const { data: recentLogs, error: logsError } = await supabase
       .from('system_logs')
       .select('*')
       .in('log_type', ['challenge_cleanup', 'deep_challenge_cleanup'])

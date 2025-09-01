@@ -300,7 +300,7 @@ const SiteMapPage = () => {
      <Card key={index} className='h-fit'>
       <CardHeader>
        <CardTitle className='flex items-center gap-3'>
-        <div className={`p-2 rounded-lg ${category.color} text-white`}>
+        <div className={`p-2 rounded-lg ${category.color} text-var(--color-background)`}>
          {category.icon}
         </div>
         <span>{category.title}</span>

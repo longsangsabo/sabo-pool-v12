@@ -1,5 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -34,7 +43,7 @@ export function useMilestones() {
   queryFn: async (): Promise<Milestone[]> => {
    if (!user?.id) return [];
 
-   const { data, error } = await supabase.rpc(
+   const { data, error } = await tournamentService.callRPC(
     'get_user_milestone_progress',
     {
      p_user_id: user.id,
@@ -67,7 +76,7 @@ export function useMilestones() {
   }) => {
    if (!user?.id) throw new Error('User not authenticated');
 
-   const { data, error } = await supabase.rpc('award_spa_milestone', {
+   const { data, error } = await tournamentService.callRPC('award_spa_milestone', {
     p_user_id: user.id,
     p_milestone_type: milestoneType,
     p_progress_increment: progressIncrement,
@@ -108,7 +117,7 @@ export function useMilestones() {
   mutationFn: async () => {
    if (!user?.id) throw new Error('User not authenticated');
 
-   const { data, error } = await supabase.rpc('award_daily_login_milestone', {
+   const { data, error } = await tournamentService.callRPC('award_daily_login_milestone', {
     p_user_id: user.id,
    });
 
@@ -144,7 +153,7 @@ export function useMilestones() {
   }) => {
    if (!user?.id) throw new Error('User not authenticated');
 
-   const { data, error } = await supabase.rpc('award_spa_bonus', {
+   const { data, error } = await tournamentService.callRPC('award_spa_bonus', {
     p_user_id: user.id,
     p_amount: amount,
     p_bonus_type: bonusType,

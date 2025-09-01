@@ -23,7 +23,7 @@ const PointsDisplay = () => {
  if (!userStreak) return null;
 
  return (
-  <Card className='mb-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200'>
+  <Card className='mb-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-warning'>
    <CardContent className='p-4'>
     <div className='flex items-center justify-between'>
      <div className='flex items-center gap-3'>

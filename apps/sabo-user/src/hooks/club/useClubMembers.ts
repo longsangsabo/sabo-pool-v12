@@ -1,5 +1,5 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { getDisplayName } from '@/types/unified-profile';
 
 export interface ClubMemberData {
@@ -24,7 +24,7 @@ export const fetchClubMembers = async (
   opts: UseClubMembersOptions = {}
 ): Promise<ClubMemberData[]> => {
   const { status, search, limit = 50, role, offset = 0 } = opts;
-  let query = supabase
+//   let query = supabase
     .from('club_members')
     .select(
       'user_id, status, role, profiles(full_name, display_name, avatar_url, verified_rank)',

@@ -79,7 +79,7 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
    case 'match_result':
     return <Trophy className='w-4 h-4 text-yellow-500' />;
    case 'achievement':
-    return <Target className='w-4 h-4 text-green-500' />;
+    return <Target className='w-4 h-4 text-success-500' />;
    case 'challenge':
     return <Flame className='w-4 h-4 text-orange-500' />;
    case 'tournament_update':
@@ -110,7 +110,7 @@ export const MobileFeedCard: React.FC<MobileFeedCardProps> = ({
     return (
      <Button
       
-      className='bg-warning-500 hover:bg-orange-600 text-white'
+      className='bg-warning-500 hover:bg-orange-600 text-var(--color-background)'
       onClick={() => onAction?.(post.id, 'accept_challenge')}
      >
       Nhận thách đấu

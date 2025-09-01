@@ -77,7 +77,7 @@ export const ClubMembershipTab: React.FC<ClubMembershipTabProps> = ({
  return (
   <div className='space-y-8'>
    {/* Club Verification Status */}
-   <div className='bg-white rounded-lg shadow-sm border p-6'>
+   <div className='bg-var(--color-background) rounded-lg shadow-sm border p-6'>
     <h2 className='text-title-semibold text-neutral-900 mb-4'>
      Trạng thái xác minh CLB
     </h2>
@@ -139,7 +139,7 @@ export const ClubMembershipTab: React.FC<ClubMembershipTabProps> = ({
    {/* Club Plans */}
    <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
     {/* Basic Club Plan */}
-    <div className='bg-white rounded-lg shadow-sm border p-6'>
+    <div className='bg-var(--color-background) rounded-lg shadow-sm border p-6'>
      <div className='text-center mb-6'>
       <h3 className='text-title-semibold text-neutral-900'>CLB Cơ bản</h3>
       <div className='mt-4'>
@@ -150,25 +150,25 @@ export const ClubMembershipTab: React.FC<ClubMembershipTabProps> = ({
 
      <ul className='space-y-3 mb-6'>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>
         Trang CLB chính thức
        </span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Quản lý thành viên</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Tổ chức giải đấu</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Thống kê cơ bản</span>
       </li>
       <li className='flex items-center'>
-       <X className='w-4 h-4 text-red-500 mr-3' />
+       <X className='w-4 h-4 text-error-500 mr-3' />
        <span className='text-body-small text-gray-400'>Hệ thống đặt bàn</span>
       </li>
      </ul>
@@ -187,9 +187,9 @@ export const ClubMembershipTab: React.FC<ClubMembershipTabProps> = ({
     </div>
 
     {/* Premium Club Plan */}
-    <div className='bg-white rounded-lg shadow-sm border-2 border-purple-500 p-6 relative'>
+    <div className='bg-var(--color-background) rounded-lg shadow-sm border-2 border-purple-500 p-6 relative'>
      <div className='absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-      <span className='bg-info-500 text-white px-3 py-1 rounded-full text-caption-medium'>
+      <span className='bg-info-500 text-var(--color-background) px-3 py-1 rounded-full text-caption-medium'>
        Khuyến nghị
       </span>
      </div>
@@ -206,25 +206,25 @@ export const ClubMembershipTab: React.FC<ClubMembershipTabProps> = ({
 
      <ul className='space-y-3 mb-6'>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>
         Tất cả tính năng Cơ bản
        </span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Hệ thống đặt bàn</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Thống kê nâng cao</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Marketing tools</span>
       </li>
       <li className='flex items-center'>
-       <Check className='w-4 h-4 text-green-500 mr-3' />
+       <Check className='w-4 h-4 text-success-500 mr-3' />
        <span className='text-body-small-neutral'>Hỗ trợ ưu tiên</span>
       </li>
      </ul>

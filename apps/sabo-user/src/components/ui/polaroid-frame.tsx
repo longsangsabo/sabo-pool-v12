@@ -1,5 +1,17 @@
 import { useState, useRef } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Camera, Upload, Check, X, Crop } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import './polaroid-frame.css';
@@ -73,8 +85,8 @@ const PolaroidFrame: React.FC<PolaroidFrameProps> = ({
   canvas.width = 400;
   canvas.height = 400;
 
-  // Set white background to prevent transparency/black issues
-  ctx.fillStyle = 'var(--color-white)';
+  // Set var(--color-background) background to prevent transparency/var(--color-foreground) issues
+  ctx.fillStyle = 'var(--color-var(--color-background))';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, 400, 400);
@@ -142,8 +154,8 @@ const PolaroidFrame: React.FC<PolaroidFrameProps> = ({
           canvas.width = 150;
           canvas.height = 150;
 
-          // Set white background to prevent transparency/black issues
-          ctx.fillStyle = 'var(--color-white)';
+          // Set var(--color-background) background to prevent transparency/var(--color-foreground) issues
+          ctx.fillStyle = 'var(--color-var(--color-background))';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           ctx.drawImage(
@@ -169,8 +181,7 @@ const PolaroidFrame: React.FC<PolaroidFrameProps> = ({
       </p>
       <canvas
        ref={canvasRef}
-       className='w-24 h-24 rounded-lg border-2 border-primary mx-auto shadow-sm'
-       style={{ imageRendering: 'auto' }}
+       className='w-24 h-24 rounded-lg border-2 border-primary mx-auto shadow-sm [image-rendering:auto]'
       />
      </div>
 
@@ -205,27 +216,20 @@ const PolaroidFrame: React.FC<PolaroidFrameProps> = ({
    >
     {/* Polaroid Background PNG - Updated Layout */}
     <img
-     src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/layout1.png'
+// // // //      src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/layout1.png'
      alt='Polaroid Frame Background'
-     className='w-full h-auto select-none pointer-events-none z-0 drop-shadow-lg'
+     className='w-full h-auto select-none pointer-events-none z-0 drop-shadow-lg aspect-[1/1.2] object-contain'
      draggable={false}
-     style={{ aspectRatio: '1/1.2', objectFit: 'contain' }}
     />
 
     {/* Avatar positioned in the frame - Updated for layout1.png */}
     <div className='absolute top-[6%] left-1/2 transform -translate-x-1/2 z-10'>
      <div
-      className='relative flex items-center justify-center pointer-events-auto group'
-      style={{
-       width: '72%',
-       height: '58%',
-       aspectRatio: '4/3',
-      }}
+      className='relative flex items-center justify-center pointer-events-auto group w-[72%] h-[58%] aspect-[4/3]'
      >
       <div
-       className='w-full h-full rounded-[6px] overflow-hidden shadow-lg border border-white/50 bg-white cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-xl'
+       className='w-full h-full rounded-[6px] overflow-hidden shadow-lg border border-var(--color-background)/50 bg-var(--color-background) cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-xl translate-y-[6%]'
        onClick={() => fileInputRef.current?.click()}
-       style={{ transform: 'translateY(6%)' }}
       >
        {currentAvatar ? (
         <img
@@ -235,25 +239,23 @@ const PolaroidFrame: React.FC<PolaroidFrameProps> = ({
         />
        ) : (
         <div
-         className='w-full h-full bg-gradient-to-br from-blue-400 via-purple-500 to-purple-600 flex items-center justify-center text-white font-bold'
-         style={{
-          fontSize: 'min(3.5vw, 28px)',
-         }}
+         className='w-full h-full bg-gradient-to-br from-blue-400 via-purple-500 to-purple-600 flex items-center justify-center text-var(--color-background) font-bold'
+         style={{ fontSize: 'min(3.5vw, 28px)', }}
         >
          {fallbackName[0]?.toUpperCase() || 'U'}
         </div>
        )}
 
        {uploading && (
-        <div className='absolute inset-0 bg-black/60 flex flex-col items-center justify-center backdrop-blur-sm'>
-         <div className='animate-spin rounded-full h-8 w-8 border-b-3 border-white mb-2'></div>
-         <p className='text-white text-caption-medium'>Đang tải...</p>
+        <div className='absolute inset-0 bg-var(--color-foreground)/60 flex flex-col items-center justify-center backdrop-blur-sm'>
+         <div className='animate-spin rounded-full h-8 w-8 border-b-3 border-var(--color-background) mb-2'></div>
+         <p className='text-var(--color-background) text-caption-medium'>Đang tải...</p>
         </div>
        )}
 
        {/* Upload icon overlay - Enhanced */}
-       <div className='absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center rounded-[6px]'>
-        <div className='flex flex-col items-center justify-center text-white'>
+       <div className='absolute inset-0 bg-gradient-to-t from-var(--color-foreground)/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center rounded-[6px]'>
+        <div className='flex flex-col items-center justify-center text-var(--color-background)'>
          <Camera className='w-6 h-6 mb-1' />
          <span className='text-caption-medium'>Đổi ảnh</span>
         </div>

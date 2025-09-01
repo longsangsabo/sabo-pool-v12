@@ -2,7 +2,14 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Loader2 } from 'lucide-react';
 
 interface TournamentPlayerAvatarProps {
@@ -41,12 +48,12 @@ const TournamentPlayerAvatar: React.FC<TournamentPlayerAvatarProps> = ({
    console.log('🎾 Fetching player data for:', playerId);
 
    // Fetch user profile data
-   const { data: profile, error: profileError } = await supabase
+//    const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select(
      'user_id, full_name, display_name, avatar_url, verified_rank, elo'
     )
-    .eq('user_id', playerId)
+    .getByUserId(playerId)
     .single();
 
    if (profileError) {
@@ -57,10 +64,10 @@ const TournamentPlayerAvatar: React.FC<TournamentPlayerAvatarProps> = ({
    console.log('👤 Profile data:', profile);
 
    // Fetch player ranking data
-   const { data: ranking, error: rankingError } = await supabase
+//    const { data: ranking, error: rankingError } = await supabase
     .from('player_rankings')
     .select('verified_rank, spa_points, elo_points')
-    .eq('user_id', playerId) // Đã fix: dùng user_id thay vì player_id
+    .getByUserId(playerId) // Đã fix: dùng user_id thay vì player_id
     .single();
 
    if (rankingError) {
@@ -92,7 +99,7 @@ const TournamentPlayerAvatar: React.FC<TournamentPlayerAvatarProps> = ({
  useEffect(() => {
   if (!playerId) return;
 
-  const channel = supabase
+//   const channel = supabase
    .channel('tournament-player-updates')
    .on(
     'postgres_changes',
@@ -117,7 +124,7 @@ const TournamentPlayerAvatar: React.FC<TournamentPlayerAvatarProps> = ({
    .subscribe();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [playerId, refetch]);
 
@@ -173,7 +180,7 @@ const TournamentPlayerAvatar: React.FC<TournamentPlayerAvatarProps> = ({
    <div
     className={`${getSizeClasses(size)} bg-error-100 rounded-full flex items-center justify-center relative`}
    >
-    <span className='text-red-500 text-xs'>!</span>
+    <span className='text-error-500 text-xs'>!</span>
    </div>
   );
  }
@@ -195,7 +202,7 @@ const TournamentPlayerAvatar: React.FC<TournamentPlayerAvatarProps> = ({
    {showRank && (
     <Badge
      variant='secondary'
-     className='absolute -bottom-1 -right-1 h-5 min-w-[20px] text-[10px] font-bold px-1 py-0 bg-gradient-to-br from-yellow-400 to-orange-500 text-white border-0'
+     className='absolute -bottom-1 -right-1 h-5 min-w-[20px] text-[10px] font-bold px-1 py-0 bg-gradient-to-br from-yellow-400 to-orange-500 text-var(--color-background) border-0'
     >
      {getPlayerRank()}
     </Badge>

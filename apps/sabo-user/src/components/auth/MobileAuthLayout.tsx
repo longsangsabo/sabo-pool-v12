@@ -25,9 +25,9 @@ export const MobileAuthLayout: React.FC<MobileAuthLayoutProps> = ({
  className = ''
 }) => {
  return (
-  <div className={`min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 ${className}`}>
+  <div className={`min-h-screen bg-gradient-to-br from-indigo-50 via-var(--color-background) to-blue-50 ${className}`}>
    {/* Mobile-optimized header */}
-   <div className="bg-white shadow-sm border-b border-gray-100">
+   <div className="bg-var(--color-background) shadow-sm border-b border-gray-100">
     <div className="px-4 py-3">
      <div className="flex items-center justify-between">
       {/* Back button */}
@@ -181,11 +181,11 @@ export const MobileAuthForm: React.FC<MobileAuthFormProps> = ({
   </div>
 
   {/* Submit area - sticky on mobile for better UX */}
-  <div className="sticky bottom-0 bg-white pt-4 pb-safe-bottom">
+  <div className="sticky bottom-0 bg-var(--color-background) pt-4 pb-safe-bottom">
    <div className="space-y-3">
     {/* Loading overlay */}
     {isLoading && (
-     <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+     <div className="absolute inset-0 bg-var(--color-background)/80 backdrop-blur-sm flex items-center justify-center">
       <div className="flex items-center space-x-2">
        <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
        <span className="text-body-small-neutral">Đang xử lý...</span>
@@ -228,7 +228,7 @@ export const MobileAuthInput: React.FC<MobileAuthInputProps> = ({
  <div className="space-y-2">
   <label className="block text-body-small-medium text-neutral-700">
    {label}
-   {required && <span className="text-red-500 ml-1">*</span>}
+   {required && <span className="text-error-500 ml-1">*</span>}
   </label>
   
   <input
@@ -246,7 +246,7 @@ export const MobileAuthInput: React.FC<MobileAuthInputProps> = ({
     focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none
     ${error 
      ? 'border-red-300 bg-error-50' 
-     : 'border-neutral-300 bg-white hover:border-gray-400'
+     : 'border-neutral-300 bg-var(--color-background) hover:border-gray-400'
     }
     ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
     touch-manipulation
@@ -287,7 +287,7 @@ export const MobileAuthButton: React.FC<MobileAuthButtonProps> = ({
  const baseStyles = "w-full py-3 px-4 text-body-medium rounded-lg transition-all duration-200 touch-manipulation";
  
  const variantStyles = {
-  primary: "bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 shadow-sm",
+  primary: "bg-indigo-600 text-var(--color-background) hover:bg-indigo-700 active:bg-indigo-800 shadow-sm",
   secondary: "bg-neutral-100 text-neutral-900 hover:bg-neutral-200 active:bg-gray-300",
   outline: "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100"
  };

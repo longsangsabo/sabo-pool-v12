@@ -82,9 +82,9 @@ export const AuthStepper: React.FC<AuthStepperProps> = ({
          w-8 h-8 rounded-full flex items-center justify-center text-body-small font-semibold transition-all duration-300
          ${
           isCompleted
-           ? 'bg-success-500 text-white'
+           ? 'bg-success-500 text-var(--color-background)'
            : isActive
-            ? 'bg-indigo-600 text-white ring-4 ring-indigo-200'
+            ? 'bg-indigo-600 text-var(--color-background) ring-4 ring-indigo-200'
             : 'bg-neutral-200 text-neutral-500'
          }
         `}
@@ -120,14 +120,9 @@ export const AuthStepper: React.FC<AuthStepperProps> = ({
        {index < steps.length - 1 && (
         <div
          className={`
-          absolute h-0.5 w-full mt-4 transition-colors duration-300
+          absolute h-0.5 w-full mt-4 transition-colors duration-300 left-1/2 translate-x-1/2 -z-10
           ${isCompleted ? 'bg-success-500' : 'bg-neutral-200'}
          `}
-         style={{
-          left: '50%',
-          transform: 'translateX(50%)',
-          zIndex: -1,
-         }}
         />
        )}
       </div>

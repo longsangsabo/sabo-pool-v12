@@ -4,7 +4,22 @@
  * Netflix/Uber scale reliability patterns
  */
 
-import { supabase } from '@/integrations/supabase/client';
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
+// Removed supabase import - migrated to services
 import {
   callTournamentFunction,
   TOURNAMENT_FUNCTIONS,
@@ -57,7 +72,7 @@ class TournamentLockManager {
 
     // Acquire lock using database advisory lock
     try {
-      const { data, error } = await supabase.rpc(
+      const { data, error } = await tournamentService.callRPC(
         'pg_try_advisory_lock' as any,
         {
           key1: this.hashString(tournamentId),
@@ -82,7 +97,7 @@ class TournamentLockManager {
     this.activeLocks.delete(lockKey);
 
     try {
-      await supabase.rpc('pg_advisory_unlock' as any, {
+      await tournamentService.callRPC('pg_advisory_unlock' as any, {
         key1: this.hashString(tournamentId),
         key2: this.hashString(operation),
       });
@@ -268,7 +283,7 @@ export class TournamentAtomicOperations {
       }
 
       // Step 2: Backup current state for rollback
-      const { data: currentState } = await supabase
+//       const { data: currentState } = await supabase
         .from('tournaments')
         .select('*')
         .eq('id', tournamentId)
@@ -276,7 +291,7 @@ export class TournamentAtomicOperations {
 
       transaction.addRollback(async () => {
         if (currentState) {
-          await supabase
+//           await supabase
             .from('tournaments')
             .update({
               status: currentState.status,
@@ -288,7 +303,7 @@ export class TournamentAtomicOperations {
       });
 
       // Step 3: Update tournament status
-      await supabase
+//       await supabase
         .from('tournaments')
         .update({
           status: 'ongoing',
@@ -335,7 +350,7 @@ export class TournamentAtomicOperations {
 
     return transaction.execute(async () => {
       // Step 1: Get current match state with row locking
-      const { data: match, error: matchError } = await supabase
+//       const { data: match, error: matchError } = await supabase
         .from('tournament_matches')
         .select('*')
         .eq('id', matchId)
@@ -351,7 +366,7 @@ export class TournamentAtomicOperations {
 
       // Step 2: Backup current state
       transaction.addRollback(async () => {
-        await supabase
+//         await supabase
           .from('tournament_matches')
           .update({
             score_player1: match.score_player1,
@@ -364,7 +379,7 @@ export class TournamentAtomicOperations {
       });
 
       // Step 3: Update match with scores
-      const { error: updateError } = await supabase
+//       const { error: updateError } = await supabase
         .from('tournament_matches')
         .update({
           score_player1: score.player1,

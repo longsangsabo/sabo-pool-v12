@@ -8,7 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, RefreshCw, CheckCircle, Zap } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface SABO32AdvancementFixProps {
@@ -29,7 +33,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
   try {
    setIsFixing(true);
    
-   const { data: matches, error } = await (supabase as any)
+//    const { data: matches, error } = await (supabase as any)
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId)
@@ -86,7 +90,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
    setFixResult(null);
 
    // Call the SQL function
-   const { data, error } = await (supabase as any).rpc('fix_sabo32_advancement', {
+//    const { data, error } = await (supabase as any).rpc('fix_sabo32_advancement', {
     p_tournament_id: tournamentId
    });
 
@@ -114,7 +118,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
    setIsFixing(true);
    
    // Get all completed matches
-   const { data: matches, error } = await (supabase as any)
+//    const { data: matches, error } = await (supabase as any)
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId);
@@ -168,7 +172,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
 
    // Apply updates
    for (const update of updates) {
-    await (supabase as any)
+//     await (supabase as any)
      .from('sabo32_matches')
      .update(update)
      .eq('id', update.id);
@@ -226,11 +230,11 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
     {/* Fix Result */}
     {fixResult && (
      <div className="p-4 rounded-lg bg-success-50 dark:bg-green-900/20 border border-success-200 dark:border-green-700">
-      <div className="flex items-center gap-2 text-success-800 dark:text-green-200">
+      <div className="flex items-center gap-2 text-success-800 dark:text-success-200">
        <CheckCircle className="w-4 h-4" />
        <span className="font-medium">Kết quả sửa:</span>
       </div>
-      <pre className="text-caption mt-2 whitespace-pre-wrap text-success-700 dark:text-green-300">
+      <pre className="text-caption mt-2 var(--color-background)space-pre-wrap text-success-700 dark:text-green-300">
        {fixResult}
       </pre>
      </div>
@@ -252,7 +256,7 @@ export const SABO32AdvancementFix: React.FC<SABO32AdvancementFixProps> = ({
       
       onClick={runAdvancementFix}
       disabled={isFixing}
-      className="bg-primary-600 hover:bg-blue-700"
+      className="bg-primary-600 hover:bg-primary-700"
      >
       <Zap className="w-4 h-4 mr-2" />
       Auto Fix (SQL)

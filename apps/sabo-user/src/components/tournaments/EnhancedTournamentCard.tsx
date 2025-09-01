@@ -71,14 +71,14 @@ export function EnhancedTournamentCard({
   switch (status) {
    case 'registration':
     return {
-     color: 'bg-green-500',
+     color: 'bg-success-500',
      variant: 'default' as const,
      text: 'Open Registration',
      icon: <Users className="h-3 w-3" />
     };
    case 'active':
     return {
-     color: 'bg-blue-500',
+     color: 'bg-primary-500',
      variant: 'default' as const,
      text: 'Live Tournament',
      icon: <Play className="h-3 w-3" />
@@ -92,14 +92,14 @@ export function EnhancedTournamentCard({
     };
    case 'draft':
     return {
-     color: 'bg-gray-500',
+     color: 'bg-neutral-background0',
      variant: 'outline' as const,
      text: 'Draft',
      icon: <Clock className="h-3 w-3" />
     };
    default:
     return {
-     color: 'bg-red-500',
+     color: 'bg-error-500',
      variant: 'destructive' as const,
      text: 'Cancelled',
      icon: <AlertCircle className="h-3 w-3" />
@@ -113,15 +113,15 @@ export function EnhancedTournamentCard({
     return {
      icon: <GitBranch className="h-4 w-4" />,
      name: 'SABO Double',
-     color: 'text-blue-600 dark:text-blue-400',
-     bgColor: 'bg-blue-50 dark:bg-blue-950/20'
+     color: 'text-primary-600 dark:text-blue-400',
+     bgColor: 'bg-primary-50 dark:bg-blue-950/20'
     };
    case 'single_elimination':
     return {
      icon: <Target className="h-4 w-4" />,
      name: 'Single Elim',
-     color: 'text-green-600 dark:text-green-400',
-     bgColor: 'bg-green-50 dark:bg-green-950/20'
+     color: 'text-success-600 dark:text-green-400',
+     bgColor: 'bg-success-50 dark:bg-green-950/20'
     };
    default:
     return {
@@ -160,9 +160,9 @@ export function EnhancedTournamentCard({
 
  return (
   <Card className={cn(
-   "overflow-hidden transition-all duration-200 hover:shadow-lg group",
-   variant === 'featured' && "border-primary/20 shadow-lg",
-   variant === 'compact' && "p-0",
+  "overflow-hidden transition-all duration-200 hover:shadow-lg group",
+   variant === 'featured' &&"border-primary/20 shadow-lg",
+   variant === 'compact' &&"p-0",
    className
   )}>
    {/* Tournament Banner/Header */}
@@ -177,7 +177,7 @@ export function EnhancedTournamentCard({
      </div>
     ) : (
      <div className={cn(
-      "h-24 sm:h-32 bg-gradient-to-r flex items-center justify-center",
+     "h-24 sm:h-32 bg-gradient-to-r flex items-center justify-center",
       typeConfig.bgColor
      )}>
       <div className={cn("text-center", typeConfig.color)}>
@@ -198,7 +198,7 @@ export function EnhancedTournamentCard({
     {/* Tournament Type Badge */}
     <div className="absolute top-3 left-3">
      <Badge variant="outline" className={cn(
-      "flex items-center gap-1 bg-background/80 backdrop-blur-sm",
+     "flex items-center gap-1 bg-background/80 backdrop-blur-sm",
       typeConfig.color
      )}>
       {typeConfig.icon}

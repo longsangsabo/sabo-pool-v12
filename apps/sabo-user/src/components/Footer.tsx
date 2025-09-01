@@ -36,17 +36,17 @@ const Footer = () => {
  ];
 
  return (
-  <footer className='bg-gradient-to-b from-slate-900 to-black border-t border-yellow-400/20'>
+  <footer className='bg-gradient-to-b from-slate-900 to-var(--color-foreground) border-t border-yellow-400/20'>
    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'>
     <div className='grid grid-cols-1 md:grid-cols-4 gap-8'>
      {/* Logo and Description */}
      <div className='md:col-span-1'>
       <Link to='/' className='flex items-center space-x-3 mb-6'>
        <div className='w-12 h-12 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center shadow-lg'>
-        <Circle className='w-7 h-7 text-black font-bold' />
+        <Circle className='w-7 h-7 text-var(--color-foreground) font-bold' />
        </div>
        <div className='flex flex-col'>
-        <span className='text-heading font-black text-white gold-glow'>
+        <span className='text-heading font-var(--color-foreground) text-var(--color-background) gold-glow'>
          SABO
         </span>
         <span className='text-body-small text-yellow-400 font-bold -mt-1'>
@@ -66,28 +66,28 @@ const Footer = () => {
         className='w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg flex items-center justify-center hover:scale-110 transition-transform'
         aria-label='Facebook'
        >
-        <Facebook className='w-5 h-5 text-white' />
+        <Facebook className='w-5 h-5 text-var(--color-background)' />
        </a>
        <a
         href='#'
         className='w-10 h-10 bg-gradient-to-r from-red-600 to-red-800 rounded-lg flex items-center justify-center hover:scale-110 transition-transform'
         aria-label='Youtube'
        >
-        <Youtube className='w-5 h-5 text-white' />
+        <Youtube className='w-5 h-5 text-var(--color-background)' />
        </a>
        <a
         href='#'
         className='w-10 h-10 bg-gradient-to-r from-green-600 to-green-800 rounded-lg flex items-center justify-center hover:scale-110 transition-transform'
         aria-label='Chat'
        >
-        <MessageCircle className='w-5 h-5 text-white' />
+        <MessageCircle className='w-5 h-5 text-var(--color-background)' />
        </a>
       </div>
      </div>
 
      {/* Quick Links */}
      <div>
-      <h3 className='text-body-large font-bold text-white mb-6 gold-glow'>
+      <h3 className='text-body-large font-bold text-var(--color-background) mb-6 gold-glow'>
        Tính Năng
       </h3>
       <ul className='space-y-3'>
@@ -106,7 +106,7 @@ const Footer = () => {
 
      {/* Account Links */}
      <div>
-      <h3 className='text-body-large font-bold text-white mb-6 gold-glow'>
+      <h3 className='text-body-large font-bold text-var(--color-background) mb-6 gold-glow'>
        Tài Khoản
       </h3>
       <ul className='space-y-3'>
@@ -125,7 +125,7 @@ const Footer = () => {
 
      {/* Contact Info */}
      <div>
-      <h3 className='text-body-large font-bold text-white mb-6 gold-glow'>
+      <h3 className='text-body-large font-bold text-var(--color-background) mb-6 gold-glow'>
        Liên Hệ
       </h3>
       <ul className='space-y-4'>

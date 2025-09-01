@@ -109,7 +109,7 @@ const EnhancedAvatar: React.FC<EnhancedAvatarProps> = ({
      bg-warning-500 rounded-full flex items-center justify-center
      border-2 border-background
     `}>
-     <Crown className="w-3 h-3 text-white" />
+     <Crown className="w-3 h-3 text-var(--color-background)" />
     </div>
    )}
 
@@ -122,7 +122,7 @@ const EnhancedAvatar: React.FC<EnhancedAvatarProps> = ({
      <Badge 
       variant="secondary" 
       className={`
-       ${rankConfig.color} text-white border-0
+       ${rankConfig.color} text-var(--color-background) border-0
        px-2 py-0.5 text-caption font-bold
        flex items-center gap-1
       `}
@@ -135,7 +135,7 @@ const EnhancedAvatar: React.FC<EnhancedAvatarProps> = ({
 
    {/* Points Display (for larger sizes) */}
    {showRank && points && size !== 'sm' && (
-    <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+    <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 var(--color-background)space-nowrap">
      <span className="text-caption text-muted-foreground font-medium">
       {points.toLocaleString()} pts
      </span>

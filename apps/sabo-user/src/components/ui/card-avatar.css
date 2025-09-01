@@ -39,7 +39,7 @@
 }
 
 .card-border {
-  background: #fff !important; /* Force nền trắng cho light mode */
+  background: var(--color-white) !important; /* Force nền trắng cho light mode */
   backdrop-filter: none;
   border-radius: 12px;
   position: relative;
@@ -63,7 +63,7 @@
   height: 240px;
   position: relative;
   overflow: hidden;
-  background: #f8fafc; /* Nền xám nhạt cho light mode */
+  background: var(--color-background); /* Nền xám nhạt cho light mode */
   margin: 12px 12px 0;
   border-radius: 12px;
   cursor: pointer;
@@ -100,11 +100,11 @@
 .avatar-placeholder {
   width: 100%;
   height: 100%;
-  background: #fff;
+  background: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed #d1d5db;
+  border: 2px dashed var(--color-gray-300);
   border-radius: 4px;
   position: absolute;
   top: 0;
@@ -118,7 +118,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: #6b7280;
+  color: var(--color-gray-500);
 }
 
 /* Upload Overlay */
@@ -160,7 +160,7 @@
 }
 
 .camera-button .camera-icon {
-  color: #374151;
+  color: var(--color-gray-700);
   width: 12px;
   height: 12px;
 }
@@ -194,17 +194,17 @@
   font-weight: 700;
   background: linear-gradient(
     135deg,
-    #1f2937 0%,
-    #374151 10%,
-    #4b5563 20%,
-    #6b7280 30%,
-    #9ca3af 40%,
-    #d1d5db 50%,
-    #e5e7eb 60%,
-    #f3f4f6 70%,
-    #f9fafb 80%,
-    #fff 90%,
-    #1f2937 100%
+    var(--color-gray-800) 0%,
+    var(--color-gray-700) 10%,
+    var(--color-gray-600) 20%,
+    var(--color-gray-500) 30%,
+    var(--color-gray-400) 40%,
+    var(--color-gray-300) 50%,
+    var(--color-gray-200) 60%,
+    var(--color-gray-100) 70%,
+    var(--color-gray-50) 80%,
+    var(--color-white) 90%,
+    var(--color-gray-800) 100%
   );
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -234,7 +234,7 @@
     Arial,
     'Noto Sans',
     sans-serif;
-  color: #1f2937;
+  color: var(--color-gray-800);
   z-index: 3;
 }
 
@@ -249,12 +249,12 @@
   line-height: 0.9 !important;
   background: linear-gradient(
     90deg,
-    #2563eb 0%,
-    #60a5fa 25%,
-    #93c5fd 45%,
-    #fff 60%,
-    #60a5fa 80%,
-    #1d4ed8 100%
+    var(--color-primary-600) 0%,
+    var(--color-primary-400) 25%,
+    var(--color-primary-300) 45%,
+    var(--color-white) 60%,
+    var(--color-primary-400) 80%,
+    var(--color-primary-700) 100%
   ) !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -308,17 +308,17 @@
   text-transform: uppercase;
   background: linear-gradient(
     135deg,
-    #1f2937 0%,
-    #374151 10%,
-    #4b5563 20%,
-    #6b7280 30%,
-    #9ca3af 40%,
-    #d1d5db 50%,
-    #e5e7eb 60%,
-    #f3f4f6 70%,
-    #f9fafb 80%,
-    #fff 90%,
-    #1f2937 100%
+    var(--color-gray-800) 0%,
+    var(--color-gray-700) 10%,
+    var(--color-gray-600) 20%,
+    var(--color-gray-500) 30%,
+    var(--color-gray-400) 40%,
+    var(--color-gray-300) 50%,
+    var(--color-gray-200) 60%,
+    var(--color-gray-100) 70%,
+    var(--color-gray-50) 80%,
+    var(--color-white) 90%,
+    var(--color-gray-800) 100%
   );
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -344,7 +344,7 @@
   font-weight: 800;
   text-align: center;
   letter-spacing: 0.04em;
-  color: #1f2937 !important;
+  color: var(--color-gray-800) !important;
   width: 20px;
   line-height: 1;
 }
@@ -386,7 +386,7 @@
 
 .dark .image-area:hover {
   background: rgba(51, 65, 85, 0.8);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 12px var(--color-black-50);
 }
 
 /* === New Rank Badge Styles === */
@@ -402,8 +402,8 @@
   letter-spacing: 0.13em;
   position: relative;
   isolation: isolate;
-  background: linear-gradient(135deg, #14532d 0%, #15803d 55%, #16a34a 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #14532d 0%, #15803d 55%, var(--color-success-600) 100%);
+  color: var(--color-white);
   box-shadow:
     0 4px 12px rgb(0 0 0 / 25%),
     inset 0 1px 2px rgb(255 255 255 / 15%);
@@ -420,11 +420,11 @@
     background: linear-gradient(
       135deg,
       #1e3a8a 0%,
-      #1d4ed8 35%,
+      var(--color-primary-700) 35%,
       #4338ca 70%,
       #6366f1 100%
     );
-    color: #fff;
+    color: var(--color-white);
     box-shadow:
       0 3px 8px rgb(0 0 0 / 18%),
       inset 0 1px 2px rgb(255 255 255 / 25%);
@@ -444,11 +444,11 @@
     rgb(255 255 255 / 30%)
   );
   mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+    linear-gradient(var(--color-white) 0 0) content-box,
+    linear-gradient(var(--color-white) 0 0);
   mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+    linear-gradient(var(--color-white) 0 0) content-box,
+    linear-gradient(var(--color-white) 0 0);
   mask-composite: xor;
   mask-composite: exclude;
   opacity: 0.45; /* giảm độ sáng để chữ nổi hơn */
@@ -465,7 +465,7 @@
   text-shadow:
     0 2px 3px rgb(0 0 0 / 45%),
     0 0 4px rgb(0 0 0 / 35%);
-  color: #fff !important;
+  color: var(--color-white) !important;
   font-weight: 800;
 }
 
@@ -477,26 +477,26 @@
 
 /* === Rank Badge Variants (attribute-based) === */
 .rank-badge[data-rank='S'] {
-  background: linear-gradient(135deg, #d97706, #fbbf24, #f59e0b);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-warning-600), var(--color-warning-400), var(--color-warning-500));
+  color: var(--color-white);
 }
 .rank-badge[data-rank='A'] {
-  background: linear-gradient(135deg, #b91c1c, #dc2626, #ef4444);
+  background: linear-gradient(135deg, var(--color-error-700), var(--color-error-600), var(--color-error-500));
 }
 .rank-badge[data-rank='B'] {
-  background: linear-gradient(135deg, #6d28d9, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, var(--color-secondary-700), var(--color-secondary-600), var(--color-secondary-500));
 }
 .rank-badge[data-rank='C'] {
-  background: linear-gradient(135deg, #1d4ed8, #2563eb, #3b82f6);
+  background: linear-gradient(135deg, var(--color-primary-700), var(--color-primary-600), var(--color-primary-500));
 }
 .rank-badge[data-rank='D'] {
-  background: linear-gradient(135deg, #047857, #059669, #10b981);
+  background: linear-gradient(135deg, var(--color-success-700), var(--color-success-600), var(--color-success-500));
 }
 .rank-badge[data-rank='E'] {
   background: linear-gradient(135deg, #c2410c, #dc6502, #f97316);
 }
 .rank-badge[data-rank='G'] {
-  background: linear-gradient(135deg, #14532d, #15803d, #16a34a);
+  background: linear-gradient(135deg, #14532d, #15803d, var(--color-success-600));
 }
 
 /* icon filters removed */

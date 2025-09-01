@@ -66,7 +66,7 @@ export const MobileFloatingActionButton: React.FC<
      {actions.map((action, index) => (
       <Button
        key={index}
-       className={`fab-action ${action.color || 'bg-primary hover:bg-primary/90'} text-white shadow-lg`}
+       className={`fab-action ${action.color || 'bg-primary hover:bg-primary/90'} text-var(--color-background) shadow-lg`}
        
        onClick={() => handleSecondaryAction(action)}
       >
@@ -84,9 +84,9 @@ export const MobileFloatingActionButton: React.FC<
     onClick={handlePrimaryAction}
    >
     {isExpanded ? (
-     <X className='w-6 h-6 text-white' />
+     <X className='w-6 h-6 text-var(--color-background)' />
     ) : (
-     <Plus className='w-6 h-6 text-white' />
+     <Plus className='w-6 h-6 text-var(--color-background)' />
     )}
    </Button>
 

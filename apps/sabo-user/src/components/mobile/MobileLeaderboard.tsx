@@ -58,15 +58,15 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
  const getRankBadgeColor = (rank: string) => {
   const rankColors: Record<string, string> = {
    'Chủ tịch':
-    'bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0',
+    'bg-gradient-to-r from-purple-600 to-pink-600 text-var(--color-background) border-0',
    'Cao thủ':
-    'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0',
+    'bg-gradient-to-r from-blue-600 to-indigo-600 text-var(--color-background) border-0',
    'Thạc sĩ':
-    'bg-gradient-to-r from-green-600 to-emerald-600 text-white border-0',
+    'bg-gradient-to-r from-green-600 to-emerald-600 text-var(--color-background) border-0',
    'Chuyên viên':
-    'bg-gradient-to-r from-orange-600 to-red-600 text-white border-0',
+    'bg-gradient-to-r from-orange-600 to-red-600 text-var(--color-background) border-0',
    'Nghiệp dư':
-    'bg-gradient-to-r from-gray-500 to-gray-600 text-white border-0',
+    'bg-gradient-to-r from-gray-500 to-gray-600 text-var(--color-background) border-0',
   };
   return (
    rankColors[rank] ||
@@ -170,15 +170,15 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
      className={`grid w-full grid-cols-3 mb-6 transition-all duration-300 ${
       theme === 'dark'
        ? 'bg-slate-900/60 border-slate-700/30 backdrop-blur-lg shadow-xl'
-       : 'bg-white/80 border-slate-200/50 backdrop-blur-sm shadow-lg'
+       : 'bg-var(--color-background)/80 border-slate-200/50 backdrop-blur-sm shadow-lg'
      }`}
     >
      <TabsTrigger
       value='spa'
       className={`flex items-center gap-2 transition-all duration-200 ${
        theme === 'dark'
-        ? 'data-[state=active]:bg-purple-600 data-[state=active]:text-white'
-        : 'data-[state=active]:bg-info-500 data-[state=active]:text-white'
+        ? 'data-[state=active]:bg-purple-600 data-[state=active]:text-var(--color-background)'
+        : 'data-[state=active]:bg-info-500 data-[state=active]:text-var(--color-background)'
       }`}
      >
       <Crown className='w-4 h-4' />
@@ -188,8 +188,8 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
       value='elo'
       className={`flex items-center gap-2 transition-all duration-200 ${
        theme === 'dark'
-        ? 'data-[state=active]:bg-primary-600 data-[state=active]:text-white'
-        : 'data-[state=active]:bg-primary-500 data-[state=active]:text-white'
+        ? 'data-[state=active]:bg-primary-600 data-[state=active]:text-var(--color-background)'
+        : 'data-[state=active]:bg-primary-500 data-[state=active]:text-var(--color-background)'
       }`}
      >
       <Trophy className='w-4 h-4' />
@@ -207,7 +207,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
         } ${
          theme === 'dark'
           ? 'bg-slate-900/60 border-slate-700/30 backdrop-blur-lg hover:bg-slate-800/60 shadow-lg'
-          : 'bg-white border-slate-200 hover:bg-slate-50 shadow-md hover:shadow-lg'
+          : 'bg-var(--color-background) border-slate-200 hover:bg-slate-50 shadow-md hover:shadow-lg'
         }`}
        >
         <CardContent className='p-3'>
@@ -217,8 +217,8 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
            className={`flex items-center justify-center w-8 h-8 rounded-full text-body-small font-bold transition-all duration-300 ${
             index < 3
              ? theme === 'dark'
-              ? 'bg-gradient-to-br from-yellow-500 to-orange-500 text-white shadow-lg animate-pulse'
-              : 'bg-gradient-to-br from-yellow-400 to-orange-400 text-white shadow-md'
+              ? 'bg-gradient-to-br from-yellow-500 to-orange-500 text-var(--color-background) shadow-lg animate-pulse'
+              : 'bg-gradient-to-br from-yellow-400 to-orange-400 text-var(--color-background) shadow-md'
              : theme === 'dark'
               ? 'bg-gray-700 text-gray-300'
               : 'bg-neutral-200 text-neutral-700'
@@ -307,7 +307,7 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
         } ${
          theme === 'dark'
           ? 'bg-slate-900/60 border-slate-700/30 backdrop-blur-lg hover:bg-slate-800/60 shadow-lg'
-          : 'bg-white border-slate-200 hover:bg-slate-50 shadow-md hover:shadow-lg'
+          : 'bg-var(--color-background) border-slate-200 hover:bg-slate-50 shadow-md hover:shadow-lg'
         }`}
        >
         <CardContent className='p-3'>
@@ -317,8 +317,8 @@ const MobileLeaderboard: React.FC<MobileLeaderboardProps> = ({
            className={`flex items-center justify-center w-8 h-8 rounded-full text-body-small font-bold transition-all duration-300 ${
             index < 3
              ? theme === 'dark'
-              ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-lg animate-pulse'
-              : 'bg-gradient-to-br from-purple-400 to-pink-400 text-white shadow-md'
+              ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-var(--color-background) shadow-lg animate-pulse'
+              : 'bg-gradient-to-br from-purple-400 to-pink-400 text-var(--color-background) shadow-md'
              : theme === 'dark'
               ? 'bg-gray-700 text-gray-300'
               : 'bg-neutral-200 text-neutral-700'

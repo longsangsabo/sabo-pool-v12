@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import {
  AlertTriangle,
@@ -54,7 +58,7 @@ const PenaltyManagement = () => {
   if (!user) return;
 
   try {
-   const { data, error } = await (supabase as any)
+//    const { data, error } = await (supabase as any)
     .from('notifications')
     .select('*')
     .eq('user_id', user.id)
@@ -186,7 +190,7 @@ const PenaltyManagement = () => {
      {penalties.length === 0 ? (
       <div className='text-center text-neutral-500 py-8'>
        <CheckCircle className='w-12 h-12 mx-auto mb-4 text-gray-300' />
-       <Typography variant="body" >Không có hình phạt nào</Typography>
+       <Text>Không có hình phạt nào</Text>
        <p className='text-sm'>Giữ vững phong độ chơi công bằng!</p>
       </div>
      ) : (

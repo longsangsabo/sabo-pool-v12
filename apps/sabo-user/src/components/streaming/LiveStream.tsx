@@ -179,7 +179,7 @@ export const LiveStream: React.FC<LiveStreamProps> = ({
      <Card>
       <CardContent className='p-0'>
        {/* Video Player */}
-       <div className='relative bg-black aspect-video'>
+       <div className='relative bg-var(--color-foreground) aspect-video'>
         <video
          ref={videoRef}
          className='w-full h-full object-cover'
@@ -193,27 +193,27 @@ export const LiveStream: React.FC<LiveStreamProps> = ({
         {/* Live Badge */}
         {isLive && (
          <div className='absolute top-4 left-4'>
-          <Badge className='bg-error-500 text-white animate-pulse'>
+          <Badge className='bg-error-500 text-var(--color-background) animate-pulse'>
            LIVE
           </Badge>
          </div>
         )}
 
         {/* Viewer Count */}
-        <div className='absolute top-4 right-4 flex items-center gap-2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full'>
+        <div className='absolute top-4 right-4 flex items-center gap-2 bg-var(--color-foreground) bg-opacity-50 text-var(--color-background) px-3 py-1 rounded-full'>
          <Eye className='h-4 w-4' />
          <span className='text-sm'>{viewers.toLocaleString()}</span>
         </div>
 
         {/* Video Controls */}
-        <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4'>
+        <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-var(--color-foreground) to-transparent p-4'>
          <div className='flex items-center justify-between'>
           <div className='flex items-center gap-2'>
            <Button
             variant='ghost'
             
             onClick={handlePlayPause}
-            className='text-white hover:bg-white hover:bg-opacity-20'
+            className='text-var(--color-background) hover:bg-var(--color-background) hover:bg-opacity-20'
            >
             {isPlaying ? (
              <Pause className='h-5 w-5' />
@@ -226,7 +226,7 @@ export const LiveStream: React.FC<LiveStreamProps> = ({
             variant='ghost'
             
             onClick={handleMute}
-            className='text-white hover:bg-white hover:bg-opacity-20'
+            className='text-var(--color-background) hover:bg-var(--color-background) hover:bg-opacity-20'
            >
             {isMuted ? (
              <VolumeX className='h-5 w-5' />
@@ -241,7 +241,7 @@ export const LiveStream: React.FC<LiveStreamProps> = ({
             variant='ghost'
             
             onClick={handleFullscreen}
-            className='text-white hover:bg-white hover:bg-opacity-20'
+            className='text-var(--color-background) hover:bg-var(--color-background) hover:bg-opacity-20'
            >
             <Maximize className='h-5 w-5' />
            </Button>
@@ -249,7 +249,7 @@ export const LiveStream: React.FC<LiveStreamProps> = ({
            <Button
             variant='ghost'
             
-            className='text-white hover:bg-white hover:bg-opacity-20'
+            className='text-var(--color-background) hover:bg-var(--color-background) hover:bg-opacity-20'
            >
             <Settings className='h-5 w-5' />
            </Button>

@@ -184,7 +184,7 @@ export const ClubApprovalCard: React.FC<ClubApprovalCardProps> = ({
     <div className="bg-primary-50 dark:bg-blue-900/20 border border-primary-200 dark:border-blue-700 rounded-lg p-4">
      <div className="flex items-center gap-2 mb-3">
       <Trophy className="w-4 h-4 text-primary-600" />
-      <span className="font-medium text-primary-800 dark:text-blue-200">
+      <span className="font-medium text-primary-800 dark:text-primary-200">
        Tỷ số đã xác nhận
       </span>
      </div>
@@ -199,7 +199,7 @@ export const ClubApprovalCard: React.FC<ClubApprovalCardProps> = ({
         {challenge.challenger_score || 0}
        </div>
        {(challenge.challenger_score || 0) > (challenge.opponent_score || 0) && (
-        <Badge className="bg-warning-100 text-warning-800 border-yellow-200 text-caption mt-1">
+        <Badge className="bg-warning-100 text-warning-800 border-warning text-caption mt-1">
          Thắng
         </Badge>
        )}
@@ -218,7 +218,7 @@ export const ClubApprovalCard: React.FC<ClubApprovalCardProps> = ({
         {challenge.opponent_score || 0}
        </div>
        {(challenge.opponent_score || 0) > (challenge.challenger_score || 0) && (
-        <Badge className="bg-warning-100 text-warning-800 border-yellow-200 text-caption mt-1">
+        <Badge className="bg-warning-100 text-warning-800 border-warning text-caption mt-1">
          Thắng
         </Badge>
        )}
@@ -232,7 +232,7 @@ export const ClubApprovalCard: React.FC<ClubApprovalCardProps> = ({
      )}
 
      {challenge.response_message && (
-      <div className="mt-3 p-2 bg-white dark:bg-neutral-800 rounded text-caption text-neutral-600 dark:text-gray-400">
+      <div className="mt-3 p-2 bg-var(--color-background) dark:bg-neutral-800 rounded text-caption text-neutral-600 dark:text-gray-400">
        <strong>Ghi chú:</strong> {challenge.response_message}
       </div>
      )}
@@ -242,7 +242,7 @@ export const ClubApprovalCard: React.FC<ClubApprovalCardProps> = ({
     <div className="bg-success-50 dark:bg-green-900/20 border border-success-200 dark:border-green-700 rounded-lg p-4">
      <div className="flex items-center gap-2 mb-3">
       <Coins className="w-4 h-4 text-success-600" />
-      <span className="font-medium text-success-800 dark:text-green-200">
+      <span className="font-medium text-success-800 dark:text-success-200">
        Xử lý điểm SPA
       </span>
      </div>
@@ -252,11 +252,11 @@ export const ClubApprovalCard: React.FC<ClubApprovalCardProps> = ({
        <div className="flex items-center justify-between p-2 bg-success-100 dark:bg-green-800/30 rounded">
         <div className="flex items-center gap-2">
          <User className="w-4 h-4 text-success-600" />
-         <span className="text-body-small-medium text-success-800 dark:text-green-200">
+         <span className="text-body-small-medium text-success-800 dark:text-success-200">
           Người thắng
          </span>
         </div>
-        <Badge className="bg-green-200 text-success-800 border-success-300">
+        <Badge className="bg-success-200 text-success-800 border-success-300">
          {spaDisplay.winnerDisplay}
         </Badge>
        </div>
@@ -264,11 +264,11 @@ export const ClubApprovalCard: React.FC<ClubApprovalCardProps> = ({
        <div className="flex items-center justify-between p-2 bg-error-100 dark:bg-red-800/30 rounded">
         <div className="flex items-center gap-2">
          <User className="w-4 h-4 text-error-600" />
-         <span className="text-body-small-medium text-error-800 dark:text-red-200">
+         <span className="text-body-small-medium text-error-800 dark:text-error-200">
           Người thua
          </span>
         </div>
-        <Badge className="bg-red-200 text-error-800 border-red-300">
+        <Badge className="bg-error-200 text-error-800 border-red-300">
          {spaDisplay.loserDisplay}
         </Badge>
        </div>
@@ -329,7 +329,7 @@ export const ClubApprovalCard: React.FC<ClubApprovalCardProps> = ({
        />
        
        {approvalAction === 'reject' && (
-        <div className="p-3 bg-error-50 dark:bg-red-900/20 border border-error-200 dark:border-red-700 rounded text-body-small text-error-800 dark:text-red-200">
+        <div className="p-3 bg-error-50 dark:bg-red-900/20 border border-error-200 dark:border-red-700 rounded text-body-small text-error-800 dark:text-error-200">
          <AlertTriangle className="w-4 h-4 inline mr-2" />
          Trận đấu sẽ được đánh dấu tranh chấp và cần xử lý thủ công.
         </div>

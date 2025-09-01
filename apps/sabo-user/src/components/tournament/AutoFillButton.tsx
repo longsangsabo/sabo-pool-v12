@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from '../../services/userService';
 import { Users, MapPin, Phone, Calendar, Clock, Wand2 } from 'lucide-react';
 
 interface AutoFillButtonProps {
@@ -33,9 +33,7 @@ export const AutoFillButton: React.FC<AutoFillButtonProps> = ({
 
   try {
    // Get current user
-   const {
-    data: { user },
-   } = await supabase.auth.getUser();
+   const user = await getCurrentUser();
    if (!user) {
     toast({
      title: 'Lỗi xác thực',
@@ -46,7 +44,7 @@ export const AutoFillButton: React.FC<AutoFillButtonProps> = ({
    }
 
    // Get user's club profile
-   const { data: clubProfile, error: clubError } = await supabase
+//    const { data: clubProfile, error: clubError } = await supabase
     .from('club_profiles')
     .select('*')
     .eq('user_id', user.id)
@@ -57,7 +55,7 @@ export const AutoFillButton: React.FC<AutoFillButtonProps> = ({
    }
 
    // Get user's basic profile
-   const { data: userProfile, error: profileError } = await supabase
+//    const { data: userProfile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
     .eq('user_id', user.id)

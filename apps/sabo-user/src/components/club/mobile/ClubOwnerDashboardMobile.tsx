@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -60,7 +60,7 @@ export const ClubOwnerDashboardMobile: React.FC<
     label: 'Trận',
     value: club?.total_matches ?? 0,
     icon: Target,
-    accent: 'text-blue-500',
+    accent: 'text-primary-500',
    },
    {
     label: 'Giải đấu',
@@ -111,7 +111,7 @@ export const ClubOwnerDashboardMobile: React.FC<
      className='justify-start gap-2 h-12 text-left'
      onClick={onSettings}
     >
-     <Settings2 className='w-4 h-4 text-blue-500 flex-shrink-0' />
+     <Settings2 className='w-4 h-4 text-primary-500 flex-shrink-0' />
      <span className='text-body-small-medium'>Cài đặt CLB</span>
     </Button>
     <Button
@@ -147,7 +147,7 @@ export const ClubOwnerDashboardMobile: React.FC<
        key={a.id}
        className='flex items-center gap-3 p-2 rounded-md border text-body-small bg-muted/40 dark:bg-slate-800/40'
       >
-       <Activity className='w-4 h-4 text-blue-500 flex-shrink-0' />
+       <Activity className='w-4 h-4 text-primary-500 flex-shrink-0' />
        <div className='flex-1 min-w-0'>
         <p className='truncate font-medium'>{a.content}</p>
         <p className='text-caption text-muted-foreground mt-0.5'>

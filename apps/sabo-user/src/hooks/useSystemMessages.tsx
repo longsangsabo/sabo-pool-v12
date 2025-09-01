@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from './useAuth';
 
 export const useSystemMessages = () => {
@@ -56,7 +59,7 @@ export const useSystemMessages = () => {
  ) => {
   try {
    // Get all users
-   const { data: users, error } = await supabase
+//    const { data: users, error } = await supabase
     .from('profiles')
     .select('user_id');
 
@@ -88,7 +91,7 @@ export const useSystemMessages = () => {
  ) => {
   try {
    // Get tournament participants
-   const { data: participants, error } = await supabase
+//    const { data: participants, error } = await supabase
     .from('tournament_registrations')
     .select('user_id')
     .eq('tournament_id', tournamentId)
@@ -142,7 +145,7 @@ export const useSystemMessages = () => {
   reason?: string
  ) => {
   try {
-   const { data: clubData, error } = await supabase
+//    const { data: clubData, error } = await supabase
     .from('club_registrations')
     .select('user_id, club_name')
     .eq('id', clubId)

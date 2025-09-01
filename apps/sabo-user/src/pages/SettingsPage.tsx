@@ -93,13 +93,13 @@ const SettingsPage = () => {
 
  return (
   <div className='min-h-screen bg-neutral-50'>
-   <div className='bg-white border-b border-neutral-200 px-4 py-4'>
+   <div className='bg-var(--color-background) border-b border-neutral-200 px-4 py-4'>
     <h1 className='text-title font-bold text-neutral-900'>Cài đặt</h1>
    </div>
 
    <div className='p-4 space-y-6'>
     {/* Notifications */}
-    <section className='bg-white rounded-lg shadow-sm border border-neutral-200 p-4'>
+    <section className='bg-var(--color-background) rounded-lg shadow-sm border border-neutral-200 p-4'>
      <h2 className='text-body-large-semibold text-neutral-900 mb-4'>
       Thông báo
      </h2>
@@ -140,7 +140,7 @@ const SettingsPage = () => {
     </section>
 
     {/* Privacy */}
-    <section className='bg-white rounded-lg shadow-sm border border-neutral-200 p-4'>
+    <section className='bg-var(--color-background) rounded-lg shadow-sm border border-neutral-200 p-4'>
      <h2 className='text-body-large-semibold text-neutral-900 mb-4'>
       Quyền riêng tư
      </h2>
@@ -181,7 +181,7 @@ const SettingsPage = () => {
     </section>
 
     {/* Account Actions */}
-    <section className='bg-white rounded-lg shadow-sm border border-neutral-200 p-4'>
+    <section className='bg-var(--color-background) rounded-lg shadow-sm border border-neutral-200 p-4'>
      <h2 className='text-body-large-semibold text-neutral-900 mb-4'>
       Tài khoản
      </h2>
@@ -217,7 +217,7 @@ const SettingsPage = () => {
     <div className='pb-6'>
      <Button
       onClick={handleSaveSettings}
-      className='w-full bg-primary-600 hover:bg-blue-700'
+      className='w-full bg-primary-600 hover:bg-primary-700'
      >
       Lưu thay đổi
      </Button>

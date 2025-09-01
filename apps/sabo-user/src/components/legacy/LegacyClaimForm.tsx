@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -42,7 +46,7 @@ export const LegacyClaimForm: React.FC<LegacyClaimFormProps> = ({ selectedEntry,
   setLoading(true);
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('simple_legacy_claims' as any)
     .insert({
      user_email: formData.user_email,
@@ -95,7 +99,7 @@ export const LegacyClaimForm: React.FC<LegacyClaimFormProps> = ({ selectedEntry,
     <Button 
      onClick={() => setSubmitted(false)} 
      variant="outline"
-     className="bg-neutral-800/80 hover:bg-gray-700/80 text-white border-gray-600 hover:border-gray-500"
+     className="bg-neutral-800/80 hover:bg-gray-700/80 text-var(--color-background) border-gray-600 hover:border-gray-500"
     >
      Gửi yêu cầu khác
     </Button>
@@ -107,7 +111,7 @@ export const LegacyClaimForm: React.FC<LegacyClaimFormProps> = ({ selectedEntry,
   <div className="space-y-5">
    <div className="flex items-center justify-center mb-6">
     <Gift className="w-8 h-8 text-yellow-400 mr-3" />
-    <h2 className="text-heading-bold text-white">Claim SPA Points</h2>
+    <h2 className="text-heading-bold text-var(--color-background)">Claim SPA Points</h2>
    </div>
    
    <form onSubmit={handleSubmit} className="space-y-5">
@@ -120,7 +124,7 @@ export const LegacyClaimForm: React.FC<LegacyClaimFormProps> = ({ selectedEntry,
        onChange={(e) => handleChange('user_name', e.target.value)}
        placeholder="Nguyễn Văn A"
        required
-       className="mt-2 bg-neutral-800/80 border-gray-600 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
+       className="mt-2 bg-neutral-800/80 border-gray-600 text-var(--color-background) placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
       />
      </div>
 
@@ -133,7 +137,7 @@ export const LegacyClaimForm: React.FC<LegacyClaimFormProps> = ({ selectedEntry,
        onChange={(e) => handleChange('user_email', e.target.value)}
        placeholder="email@example.com"
        required
-       className="mt-2 bg-neutral-800/80 border-gray-600 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
+       className="mt-2 bg-neutral-800/80 border-gray-600 text-var(--color-background) placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
       />
      </div>
 
@@ -145,7 +149,7 @@ export const LegacyClaimForm: React.FC<LegacyClaimFormProps> = ({ selectedEntry,
        value={formData.user_phone}
        onChange={(e) => handleChange('user_phone', e.target.value)}
        placeholder="0123456789"
-       className="mt-2 bg-neutral-800/80 border-gray-600 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
+       className="mt-2 bg-neutral-800/80 border-gray-600 text-var(--color-background) placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
       />
      </div>
 
@@ -158,7 +162,7 @@ export const LegacyClaimForm: React.FC<LegacyClaimFormProps> = ({ selectedEntry,
        onChange={(e) => handleChange('legacy_name', e.target.value)}
        placeholder="LEGACY ACCOUNT NAME"
        required
-       className="mt-2 bg-neutral-800/80 border-gray-600 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
+       className="mt-2 bg-neutral-800/80 border-gray-600 text-var(--color-background) placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
       />
      </div>
 
@@ -172,18 +176,18 @@ export const LegacyClaimForm: React.FC<LegacyClaimFormProps> = ({ selectedEntry,
        onChange={(e) => handleChange('spa_points', e.target.value)}
        placeholder="100"
        required
-       className="mt-2 bg-neutral-800/80 border-gray-600 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
+       className="mt-2 bg-neutral-800/80 border-gray-600 text-var(--color-background) placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
       />
      </div>
 
      <Button 
       type="submit" 
-      className="w-full mt-6 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold py-3 text-body-large transition-all duration-200 shadow-lg hover:shadow-xl" 
+      className="w-full mt-6 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-var(--color-background) font-semibold py-3 text-body-large transition-all duration-200 shadow-lg hover:shadow-xl" 
       disabled={loading}
      >
       {loading ? (
        <>
-        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-var(--color-background) mr-2"></div>
         Đang gửi...
        </>
       ) : (

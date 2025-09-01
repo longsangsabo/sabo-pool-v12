@@ -267,18 +267,18 @@ export default function AdminUserManagementEnterprise() {
 
   const getStatusBadge = (user: AdminUser) => {
     if (user.ban_status === 'banned') {
-      return <span className="px-2 py-1 text-xs bg-red-600 text-white rounded">Banned</span>
+      return <span className="px-2 py-1 text-xs bg-red-600 text-var(--color-background) rounded">Banned</span>
     }
     if (user.is_admin) {
-      return <span className="px-2 py-1 text-xs bg-purple-600 text-white rounded">Admin</span>
+      return <span className="px-2 py-1 text-xs bg-purple-600 text-var(--color-background) rounded">Admin</span>
     }
     if (user.role === 'premium') {
-      return <span className="px-2 py-1 text-xs bg-yellow-600 text-white rounded">Premium</span>
+      return <span className="px-2 py-1 text-xs bg-yellow-600 text-var(--color-background) rounded">Premium</span>
     }
     if (user.role === 'club_owner') {
-      return <span className="px-2 py-1 text-xs bg-blue-600 text-white rounded">Club Owner</span>
+      return <span className="px-2 py-1 text-xs bg-blue-600 text-var(--color-background) rounded">Club Owner</span>
     }
-    return <span className="px-2 py-1 text-xs bg-green-600 text-white rounded">Active</span>
+    return <span className="px-2 py-1 text-xs bg-green-600 text-var(--color-background) rounded">Active</span>
   }
 
   if (error) {
@@ -290,7 +290,7 @@ export default function AdminUserManagementEnterprise() {
             <p className="text-gray-300">{error}</p>
             <button
               onClick={fetchUsers}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700 transition-colors"
             >
               Retry
             </button>
@@ -301,7 +301,7 @@ export default function AdminUserManagementEnterprise() {
   }
 
   return (
-    <div className="text-white p-8">
+    <div className="text-var(--color-background) p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -310,11 +310,11 @@ export default function AdminUserManagementEnterprise() {
             <p className="text-gray-400">Enterprise user administration and analytics</p>
           </div>
           <div className="flex gap-2">
-            <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-var(--color-background) rounded hover:bg-blue-700 transition-colors">
               <Download className="h-4 w-4" />
               Export
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-var(--color-background) rounded hover:bg-green-700 transition-colors">
               <Plus className="h-4 w-4" />
               Add User
             </button>
@@ -327,7 +327,7 @@ export default function AdminUserManagementEnterprise() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-400">Total Users</p>
-                <p className="text-2xl font-bold text-white">{analytics.total_users}</p>
+                <p className="text-2xl font-bold text-var(--color-background)">{analytics.total_users}</p>
               </div>
               <Users className="h-6 w-6 text-gray-400" />
             </div>
@@ -400,7 +400,7 @@ export default function AdminUserManagementEnterprise() {
                   placeholder="Search users by name, phone, or ID..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -410,7 +410,7 @@ export default function AdminUserManagementEnterprise() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-var(--color-background) focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
@@ -420,7 +420,7 @@ export default function AdminUserManagementEnterprise() {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-var(--color-background) focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">All Roles</option>
                 <option value="player">Player</option>
@@ -436,7 +436,7 @@ export default function AdminUserManagementEnterprise() {
                 <select
                   value={bulkAction}
                   onChange={(e) => setBulkAction(e.target.value)}
-                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-var(--color-background) focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Bulk Action</option>
                   <option value="ban">Ban Selected</option>
@@ -446,7 +446,7 @@ export default function AdminUserManagementEnterprise() {
                 <button
                   onClick={handleBulkAction}
                   disabled={!bulkAction}
-                  className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700 transition-colors disabled:opacity-50"
                 >
                   Apply ({selectedUsers.length})
                 </button>
@@ -458,7 +458,7 @@ export default function AdminUserManagementEnterprise() {
         {/* Users Table */}
         <div className="bg-gray-800 rounded-lg border border-gray-700">
           <div className="p-6 border-b border-gray-700">
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold text-var(--color-background)">
               Users ({filteredUsers.length})
             </h2>
           </div>
@@ -470,7 +470,7 @@ export default function AdminUserManagementEnterprise() {
               </div>
             ) : filteredUsers.length === 0 ? (
               <div className="text-center py-12">
-                <Users className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                <Users className="h-16 w-16 text-neutral mx-auto mb-4" />
                 <p className="text-gray-400">No users found</p>
               </div>
             ) : (
@@ -501,7 +501,7 @@ export default function AdminUserManagementEnterprise() {
                 <tbody className="divide-y divide-gray-700">
                   {filteredUsers.map(user => (
                     <tr key={user.user_id} className="hover:bg-gray-700/50">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 var(--color-background)space-nowrap">
                         <input
                           type="checkbox"
                           checked={selectedUsers.includes(user.user_id)}
@@ -515,17 +515,17 @@ export default function AdminUserManagementEnterprise() {
                           className="rounded"
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 var(--color-background)space-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
                             <div className="h-10 w-10 rounded-full bg-gray-600 flex items-center justify-center">
-                              <span className="text-sm font-medium text-white">
+                              <span className="text-sm font-medium text-var(--color-background)">
                                 {user.full_name?.charAt(0) || 'U'}
                               </span>
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-white">
+                            <div className="text-sm font-medium text-var(--color-background)">
                               {user.full_name || 'Unknown User'}
                             </div>
                             <div className="text-sm text-gray-400">
@@ -537,7 +537,7 @@ export default function AdminUserManagementEnterprise() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 var(--color-background)space-nowrap">
                         {getStatusBadge(user)}
                         {user.ban_reason && (
                           <div className="text-xs text-red-400 mt-1">
@@ -545,7 +545,7 @@ export default function AdminUserManagementEnterprise() {
                           </div>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 var(--color-background)space-nowrap">
                         <span className="text-sm text-gray-300">
                           {user.role || 'player'}
                         </span>
@@ -555,13 +555,13 @@ export default function AdminUserManagementEnterprise() {
                           </div>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      <td className="px-6 py-4 var(--color-background)space-nowrap text-sm text-gray-300">
                         {user.elo || 'N/A'}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      <td className="px-6 py-4 var(--color-background)space-nowrap text-sm text-gray-300">
                         {formatDate(user.created_at)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="px-6 py-4 var(--color-background)space-nowrap text-sm font-medium">
                         <div className="flex gap-2">
                           {user.ban_status === 'banned' ? (
                             <button
@@ -602,9 +602,9 @@ export default function AdminUserManagementEnterprise() {
 
         {/* Ban User Modal */}
         {banDialogOpen && selectedUser && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-var(--color-foreground) bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-              <h3 className="text-lg font-bold text-white mb-4">
+              <h3 className="text-lg font-bold text-var(--color-background) mb-4">
                 Ban User: {selectedUser.full_name}
               </h3>
               <div className="space-y-4">
@@ -615,7 +615,7 @@ export default function AdminUserManagementEnterprise() {
                   <textarea
                     value={banReason}
                     onChange={(e) => setBanReason(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     rows={3}
                     placeholder="Enter reason for ban..."
                     required
@@ -628,7 +628,7 @@ export default function AdminUserManagementEnterprise() {
                   <select
                     value={banDuration}
                     onChange={(e) => setBanDuration(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-var(--color-background) focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="permanent">Permanent</option>
                     <option value="7days">7 Days</option>
@@ -642,14 +642,14 @@ export default function AdminUserManagementEnterprise() {
                       setSelectedUser(null)
                       setBanReason('')
                     }}
-                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+                    className="px-4 py-2 bg-gray-600 text-var(--color-background) rounded hover:bg-gray-700 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleBanUser}
                     disabled={!banReason.trim()}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
+                    className="px-4 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700 transition-colors disabled:opacity-50"
                   >
                     Ban User
                   </button>

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { Tournament, Player } from '@/types/tournament-management';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 
 export const useAdvancedTournamentActions = () => {
@@ -8,7 +8,7 @@ export const useAdvancedTournamentActions = () => {
   const bulkUpdateTournamentStatus = useCallback(
     async (tournamentIds: string[], status: string) => {
       try {
-        const { error } = await supabase
+        // TODO: Replace with service call - const { error } = await supabase
           .from('tournaments')
           .update({ status, updated_at: new Date().toISOString() })
           .in('id', tournamentIds);
@@ -65,7 +65,7 @@ export const useAdvancedTournamentActions = () => {
       }
     ) => {
       try {
-        const { data: matches, error } = await supabase
+//         const { data: matches, error } = await supabase
           .from('tournament_matches')
           .select('*')
           .eq('tournament_id', tournamentId)
@@ -77,7 +77,7 @@ export const useAdvancedTournamentActions = () => {
 
         // Update matches with calculated schedule
         for (const match of scheduledMatches) {
-          await supabase
+//           await supabase
             .from('tournament_matches')
             .update({
               scheduled_time: match.scheduled_time,

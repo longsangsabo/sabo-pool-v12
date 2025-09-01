@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from '@/hooks/use-toast';
 
 export interface TournamentReward {
@@ -23,7 +23,7 @@ export const useTournamentRewards = () => {
   const { data: rewards = [], isLoading: loading } = useQuery({
     queryKey: ['tournament-reward-templates'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_reward_templates')
         .select('*')
         .eq('is_active', true)
@@ -47,7 +47,7 @@ export const useTournamentRewards = () => {
     mutationFn: async (
       rewardData: Omit<TournamentReward, 'id' | 'created_at' | 'updated_at'>
     ) => {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_reward_templates')
         .insert(rewardData as any)
         .select()
@@ -82,7 +82,7 @@ export const useTournamentRewards = () => {
       id,
       ...rewardData
     }: Partial<TournamentReward> & { id: string }) => {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_reward_templates')
         .update(rewardData)
         .eq('id', id)
@@ -117,7 +117,7 @@ export const useTournamentRewards = () => {
 
   const deleteRewardMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('tournament_reward_templates')
         .delete()
         .eq('id', id);

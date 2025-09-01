@@ -1,3 +1,8 @@
+import { userService } from "../services/userService";
+import { tournamentService } from "../services/tournamentService";
+import { clubService } from "../services/clubService";
+import { profileService } from "../services/profileService";
+import { rankingService } from "../services/rankingService";
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

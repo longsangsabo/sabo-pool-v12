@@ -10,7 +10,7 @@ interface ScrollableTableProps {
 export const ScrollableTable: React.FC<ScrollableTableProps> = ({
  children,
  className,
- maxHeight = "400px"
+ maxHeight ="400px"
 }) => {
  return (
   <div className='overflow-x-auto'>
@@ -43,8 +43,8 @@ interface ScrollableTableWithStickyHeaderProps {
 export const ScrollableTableWithStickyHeader: React.FC<ScrollableTableWithStickyHeaderProps> = ({
  children,
  className,
- maxHeight = "400px",
- stickyHeaderClassName = "bg-gradient-to-r from-gray-700/50 to-gray-800/50 backdrop-blur-sm sticky top-0 z-10"
+ maxHeight ="400px",
+ stickyHeaderClassName ="bg-gradient-to-r from-gray-700/50 to-gray-800/50 backdrop-blur-sm sticky top-0 z-10"
 }) => {
  return (
   <div className='overflow-x-auto'>

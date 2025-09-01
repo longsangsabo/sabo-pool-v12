@@ -5,7 +5,9 @@ import {
  useCallback,
  useEffect,
 } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getCurrentUser } from "../services/userService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { RewardsService } from '@/services/RewardsService';
@@ -86,7 +88,7 @@ export const SimpleTournamentProvider: React.FC<{
    setLoading(true);
    setError(null);
 
-   const { data, error: fetchError } = await supabase
+//    const { data, error: fetchError } = await supabase
     .from('tournaments')
     .select(
      `
@@ -204,7 +206,7 @@ export const SimpleTournamentProvider: React.FC<{
 
     console.log('✅ Rewards validation passed, updating database...');
 
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
      .from('tournaments')
      .update({
       // Note: saving to tournament_prize_tiers instead

@@ -126,25 +126,25 @@ const DashboardPage = () => {
    label: 'Tạo thách đấu',
    icon: Target,
    route: '/challenges',
-   color: 'bg-primary-500 hover:bg-primary-600 text-white'
+   color: 'bg-primary-500 hover:bg-primary-600 text-var(--color-background)'
   },
   {
    label: 'Xem giải đấu',
    icon: Trophy,
    route: '/tournaments',
-   color: 'bg-success-500 hover:bg-success-600 text-white'
+   color: 'bg-success-500 hover:bg-success-600 text-var(--color-background)'
   },
   {
    label: 'Cập nhật hồ sơ',
    icon: User,
    route: '/profile',
-   color: 'bg-info-500 hover:bg-purple-600 text-white'
+   color: 'bg-info-500 hover:bg-purple-600 text-var(--color-background)'
   },
   {
    label: 'Xem lịch',
    icon: Calendar,
    route: '/schedule',
-   color: 'bg-warning-500 hover:bg-orange-600 text-white'
+   color: 'bg-warning-500 hover:bg-orange-600 text-var(--color-background)'
   }
  ];
 
@@ -205,7 +205,7 @@ const DashboardPage = () => {
      title="Feed Cộng Đồng" 
      description="Hoạt động mới nhất từ cộng đồng bi-a SABO"
      variant="feature"
-     className="bg-black/20 dark:bg-black/30 backdrop-blur-lg border-white/10 text-white"
+     className="bg-var(--color-foreground)/20 dark:bg-var(--color-foreground)/30 backdrop-blur-lg border-var(--color-background)/10 text-var(--color-background)"
      headerActions={
       <div className="flex items-center space-x-2">
        <Button 
@@ -343,7 +343,7 @@ const DashboardPage = () => {
           <div className={`mx-auto w-12 h-12 rounded-lg flex items-center justify-center mb-3 ${action.color}`}>
            <Icon className="w-6 h-6" />
           </div>
-          <div className="font-medium text-slate-100 group-hover:text-white">
+          <div className="font-medium text-slate-100 group-hover:text-var(--color-background)">
            {action.label}
           </div>
          </div>

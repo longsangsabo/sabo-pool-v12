@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { TournamentMatch } from './useTournamentMatches';
 import { useOptimisticTournamentUpdates } from './useOptimisticTournamentUpdates';
 
@@ -36,10 +42,10 @@ export const useEnhancedTournamentMatches = (tournamentId: string | undefined) =
           tournamentId
         );
 
-        const { data: matchesData, error: matchesError } = await supabase
+//         const { data: matchesData, error: matchesError } = await supabase
           .from('tournament_matches')
           .select('*')
-          .eq('tournament_id', tournamentId)
+          .getByTournamentId(tournamentId)
           .order('bracket_type', { ascending: true })
           .order('round_number', { ascending: true })
           .order('match_number', { ascending: true });
@@ -51,21 +57,21 @@ export const useEnhancedTournamentMatches = (tournamentId: string | undefined) =
           (matchesData || []).map(async match => {
             const [player1Profile, player2Profile] = await Promise.all([
               match.player1_id
-                ? supabase
+//                 ? supabase
                     .from('profiles')
                     .select(
                       'user_id, full_name, display_name, avatar_url, verified_rank'
                     )
-                    .eq('user_id', match.player1_id)
+                    .getByUserId(match.player1_id)
                     .single()
                 : { data: null },
               match.player2_id
-                ? supabase
+//                 ? supabase
                     .from('profiles')
                     .select(
                       'user_id, full_name, display_name, avatar_url, verified_rank'
                     )
-                    .eq('user_id', match.player2_id)
+                    .getByUserId(match.player2_id)
                     .single()
                 : { data: null },
             ]);
@@ -100,7 +106,7 @@ export const useEnhancedTournamentMatches = (tournamentId: string | undefined) =
       tournamentId
     );
 
-    const channel = supabase
+//     const channel = supabase
       .channel(`enhanced-tournament-matches-${tournamentId}`)
 
       // Listen to match updates
@@ -187,7 +193,7 @@ export const useEnhancedTournamentMatches = (tournamentId: string | undefined) =
     return () => {
       console.log('🔌 Cleaning up enhanced subscription');
       if (debounceRef.current) clearTimeout(debounceRef.current);
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [tournamentId, optimistic, fetchMatches]);
 

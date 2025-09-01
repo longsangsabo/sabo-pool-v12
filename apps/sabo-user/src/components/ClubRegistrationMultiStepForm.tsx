@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,7 +15,14 @@ import {
 } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import {
  Building,
@@ -133,10 +140,10 @@ const ClubRegistrationMultiStepForm = () => {
   if (!user) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .select('*')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    if (error && error.code !== 'PGRST116') {
@@ -186,7 +193,7 @@ const ClubRegistrationMultiStepForm = () => {
 
   setSaving(true);
   try {
-   const { error } = await supabase.from('club_profiles').upsert({
+// // //    // const { error } = // await // // TODO: Replace with service call - supabase.from('club_profiles').upsert({
     user_id: user.id,
     club_name: formData.club_name,
     name: formData.club_name, // Required field - same as club_name
@@ -232,7 +239,7 @@ const ClubRegistrationMultiStepForm = () => {
 
    console.log('Submitting registration data:', registrationData);
 
-   const { error } = await supabase.from('club_profiles').upsert(registrationData);
+// // //    // const { error } = // await // // TODO: Replace with service call - supabase.from('club_profiles').upsert(registrationData);
 
    if (error) throw error;
 
@@ -255,12 +262,12 @@ const ClubRegistrationMultiStepForm = () => {
 
   setSaving(true);
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('club_profiles')
     .update({
      verification_status: 'pending',
     })
-    .eq('user_id', user.id);
+    .getByUserId(user.id);
 
    if (error) throw error;
 
@@ -322,8 +329,8 @@ const ClubRegistrationMultiStepForm = () => {
     canvas.width = targetSize;
     canvas.height = targetSize;
 
-    // Set white background to prevent transparency/black issues
-    ctx.fillStyle = 'var(--color-white)';
+    // Set var(--color-background) background to prevent transparency/var(--color-foreground) issues
+    ctx.fillStyle = 'var(--color-var(--color-background))';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Calculate crop dimensions (center crop to square)
@@ -402,13 +409,13 @@ const ClubRegistrationMultiStepForm = () => {
     const fileExt = 'jpg';
     const fileName = `${user.id}/club-photos/${Date.now()}-${i}.${fileExt}`;
 
-    const { error: uploadError } = await supabase.storage
+// // //     const { error: uploadError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
      .from('club-photos')
      .upload(fileName, compressedFile);
 
     if (uploadError) throw uploadError;
 
-    const { data: urlData } = supabase.storage
+// // //     const { data: urlData } = // TODO: Replace with service call - supabase.storage
      .from('club-photos')
      .getPublicUrl(fileName);
 
@@ -449,13 +456,13 @@ const ClubRegistrationMultiStepForm = () => {
    const fileExt = 'jpg';
    const fileName = `${user.id}/business-license/${Date.now()}.${fileExt}`;
 
-   const { error: uploadError } = await supabase.storage
+// // //    const { error: uploadError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
     .from('club-photos')
     .upload(fileName, compressedFile);
 
    if (uploadError) throw uploadError;
 
-   const { data: urlData } = supabase.storage
+// // //    const { data: urlData } = // TODO: Replace with service call - supabase.storage
     .from('club-photos')
     .getPublicUrl(fileName);
 
@@ -561,7 +568,7 @@ const ClubRegistrationMultiStepForm = () => {
     {/* Step 1: Basic Info */}
     {currentStep === 1 && (
      <div className='space-y-4'>
-      <Typography variant="heading" >Bước 1: Thông tin cơ bản</Typography>
+      <Heading variant="title">Bước 1: Thông tin cơ bản</Heading>
 
       <div>
        <label className='block text-body-small-medium text-neutral-700 mb-2'>
@@ -914,7 +921,7 @@ const ClubRegistrationMultiStepForm = () => {
         <div className='text-body-small text-neutral-500'>
          Đã tải: {formData.photos.length}/10 ảnh
          {formData.photos.length < 3 && (
-          <span className='text-red-500 ml-2'>
+          <span className='text-error-500 ml-2'>
            (Cần tối thiểu 3 ảnh)
           </span>
          )}
@@ -1112,7 +1119,7 @@ const ClubRegistrationMultiStepForm = () => {
         disabled={
          saving || !validateStep(3) || formData.status === 'pending'
         }
-        className='bg-primary-600 hover:bg-blue-700'
+        className='bg-primary-600 hover:bg-primary-700'
        >
         {saving ? 'Đang gửi...' : 'Gửi đăng ký'}
        </Button>

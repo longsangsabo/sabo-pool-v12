@@ -17,7 +17,11 @@ import {
 } from '@/components/ui/select';
 // Removed Badge (unused)
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import { useChallenges } from '@/hooks/useChallenges';
 import { toast } from 'sonner';
@@ -118,7 +122,7 @@ const ImprovedCreateChallengeModal = ({
    if (!user?.id) return;
 
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('profiles')
      .select('user_id, full_name, avatar_url, current_rank')
      .eq('user_id', user.id)
@@ -141,7 +145,7 @@ const ImprovedCreateChallengeModal = ({
  useEffect(() => {
   const fetchClubs = async () => {
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('club_profiles')
      .select('id, club_name, address')
      .order('club_name');
@@ -175,7 +179,7 @@ const ImprovedCreateChallengeModal = ({
 
   setSearching(true);
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('profiles')
     .select('user_id, full_name, avatar_url, current_rank')
     .ilike('full_name', `%${query}%`)
@@ -317,7 +321,7 @@ const ImprovedCreateChallengeModal = ({
  // Base card style (subtle, no "tech" border) - Enhanced for better visibility
  const sectionCard = isDark
   ? 'rounded-xl bg-slate-800/80 border border-slate-700/80 backdrop-blur-sm p-4 shadow-lg shadow-slate-900/40'
-  : 'rounded-xl bg-white/90 border border-slate-300/80 backdrop-blur-sm p-4 shadow-lg shadow-slate-200/40';
+  : 'rounded-xl bg-var(--color-background)/90 border border-slate-300/80 backdrop-blur-sm p-4 shadow-lg shadow-slate-200/40';
 
  return (
   <>
@@ -328,12 +332,12 @@ const ImprovedCreateChallengeModal = ({
        ? `w-screen h-[100dvh] max-w-none m-0 p-0 rounded-none backdrop-blur-xl border flex flex-col shadow-[0_0_40px_-10px_rgba(0,0,0,0.8)] ${
          isDark 
           ? 'bg-gradient-to-br from-slate-950/98 via-slate-900/95 to-slate-950/98 border-slate-700/90' 
-          : 'bg-gradient-to-br from-white/98 via-slate-50/95 to-white/98 border-slate-300/90'
+          : 'bg-gradient-to-br from-var(--color-background)/98 via-slate-50/95 to-var(--color-background)/98 border-slate-300/90'
         }`
        : `max-w-xl max-h-[92vh] overflow-hidden p-0 backdrop-blur-xl shadow-2xl ${
          isDark 
           ? 'bg-slate-950/95 border-slate-700/90' 
-          : 'bg-white/95 border-slate-300/90'
+          : 'bg-var(--color-background)/95 border-slate-300/90'
         }`
      }
     >
@@ -434,7 +438,7 @@ const ImprovedCreateChallengeModal = ({
             : 'bg-primary-100/80 border-primary-300/80 shadow-md shadow-blue-200/50 text-primary-800 ring-2 ring-blue-400/40'
            : isDark
             ? 'bg-slate-800/60 border-slate-600/70 hover:bg-slate-700/80 text-slate-400'
-            : 'bg-white/80 border-slate-300/70 hover:bg-slate-100/80 text-slate-600'
+            : 'bg-var(--color-background)/80 border-slate-300/70 hover:bg-slate-100/80 text-slate-600'
          }`}
          
         >
@@ -452,7 +456,7 @@ const ImprovedCreateChallengeModal = ({
             : 'bg-primary-100/80 border-primary-300/80 shadow-md shadow-blue-200/50 text-primary-800 ring-2 ring-blue-400/40'
            : isDark
             ? 'bg-slate-800/60 border-slate-600/70 hover:bg-slate-700/80 text-slate-400'
-            : 'bg-white/80 border-slate-300/70 hover:bg-slate-100/80 text-slate-600'
+            : 'bg-var(--color-background)/80 border-slate-300/70 hover:bg-slate-100/80 text-slate-600'
          }`}
          
         >
@@ -492,7 +496,7 @@ const ImprovedCreateChallengeModal = ({
           className={`h-11 placeholder:text-slate-500 ${
            isDark
             ? 'bg-slate-800/60 border-slate-700 text-slate-100'
-            : 'bg-white border-slate-300 text-slate-700'
+            : 'bg-var(--color-background) border-slate-300 text-slate-700'
           }`}
          />
          <Search className='absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400' />
@@ -507,7 +511,7 @@ const ImprovedCreateChallengeModal = ({
           className={`max-h-48 overflow-y-auto rounded-lg shadow-inner border ${
            isDark
             ? 'bg-slate-900/80 border-slate-700'
-            : 'bg-white/80 border-slate-200'
+            : 'bg-var(--color-background)/80 border-slate-200'
           }`}
          >
           {searchResults.map(player => (
@@ -583,7 +587,7 @@ const ImprovedCreateChallengeModal = ({
             {selectedOpponent.ranking_points || 0} điểm
            </div>
           </div>
-          <CheckCircle className='w-5 h-5 text-green-500 ml-auto drop-shadow-[0_0_4px_rgba(34,197,94,0.5)]' />
+          <CheckCircle className='w-5 h-5 text-success-500 ml-auto drop-shadow-[0_0_4px_rgba(34,197,94,0.5)]' />
          </div>
         )}
        </div>
@@ -659,7 +663,7 @@ const ImprovedCreateChallengeModal = ({
               : 'bg-gradient-to-br from-indigo-400/15 via-sky-300/10 to-fuchsia-400/15 border-indigo-300/60 ring-1 ring-indigo-300/40 shadow-[0_0_6px_-1px_rgba(99,102,241,0.25)]'
              : isDark
               ? 'bg-slate-900/50 border-slate-700 hover:bg-slate-900/70 text-slate-300'
-              : 'bg-white/70 border-slate-300 hover:bg-slate-50 text-slate-600'
+              : 'bg-var(--color-background)/70 border-slate-300 hover:bg-slate-50 text-slate-600'
            }`}
            
           >
@@ -719,7 +723,7 @@ const ImprovedCreateChallengeModal = ({
           className={`h-11 placeholder:text-slate-500 ${
            isDark
             ? 'bg-slate-800/60 border-slate-700 text-slate-100'
-            : 'bg-white border-slate-300 text-slate-700'
+            : 'bg-var(--color-background) border-slate-300 text-slate-700'
           }`}
          >
           <SelectValue placeholder='Chọn hạng yêu cầu' />
@@ -728,7 +732,7 @@ const ImprovedCreateChallengeModal = ({
           className={
            isDark
             ? 'bg-slate-900 border-slate-700 text-slate-100'
-            : 'bg-white border-slate-200 text-slate-700'
+            : 'bg-var(--color-background) border-slate-200 text-slate-700'
           }
          >
           <SelectItem value="all">Tất cả hạng</SelectItem>
@@ -766,7 +770,7 @@ const ImprovedCreateChallengeModal = ({
          className={`h-11 placeholder:text-slate-500 ${
           isDark
            ? 'bg-slate-800/60 border-slate-700 text-slate-100'
-           : 'bg-white border-slate-300 text-slate-700'
+           : 'bg-var(--color-background) border-slate-300 text-slate-700'
          }`}
         >
          <SelectValue placeholder='Chọn câu lạc bộ' />
@@ -775,7 +779,7 @@ const ImprovedCreateChallengeModal = ({
          className={
           (isDark
            ? 'bg-slate-900 border-slate-700 text-slate-100'
-           : 'bg-white border-slate-200 text-slate-700') +
+           : 'bg-var(--color-background) border-slate-200 text-slate-700') +
           ' max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-500 rounded-lg shadow-xl min-w-[280px] p-1'
          }
          position='popper'
@@ -825,7 +829,7 @@ const ImprovedCreateChallengeModal = ({
         className={`h-11 ${
          isDark
           ? 'bg-slate-800/60 border-slate-700 text-slate-100'
-          : 'bg-white border-slate-300 text-slate-700'
+          : 'bg-var(--color-background) border-slate-300 text-slate-700'
         }`}
        />
       </div>
@@ -837,7 +841,7 @@ const ImprovedCreateChallengeModal = ({
      <div className={`absolute inset-x-0 bottom-0 pt-4 pb-5 px-4 border-t backdrop-blur-xl ${
       isDark 
        ? 'border-slate-700/90 bg-gradient-to-t from-slate-950/98 via-slate-950/95 to-slate-950/60' 
-       : 'border-slate-300/90 bg-gradient-to-t from-white/98 via-white/95 to-white/60'
+       : 'border-slate-300/90 bg-gradient-to-t from-var(--color-background)/98 via-var(--color-background)/95 to-var(--color-background)/60'
      }`}>
       <div className='flex gap-3'>
        <Button
@@ -846,8 +850,8 @@ const ImprovedCreateChallengeModal = ({
         onClick={onClose}
         className={`flex-1 h-12 button-text uppercase tracking-wide transition-all ${
          isDark 
-          ? 'border-slate-600/80 bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-700' 
-          : 'border-slate-400/80 bg-white/80 text-slate-600 hover:text-slate-800 hover:bg-slate-200'
+          ? 'border-slate-600/80 bg-slate-800/50 text-slate-300 hover:text-var(--color-background) hover:bg-slate-700' 
+          : 'border-slate-400/80 bg-var(--color-background)/80 text-slate-600 hover:text-slate-800 hover:bg-slate-200'
         }`}
        >
         Hủy {isDark ? '🌙' : '☀️'}

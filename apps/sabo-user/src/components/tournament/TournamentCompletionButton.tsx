@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Trophy, Loader2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { completeTournamentWithAutomation } from '@/services/tournamentService';
 import { toast } from 'sonner';
 import {
  AlertDialog,
@@ -37,15 +37,9 @@ const TournamentCompletionButton: React.FC<TournamentCompletionButtonProps> = ({
 
    toast.info('Đang xử lý hoàn thành giải đấu...');
 
-   const { data, error } = await supabase.functions.invoke(
-    'tournament-completion-automation',
-    {
-     body: {
-      tournament_id: tournamentId,
-      trigger_type: 'manual',
-      use_club_force: true, // Enable club force completion for club owners
-     },
-    }
+   const { data, error } = await completeTournamentWithAutomation(
+     tournamentId,
+     'manual'
    );
 
    if (error) {
@@ -138,7 +132,6 @@ const TournamentCompletionButton: React.FC<TournamentCompletionButtonProps> = ({
      <AlertDialogAction
       onClick={handleCompleteTournament}
       disabled={isCompleting}
-      variant="default"
      >
       {isCompleting ? (
        <>

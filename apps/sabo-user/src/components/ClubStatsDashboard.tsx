@@ -4,6 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import {
  Users,
  Shield,
@@ -261,7 +265,7 @@ const ClubStatsDashboard = () => {
          {stats?.active_members || 0}
         </p>
        </div>
-       <Users className='w-8 h-8 text-blue-500' />
+       <Users className='w-8 h-8 text-primary-500' />
       </div>
      </CardContent>
     </Card>
@@ -275,7 +279,7 @@ const ClubStatsDashboard = () => {
          {stats?.verified_members || 0}
         </p>
        </div>
-       <Shield className='w-8 h-8 text-green-500' />
+       <Shield className='w-8 h-8 text-success-500' />
       </div>
      </CardContent>
     </Card>

@@ -30,7 +30,7 @@ export const FormInput: React.FC<FormInputProps> = ({
  return (
   <div className={`space-y-2 ${className}`}>
    <Label htmlFor={id}>
-    {label} {required && <span className='text-red-500'>*</span>}
+    {label} {required && <span className='text-error-500'>*</span>}
    </Label>
    <Input
     id={id}

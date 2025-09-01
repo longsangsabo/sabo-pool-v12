@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { UserProfile } from '@/types/common';
 import { useProfile } from '@/hooks/useProfile';
 
@@ -51,7 +54,7 @@ export const useSmartMatching = () => {
 
   try {
    // Get current user profile
-   const { data: userProfile } = await supabase
+//    const { data: userProfile } = await supabase
     .from('profiles')
     .select('*')
     .eq('user_id', currentUser.id)
@@ -60,7 +63,7 @@ export const useSmartMatching = () => {
    if (!userProfile) return [];
 
    // Get potential matches
-   const { data: potentialMatches } = await supabase
+//    const { data: potentialMatches } = await supabase
     .from('profiles')
     .select('*')
     .neq('user_id', currentUser.id)

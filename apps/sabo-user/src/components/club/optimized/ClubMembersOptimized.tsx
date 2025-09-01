@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,11 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useClubRole } from '@/hooks/useClubRole';
 import { supabase } from '@/integrations/supabase/client';
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { approveRankRequest } from '../../../services/userService';
 import { toast } from 'sonner';
 import TrustScoreBadge from '@/components/TrustScoreBadge';
 
@@ -327,18 +332,7 @@ const ClubMembersOptimized: React.FC = () => {
    console.log('🔧 Processing approval with manual function...');
 
    // Use the manual approval function instead of direct update
-   const { data: approvalResult, error: approvalError } = await supabase.rpc(
-    'manual_approve_rank_request',
-    {
-     p_request_id: requestId,
-     p_approver_id: user.id
-    }
-   );
-
-   if (approvalError) {
-    console.error('❌ Error calling approval function:', approvalError);
-    throw new Error('Lỗi khi gọi function duyệt: ' + approvalError.message);
-   }
+   const approvalResult = await approveRankRequest(requestId, user.id);
 
    if (!approvalResult?.success) {
     console.error('❌ Approval function failed:', approvalResult);
@@ -683,10 +677,10 @@ const ClubMembersOptimized: React.FC = () => {
             <div className='ml-4'>
              {notification.type ===
               'rank_verification_request' && (
-              <UserCheck className='w-5 h-5 text-blue-500' />
+              <UserCheck className='w-5 h-5 text-primary-500' />
              )}
              {notification.type === 'new_match' && (
-              <Trophy className='w-5 h-5 text-green-500' />
+              <Trophy className='w-5 h-5 text-success-500' />
              )}
              {notification.type === 'club_member_joined' && (
               <Users className='w-5 h-5 text-purple-500' />

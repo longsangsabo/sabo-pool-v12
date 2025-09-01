@@ -5,34 +5,12 @@ const RankColorReference = () => {
  const allRanks = Object.keys(rankColors);
 
  return (
-  <div
-   style={{
-    padding: '20px',
-    fontFamily: "'Orbitron', monospace",
-    background: '#f8f9fa',
-    borderRadius: '12px',
-    margin: '20px',
-   }}
-  >
-   <h2
-    style={{
-     textAlign: 'center',
-     marginBottom: '20px',
-     color: '#1f2937',
-     fontSize: '24px',
-     fontWeight: 700,
-    }}
-   >
+  <div className="p-5 font-mono bg-gray-50 rounded-xl m-5">
+   <h2 className="text-center mb-5 text-gray-800 text-2xl font-bold">
     🎱 Bảng Màu Hạng - Sabo Billiards
    </h2>
 
-   <div
-    style={{
-     display: 'grid',
-     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-     gap: '16px',
-    }}
-   >
+   <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
     {allRanks.map(rank => {
      const rankInfo = rankColors[rank as keyof typeof rankColors];
      const IconComponent = rankInfo.icon;
@@ -41,12 +19,12 @@ const RankColorReference = () => {
       <div
        key={rank}
        style={{
-        background: 'white',
+        background: 'var(--color-background)',
         border: `3px solid ${rankInfo.borderColor}`,
         borderRadius: '12px',
         padding: '16px',
-        textAlign: 'center',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+        className="text-center",
+        boxShadow: '0 4px 12px var(--color-var(--color-foreground)-10)',
         transition: 'transform 0.3s ease',
         cursor: 'pointer',
        }}
@@ -57,15 +35,7 @@ const RankColorReference = () => {
         e.currentTarget.style.transform = 'translateY(0)';
        }}
       >
-       <div
-        style={{
-         display: 'flex',
-         alignItems: 'center',
-         justifyContent: 'center',
-         gap: '12px',
-         marginBottom: '12px',
-        }}
-       >
+       <div className="flex items-center justify-center gap-3 mb-3">
         <IconComponent
          style={{
           color: rankInfo.color,
@@ -75,82 +45,44 @@ const RankColorReference = () => {
          }}
         />
         <span
-         style={{
-          background: rankInfo.gradient,
+         style={{ background: rankInfo.gradient,
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
           fontSize: '20px',
-          fontWeight: 700,
-          letterSpacing: '2px',
-         }}
+          className="font-bold",
+          letterSpacing: '2px', }}
         >
          RANK {rank}
         </span>
        </div>
 
-       <div
-        style={{
-         fontSize: '14px',
-         color: '#6b7280',
-         marginBottom: '8px',
-         fontWeight: 500,
-        }}
-       >
+       <div className="text-sm text-gray-500 mb-2 font-medium">
         {rankInfo.name}
        </div>
 
        <div
-        style={{
-         fontSize: '12px',
-         color: rankInfo.color,
-         fontFamily: 'monospace',
-         fontWeight: 600,
-         letterSpacing: '1px',
-        }}
+        className="text-xs font-semibold font-mono tracking-wide"
+        style={{ color: rankInfo.color }}
        >
         {rankInfo.color}
        </div>
 
        <div
-        style={{
-         marginTop: '8px',
-         height: '4px',
-         background: rankInfo.gradient,
-         borderRadius: '2px',
-        }}
+        className="mt-2 h-1 rounded-sm"
+        style={{ background: rankInfo.gradient }}
        ></div>
       </div>
      );
     })}
    </div>
 
-   <div
-    style={{
-     marginTop: '30px',
-     padding: '16px',
-     background: 'white',
-     borderRadius: '8px',
-     border: '2px solid var(--color-gray-200)',
-    }}
-   >
-    <h3
-     style={{
-      color: '#1f2937',
-      marginBottom: '12px',
-      fontSize: '16px',
-      fontWeight: 600,
-     }}
-    >
+   <div className="mt-8 p-4 bg-background rounded-lg border-2 border-gray-200">
+    <h3 className="text-gray-800 mb-3 text-base font-semibold">
      📋 Hướng dẫn sử dụng:
     </h3>
     <ul
-     style={{
-      color: 'var(--color-gray-600)',
-      fontSize: '14px',
-      lineHeight: '1.6',
-      paddingLeft: '20px',
-     }}
+     className="text-gray-600 text-sm leading-relaxed pl-5"
     >
      <li>Mỗi hạng có màu sắc và icon riêng biệt</li>
      <li>Font chữ sử dụng: Orbitron, Exo 2, Rajdhani</li>

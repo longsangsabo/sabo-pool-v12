@@ -8,7 +8,10 @@ import { Challenge } from '@/types/challenge';
 import EnhancedChallengeCard, { EnhancedChallengeCardGrid } from '@/components/challenges/EnhancedChallengeCard';
 import ClubApprovalCard from '@/components/challenges/ClubApprovalCard';
 import { useClubAdminCheck } from '@/hooks/useClubAdminCheck';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { cn } from '@/lib/utils';
 
 interface ClubChallengesTabProps {
@@ -33,7 +36,7 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
  useEffect(() => {
   const fetchClubChallenges = async () => {
    try {
-    let query = supabase
+//     let query = supabase
      .from('challenges')
      .select(`
       *,
@@ -109,7 +112,7 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
    id: 'active',
    title: 'Đang diễn ra',
    icon: Target,
-   color: 'text-red-500 dark:text-red-400',
+   color: 'text-error-500 dark:text-red-400',
    bgColor: 'bg-error-50 dark:bg-red-950/30',
    data: activeChalllenges,
    variant: 'live' as const,
@@ -119,7 +122,7 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
    id: 'upcoming',
    title: 'Sắp tới',
    icon: Clock,
-   color: 'text-blue-500 dark:text-blue-400',
+   color: 'text-primary-500 dark:text-blue-400',
    bgColor: 'bg-primary-50 dark:bg-blue-950/30',
    data: upcomingChallenges,
    variant: 'upcoming' as const,
@@ -129,7 +132,7 @@ const ClubChallengesTab: React.FC<ClubChallengesTabProps> = ({
    id: 'completed',
    title: 'Hoàn thành',
    icon: Trophy,
-   color: 'text-green-500 dark:text-green-400',
+   color: 'text-success-500 dark:text-green-400',
    bgColor: 'bg-success-50 dark:bg-green-950/30',
    data: completedChallenges,
    variant: 'completed' as const,

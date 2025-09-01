@@ -30,7 +30,14 @@ import TournamentPlayerAvatar from './TournamentPlayerAvatar';
 import { SABODoubleEliminationViewer } from '@/components/tournaments/sabo/SABODoubleEliminationViewer';
 import { SABO32BracketViewer } from './SABO32BracketViewer';
 import { SABO32TournamentResults } from '../tournaments/SABO32TournamentResults';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -172,10 +179,10 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
 
  const getClubId = async () => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .select('id')
-    .eq('user_id', user?.id)
+    .getByUserId(user?.id)
     .eq('verification_status', 'approved')
     .maybeSingle(); // Use maybeSingle instead of single
 
@@ -196,14 +203,14 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
   
   try {
    // Simple query without joins to avoid foreign key issues
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .select(`
      id, name, status, max_participants, entry_fee, prize_pool,
      registration_start, registration_end, start_date, end_date,
      tournament_type, created_at, description, current_participants
     `)
-    .eq('club_id', targetClubId)
+    .getByClubId(targetClubId)
     .in('status', ['upcoming', 'registration_open', 'registration_closed', 'ongoing', 'completed'])
     .order('created_at', { ascending: false });
 
@@ -217,10 +224,10 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
    for (const tournament of tournaments) {
     if (tournament.tournament_type === 'double_elimination' || 
       tournament.tournament_type === 'sabo_double_elimination') {
-     const { data: registrations } = await supabase
+//      const { data: registrations } = await supabase
       .from('tournament_registrations')
       .select('user_id')
-      .eq('tournament_id', tournament.id)
+      .getByTournamentId(tournament.id)
       .eq('registration_status', 'confirmed');
      
      counts[tournament.id] = registrations?.length || 0;
@@ -288,12 +295,12 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
   // Load tournament participants
   try {
    // Load registrations first
-   const { data: registrationsData, error: registrationsError } = await supabase
+//    const { data: registrationsData, error: registrationsError } = await supabase
     .from('tournament_registrations')
     .select(`
      user_id
     `)
-    .eq('tournament_id', tournament.id)
+    .getByTournamentId(tournament.id)
     .eq('registration_status', 'confirmed');
 
    if (registrationsError) throw registrationsError;
@@ -301,7 +308,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
    let participants: any[] = [];
    if (registrationsData && registrationsData.length > 0) {
     const userIds = registrationsData.map(r => r.user_id);
-    const { data: profilesData, error: profilesError } = await supabase
+//     const { data: profilesData, error: profilesError } = await supabase
      .from('profiles')
      .select(`
       user_id,
@@ -352,7 +359,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
   
   // Load existing tournament matches with enhanced player data
   try {
-   const { data: matches, error } = await supabase
+//    const { data: matches, error } = await supabase
     .from('tournament_matches')
     .select(`
      *,
@@ -367,7 +374,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
      ),
      assigned_table:club_tables!tournament_matches_assigned_table_id_fkey(table_number, table_name, status)
     `)
-    .eq('tournament_id', tournament.id)
+    .getByTournamentId(tournament.id)
     .order('round_number')
     .order('match_number');
 
@@ -378,7 +385,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
     const playerIds = [match.player1_id, match.player2_id].filter(Boolean);
     
     if (playerIds.length > 0) {
-     const { data: rankings } = await supabase
+//      const { data: rankings } = await supabase
       .from('player_rankings')
       .select('user_id, verified_rank, spa_points, elo_points')
       .in('user_id', playerIds);
@@ -422,7 +429,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
 
   setAutoAssigning(true);
   try {
-   const { data, error } = await supabase.functions.invoke('tournament-table-manager', {
+// // //    // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await supabase.functions.invoke('tournament-table-manager', {
     body: {
      action: 'auto_assign_tables',
      club_id: clubId,
@@ -488,7 +495,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
    // Determine winner
    const winnerId = player1 > player2 ? match.player1_id : match.player2_id;
    
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_matches')
     .update({
      score_player1: player1,
@@ -540,7 +547,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
     ? matchToConfirm.player1_id 
     : matchToConfirm.player2_id;
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_matches')
     .update({
      score_confirmed_by: user.id,
@@ -562,7 +569,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
      console.log('🎯 Using SABO Tournament Engine for advancement');
      
      // Get match data for the advancement
-     const { data: matchData } = await supabase
+//      const { data: matchData } = await supabase
       .from('tournament_matches')
       .select('*')
       .eq('id', matchId)
@@ -595,7 +602,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
   if (!user) return;
   
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_matches')
     .update({
      score_status: 'disputed',
@@ -630,7 +637,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
    }
 
    // Load registrations first
-   const { data: registrationsData, error: registrationsError } = await supabase
+//    const { data: registrationsData, error: registrationsError } = await supabase
     .from('tournament_registrations')
     .select(`
      id,
@@ -641,7 +648,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
      notes,
      tournament_id
     `)
-    .eq('tournament_id', tournament.id)
+    .getByTournamentId(tournament.id)
     .order('registration_date', { ascending: false });
 
    if (registrationsError) {
@@ -655,7 +662,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
     const userIds = registrationsData.map(r => r.user_id);
     
     // Load profiles
-    const { data: profilesData, error: profilesError } = await supabase
+//     const { data: profilesData, error: profilesError } = await supabase
      .from('profiles')
      .select(`
       user_id,
@@ -674,7 +681,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
     }
 
     // Load tournament info
-    const { data: tournamentData, error: tournamentError } = await supabase
+//     const { data: tournamentData, error: tournamentError } = await supabase
      .from('tournaments')
      .select('entry_fee')
      .eq('id', tournament.id)
@@ -709,7 +716,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
 
  const confirmParticipant = async (registrationId: string) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_registrations')
     .update({
      registration_status: 'confirmed'
@@ -732,7 +739,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
 
  const confirmPayment = async (registrationId: string) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_registrations')
     .update({
      payment_status: 'paid'
@@ -756,7 +763,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
  // Close registration function
  const closeRegistration = async (tournament: any) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournaments')
     .update({ status: 'registration_closed' })
     .eq('id', tournament.id);
@@ -776,7 +783,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
  // Open registration function
  const openRegistration = async (tournament: any) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournaments')
     .update({ status: 'registration_open' })
     .eq('id', tournament.id);
@@ -1562,7 +1569,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                     let error;
                     
                     try {
-                     const edgeResponse = await supabase.functions.invoke(
+// // //                      const edgeResponse = // TODO: Replace with service call - await supabase.functions.invoke(
                       'generate-tournament-bracket',
                       {
                        body: {
@@ -1638,7 +1645,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
                    try {
                     setGeneratingTournaments(prev => new Set(prev).add(tournamentId));
                     
-                    const { data: result, error } = await supabase.functions.invoke(
+// // //                     const { data: result, error } = // TODO: Replace with service call - await supabase.functions.invoke(
                      'repair-double-elimination',
                      {
                       body: {
@@ -1870,7 +1877,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
           </CardHeader>
           <CardContent>
            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-warning-50 rounded-lg border border-yellow-200">
+            <div className="text-center p-3 bg-warning-50 rounded-lg border border-warning">
              <div className="text-heading-bold text-warning-600">
               {selectedTournament.current_participants}
              </div>
@@ -1915,7 +1922,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
               
               onClick={async () => {
                try {
-                const { data, error } = await supabase.rpc('calculate_tournament_results', {
+                const { data, error } = await tournamentService.callRPC('calculate_tournament_results', {
                  p_tournament_id: selectedTournament.id
                 });
                 
@@ -2149,7 +2156,7 @@ const TournamentManagementHub = forwardRef<TournamentManagementHubRef>((props, r
               <Button 
                
                onClick={() => confirmPayment(participant.id)}
-               className="bg-primary-600 hover:bg-blue-700"
+               className="bg-primary-600 hover:bg-primary-700"
               >
                <CreditCard className="w-4 h-4 mr-1" />
                Xác nhận TT

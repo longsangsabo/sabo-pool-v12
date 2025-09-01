@@ -22,7 +22,7 @@ const LiveStreamPage: React.FC = () => {
  }, [streamId]);
 
  return (
-  <div className='min-h-screen bg-black'>
+  <div className='min-h-screen bg-var(--color-foreground)'>
    <LiveStream
     streamId={streamId || 'default'}
     title={streamData.title}

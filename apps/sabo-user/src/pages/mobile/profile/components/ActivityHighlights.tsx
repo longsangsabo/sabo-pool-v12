@@ -53,7 +53,7 @@ export const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({
    className={`overflow-hidden ${
     theme === 'dark'
      ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
-     : 'bg-white border-slate-200'
+     : 'bg-var(--color-background) border-slate-200'
    }`}
   >
    <CardHeader className='pb-3'>
@@ -120,16 +120,16 @@ export const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({
         getResultColor(match.title.split(' ')[0])
        } ${
         theme === 'dark'
-         ? 'backdrop-blur-sm border border-white/10'
-         : 'border border-black/10'
+         ? 'backdrop-blur-sm border border-var(--color-background)/10'
+         : 'border border-var(--color-foreground)/10'
        }`}
       >
        <div className='flex items-center gap-3'>
         <div
          className={`w-8 h-8 rounded-lg flex items-center justify-center ${
           theme === 'dark'
-           ? 'bg-white/10 backdrop-blur-sm'
-           : 'bg-black/10'
+           ? 'bg-var(--color-background)/10 backdrop-blur-sm'
+           : 'bg-var(--color-foreground)/10'
          }`}
         >
          {getResultIcon(match.title.split(' ')[0])}

@@ -54,11 +54,11 @@ export const ProfileTabsMobile: React.FC<ProfileTabsMobileProps> = ({
     const color = tab.color[theme];
     const activeClasses =
      theme === 'dark'
-      ? 'text-white border-b-2'
+      ? 'text-var(--color-background) border-b-2'
       : 'text-slate-900 border-b-2';
     const inactiveClasses =
      theme === 'dark'
-      ? 'text-slate-300 hover:text-white'
+      ? 'text-slate-300 hover:text-var(--color-background)'
       : 'text-slate-600 hover:text-slate-900';
     return (
      <Button

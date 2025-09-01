@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 
 interface SPAAnalyticsData {
@@ -44,7 +47,7 @@ export function useSPAAnalytics() {
    if (!user?.id) return null;
 
    // Get current SPA points
-   const { data: currentRanking } = await supabase
+//    const { data: currentRanking } = await supabase
     .from('player_rankings')
     .select('spa_points')
     .eq('user_id', user.id)
@@ -92,7 +95,7 @@ export function useSPAAnalytics() {
   queryKey: ['system-spa-analytics'],
   queryFn: async () => {
    // Get system-wide stats
-   const { data: playersWithSPA, count } = await supabase
+//    const { data: playersWithSPA, count } = await supabase
     .from('player_rankings')
     .select('spa_points', { count: 'exact' })
     .gt('spa_points', 0);
@@ -102,7 +105,7 @@ export function useSPAAnalytics() {
      (count || 1) || 0;
 
    // Get top SPA player
-   const { data: topPlayer } = await supabase
+//    const { data: topPlayer } = await supabase
     .from('player_rankings')
     .select(
      `

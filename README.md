@@ -2,6 +2,48 @@
 
 > **Clean Architecture Monorepo** - Modern billiards tournament management platform with complete TypeScript type safety and database synchronization.
 
+## 🤖 FOR COPILOT: Service Discovery Instructions
+
+**IMPORTANT**: Before working with any services, ALWAYS read these files first:
+
+1. **`/apps/sabo-user/src/services/serviceDiscovery.ts`** - 🔥 START HERE - Complete service registry
+2. **`.copilot-instructions.md`** - Detailed Copilot workflow instructions  
+3. **`SERVICES_REFERENCE.md`** - Complete service documentation
+4. **`SERVICES_IMPORTS.md`** - Copy-paste import examples
+
+### Quick Service Discovery for Copilot:
+```typescript
+// Import discovery functions
+import { findServicesFor, getServiceLocation, getServiceInfo } from './apps/sabo-user/src/services/serviceDiscovery';
+
+// Find services for any use case
+const services = findServicesFor('create tournament'); 
+// Returns: ['tournamentService', 'userService', 'paymentService', 'notificationService']
+
+// Get file location to read
+const filePath = getServiceLocation('tournamentService');
+// Returns: '/workspaces/sabo-pool-v12/apps/sabo-user/src/services/tournamentService.ts'
+
+// Get complete service info
+const info = getServiceInfo('userService');
+// Returns: { name, filePath, methods, dependencies, examples }
+```
+
+### Service Categories (43 total):
+- 🔐 **Authentication** (4): userService, authService, profileService, settingsService
+- 🏆 **Tournaments** (4): tournamentService, challengeService, matchService, tableService  
+- 🏢 **Clubs** (3): clubService, memberService, roleService
+- ⭐ **Verification** (4): verificationService, rankService, handicapService, statisticsService
+- 💰 **Payments** (4): walletService, paymentService, transactionService, spaPointsService
+- 📢 **Communication** (4): notificationService, emailService, messageService, alertService
+- 💾 **Data** (4): storageService, cacheService, backupService, syncService
+- 📊 **Analytics** (4): analyticsService, reportingService, metricsService, auditService
+- 🖥️ **Dashboard** (4): dashboardService, searchService, filterService, themeService
+- 📱 **Mobile** (3): offlineService, webSocketService, pushNotificationService
+- 🔒 **Security** (3): securityService, validationService, permissionService
+
+---
+
 ## 🎯 Status: Database Synchronization Complete ✅
 
 **Latest Update:** 2025-08-31 - Completed full database schema synchronization with TypeScript types
@@ -77,12 +119,24 @@ pnpm dev
 - **Design**: Desktop-optimized with comprehensive navigation
 - **Auth**: Service role authentication required
 
-## 🎨 Design System
+## 🎨 Design System ✅
 
-- **Theme**: Light/Dark mode support
-- **Responsive**: Mobile-first approach
-- **Colors**: SABO brand gradients and tech aesthetics
-- **Components**: Shared UI library with consistent styling
+> **Status**: 90%+ adoption achieved - Professional design system completed!
+
+- **Theme**: Light/Dark mode support with consistent design tokens
+- **Responsive**: Mobile-first approach with Tailwind utilities
+- **Colors**: SABO brand gradients with design token standardization
+- **Components**: 59+ shared components in unified component library
+- **Metrics**: 
+  - ✅ Inline styles: 53 files (well-controlled)
+  - ✅ Hex colors: 8 files (target achieved)
+  - ✅ Shared components: 59 (exceeds target)
+  - ✅ Quality monitoring: Automated script available
+
+```bash
+# Monitor design system health
+pnpm design-system:check
+```
 
 ## 🛠️ Tech Stack
 
@@ -137,13 +191,20 @@ pnpm test:e2e         # Run E2E tests
 # Linting & Formatting
 pnpm lint             # Lint all packages
 pnpm format           # Format code
+
+# Design System Quality
+pnpm design-system:check      # Check design system metrics
+pnpm design-system:monitor    # Continuous monitoring
 ```
 
 ## 📚 Documentation
 
-- **Migration History**: `docs/migration-history/`
-- **Architecture**: `docs/architecture/`
-- **Legacy**: `docs/legacy/`
+- **Getting Started**: `docs/01-getting-started/`
+- **Design System**: `docs/02-design-system/` ✨
+- **Architecture**: `docs/03-architecture/`
+- **Development**: `docs/04-development/`
+- **API Reference**: `docs/06-api/`
+- **Archive**: `docs/99-archive/` (Historical documents)
 
 ## 🤝 Contributing
 

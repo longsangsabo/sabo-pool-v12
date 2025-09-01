@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getRanks, createRank, updateRank, deleteRank } from '../services/rankService';
 import { toast } from '@/hooks/use-toast';
 
 export const useRankDefinitions = () => {
@@ -9,12 +9,9 @@ export const useRankDefinitions = () => {
   const fetchRanks = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('ranks')
-        .select('*')
-        .order('rank_order');
+      const { data, error } = await getRanks();
 
-      if (error) throw error;
+      if (error) throw new Error(error);
       setRanks(data || []);
     } catch (error) {
       console.error('Error fetching ranks:', error);
@@ -28,16 +25,13 @@ export const useRankDefinitions = () => {
     }
   };
 
-  const createRank = async (rankData: any) => {
+  const createRankDefinition = async (rankData: any) => {
     try {
-      const { data, error } = await supabase
-        .from('ranks')
-        .insert([rankData])
-        .select();
+      const { data, error } = await createRank(rankData);
 
-      if (error) throw error;
+      if (error) throw new Error(error);
 
-      setRanks(prev => [...prev, ...(data || [])]);
+      setRanks(prev => [...prev, data]);
       toast({
         title: 'Success',
         description: 'Rank created successfully',
@@ -52,15 +46,11 @@ export const useRankDefinitions = () => {
     }
   };
 
-  const updateRank = async (id: string, rankData: any) => {
+  const updateRankDefinition = async (id: string, rankData: any) => {
     try {
-      const { data, error } = await supabase
-        .from('ranks')
-        .update(rankData)
-        .eq('id', id)
-        .select();
+      const { data, error } = await updateRank(id, rankData);
 
-      if (error) throw error;
+      if (error) throw new Error(error);
 
       setRanks(prev =>
         prev.map(rank => (rank.id === id ? data?.[0] || rank : rank))
@@ -80,11 +70,11 @@ export const useRankDefinitions = () => {
     }
   };
 
-  const deleteRank = async (id: string) => {
+  const deleteRankDefinition = async (id: string) => {
     try {
-      const { error } = await supabase.from('ranks').delete().eq('id', id);
+      const { error } = await deleteRank(id);
 
-      if (error) throw error;
+      if (error) throw new Error(error);
 
       setRanks(prev => prev.filter(rank => rank.id !== id));
       toast({
@@ -104,12 +94,9 @@ export const useRankDefinitions = () => {
   const reorderRanks = async (id: string, newOrder: number) => {
     try {
       // First, update the target rank's order
-      const { error } = await supabase
-        .from('ranks')
-        .update({ rank_order: newOrder })
-        .eq('id', id);
+      const { error } = await updateRank(id, { rank_order: newOrder });
 
-      if (error) throw error;
+      if (error) throw new Error(error);
 
       // Refresh the list to get updated order
       await fetchRanks();
@@ -135,9 +122,9 @@ export const useRankDefinitions = () => {
   return {
     ranks,
     loading,
-    createRank,
-    updateRank,
-    deleteRank,
+    createRank: createRankDefinition,
+    updateRank: updateRankDefinition,
+    deleteRank: deleteRankDefinition,
     reorderRanks,
     refetch: fetchRanks,
   };

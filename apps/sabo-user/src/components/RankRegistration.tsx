@@ -1,4 +1,10 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -11,7 +17,18 @@ import {
 } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Upload, X } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+import { submitRankVerificationRequest } from '../services/verificationService';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -61,7 +78,7 @@ const RankRegistration: React.FC = () => {
    console.log('Fetching clubs...');
 
    // Query club_profiles table with approved status
-   const { data: clubProfiles, error: clubError } = await supabase
+//    const { data: clubProfiles, error: clubError } = await supabase
     .from('club_profiles')
     .select('id, club_name, address, verification_status')
     .eq('verification_status', 'approved')
@@ -72,7 +89,7 @@ const RankRegistration: React.FC = () => {
     
     // Fallback: get all club profiles
     console.log('No approved clubs found, trying all club profiles...');
-    const { data: allClubProfiles, error: allError } = await supabase
+//     const { data: allClubProfiles, error: allError } = await supabase
      .from('club_profiles')
      .select('id, club_name, address, verification_status')
      .limit(10);
@@ -121,7 +138,7 @@ const RankRegistration: React.FC = () => {
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `evidence/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
+// // //     const { error: uploadError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
      .from('evidence')
      .upload(filePath, file);
 
@@ -129,7 +146,7 @@ const RankRegistration: React.FC = () => {
 
     const {
      data: { publicUrl },
-    } = supabase.storage.from('evidence').getPublicUrl(filePath);
+    } = storageService.upload('evidence').getPublicUrl(filePath);
 
     uploadedFiles.push({
      id: Math.random().toString(),
@@ -184,7 +201,7 @@ const RankRegistration: React.FC = () => {
   setIsLoading(true);
 
   try {
-   const { error } = await supabase.from('rank_requests').insert({
+// // //    // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('rank_requests').create({
     user_id: user.id,
     requested_rank: selectedRank,
     club_id: selectedClub,

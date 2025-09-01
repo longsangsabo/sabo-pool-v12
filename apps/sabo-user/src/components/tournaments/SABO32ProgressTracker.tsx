@@ -4,7 +4,11 @@
 // =============================================
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -34,7 +38,7 @@ export function SABO32ProgressTracker({ tournamentId }: SABO32ProgressProps) {
   fetchProgressStats();
   
   // Set up real-time subscription
-  const subscription = supabase
+//   const subscription = supabase
    .channel(`tournament_${tournamentId}_progress`)
    .on('postgres_changes', 
     { event: '*', schema: 'public', table: 'sabo32_matches', filter: `tournament_id=eq.${tournamentId}` },
@@ -53,7 +57,7 @@ export function SABO32ProgressTracker({ tournamentId }: SABO32ProgressProps) {
   try {
    setLoading(true);
    
-   const { data: matches, error } = await (supabase as any)
+//    const { data: matches, error } = await (supabase as any)
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId);
@@ -229,7 +233,7 @@ export function SABO32ProgressTracker({ tournamentId }: SABO32ProgressProps) {
     
     <Card>
      <CardContent className="p-4 text-center">
-      <Clock className="w-8 h-8 mx-auto mb-2 text-blue-500" />
+      <Clock className="w-8 h-8 mx-auto mb-2 text-primary-500" />
       <div className="text-heading-bold">{Math.round(stats.averageMatchDuration)}</div>
       <div className="text-body-small text-muted-foreground">Avg Min/Match</div>
      </CardContent>
@@ -237,7 +241,7 @@ export function SABO32ProgressTracker({ tournamentId }: SABO32ProgressProps) {
     
     <Card>
      <CardContent className="p-4 text-center">
-      <CheckCircle className="w-8 h-8 mx-auto mb-2 text-green-500" />
+      <CheckCircle className="w-8 h-8 mx-auto mb-2 text-success-500" />
       <div className="text-title font-bold">
        {stats.estimatedCompletion.split(' ')[1]}
       </div>

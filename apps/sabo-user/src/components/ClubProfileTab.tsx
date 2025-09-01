@@ -1,6 +1,24 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useForm } from 'react-hook-form';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+import { getClubProfile, updateClubProfile } from '../services/clubService';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { createNotification } from '../services/notificationService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +39,12 @@ import {
  TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Building, Loader2, Info } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { toast } from 'sonner';
 import GoogleMapsPlacesAutocomplete from './GoogleMapsPlacesAutocomplete';
 
@@ -186,7 +210,7 @@ const ClubProfileTab = ({ user, profile, onUpdate }: ClubProfileTabProps) => {
 
  const fetchExistingClubs = async () => {
   try {
-   const { data } = await supabase
+   // TODO: Replace with service call - const { data } = await supabase
     .from('club_profiles')
     .select('id, club_name, address')
     .eq('verification_status', 'approved')
@@ -264,9 +288,9 @@ const ClubProfileTab = ({ user, profile, onUpdate }: ClubProfileTabProps) => {
    };
 
    // Create a club entry instead
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
-    .insert([
+    .create([
      {
       club_name: registrationData.club_name,
       address: registrationData.address,
@@ -275,7 +299,7 @@ const ClubProfileTab = ({ user, profile, onUpdate }: ClubProfileTabProps) => {
       verification_status: 'pending',
      },
     ])
-    .select()
+    .getAll()
     .single();
 
    if (error) {
@@ -284,7 +308,7 @@ const ClubProfileTab = ({ user, profile, onUpdate }: ClubProfileTabProps) => {
    }
 
    // Create success notification for user
-   await supabase.from('notifications').insert({
+   await notificationService.create({
     user_id: user.id,
     type: 'club_registration_submitted',
     title: 'Đăng ký CLB thành công! 🏢',

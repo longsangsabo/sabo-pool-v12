@@ -4,9 +4,19 @@
  */
 
 import { useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Button } from '@sabo/shared-ui';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -94,8 +104,8 @@ export function EnhancedTournamentBracketGenerator({
     title: 'SABO Double Elimination',
     subtitle: 'Professional tournament with Winners & Losers brackets',
     color: 'from-blue-500 to-purple-600',
-    bgColor: 'bg-blue-50 dark:bg-blue-950/20',
-    textColor: 'text-blue-700 dark:text-blue-300',
+    bgColor: 'bg-primary-50 dark:bg-blue-950/20',
+    textColor: 'text-primary-700 dark:text-blue-300',
     badgeVariant: 'default' as const,
     requirements: [
      'Exactly 16 participants required',
@@ -111,7 +121,7 @@ export function EnhancedTournamentBracketGenerator({
    title: 'Single Elimination',
    subtitle: 'Classic tournament format with immediate elimination',
    color: 'from-green-500 to-teal-600',
-   bgColor: 'bg-green-50 dark:bg-green-950/20',
+   bgColor: 'bg-success-50 dark:bg-green-950/20',
    textColor: 'text-green-700 dark:text-green-300',
    badgeVariant: 'secondary' as const,
    requirements: [
@@ -146,7 +156,7 @@ export function EnhancedTournamentBracketGenerator({
   
   if (!isValidCount) {
    return {
-    color: 'bg-red-500',
+    color: 'bg-error-500',
     text: 'Invalid participant count',
     variant: 'destructive' as const,
     canGenerate: false
@@ -154,7 +164,7 @@ export function EnhancedTournamentBracketGenerator({
   }
   
   return {
-   color: 'bg-green-500',
+   color: 'bg-success-500',
    text: 'Ready to generate',
    variant: 'default' as const,
    canGenerate: true
@@ -189,10 +199,10 @@ export function EnhancedTournamentBracketGenerator({
 
    if (isDoubleElimination) {
     // SABO Double Elimination logic
-    const { data: registrations, error: regError } = await supabase
+//     const { data: registrations, error: regError } = await supabase
      .from('tournament_registrations')
      .select('user_id')
-     .eq('tournament_id', tournamentId)
+     .getByTournamentId(tournamentId)
      .eq('payment_status', 'paid')
      .limit(16);
 
@@ -206,7 +216,7 @@ export function EnhancedTournamentBracketGenerator({
     }
 
     const playerIds = registrations.map(r => r.user_id);
-    const result = await supabase.rpc('initialize_sabo_tournament', {
+    const result = await tournamentService.callRPC('initialize_sabo_tournament', {
      p_tournament_id: tournamentId,
      p_player_ids: playerIds,
     });
@@ -214,7 +224,7 @@ export function EnhancedTournamentBracketGenerator({
     error = result.error;
    } else {
     // Single Elimination logic
-    const result = await supabase.rpc(
+    const result = await tournamentService.callRPC(
      'generate_single_elimination_bracket' as any,
      {
       p_tournament_id: tournamentId,
@@ -339,7 +349,7 @@ export function EnhancedTournamentBracketGenerator({
      <div className="grid gap-2">
       {config.requirements.map((req, index) => (
        <div key={index} className="flex items-start gap-2 text-sm">
-        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+        <CheckCircle className="h-4 w-4 text-success-500 mt-0.5 flex-shrink-0" />
         <span className="text-muted-foreground">{req}</span>
        </div>
       ))}

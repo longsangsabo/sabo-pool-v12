@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { getDisplayName } from '@/types/unified-profile';
 
 interface ProfileData {
@@ -55,7 +55,7 @@ export const useProfileCache = () => {
 
   const fetchProfile = async (userId: string): Promise<ProfileData | null> => {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('profiles')
         .select('user_id, full_name, display_name, nickname, email, avatar_url, verified_rank')
         .eq('user_id', userId)
@@ -65,7 +65,7 @@ export const useProfileCache = () => {
         console.warn('⚠️ Error fetching profile from profiles table, trying player_rankings fallback:', error);
         
         // Try player_rankings as fallback
-        const { data: rankingData, error: rankingError } = await supabase
+//         const { data: rankingData, error: rankingError } = await supabase
           .from('player_rankings')
           .select('user_id, user_name, current_rank, verified_rank')
           .eq('user_id', userId)

@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 
 interface Player {
   name: string;
@@ -50,7 +56,7 @@ export const useRealMatches = () => {
 
   const fetchLiveMatches = async () => {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('matches')
         .select(
           `
@@ -76,7 +82,7 @@ export const useRealMatches = () => {
       });
 
       // Fetch profiles
-      const { data: profiles } = await supabase
+//       const { data: profiles } = await supabase
         .from('profiles')
         .select('user_id, full_name, avatar_url, verified_rank')
         .in('user_id', Array.from(playerIds));
@@ -120,7 +126,7 @@ export const useRealMatches = () => {
 
   const fetchUpcomingMatches = async () => {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('matches')
         .select(
           `
@@ -146,7 +152,7 @@ export const useRealMatches = () => {
       });
 
       // Fetch profiles
-      const { data: profiles } = await supabase
+//       const { data: profiles } = await supabase
         .from('profiles')
         .select('user_id, full_name, avatar_url, verified_rank')
         .in('user_id', Array.from(playerIds));
@@ -186,7 +192,7 @@ export const useRealMatches = () => {
 
   const fetchRecentResults = async () => {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('matches')
         .select(
           `
@@ -217,11 +223,11 @@ export const useRealMatches = () => {
 
       // Fetch profiles and match results
       const [profilesRes, matchResultsRes] = await Promise.all([
-        supabase
+//         supabase
           .from('profiles')
           .select('user_id, full_name, avatar_url, verified_rank')
           .in('user_id', Array.from(playerIds)),
-        supabase
+//         supabase
           .from('match_results')
           .select('match_id, player_id, elo_change')
           .in(
@@ -330,7 +336,7 @@ export const useRealMatches = () => {
     refreshAll();
 
     // Set up real-time subscriptions
-    const liveSubscription = supabase
+//     const liveSubscription = supabase
       .channel('live-matches')
       .on(
         'postgres_changes',
@@ -346,7 +352,7 @@ export const useRealMatches = () => {
       )
       .subscribe();
 
-    const upcomingSubscription = supabase
+//     const upcomingSubscription = supabase
       .channel('upcoming-matches')
       .on(
         'postgres_changes',
@@ -362,7 +368,7 @@ export const useRealMatches = () => {
       )
       .subscribe();
 
-    const recentSubscription = supabase
+//     const recentSubscription = supabase
       .channel('recent-matches')
       .on(
         'postgres_changes',
@@ -379,9 +385,9 @@ export const useRealMatches = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(liveSubscription);
-      supabase.removeChannel(upcomingSubscription);
-      supabase.removeChannel(recentSubscription);
+      // removeChannel(liveSubscription);
+      // removeChannel(upcomingSubscription);
+      // removeChannel(recentSubscription);
     };
   }, []);
 

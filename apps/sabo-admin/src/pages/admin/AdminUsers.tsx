@@ -194,11 +194,11 @@ export default function AdminUsers() {
   const getStatusColor = (banStatus: string | null) => {
     switch (banStatus) {
       case 'banned':
-        return 'bg-red-500/10 text-red-400 border-red-400';
+        return 'bg-error-background0/10 text-red-400 border-red-400';
       case 'inactive':
-        return 'bg-gray-500/10 text-gray-400 border-gray-400';
+        return 'bg-neutral-background0/10 text-gray-400 border-gray-400';
       default:
-        return 'bg-green-500/10 text-green-400 border-green-400';
+        return 'bg-success-background0/10 text-green-400 border-green-400';
     }
   };
 
@@ -223,14 +223,14 @@ export default function AdminUsers() {
 
   if (error) {
     return (
-      <div className="text-white p-8">
+      <div className="text-var(--color-background) p-8">
         <div className="max-w-7xl mx-auto">
           <div className="bg-red-900/20 border border-red-700 rounded-lg p-6">
             <h2 className="text-xl font-bold text-red-400 mb-2">User Management Error</h2>
             <p className="text-gray-300">{error}</p>
             <button
               onClick={loadUsers}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700 transition-colors"
             >
               Retry
             </button>
@@ -242,7 +242,7 @@ export default function AdminUsers() {
 
   if (isLoading) {
     return (
-      <div className="text-white p-8">
+      <div className="text-var(--color-background) p-8">
         <div className="max-w-7xl mx-auto">
           <div className='flex items-center justify-center h-64'>
             <div className='text-center'>
@@ -256,12 +256,12 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="text-white p-8">
+    <div className="text-var(--color-background) p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className='flex justify-between items-center'>
           <div>
-            <h1 className='text-3xl font-bold text-white'>👥 User Management</h1>
+            <h1 className='text-3xl font-bold text-var(--color-background)'>👥 User Management</h1>
             <p className='text-gray-400'>Manage user accounts, roles, and permissions</p>
           </div>
         </div>
@@ -274,14 +274,14 @@ export default function AdminUsers() {
               placeholder="Search users by name or phone..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className='w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              className='w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             />
           </div>
           <div className="relative">
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              className="w-48 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-48 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-var(--color-background) appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -295,7 +295,7 @@ export default function AdminUsers() {
         {/* User List */}
         <div className="bg-gray-800 rounded-lg border border-gray-700">
           <div className="p-6 border-b border-gray-700">
-            <h2 className="text-xl font-bold text-white">User List</h2>
+            <h2 className="text-xl font-bold text-var(--color-background)">User List</h2>
             <p className="text-gray-400">
               Total: {filteredUsers.length} users
             </p>
@@ -309,14 +309,14 @@ export default function AdminUsers() {
                 >
                   <div className='flex items-center space-x-4'>
                     {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-var(--color-background) font-bold">
                       {user.full_name?.charAt(0) || 'U'}
                     </div>
                     
                     {/* User Info */}
                     <div>
                       <div className='flex items-center space-x-2'>
-                        <h3 className='font-medium text-white'>
+                        <h3 className='font-medium text-var(--color-background)'>
                           {user.full_name || 'Not Updated'}
                         </h3>
                         {getRoleIcon(user.role)}
@@ -367,7 +367,7 @@ export default function AdminUsers() {
                       <button
                         onClick={() => setActiveDropdown(activeDropdown === user.user_id ? null : user.user_id)}
                         disabled={isUpdatingBan || isUpdatingRole}
-                        className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
+                        className="p-2 text-gray-400 hover:text-var(--color-background) hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
                       >
                         <MoreHorizontal className='w-4 h-4' />
                       </button>
@@ -379,7 +379,7 @@ export default function AdminUsers() {
                               onClick={() => {
                                 setActiveDropdown(null);
                               }}
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                              className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-var(--color-background) transition-colors"
                             >
                               <UserCheck className='w-4 h-4 mr-2' />
                               View Details
@@ -463,9 +463,9 @@ export default function AdminUsers() {
 
         {/* Ban User Dialog */}
         {banDialogOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-var(--color-foreground)/50 flex items-center justify-center z-50">
             <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-bold text-white mb-2">Ban User Account</h3>
+              <h3 className="text-lg font-bold text-var(--color-background) mb-2">Ban User Account</h3>
               <p className="text-gray-400 mb-4">
                 Are you sure you want to ban {selectedUser?.full_name || 'this user'}? This action will prevent them from accessing the system.
               </p>
@@ -478,7 +478,7 @@ export default function AdminUsers() {
                   placeholder="Enter the reason for banning this user..."
                   value={banReason}
                   onChange={e => setBanReason(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[100px] resize-none"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[100px] resize-none"
                 />
               </div>
               
@@ -492,7 +492,7 @@ export default function AdminUsers() {
                 <button
                   onClick={confirmBanUser}
                   disabled={!banReason.trim() || isUpdatingBan}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700 transition-colors disabled:opacity-50"
                 >
                   {isUpdatingBan ? 'Processing...' : 'Ban Account'}
                 </button>

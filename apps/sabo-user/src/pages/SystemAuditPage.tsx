@@ -1,5 +1,17 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Helmet } from 'react-helmet-async';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +31,10 @@ import {
  Server,
  Clock,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { useAuth } from '@/hooks/useAuth';
 
 interface AuditResult {
@@ -133,15 +148,15 @@ const SystemAuditPage = () => {
  const checkSupabaseConnection = async () => {
   console.log('Checking Supabase connection...');
 
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+//   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+//   const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseKey) {
+//   if (!supabaseUrl || !supabaseKey) {
    throw new Error('Missing Supabase environment variables');
   }
 
   // Test basic connection
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
    .from('profiles')
    .select('count')
    .limit(1);
@@ -151,7 +166,7 @@ const SystemAuditPage = () => {
   }
 
   return {
-   url: supabaseUrl,
+//    url: supabaseUrl,
    connected: true,
    hasData: !!data,
   };
@@ -164,7 +179,7 @@ const SystemAuditPage = () => {
    const {
     data: { session },
     error,
-   } = await supabase.auth.getSession();
+   } = await userService.getSession();
 
    if (error) {
     throw new Error(`Auth check failed: ${error.message}`);
@@ -408,9 +423,9 @@ const SystemAuditPage = () => {
  const getStatusIcon = (status: string) => {
   switch (status) {
    case 'success':
-    return <CheckCircle className='h-4 w-4 text-green-500' />;
+    return <CheckCircle className='h-4 w-4 text-success-500' />;
    case 'error':
-    return <XCircle className='h-4 w-4 text-red-500' />;
+    return <XCircle className='h-4 w-4 text-error-500' />;
    case 'warning':
     return <AlertTriangle className='h-4 w-4 text-yellow-500' />;
    default:
@@ -425,7 +440,7 @@ const SystemAuditPage = () => {
    case 'error':
     return 'bg-error-50 border-error-200';
    case 'warning':
-    return 'bg-warning-50 border-yellow-200';
+    return 'bg-warning-50 border-warning';
    default:
     return 'bg-neutral-50 border-neutral-200';
   }
@@ -442,10 +457,10 @@ const SystemAuditPage = () => {
      {/* Header */}
      <div className='flex items-center justify-between mb-6'>
       <div>
-       <h1 className='text-3xl font-bold text-white mb-2'>
+       <h1 className='text-3xl font-bold text-var(--color-background) mb-2'>
         🔍 System Audit Dashboard
        </h1>
-       <p className='text-green-200'>
+       <p className='text-success-200'>
         Comprehensive system health and connectivity check
        </p>
       </div>
@@ -463,7 +478,7 @@ const SystemAuditPage = () => {
        <Button
         onClick={() => (window.location.href = '/')}
         variant='outline'
-        className='text-white border-white hover:bg-white hover:text-green-900'
+        className='text-var(--color-background) border-var(--color-background) hover:bg-var(--color-background) hover:text-green-900'
        >
         Back to Home
        </Button>
@@ -545,25 +560,25 @@ const SystemAuditPage = () => {
       <TabsList className='bg-green-800 border-green-700'>
        <TabsTrigger
         value='all'
-        className='text-white data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
+        className='text-var(--color-background) data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
        >
         All Tests ({auditResults.length})
        </TabsTrigger>
        <TabsTrigger
         value='errors'
-        className='text-white data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
+        className='text-var(--color-background) data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
        >
         Errors ({auditResults.filter(r => r.status === 'error').length})
        </TabsTrigger>
        <TabsTrigger
         value='connectivity'
-        className='text-white data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
+        className='text-var(--color-background) data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
        >
         Connectivity
        </TabsTrigger>
        <TabsTrigger
         value='database'
-        className='text-white data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
+        className='text-var(--color-background) data-[state=active]:bg-yellow-400 data-[state=active]:text-green-900'
        >
         Database
        </TabsTrigger>
@@ -636,7 +651,7 @@ const SystemAuditPage = () => {
        {auditResults.filter(r => r.status === 'error').length === 0 ? (
         <Card>
          <CardContent className='p-8 text-center'>
-          <CheckCircle className='h-12 w-12 mx-auto mb-4 text-green-500' />
+          <CheckCircle className='h-12 w-12 mx-auto mb-4 text-success-500' />
           <p className='text-success-600 font-semibold'>
            No errors found!
           </p>
@@ -649,7 +664,7 @@ const SystemAuditPage = () => {
           <Card key={index} className='bg-error-50 border-error-200'>
            <CardContent className='p-4'>
             <div className='flex items-center gap-3'>
-             <XCircle className='h-5 w-5 text-red-500' />
+             <XCircle className='h-5 w-5 text-error-500' />
              <div className='flex-1'>
               <h3 className='font-semibold text-error-800'>
                {result.category}: {result.test}

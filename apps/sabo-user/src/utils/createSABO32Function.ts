@@ -3,7 +3,9 @@
 // Run this to create the SQL function in database
 // =============================================
 
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament, callRPC } from "../services/tournamentService";
 
 const createAdvancementFunction = async () => {
   const sqlFunction = `
@@ -127,7 +129,7 @@ const createAdvancementFunction = async () => {
   `;
 
   try {
-    const { data, error } = await supabase.rpc('exec', { sql: sqlFunction });
+    const { data, error } = await tournamentService.callRPC('exec', { sql: sqlFunction });
     
     if (error) {
       console.error('Error creating function:', error);

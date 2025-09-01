@@ -57,13 +57,13 @@ const Index = () => {
     <header className='relative z-10 container mx-auto px-4 py-6 flex justify-between items-center backdrop-blur-sm bg-slate-900/20 rounded-lg mx-4 mt-4'>
      <div className='flex items-center space-x-2'>
       <Target className='h-8 w-8 text-yellow-400' />
-      <h1 className='text-heading-bold text-white'>SABO ARENA</h1>
+      <h1 className='text-heading-bold text-var(--color-background)'>SABO ARENA</h1>
      </div>
      <div className='flex space-x-4'>
       <Link to='/login'>
        <Button
         variant='outline'
-        className='text-white border-white hover:bg-white hover:text-slate-900'
+        className='text-var(--color-background) border-var(--color-background) hover:bg-var(--color-background) hover:text-slate-900'
        >
         Đăng nhập
        </Button>
@@ -81,7 +81,7 @@ const Index = () => {
      <Badge className='mb-4 tablet:mb-6 bg-yellow-400 text-slate-900 tablet:text-body-large tablet:px-4 tablet:py-2'>
       CLB Billiards Chuyên Nghiệp
      </Badge>
-     <h1 className='text-5xl md:text-6xl tablet:text-7xl xl:text-8xl font-bold text-white mb-6 tablet:mb-8 leading-tight'>
+     <h1 className='text-5xl md:text-6xl tablet:text-7xl xl:text-8xl font-bold text-var(--color-background) mb-6 tablet:mb-8 leading-tight'>
       Chào Mừng Đến
       <br />
       <span className='text-yellow-400'>SABO ARENA</span>
@@ -103,7 +103,7 @@ const Index = () => {
       <Button
        
        variant='outline'
-       className='text-white border-white hover:bg-white hover:text-slate-900 px-8 py-3 tablet:px-12 tablet:py-4 text-body-large tablet:text-xl'
+       className='text-var(--color-background) border-var(--color-background) hover:bg-var(--color-background) hover:text-slate-900 px-8 py-3 tablet:px-12 tablet:py-4 text-body-large tablet:text-xl'
       >
        Khám phá tính năng
       </Button>
@@ -113,7 +113,7 @@ const Index = () => {
     {/* Features Section - Tablet Optimized */}
     <section className='relative z-10 container mx-auto px-4 tablet:px-8 py-20 tablet:py-24'>
      <div className='text-center mb-16 tablet:mb-20'>
-      <h2 className='text-4xl tablet:text-5xl font-bold text-white mb-4 tablet:mb-6'>
+      <h2 className='text-4xl tablet:text-5xl font-bold text-var(--color-background) mb-4 tablet:mb-6'>
        Tại sao chọn SABO ARENA?
       </h2>
       <p className='text-gray-300 text-body-large tablet:text-title max-w-2xl tablet:max-w-4xl mx-auto leading-relaxed'>
@@ -125,7 +125,7 @@ const Index = () => {
       <Card className='bg-slate-800/80 backdrop-blur-sm border-slate-700/50 tablet:p-8'>
        <CardHeader className='tablet:pb-6'>
         <Trophy className='h-12 w-12 tablet:h-16 tablet:w-16 text-yellow-400 mb-4 tablet:mb-6' />
-        <CardTitle className='text-white tablet:text-2xl'>
+        <CardTitle className='text-var(--color-background) tablet:text-2xl'>
          Hệ thống ELO chuyên nghiệp
         </CardTitle>
         <CardDescription className='text-gray-300 tablet:text-lg'>
@@ -144,7 +144,7 @@ const Index = () => {
       <Card className='bg-slate-800/80 backdrop-blur-sm border-slate-700/50 tablet:p-8'>
        <CardHeader className='tablet:pb-6'>
         <Users className='h-12 w-12 tablet:h-16 tablet:w-16 text-blue-400 mb-4 tablet:mb-6' />
-        <CardTitle className='text-white tablet:text-2xl'>
+        <CardTitle className='text-var(--color-background) tablet:text-2xl'>
          Cộng đồng sôi động
         </CardTitle>
         <CardDescription className='text-gray-300 tablet:text-lg'>
@@ -163,7 +163,7 @@ const Index = () => {
       <Card className='bg-slate-800/80 backdrop-blur-sm border-slate-700/50 tablet:p-8'>
        <CardHeader className='tablet:pb-6'>
         <Calendar className='h-12 w-12 tablet:h-16 tablet:w-16 text-green-400 mb-4 tablet:mb-6' />
-        <CardTitle className='text-white tablet:text-2xl'>
+        <CardTitle className='text-var(--color-background) tablet:text-2xl'>
          Giải đấu thường xuyên
         </CardTitle>
         <CardDescription className='text-gray-300 tablet:text-lg'>
@@ -227,7 +227,7 @@ const Index = () => {
        <Link to='/register'>
         <Button
          
-         className='bg-slate-900 text-white hover:bg-slate-800 px-8 py-3 tablet:px-12 tablet:py-4 text-body-large tablet:text-xl'
+         className='bg-slate-900 text-var(--color-background) hover:bg-slate-800 px-8 py-3 tablet:px-12 tablet:py-4 text-body-large tablet:text-xl'
         >
          Đăng ký miễn phí
         </Button>

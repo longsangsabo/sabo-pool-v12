@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
 
@@ -33,7 +36,7 @@ export const usePlayerAvailability = () => {
   queryFn: async () => {
    if (!user?.id) return null;
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('player_availability')
     .select('*')
     .eq('user_id', user.id)
@@ -56,7 +59,7 @@ export const usePlayerAvailability = () => {
    queryFn: async () => {
     if (!user?.id) return [];
 
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('player_availability')
      .select(
       `
@@ -91,7 +94,7 @@ export const usePlayerAvailability = () => {
   mutationFn: async (availability: AvailabilityUpdate) => {
    if (!user?.id) throw new Error('Must be logged in');
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('player_availability')
     .upsert({
      user_id: user.id,
@@ -126,7 +129,7 @@ export const usePlayerAvailability = () => {
   }) => {
    if (!user?.id) throw new Error('Must be logged in');
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('challenges')
     .insert({
      challenger_id: user.id,

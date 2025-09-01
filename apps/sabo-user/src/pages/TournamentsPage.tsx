@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
+import { getCurrentUser } from '../services/userService';
 import OptimizedTournamentCard from '@/components/tournament/OptimizedTournamentCard';
 import { EnhancedTournamentDetailsModal } from '@/components/tournament/EnhancedTournamentDetailsModal';
 import { SimpleRegistrationModal } from '@/components/tournament/SimpleRegistrationModal';
@@ -48,7 +52,7 @@ const TournamentsPage = () => {
  const fetchTournaments = async () => {
   try {
    setLoading(true);
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .select(
      `
@@ -92,9 +96,9 @@ const TournamentsPage = () => {
   try {
    const {
     data: { user },
-   } = await supabase.auth.getUser();
+   } = await getCurrentUser();
    if (user) {
-    const { data: profile, error } = await supabase
+//     const { data: profile, error } = await supabase
      .from('club_profiles')
      .select('*')
      .eq('user_id', user.id)
@@ -140,7 +144,7 @@ const TournamentsPage = () => {
   try {
    const {
     data: { user },
-   } = await supabase.auth.getUser();
+   } = await getCurrentUser();
    if (!user) {
     toast({
      title: 'Lỗi',
@@ -180,7 +184,7 @@ const TournamentsPage = () => {
     is_visible: true,
    };
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .insert([tournamentData])
     .select()

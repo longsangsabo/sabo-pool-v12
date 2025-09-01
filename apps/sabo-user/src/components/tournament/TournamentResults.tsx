@@ -86,7 +86,7 @@ export const TournamentResults: React.FC<TournamentResultsProps> = ({
    case 3:
     return <Award className='h-5 w-5 text-amber-600' />;
    case 4:
-    return <Award className='h-5 w-5 text-blue-500' />;
+    return <Award className='h-5 w-5 text-primary-500' />;
    default:
     return <Gift className='h-5 w-5 text-purple-500' />;
   }
@@ -95,7 +95,7 @@ export const TournamentResults: React.FC<TournamentResultsProps> = ({
  const getPositionColor = (position: number) => {
   switch (position) {
    case 1:
-    return 'bg-warning-100 text-warning-800 border-yellow-200';
+    return 'bg-warning-100 text-warning-800 border-warning';
    case 2:
     return 'bg-neutral-100 text-neutral-800 border-neutral-200';
    case 3:

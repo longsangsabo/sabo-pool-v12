@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getCurrentUser } from '../services/userService';
 import { toast } from 'sonner';
 
 interface MatchScore {
@@ -29,7 +30,7 @@ export const useSABOScoreSubmission = (
       // Get current user for submitted_by parameter
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await getCurrentUser();
       
       const submittedBy = user?.id || '18f49e79-f402-46d1-90be-889006e9761c';
       
@@ -51,7 +52,7 @@ export const useSABOScoreSubmission = (
       console.log('🔍 Using SAFE DIRECT UPDATE (step by step)');
 
       // ✅ STEP 1: Update match result ONLY (using exact schema columns)
-      const { error: updateError } = await supabase
+//       const { error: updateError } = await supabase
         .from('tournament_matches')
         .update({
           score_player1: player1Score,
@@ -96,7 +97,7 @@ export const useSABOScoreSubmission = (
           
           const nextMatchNumber = Math.ceil(matchData.match_number / 2);
           
-          const { data: nextMatches } = await supabase
+//           const { data: nextMatches } = await supabase
             .from('tournament_matches')
             .select('*')
             .eq('tournament_id', matchData.tournament_id)
@@ -107,7 +108,7 @@ export const useSABOScoreSubmission = (
             const nextMatch = nextMatches[0];
             const updateField = !nextMatch.player1_id ? 'player1_id' : 'player2_id';
             
-            const { error: winnerError } = await supabase
+//             const { error: winnerError } = await supabase
               .from('tournament_matches')
               .update({ 
                 [updateField]: winnerId,
@@ -129,7 +130,7 @@ export const useSABOScoreSubmission = (
           
           const loserMatchNumber = Math.ceil(matchData.match_number / 2);
           
-          const { data: loserMatches } = await supabase
+//           const { data: loserMatches } = await supabase
             .from('tournament_matches')
             .select('*')
             .eq('tournament_id', matchData.tournament_id)
@@ -142,7 +143,7 @@ export const useSABOScoreSubmission = (
             if (!loserMatch.player1_id || !loserMatch.player2_id) {
               const updateField = !loserMatch.player1_id ? 'player1_id' : 'player2_id';
               
-              const { error: loserError } = await supabase
+//               const { error: loserError } = await supabase
                 .from('tournament_matches')
                 .update({ 
                   [updateField]: loserId,
@@ -201,7 +202,7 @@ export const useSABOScoreSubmission = (
   const submitScore = useCallback(
     async (matchId: string, scores: MatchScore, matchData?: any) => {
       if (!matchData) {
-        const { data: match, error } = await supabase
+//         const { data: match, error } = await supabase
           .from('tournament_matches')
           .select('*')
           .eq('id', matchId)

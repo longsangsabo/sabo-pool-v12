@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -21,7 +30,7 @@ export function useRealtimeSPA() {
   if (!user?.id) return;
 
   // Subscribe to real-time SPA points changes
-  const channel = supabase
+//   const channel = supabase
    .channel('spa-points-updates')
    .on(
     'postgres_changes',
@@ -34,10 +43,10 @@ export function useRealtimeSPA() {
      const newRecord = payload.new as any;
 
      // Get user name for the update
-     const { data: profile } = await supabase
+//      const { data: profile } = await supabase
       .from('profiles')
       .select('full_name')
-      .eq('user_id', newRecord.user_id)
+      .getByUserId(newRecord.user_id)
       .single();
 
      const spaUpdate: SPAUpdate = {
@@ -90,13 +99,13 @@ export function useRealtimeSPA() {
    });
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [user?.id]);
 
  // Get recent SPA updates for the feed
  const getRecentGlobalUpdates = async () => {
-  const { data } = await supabase
+  // TODO: Replace with service call - const { data } = await supabase
    .from('spa_points_log')
    .select(
     `

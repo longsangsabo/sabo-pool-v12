@@ -2,7 +2,7 @@
 // 🏆 CHALLENGE NOTIFICATION EVENT HANDLERS
 // =====================================================
 
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { challengeNotificationService } from '@/services/challengeNotificationService';
 import {
   ChallengeNotificationType,
@@ -433,7 +433,7 @@ export class ChallengeNotificationEventHandler {
 
   private async handleChallengeScheduled(payload: ChallengeStatusChangedPayload): Promise<void> {
     // Get challenge details to find scheduled time
-    const { data: challenge } = await supabase
+//     const { data: challenge } = await supabase
       .from('challenges')
       .select('scheduled_time')
       .eq('id', payload.challenge.id)
@@ -569,7 +569,7 @@ export class ChallengeNotificationEventHandler {
 
   private async getProfileName(userId: string): Promise<string> {
     try {
-      const { data } = await supabase
+      // TODO: Replace with service call - const { data } = await supabase
         .from('profiles')
         .select('full_name')
         .eq('user_id', userId)

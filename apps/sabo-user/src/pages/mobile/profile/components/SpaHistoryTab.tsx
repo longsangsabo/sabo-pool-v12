@@ -16,7 +16,10 @@ import {
  Eye,
  EyeOff
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { useAuth } from '@/hooks/useAuth';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -157,7 +160,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
    
    // Get milestone details
    if (transaction.source_type === 'milestone_reward' || transaction.source_type === 'milestone') {
-    const { data: milestone } = await supabase
+//     const { data: milestone } = await supabase
      .from('milestones')
      .select('name, description, spa_reward, category')
      .eq('id', transaction.reference_id)
@@ -176,7 +179,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
    
    // Get rank verification details
    else if (transaction.source_type === 'rank_verification') {
-    const { data: rankRequest } = await supabase
+//     const { data: rankRequest } = await supabase
      .from('rank_requests')
      .select('requested_rank, status, verification_notes')
      .eq('id', transaction.reference_id)
@@ -195,7 +198,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
    
    // Get tournament details
    else if (transaction.source_type === 'tournament_prize') {
-    const { data: tournament } = await supabase
+//     const { data: tournament } = await supabase
      .from('tournaments')
      .select('name, description, prizes')
      .eq('id', transaction.reference_id)
@@ -213,7 +216,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
    
    // Get challenge details
    else if (transaction.source_type === 'challenge_reward') {
-    const { data: challenge } = await supabase
+//     const { data: challenge } = await supabase
      .from('challenges')
      .select(`
       id,
@@ -262,7 +265,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
    }
 
    // Fetch current SPA balance
-   const { data: rankingData } = await supabase
+//    const { data: rankingData } = await supabase
     .from('player_rankings')
     .select('spa_points')
     .eq('user_id', user.id)
@@ -273,14 +276,14 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
    // Fetch transaction history from multiple sources
 
    // 1. Fetch from spa_points_log (most detailed)
-   const { data: pointsLogData, error: pointsLogError } = await supabase
+//    const { data: pointsLogData, error: pointsLogError } = await supabase
     .from('spa_points_log')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
    // 2. Fetch from spa_transactions (legacy/fallback)
-   const { data: transactionData, error } = await supabase
+//    const { data: transactionData, error } = await supabase
     .from('spa_transactions')
     .select('*')
     .eq('user_id', user.id)
@@ -563,7 +566,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
       className={`px-3 py-2 rounded-lg border text-body-small outline-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
      >
       <option value="all">Tất cả nguồn</option>
@@ -578,7 +581,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
       className={`px-3 py-2 rounded-lg border text-body-small outline-none transition ${
        theme === 'dark'
         ? 'bg-slate-800/70 border-slate-600/60 text-slate-100 focus:border-amber-400'
-        : 'bg-white border-slate-300 text-slate-800 focus:border-amber-500'
+        : 'bg-var(--color-background) border-slate-300 text-slate-800 focus:border-amber-500'
       }`}
      >
       <option value="all">Tất cả loại</option>
@@ -605,7 +608,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
      <Card className={
       theme === 'dark'
        ? 'bg-slate-900/40 border-slate-700/50'
-       : 'bg-white border-slate-200'
+       : 'bg-var(--color-background) border-slate-200'
      }>
       <CardContent className="p-6 text-center">
        <DollarSign className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
@@ -627,7 +630,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
        <Card key={transaction.id} className={
         theme === 'dark'
          ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm hover:bg-slate-800/40 transition-colors'
-         : 'bg-white border-slate-200 hover:bg-slate-50 transition-colors'
+         : 'bg-var(--color-background) border-slate-200 hover:bg-slate-50 transition-colors'
        }>
         <CardContent className="content-spacing">
          <div className="flex items-start justify-between">
@@ -705,7 +708,7 @@ const SpaHistoryTab: React.FC<SpaHistoryTabProps> = ({ theme }) => {
           }`}>
            <details>
             <summary className="cursor-pointer">Chi tiết giao dịch</summary>
-            <pre className="mt-2 whitespace-pre-wrap text-caption">
+            <pre className="mt-2 var(--color-background)space-pre-wrap text-caption">
              {JSON.stringify(transaction.metadata, null, 2)}
             </pre>
            </details>

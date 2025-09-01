@@ -2,7 +2,7 @@ import {
   User as SupabaseUser,
   Session as SupabaseSession,
   AuthError,
-} from '@supabase/supabase-js';
+// } from '@supabase/supabase-js';
 
 // Authentication Types
 export type User = SupabaseUser;

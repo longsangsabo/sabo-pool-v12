@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getCurrentUser } from '../services/userService';
 import { Tournament } from '@/types/tournament';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -14,7 +15,7 @@ export const useTournaments = () => {
     setError(null);
 
     try {
-      const { data, error: fetchError } = await supabase
+//       const { data, error: fetchError } = await supabase
         .from('tournaments')
         .select(
           `
@@ -99,10 +100,10 @@ export const useTournaments = () => {
     mutationFn: async ({ tournamentId }: { tournamentId: string }) => {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await getCurrentUser();
       if (!user) throw new Error('User not authenticated');
 
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_registrations')
         .insert({
           tournament_id: tournamentId,
@@ -132,10 +133,10 @@ export const useTournaments = () => {
     }) => {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await getCurrentUser();
       if (!user) throw new Error('User not authenticated');
 
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_registrations')
         .insert({
           tournament_id: tournamentId,

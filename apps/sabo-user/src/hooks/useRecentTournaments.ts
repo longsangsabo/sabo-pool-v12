@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -51,7 +51,7 @@ export const useRecentTournaments = () => {
 
       console.log('🔍 Loading recent tournaments for user:', user.id);
 
-      const { data, error: fetchError } = await supabase
+//       const { data, error: fetchError } = await supabase
         .from('tournaments')
         .select(`
           id,
@@ -105,7 +105,7 @@ export const useRecentTournaments = () => {
 
       console.log('🔍 Loading tournament template for ID:', tournamentId);
 
-      const { data, error: fetchError } = await supabase
+//       const { data, error: fetchError } = await supabase
         .from('tournaments')
         .select(`
           name,

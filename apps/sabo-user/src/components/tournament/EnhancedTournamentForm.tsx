@@ -58,7 +58,16 @@ import { UnifiedPrizesManager } from './UnifiedPrizesManager';
 import { TournamentTemplateDropdown } from './TournamentTemplateDropdown';
 
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { createTournamentResultsTemplate } from '../../services/tournamentService';
+import { getCurrentUser } from '../../services/userService';
 
 interface EnhancedTournamentFormProps {
  mode?: 'create' | 'edit';
@@ -296,23 +305,21 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
        '🏆 Creating tournament results template for:',
        result.id
       );
-      const { data: templateResult, error: templateError } =
-       await supabase.rpc('create_tournament_results_template', {
-        p_tournament_id: result.id,
-        p_max_participants: tournament?.max_participants || 16,
-       });
-
-      if (templateError) {
-       console.error(
-        '❌ Error creating tournament results template:',
-        templateError
-       );
-       toast.error('Giải đấu đã tạo nhưng có lỗi khi tạo bảng kết quả');
-      } else {
-       console.log(
-        '✅ Tournament results template created:',
-        templateResult
-       );
+      try {
+        const templateResult = await createTournamentResultsTemplate(
+          result.id,
+          tournament?.max_participants || 16
+        );
+        console.log(
+          '✅ Tournament results template created:',
+          templateResult
+        );
+      } catch (templateError) {
+        console.error(
+          '❌ Error creating tournament results template:',
+          templateError
+        );
+        toast.error('Giải đấu đã tạo nhưng có lỗi khi tạo bảng kết quả');
       }
      } catch (templateErr) {
       console.error(
@@ -520,7 +527,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
         </span>
        </div>
        {getTabValidation('basic-info').isValid && (
-        <CheckCircle className='h-3 w-3 text-green-500 ml-1' />
+        <CheckCircle className='h-3 w-3 text-success-500 ml-1' />
        )}
       </TabsTrigger>
       <TabsTrigger
@@ -535,7 +542,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
         </span>
        </div>
        {getTabValidation('financial').isValid && (
-        <CheckCircle className='h-3 w-3 text-green-500 ml-1' />
+        <CheckCircle className='h-3 w-3 text-success-500 ml-1' />
        )}
       </TabsTrigger>
      </TabsList>
@@ -922,7 +929,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
          )}
 
          {/* Rewards Table */}
-        <div className='border border-emerald-200 rounded-lg bg-white p-4'>
+        <div className='border border-emerald-200 rounded-lg bg-var(--color-background) p-4'>
          <div className='flex items-center justify-between mb-4'>
           <div className='flex items-center gap-3'>
            <h4 className='font-medium'>
@@ -1040,20 +1047,17 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
 
         try {
          // Get current user
-         const {
-          data: { user },
-          error: userError,
-         } = await supabase.auth.getUser();
-         if (userError || !user) {
+         const user = await getCurrentUser();
+         if (!user) {
           toast.error('Vui lòng đăng nhập để tạo giải đấu');
           return;
          }
 
          // Get user's club profile to set club_id
-         const { data: clubProfile, error: clubError } = await supabase
+//          const { data: clubProfile, error: clubError } = await supabase
           .from('club_profiles')
           .select('id')
-          .eq('user_id', user.id)
+          .getByUserId(user.id)
           .maybeSingle();
 
          if (clubError || !clubProfile) {
@@ -1063,9 +1067,9 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
 
          // 1. TẠO TOURNAMENT TRƯỚC
          console.log('🏆 Creating tournament...');
-         const { data, error } = await supabase
+         // TODO: Replace with service call - const { data, error } = await supabase
           .from('tournaments')
-          .insert([
+          .create([
            {
             name: formData.name || 'Test Tournament',
             description: formData.description || 'Test Description',
@@ -1083,7 +1087,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
             club_id: clubProfile.id,
            },
           ])
-          .select();
+          .getAll();
 
          if (error) {
           console.error('❌ Tournament creation error:', error);
@@ -1169,7 +1173,7 @@ export const EnhancedTournamentForm: React.FC<EnhancedTournamentFormProps> = ({
          console.log('🏆 Inserting', defaultPrizes.length, 'prize records...');
          
          // Insert using SERVICE ROLE to bypass RLS
-         const response = await fetch('https://exlqvlbawytbglioqfbc.supabase.co/rest/v1/tournament_prizes', {
+// // // //          const response = await fetch('https://exlqvlbawytbglioqfbc.supabase.co/rest/v1/tournament_prizes', {
           method: 'POST',
           headers: {
            'Content-Type': 'application/json',

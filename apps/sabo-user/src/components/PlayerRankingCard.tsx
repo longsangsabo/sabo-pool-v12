@@ -1,4 +1,5 @@
 import React from 'react';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import {
  Card,
  CardContent,
@@ -33,19 +34,19 @@ export const PlayerRankingCard: React.FC<PlayerRankingCardProps> = ({
  const getRankColor = (rankCode: string) => {
   switch (rankCode) {
    case 'G':
-    return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-white';
+    return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-var(--color-background)';
    case 'H+':
-    return 'bg-gradient-to-r from-orange-400 to-orange-600 text-white';
+    return 'bg-gradient-to-r from-orange-400 to-orange-600 text-var(--color-background)';
    case 'H':
-    return 'bg-gradient-to-r from-red-400 to-red-600 text-white';
+    return 'bg-gradient-to-r from-red-400 to-red-600 text-var(--color-background)';
    case 'I+':
-    return 'bg-gradient-to-r from-blue-400 to-blue-600 text-white';
+    return 'bg-gradient-to-r from-blue-400 to-blue-600 text-var(--color-background)';
    case 'I':
-    return 'bg-gradient-to-r from-green-400 to-green-600 text-white';
+    return 'bg-gradient-to-r from-green-400 to-green-600 text-var(--color-background)';
    case 'K+':
-    return 'bg-gradient-to-r from-purple-400 to-purple-600 text-white';
+    return 'bg-gradient-to-r from-purple-400 to-purple-600 text-var(--color-background)';
    case 'K':
-    return 'bg-gradient-to-r from-gray-400 to-gray-600 text-white';
+    return 'bg-gradient-to-r from-gray-400 to-gray-600 text-var(--color-background)';
    default:
     return 'bg-neutral-200 text-neutral-800';
   }
@@ -146,7 +147,7 @@ export const PlayerRankingCard: React.FC<PlayerRankingCardProps> = ({
 
      {/* Tournament Achievement */}
      {player.tournament_achievement && (
-      <div className='p-3 bg-warning-50 border border-yellow-200 rounded-lg'>
+      <div className='p-3 bg-warning-50 border border-warning rounded-lg'>
        <div className='flex items-center gap-2'>
         <Trophy className='w-4 h-4 text-warning-600' />
         <span className='text-body-small-medium text-warning-800'>

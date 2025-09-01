@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Mail, X, Check } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { resendEmailVerification } from '../services/userService';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -47,24 +47,13 @@ const EmailVerificationBanner = () => {
   setIsResending(true);
   setCanResend(false);
   try {
-   const { AUTH_REDIRECTS } = await import('@/utils/authConfig');
-   const { error } = await supabase.auth.resend({
-    type: 'signup',
-    email: user.email,
-    options: {
-     emailRedirectTo: AUTH_REDIRECTS.emailResend,
-    },
-   });
+   const { AUTH_REDIRECTS } = await import('@/services/userService');
+   await resendEmailVerification(user.email, AUTH_REDIRECTS.emailResend);
 
-   if (error) {
-    toast.error(`Lỗi gửi email: ${error.message}`);
-    setCanResend(true);
-   } else {
-    setEmailSent(true);
-    setCountdown(60); // Start 60 second countdown
-    toast.success('Email xác thực đã được gửi lại!');
-    setTimeout(() => setEmailSent(false), 5000);
-   }
+   setEmailSent(true);
+   setCountdown(60); // Start 60 second countdown
+   toast.success('Email xác thực đã được gửi lại!');
+   setTimeout(() => setEmailSent(false), 5000);
   } catch (error: any) {
    toast.error('Có lỗi xảy ra khi gửi email');
    setCanResend(true);
@@ -81,7 +70,7 @@ const EmailVerificationBanner = () => {
     <div className='flex items-center'>
      <div className='flex-shrink-0'>
       {emailSent ? (
-       <Check className='h-5 w-5 text-green-500' />
+       <Check className='h-5 w-5 text-success-500' />
       ) : (
        <Mail className='h-5 w-5 text-blue-400' />
       )}

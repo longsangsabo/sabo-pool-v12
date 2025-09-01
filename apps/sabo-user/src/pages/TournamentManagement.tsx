@@ -1,4 +1,10 @@
 import { useParams } from 'react-router-dom';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useTournamentManagement } from '@/hooks/useTournamentManagement';
 import { TournamentBracketGenerator } from '@/components/tournaments/TournamentBracketGenerator';
 import { SingleEliminationBracket } from '@/components/tournaments/SingleEliminationBracket';
@@ -15,7 +21,10 @@ import {
  DollarSign,
  Settings,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { toast } from 'sonner';
 
 export default function TournamentManagement() {
@@ -99,7 +108,7 @@ export default function TournamentManagement() {
   try {
    toast.loading('Đang tiến hành manual advance...');
 
-   const { data, error } = await supabase.functions.invoke(
+// // //    // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await supabase.functions.invoke(
     'manual-tournament-advance',
     {
      body: { tournament_id: tournamentId },
@@ -207,7 +216,7 @@ export default function TournamentManagement() {
 
       {tournament.status === 'ongoing' && (
        <div className='text-center p-4 bg-success-50 dark:bg-green-950 rounded-lg'>
-        <h3 className='font-semibold text-success-800 dark:text-green-200'>
+        <h3 className='font-semibold text-success-800 dark:text-success-200'>
          Tournament is Live!
         </h3>
         <p className='text-body-small text-success-600 dark:text-green-300'>
@@ -237,7 +246,7 @@ export default function TournamentManagement() {
 
       {tournament.status === 'completed' && (
        <div className='text-center p-4 bg-primary-50 dark:bg-blue-950 rounded-lg'>
-        <h3 className='font-semibold text-primary-800 dark:text-blue-200'>
+        <h3 className='font-semibold text-primary-800 dark:text-primary-200'>
          Tournament Completed!
         </h3>
         <p className='text-body-small text-primary-600 dark:text-blue-300'>

@@ -71,7 +71,7 @@ const JoinChallengeConfirmDialog: React.FC<JoinChallengeConfirmDialogProps> = ({
        {/* Challenge Details */}
        <div className="space-y-3 p-3 bg-muted/30 rounded-lg">
         <div className="flex items-center gap-2">
-         <User className="h-4 w-4 text-blue-500" />
+         <User className="h-4 w-4 text-primary-500" />
          <span className="text-body-small-medium">Đối thủ:</span>
          <span className="text-body-small">{challenge.challenger_name || 'Ẩn danh'}</span>
         </div>
@@ -93,7 +93,7 @@ const JoinChallengeConfirmDialog: React.FC<JoinChallengeConfirmDialogProps> = ({
         
         {challenge.bet_points && challenge.bet_points > 0 && (
          <div className="flex items-center gap-2">
-          <Coins className="h-4 w-4 text-green-500" />
+          <Coins className="h-4 w-4 text-success-500" />
           <span className="text-body-small-medium">SPA cược:</span>
           <Badge variant="destructive" className="text-caption">
            {challenge.bet_points.toLocaleString()} SPA
@@ -120,7 +120,7 @@ const JoinChallengeConfirmDialog: React.FC<JoinChallengeConfirmDialogProps> = ({
        </div>
        
        {challenge.bet_points && challenge.bet_points > 0 && (
-        <div className="p-2 bg-warning-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded">
+        <div className="p-2 bg-warning-50 dark:bg-yellow-900/20 border border-warning dark:border-yellow-800 rounded">
          <p className="text-caption text-warning-800 dark:text-yellow-200">
           ⚠️ Lưu ý: Bạn sẽ bị trừ {challenge.bet_points.toLocaleString()} SPA Points khi tham gia.
          </p>

@@ -1,4 +1,8 @@
 import React from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, getUserTournaments } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance } from "../services/walletService";
 import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
@@ -46,22 +50,22 @@ const Home: React.FC = () => {
  }
 
  return (
-  <main className='min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 dark:text-slate-50 transition-colors duration-300'>
+  <main className='min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-var(--color-background) to-slate-100 text-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 dark:text-slate-50 transition-colors duration-300'>
    <SEOHead />
    {/* Top Header (Desktop & Mobile variant) */}
-   <header className='sticky top-0 z-30 w-full border-b border-slate-200/70 bg-white/70 supports-[backdrop-filter]:bg-white/50 backdrop-blur px-4 md:px-8 dark:border-slate-800/60 dark:bg-slate-900/70 dark:supports-[backdrop-filter]:bg-slate-900/50 transition-colors duration-300'>
+   <header className='sticky top-0 z-30 w-full border-b border-slate-200/70 bg-var(--color-background)/70 supports-[backdrop-filter]:bg-var(--color-background)/50 backdrop-blur px-4 md:px-8 dark:border-slate-800/60 dark:bg-slate-900/70 dark:supports-[backdrop-filter]:bg-slate-900/50 transition-colors duration-300'>
     <div className='h-16 flex items-center justify-between gap-4 max-w-7xl mx-auto'>
      {/* Brand */}
      <Link to='/' className='flex items-center gap-3 group'>
       <div className='relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-indigo-500/40 shadow-md shadow-indigo-900/30'>
        <img
-        src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
+// // // //         src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//logo-sabo-arena.png'
         alt='SABO ARENA'
         className='w-full h-full object-cover transition-transform group-hover:scale-105'
        />
       </div>
       <div className='flex flex-col leading-none'>
-       <span className='font-black text-body-large md:text-title bg-gradient-to-r from-sky-400 via-indigo-400 to-fuchsia-400 bg-clip-text text-transparent tracking-tight'>
+       <span className='font-var(--color-foreground) text-body-large md:text-title bg-gradient-to-r from-sky-400 via-indigo-400 to-fuchsia-400 bg-clip-text text-transparent tracking-tight'>
         SABO
        </span>
        <span className='text-[10px] md:text-caption font-semibold tracking-[0.25em] text-slate-400 group-hover:text-slate-200 transition-colors'>
@@ -97,7 +101,7 @@ const Home: React.FC = () => {
        variant='ghost'
        
        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-       className='h-9 w-9 rounded-full border border-slate-300/60 bg-white/40 hover:bg-slate-100 hover:border-slate-400 dark:border-slate-700/50 dark:bg-slate-800/40 dark:hover:border-slate-500 dark:hover:bg-slate-800/60 transition-colors'
+       className='h-9 w-9 rounded-full border border-slate-300/60 bg-var(--color-background)/40 hover:bg-slate-100 hover:border-slate-400 dark:border-slate-700/50 dark:bg-slate-800/40 dark:hover:border-slate-500 dark:hover:bg-slate-800/60 transition-colors'
        aria-label='Chuyển giao diện'
       >
        {theme === 'light' ? (
@@ -111,7 +115,7 @@ const Home: React.FC = () => {
         <Button
          variant='outline'
          
-         className='border-slate-300 bg-white/60 backdrop-blur hover:bg-slate-100 hover:border-slate-400 dark:border-slate-600/70 dark:bg-slate-800/40 dark:hover:bg-slate-700/50 dark:hover:border-slate-400 font-slate transition-colors'
+         className='border-slate-300 bg-var(--color-background)/60 backdrop-blur hover:bg-slate-100 hover:border-slate-400 dark:border-slate-600/70 dark:bg-slate-800/40 dark:hover:bg-slate-700/50 dark:hover:border-slate-400 font-slate transition-colors'
         >
          <LogIn className='w-4 h-4' />
          <span>Đăng nhập</span>
@@ -124,7 +128,7 @@ const Home: React.FC = () => {
         >
          <UserPlus className='w-4 h-4' />
          <span>Đăng ký</span>
-         <span className='absolute inset-0 opacity-0 hover:opacity-20 bg-[radial-gradient(circle_at_30%_20%,white,transparent_60%)] transition-opacity'></span>
+         <span className='absolute inset-0 opacity-0 hover:opacity-20 bg-[radial-gradient(circle_at_30%_20%,var(--color-background),transparent_60%)] transition-opacity'></span>
         </Button>
        </Link>
       </div>
@@ -141,7 +145,7 @@ const Home: React.FC = () => {
       className='w-full h-full object-cover opacity-40 md:opacity-35 mix-blend-luminosity'
       loading='lazy'
      />
-     <div className='absolute inset-0 bg-gradient-to-br from-white/70 via-white/60 to-indigo-100/40 dark:from-slate-950/80 dark:via-slate-900/70 dark:to-indigo-900/60 backdrop-blur-sm transition-colors'></div>
+     <div className='absolute inset-0 bg-gradient-to-br from-var(--color-background)/70 via-var(--color-background)/60 to-indigo-100/40 dark:from-slate-950/80 dark:via-slate-900/70 dark:to-indigo-900/60 backdrop-blur-sm transition-colors'></div>
     </div>
 
     {/* Hero Image - Mobile First */}
@@ -151,16 +155,13 @@ const Home: React.FC = () => {
       <div className='absolute inset-0 rounded-none overflow-hidden'>
        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-75 w-full h-0.5 top-0 animate-sabo-data-flow'></div>
        <div
-        className='absolute inset-0 bg-gradient-to-b from-transparent via-sky-500 to-transparent opacity-75 w-0.5 h-full right-0 animate-sabo-data-flow'
-        style={{ animationDelay: '0.5s' }}
+        className='absolute inset-0 bg-gradient-to-b from-transparent via-sky-500 to-transparent opacity-75 w-0.5 h-full right-0 animate-sabo-data-flow [animation-delay:0.5s]'
        ></div>
        <div
-        className='absolute inset-0 bg-gradient-to-l from-transparent via-fuchsia-500 to-transparent opacity-75 w-full h-0.5 bottom-0 animate-sabo-data-flow'
-        style={{ animationDelay: '1s' }}
+        className='absolute inset-0 bg-gradient-to-l from-transparent via-fuchsia-500 to-transparent opacity-75 w-full h-0.5 bottom-0 animate-sabo-data-flow [animation-delay:1s]'
        ></div>
        <div
-        className='absolute inset-0 bg-gradient-to-t from-transparent via-indigo-500 to-transparent opacity-75 w-0.5 h-full left-0 animate-sabo-data-flow'
-        style={{ animationDelay: '1.5s' }}
+        className='absolute inset-0 bg-gradient-to-t from-transparent via-indigo-500 to-transparent opacity-75 w-0.5 h-full left-0 animate-sabo-data-flow [animation-delay:1.5s]'
        ></div>
       </div>
 
@@ -170,7 +171,7 @@ const Home: React.FC = () => {
       {/* Image Container */}
       <div className='relative bg-slate-900/10 backdrop-blur-sm'>
        <img
-        src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/homepage-new.png'
+// // // //         src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo/homepage-new.png'
         alt='SABO Arena Homepage'
         className='w-full h-auto object-contain drop-shadow-xl relative z-10'
         loading='lazy'
@@ -180,7 +181,7 @@ const Home: React.FC = () => {
     </div>
 
     <div className='max-w-7xl mx-auto px-6 md:px-10 pb-12 md:pb-16 text-center'>
-     <h1 className='text-heading md:text-4xl lg:text-5xl font-black tracking-tight leading-tight bg-gradient-to-r from-sky-600 via-indigo-600 to-fuchsia-600 dark:from-sky-300 dark:via-indigo-300 dark:to-fuchsia-300 bg-clip-text text-transparent drop-shadow'>
+     <h1 className='text-heading md:text-4xl lg:text-5xl font-var(--color-foreground) tracking-tight leading-tight bg-gradient-to-r from-sky-600 via-indigo-600 to-fuchsia-600 dark:from-sky-300 dark:via-indigo-300 dark:to-fuchsia-300 bg-clip-text text-transparent drop-shadow'>
       <div className='mb-1'>SABO ARENA</div>
       <div className='text-body-large md:text-heading lg:text-3xl font-semibold tracking-wider'>
        VIET NAM'S BILLIARDS PLATFORM
@@ -197,7 +198,7 @@ const Home: React.FC = () => {
         className='relative overflow-hidden bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 hover:from-indigo-400 hover:via-sky-400 hover:to-fuchsia-400 shadow-xl shadow-indigo-500/30 dark:shadow-indigo-900/40 rounded-xl px-10 font-semibold tracking-wide font-slate'
        >
         <span className='relative z-10'>Đăng ký Tài Khoản</span>
-        <span className='absolute inset-0 opacity-0 group-hover:opacity-20 bg-[radial-gradient(circle_at_20%_20%,white,transparent_60%)] transition-opacity'></span>
+        <span className='absolute inset-0 opacity-0 group-hover:opacity-20 bg-[radial-gradient(circle_at_20%_20%,var(--color-background),transparent_60%)] transition-opacity'></span>
        </Button>
       </Link>
       <Link to='/auth/login'>
@@ -205,9 +206,9 @@ const Home: React.FC = () => {
         <Button
          variant='outline'
          
-         className='rounded-[11px] px-8 border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-slate relative overflow-hidden transition-colors'
+         className='rounded-[11px] px-8 border-transparent bg-var(--color-background)/60 backdrop-blur hover:bg-var(--color-background)/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-slate relative overflow-hidden transition-colors'
         >
-         <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
+         <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,var(--color-background),transparent_60%)] transition-opacity'></span>
          <span className='relative'>Đăng nhập</span>
         </Button>
        </div>
@@ -219,7 +220,7 @@ const Home: React.FC = () => {
       id='stats'
       className='mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-body-small md:text-base'
      >
-      <div className='p-4 rounded-lg bg-white/70 border border-slate-200/70 backdrop-blur-sm hover:border-sky-400/60 dark:bg-slate-900/50 dark:border-slate-700/60 dark:hover:border-sky-500/50 transition-colors'>
+      <div className='p-4 rounded-lg bg-var(--color-background)/70 border border-slate-200/70 backdrop-blur-sm hover:border-sky-400/60 dark:bg-slate-900/50 dark:border-slate-700/60 dark:hover:border-sky-500/50 transition-colors'>
        <p className='font-semibold text-sky-600 dark:text-sky-300'>
         +250
        </p>
@@ -227,7 +228,7 @@ const Home: React.FC = () => {
         Thành viên
        </p>
       </div>
-      <div className='p-4 rounded-lg bg-white/70 border border-slate-200/70 backdrop-blur-sm hover:border-sky-400/60 dark:bg-slate-900/50 dark:border-slate-700/60 dark:hover:border-sky-500/50 transition-colors'>
+      <div className='p-4 rounded-lg bg-var(--color-background)/70 border border-slate-200/70 backdrop-blur-sm hover:border-sky-400/60 dark:bg-slate-900/50 dark:border-slate-700/60 dark:hover:border-sky-500/50 transition-colors'>
        <p className='font-semibold text-sky-600 dark:text-sky-300'>
         +1,200
        </p>
@@ -235,7 +236,7 @@ const Home: React.FC = () => {
         Trận đấu
        </p>
       </div>
-      <div className='p-4 rounded-lg bg-white/70 border border-slate-200/70 backdrop-blur-sm hover:border-sky-400/60 dark:bg-slate-900/50 dark:border-slate-700/60 dark:hover:border-sky-500/50 transition-colors'>
+      <div className='p-4 rounded-lg bg-var(--color-background)/70 border border-slate-200/70 backdrop-blur-sm hover:border-sky-400/60 dark:bg-slate-900/50 dark:border-slate-700/60 dark:hover:border-sky-500/50 transition-colors'>
        <p className='font-semibold text-sky-600 dark:text-sky-300'>
         Realtime
        </p>
@@ -243,7 +244,7 @@ const Home: React.FC = () => {
         Tournaments
        </p>
       </div>
-      <div className='p-4 rounded-lg bg-white/70 border border-slate-200/70 backdrop-blur-sm hover:border-sky-400/60 dark:bg-slate-900/50 dark:border-slate-700/60 dark:hover:border-sky-500/50 transition-colors'>
+      <div className='p-4 rounded-lg bg-var(--color-background)/70 border border-slate-200/70 backdrop-blur-sm hover:border-sky-400/60 dark:bg-slate-900/50 dark:border-slate-700/60 dark:hover:border-sky-500/50 transition-colors'>
        <p className='font-semibold text-sky-600 dark:text-sky-300'>
         ELO
        </p>
@@ -262,10 +263,10 @@ const Home: React.FC = () => {
        {/* Facebook */}
        <a
         href='#'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-blue-400/60 hover:bg-primary-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-blue-500/50 dark:hover:bg-blue-900/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-blue-400/60 hover:bg-primary-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-blue-500/50 dark:hover:bg-blue-900/20 transition-all duration-300'
        >
         <svg
-         className='w-6 h-6 text-blue-500 group-hover:text-blue-400 transition-colors'
+         className='w-6 h-6 text-primary-500 group-hover:text-blue-400 transition-colors'
          fill='currentColor'
          viewBox='0 0 24 24'
         >
@@ -276,7 +277,7 @@ const Home: React.FC = () => {
        {/* Instagram */}
        <a
         href='#'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-pink-400/60 hover:bg-pink-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-pink-500/50 dark:hover:bg-pink-900/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-pink-400/60 hover:bg-pink-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-pink-500/50 dark:hover:bg-pink-900/20 transition-all duration-300'
        >
         <svg
          className='w-6 h-6 text-pink-500 group-hover:text-pink-400 transition-colors'
@@ -290,7 +291,7 @@ const Home: React.FC = () => {
        {/* Zalo */}
        <a
         href='#'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-blue-400/60 hover:bg-primary-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-blue-400/50 dark:hover:bg-blue-800/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-blue-400/60 hover:bg-primary-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-blue-400/50 dark:hover:bg-blue-800/20 transition-all duration-300'
        >
         <svg
          className='w-6 h-6 text-blue-400 group-hover:text-blue-300 transition-colors'
@@ -305,7 +306,7 @@ const Home: React.FC = () => {
        <a
         href='#'
         aria-label='Threads'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-slate-400/60 hover:bg-slate-100 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-slate-300/50 dark:hover:bg-slate-700/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-slate-400/60 hover:bg-slate-100 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-slate-300/50 dark:hover:bg-slate-700/20 transition-all duration-300'
        >
         <svg
          className='w-6 h-6 text-slate-300 group-hover:text-slate-200 transition-colors'
@@ -319,7 +320,7 @@ const Home: React.FC = () => {
        {/* TikTok */}
        <a
         href='#'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-pink-400/60 hover:bg-pink-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-pink-500/50 dark:hover:bg-pink-900/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-pink-400/60 hover:bg-pink-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-pink-500/50 dark:hover:bg-pink-900/20 transition-all duration-300'
        >
         <svg
          className='w-6 h-6 text-pink-500 group-hover:text-pink-400 transition-colors'
@@ -333,10 +334,10 @@ const Home: React.FC = () => {
        {/* YouTube */}
        <a
         href='#'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-red-400/60 hover:bg-error-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-red-500/50 dark:hover:bg-red-900/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-red-400/60 hover:bg-error-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-red-500/50 dark:hover:bg-red-900/20 transition-all duration-300'
        >
         <svg
-         className='w-6 h-6 text-red-500 group-hover:text-red-400 transition-colors'
+         className='w-6 h-6 text-error-500 group-hover:text-red-400 transition-colors'
          fill='currentColor'
          viewBox='0 0 24 24'
         >
@@ -347,10 +348,10 @@ const Home: React.FC = () => {
        {/* Spotify */}
        <a
         href='#'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-green-400/60 hover:bg-success-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-green-500/50 dark:hover:bg-green-900/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-green-400/60 hover:bg-success-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-green-500/50 dark:hover:bg-green-900/20 transition-all duration-300'
        >
         <svg
-         className='w-6 h-6 text-green-500 group-hover:text-green-400 transition-colors'
+         className='w-6 h-6 text-success-500 group-hover:text-green-400 transition-colors'
          fill='currentColor'
          viewBox='0 0 24 24'
         >
@@ -361,7 +362,7 @@ const Home: React.FC = () => {
        {/* Shop */}
        <a
         href='#'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-amber-400/60 hover:bg-amber-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-amber-500/50 dark:hover:bg-amber-900/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-amber-400/60 hover:bg-amber-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-amber-500/50 dark:hover:bg-amber-900/20 transition-all duration-300'
        >
         <svg
          className='w-6 h-6 text-amber-500 group-hover:text-amber-400 transition-colors'
@@ -381,7 +382,7 @@ const Home: React.FC = () => {
        {/* Phone */}
        <a
         href='#'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-emerald-400/60 hover:bg-emerald-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-emerald-500/50 dark:hover:bg-emerald-900/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-emerald-400/60 hover:bg-emerald-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-emerald-500/50 dark:hover:bg-emerald-900/20 transition-all duration-300'
        >
         <svg
          className='w-6 h-6 text-emerald-500 group-hover:text-emerald-400 transition-colors'
@@ -401,7 +402,7 @@ const Home: React.FC = () => {
        {/* Community */}
        <a
         href='#'
-        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 hover:border-purple-400/60 hover:bg-info-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-purple-500/50 dark:hover:bg-purple-900/20 transition-all duration-300'
+        className='group flex items-center justify-center w-12 h-12 rounded-xl bg-var(--color-background) border border-slate-200 hover:border-purple-400/60 hover:bg-info-50 dark:bg-slate-800/50 dark:border-slate-700/60 dark:hover:border-purple-500/50 dark:hover:bg-purple-900/20 transition-all duration-300'
        >
         <svg
          className='w-6 h-6 text-purple-500 group-hover:text-purple-400 transition-colors'
@@ -434,7 +435,7 @@ const Home: React.FC = () => {
      {features.map(f => (
       <div
        key={f.title}
-       className='group relative p-6 md:p-6 rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm hover:border-sky-400/70 hover:shadow-lg hover:shadow-sky-200/50 dark:border-slate-700/60 dark:bg-slate-900/40 dark:hover:border-sky-500/70 dark:hover:shadow-sky-900/30 transition-all overflow-hidden'
+       className='group relative p-6 md:p-6 rounded-2xl border border-slate-200 bg-var(--color-background)/80 backdrop-blur-sm hover:border-sky-400/70 hover:shadow-lg hover:shadow-sky-200/50 dark:border-slate-700/60 dark:bg-slate-900/40 dark:hover:border-sky-500/70 dark:hover:shadow-sky-900/30 transition-all overflow-hidden'
       >
        <div className='absolute -top-10 -right-10 w-28 h-28 rounded-full bg-gradient-to-br from-sky-500/5 to-indigo-600/5 blur-2xl group-hover:from-sky-500/15 group-hover:to-indigo-600/15 transition-opacity'></div>
        <div className='relative flex flex-col gap-2 md:gap-3'>
@@ -457,7 +458,7 @@ const Home: React.FC = () => {
    {/* CTA Strip */}
    <section
     id='join'
-    className='mt-auto w-full bg-white/80 dark:bg-slate-900/70 border-t border-slate-200/70 dark:border-slate-800/70 py-14 px-6 transition-colors'
+    className='mt-auto w-full bg-var(--color-background)/80 dark:bg-slate-900/70 border-t border-slate-200/70 dark:border-slate-800/70 py-14 px-6 transition-colors'
    >
     <div className='max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-8 justify-between text-center md:text-left'>
      <div className='max-w-xl'>
@@ -483,9 +484,9 @@ const Home: React.FC = () => {
         <Button
          variant='outline'
          
-         className='rounded-[11px] px-8 border-transparent bg-white/60 backdrop-blur hover:bg-white/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-slate relative overflow-hidden transition-colors'
+         className='rounded-[11px] px-8 border-transparent bg-var(--color-background)/60 backdrop-blur hover:bg-var(--color-background)/70 text-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900/70 dark:text-slate-200 font-slate relative overflow-hidden transition-colors'
         >
-         <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)] transition-opacity'></span>
+         <span className='absolute inset-0 opacity-0 group-hover:opacity-10 bg-[radial-gradient(circle_at_30%_30%,var(--color-background),transparent_60%)] transition-opacity'></span>
          <span className='relative'>Đăng nhập</span>
         </Button>
        </div>

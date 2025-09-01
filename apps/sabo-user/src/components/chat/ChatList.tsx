@@ -197,8 +197,8 @@ export const ChatList: React.FC<ChatListProps> = ({
        <Users className='h-6 w-6' />
       </AvatarFallback>
      </Avatar>
-     <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-primary-500 rounded-full border-2 border-white flex items-center justify-center'>
-      <span className='text-caption text-white font-bold'>
+     <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-primary-500 rounded-full border-2 border-var(--color-background) flex items-center justify-center'>
+      <span className='text-caption text-var(--color-background) font-bold'>
        {conversation.participants.length}
       </span>
      </div>
@@ -214,7 +214,7 @@ export const ChatList: React.FC<ChatListProps> = ({
      <AvatarFallback>{user?.username[0]}</AvatarFallback>
     </Avatar>
     {user?.is_online && (
-     <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-success-500 rounded-full border-2 border-white'></div>
+     <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-success-500 rounded-full border-2 border-var(--color-background)'></div>
     )}
    </div>
   );
@@ -325,7 +325,7 @@ export const ChatList: React.FC<ChatListProps> = ({
 
             <div className='flex items-center gap-2 ml-2'>
              {conversation.unread_count > 0 && (
-              <Badge className='bg-error-500 text-white text-xs'>
+              <Badge className='bg-error-500 text-var(--color-background) text-xs'>
                {conversation.unread_count}
               </Badge>
              )}

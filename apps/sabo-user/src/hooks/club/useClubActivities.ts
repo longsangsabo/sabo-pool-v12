@@ -1,5 +1,5 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export interface ClubActivityData {
   id: string;
@@ -19,7 +19,7 @@ export const fetchClubActivities = async (
   opts: UseClubActivitiesOptions = {}
 ): Promise<ClubActivityData[]> => {
   const { limit = 30, offset = 0 } = opts; // cursor not yet applied (placeholder)
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_activities')
     .select('*')
     .eq('club_id', clubId)

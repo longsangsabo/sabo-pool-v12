@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import type {
   EmailTemplate,
   EmailConfig,
@@ -116,12 +116,12 @@ export class EmailService {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #1e40af; margin-bottom: 10px;">🎱 SABO Pool Arena</h1>
+            <h1 style="color: var(--color-primary-dark); margin-bottom: 10px;">🎱 SABO Pool Arena</h1>
             <p style="color: #666; font-size: 16px;">Nền tảng thi đấu Billiards hàng đầu Việt Nam</p>
           </div>
           
-          <div style="background: #f8fafc; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
-            <h2 style="color: #1e40af; margin-bottom: 15px;">Xin chào ${userName}!</h2>
+          <div style="background: hsl(var(--muted)); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h2 style="color: var(--color-primary-dark); margin-bottom: 15px;">Xin chào ${userName}!</h2>
             <p style="color: #374151; line-height: 1.6; margin-bottom: 15px;">
               Chúc mừng bạn đã gia nhập cộng đồng SABO Pool Arena! Chúng tôi rất vui mừng chào đón bạn.
             </p>
@@ -139,16 +139,16 @@ export class EmailService {
 
           <div style="text-align: center; margin: 30px 0;">
             <a href="${window.location.origin}/dashboard" 
-               style="background: #1e40af; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+               style="background: var(--color-primary-dark); color: var(--color-background); padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
               Bắt đầu ngay
             </a>
           </div>
 
           <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center;">
-            <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">
+            <p style="color: var(--color-neutral-dark); font-size: 14px; margin-bottom: 10px;">
               Cần hỗ trợ? Liên hệ với chúng tôi tại: support@sabopoolarena.com
             </p>
-            <p style="color: #6b7280; font-size: 12px;">
+            <p style="color: var(--color-neutral-dark); font-size: 12px;">
               © 2024 SABO Pool Arena. Tất cả quyền được bảo lưu.
             </p>
           </div>
@@ -167,23 +167,23 @@ export class EmailService {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #1e40af;">🏆 SABO Pool Arena</h1>
+            <h1 style="color: var(--color-primary-dark);">🏆 SABO Pool Arena</h1>
           </div>
           
-          <div style="background: #10b981; color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
+          <div style="background: var(--color-success); color: var(--color-background); padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
             <h2 style="margin-bottom: 10px;">Đăng ký thành công!</h2>
-            <p style="margin: 0; opacity: 0.9;">Bạn đã đăng ký tham gia giải đấu</p>
+            <p style="margin: 0; className="opacity-90";">Bạn đã đăng ký tham gia giải đấu</p>
           </div>
 
-          <div style="background: #f8fafc; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
-            <h3 style="color: #1e40af; margin-bottom: 15px;">Thông tin giải đấu</h3>
+          <div style="background: hsl(var(--muted)); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="color: var(--color-primary-dark); margin-bottom: 15px;">Thông tin giải đấu</h3>
             <p><strong>Tên giải:</strong> ${tournamentName}</p>
             <p><strong>Người tham gia:</strong> ${userName}</p>
-            <p><strong>Trạng thái:</strong> <span style="color: #10b981;">Đã xác nhận</span></p>
+            <p><strong>Trạng thái:</strong> <span style="color: var(--color-success);">Đã xác nhận</span></p>
           </div>
 
-          <div style="border: 2px solid #fbbf24; border-radius: 10px; padding: 20px; margin: 25px 0;">
-            <h4 style="color: #d97706; margin-bottom: 15px;">📋 Lưu ý quan trọng:</h4>
+          <div style="border: 2px solid var(--color-warning-light); border-radius: 10px; padding: 20px; margin: 25px 0;">
+            <h4 style="color: var(--color-warning-dark); margin-bottom: 15px;">📋 Lưu ý quan trọng:</h4>
             <ul style="color: #374151; line-height: 1.6; margin: 0; padding-left: 20px;">
               <li>Vui lòng có mặt đúng giờ theo lịch thi đấu</li>
               <li>Mang theo giấy tờ tùy thân để xác minh</li>
@@ -194,13 +194,13 @@ export class EmailService {
 
           <div style="text-align: center; margin: 30px 0;">
             <a href="${window.location.origin}/tournaments" 
-               style="background: #1e40af; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+               style="background: var(--color-primary-dark); color: var(--color-background); padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
               Xem chi tiết giải đấu
             </a>
           </div>
 
           <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center;">
-            <p style="color: #6b7280; font-size: 14px;">
+            <p style="color: var(--color-neutral-dark); font-size: 14px;">
               Chúc bạn thi đấu thành công! 🎱<br>
               Đội ngũ SABO Pool Arena
             </p>
@@ -216,7 +216,7 @@ export class EmailService {
     userName: string
   ): EmailTemplate {
     const isWinner = matchResult.winner === userName;
-    const resultColor = isWinner ? '#10b981' : '#ef4444';
+    const resultColor = isWinner ? 'var(--color-success)' : '#ef4444';
     const resultText = isWinner ? 'THẮNG' : 'THUA';
     const emoji = isWinner ? '🏆' : '💪';
 
@@ -225,16 +225,16 @@ export class EmailService {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #1e40af;">🎱 SABO Pool Arena</h1>
+            <h1 style="color: var(--color-primary-dark);">🎱 SABO Pool Arena</h1>
           </div>
           
-          <div style="background: ${resultColor}; color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
+          <div style="background: ${resultColor}; color: var(--color-background); padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
             <h2 style="margin-bottom: 10px;">${emoji} BẠN ĐÃ ${resultText}!</h2>
-            <p style="margin: 0; opacity: 0.9;">Kết quả trận đấu vừa được cập nhật</p>
+            <p style="margin: 0; className="opacity-90";">Kết quả trận đấu vừa được cập nhật</p>
           </div>
 
-          <div style="background: #f8fafc; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
-            <h3 style="color: #1e40af; margin-bottom: 15px;">Chi tiết trận đấu</h3>
+          <div style="background: hsl(var(--muted)); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="color: var(--color-primary-dark); margin-bottom: 15px;">Chi tiết trận đấu</h3>
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
               <span><strong>Đối thủ:</strong> ${matchResult.opponent || 'N/A'}</span>
             </div>
@@ -249,8 +249,8 @@ export class EmailService {
           ${
             isWinner
               ? `
-          <div style="background: #dcfce7; border: 2px solid #10b981; border-radius: 10px; padding: 20px; margin: 25px 0;">
-            <h4 style="color: #059669; margin-bottom: 15px;">🎉 Chúc mừng chiến thắng!</h4>
+          <div style="background: #dcfce7; border: 2px solid var(--color-success); border-radius: 10px; padding: 20px; margin: 25px 0;">
+            <h4 style="color: var(--color-success-dark); margin-bottom: 15px;">🎉 Chúc mừng chiến thắng!</h4>
             <p style="color: #374151; margin: 0;">
               Bạn đã có một trận đấu xuất sắc! Hãy tiếp tục nỗ lực để đạt được nhiều thành công hơn nữa.
             </p>
@@ -258,7 +258,7 @@ export class EmailService {
           `
               : `
           <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 20px; margin: 25px 0;">
-            <h4 style="color: #dc2626; margin-bottom: 15px;">💪 Đừng bỏ cuộc!</h4>
+            <h4 style="color: var(--color-error-dark); margin-bottom: 15px;">💪 Đừng bỏ cuộc!</h4>
             <p style="color: #374151; margin: 0;">
               Mỗi trận đấu đều là cơ hội học hỏi. Hãy tiếp tục luyện tập và chuẩn bị cho những thử thách tiếp theo!
             </p>
@@ -268,13 +268,13 @@ export class EmailService {
 
           <div style="text-align: center; margin: 30px 0;">
             <a href="${window.location.origin}/matches" 
-               style="background: #1e40af; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+               style="background: var(--color-primary-dark); color: var(--color-background); padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
               Xem lịch sử trận đấu
             </a>
           </div>
 
           <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center;">
-            <p style="color: #6b7280; font-size: 14px;">
+            <p style="color: var(--color-neutral-dark); font-size: 14px;">
               Chúc bạn ngày càng tiến bộ! 🎱<br>
               Đội ngũ SABO Pool Arena
             </p>
@@ -291,7 +291,7 @@ export class EmailService {
     userName: string
   ): EmailTemplate {
     const isPromotion = newRank > oldRank;
-    const changeColor = isPromotion ? '#10b981' : '#ef4444';
+    const changeColor = isPromotion ? 'var(--color-success)' : '#ef4444';
     const changeText = isPromotion ? 'THĂNG HẠNG' : 'XUỐNG HẠNG';
     const emoji = isPromotion ? '📈' : '📉';
 
@@ -300,28 +300,28 @@ export class EmailService {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #1e40af;">🎱 SABO Pool Arena</h1>
+            <h1 style="color: var(--color-primary-dark);">🎱 SABO Pool Arena</h1>
           </div>
           
-          <div style="background: ${changeColor}; color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
+          <div style="background: ${changeColor}; color: var(--color-background); padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
             <h2 style="margin-bottom: 10px;">${emoji} ${changeText}!</h2>
-            <p style="margin: 0; opacity: 0.9;">Xếp hạng của bạn đã được cập nhật</p>
+            <p style="margin: 0; className="opacity-90";">Xếp hạng của bạn đã được cập nhật</p>
           </div>
 
-          <div style="background: #f8fafc; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
-            <h3 style="color: #1e40af; margin-bottom: 15px;">Thông tin xếp hạng</h3>
+          <div style="background: hsl(var(--muted)); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="color: var(--color-primary-dark); margin-bottom: 15px;">Thông tin xếp hạng</h3>
             <div style="text-align: center; margin: 20px 0;">
               <div style="display: inline-block; margin: 0 20px;">
                 <div style="background: #e5e7eb; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                  <div style="font-size: 24px; font-weight: bold; color: #6b7280;">#{oldRank}</div>
-                  <div style="font-size: 12px; color: #6b7280;">HẠNG CŨ</div>
+                  <div style="font-size: 24px; font-weight: bold; color: var(--color-neutral-dark);">#{oldRank}</div>
+                  <div style="font-size: 12px; color: var(--color-neutral-dark);">HẠNG CŨ</div>
                 </div>
               </div>
-              <div style="display: inline-block; margin: 0 10px; font-size: 24px; color: #6b7280;">→</div>
+              <div style="display: inline-block; margin: 0 10px; font-size: 24px; color: var(--color-neutral-dark);">→</div>
               <div style="display: inline-block; margin: 0 20px;">
                 <div style="background: ${changeColor}; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                  <div style="font-size: 24px; font-weight: bold; color: white;">#{newRank}</div>
-                  <div style="font-size: 12px; color: white; opacity: 0.9;">HẠNG MỚI</div>
+                  <div style="font-size: 24px; font-weight: bold; color: var(--color-background);">#{newRank}</div>
+                  <div style="font-size: 12px; color: var(--color-background); className="opacity-90";">HẠNG MỚI</div>
                 </div>
               </div>
             </div>
@@ -333,8 +333,8 @@ export class EmailService {
           ${
             isPromotion
               ? `
-          <div style="background: #dcfce7; border: 2px solid #10b981; border-radius: 10px; padding: 20px; margin: 25px 0;">
-            <h4 style="color: #059669; margin-bottom: 15px;">🎉 Xuất sắc!</h4>
+          <div style="background: #dcfce7; border: 2px solid var(--color-success); border-radius: 10px; padding: 20px; margin: 25px 0;">
+            <h4 style="color: var(--color-success-dark); margin-bottom: 15px;">🎉 Xuất sắc!</h4>
             <p style="color: #374151; margin: 0;">
               Chúc mừng bạn đã thăng hạng! Thành tích này là kết quả của sự nỗ lực và kỹ năng thi đấu tuyệt vời.
             </p>
@@ -342,7 +342,7 @@ export class EmailService {
           `
               : `
           <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 20px; margin: 25px 0;">
-            <h4 style="color: #dc2626; margin-bottom: 15px;">💪 Tiếp tục cố gắng!</h4>
+            <h4 style="color: var(--color-error-dark); margin-bottom: 15px;">💪 Tiếp tục cố gắng!</h4>
             <p style="color: #374151; margin: 0;">
               Đây là cơ hội để bạn trở lại mạnh mẽ hơn. Hãy luyện tập chăm chỉ và cải thiện kỹ năng của mình!
             </p>
@@ -352,13 +352,13 @@ export class EmailService {
 
           <div style="text-align: center; margin: 30px 0;">
             <a href="${window.location.origin}/leaderboard" 
-               style="background: #1e40af; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+               style="background: var(--color-primary-dark); color: var(--color-background); padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
               Xem bảng xếp hạng
             </a>
           </div>
 
           <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center;">
-            <p style="color: #6b7280; font-size: 14px;">
+            <p style="color: var(--color-neutral-dark); font-size: 14px;">
               Chúc bạn thành công trong những trận đấu tiếp theo! 🎱<br>
               Đội ngũ SABO Pool Arena
             </p>
@@ -378,16 +378,16 @@ export class EmailService {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #1e40af;">🎱 SABO Pool Arena</h1>
+            <h1 style="color: var(--color-primary-dark);">🎱 SABO Pool Arena</h1>
           </div>
           
-          <div style="background: #10b981; color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
+          <div style="background: var(--color-success); color: var(--color-background); padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
             <h2 style="margin-bottom: 10px;">💳 Thanh toán thành công!</h2>
-            <p style="margin: 0; opacity: 0.9;">Giao dịch của bạn đã được xử lý</p>
+            <p style="margin: 0; className="opacity-90";">Giao dịch của bạn đã được xử lý</p>
           </div>
 
-          <div style="background: #f8fafc; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
-            <h3 style="color: #1e40af; margin-bottom: 15px;">Chi tiết giao dịch</h3>
+          <div style="background: hsl(var(--muted)); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="color: var(--color-primary-dark); margin-bottom: 15px;">Chi tiết giao dịch</h3>
             <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; margin-bottom: 15px;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                 <span><strong>Mã giao dịch:</strong></span>
@@ -406,13 +406,13 @@ export class EmailService {
                 <span>${new Date().toLocaleString('vi-VN')}</span>
               </div>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #10b981;">
+            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: var(--color-success);">
               <span>Tổng tiền:</span>
               <span>${paymentDetails.amount || '100,000'} VNĐ</span>
             </div>
           </div>
 
-          <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 10px; padding: 20px; margin: 25px 0;">
+          <div style="background: var(--color-primary-background); border: 2px solid var(--color-primary); border-radius: 10px; padding: 20px; margin: 25px 0;">
             <h4 style="color: #1d4ed8; margin-bottom: 15px;">📋 Thông tin quan trọng:</h4>
             <ul style="color: #374151; line-height: 1.6; margin: 0; padding-left: 20px;">
               <li>Hóa đơn điện tử đã được gửi đến email này</li>
@@ -424,13 +424,13 @@ export class EmailService {
 
           <div style="text-align: center; margin: 30px 0;">
             <a href="${window.location.origin}/wallet" 
-               style="background: #1e40af; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+               style="background: var(--color-primary-dark); color: var(--color-background); padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
               Xem lịch sử giao dịch
             </a>
           </div>
 
           <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center;">
-            <p style="color: #6b7280; font-size: 14px;">
+            <p style="color: var(--color-neutral-dark); font-size: 14px;">
               Cảm ơn bạn đã tin tưởng SABO Pool Arena! 💳<br>
               Đội ngũ SABO Pool Arena
             </p>
@@ -447,15 +447,15 @@ export class EmailService {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #1e40af;">🎱 SABO Pool Arena</h1>
+            <h1 style="color: var(--color-primary-dark);">🎱 SABO Pool Arena</h1>
           </div>
           
-          <div style="background: #f59e0b; color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
+          <div style="background: var(--color-warning); color: var(--color-background); padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px;">
             <h2 style="margin-bottom: 10px;">🔐 Đặt lại mật khẩu</h2>
-            <p style="margin: 0; opacity: 0.9;">Chúng tôi đã nhận được yêu cầu của bạn</p>
+            <p style="margin: 0; className="opacity-90";">Chúng tôi đã nhận được yêu cầu của bạn</p>
           </div>
 
-          <div style="background: #f8fafc; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+          <div style="background: hsl(var(--muted)); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
             <p style="color: #374151; line-height: 1.6; margin-bottom: 20px;">
               Xin chào,
             </p>
@@ -466,12 +466,12 @@ export class EmailService {
             
             <div style="text-align: center; margin: 30px 0;">
               <a href="${resetLink}" 
-                 style="background: #dc2626; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                 style="background: var(--color-error-dark); color: var(--color-background); padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
                 Đặt lại mật khẩu
               </a>
             </div>
             
-            <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-top: 20px;">
+            <p style="color: var(--color-neutral-dark); font-size: 14px; line-height: 1.6; margin-top: 20px;">
               Nếu nút không hoạt động, vui lòng copy và paste link sau vào trình duyệt:<br>
               <span style="word-break: break-all; font-family: monospace; background: #e5e7eb; padding: 5px; border-radius: 3px;">
                 ${resetLink}
@@ -480,7 +480,7 @@ export class EmailService {
           </div>
 
           <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 20px; margin: 25px 0;">
-            <h4 style="color: #dc2626; margin-bottom: 15px;">⚠️ Lưu ý bảo mật:</h4>
+            <h4 style="color: var(--color-error-dark); margin-bottom: 15px;">⚠️ Lưu ý bảo mật:</h4>
             <ul style="color: #374151; line-height: 1.6; margin: 0; padding-left: 20px;">
               <li>Link này chỉ có hiệu lực trong 1 giờ</li>
               <li>Chỉ sử dụng link nếu bạn thực sự yêu cầu đặt lại mật khẩu</li>
@@ -490,7 +490,7 @@ export class EmailService {
           </div>
 
           <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center;">
-            <p style="color: #6b7280; font-size: 14px;">
+            <p style="color: var(--color-neutral-dark); font-size: 14px;">
               Cần hỗ trợ? Liên hệ: support@sabopoolarena.com<br>
               Đội ngũ SABO Pool Arena
             </p>

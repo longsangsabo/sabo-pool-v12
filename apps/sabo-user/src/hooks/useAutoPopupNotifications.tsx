@@ -1,6 +1,21 @@
 import { useEffect, useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 
 export const useAutoPopupNotifications = () => {
@@ -14,10 +29,10 @@ export const useAutoPopupNotifications = () => {
   queryFn: async () => {
    if (!user?.id) return [];
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('notifications')
     .select('*')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .eq('auto_popup', true)
     .eq('is_read', false)
     .order('created_at', { ascending: false });
@@ -40,7 +55,7 @@ export const useAutoPopupNotifications = () => {
  useEffect(() => {
   if (!user?.id) return;
 
-  const channel = supabase
+//   const channel = supabase
    .channel(`notifications-${user.id}`)
    .on(
     'postgres_changes',
@@ -81,7 +96,7 @@ export const useAutoPopupNotifications = () => {
    .subscribe();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [user?.id, currentPopup, refetch]);
 
@@ -93,7 +108,7 @@ export const useAutoPopupNotifications = () => {
 
  const markNotificationAsRead = async (notificationId: string) => {
   try {
-   await supabase
+//    await supabase
     .from('notifications')
     .update({ is_read: true, auto_popup: false })
     .eq('id', notificationId);

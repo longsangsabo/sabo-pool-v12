@@ -114,7 +114,7 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
     };
    default: // yellow
     return {
-     border: 'border-yellow-200',
+     border: 'border-warning',
      background: 'bg-warning-50 dark:bg-yellow-950/20',
      accent: 'text-warning-600',
      badge: 'border-yellow-300 text-warning-700',
@@ -216,7 +216,7 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
      </div>
      <div className='flex items-center gap-2'>
       {eliminationRisk && (
-       <AlertTriangle className='h-4 w-4 text-red-500' />
+       <AlertTriangle className='h-4 w-4 text-error-500' />
       )}
       {getStatusBadge()}
      </div>
@@ -354,7 +354,7 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
         'flex items-center justify-between p-2 rounded-lg',
         winner_id === player1?.user_id && highlightWinner
          ? 'bg-success-100 dark:bg-green-900/20 border border-success-200'
-         : 'bg-white dark:bg-neutral-800/50'
+         : 'bg-var(--color-background) dark:bg-neutral-800/50'
        )}
       >
        <div className='flex items-center gap-2'>
@@ -393,7 +393,7 @@ export const SABOMatchCard: React.FC<SABOMatchCardProps> = ({
         'flex items-center justify-between p-2 rounded-lg',
         winner_id === player2?.user_id && highlightWinner
          ? 'bg-success-100 dark:bg-green-900/20 border border-success-200'
-         : 'bg-white dark:bg-neutral-800/50'
+         : 'bg-var(--color-background) dark:bg-neutral-800/50'
        )}
       >
        <div className='flex items-center gap-2'>

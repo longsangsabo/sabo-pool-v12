@@ -1,5 +1,8 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from './useAuth';
 
 interface MatchNotification {
@@ -26,7 +29,7 @@ export const useRealtimeMatchNotifications = () => {
      : match.player1_id;
    if (!opponentId) return null;
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('profiles')
     .select('user_id, full_name, display_name, avatar_url')
     .eq('user_id', opponentId)
@@ -43,7 +46,7 @@ export const useRealtimeMatchNotifications = () => {
  );
 
  const getTournamentData = useCallback(async (tournamentId: string) => {
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
    .from('tournaments')
    .select('id, name, tournament_type, club_id')
    .eq('id', tournamentId)
@@ -60,7 +63,7 @@ export const useRealtimeMatchNotifications = () => {
  const getTableData = useCallback(async (tableId: string) => {
   if (!tableId) return null;
 
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
    .from('club_tables')
    .select('id, table_name, table_number')
    .eq('id', tableId)
@@ -78,7 +81,7 @@ export const useRealtimeMatchNotifications = () => {
  const getUserProfile = useCallback(async (userId: string) => {
   if (!userId) return null;
 
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
    .from('profiles')
    .select(
     'user_id, full_name, display_name, avatar_url, verified_rank, elo'
@@ -100,7 +103,7 @@ export const useRealtimeMatchNotifications = () => {
    if (!user?.id) return;
 
    try {
-    const { data: match, error } = await supabase
+//     const { data: match, error } = await supabase
      .from('tournament_matches')
      .select(
       `

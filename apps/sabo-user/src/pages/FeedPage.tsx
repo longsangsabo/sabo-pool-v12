@@ -132,7 +132,7 @@ const FeedPage = () => {
 
    <div className='bg-neutral-50 min-h-screen'>
     {/* Header với Tabs */}
-    <div className='sticky top-0 bg-white border-b border-neutral-200 z-10 shadow-sm'>
+    <div className='sticky top-0 bg-var(--color-background) border-b border-neutral-200 z-10 shadow-sm'>
      <div className='px-4 py-3'>
       <h1 className='text-title font-bold text-neutral-900 mb-3'>Feed</h1>
       <Tabs
@@ -143,25 +143,25 @@ const FeedPage = () => {
        <TabsList className='grid w-full grid-cols-4 bg-neutral-100 rounded-lg p-1'>
         <TabsTrigger
          value='all'
-         className='text-caption data-[state=active]:bg-white data-[state=active]:shadow-sm'
+         className='text-caption data-[state=active]:bg-var(--color-background) data-[state=active]:shadow-sm'
         >
          Tất cả
         </TabsTrigger>
         <TabsTrigger
          value='tournaments'
-         className='text-caption data-[state=active]:bg-white data-[state=active]:shadow-sm'
+         className='text-caption data-[state=active]:bg-var(--color-background) data-[state=active]:shadow-sm'
         >
          Giải đấu
         </TabsTrigger>
         <TabsTrigger
          value='challenges'
-         className='text-caption data-[state=active]:bg-white data-[state=active]:shadow-sm'
+         className='text-caption data-[state=active]:bg-var(--color-background) data-[state=active]:shadow-sm'
         >
          Thách đấu
         </TabsTrigger>
         <TabsTrigger
          value='social'
-         className='text-caption data-[state=active]:bg-white data-[state=active]:shadow-sm'
+         className='text-caption data-[state=active]:bg-var(--color-background) data-[state=active]:shadow-sm'
         >
          Cộng đồng
         </TabsTrigger>
@@ -185,11 +185,11 @@ const FeedPage = () => {
        feedPosts.map((post, index) => (
         <Card
          key={`social-${index}`}
-         className='bg-white/70 dark:bg-slate-900/30 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 shadow-lg'
+         className='bg-var(--color-background)/70 dark:bg-slate-900/30 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 shadow-lg'
         >
          <CardContent className='p-4'>
           <div className='flex items-start gap-3'>
-           <div className='w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold text-sm'>
+           <div className='w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center text-var(--color-background) font-bold text-sm'>
             {post.author?.charAt(0) || 'U'}
            </div>
            <div className='flex-1'>
@@ -227,7 +227,7 @@ const FeedPage = () => {
        filteredTournaments.map((tournament, index) => (
         <Card
          key={`tournament-${index}`}
-         className='bg-white shadow-sm border border-neutral-200'
+         className='bg-var(--color-background) shadow-sm border border-neutral-200'
         >
          <CardContent className='p-4'>
           <h4 className='font-semibold text-neutral-900'>
@@ -267,7 +267,7 @@ const FeedPage = () => {
        filteredChallenges.map((challenge, index) => (
         <Card
          key={`challenge-${index}`}
-         className='bg-white shadow-sm border border-neutral-200'
+         className='bg-var(--color-background) shadow-sm border border-neutral-200'
         >
          <CardContent className='p-4'>
           <h4 className='font-semibold text-neutral-900'>

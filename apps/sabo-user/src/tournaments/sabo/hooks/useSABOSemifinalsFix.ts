@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 
 interface FixResult {
@@ -15,7 +15,7 @@ export const useSABOSemifinalsFix = (tournamentId: string, onRefresh?: () => voi
       console.log('🔧 Fixing SABO semifinals for tournament:', tournamentId);
 
       // Cast the function name as any since it's not in types yet
-      const { data, error } = await (supabase as any).rpc('fix_sabo_semifinals_now', {
+//       const { data, error } = await (supabase as any).rpc('fix_sabo_semifinals_now', {
         p_tournament_id: tournamentId,
       });
 

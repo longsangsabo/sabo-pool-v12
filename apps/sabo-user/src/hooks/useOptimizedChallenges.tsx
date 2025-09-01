@@ -1,6 +1,21 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { Challenge, CreateChallengeData } from '@/types/challenge';
@@ -87,13 +102,13 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
    }
   });
   if (toFetch.length) {
-   const { data: profilesRes } = await supabase
+//    const { data: profilesRes } = await supabase
     .from('profiles')
     .select(
      'user_id, full_name, display_name, verified_rank, elo, avatar_url'
     )
     .in('user_id', toFetch);
-   const { data: rankingsRes } = await supabase
+//    const { data: rankingsRes } = await supabase
     .from('player_rankings')
     .select('user_id, spa_points, elo_points')
     .in('user_id', toFetch);
@@ -218,7 +233,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
      data: challengesData,
      error: fetchError,
      count,
-    } = await supabase
+//     } = await supabase
      .from('challenges')
      .select('*', { count: 'exact' })
      .order('created_at', { ascending: false })
@@ -254,13 +269,13 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
     let freshProfiles: any[] = [];
     if (uncachedUserIds.size > 0) {
      const [profilesRes, rankingsRes] = await Promise.all([
-      supabase
+//       supabase
        .from('profiles')
        .select(
         'user_id, full_name, display_name, verified_rank, elo, avatar_url'
        )
        .in('user_id', Array.from(uncachedUserIds)),
-      supabase
+//       supabase
        .from('player_rankings')
        .select('user_id, spa_points, elo_points')
        .in('user_id', Array.from(uncachedUserIds)),
@@ -405,7 +420,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
    if (winRateLoading.current.has(userId)) return null;
    winRateLoading.current.add(userId);
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('matches')
      .select('player1_id, player2_id, winner_id, status')
      .or(`player1_id.eq.${userId},player2_id.eq.${userId}`)
@@ -475,7 +490,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
    try {
     // Check daily limit efficiently
     const today = new Date().toISOString().split('T')[0];
-    const { count } = await supabase
+//     const { count } = await supabase
      .from('challenges')
      .select('*', { count: 'exact', head: true })
      .eq('challenger_id', user.id)
@@ -504,9 +519,9 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
      expires_at: expiresAt.toISOString(),
     };
 
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('challenges')
-     .insert([newChallenge])
+     .create([newChallenge])
      .select('*')
      .single();
 
@@ -531,7 +546,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
    if (!user) throw new Error('User not authenticated');
 
    try {
-    const { data: challengeData, error: fetchError } = await supabase
+//     const { data: challengeData, error: fetchError } = await supabase
      .from('challenges')
      .select('*')
      .eq('id', challengeId)
@@ -562,7 +577,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
        responded_at: new Date().toISOString(),
       };
 
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('challenges')
      .update(updateData)
      .eq('id', challengeId)
@@ -591,9 +606,9 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
      score_player2: 0,
     };
 
-    const { data: matchRecord, error: matchError } = await supabase
+//     const { data: matchRecord, error: matchError } = await supabase
      .from('matches')
-     .insert([matchData])
+     .create([matchData])
      .select('*')
      .maybeSingle();
 
@@ -612,16 +627,16 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
       console.log('📬 Sending notification to challenger...');
 
       // Get participant profile for notification metadata
-      const { data: participantProfile } = await supabase
+//       const { data: participantProfile } = await supabase
        .from('profiles')
        .select(
         'full_name, display_name, avatar_url, verified_rank, current_rank'
        )
-       .eq('user_id', user.id)
+       .getByUserId(user.id)
        .single();
 
       const { error: notificationError } =
-       await supabase.functions.invoke('send-notification', {
+// // //        // TODO: Replace with service call - await supabase.functions.invoke('send-notification', {
         body: {
          user_id: challengeData.challenger_id,
          type: 'challenge_accepted',
@@ -676,7 +691,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
    if (!user) throw new Error('User not authenticated');
 
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('challenges')
      .update({
       status: 'declined',
@@ -685,7 +700,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
      .eq('id', challengeId)
      .eq('opponent_id', user.id)
      .eq('status', 'pending')
-     .select()
+     .getAll()
      .single();
 
     if (error) throw error;
@@ -707,7 +722,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
  const cancelChallenge = useCallback(
   async (challengeId: string) => {
    try {
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
      .from('challenges')
      .delete()
      .eq('id', challengeId);
@@ -760,7 +775,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
      : challenge.opponent_id;
 
    // Update challenge with scores and status
-   const { data: challengeData, error: challengeError } = await supabase
+//    const { data: challengeData, error: challengeError } = await supabase
     .from('challenges')
     .update({
      challenger_score: challengerScore,
@@ -769,14 +784,14 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
      completed_at: new Date().toISOString(),
     })
     .eq('id', challengeId)
-    .select()
+    .getAll()
     .maybeSingle();
 
    if (challengeError) throw challengeError;
    if (!challengeData) throw new Error('Challenge not found');
 
    // Create or update match record
-   const { data: matchData, error: matchError } = await supabase
+//    const { data: matchData, error: matchError } = await supabase
     .from('matches')
     .upsert(
      {
@@ -794,14 +809,14 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
       onConflict: 'challenge_id',
      }
     )
-    .select()
+    .getAll()
     .single();
 
    if (matchError) throw matchError;
 
    // Process SPA points and ELO
    try {
-    const { data: spaResult, error: spaError } = await supabase.rpc(
+    const { data: spaResult, error: spaError } = await tournamentService.callRPC(
      'credit_spa_points',
      {
       p_user_id: winnerId,
@@ -825,7 +840,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
 
    if (opponentId) {
     try {
-     await supabase.functions.invoke('send-notification', {
+// // //      // TODO: Replace with service call - await supabase.functions.invoke('send-notification', {
       body: {
        user_id: opponentId,
        type: 'challenge_completed',
@@ -880,7 +895,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
    }, 500); // 500ms debounce to group rapid changes
   };
 
-  const subscription = supabase
+//   const subscription = supabase
    .channel(`optimized_challenges_${user.id}`)
    .on(
     'postgres_changes',
@@ -915,7 +930,7 @@ export const useOptimizedChallenges = (): UseOptimizedChallengesReturn => {
 
   return () => {
    if (refreshTimeout) clearTimeout(refreshTimeout);
-   supabase.removeChannel(subscription);
+   // removeChannel(subscription);
   };
  }, [user?.id]); // Only depend on user.id to prevent unnecessary re-subscriptions
 

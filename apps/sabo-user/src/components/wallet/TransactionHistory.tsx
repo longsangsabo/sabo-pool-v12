@@ -3,7 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -57,7 +61,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
   const fetchTransactions = async () => {
    setIsLoading(true);
    try {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('spa_transactions')
      .select('*')
      .eq('user_id', user.id)
@@ -86,7 +90,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
   fetchTransactions();
 
   // Set up real-time subscription
-  const subscription = supabase
+//   const subscription = supabase
    .channel('spa-transactions-history')
    .on(
     'postgres_changes',

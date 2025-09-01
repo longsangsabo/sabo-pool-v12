@@ -139,7 +139,7 @@ const MessageCenter: React.FC = () => {
     <Card>
      <CardContent className="content-spacing">
       <div className="flex items-center gap-3">
-       <Inbox className="h-8 w-8 text-blue-500" />
+       <Inbox className="h-8 w-8 text-primary-500" />
        <div>
         <p className="text-body-small text-muted-foreground">Tổng tin nhắn</p>
         <p className="text-heading-bold">{stats.total_messages}</p>
@@ -151,10 +151,10 @@ const MessageCenter: React.FC = () => {
     <Card>
      <CardContent className="content-spacing">
       <div className="flex items-center gap-3">
-       <Mail className="h-8 w-8 text-red-500" />
+       <Mail className="h-8 w-8 text-error-500" />
        <div>
         <p className="text-body-small text-muted-foreground">Chưa đọc</p>
-        <p className="text-heading-bold text-red-500">{stats.unread_count}</p>
+        <p className="text-heading-bold text-error-500">{stats.unread_count}</p>
        </div>
       </div>
      </CardContent>
@@ -163,7 +163,7 @@ const MessageCenter: React.FC = () => {
     <Card>
      <CardContent className="content-spacing">
       <div className="flex items-center gap-3">
-       <Send className="h-8 w-8 text-green-500" />
+       <Send className="h-8 w-8 text-success-500" />
        <div>
         <p className="text-body-small text-muted-foreground">Đã gửi</p>
         <p className="text-heading-bold">{stats.sent_count}</p>

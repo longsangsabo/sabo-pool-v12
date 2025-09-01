@@ -52,10 +52,10 @@ const SimpleClubAboutPage = () => {
       {/* Hero Section */}
       <Card className='bg-green-800 border-green-700'>
        <CardHeader className='text-center'>
-        <CardTitle className='text-white text-3xl mb-4'>
+        <CardTitle className='text-var(--color-background) text-3xl mb-4'>
          SABO Billiards
         </CardTitle>
-        <p className='text-green-200 text-lg'>
+        <p className='text-success-200 text-lg'>
          Hơn 10 năm phục vụ đam mê billiards với chất lượng hàng đầu
         </p>
        </CardHeader>
@@ -63,23 +63,23 @@ const SimpleClubAboutPage = () => {
         <div className='grid md:grid-cols-4 gap-6 mt-8'>
          <div className='text-center'>
           <Users className='h-8 w-8 text-yellow-400 mx-auto mb-2' />
-          <p className='text-heading-bold text-white'>5000+</p>
-          <p className='text-green-200'>Khách hàng</p>
+          <p className='text-heading-bold text-var(--color-background)'>5000+</p>
+          <p className='text-success-200'>Khách hàng</p>
          </div>
          <div className='text-center'>
           <Clock className='h-8 w-8 text-yellow-400 mx-auto mb-2' />
-          <p className='text-heading-bold text-white'>10+</p>
-          <p className='text-green-200'>Năm kinh nghiệm</p>
+          <p className='text-heading-bold text-var(--color-background)'>10+</p>
+          <p className='text-success-200'>Năm kinh nghiệm</p>
          </div>
          <div className='text-center'>
           <Award className='h-8 w-8 text-yellow-400 mx-auto mb-2' />
-          <p className='text-heading-bold text-white'>12</p>
-          <p className='text-green-200'>Bàn billiards cao cấp</p>
+          <p className='text-heading-bold text-var(--color-background)'>12</p>
+          <p className='text-success-200'>Bàn billiards cao cấp</p>
          </div>
          <div className='text-center'>
           <Star className='h-8 w-8 text-yellow-400 mx-auto mb-2' />
-          <p className='text-heading-bold text-white'>4.8/5</p>
-          <p className='text-green-200'>Đánh giá</p>
+          <p className='text-heading-bold text-var(--color-background)'>4.8/5</p>
+          <p className='text-success-200'>Đánh giá</p>
          </div>
         </div>
        </CardContent>
@@ -88,11 +88,11 @@ const SimpleClubAboutPage = () => {
       {/* Story Section */}
       <Card className='bg-green-800 border-green-700'>
        <CardHeader>
-        <CardTitle className='text-white text-2xl'>
+        <CardTitle className='text-var(--color-background) text-2xl'>
          Câu chuyện của chúng tôi
         </CardTitle>
        </CardHeader>
-       <CardContent className='text-green-200 space-y-4 text-body-large leading-relaxed'>
+       <CardContent className='text-success-200 space-y-4 text-body-large leading-relaxed'>
         <p>
          SABO Billiards được thành lập vào năm 2014 với mong muốn tạo
          ra một không gian chơi billiards chuyên nghiệp và thân thiện
@@ -114,7 +114,7 @@ const SimpleClubAboutPage = () => {
       {/* Facilities */}
       <Card className='bg-green-800 border-green-700'>
        <CardHeader>
-        <CardTitle className='text-white text-2xl'>
+        <CardTitle className='text-var(--color-background) text-2xl'>
          Cơ sở vật chất
         </CardTitle>
        </CardHeader>
@@ -124,7 +124,7 @@ const SimpleClubAboutPage = () => {
           <h3 className='text-yellow-400 font-semibold text-lg'>
            Bàn billiards chất lượng cao
           </h3>
-          <ul className='text-green-200 space-y-2'>
+          <ul className='text-success-200 space-y-2'>
            <li>• 12 bàn billiards chuẩn quốc tế</li>
            <li>• Nỉ bàn cao cấp, thay định kỳ</li>
            <li>• Hệ thống đèn chiếu sáng chuyên dụng</li>
@@ -135,7 +135,7 @@ const SimpleClubAboutPage = () => {
           <h3 className='text-yellow-400 font-semibold text-lg'>
            Tiện nghi khác
           </h3>
-          <ul className='text-green-200 space-y-2'>
+          <ul className='text-success-200 space-y-2'>
            <li>• Điều hòa mát lạnh quanh năm</li>
            <li>• Hệ thống âm thanh hiện đại</li>
            <li>• Khu vực nghỉ ngơi thoải mái</li>
@@ -149,7 +149,7 @@ const SimpleClubAboutPage = () => {
       {/* Services */}
       <Card className='bg-green-800 border-green-700'>
        <CardHeader>
-        <CardTitle className='text-white text-2xl'>
+        <CardTitle className='text-var(--color-background) text-2xl'>
          Dịch vụ của chúng tôi
         </CardTitle>
        </CardHeader>
@@ -159,7 +159,7 @@ const SimpleClubAboutPage = () => {
           <h3 className='text-yellow-400 font-semibold text-body-large mb-2'>
            Chơi billiards tự do
           </h3>
-          <p className='text-green-200'>
+          <p className='text-success-200'>
            Giá cả hợp lý theo giờ, không gian thoải mái
           </p>
          </div>
@@ -167,7 +167,7 @@ const SimpleClubAboutPage = () => {
           <h3 className='text-yellow-400 font-semibold text-body-large mb-2'>
            Tổ chức giải đấu
           </h3>
-          <p className='text-green-200'>
+          <p className='text-success-200'>
            Hỗ trợ tổ chức các giải đấu billiards cho cộng đồng
           </p>
          </div>
@@ -175,7 +175,7 @@ const SimpleClubAboutPage = () => {
           <h3 className='text-yellow-400 font-semibold text-body-large mb-2'>
            Hướng dẫn kỹ thuật
           </h3>
-          <p className='text-green-200'>
+          <p className='text-success-200'>
            Có HLV chuyên nghiệp hướng dẫn người mới
           </p>
          </div>
@@ -186,7 +186,7 @@ const SimpleClubAboutPage = () => {
       {/* Contact Info */}
       <Card className='bg-green-800 border-green-700'>
        <CardHeader>
-        <CardTitle className='text-white text-2xl'>
+        <CardTitle className='text-var(--color-background) text-2xl'>
          Liên hệ với chúng tôi
         </CardTitle>
        </CardHeader>
@@ -194,8 +194,8 @@ const SimpleClubAboutPage = () => {
         <div className='flex items-center space-x-3'>
          <MapPin className='h-6 w-6 text-yellow-400' />
          <div>
-          <p className='text-white font-medium'>Địa chỉ:</p>
-          <p className='text-green-200'>
+          <p className='text-var(--color-background) font-medium'>Địa chỉ:</p>
+          <p className='text-success-200'>
            123 Đường Nguyễn Huệ, Quận 1, TP.HCM
           </p>
          </div>
@@ -203,15 +203,15 @@ const SimpleClubAboutPage = () => {
         <div className='flex items-center space-x-3'>
          <Phone className='h-6 w-6 text-yellow-400' />
          <div>
-          <p className='text-white font-medium'>Hotline:</p>
-          <p className='text-green-200'>0901 234 567</p>
+          <p className='text-var(--color-background) font-medium'>Hotline:</p>
+          <p className='text-success-200'>0901 234 567</p>
          </div>
         </div>
         <div className='flex items-center space-x-3'>
          <Clock className='h-6 w-6 text-yellow-400' />
          <div>
-          <p className='text-white font-medium'>Giờ mở cửa:</p>
-          <p className='text-green-200'>
+          <p className='text-var(--color-background) font-medium'>Giờ mở cửa:</p>
+          <p className='text-success-200'>
            8:00 - 23:00 (Thứ 2 - Chủ nhật)
           </p>
          </div>
@@ -221,10 +221,10 @@ const SimpleClubAboutPage = () => {
 
       {/* Call to Action */}
       <div className='text-center py-8'>
-       <h3 className='text-3xl font-bold text-white mb-4'>
+       <h3 className='text-3xl font-bold text-var(--color-background) mb-4'>
         Sẵn sàng trải nghiệm?
        </h3>
-       <p className='text-green-200 mb-6 text-lg'>
+       <p className='text-success-200 mb-6 text-lg'>
         Hãy đến và cảm nhận không khí chơi billiards chuyên nghiệp
        </p>
        <Link to='/simple-booking'>

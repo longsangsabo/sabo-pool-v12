@@ -171,27 +171,27 @@ export default function AdminFeedback() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">📝 Feedback Management</h1>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        <button className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700">
           Export Feedback
         </button>
       </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Feedback</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Feedback</p>
               <p className="text-2xl font-bold">{feedback.length}</p>
             </div>
             <MessageCircle className="h-8 w-8 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Average Rating</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Average Rating</p>
               <div className="flex items-center gap-2">
                 <p className="text-2xl font-bold">{getAverageRating()}</p>
                 <div className="flex">{renderStars(Math.round(parseFloat(getAverageRating())))}</div>
@@ -201,20 +201,20 @@ export default function AdminFeedback() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">New Feedback</p>
-              <p className="text-2xl font-bold text-yellow-600">{getNewFeedbackCount()}</p>
+              <p className="text-sm text-neutral dark:text-gray-400">New Feedback</p>
+              <p className="text-2xl font-bold text-warning">{getNewFeedbackCount()}</p>
             </div>
             <TrendingUp className="h-8 w-8 text-yellow-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Votes</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Votes</p>
               <p className="text-2xl font-bold">{getTotalVotes()}</p>
             </div>
             <ThumbsUp className="h-8 w-8 text-green-500" />
@@ -226,7 +226,7 @@ export default function AdminFeedback() {
         {/* Feedback List */}
         <div className="lg:col-span-2 space-y-6">
           {/* Filters */}
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <div className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg shadow">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -270,7 +270,7 @@ export default function AdminFeedback() {
             {feedback.map((item) => (
               <div 
                 key={item.id} 
-                className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow p-6 cursor-pointer hover:bg-neutral-background dark:hover:bg-gray-700"
                 onClick={() => setSelectedFeedback(item)}
               >
                 <div className="flex items-start justify-between mb-4">
@@ -283,7 +283,7 @@ export default function AdminFeedback() {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <div className="flex items-center gap-1 text-sm text-neutral">
                       <ThumbsUp className="h-4 w-4" />
                       <span>{item.votes}</span>
                     </div>
@@ -294,7 +294,7 @@ export default function AdminFeedback() {
                 </div>
 
                 <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">{item.description}</p>
+                <p className="text-neutral dark:text-gray-400 text-sm line-clamp-2 mb-4">{item.description}</p>
 
                 <div className="flex items-center justify-between">
                   <div className="flex gap-2">
@@ -320,8 +320,8 @@ export default function AdminFeedback() {
         </div>
 
         {/* Feedback Detail */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
             <h2 className="text-lg font-semibold">
               {selectedFeedback ? 'Feedback Details' : 'Select Feedback'}
             </h2>
@@ -336,10 +336,10 @@ export default function AdminFeedback() {
                       <h3 className="text-lg font-semibold">{selectedFeedback.title}</h3>
                       <div className="flex items-center gap-2 mt-1">
                         <div className="flex">{renderStars(selectedFeedback.rating)}</div>
-                        <span className="text-sm text-gray-600">({selectedFeedback.rating}/5)</span>
+                        <span className="text-sm text-neutral">({selectedFeedback.rating}/5)</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 text-gray-600">
+                    <div className="flex items-center gap-1 text-neutral">
                       <ThumbsUp className="h-4 w-4" />
                       <span>{selectedFeedback.votes}</span>
                     </div>
@@ -349,7 +349,7 @@ export default function AdminFeedback() {
                     <div>
                       <h4 className="font-medium mb-2">From:</h4>
                       <p className="font-medium">{selectedFeedback.user}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{selectedFeedback.email}</p>
+                      <p className="text-sm text-neutral dark:text-gray-400">{selectedFeedback.email}</p>
                       <p className="text-sm text-gray-500">Submitted: {selectedFeedback.submittedAt}</p>
                     </div>
                   </div>
@@ -371,7 +371,7 @@ export default function AdminFeedback() {
 
                   <div className="mb-6">
                     <h4 className="font-medium mb-2">Description:</h4>
-                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{selectedFeedback.description}</p>
+                    <p className="text-neutral dark:text-gray-400 leading-relaxed">{selectedFeedback.description}</p>
                   </div>
 
                   <div className="mb-6">
@@ -386,7 +386,7 @@ export default function AdminFeedback() {
                     </div>
                   </div>
 
-                  <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                  <div className="border-t border-neutral dark:border-gray-700 pt-6">
                     <h4 className="font-medium mb-4">Actions</h4>
                     <div className="space-y-3">
                       <select className="w-full px-3 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
@@ -411,10 +411,10 @@ export default function AdminFeedback() {
                       />
 
                       <div className="flex gap-2">
-                        <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        <button className="flex-1 px-4 py-2 bg-blue-600 text-var(--color-background) rounded hover:bg-blue-700">
                           Update
                         </button>
-                        <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                        <button className="px-4 py-2 bg-green-600 text-var(--color-background) rounded hover:bg-green-700">
                           Contact User
                         </button>
                       </div>
@@ -434,26 +434,26 @@ export default function AdminFeedback() {
 
       {/* Quick Actions */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📊 Feedback Analytics</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">View trends and insights from user feedback</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">View trends and insights from user feedback</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             View Analytics
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">🏷️ Tag Management</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Organize feedback with custom tags</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Organize feedback with custom tags</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             Manage Tags
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📝 Feedback Survey</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Create and manage feedback surveys</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Create and manage feedback surveys</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             Create Survey
           </button>
         </div>

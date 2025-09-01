@@ -1,3 +1,8 @@
+import { userService } from "../services/userService";
+import { tournamentService } from "../services/tournamentService";
+import { clubService } from "../services/clubService";
+import { profileService } from "../services/profileService";
+import { rankingService } from "../services/rankingService";
 import { useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import MobileStoryReel from '../components/mobile/cards/MobileStoryReel';
@@ -168,7 +173,7 @@ const Dashboard = () => {
      style={getRefreshIndicatorStyle()}
     >
      <RefreshCw
-      className={`w-6 h-6 ${conditionalClasses('text-white', 'text-slate-700')} ${
+      className={`w-6 h-6 ${conditionalClasses('text-var(--color-background)', 'text-slate-700')} ${
        isPullRefreshing || loading ? 'animate-spin' : ''
       }`}
      />
@@ -183,7 +188,7 @@ const Dashboard = () => {
     <div className='px-4 space-y-4 pb-4'>
      {/* Loading state */}
      {loading && feedPosts.length === 0 && (
-      <div className={`text-center py-8 ${conditionalClasses('bg-slate-800/30', 'bg-white/30')} backdrop-blur-md rounded-lg`}>
+      <div className={`text-center py-8 ${conditionalClasses('bg-slate-800/30', 'bg-var(--color-background)/30')} backdrop-blur-md rounded-lg`}>
        <RefreshCw className={`w-8 h-8 animate-spin mx-auto ${getClasses('textSecondary')}`} />
        <p className={`text-body-small ${getClasses('textSecondary')} mt-2 font-medium`}>
         Đang tải feed...
@@ -193,11 +198,11 @@ const Dashboard = () => {
 
      {/* Error state */}
      {error && (
-      <div className={`text-center py-8 ${conditionalClasses('bg-slate-800/40', 'bg-white/40')} backdrop-blur-md rounded-lg border ${getClasses('border')}`}>
+      <div className={`text-center py-8 ${conditionalClasses('bg-slate-800/40', 'bg-var(--color-background)/40')} backdrop-blur-md rounded-lg border ${getClasses('border')}`}>
        <p className='text-body-small text-red-400 font-medium'>{error}</p>
        <Button
         onClick={refreshFeed}
-        className={`text-body-small ${getClasses('textSecondary')} hover:${getClasses('textPrimary')} ${conditionalClasses('bg-slate-700/50 hover:bg-slate-700/70', 'bg-white/50 hover:bg-white/70')} px-4 py-2 rounded-md mt-3 transition-colors`}
+        className={`text-body-small ${getClasses('textSecondary')} hover:${getClasses('textPrimary')} ${conditionalClasses('bg-slate-700/50 hover:bg-slate-700/70', 'bg-var(--color-background)/50 hover:bg-var(--color-background)/70')} px-4 py-2 rounded-md mt-3 transition-colors`}
        >
         Thử lại
        </Button>
@@ -229,7 +234,7 @@ const Dashboard = () => {
 
      {/* Empty state */}
      {!loading && !error && feedPosts.length === 0 && (
-      <div className={`text-center py-12 ${conditionalClasses('bg-slate-800/30', 'bg-white/30')} backdrop-blur-md rounded-lg`}>
+      <div className={`text-center py-12 ${conditionalClasses('bg-slate-800/30', 'bg-var(--color-background)/30')} backdrop-blur-md rounded-lg`}>
        <div className='text-4xl mb-4'>🎱</div>
        <p className={`text-body ${getClasses('textPrimary')} font-medium mb-2`}>
         Chưa có hoạt động nào

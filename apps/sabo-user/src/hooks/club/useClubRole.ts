@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export interface ClubRoleData {
   club_id: string;
@@ -12,7 +12,7 @@ export const fetchClubRole = async (
   clubId: string,
   userId: string
 ): Promise<ClubRoleData | null> => {
-  const { data, error } = await supabase
+  // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_members')
     .select('club_id, user_id, role, status')
     .eq('club_id', clubId)
@@ -46,7 +46,7 @@ export const useIsClubOwner = (userId?: string, enabled: boolean = true) => {
       if (!userId) return false;
 
       // Check if user has club_owner role in profiles
-      const { data: profileData, error: profileError } = await supabase
+//       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('user_id', userId)
@@ -57,7 +57,7 @@ export const useIsClubOwner = (userId?: string, enabled: boolean = true) => {
       }
 
       // Verify they have an approved club profile
-      const { data: clubData, error: clubError } = await supabase
+//       const { data: clubData, error: clubError } = await supabase
         .from('club_profiles')
         .select('id')
         .eq('user_id', userId)

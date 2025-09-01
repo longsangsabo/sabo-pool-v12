@@ -43,7 +43,7 @@ export const RankingDashboard: React.FC<RankingDashboardProps> = ({
   return (
    <Card>
     <CardContent className='p-6 text-center'>
-     <div className='text-red-500 mb-4'>
+     <div className='text-error-500 mb-4'>
       <Info className='h-12 w-12 mx-auto mb-2' />
       <p className='font-medium'>Lỗi tải dữ liệu</p>
       <p className='text-body-small text-muted-foreground'>{error}</p>

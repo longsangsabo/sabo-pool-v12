@@ -1,5 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { toast } from 'sonner';
 
 export interface AvailableUser {
@@ -28,7 +31,7 @@ export const useAvailableUsers = () => {
     );
 
     // First check existing registrations using user_id
-    const { data: existingRegistrations, error: regError } = await supabase
+//     const { data: existingRegistrations, error: regError } = await supabase
      .from('tournament_registrations')
      .select('user_id')
      .eq('tournament_id', tournamentId);
@@ -43,7 +46,7 @@ export const useAvailableUsers = () => {
     console.log(`📋 Found ${excludedIds.length} users already registered`);
 
     // Get all users (remove is_demo_user filter since column doesn't exist)
-    const { data: demoUsers, error: demoError } = await supabase
+//     const { data: demoUsers, error: demoError } = await supabase
      .from('profiles')
      .select(
       `
@@ -70,7 +73,7 @@ export const useAvailableUsers = () => {
     }
 
     // Fetch ELO data using user_id instead of player_id
-    const { data: allPlayers, error: playersError } = await supabase
+//     const { data: allPlayers, error: playersError } = await supabase
      .from('player_rankings')
      .select(
       `

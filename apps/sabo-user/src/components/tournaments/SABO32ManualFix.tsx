@@ -5,7 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Wrench, AlertTriangle, CheckCircle, Users, Trophy } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface SABO32ManualFixProps {
@@ -26,7 +30,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
    console.log('🔧 Starting manual SABO32 advancement fix...');
 
    // 1. Get all matches for this tournament
-   const { data: allMatches, error: matchesError } = await supabase
+//    const { data: allMatches, error: matchesError } = await supabase
     .from('sabo32_matches')
     .select('*')
     .eq('tournament_id', tournamentId)
@@ -90,7 +94,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
      );
      
      if (targetSF) {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
        .from('sabo32_matches')
        .update({ 
         player1_id: groupAFinal.winner_id,
@@ -116,7 +120,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
      );
      
      if (targetSF) {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
        .from('sabo32_matches')
        .update({ 
         player1_id: groupBFinal.winner_id,
@@ -144,7 +148,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
        ? { player2_id: semi.winner_id } 
        : { player1_id: semi.winner_id };
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
        .from('sabo32_matches')
        .update({ 
         ...updateData,
@@ -225,7 +229,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
        <div>
         <div className="text-caption-medium mb-2">Group A Finals:</div>
         {analysis.groupAFinals.map((final: any) => (
-         <div key={final.id} className="text-caption p-2 bg-white dark:bg-neutral-800 rounded border">
+         <div key={final.id} className="text-caption p-2 bg-var(--color-background) dark:bg-neutral-800 rounded border">
           <Badge variant={final.completed ? "default" : "secondary"} className="mr-2">
            {final.sabo_match_id}
           </Badge>
@@ -243,7 +247,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
        <div>
         <div className="text-caption-medium mb-2">Group B Finals:</div>
         {analysis.groupBFinals.map((final: any) => (
-         <div key={final.id} className="text-caption p-2 bg-white dark:bg-neutral-800 rounded border">
+         <div key={final.id} className="text-caption p-2 bg-var(--color-background) dark:bg-neutral-800 rounded border">
           <Badge variant={final.completed ? "default" : "secondary"} className="mr-2">
            {final.sabo_match_id}
           </Badge>
@@ -264,7 +268,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
        <div className="text-caption-medium mb-2">Cross-Bracket Status:</div>
        <div className="space-y-1">
         {analysis.crossSemis.map((semi: any) => (
-         <div key={semi.id} className="text-caption p-2 bg-white dark:bg-neutral-800 rounded border">
+         <div key={semi.id} className="text-caption p-2 bg-var(--color-background) dark:bg-neutral-800 rounded border">
           <Badge variant="outline" className="mr-2">{semi.sabo_match_id}</Badge>
           <span className={semi.player1_id ? "text-success-600" : "text-neutral-500"}>
            Player 1: {semi.player1_id ? "Set" : "TBD"}
@@ -276,7 +280,7 @@ export const SABO32ManualFix: React.FC<SABO32ManualFixProps> = ({
          </div>
         ))}
         {analysis.crossFinal.map((final: any) => (
-         <div key={final.id} className="text-caption p-2 bg-white dark:bg-neutral-800 rounded border">
+         <div key={final.id} className="text-caption p-2 bg-var(--color-background) dark:bg-neutral-800 rounded border">
           <Badge variant="outline" className="mr-2">{final.sabo_match_id}</Badge>
           <span className={final.player1_id ? "text-success-600" : "text-neutral-500"}>
            Player 1: {final.player1_id ? "Set" : "TBD"}

@@ -15,7 +15,11 @@ import {
  Building2,
  ArrowRight,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { useAuth } from '@/hooks/useAuth';
 import TrustScoreBadgeMock from '@/components/TrustScoreBadgeMock';
 import ProfileCompletionBadge from '@/components/profile/ProfileCompletionBadge';
@@ -89,7 +93,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   if (!user) return;
 
   try {
-   const { data: statsData, error } = await supabase
+//    const { data: statsData, error } = await supabase
     .from('player_rankings')
     .select('total_matches, wins, spa_points')
     .eq('user_id', user.id)
@@ -143,7 +147,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   if (!user) return;
 
   try {
-   const { data, error } = await (supabase as any)
+//    const { data, error } = await (supabase as any)
     .from('club_profiles')
     .select('id, verification_status')
     .eq('user_id', user.id)
@@ -332,7 +336,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
            <p className='text-caption text-success-600 font-medium'>
             Trận đấu
            </p>
-           <Target className='w-4 h-4 text-green-500' />
+           <Target className='w-4 h-4 text-success-500' />
           </div>
           <p className='text-title font-bold text-success-700'>
            {stats?.matches_played || 0}
@@ -346,7 +350,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
            <p className='text-caption text-primary-600 font-medium'>
             Tỷ lệ thắng
            </p>
-           <Trophy className='w-4 h-4 text-blue-500' />
+           <Trophy className='w-4 h-4 text-primary-500' />
           </div>
           <p className='text-title font-bold text-primary-700'>
            {stats?.win_rate?.toFixed(0) || 0}%

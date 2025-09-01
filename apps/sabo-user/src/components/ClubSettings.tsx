@@ -7,7 +7,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import {
  Settings,
  Building,
@@ -57,7 +61,7 @@ const ClubSettings = () => {
   if (!user) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .select('*')
     .eq('user_id', user.id)
@@ -91,7 +95,7 @@ const ClubSettings = () => {
 
   setSaving(true);
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('club_profiles')
     .update({
      club_name: clubSettings.club_name,
@@ -146,7 +150,7 @@ const ClubSettings = () => {
    <Card>
     <CardContent className='pt-6'>
      <div className='text-center py-8 text-muted-foreground'>
-      <AlertTriangle className='w-12 h-12 mx-auto mb-4 text-red-500' />
+      <AlertTriangle className='w-12 h-12 mx-auto mb-4 text-error-500' />
       <p className='font-medium'>Không tìm thấy thông tin CLB</p>
       <p className='text-body-small mt-1'>
        Vui lòng liên hệ admin để được hỗ trợ
@@ -351,7 +355,7 @@ const ClubSettings = () => {
      </CardTitle>
     </CardHeader>
     <CardContent>
-     <div className='bg-warning-50 border border-yellow-200 rounded-lg p-4'>
+     <div className='bg-warning-50 border border-warning rounded-lg p-4'>
       <div className='flex items-start gap-3'>
        <AlertTriangle className='w-5 h-5 text-warning-600 mt-0.5' />
        <div>

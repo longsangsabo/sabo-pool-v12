@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { getDisplayName } from '@/types/unified-profile';
 
 export const useDisplayName = (userId: string) => {
   return useQuery({
     queryKey: ['display-name', userId],
     queryFn: async () => {
-      const { data } = await supabase
+      // TODO: Replace with service call - const { data } = await supabase
         .from('profiles')
         .select('display_name, full_name, nickname, email, user_id')
         .eq('user_id', userId)

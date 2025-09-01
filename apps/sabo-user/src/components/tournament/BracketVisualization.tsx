@@ -11,7 +11,11 @@ import {
  Medal,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 
 interface BracketVisualizationProps {
  tournamentId: string;
@@ -61,7 +65,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
 
  // Real-time subscription để cập nhật thông tin người chơi
  useEffect(() => {
-  const channel = supabase
+//   const channel = supabase
    .channel('bracket-updates')
    .on(
     'postgres_changes',
@@ -102,7 +106,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
    console.log('🔍 Fetching bracket data for tournament:', tournamentId);
 
    // Get tournament data first
-   const { data: tournament, error: tournamentError } = await supabase
+//    const { data: tournament, error: tournamentError } = await supabase
     .from('tournaments')
     .select('*')
     .eq('id', tournamentId)
@@ -113,7 +117,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
    }
 
    // Get tournament registrations as participants
-   const { data: registrations, error: regError } = await supabase
+//    const { data: registrations, error: regError } = await supabase
     .from('tournament_registrations')
     .select(
      `
@@ -135,7 +139,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
    let profiles: any[] = [];
 
    if (userIds.length > 0) {
-    const { data: profileData, error: profileError } = await supabase
+//     const { data: profileData, error: profileError } = await supabase
      .from('profiles')
      .select('user_id, full_name, display_name, avatar_url, verified_rank')
      .in('user_id', userIds);
@@ -159,7 +163,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
     }) || [];
 
    // Get tournament matches with player details
-   const { data: matchesData, error: matchesError } = await supabase
+//    const { data: matchesData, error: matchesError } = await supabase
     .from('tournament_matches')
     .select(
      `
@@ -202,7 +206,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
    setMatches(enhancedMatches);
 
    // Check if bracket exists in tournament_brackets table
-   const { data: existingBracket, error: bracketError } = await supabase
+//    const { data: existingBracket, error: bracketError } = await supabase
     .from('tournament_brackets')
     .select('*')
     .eq('tournament_id', tournamentId)
@@ -317,13 +321,13 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
     <CardContent>
      <div className='grid grid-cols-3 gap-4 text-center'>
       <div className='flex items-center justify-center gap-2'>
-       <Users className='h-4 w-4 text-blue-500' />
+       <Users className='h-4 w-4 text-primary-500' />
        <span className='text-body-small-medium'>
         {bracketData.participant_count} Người chơi
        </span>
       </div>
       <div className='flex items-center justify-center gap-2'>
-       <Medal className='h-4 w-4 text-green-500' />
+       <Medal className='h-4 w-4 text-success-500' />
        <span className='text-body-small-medium'>
         {totalRounds} Vòng đấu
        </span>
@@ -364,9 +368,9 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
             variant='outline'
             className={`w-full justify-center py-2 ${
              round === totalRounds
-              ? 'bg-gradient-to-r from-yellow-400 to-amber-400 text-white border-amber-500'
+              ? 'bg-gradient-to-r from-yellow-400 to-amber-400 text-var(--color-background) border-amber-500'
               : round === totalRounds - 1
-               ? 'bg-gradient-to-r from-blue-400 to-indigo-400 text-white border-blue-500'
+               ? 'bg-gradient-to-r from-blue-400 to-indigo-400 text-var(--color-background) border-blue-500'
                : 'bg-background'
             }`}
            >
@@ -389,7 +393,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
               className={`h-full min-h-[90px] border-2 transition-all hover:shadow-md ${
                match.winner_id
                 ? 'border-green-400 shadow-lg bg-success-50'
-                : 'border-neutral-300 shadow-sm bg-white'
+                : 'border-neutral-300 shadow-sm bg-var(--color-background)'
               } ${
                round === totalRounds
                 ? 'bg-gradient-to-br from-yellow-100 to-amber-200 border-amber-400'
@@ -406,13 +410,13 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
                  <div
                   className={`flex items-center gap-1.5 flex-1 p-1.5 rounded-lg ${
                    match.winner_id === match.player1_id
-                    ? 'bg-green-200 border border-green-400'
+                    ? 'bg-success-200 border border-green-400'
                     : match.player1_id
                      ? 'bg-neutral-100'
                      : 'bg-neutral-50 text-gray-400'
                   }`}
                  >
-                  <Avatar className='h-5 w-5 border border-white shadow-sm flex-shrink-0'>
+                  <Avatar className='h-5 w-5 border border-var(--color-background) shadow-sm flex-shrink-0'>
                    <AvatarImage src={match.player1_avatar} />
                    <AvatarFallback className='text-caption font-semibold bg-primary-100 text-primary-700'>
                     {match.player1_name
@@ -435,7 +439,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
 
                   <div className='flex items-center gap-1 flex-shrink-0'>
                    {match.score_player1 !== null && (
-                    <div className='bg-white rounded w-6 h-6 flex items-center justify-center border'>
+                    <div className='bg-var(--color-background) rounded w-6 h-6 flex items-center justify-center border'>
                      <span className='text-caption font-bold'>
                       {match.score_player1}
                      </span>
@@ -448,7 +452,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
                  </div>
 
                  {/* VS */}
-                 <div className='bg-gradient-to-r from-purple-500 to-blue-500 text-white px-2 py-1 rounded-full'>
+                 <div className='bg-gradient-to-r from-purple-500 to-blue-500 text-var(--color-background) px-2 py-1 rounded-full'>
                   <span className='text-caption font-bold'>
                    VS
                   </span>
@@ -458,13 +462,13 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
                  <div
                   className={`flex items-center gap-1.5 flex-1 p-1.5 rounded-lg ${
                    match.winner_id === match.player2_id
-                    ? 'bg-green-200 border border-green-400'
+                    ? 'bg-success-200 border border-green-400'
                     : match.player2_id
                      ? 'bg-neutral-100'
                      : 'bg-neutral-50 text-gray-400'
                   }`}
                  >
-                  <Avatar className='h-5 w-5 border border-white shadow-sm flex-shrink-0'>
+                  <Avatar className='h-5 w-5 border border-var(--color-background) shadow-sm flex-shrink-0'>
                    <AvatarImage src={match.player2_avatar} />
                    <AvatarFallback className='text-caption font-semibold bg-error-100 text-error-700'>
                     {match.player2_name
@@ -487,7 +491,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
 
                   <div className='flex items-center gap-1 flex-shrink-0'>
                    {match.score_player2 !== null && (
-                    <div className='bg-white rounded w-6 h-6 flex items-center justify-center border'>
+                    <div className='bg-var(--color-background) rounded w-6 h-6 flex items-center justify-center border'>
                      <span className='text-caption font-bold'>
                       {match.score_player2}
                      </span>
@@ -506,14 +510,14 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
                  <div
                   className={`flex items-center justify-between p-2 rounded-lg transition-colors ${
                    match.winner_id === match.player1_id
-                    ? 'bg-green-200 border-2 border-green-400'
+                    ? 'bg-success-200 border-2 border-green-400'
                     : match.player1_id
                      ? 'bg-neutral-100 hover:bg-gray-150'
                      : 'bg-neutral-50 text-gray-400'
                   }`}
                  >
                   <div className='flex items-center gap-2 flex-1 min-w-0'>
-                   <Avatar className='h-6 w-6 border border-white shadow-sm flex-shrink-0'>
+                   <Avatar className='h-6 w-6 border border-var(--color-background) shadow-sm flex-shrink-0'>
                     <AvatarImage
                      src={match.player1_avatar}
                     />
@@ -540,7 +544,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
 
                   <div className='flex items-center gap-2 ml-2 flex-shrink-0'>
                    {match.score_player1 !== null && (
-                    <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center border border-neutral-300 shadow-sm'>
+                    <div className='bg-var(--color-background) rounded-full w-7 h-7 flex items-center justify-center border border-neutral-300 shadow-sm'>
                      <span className='text-body-small font-bold text-neutral-800'>
                       {match.score_player1}
                      </span>
@@ -548,7 +552,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
                    )}
                    {match.winner_id === match.player1_id && (
                     <div className='bg-amber-400 rounded-full p-1'>
-                     <Crown className='h-3 w-3 text-white' />
+                     <Crown className='h-3 w-3 text-var(--color-background)' />
                     </div>
                    )}
                   </div>
@@ -556,7 +560,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
 
                  {/* VS Section */}
                  <div className='flex items-center justify-center py-1'>
-                  <div className='bg-gradient-to-r from-purple-500 to-blue-500 text-white px-2 py-0.5 rounded-full shadow-sm'>
+                  <div className='bg-gradient-to-r from-purple-500 to-blue-500 text-var(--color-background) px-2 py-0.5 rounded-full shadow-sm'>
                    <span className='text-caption font-bold'>
                     VS
                    </span>
@@ -567,14 +571,14 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
                  <div
                   className={`flex items-center justify-between p-2 rounded-lg transition-colors ${
                    match.winner_id === match.player2_id
-                    ? 'bg-green-200 border-2 border-green-400'
+                    ? 'bg-success-200 border-2 border-green-400'
                     : match.player2_id
                      ? 'bg-neutral-100 hover:bg-gray-150'
                      : 'bg-neutral-50 text-gray-400'
                   }`}
                  >
                   <div className='flex items-center gap-2 flex-1 min-w-0'>
-                   <Avatar className='h-6 w-6 border border-white shadow-sm flex-shrink-0'>
+                   <Avatar className='h-6 w-6 border border-var(--color-background) shadow-sm flex-shrink-0'>
                     <AvatarImage
                      src={match.player2_avatar}
                     />
@@ -601,7 +605,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
 
                   <div className='flex items-center gap-2 ml-2 flex-shrink-0'>
                    {match.score_player2 !== null && (
-                    <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center border border-neutral-300 shadow-sm'>
+                    <div className='bg-var(--color-background) rounded-full w-7 h-7 flex items-center justify-center border border-neutral-300 shadow-sm'>
                      <span className='text-body-small font-bold text-neutral-800'>
                       {match.score_player2}
                      </span>
@@ -609,7 +613,7 @@ export const BracketVisualization: React.FC<BracketVisualizationProps> = ({
                    )}
                    {match.winner_id === match.player2_id && (
                     <div className='bg-amber-400 rounded-full p-1'>
-                     <Crown className='h-3 w-3 text-white' />
+                     <Crown className='h-3 w-3 text-var(--color-background)' />
                     </div>
                    )}
                   </div>

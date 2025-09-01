@@ -1,4 +1,10 @@
 import { useState } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import {
  Dialog,
  DialogContent,
@@ -13,10 +19,20 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
+import { createNotification } from '../services/notificationService';
 import { toast } from 'sonner';
 import { Challenge } from '@/types/challenge';
 import { Target, Clock, CheckCircle, AlertCircle, Trophy } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 
 interface ScoreSubmissionFormProps {
  challenge: Challenge;
@@ -107,7 +123,7 @@ const ScoreSubmissionForm: React.FC<ScoreSubmissionFormProps> = ({
     }
    }
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('challenges')
     .update(updates)
     .eq('id', challenge.id);
@@ -125,7 +141,7 @@ const ScoreSubmissionForm: React.FC<ScoreSubmissionFormProps> = ({
 
     // Notify both players
     await Promise.all([
-     supabase.from('notifications').insert({
+     notificationService.create({
       user_id: challenge.challenger_id,
       type: 'challenge_result_confirmed',
       title: 'Kết quả thách đấu đã được xác nhận',
@@ -136,7 +152,7 @@ const ScoreSubmissionForm: React.FC<ScoreSubmissionFormProps> = ({
        winner: winner === 'challenger' ? 'you' : 'opponent',
       },
      }),
-     supabase.from('notifications').insert({
+     notificationService.create({
       user_id: challenge.opponent_id,
       type: 'challenge_result_confirmed',
       title: 'Kết quả thách đấu đã được xác nhận',

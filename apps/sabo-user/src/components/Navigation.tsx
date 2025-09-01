@@ -22,7 +22,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUnifiedMessages } from '@/hooks/useUnifiedMessages';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { getUserStatus } from '../services/userService';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -55,40 +60,9 @@ const Navigation = () => {
 
   const checkUserStatus = async () => {
    try {
-    // Run both checks in parallel to improve performance
-    const [clubResult, adminResult] = await Promise.allSettled([
-     // Check club owner status
-     // Check club owner status using club_profiles table
-     supabase.from('club_profiles').select('id').eq('user_id', user.id).single(),
-     // Check admin status using profile table directly
-     supabase
-      .from('profiles')
-      .select('is_admin')
-      .eq('user_id', user.id)
-      .single(),
-    ]);
-
-    // Handle club owner result
-    if (
-     clubResult.status === 'fulfilled' &&
-     clubResult.value.data &&
-     !clubResult.value.error
-    ) {
-     setIsClubOwner(true);
-    } else {
-     setIsClubOwner(false);
-    }
-
-    // Handle admin result
-    if (
-     adminResult.status === 'fulfilled' &&
-     adminResult.value.data &&
-     !adminResult.value.error
-    ) {
-     setIsAdmin(adminResult.value.data.is_admin || false);
-    } else {
-     setIsAdmin(false);
-    }
+    const { isClubOwner, isAdmin } = await getUserStatus(user.id);
+    setIsClubOwner(isClubOwner);
+    setIsAdmin(isAdmin);
    } catch (error) {
     console.error('Error checking user status:', error);
     setIsClubOwner(false);
@@ -172,7 +146,7 @@ const Navigation = () => {
         <Circle className='w-6 h-6 text-primary-foreground font-bold' />
        </div>
        <div className='hidden sm:flex flex-col'>
-        <span className='text-title font-black text-foreground'>SABO</span>
+        <span className='text-title font-var(--color-foreground) text-foreground'>SABO</span>
         <span className='text-body-small text-primary font-bold -mt-1'>
          ARENA
         </span>

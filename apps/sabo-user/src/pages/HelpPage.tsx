@@ -192,7 +192,7 @@ const HelpPage = () => {
          <div
           className={`${method.color} w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4`}
          >
-          <Icon className='w-6 h-6 text-white' />
+          <Icon className='w-6 h-6 text-var(--color-background)' />
          </div>
          <h3 className='font-semibold text-body-large mb-2'>{method.title}</h3>
          <p className='text-muted-foreground text-body-small mb-4'>

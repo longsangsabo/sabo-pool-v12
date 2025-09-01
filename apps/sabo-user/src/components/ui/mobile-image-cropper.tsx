@@ -280,8 +280,8 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
    canvas.width = 400;
    canvas.height = 400;
    
-   // Set white background to prevent transparency issues
-   ctx.fillStyle = 'var(--color-white)';
+   // Set var(--color-background) background to prevent transparency issues
+   ctx.fillStyle = 'var(--color-var(--color-background))';
    ctx.fillRect(0, 0, canvas.width, canvas.height);
    
    // Apply transformations
@@ -366,16 +366,15 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
     <div className="px-4">
      {/* Loading state */}
      {!imageLoaded && (
-      <div className="relative bg-black rounded-lg overflow-hidden aspect-square flex items-center justify-center">
-       <div className="animate-spin rounded-full h-8 w-8 border-2 border-white border-t-transparent" />
+      <div className="relative bg-var(--color-foreground) rounded-lg overflow-hidden aspect-square flex items-center justify-center">
+       <div className="animate-spin rounded-full h-8 w-8 border-2 border-var(--color-background) border-t-transparent" />
       </div>
      )}
      
      {/* Image Editor */}
      <div
       ref={containerRef}
-      className={`relative bg-black rounded-lg overflow-hidden aspect-square ${!imageLoaded ? 'hidden' : ''}`}
-      style={{ touchAction: 'none' }}
+      className={`relative bg-var(--color-foreground) rounded-lg overflow-hidden aspect-square touch-none ${!imageLoaded ? 'hidden' : ''}`}
      >
       <img
        ref={imageRef}
@@ -394,25 +393,23 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
       {imageLoaded && (
        <div
         className="absolute border-2 border-blue-500 bg-primary-500/10"
-        style={{
-         left: cropArea.x,
+        style={{ left: cropArea.x,
          top: cropArea.y,
          width: cropArea.width,
          height: cropArea.height,
-         cursor: isDragging ? 'grabbing' : 'grab',
-        }}
+         cursor: isDragging ? 'grabbing' : 'grab', }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
        >
         {/* Corner handles for resizing */}
-        <div className="absolute -top-1 -left-1 w-3 h-3 bg-primary-500 border border-white rounded-full cursor-nw-resize" />
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary-500 border border-white rounded-full cursor-ne-resize" />
-        <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-primary-500 border border-white rounded-full cursor-sw-resize" />
-        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-primary-500 border border-white rounded-full cursor-se-resize" />
+        <div className="absolute -top-1 -left-1 w-3 h-3 bg-primary-500 border border-var(--color-background) rounded-full cursor-nw-resize" />
+        <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary-500 border border-var(--color-background) rounded-full cursor-ne-resize" />
+        <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-primary-500 border border-var(--color-background) rounded-full cursor-sw-resize" />
+        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-primary-500 border border-var(--color-background) rounded-full cursor-se-resize" />
         
         {/* Move icon */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-var(--color-background)">
          <Move className="w-4 h-4" />
         </div>
        </div>
@@ -461,7 +458,7 @@ export const MobileImageCropper: React.FC<MobileImageCropperProps> = ({
      <Button onClick={handleCrop} className="flex-1" disabled={!imageLoaded || isCropping}>
       {isCropping ? (
        <>
-        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+        <div className="animate-spin rounded-full h-4 w-4 border-2 border-var(--color-background) border-t-transparent mr-2" />
         Đang xử lý...
        </>
       ) : (

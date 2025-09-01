@@ -4,14 +4,14 @@
  */
 
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export const useAutoTransitionChallenges = () => {
   useEffect(() => {
     const transitionChallenges = async () => {
       try {
         // Get all accepted challenges where scheduled_time has passed
-        const { data: challenges, error } = await supabase
+//         const { data: challenges, error } = await supabase
           .from('challenges')
           .select('id, scheduled_time')
           .eq('status', 'accepted')
@@ -31,7 +31,7 @@ export const useAutoTransitionChallenges = () => {
         // Update all eligible challenges to ongoing status
         const challengeIds = challenges.map(c => c.id);
         
-        const { error: updateError } = await supabase
+//         const { error: updateError } = await supabase
           .from('challenges')
           .update({ 
             status: 'ongoing',

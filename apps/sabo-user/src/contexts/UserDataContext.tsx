@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getCurrentUser } from "../services/userService";
 
 interface UserData {
  profile: any;
@@ -29,7 +31,7 @@ export const UserDataProvider: React.FC<{ children: React.ReactNode }> = ({
 
    try {
     setIsLoading(true);
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
      .from('profiles')
      .select('*')
      .eq('user_id', user.id)

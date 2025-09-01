@@ -99,7 +99,7 @@ export default function AdminPermissions() {
         <h1 className="text-3xl font-bold">🛡️ Permissions & Roles</h1>
         <button 
           onClick={() => alert('Create role feature coming soon!')}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700 flex items-center gap-2"
         >
           <Plus className="h-4 w-4" />
           Create Role
@@ -108,40 +108,40 @@ export default function AdminPermissions() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Roles</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Roles</p>
               <p className="text-2xl font-bold">{roles.length}</p>
             </div>
             <Shield className="h-8 w-8 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Users</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Users</p>
               <p className="text-2xl font-bold">{roles.reduce((sum, role) => sum + role.userCount, 0)}</p>
             </div>
             <Users className="h-8 w-8 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Permissions</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Permissions</p>
               <p className="text-2xl font-bold">{permissions.length}</p>
             </div>
             <Settings className="h-8 w-8 text-purple-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Categories</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Categories</p>
               <p className="text-2xl font-bold">{permissionCategories.length}</p>
             </div>
             <Shield className="h-8 w-8 text-orange-500" />
@@ -151,8 +151,8 @@ export default function AdminPermissions() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Roles List */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
             <h2 className="text-lg font-semibold">Roles</h2>
           </div>
           
@@ -161,7 +161,7 @@ export default function AdminPermissions() {
               {roles.map((role) => (
                 <div 
                   key={role.id} 
-                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
+                  className="border border-neutral dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-neutral-background dark:hover:bg-gray-700"
                   onClick={() => setSelectedRole(role)}
                 >
                   <div className="flex justify-between items-start mb-2">
@@ -177,14 +177,14 @@ export default function AdminPermissions() {
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{role.description}</p>
+                      <p className="text-sm text-neutral dark:text-gray-400 mt-1">{role.description}</p>
                     </div>
                     <div className="flex gap-2">
-                      <button className="p-1 text-gray-500 hover:text-blue-600">
+                      <button className="p-1 text-gray-500 hover:text-primary">
                         <Edit className="h-4 w-4" />
                       </button>
                       {!role.isDefault && (
-                        <button className="p-1 text-gray-500 hover:text-red-600">
+                        <button className="p-1 text-gray-500 hover:text-error">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       )}
@@ -192,10 +192,10 @@ export default function AdminPermissions() {
                   </div>
                   
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">
+                    <span className="text-neutral dark:text-gray-400">
                       {role.userCount} users
                     </span>
-                    <span className="text-gray-600 dark:text-gray-400">
+                    <span className="text-neutral dark:text-gray-400">
                       {role.permissions.includes('all') ? 'All permissions' : `${role.permissions.length} permissions`}
                     </span>
                   </div>
@@ -206,8 +206,8 @@ export default function AdminPermissions() {
         </div>
 
         {/* Role Details / Permissions */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
             <h2 className="text-lg font-semibold">
               {selectedRole ? `${selectedRole.name} Permissions` : 'Select a Role'}
             </h2>
@@ -218,7 +218,7 @@ export default function AdminPermissions() {
               <div>
                 <div className="mb-6">
                   <h3 className="font-medium mb-2">{selectedRole.name}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{selectedRole.description}</p>
+                  <p className="text-sm text-neutral dark:text-gray-400 mb-4">{selectedRole.description}</p>
                   <div className="flex gap-4 text-sm">
                     <span><strong>{selectedRole.userCount}</strong> users</span>
                     <span><strong>{selectedRole.permissions.length}</strong> permissions</span>
@@ -233,10 +233,10 @@ export default function AdminPermissions() {
                         {permissions
                           .filter(p => p.category === category)
                           .map(permission => (
-                            <div key={permission.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-600 rounded">
+                            <div key={permission.id} className="flex items-center justify-between p-3 border border-neutral dark:border-gray-600 rounded">
                               <div className="flex-1">
                                 <div className="font-medium text-sm">{permission.name}</div>
-                                <div className="text-xs text-gray-600 dark:text-gray-400">{permission.description}</div>
+                                <div className="text-xs text-neutral dark:text-gray-400">{permission.description}</div>
                               </div>
                               <div className="ml-4">
                                 {hasPermission(selectedRole, permission.id) ? (
@@ -264,26 +264,26 @@ export default function AdminPermissions() {
 
       {/* Quick Actions */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">👥 Bulk User Assignment</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Assign roles to multiple users at once</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Assign roles to multiple users at once</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             Bulk Assign
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📋 Permission Audit</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Review and audit permission assignments</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Review and audit permission assignments</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             Run Audit
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">⚙️ Role Templates</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Create roles from predefined templates</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Create roles from predefined templates</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             Browse Templates
           </button>
         </div>

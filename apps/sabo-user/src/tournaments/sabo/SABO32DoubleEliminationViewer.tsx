@@ -333,7 +333,7 @@ const GroupBracketViewer: React.FC<GroupBracketViewerProps> = ({
 
    {/* Group Finals */}
    {groupData.final.length > 0 && (
-    <Card className="bg-warning-50 border-yellow-200">
+    <Card className="bg-warning-50 border-warning">
      <CardHeader>
       <CardTitle className="text-warning-700">🥇 Group {groupId} Finals</CardTitle>
       <p className="text-body-small text-warning-600">
@@ -400,7 +400,7 @@ const CrossBracketViewer: React.FC<CrossBracketViewerProps> = ({
   <div className="space-y-6">
    
    {/* Cross-Bracket Header */}
-   <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
+   <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-warning">
     <CardHeader>
      <CardTitle className="flex items-center gap-2">
       <Target className="h-6 w-6 text-warning-600" />

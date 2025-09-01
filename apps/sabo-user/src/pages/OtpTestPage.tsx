@@ -24,7 +24,7 @@ const OtpTestPage = () => {
 
  return (
   <div className='min-h-screen bg-neutral-50 flex items-center justify-center'>
-   <div className='bg-white p-8 rounded-lg shadow-lg max-w-md w-full'>
+   <div className='bg-var(--color-background) p-8 rounded-lg shadow-lg max-w-md w-full'>
     <h1 className='text-heading-bold text-center mb-6'>Test OTP Dialog</h1>
 
     <div className='space-y-4'>

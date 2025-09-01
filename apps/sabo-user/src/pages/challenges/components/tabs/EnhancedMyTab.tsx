@@ -56,7 +56,7 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
    id: 'sap-toi',
    title: 'Sắp tới',
    icon: Clock,
-   color: 'text-blue-500 dark:text-blue-400',
+   color: 'text-primary-500 dark:text-blue-400',
    bgColor: 'bg-primary-50 dark:bg-blue-950/30',
    data: sapToiData,
    variant: 'upcoming' as const,
@@ -66,7 +66,7 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
    id: 'hoan-thanh',
    title: 'Hoàn thành',
    icon: CheckCircle,
-   color: 'text-green-500 dark:text-green-400',
+   color: 'text-success-500 dark:text-green-400',
    bgColor: 'bg-success-50 dark:bg-green-950/30',
    data: hoanThanhData,
    variant: 'completed' as const,
@@ -162,11 +162,11 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
 
  return (
   <div className="form-spacing">
-   <Card className="border-border/30 dark:border-border/20 bg-white/10 dark:bg-black/20 backdrop-blur-md">
+   <Card className="border-border/30 dark:border-border/20 bg-var(--color-background)/10 dark:bg-var(--color-foreground)/20 backdrop-blur-md">
     <CardContent className="p-0">
      <Tabs value={currentActiveTab} onValueChange={handleTabChange} className="w-full">
       {/* Enhanced Tab Navigation - Compact 2-row layout */}
-      <div className="border-b border-border/30 dark:border-border/20 bg-white/5 dark:bg-black/10 backdrop-blur-sm">
+      <div className="border-b border-border/30 dark:border-border/20 bg-var(--color-background)/5 dark:bg-var(--color-foreground)/10 backdrop-blur-sm">
        <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-2 gap-1">
         {tabs.map((tab) => {
          const IconComponent = tab.icon;
@@ -178,10 +178,10 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
            value={tab.id}
            className={cn(
             'flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 relative',
-            'data-[state=active]:bg-white/20 data-[state=active]:shadow-sm backdrop-blur-sm',
+            'data-[state=active]:bg-var(--color-background)/20 data-[state=active]:shadow-sm backdrop-blur-sm',
             'data-[state=active]:border data-[state=active]:border-border/30',
-            'hover:bg-white/10 dark:hover:bg-black/20',
-            isActive && 'dark:bg-black/30 dark:border-border/30'
+            'hover:bg-var(--color-background)/10 dark:hover:bg-var(--color-foreground)/20',
+            isActive && 'dark:bg-var(--color-foreground)/30 dark:border-border/30'
            )}
           >
            <div className="relative">
@@ -196,7 +196,7 @@ const EnhancedMyTab: React.FC<EnhancedMyTabProps> = ({
             </div>
             {/* Badge on top of icon */}
             {tab.data.length > 0 && (
-             <span className="absolute -top-1 -right-1 bg-error-500 text-white text-caption rounded-full w-4 h-4 flex items-center justify-center font-bold text-[10px] shadow-lg animate-pulse">
+             <span className="absolute -top-1 -right-1 bg-error-500 text-var(--color-background) text-caption rounded-full w-4 h-4 flex items-center justify-center font-bold text-[10px] shadow-lg animate-pulse">
               {tab.data.length}
              </span>
             )}

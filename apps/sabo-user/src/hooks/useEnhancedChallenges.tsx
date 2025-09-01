@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+import { getChallenges, createChallenge, acceptChallenge } from '../services/challengeService';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { useAdvancedSPAPoints } from '@/hooks/useAdvancedSPAPoints';
@@ -37,10 +49,10 @@ export function useEnhancedChallenges() {
 
    const today = new Date().toISOString().split('T')[0];
 
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('daily_challenge_stats')
     .select('*')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .eq('challenge_date', today)
     .single();
 
@@ -67,7 +79,7 @@ export function useEnhancedChallenges() {
  const completeChallengeEnhanced = useMutation({
   mutationFn: async (params: ChallengeCompletion) => {
    // Use the credit_spa_points function and mark challenge as completed
-   const { data: result, error } = await supabase.rpc('credit_spa_points', {
+   const { data: result, error } = await tournamentService.callRPC('credit_spa_points', {
     p_user_id: params.winnerId,
     p_points: 100, // Base amount, will be calculated properly later
     p_description: `Challenge victory vs opponent`,
@@ -76,7 +88,7 @@ export function useEnhancedChallenges() {
    if (error) throw error;
 
    // Update challenge status to completed
-   await supabase
+//    await supabase
     .from('challenges')
     .update({
      status: 'completed',
@@ -88,7 +100,7 @@ export function useEnhancedChallenges() {
    const today = new Date().toISOString().split('T')[0];
 
    // Insert or update daily stats for both players
-   await supabase.from('daily_challenge_stats').upsert(
+// // //    // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('daily_challenge_stats').upsert(
     [
      {
       user_id: params.winnerId,

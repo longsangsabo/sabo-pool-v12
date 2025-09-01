@@ -130,7 +130,7 @@ export const AchievementsCard: React.FC<AchievementsCardProps> = ({
    className={`overflow-hidden ${
     theme === 'dark'
      ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
-     : 'bg-white border-slate-200'
+     : 'bg-var(--color-background) border-slate-200'
    }`}
   >
    <CardHeader className='pb-4 border-b border-slate-200/10'>
@@ -222,7 +222,7 @@ export const AchievementsCard: React.FC<AchievementsCardProps> = ({
            className={`absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-caption font-bold ${
             theme === 'dark'
              ? 'bg-violet-400 text-violet-900'
-             : 'bg-violet-500 text-white'
+             : 'bg-violet-500 text-var(--color-background)'
            }`}
           >
            {a.badge}
@@ -232,7 +232,7 @@ export const AchievementsCard: React.FC<AchievementsCardProps> = ({
         <div className='flex-1 min-w-0'>
          <div
           className={`text-body-small font-semibold mb-1 ${
-           theme === 'dark' ? 'text-white' : 'text-slate-800'
+           theme === 'dark' ? 'text-var(--color-background)' : 'text-slate-800'
           }`}
          >
           {a.title}

@@ -12,7 +12,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import {
  Calendar,
@@ -195,7 +199,7 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
 
  const fetchPrizeTiers = async () => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_prize_tiers')
     .select('*')
     .eq('tournament_id', tournament.id)
@@ -212,7 +216,7 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
  const updateTournament = async (values: z.infer<typeof formSchema>) => {
   setLoading(true);
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .update({
      ...values,
@@ -263,7 +267,7 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
     prizeTiers.length > 0
      ? prizeTiers[prizeTiers.length - 1].position + 1
      : 1;
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_prize_tiers')
     .insert({
      tournament_id: tournament.id,
@@ -291,7 +295,7 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
 
  const updateTier = async (id: string, field: string, value: any) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_prize_tiers')
     .update({ [field]: value, updated_at: new Date().toISOString() })
     .eq('id', id);
@@ -307,7 +311,7 @@ export const EditTournamentModal: React.FC<EditTournamentModalProps> = ({
 
  const deleteTier = async (id: string) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournament_prize_tiers')
     .delete()
     .eq('id', id);

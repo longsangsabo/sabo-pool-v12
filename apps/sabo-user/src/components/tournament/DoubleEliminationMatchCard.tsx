@@ -6,6 +6,8 @@ import { Crown, Trophy, Edit, Zap, Shield } from 'lucide-react';
 import UserAvatar from '@/components/UserAvatar';
 import { toast } from 'sonner';
 import { MatchStatusDebugInfo } from './MatchStatusDebugInfo';
+import { getCurrentUser } from '../../services/userService';
+import { submitMatchScore } from '../../services/tournamentService';
 
 interface Match {
  id: string;
@@ -113,7 +115,7 @@ export const DoubleEliminationMatchCard: React.FC<
      label: 'Final',
      color: 'text-warning-600',
      bgColor: 'bg-warning-50',
-     borderColor: 'border-yellow-200',
+     borderColor: 'border-warning',
     };
    default:
     return {
@@ -157,7 +159,7 @@ export const DoubleEliminationMatchCard: React.FC<
 
      {(match.assigned_table?.table_number ||
       match.assigned_table_number) && (
-      <div className='bg-emerald-500 text-white px-2 py-0.5 rounded-full text-caption-medium'>
+      <div className='bg-emerald-500 text-var(--color-background) px-2 py-0.5 rounded-full text-caption-medium'>
        Bàn{' '}
        {match.assigned_table?.table_number ||
         match.assigned_table_number}
@@ -221,7 +223,7 @@ export const DoubleEliminationMatchCard: React.FC<
          type='number'
          min='0'
          max='50'
-         className='w-16 px-2 py-1 border border-primary-300 rounded text-center text-body-small-medium bg-white focus:outline-none focus:ring-1 focus:ring-blue-500'
+         className='w-16 px-2 py-1 border border-primary-300 rounded text-center text-body-small-medium bg-var(--color-background) focus:outline-none focus:ring-1 focus:ring-blue-500'
          placeholder='0'
          value={player1Score}
          onChange={e => setPlayer1Score(e.target.value)}
@@ -291,7 +293,7 @@ export const DoubleEliminationMatchCard: React.FC<
          type='number'
          min='0'
          max='50'
-         className='w-16 px-2 py-1 border border-purple-300 rounded text-center text-body-small-medium bg-white focus:outline-none focus:ring-1 focus:ring-purple-500'
+         className='w-16 px-2 py-1 border border-purple-300 rounded text-center text-body-small-medium bg-var(--color-background) focus:outline-none focus:ring-1 focus:ring-purple-500'
          placeholder='0'
          value={player2Score}
          onChange={e => setPlayer2Score(e.target.value)}
@@ -420,14 +422,8 @@ export const DoubleEliminationMatchCard: React.FC<
           }
          );
 
-         const { supabase } = await import(
-          './integrations/supabase/client'
-         );
-
          // Get current user for submitted_by parameter
-         const {
-          data: { user },
-         } = await supabase.auth.getUser();
+         const user = await getCurrentUser();
          if (!user) {
           throw new Error(
            'User must be authenticated to submit scores'
@@ -438,23 +434,12 @@ export const DoubleEliminationMatchCard: React.FC<
          // This component should be updated to use useSABOScoreSubmission hook
          // for proper integration with the new SABO Tournament Engine
          
-         const { data, error } = await supabase.rpc(
-          'submit_sabo_match_score',
-          {
-           p_match_id: match.id,
-           p_player1_score: score1,
-           p_player2_score: score2,
-           p_submitted_by: user.id,
-          }
+         const data = await submitMatchScore(
+          match.id,
+          score1,
+          score2,
+          user.id
          );
-
-         if (error) {
-          console.error(
-           '❌ [DoubleEliminationMatchCard] RPC Error:',
-           error
-          );
-          throw error;
-         }
 
          console.log(
           '✅ [DoubleEliminationMatchCard] RPC Response:',

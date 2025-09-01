@@ -46,6 +46,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@sabo-pool/shared-business": "workspace:*",
     "@sabo/shared-auth": "workspace:*",
+    "@sabo-pool/shared-business": "workspace:*",
     "@sabo/shared-types": "workspace:*",
     "@sabo/shared-ui": "workspace:*",
     "@sabo/shared-utils": "workspace:*",

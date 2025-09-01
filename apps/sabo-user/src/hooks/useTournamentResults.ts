@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { TournamentResultWithPlayer } from '@/types/tournamentResults';
 
 export const useTournamentResults = (tournamentId?: string) => {
@@ -21,10 +27,10 @@ export const useTournamentResults = (tournamentId?: string) => {
       console.log('🏆 Fetching tournament results for:', tournamentId);
 
       // First, get tournament results
-      const { data: resultsData, error: resultsError } = await supabase
+//       const { data: resultsData, error: resultsError } = await supabase
         .from('tournament_results')
         .select('*')
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .order('final_position', { ascending: true });
 
       if (resultsError) {
@@ -41,10 +47,10 @@ export const useTournamentResults = (tournamentId?: string) => {
       console.log('🔍 Raw results data:', resultsData[0]); // Debug log
 
       // Get prize details for this tournament
-      const { data: prizeData, error: prizeError } = await supabase
+//       const { data: prizeData, error: prizeError } = await supabase
         .from('tournament_prizes')
         .select('*')
-        .eq('tournament_id', tournamentId);
+        .getByTournamentId(tournamentId);
 
       if (prizeError) {
         console.warn('⚠️ Error fetching prize details:', prizeError);
@@ -60,7 +66,7 @@ export const useTournamentResults = (tournamentId?: string) => {
       const userIds = resultsData.map(result => result.user_id);
 
       // Fetch profiles for these users
-      const { data: profilesData, error: profilesError } = await supabase
+//       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('user_id, full_name, display_name, avatar_url, verified_rank')
         .in('user_id', userIds);
@@ -130,7 +136,7 @@ export const useTournamentResults = (tournamentId?: string) => {
       tournamentId
     );
 
-    const channel = supabase
+//     const channel = supabase
       .channel(`tournament-results-${tournamentId}`)
       .on(
         'postgres_changes',
@@ -151,7 +157,7 @@ export const useTournamentResults = (tournamentId?: string) => {
 
     return () => {
       console.log('🔄 Cleaning up tournament results real-time subscription');
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [tournamentId]);
 

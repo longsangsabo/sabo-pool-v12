@@ -1,4 +1,6 @@
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament, callRPC, getTournamentMatches } from "../services/tournamentService";
 
 export interface AdvancementResult {
   success: boolean;
@@ -11,11 +13,8 @@ export const advanceWinner = async (
 ): Promise<AdvancementResult> => {
   try {
     // First, get the tournament ID from the match
-    const { data: matchData, error: matchError } = await supabase
-      .from('tournament_matches')
-      .select('tournament_id')
-      .eq('id', matchId)
-      .single();
+    const { data: matches, error: matchError } = await getTournamentMatches('all');
+    const matchData = matches?.find(m => m.id === matchId);
 
     if (matchError || !matchData?.tournament_id) {
       console.error('❌ Error getting tournament ID for match:', matchError);
@@ -26,7 +25,7 @@ export const advanceWinner = async (
     }
 
     // Use proper repair function with tournament ID
-    const { data, error } = await supabase.rpc(
+    const { data, error } = await callRPC(
       'repair_double_elimination_bracket',
       {
         p_tournament_id: matchData.tournament_id,
@@ -69,7 +68,7 @@ export const fixAllTournamentProgression = async (
   try {
     console.log('🔧 Starting comprehensive tournament fix for:', tournamentId);
 
-    const { data, error } = await supabase.rpc(
+    const { data, error } = await callRPC(
       'fix_all_tournament_progression',
       {
         p_tournament_id: tournamentId,
@@ -114,12 +113,7 @@ export const autoFixTournamentProgression = async (
     console.log('🔄 Auto-checking tournament progression for:', tournamentId);
 
     // Check if tournament needs fixing by looking for inconsistencies
-    const { data: matches, error } = await supabase
-      .from('tournament_matches')
-      .select('*')
-      .eq('tournament_id', tournamentId)
-      .order('round_number', { ascending: true })
-      .order('match_number', { ascending: true });
+    const { data: matches, error } = await getTournamentMatches(tournamentId);
 
     if (error || !matches) {
       console.error('❌ Error fetching matches for auto-fix:', error);

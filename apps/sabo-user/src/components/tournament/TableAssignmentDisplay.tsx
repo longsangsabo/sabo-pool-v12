@@ -27,7 +27,15 @@ import {
  XCircle,
  AlertCircle,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { invokeTournamentEdgeFunction } from '../../services/tournamentService';
 import { toast } from 'sonner';
 
 interface ClubTable {
@@ -74,7 +82,7 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
 
   setLoading(true);
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_tables')
     .select(
      `
@@ -91,7 +99,7 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
      )
     `
     )
-    .eq('club_id', clubId)
+    .getByClubId(clubId)
     .order('table_number');
 
    if (error) throw error;
@@ -110,7 +118,7 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
   if (!tournamentId) return;
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_matches')
     .select(
      `
@@ -123,7 +131,7 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
      assigned_table_id
     `
     )
-    .eq('tournament_id', tournamentId)
+    .getByTournamentId(tournamentId)
     .eq('status', 'scheduled')
     .is('assigned_table_id', null)
     .not('player1_id', 'is', null)
@@ -141,17 +149,13 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
  const initializeTables = async () => {
   setLoading(true);
   try {
-   const { data, error } = await supabase.functions.invoke(
+   const data = await invokeTournamentEdgeFunction(
     'tournament-table-manager',
     {
-     body: {
-      action: 'initialize_tables',
-      club_id: clubId,
-     },
+     action: 'initialize_tables',
+     club_id: clubId,
     }
    );
-
-   if (error) throw error;
 
    toast.success(data.message);
    await fetchTableStatus();
@@ -169,17 +173,13 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
 
   setLoading(true);
   try {
-   const { data, error } = await supabase.functions.invoke(
+   const data = await invokeTournamentEdgeFunction(
     'tournament-table-manager',
     {
-     body: {
-      action: 'auto_assign_tables',
-      tournament_id: tournamentId,
-     },
+     action: 'auto_assign_tables',
+     tournament_id: tournamentId,
     }
    );
-
-   if (error) throw error;
 
    toast.success(
     `Đã tự động phân bàn cho ${data.assignments_made} trận đấu`
@@ -200,18 +200,14 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
 
   setLoading(true);
   try {
-   const { data, error } = await supabase.functions.invoke(
+   const data = await invokeTournamentEdgeFunction(
     'tournament-table-manager',
     {
-     body: {
-      action: 'manual_assign_table',
-      match_id: selectedMatch,
-      table_id: selectedTable,
-     },
+     action: 'manual_assign_table',
+     match_id: selectedMatch,
+     table_id: selectedTable,
     }
    );
-
-   if (error) throw error;
 
    toast.success(data.message);
    await fetchTableStatus();
@@ -230,17 +226,13 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
  const releaseTable = async (matchId: string) => {
   setLoading(true);
   try {
-   const { data, error } = await supabase.functions.invoke(
+   const data = await invokeTournamentEdgeFunction(
     'tournament-table-manager',
     {
-     body: {
-      action: 'release_table',
-      match_id: matchId,
-     },
+     action: 'release_table',
+     match_id: matchId,
     }
    );
-
-   if (error) throw error;
 
    toast.success('Đã giải phóng bàn chơi');
    await fetchTableStatus();
@@ -264,7 +256,7 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
   if (!clubId) return;
 
   // Subscribe to table status changes
-  const channel = supabase
+//   const channel = supabase
    .channel(`club-tables-${clubId}`)
    .on(
     'postgres_changes',
@@ -281,20 +273,20 @@ const TableAssignmentDisplay: React.FC<TableAssignmentDisplayProps> = ({
    .subscribe();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [clubId]);
 
  const getStatusIcon = (status: string) => {
   switch (status) {
    case 'available':
-    return <CheckCircle className='h-4 w-4 text-green-500' />;
+    return <CheckCircle className='h-4 w-4 text-success-500' />;
    case 'occupied':
-    return <XCircle className='h-4 w-4 text-red-500' />;
+    return <XCircle className='h-4 w-4 text-error-500' />;
    case 'maintenance':
     return <AlertCircle className='h-4 w-4 text-orange-500' />;
    case 'reserved':
-    return <Clock className='h-4 w-4 text-blue-500' />;
+    return <Clock className='h-4 w-4 text-primary-500' />;
    default:
     return <AlertCircle className='h-4 w-4 text-neutral-500' />;
   }

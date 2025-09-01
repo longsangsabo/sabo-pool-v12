@@ -53,17 +53,17 @@ export const Season2Page: React.FC = () => {
 
  const getRankBadge = (rank: number) => {
   if (rank === 1)
-   return <Badge className='bg-warning-500 text-white'>🥇 Top 1</Badge>;
+   return <Badge className='bg-warning-500 text-var(--color-background)'>🥇 Top 1</Badge>;
   if (rank === 2)
-   return <Badge className='bg-gray-400 text-white'>🥈 Top 2</Badge>;
+   return <Badge className='bg-gray-400 text-var(--color-background)'>🥈 Top 2</Badge>;
   if (rank === 3)
-   return <Badge className='bg-warning-500 text-white'>🥉 Top 3</Badge>;
+   return <Badge className='bg-warning-500 text-var(--color-background)'>🥉 Top 3</Badge>;
   if (rank <= 10)
-   return <Badge className='bg-primary-500 text-white'>Top {rank}</Badge>;
+   return <Badge className='bg-primary-500 text-var(--color-background)'>Top {rank}</Badge>;
   if (rank <= 20)
-   return <Badge className='bg-success-500 text-white'>Top {rank}</Badge>;
+   return <Badge className='bg-success-500 text-var(--color-background)'>Top {rank}</Badge>;
   if (rank <= 40)
-   return <Badge className='bg-info-500 text-white'>Top {rank}</Badge>;
+   return <Badge className='bg-info-500 text-var(--color-background)'>Top {rank}</Badge>;
   return <Badge variant='outline'>#{rank}</Badge>;
  };
 
@@ -218,7 +218,7 @@ export const Season2Page: React.FC = () => {
           <div className='flex items-center justify-between mb-4'>
            <div className='flex items-center gap-3'>
             <div
-             className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${
+             className={`w-12 h-12 rounded-full flex items-center justify-center text-var(--color-background) font-bold ${
               prize.rank_min === 1
                ? 'bg-gradient-to-r from-yellow-400 to-yellow-600'
                : prize.rank_min <= 3

@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 
 export const useTournamentRewardSync = () => {
   const [syncing, setSyncing] = useState(false);
@@ -15,7 +21,7 @@ export const useTournamentRewardSync = () => {
         tournamentId ? `for ${tournamentId}` : 'for all tournaments'
       );
 
-      const { data, error } = await supabase.functions.invoke(
+// // //       // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await supabase.functions.invoke(
         'sync-tournament-rewards',
         {
           body: {

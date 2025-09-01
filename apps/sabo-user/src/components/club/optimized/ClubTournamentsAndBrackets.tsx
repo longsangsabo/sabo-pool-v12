@@ -1,4 +1,5 @@
 import React from 'react';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import ClubTournamentManagement from '@/components/club/ClubTournamentManagement';
 import { TournamentSection } from '@/components/error-boundary/SectionWrappers';
 import { AppProviders } from '@/contexts/AppProviders';

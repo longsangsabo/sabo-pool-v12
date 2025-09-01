@@ -1,9 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from './useAuth';
 import { useQueryClient } from '@tanstack/react-query';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { toast } from 'sonner';
-import { RealtimeChannel } from '@supabase/supabase-js';
+// import { RealtimeChannel } from '@supabase/supabase-js';
 import { Challenge, Club, Notification } from '@/types/common';
 
 interface RealtimeSubscriptionOptions {
@@ -27,7 +42,7 @@ export const useRealtimeSubscriptions = (
   if (!user?.id) return;
 
   // Create a single channel for all subscriptions
-  const channel = supabase.channel(`user-realtime-${user.id}`);
+  const channel = notificationService.subscribe(`user-realtime-${user.id}`);
 
   // Subscribe to challenges where user is challenger
   channel.on(
@@ -112,7 +127,7 @@ export const useRealtimeSubscriptions = (
   return () => {
    if (channelRef.current) {
     // ...removed console.log('Cleaning up real-time subscriptions')
-    supabase.removeChannel(channelRef.current);
+    // removeChannel(channelRef.current);
     channelRef.current = null;
    }
    setIsConnected(false);
@@ -276,7 +291,7 @@ export const useRealtimeSubscriptions = (
   connectionError,
   reconnect: () => {
    if (channelRef.current) {
-    supabase.removeChannel(channelRef.current);
+    // removeChannel(channelRef.current);
     channelRef.current = null;
    }
    setConnectionError(null);
@@ -296,7 +311,7 @@ export const useTournamentSubscription = (
  useEffect(() => {
   // ...removed console.log('Setting up tournament real-time subscription')
 
-  const channel = supabase.channel(`tournaments-${Date.now()}`);
+  const channel = notificationService.subscribe(`tournaments-${Date.now()}`);
 
   channel.on(
    'postgres_changes',
@@ -331,7 +346,7 @@ export const useTournamentSubscription = (
   return () => {
    if (channelRef.current) {
     // ...removed console.log('Cleaning up tournament subscription')
-    supabase.removeChannel(channelRef.current);
+    // removeChannel(channelRef.current);
     channelRef.current = null;
    }
    setIsConnected(false);

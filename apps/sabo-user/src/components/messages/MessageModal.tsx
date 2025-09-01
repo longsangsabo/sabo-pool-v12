@@ -1,4 +1,5 @@
 import React from 'react';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -146,7 +147,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({
        )}
        
        {message.is_important && (
-        <Badge variant="default" className="bg-warning-500 text-white">
+        <Badge variant="default" className="bg-warning-500 text-var(--color-background)">
          <Star className="h-3 w-3 mr-1" />
          Quan trọng
         </Badge>
@@ -177,7 +178,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({
          </p>
         </div>
         {message.is_read && (
-         <CheckCircle2 className="h-5 w-5 text-green-500" />
+         <CheckCircle2 className="h-5 w-5 text-success-500" />
         )}
        </div>
       </div>
@@ -185,7 +186,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({
       {/* Message Body */}
       <div className="prose prose-sm max-w-none">
        <div 
-        className="whitespace-pre-wrap break-words"
+        className="var(--color-background)space-pre-wrap break-words"
         dangerouslySetInnerHTML={{ __html: message.content }}
        />
       </div>

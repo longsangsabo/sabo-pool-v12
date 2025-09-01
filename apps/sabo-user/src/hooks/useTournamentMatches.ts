@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { useProfileCache } from './useProfileCache';
 
 export interface TournamentMatch {
@@ -60,10 +66,10 @@ export const useTournamentMatches = (tournamentId: string | undefined) => {
       console.log('🎯 Fetching matches for tournament:', tournamentId);
 
       // Fetch matches with enhanced schema
-      const { data: matchesData, error: matchesError } = await supabase
+//       const { data: matchesData, error: matchesError } = await supabase
         .from('tournament_matches')
         .select('*')
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .order('bracket_type', { ascending: true })
         .order('round_number', { ascending: true })
         .order('match_number', { ascending: true });
@@ -136,7 +142,7 @@ export const useTournamentMatches = (tournamentId: string | undefined) => {
       }, 800); // Increased debounce time
     };
 
-    const channel = supabase
+//     const channel = supabase
       .channel(`tournament-matches-optimized-${tournamentId}`)
       .on(
         'postgres_changes',
@@ -222,7 +228,7 @@ export const useTournamentMatches = (tournamentId: string | undefined) => {
     return () => {
       console.log('🔄 Cleaning up optimized real-time subscription');
       clearTimeout(debounceTimer);
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [tournamentId, fetchMatches]);
 

@@ -34,7 +34,7 @@ const CheckInWidget = () => {
    className={`transition-all duration-300 ${
     hasCheckedInToday
      ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-success-200'
-     : 'bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200 hover:shadow-lg'
+     : 'bg-gradient-to-r from-yellow-50 to-orange-50 border-warning hover:shadow-lg'
    }`}
   >
    <CardHeader className='pb-3'>

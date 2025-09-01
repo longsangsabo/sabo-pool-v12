@@ -1,4 +1,10 @@
 import React from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useTheme } from '@/hooks/useTheme';
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { useMobilePageTitle } from '@/hooks/useMobilePageTitle';
@@ -87,7 +93,7 @@ export const MobilePlayerLayout: React.FC<MobilePlayerLayoutProps> = ({
      className='fixed inset-0 w-full h-full z-0'
      style={{
       backgroundImage:
-       'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
+// // // //        'url(https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//billiards-background.png)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',

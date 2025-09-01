@@ -93,7 +93,7 @@ export default function AdminSettings() {
       }`}
     >
       <span
-        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+        className={`inline-block h-4 w-4 transform rounded-full bg-var(--color-background) transition-transform ${
           checked ? 'translate-x-6' : 'translate-x-1'
         }`}
       />
@@ -102,14 +102,14 @@ export default function AdminSettings() {
 
   if (error) {
     return (
-      <div className="text-white p-8">
+      <div className="text-var(--color-background) p-8">
         <div className="max-w-7xl mx-auto">
           <div className="bg-red-900/20 border border-red-700 rounded-lg p-6">
             <h2 className="text-xl font-bold text-red-400 mb-2">Settings Error</h2>
             <p className="text-gray-300">{error}</p>
             <button
               onClick={() => setError(null)}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700 transition-colors"
             >
               Dismiss
             </button>
@@ -120,12 +120,12 @@ export default function AdminSettings() {
   }
 
   return (
-    <div className="text-white p-8">
+    <div className="text-var(--color-background) p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className='flex justify-between items-center'>
           <div>
-            <h1 className='text-3xl font-bold text-white'>⚙️ System Settings</h1>
+            <h1 className='text-3xl font-bold text-var(--color-background)'>⚙️ System Settings</h1>
             <p className='text-gray-400'>
               Manage system configuration and preferences
             </p>
@@ -141,7 +141,7 @@ export default function AdminSettings() {
             <button
               onClick={handleSaveSettings}
               disabled={isLoading}
-              className='flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors disabled:opacity-50'
+              className='flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-var(--color-background) rounded transition-colors disabled:opacity-50'
             >
               <Save className='w-4 h-4' />
               {isLoading ? 'Saving...' : 'Save Changes'}
@@ -162,7 +162,7 @@ export default function AdminSettings() {
           {/* General Settings */}
           <div className="bg-gray-800 border border-gray-700 rounded-lg">
             <div className="p-6 border-b border-gray-700">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <h2 className="text-xl font-bold text-var(--color-background) flex items-center gap-2">
                 <Globe className='w-5 h-5' />
                 General Settings
               </h2>
@@ -178,7 +178,7 @@ export default function AdminSettings() {
                     type="text"
                     value={settings.siteName}
                     onChange={(e) => handleSettingChange('siteName', e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div className='space-y-2'>
@@ -189,7 +189,7 @@ export default function AdminSettings() {
                     type="url"
                     value={settings.siteUrl}
                     onChange={(e) => handleSettingChange('siteUrl', e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -201,7 +201,7 @@ export default function AdminSettings() {
                   value={settings.siteDescription}
                   onChange={(e) => handleSettingChange('siteDescription', e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 />
               </div>
               <div className='space-y-2'>
@@ -211,7 +211,7 @@ export default function AdminSettings() {
                 <select
                   value={settings.language}
                   onChange={(e) => handleSettingChange('language', e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-var(--color-background) focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="en">English</option>
                   <option value="vi">Tiếng Việt</option>
@@ -223,7 +223,7 @@ export default function AdminSettings() {
           {/* Security Settings */}
           <div className="bg-gray-800 border border-gray-700 rounded-lg">
             <div className="p-6 border-b border-gray-700">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <h2 className="text-xl font-bold text-var(--color-background) flex items-center gap-2">
                 <Shield className='w-5 h-5' />
                 Security
               </h2>
@@ -266,7 +266,7 @@ export default function AdminSettings() {
                   type="number"
                   value={settings.maxLoginAttempts}
                   onChange={(e) => handleSettingChange('maxLoginAttempts', parseInt(e.target.value))}
-                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -275,7 +275,7 @@ export default function AdminSettings() {
           {/* Notification Settings */}
           <div className="bg-gray-800 border border-gray-700 rounded-lg">
             <div className="p-6 border-b border-gray-700">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <h2 className="text-xl font-bold text-var(--color-background) flex items-center gap-2">
                 <Bell className='w-5 h-5' />
                 Notifications
               </h2>
@@ -318,7 +318,7 @@ export default function AdminSettings() {
                   type="email"
                   value={settings.adminEmail}
                   onChange={(e) => handleSettingChange('adminEmail', e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -327,7 +327,7 @@ export default function AdminSettings() {
           {/* System Settings */}
           <div className="bg-gray-800 border border-gray-700 rounded-lg">
             <div className="p-6 border-b border-gray-700">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <h2 className="text-xl font-bold text-var(--color-background) flex items-center gap-2">
                 <Database className='w-5 h-5' />
                 System
               </h2>
@@ -371,7 +371,7 @@ export default function AdminSettings() {
                     type="number"
                     value={settings.cacheTimeout}
                     onChange={(e) => handleSettingChange('cacheTimeout', parseInt(e.target.value))}
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div className='space-y-2'>
@@ -382,7 +382,7 @@ export default function AdminSettings() {
                     type="number"
                     value={settings.maxFileSize}
                     onChange={(e) => handleSettingChange('maxFileSize', parseInt(e.target.value))}
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -392,7 +392,7 @@ export default function AdminSettings() {
           {/* Admin Account Management */}
           <div className="bg-gray-800 border border-gray-700 rounded-lg">
             <div className="p-6 border-b border-gray-700">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <h2 className="text-xl font-bold text-var(--color-background) flex items-center gap-2">
                 <Shield className='w-5 h-5' />
                 Admin Account Management
               </h2>
@@ -411,7 +411,7 @@ export default function AdminSettings() {
                   </div>
                   <button
                     onClick={handleLogout}
-                    className='ml-4 flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors'
+                    className='ml-4 flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-var(--color-background) rounded transition-colors'
                   >
                     <LogOut className='w-4 h-4' />
                     Sign Out

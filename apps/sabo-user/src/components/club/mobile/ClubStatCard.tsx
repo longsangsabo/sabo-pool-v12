@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@sabo/shared-ui';
+import { Typography , StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { cn } from '@/lib/utils';
 
 interface ClubStatCardProps {
@@ -14,13 +14,13 @@ export const ClubStatCard: React.FC<ClubStatCardProps> = ({
  label,
  value,
  icon: Icon,
- accentClass = 'text-blue-500',
+ accentClass = 'text-primary-500',
  className = '',
 }) => {
  return (
   <div
    className={cn(
-    'relative overflow-hidden rounded-xl border p-3 flex items-center gap-3 transition-colors bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-900/70',
+    'relative overflow-hidden rounded-xl border p-3 flex items-center gap-3 transition-colors bg-var(--color-background) dark:bg-slate-900/50 border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-900/70',
     className
    )}
   >

@@ -21,7 +21,7 @@ export const rankColors = {
     name: 'Hạng K',
     icon: Crown,
     gradient: 'linear-gradient(135deg, #878787 0%, #5a5a5a 50%, #878787 100%)',
-    textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+    textShadow: '0 2px 4px hsl(var(--foreground) / 0.5)',
     borderColor: 'rgba(135, 135, 135, 0.3)',
   },
   'K+': {
@@ -29,7 +29,7 @@ export const rankColors = {
     name: 'Hạng K+',
     icon: Shield,
     gradient: 'linear-gradient(135deg, #72788F 0%, #4a5061 50%, #72788F 100%)',
-    textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+    textShadow: '0 2px 4px hsl(var(--foreground) / 0.5)',
     borderColor: 'rgba(114, 120, 143, 0.3)',
   },
 
@@ -39,7 +39,7 @@ export const rankColors = {
     name: 'Hạng J',
     icon: Star,
     gradient: 'linear-gradient(135deg, #595988 0%, #3c3c5e 50%, #595988 100%)',
-    textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+    textShadow: '0 2px 4px hsl(var(--foreground) / 0.5)',
     borderColor: 'rgba(89, 89, 136, 0.3)',
   },
   'J+': {

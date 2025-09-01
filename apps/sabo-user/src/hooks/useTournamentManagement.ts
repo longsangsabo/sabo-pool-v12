@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from './useAuth';
 import { toast as sonnerToast } from 'sonner';
@@ -40,7 +46,7 @@ export function useTournamentManagement(tournamentId: string) {
 
   const fetchTournament = useCallback(async () => {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournaments')
         .select(
           `
@@ -65,7 +71,7 @@ export function useTournamentManagement(tournamentId: string) {
 
   const fetchRegistrations = async () => {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_registrations')
         .select(
           `
@@ -76,7 +82,7 @@ export function useTournamentManagement(tournamentId: string) {
           profiles!tournament_registrations_user_id_fkey(full_name)
         `
         )
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .eq('registration_status', 'confirmed')
         .order('created_at');
 
@@ -90,10 +96,10 @@ export function useTournamentManagement(tournamentId: string) {
 
   const checkBracketExists = async () => {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_matches')
         .select('id')
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .limit(1);
 
       if (error) throw error;
@@ -105,7 +111,7 @@ export function useTournamentManagement(tournamentId: string) {
 
   const generateBracket = async () => {
     try {
-      const { data, error } = await supabase.rpc(
+      const { data, error } = await tournamentService.callRPC(
         'generate_single_elimination_bracket' as any,
         {
           p_tournament_id: tournamentId,
@@ -147,7 +153,7 @@ export function useTournamentManagement(tournamentId: string) {
       setUpdating(true);
       console.log('Starting tournament with ID:', tournamentId);
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('tournaments')
         .update({
           status: 'ongoing',
@@ -218,10 +224,10 @@ export function useTournamentManagement(tournamentId: string) {
   const checkTournamentCompletion = async () => {
     try {
       // Check if final match is completed
-      const { data: finalMatch, error } = await supabase
+//       const { data: finalMatch, error } = await supabase
         .from('tournament_matches')
         .select('*')
-        .eq('tournament_id', tournamentId)
+        .getByTournamentId(tournamentId)
         .eq('bracket_type', 'single_elimination')
         .eq('status', 'completed')
         .order('round_number', { ascending: false })
@@ -231,7 +237,7 @@ export function useTournamentManagement(tournamentId: string) {
 
       if (finalMatch && finalMatch.length > 0) {
         // Tournament is completed, update status
-        await supabase
+//         await supabase
           .from('tournaments')
           .update({
             status: 'completed',
@@ -264,7 +270,7 @@ export function useTournamentManagement(tournamentId: string) {
     loadData();
 
     // Set up real-time subscriptions
-    const tournamentSubscription = supabase
+//     const tournamentSubscription = supabase
       .channel('tournament_changes')
       .on(
         'postgres_changes',
@@ -280,7 +286,7 @@ export function useTournamentManagement(tournamentId: string) {
       )
       .subscribe();
 
-    const registrationSubscription = supabase
+//     const registrationSubscription = supabase
       .channel('registration_changes')
       .on(
         'postgres_changes',

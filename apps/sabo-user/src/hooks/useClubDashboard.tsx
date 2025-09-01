@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { supabase } from '@/integrations/supabase/client';
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -49,7 +58,7 @@ export const useClubDashboard = () => {
     const { data: clubData } = await supabase
      .from('club_profiles')
      .select('id')
-     .eq('user_id', user.id)
+     .getByUserId(user.id)
      .single();
 
     if (!clubData) return;
@@ -185,7 +194,7 @@ export const useClubDashboard = () => {
 
   return () => {
    channels.forEach(channel => {
-    supabase.removeChannel(channel);
+    // removeChannel(channel);
    });
   };
  }, [user]);
@@ -202,7 +211,7 @@ export const useClubDashboard = () => {
    const { data: clubData, error: clubError } = await supabase
     .from('club_profiles')
     .select('*')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .single();
 
    console.log('Club data:', clubData, 'Error:', clubError);
@@ -234,7 +243,7 @@ export const useClubDashboard = () => {
       profiles!inner(full_name, display_name, phone)
      `
      )
-     .eq('club_id', clubId)
+     .getByClubId(clubId)
      .eq('status', 'pending')
      .order('created_at', { ascending: false })
      .limit(10),
@@ -253,14 +262,14 @@ export const useClubDashboard = () => {
     supabase
      .from('club_members')
      .select('id', { count: 'exact' })
-     .eq('club_id', clubId)
+     .getByClubId(clubId)
      .eq('status', 'active'),
 
     // Get total tournaments count
     supabase
      .from('tournaments')
      .select('id', { count: 'exact' })
-     .eq('club_id', clubId)
+     .getByClubId(clubId)
      .in('status', ['upcoming', 'registration_open', 'registration_closed', 'ongoing', 'completed']),
 
     // Get total matches count (placeholder for now)

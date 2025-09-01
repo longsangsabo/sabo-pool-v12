@@ -97,7 +97,7 @@ export const MobileStoryReel: React.FC<MobileStoryReelProps> = ({
  const getStoryBadge = (type: StoryItem['type'], isLive?: boolean) => {
   if (isLive) {
    return (
-    <Badge className='absolute top-0 right-0 bg-error-500 text-white text-caption px-1.5 py-0.5 animate-pulse'>
+    <Badge className='absolute top-0 right-0 bg-error-500 text-var(--color-background) text-caption px-1.5 py-0.5 animate-pulse'>
      LIVE
     </Badge>
    );

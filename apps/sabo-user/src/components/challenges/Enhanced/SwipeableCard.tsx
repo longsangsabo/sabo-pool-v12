@@ -82,23 +82,23 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
   switch (variant) {
    case 'open':
     return {
-     left: { icon: X, label: 'Từ chối', color: 'text-red-500', bg: 'bg-error-500/10' },
-     right: { icon: Zap, label: 'Tham gia', color: 'text-green-500', bg: 'bg-success-500/10' }
+     left: { icon: X, label: 'Từ chối', color: 'text-error-500', bg: 'bg-error-500/10' },
+     right: { icon: Zap, label: 'Tham gia', color: 'text-success-500', bg: 'bg-success-500/10' }
     };
    case 'live':
     return {
-     left: { icon: Eye, label: 'Xem', color: 'text-blue-500', bg: 'bg-primary-500/10' },
-     right: { icon: Zap, label: 'Live', color: 'text-red-500', bg: 'bg-error-500/10' }
+     left: { icon: Eye, label: 'Xem', color: 'text-primary-500', bg: 'bg-primary-500/10' },
+     right: { icon: Zap, label: 'Live', color: 'text-error-500', bg: 'bg-error-500/10' }
     };
    case 'upcoming':
     return {
-     left: { icon: X, label: 'Hủy', color: 'text-red-500', bg: 'bg-error-500/10' },
-     right: { icon: Eye, label: 'Xem', color: 'text-blue-500', bg: 'bg-primary-500/10' }
+     left: { icon: X, label: 'Hủy', color: 'text-error-500', bg: 'bg-error-500/10' },
+     right: { icon: Eye, label: 'Xem', color: 'text-primary-500', bg: 'bg-primary-500/10' }
     };
    default:
     return {
      left: { icon: ArrowLeft, label: 'Chia sẻ', color: 'text-purple-500', bg: 'bg-info-500/10' },
-     right: { icon: Eye, label: 'Xem', color: 'text-blue-500', bg: 'bg-primary-500/10' }
+     right: { icon: Eye, label: 'Xem', color: 'text-primary-500', bg: 'bg-primary-500/10' }
     };
   }
  };
@@ -166,11 +166,11 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
 
    {/* Main Card */}
    <motion.div
-    drag={!disabled ? "x" : false}
+    drag={!disabled ?"x" : false}
     dragConstraints={{ left: 0, right: 0 }}
     dragElastic={0.7}
     onDragEnd={handleDragEnd}
-    className="swipeable-card transform-dynamic" style={{ "--transform-x": x, "--transform-opacity": opacity, "--transform-scale": scale, "--transform-rotate": rotate }}
+    className="swipeable-card transform-dynamic" style={{"--transform-x": x,"--transform-opacity": opacity,"--transform-scale": scale,"--transform-rotate": rotate }}
     whileTap={{ scale: 0.98 }}
     className="relative z-10"
    >
@@ -179,12 +179,12 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
       'transition-all duration-200 cursor-grab active:cursor-grabbing',
       'border-border/50 dark:border-border/30',
       'bg-card/80 dark:bg-card/90 backdrop-blur-sm',
-      'shadow-lg dark:shadow-black/20',
+      'shadow-lg dark:shadow-var(--color-foreground)/20',
       // Variant-specific styling
       variant === 'live' && 'border-error-200 dark:border-red-800 bg-error-50/50 dark:bg-red-950/20',
       variant === 'upcoming' && 'border-primary-200 dark:border-blue-800 bg-primary-50/50 dark:bg-blue-950/20',
       variant === 'completed' && 'border-success-200 dark:border-green-800 bg-success-50/50 dark:bg-green-950/20',
-      variant === 'open' && 'border-yellow-200 dark:border-yellow-800 bg-warning-50/50 dark:bg-yellow-950/20'
+      variant === 'open' && 'border-warning dark:border-yellow-800 bg-warning-50/50 dark:bg-yellow-950/20'
      )}
      onClick={() => onTap?.(challenge.id)}
     >

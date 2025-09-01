@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { signInWithPassword } from '../../services/userService';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 export const ReAuthModal: React.FC = () => {
@@ -19,16 +20,11 @@ export const ReAuthModal: React.FC = () => {
   if (!email || !password) return;
   setLoading(true);
   try {
-   const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-   });
-   if (error) {
-    toast.error('Đăng nhập lại thất bại');
-   } else {
-    toast.success('Khôi phục phiên thành công');
-    setOpen(false);
-   }
+   await signInWithPassword(email, password);
+   toast.success('Khôi phục phiên thành công');
+   setOpen(false);
+  } catch (error) {
+   toast.error('Đăng nhập lại thất bại');
   } finally {
    setLoading(false);
   }
@@ -36,7 +32,7 @@ export const ReAuthModal: React.FC = () => {
 
  if (!open) return null;
  return (
-  <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4'>
+  <div className='fixed inset-0 z-50 flex items-center justify-center bg-var(--color-foreground)/60 p-4'>
    <div className='bg-background border rounded-lg shadow-xl w-full max-w-sm p-6 space-y-4'>
     <h2 className='text-body-large-semibold'>Phiên đăng nhập đã hết hạn</h2>
     <p className='text-body-small text-muted-foreground'>

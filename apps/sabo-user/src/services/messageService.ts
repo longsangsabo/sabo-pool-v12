@@ -1,4 +1,5 @@
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getCurrentUser } from '../services/userService';
 import { 
   Message, 
   MessageThread, 
@@ -24,11 +25,11 @@ export class MessageService {
   }): Promise<Message | null> {
   if (this.isSmokeBypass()) return null;
   try {
-      const currentUser = (await supabase.auth.getUser()).data.user;
+      const currentUser = (await getCurrentUser()).data.user;
       
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('messages')
-        .insert([{
+        .create([{
           sender_id: currentUser?.id,
           ...messageData,
           // Store enhanced metadata
@@ -79,7 +80,7 @@ export class MessageService {
   if (this.isSmokeBypass()) return [];
   try {
       // Check if messages table exists first
-      const { data: tableExists, error: tableError } = await supabase
+//       const { data: tableExists, error: tableError } = await supabase
         .from('messages')
         .select('id')
         .limit(1);
@@ -90,7 +91,7 @@ export class MessageService {
       }
 
       // Use separate queries to avoid PostgREST relationship issues
-      let query = supabase
+//       let query = supabase
         .from('messages')
         .select('*')
         .eq('recipient_id', userId)
@@ -128,7 +129,7 @@ export class MessageService {
           if (msg.recipient_id) userIds.add(msg.recipient_id);
         });
 
-        const { data: profiles, error: profileError } = await supabase
+//         const { data: profiles, error: profileError } = await supabase
           .from('profiles')
           .select('user_id, full_name, avatar_url, display_name')
           .in('user_id', Array.from(userIds));
@@ -164,7 +165,7 @@ export class MessageService {
   ): Promise<Message[]> {
   if (this.isSmokeBypass()) return [];
   try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('messages')
         .select(`
           *,
@@ -187,7 +188,7 @@ export class MessageService {
   static async getMessageById(messageId: string): Promise<Message | null> {
   if (this.isSmokeBypass()) return null;
   try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('messages')
         .select(`
           *,
@@ -209,7 +210,7 @@ export class MessageService {
   static async markAsRead(messageId: string): Promise<boolean> {
   if (this.isSmokeBypass()) return false;
   try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('messages')
         .update({ 
           status: 'read', 
@@ -228,7 +229,7 @@ export class MessageService {
   static async markMultipleAsRead(messageIds: string[]): Promise<boolean> {
   if (this.isSmokeBypass()) return false;
   try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('messages')
         .update({ 
           status: 'read', 
@@ -247,7 +248,7 @@ export class MessageService {
   static async archiveMessage(messageId: string): Promise<boolean> {
   if (this.isSmokeBypass()) return false;
   try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('messages')
         .update({ status: 'archived' })
         .eq('id', messageId);
@@ -263,7 +264,7 @@ export class MessageService {
   static async deleteMessage(messageId: string): Promise<boolean> {
   if (this.isSmokeBypass()) return 0;
   try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('messages')
         .update({ status: 'deleted' })
         .eq('id', messageId);
@@ -280,7 +281,7 @@ export class MessageService {
   if (this.isSmokeBypass()) return 0;
   try {
       // First try the database function
-      const { data: functionResult, error: functionError } = await supabase
+//       const { data: functionResult, error: functionError } = await supabase
         .rpc('get_unread_message_count', { user_uuid: userId });
 
       if (!functionError && functionResult !== null) {
@@ -290,7 +291,7 @@ export class MessageService {
       // Fallback to manual count if function doesn't exist
       console.log('Function get_unread_message_count not found, using fallback query');
       
-      const { data: tableExists, error: tableError } = await supabase
+//       const { data: tableExists, error: tableError } = await supabase
         .from('messages')
         .select('id')
         .limit(1);
@@ -300,7 +301,7 @@ export class MessageService {
         return 0;
       }
 
-      const { count, error: countError } = await supabase
+//       const { count, error: countError } = await supabase
         .from('messages')
         .select('*', { count: 'exact', head: true })
         .eq('recipient_id', userId)
@@ -319,25 +320,25 @@ export class MessageService {
   if (this.isSmokeBypass()) return null;
   try {
       const [total, unread, sent, archived, system] = await Promise.all([
-        supabase
+//         supabase
           .from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('recipient_id', userId),
-        supabase
+//         supabase
           .from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('recipient_id', userId)
           .eq('status', 'unread'),
-        supabase
+//         supabase
           .from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('sender_id', userId),
-        supabase
+//         supabase
           .from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('recipient_id', userId)
           .eq('status', 'archived'),
-        supabase
+//         supabase
           .from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('recipient_id', userId)
@@ -377,7 +378,7 @@ export class MessageService {
   ): Promise<string | null> {
   if (this.isSmokeBypass()) return [];
   try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .rpc('send_system_message', {
           recipient_uuid: recipientId,
           message_subject: subject,
@@ -410,7 +411,7 @@ export class MessageService {
   private static async triggerMultiChannelNotification(message: Message): Promise<void> {
     try {
       // Call the multi-channel notification function
-      const { error } = await supabase.functions.invoke('multi-channel-notification', {
+// // //       // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await supabase.functions.invoke('multi-channel-notification', {
         body: {
           notification_id: `msg_${message.id}`,
           user_id: message.recipient_id,
@@ -443,7 +444,7 @@ export class MessageService {
     metadata: any
   ): Promise<void> {
     try {
-      const { error } = await supabase.functions.invoke('send-notification', {
+// // //       // TODO: Replace with service call - const { error } = // TODO: Replace with service call - await supabase.functions.invoke('send-notification', {
         body: {
           user_id: userId,
           type: 'system',
@@ -470,7 +471,7 @@ export class MessageService {
   ): Promise<Message[]> {
   if (this.isSmokeBypass()) return null;
   try {
-      let supabaseQuery = supabase
+//       let supabaseQuery = supabase
         .from('messages')
         .select(`
           *,
@@ -481,22 +482,22 @@ export class MessageService {
         .or(`subject.ilike.%${query}%,content.ilike.%${query}%`);
 
       if (filters?.type) {
-        supabaseQuery = supabaseQuery.eq('message_type', filters.type);
+//         supabaseQuery = supabaseQuery.eq('message_type', filters.type);
       }
 
       if (filters?.status && filters.status !== 'deleted') {
-        supabaseQuery = supabaseQuery.eq('status', filters.status);
+//         supabaseQuery = supabaseQuery.eq('status', filters.status);
       }
 
       if (filters?.dateFrom) {
-        supabaseQuery = supabaseQuery.gte('created_at', filters.dateFrom);
+//         supabaseQuery = supabaseQuery.gte('created_at', filters.dateFrom);
       }
 
       if (filters?.dateTo) {
-        supabaseQuery = supabaseQuery.lte('created_at', filters.dateTo);
+//         supabaseQuery = supabaseQuery.lte('created_at', filters.dateTo);
       }
 
-      const { data, error } = await supabaseQuery
+      // TODO: Replace with service call - const { data, error } = await supabaseQuery
         .order('created_at', { ascending: false })
         .limit(50);
 
@@ -512,10 +513,10 @@ export class MessageService {
   static async getNotificationSettings(userId: string): Promise<NotificationSettings | null> {
   if (this.isSmokeBypass()) return false;
   try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('notification_settings')
         .select('*')
-        .eq('user_id', userId)
+        .getByUserId(userId)
         .single();
 
       if (error && error.code !== 'PGRST116') throw error;
@@ -539,7 +540,7 @@ export class MessageService {
   ): Promise<boolean> {
   if (this.isSmokeBypass()) return null;
   try {
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('notification_settings')
         .upsert({
           user_id: userId,
@@ -558,9 +559,9 @@ export class MessageService {
   private static async createDefaultNotificationSettings(userId: string): Promise<NotificationSettings | null> {
   if (this.isSmokeBypass()) return [];
   try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('notification_settings')
-        .insert([{
+        .create([{
           user_id: userId,
           email_notifications: true,
           push_notifications: true,
@@ -569,7 +570,7 @@ export class MessageService {
           system_announcements: true,
           match_reminders: true
         }])
-        .select()
+        .getAll()
         .single();
 
       if (error) throw error;
@@ -595,7 +596,7 @@ export class MessageService {
   // Get users for messaging (search recipients)
   static async searchUsers(query: string, limit: number = 10): Promise<any[]> {
     try {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('profiles')
         .select('user_id, full_name, display_name, avatar_url')
         .or(`full_name.ilike.%${query}%,display_name.ilike.%${query}%`)

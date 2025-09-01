@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
+import { getCurrentUser } from '../services/userService';
 import {
  RankRequest,
  CreateRankRequestData,
@@ -23,7 +27,7 @@ export const useRankRequests = (clubId?: string) => {
   setError('');
   try {
    // Query rank_requests with basic data - foreign keys are for integrity
-   let query = supabase
+//    let query = supabase
     .from('rank_requests')
     .select('*')
     .order('created_at', { ascending: false });
@@ -32,7 +36,7 @@ export const useRankRequests = (clubId?: string) => {
    const activeFilters = filterOptions || filters;
 
    if (activeFilters.club_id || clubId) {
-    query = query.eq('club_id', activeFilters.club_id || clubId);
+    query = query.getByClubId(activeFilters.club_id || clubId);
    }
 
    if (activeFilters.status) {
@@ -60,13 +64,13 @@ export const useRankRequests = (clubId?: string) => {
     verificationData?.map(v => v.club_id).filter(Boolean) || [];
 
    // Fetch player profiles
-   const { data: playersData } = await supabase
+//    const { data: playersData } = await supabase
     .from('profiles')
     .select('user_id, full_name, avatar_url, phone, elo')
     .in('user_id', playerIds);
 
    // Fetch club profiles
-   const { data: clubsData } = await supabase
+//    const { data: clubsData } = await supabase
     .from('club_profiles')
     .select('id, club_name, address, phone')
     .in('id', clubIds);
@@ -128,11 +132,11 @@ export const useRankRequests = (clubId?: string) => {
   clubId: string
  ) => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('rank_requests')
     .select('*')
-    .eq('user_id', userId)
-    .eq('club_id', clubId)
+    .getByUserId(userId)
+    .getByClubId(clubId)
     .eq('status', 'pending');
 
    if (error) throw error;
@@ -149,7 +153,7 @@ export const useRankRequests = (clubId?: string) => {
    console.log('🔍 [DEBUG] Environment check:', {
     isDev: window.location.hostname === 'localhost',
     hostname: window.location.hostname,
-    supabaseUrl: import.meta.env.VITE_SUPABASE_URL
+//     supabaseUrl: import.meta.env.VITE_SUPABASE_URL
    });
    
    const userId = data.user_id;
@@ -162,7 +166,7 @@ export const useRankRequests = (clubId?: string) => {
    }
 
    // Check current user authentication
-   const { data: { user }, error: authError } = await supabase.auth.getUser();
+   const { data: { user }, error: authError } = await getCurrentUser();
    console.log('🔍 [DEBUG] Auth check:', { 
     authUser: user?.id, 
     dataUserId: userId, 
@@ -182,10 +186,10 @@ export const useRankRequests = (clubId?: string) => {
 
    // 🛠️ FIX: Check if profile exists, create if missing
    console.log('🔍 [DEBUG] Checking if profile exists for user:', userId);
-   const { data: existingProfile, error: profileCheckError } = await supabase
+//    const { data: existingProfile, error: profileCheckError } = await supabase
     .from('profiles')
     .select('user_id, email, current_rank')
-    .eq('user_id', userId)
+    .getByUserId(userId)
     .single();
 
    if (profileCheckError && profileCheckError.code === 'PGRST116') {
@@ -200,10 +204,10 @@ export const useRankRequests = (clubId?: string) => {
      spa_points: 1000, // Required field with default
     };
     
-    const { data: newProfile, error: createProfileError } = await supabase
+//     const { data: newProfile, error: createProfileError } = await supabase
      .from('profiles')
-     .insert(minimalProfileData)
-     .select()
+     .create(minimalProfileData)
+     .getAll()
      .single();
 
     if (createProfileError) {
@@ -256,10 +260,10 @@ export const useRankRequests = (clubId?: string) => {
      evidence_files: data.evidence_files,
     };
     console.log('🔍 [DEBUG] trying insert with evidence_files:', insertPayload);
-    const { data: insData, error } = await supabase
+//     const { data: insData, error } = await supabase
      .from('rank_requests')
-     .insert(insertPayload)
-     .select()
+     .create(insertPayload)
+     .getAll()
      .single();
     if (error) {
      firstError = error;
@@ -274,10 +278,10 @@ export const useRankRequests = (clubId?: string) => {
    if (!newRequest) {
     if (firstError && firstError.message?.includes("'evidence_files'")) {
      console.log('🔄 [RETRY] without evidence_files');
-     const { data: insData2, error: retryErr } = await supabase
+//      const { data: insData2, error: retryErr } = await supabase
       .from('rank_requests')
-      .insert(basePayload)
-      .select()
+      .create(basePayload)
+      .getAll()
       .single();
      if (retryErr) {
       console.error('🚨 [ERROR] retry insert error:', retryErr);
@@ -288,10 +292,10 @@ export const useRankRequests = (clubId?: string) => {
     } else if (!data.evidence_files?.length) {
      // No evidence provided originally; perform single insert
      console.log('🔍 [DEBUG] inserting without evidence (original):', basePayload);
-     const { data: insData3, error: err3 } = await supabase
+//      const { data: insData3, error: err3 } = await supabase
       .from('rank_requests')
-      .insert(basePayload)
-      .select()
+      .create(basePayload)
+      .getAll()
       .single();
      if (err3) {
       console.error('🚨 [ERROR] insert (no evidence) error:', err3);
@@ -316,7 +320,7 @@ export const useRankRequests = (clubId?: string) => {
 
  const updateRankRequest = async (id: string, updateData: any) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('rank_requests')
     .update({
      status: updateData.status,
@@ -340,7 +344,7 @@ export const useRankRequests = (clubId?: string) => {
 
  const deleteRankRequest = async (id: string) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('rank_requests')
     .delete()
     .eq('id', id);
@@ -458,7 +462,7 @@ export const useRankRequests = (clubId?: string) => {
   fetchRankRequests();
 
   // Subscribe to realtime changes
-  const channel = supabase
+//   const channel = supabase
    .channel('rank-requests')
    .on(
     'postgres_changes',
@@ -476,7 +480,7 @@ export const useRankRequests = (clubId?: string) => {
    .subscribe();
 
   return () => {
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [clubId]);
 

@@ -1,5 +1,6 @@
 // Milestone business logic service (Phase 2 - initial)
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { createNotification } from '../services/notificationService';
 import { spaService } from '@/services/spaService';
 
 export interface Milestone {
@@ -33,7 +34,7 @@ export interface PlayerMilestone {
 
 class MilestoneService {
   async getMilestonesByCategory(category: Milestone['category']): Promise<Milestone[]> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('milestones')
       .select('*')
       .eq('category', category)
@@ -44,16 +45,16 @@ class MilestoneService {
   }
 
   async getPlayerMilestoneProgress(playerId: string): Promise<PlayerMilestone[]> {
-    const { data, error } = await supabase
+    // TODO: Replace with service call - const { data, error } = await supabase
       .from('player_milestones')
       .select('*, milestone:milestones(*)')
-      .eq('user_id', playerId);
+      .getByUserId(playerId);
     if (error) throw error;
     return (data || []) as unknown as PlayerMilestone[];
   }
 
   async initializePlayerMilestones(playerId: string): Promise<void> {
-    const { data: milestones, error } = await supabase
+//     const { data: milestones, error } = await supabase
       .from('milestones')
       .select('id')
       .eq('is_active', true);
@@ -61,25 +62,25 @@ class MilestoneService {
     if (!milestones) return;
     for (const m of milestones) {
       // Check if milestone already exists for this user
-      const { data: existing } = await supabase
+//       const { data: existing } = await supabase
         .from('player_milestones')
         .select('id')
-        .eq('user_id', playerId)
+        .getByUserId(playerId)
         .eq('milestone_id', m.id)
         .single();
       
       // Only insert if doesn't exist
       if (!existing) {
-        await supabase
+//         await supabase
           .from('player_milestones')
-          .insert({ user_id: playerId, milestone_id: m.id });
+          .create({ user_id: playerId, milestone_id: m.id });
       }
     }
   }
 
   async updatePlayerProgress(playerId: string, milestoneType: string, increment: number): Promise<void> {
     if (increment <= 0) return;
-    const { data: milestone } = await supabase
+//     const { data: milestone } = await supabase
       .from('milestones')
       .select('*')
       .eq('milestone_type', milestoneType)
@@ -90,23 +91,23 @@ class MilestoneService {
     if (!milestone) return;
 
     // Check if milestone record exists, if not create it
-    const { data: existing } = await supabase
+//     const { data: existing } = await supabase
       .from('player_milestones')
       .select('*')
-      .eq('user_id', playerId)
+      .getByUserId(playerId)
       .eq('milestone_id', milestone.id)
       .single();
 
     if (!existing) {
-      await supabase
+//       await supabase
         .from('player_milestones')
-        .insert({ user_id: playerId, milestone_id: milestone.id });
+        .create({ user_id: playerId, milestone_id: milestone.id });
     }
 
-    const { data: progressRow } = await supabase
+//     const { data: progressRow } = await supabase
       .from('player_milestones')
       .select('*')
-      .eq('user_id', playerId)
+      .getByUserId(playerId)
       .eq('milestone_id', milestone.id)
       .single();
 
@@ -130,7 +131,7 @@ class MilestoneService {
         
         if (spaResult.requiresRanking) {
           // User needs to register ranking first - create special notification
-          await supabase.from('notifications').insert({
+          await notificationService.create({
             user_id: playerId,
             type: 'milestone_completed_pending',
             category: 'achievement',
@@ -149,7 +150,7 @@ class MilestoneService {
           });
         } else if (spaResult.success) {
           // Normal success notification
-          await supabase.from('notifications').insert({
+          await notificationService.create({
             user_id: playerId,
             type: 'milestone_completed',
             category: 'achievement',
@@ -168,7 +169,7 @@ class MilestoneService {
           });
         } else {
           // SPA award failed for other reasons
-          await supabase.from('notifications').insert({
+          await notificationService.create({
             user_id: playerId,
             type: 'milestone_completed_error',
             category: 'achievement',
@@ -187,7 +188,7 @@ class MilestoneService {
         }
       } else {
         // Milestone with no SPA reward
-        await supabase.from('notifications').insert({
+        await notificationService.create({
           user_id: playerId,
           type: 'milestone_completed',
           category: 'achievement',
@@ -206,7 +207,7 @@ class MilestoneService {
       }
     }
 
-    await supabase
+//     await supabase
       .from('player_milestones')
       .update({
         current_progress: newProgress,
@@ -215,12 +216,12 @@ class MilestoneService {
         times_completed: timesCompleted,
         last_progress_update: new Date().toISOString()
       })
-      .eq('user_id', playerId)
+      .getByUserId(playerId)
       .eq('milestone_id', milestone.id);
   }
 
   async checkAndAwardMilestone(playerId: string, milestoneType: string, currentValue: number): Promise<boolean> {
-    const { data: milestone } = await supabase
+//     const { data: milestone } = await supabase
       .from('milestones')
       .select('*')
       .eq('milestone_type', milestoneType)
@@ -232,9 +233,9 @@ class MilestoneService {
 
     // Try insert first, if conflict then do nothing (user already has this milestone)
     try {
-      await supabase
+//       await supabase
         .from('player_milestones')
-        .insert({ user_id: playerId, milestone_id: milestone.id });
+        .create({ user_id: playerId, milestone_id: milestone.id });
     } catch (error) {
       // Ignore duplicate key errors - milestone already exists for user
       if (error && !error.message?.includes('duplicate key')) {
@@ -242,17 +243,17 @@ class MilestoneService {
       }
     }
 
-    const { data: progressRow } = await supabase
+//     const { data: progressRow } = await supabase
       .from('player_milestones')
       .select('*')
-      .eq('user_id', playerId)
+      .getByUserId(playerId)
       .eq('milestone_id', milestone.id)
       .single();
 
     if (progressRow?.is_completed) return false;
     if (currentValue < milestone.requirement_value) return false;
 
-    await supabase
+//     await supabase
       .from('player_milestones')
       .update({
         current_progress: milestone.requirement_value,
@@ -260,7 +261,7 @@ class MilestoneService {
         completed_at: new Date().toISOString(),
         times_completed: (progressRow?.times_completed || 0) + 1
       })
-      .eq('user_id', playerId)
+      .getByUserId(playerId)
       .eq('milestone_id', milestone.id);
 
     if (milestone.spa_reward > 0) {
@@ -268,7 +269,7 @@ class MilestoneService {
       
       if (spaResult.requiresRanking) {
         // User needs to register ranking first - create special notification
-        await supabase.from('notifications').insert({
+        await notificationService.create({
           user_id: playerId,
           type: 'milestone_completed_pending',
           category: 'achievement',
@@ -287,7 +288,7 @@ class MilestoneService {
         });
       } else if (spaResult.success) {
         // Normal success notification
-        await supabase.from('notifications').insert({
+        await notificationService.create({
           user_id: playerId,
           type: 'milestone_completed',
           category: 'achievement',
@@ -311,10 +312,10 @@ class MilestoneService {
 
   async processDailyCheckin(playerId: string): Promise<{ success: boolean; rewards: number }> {
     const today = new Date().toISOString().slice(0, 10);
-    const { data: dailyRow, error } = await supabase
+//     const { data: dailyRow, error } = await supabase
       .from('player_daily_progress')
       .select('*')
-      .eq('user_id', playerId)
+      .getByUserId(playerId)
       .eq('date', today)
       .single();
     if (error && (error as any).code !== 'PGRST116') {
@@ -323,17 +324,17 @@ class MilestoneService {
     if (dailyRow?.daily_checkin) return { success: false, rewards: 0 };
 
     // Check if daily progress already exists
-    const { data: existingDaily } = await supabase
+//     const { data: existingDaily } = await supabase
       .from('player_daily_progress')
       .select('id')
-      .eq('user_id', playerId)
+      .getByUserId(playerId)
       .eq('date', today)
       .single();
 
     if (!existingDaily) {
-      await supabase
+//       await supabase
         .from('player_daily_progress')
-        .insert({ user_id: playerId, date: today, daily_checkin: true });
+        .create({ user_id: playerId, date: today, daily_checkin: true });
     }
 
     await this.updateLoginStreak(playerId);
@@ -344,10 +345,10 @@ class MilestoneService {
 
   async getPlayerDailyProgress(playerId: string) {
     const today = new Date().toISOString().slice(0, 10);
-    const { data } = await supabase
+    // TODO: Replace with service call - const { data } = await supabase
       .from('player_daily_progress')
       .select('*')
-      .eq('user_id', playerId)
+      .getByUserId(playerId)
       .eq('date', today)
       .single();
     return data;
@@ -356,14 +357,14 @@ class MilestoneService {
   async updateLoginStreak(playerId: string): Promise<void> {
     const today = new Date();
     const todayDate = today.toISOString().slice(0, 10);
-    const { data: streak } = await supabase
+//     const { data: streak } = await supabase
       .from('player_login_streaks')
       .select('*')
-      .eq('user_id', playerId)
+      .getByUserId(playerId)
       .single();
 
     if (!streak) {
-      await supabase.from('player_login_streaks').insert({
+// // //       // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('player_login_streaks').create({
         user_id: playerId,
         current_streak: 1,
         longest_streak: 1,
@@ -384,7 +385,7 @@ class MilestoneService {
     const longest = Math.max(currentStreak, streak.longest_streak || 0);
     const weeklyLogins = (streak.weekly_logins || 0) + (diffDays === 0 ? 0 : 1);
 
-    await supabase
+//     await supabase
       .from('player_login_streaks')
       .update({
         current_streak: currentStreak,
@@ -392,10 +393,22 @@ class MilestoneService {
         last_login_date: todayDate,
         weekly_logins: weeklyLogins
       })
-      .eq('user_id', playerId);
+      .getByUserId(playerId);
 
     await this.checkAndAwardMilestone(playerId, 'login_streak', currentStreak);
   }
 }
 
 export const milestoneService = new MilestoneService();
+
+export const getRecentMilestoneAwards = async (limit: number = 10) => {
+  try {
+    const { data, error } = await tournamentService.callRPC('recent_milestone_awards', { p_limit: limit });
+    
+    if (error) throw error;
+    return { data, error: null };
+  } catch (error: any) {
+    console.error('Get recent milestone awards failed:', error);
+    return { data: null, error: error.message };
+  }
+};

@@ -4,7 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useFileUpload } from '@/hooks/useFileUpload';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { supabase } from "@/integrations/supabase/client";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -145,10 +152,10 @@ const EvidenceUpload = ({
 
  const getFileIcon = (type: string) => {
   if (type.startsWith('image/')) {
-   return <FileImage className='w-5 h-5 text-blue-500' />;
+   return <FileImage className='w-5 h-5 text-primary-500' />;
   }
   if (type === 'application/pdf') {
-   return <FileText className='w-5 h-5 text-red-500' />;
+   return <FileText className='w-5 h-5 text-error-500' />;
   }
   return <FileText className='w-5 h-5 text-neutral-500' />;
  };
@@ -249,7 +256,7 @@ const EvidenceUpload = ({
             // Get proper image URL for preview
             const imageUrl = file.url.startsWith('http')
              ? file.url
-             : supabase.storage
+// //              : supabase.storage
                .from('rank-evidence')
                .getPublicUrl(file.url).data.publicUrl;
             setPreviewing(imageUrl);
@@ -278,12 +285,12 @@ const EvidenceUpload = ({
    {/* Preview Modal */}
    {previewing && (
     <div
-     className='fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4'
+     className='fixed inset-0 bg-var(--color-foreground)/80 flex items-center justify-center z-50 p-4'
      onClick={() => setPreviewing(null)}
     >
      <div className='relative max-w-4xl max-h-[90vh]'>
       <Button
-       className='absolute -top-12 right-0 text-white hover:text-gray-300'
+       className='absolute -top-12 right-0 text-var(--color-background) hover:text-gray-300'
        variant='ghost'
        
        onClick={() => setPreviewing(null)}

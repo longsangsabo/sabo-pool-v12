@@ -3,6 +3,9 @@
  * Consolidated user management business logic for mobile development
  */
 
+// Export the main UserService
+export { UserService } from './UserService';
+
 // Export all user business logic modules
 export * from './user-profile';
 export * from './user-auth';

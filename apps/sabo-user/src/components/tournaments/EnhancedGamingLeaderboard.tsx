@@ -99,14 +99,14 @@ export function EnhancedGamingLeaderboard({
   
   if (change > 0) {
    return (
-    <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+    <div className="flex items-center gap-1 text-success-600 dark:text-green-400">
      <ChevronUp className="h-3 w-3" />
      <span className="text-xs font-medium">+{change}</span>
     </div>
    );
   } else if (change < 0) {
    return (
-    <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
+    <div className="flex items-center gap-1 text-error-600 dark:text-red-400">
      <ChevronDown className="h-3 w-3" />
      <span className="text-xs font-medium">{change}</span>
     </div>
@@ -128,13 +128,13 @@ export function EnhancedGamingLeaderboard({
   
   if (change > 0) {
    return (
-    <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+    <span className="text-xs text-success-600 dark:text-green-400 font-medium">
      +{change}
     </span>
    );
   } else if (change < 0) {
    return (
-    <span className="text-xs text-red-600 dark:text-red-400 font-medium">
+    <span className="text-xs text-error-600 dark:text-red-400 font-medium">
      {change}
     </span>
    );
@@ -147,11 +147,11 @@ export function EnhancedGamingLeaderboard({
   
   const rankColors = {
    'Novice': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
-   'Amateur': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
+   'Amateur': 'bg-primary-100 text-blue-800 dark:bg-blue-900 dark:text-primary-100',
    'Semi-Pro': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
-   'Professional': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
+   'Professional': 'bg-success-100 text-green-800 dark:bg-green-900 dark:text-success-100',
    'Master': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100',
-   'Legend': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
+   'Legend': 'bg-error-100 text-red-800 dark:bg-red-900 dark:text-error-100',
   };
   
   return (
@@ -289,14 +289,14 @@ function PlayerRow({
   
   if (change > 0) {
    return (
-    <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+    <div className="flex items-center gap-1 text-success-600 dark:text-green-400">
      <ChevronUp className="h-3 w-3" />
      <span className="text-xs font-medium">+{change}</span>
     </div>
    );
   } else if (change < 0) {
    return (
-    <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
+    <div className="flex items-center gap-1 text-error-600 dark:text-red-400">
      <ChevronDown className="h-3 w-3" />
      <span className="text-xs font-medium">{change}</span>
     </div>
@@ -331,7 +331,7 @@ function PlayerRow({
        {player.display_name || player.full_name}
       </span>
       {player.is_online && (
-       <div className="h-2 w-2 rounded-full bg-green-500" />
+       <div className="h-2 w-2 rounded-full bg-success-500" />
       )}
       {isCurrentUser && (
        <Badge variant="outline" className="text-xs">

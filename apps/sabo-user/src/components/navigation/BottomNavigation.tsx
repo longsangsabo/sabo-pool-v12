@@ -1,4 +1,5 @@
 import React from 'react';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { Link, useLocation } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -64,7 +65,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
  ];
 
  return (
-  <nav className='fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-neutral-200 md:hidden'>
+  <nav className='fixed bottom-0 left-0 right-0 z-50 bg-var(--color-background) border-t border-neutral-200 md:hidden'>
    <div className='flex items-center justify-around px-2 py-2'>
     {navigationItems.map(item => (
      <Link
@@ -79,7 +80,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       <div className='relative'>
        {item.icon}
        {item.badge && item.badge > 0 && (
-        <Badge className='absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-caption bg-error-500 text-white'>
+        <Badge className='absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-caption bg-error-500 text-var(--color-background)'>
          {item.badge > 99 ? '99+' : item.badge}
         </Badge>
        )}

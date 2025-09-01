@@ -1,5 +1,14 @@
 import { useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from './useAuth';
 
 export const useTournamentRealtimeSync = (
@@ -13,7 +22,7 @@ export const useTournamentRealtimeSync = (
   console.log('Setting up real-time listeners for user:', user.id);
 
   // Listen to tournament_registrations changes
-  const channel = supabase
+//   const channel = supabase
    .channel('tournament-registration-changes')
    .on(
     'postgres_changes',
@@ -50,7 +59,7 @@ export const useTournamentRealtimeSync = (
 
   return () => {
    console.log('Cleaning up real-time listeners');
-   supabase.removeChannel(channel);
+   // removeChannel(channel);
   };
  }, [user?.id, onRegistrationChange]);
 

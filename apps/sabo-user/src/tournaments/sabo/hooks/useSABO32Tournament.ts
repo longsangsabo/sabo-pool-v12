@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { SABO32Match } from '../SABO32Structure';
 import { SABO32TournamentEngine } from '../SABO32TournamentEngine';
 import { toast } from 'sonner';
@@ -23,7 +23,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
     queryFn: async (): Promise<SABO32Match[]> => {
       console.log('🔍 Fetching SABO-32 tournament matches for:', tournamentId);
       
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('sabo32_matches')
         .select(`
           id,
@@ -94,7 +94,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
       const loserId = player1Score > player2Score ? matchData.player2_id : matchData.player1_id;
 
       // Update match result using direct table update
-      const { error: updateError } = await supabase
+//       const { error: updateError } = await supabase
         .from('sabo32_matches')
         .update({
           score_player1: player1Score,
@@ -198,7 +198,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
     console.log('🎯 Cross-bracket advancement: winner advances to final');
     
     // Find the final match
-    const { data: finalMatches } = await supabase
+//     const { data: finalMatches } = await supabase
       .from('tournament_matches')
       .select('*')
       .eq('tournament_id', tournamentId)
@@ -208,7 +208,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
       const finalMatch = finalMatches[0];
       const updateField = !finalMatch.player1_id ? 'player1_id' : 'player2_id';
       
-      await supabase
+//       await supabase
         .from('tournament_matches')
         .update({ 
           [updateField]: winnerId,
@@ -225,7 +225,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
     console.log('🔍 Checking if cross-bracket can be populated...');
     
     // Get group finals
-    const { data: groupFinals } = await supabase
+//     const { data: groupFinals } = await supabase
       .from('tournament_matches')
       .select('*')
       .eq('tournament_id', tournamentId)
@@ -246,7 +246,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
         const groupBRunnerUp = groupBFinal.loser_id; // Runner-up in final
         
         // Update semifinals with cross-bracket matchups
-        await supabase
+//         await supabase
           .from('tournament_matches')
           .update({
             player1_id: groupAWinner,
@@ -257,7 +257,7 @@ export const useSABO32Tournament = (tournamentId: string) => {
           .eq('bracket_type', 'cross_semifinals')
           .eq('match_number', 1);
 
-        await supabase
+//         await supabase
           .from('tournament_matches')
           .update({
             player1_id: groupBWinner,

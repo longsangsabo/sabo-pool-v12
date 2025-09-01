@@ -173,7 +173,7 @@ const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
       className={cn(
        'text-caption px-1 py-0.5 font-bold',
        'bg-gradient-to-r from-orange-400 to-red-400',
-       'text-white border-0 shadow-lg',
+       'text-var(--color-background) border-0 shadow-lg',
        'dark:from-orange-500 dark:to-red-500'
       )}
      >
@@ -197,7 +197,7 @@ const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
       'border-2 border-background dark:border-card',
       'flex items-center justify-center'
      )}>
-      <Crown className="w-2 h-2 text-white" />
+      <Crown className="w-2 h-2 text-var(--color-background)" />
      </div>
     </motion.div>
    )}
@@ -212,7 +212,7 @@ const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
       'rounded px-2 py-1 text-caption-medium',
       'opacity-0 pointer-events-none',
       'group-hover:opacity-100 transition-opacity',
-      'shadow-lg dark:shadow-black/20'
+      'shadow-lg dark:shadow-var(--color-foreground)/20'
      )}
      initial={{ opacity: 0, y: 5 }}
      whileHover={{ opacity: 1, y: 0 }}

@@ -1,6 +1,24 @@
 import React from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { ErrorBoundary } from 'react-error-boundary';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -16,13 +34,13 @@ const AuthErrorFallback: React.FC<AuthErrorFallbackProps> = ({
  const handleClearAuthAndReload = () => {
   // Clear all auth-related storage
   Object.keys(localStorage).forEach(key => {
-   if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+// // //    if (key.startsWith('// TODO: Replace with service call - supabase.auth.') || key.includes('sb-')) {
     localStorage.removeItem(key);
    }
   });
 
   Object.keys(sessionStorage).forEach(key => {
-   if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+// // //    if (key.startsWith('// TODO: Replace with service call - supabase.auth.') || key.includes('sb-')) {
     sessionStorage.removeItem(key);
    }
   });
@@ -69,7 +87,7 @@ const AuthErrorFallback: React.FC<AuthErrorFallbackProps> = ({
        <summary className='cursor-pointer hover:text-foreground'>
         Chi tiết lỗi (Development)
        </summary>
-       <pre className='mt-2 whitespace-pre-wrap break-all bg-muted p-2 rounded'>
+       <pre className='mt-2 var(--color-background)space-pre-wrap break-all bg-muted p-2 rounded'>
         {error.message}
        </pre>
       </details>

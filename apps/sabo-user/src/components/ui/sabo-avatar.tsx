@@ -1,6 +1,18 @@
 import React from 'react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useRainbowAvatar } from '@/hooks/useRainbowAvatar';
 import { Camera } from 'lucide-react';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/hooks/useTheme';
 import '@/styles/rainbow-avatar.css';
@@ -66,8 +78,8 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
    <defs key={`octagon-defs-${avatar.variant}-${renderKey}`}>
     {(profile?.verified_rank || isVerified) && (
      <mask id={`octagon-frame-mask-${renderKey}`}>
-      <rect width='400' height='400' fill='white' />
-      <circle cx='350' cy='360' r='35' fill='black' />
+      <rect width='400' height='400' fill='var(--color-background)' />
+      <circle cx='350' cy='360' r='35' fill='var(--color-foreground)' />
      </mask>
     )}
 
@@ -148,15 +160,15 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='0%' stopColor='#f0f0f0'>
       <animate
        attributeName='stop-color'
-       values='#f0f0f0;var(--color-white);#e6e6e6;#fafafa;#f0f0f0'
+       values='#f0f0f0;var(--color-var(--color-background));#e6e6e6;#fafafa;#f0f0f0'
        dur='8s'
        repeatCount='indefinite'
       />
      </stop>
-     <stop offset='50%' stopColor='var(--color-white)'>
+     <stop offset='50%' stopColor='var(--color-var(--color-background))'>
       <animate
        attributeName='stop-color'
-       values='var(--color-white);#e6e6e6;#fafafa;#f0f0f0;var(--color-white)'
+       values='var(--color-var(--color-background));#e6e6e6;#fafafa;#f0f0f0;var(--color-var(--color-background))'
        dur='8s'
        repeatCount='indefinite'
       />
@@ -164,7 +176,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='100%' stopColor='#e6e6e6'>
       <animate
        attributeName='stop-color'
-       values='#e6e6e6;#fafafa;#f0f0f0;var(--color-white);#e6e6e6'
+       values='#e6e6e6;#fafafa;#f0f0f0;var(--color-var(--color-background));#e6e6e6'
        dur='8s'
        repeatCount='indefinite'
       />
@@ -180,7 +192,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='0%' stopColor='#fafafa'>
       <animate
        attributeName='stop-color'
-       values='#fafafa;#f0f0f0;var(--color-white);#e6e6e6;#fafafa'
+       values='#fafafa;#f0f0f0;var(--color-var(--color-background));#e6e6e6;#fafafa'
        dur='8s'
        repeatCount='indefinite'
       />
@@ -188,15 +200,15 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='50%' stopColor='#f0f0f0'>
       <animate
        attributeName='stop-color'
-       values='#f0f0f0;var(--color-white);#e6e6e6;#fafafa;#f0f0f0'
+       values='#f0f0f0;var(--color-var(--color-background));#e6e6e6;#fafafa;#f0f0f0'
        dur='8s'
        repeatCount='indefinite'
       />
      </stop>
-     <stop offset='100%' stopColor='var(--color-white)'>
+     <stop offset='100%' stopColor='var(--color-var(--color-background))'>
       <animate
        attributeName='stop-color'
-       values='var(--color-white);#e6e6e6;#fafafa;#f0f0f0;var(--color-white)'
+       values='var(--color-var(--color-background));#e6e6e6;#fafafa;#f0f0f0;var(--color-var(--color-background))'
        dur='8s'
        repeatCount='indefinite'
       />
@@ -214,21 +226,21 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='0%' stopColor='#c8c8c8'>
       <animate
        attributeName='stop-color'
-       values='#c8c8c8;var(--color-white);#b4b4b4;#f0f0f0;#c8c8c8'
+       values='#c8c8c8;var(--color-var(--color-background));#b4b4b4;#f0f0f0;#c8c8c8'
        dur='6s'
        repeatCount='indefinite'
       />
      </stop>
-     <stop offset='25%' stopColor='var(--color-white)' />
+     <stop offset='25%' stopColor='var(--color-var(--color-background))' />
      <stop offset='50%' stopColor='#b4b4b4'>
       <animate
        attributeName='stop-color'
-       values='#b4b4b4;#f0f0f0;#c8c8c8;var(--color-white);#b4b4b4'
+       values='#b4b4b4;#f0f0f0;#c8c8c8;var(--color-var(--color-background));#b4b4b4'
        dur='6s'
        repeatCount='indefinite'
       />
      </stop>
-     <stop offset='75%' stopColor='var(--color-white)' />
+     <stop offset='75%' stopColor='var(--color-var(--color-background))' />
      <stop offset='100%' stopColor='#c8c8c8' />
     </linearGradient>
     <linearGradient
@@ -241,13 +253,13 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='0%' stopColor='#f0f0f0'>
       <animate
        attributeName='stop-color'
-       values='#f0f0f0;#c8c8c8;var(--color-white);#b4b4b4;#f0f0f0'
+       values='#f0f0f0;#c8c8c8;var(--color-var(--color-background));#b4b4b4;#f0f0f0'
        dur='6s'
        repeatCount='indefinite'
       />
      </stop>
      <stop offset='25%' stopColor='#b4b4b4' />
-     <stop offset='50%' stopColor='var(--color-white)' />
+     <stop offset='50%' stopColor='var(--color-var(--color-background))' />
      <stop offset='75%' stopColor='#c8c8c8' />
      <stop offset='100%' stopColor='#f0f0f0' />
     </linearGradient>
@@ -261,7 +273,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      y2='0%'
     >
      <stop offset='0%' stopColor='#c0c0c0' />
-     <stop offset='25%' stopColor='var(--color-white)'>
+     <stop offset='25%' stopColor='var(--color-var(--color-background))'>
       <animate
        attributeName='offset'
        values='25%;75%;25%'
@@ -270,7 +282,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
       />
      </stop>
      <stop offset='50%' stopColor='#dcdcdc' />
-     <stop offset='75%' stopColor='var(--color-white)'>
+     <stop offset='75%' stopColor='var(--color-var(--color-background))'>
       <animate
        attributeName='offset'
        values='75%;25%;75%'
@@ -288,7 +300,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      y2='0%'
     >
      <stop offset='0%' stopColor='#dcdcdc' />
-     <stop offset='50%' stopColor='var(--color-white)' />
+     <stop offset='50%' stopColor='var(--color-var(--color-background))' />
      <stop offset='100%' stopColor='#c0c0c0' />
     </linearGradient>
 
@@ -321,41 +333,41 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      cx='30%'
      cy='30%'
     >
-     <stop offset='0%' stopColor='var(--color-white)' />
+     <stop offset='0%' stopColor='var(--color-var(--color-background))' />
      <stop offset='100%' stopColor='#c8d5e6' />
     </radialGradient>
 
     {/* White Gold gradient */}
     <linearGradient
-     id={`octagon-whiteGoldGradient1-${renderKey}`}
+     id={`octagon-var(--color-background)GoldGradient1-${renderKey}`}
      x1='0%'
      y1='0%'
      x2='100%'
      y2='100%'
     >
-     <stop offset='0%' stopColor='var(--color-white)af0'>
+     <stop offset='0%' stopColor='var(--color-var(--color-background))af0'>
       <animate
        attributeName='stop-color'
-       values='var(--color-white)af0;var(--color-white)ff5;var(--color-white)8dc;var(--color-white)ded;var(--color-white)af0'
+       values='var(--color-var(--color-background))af0;var(--color-var(--color-background))ff5;var(--color-var(--color-background))8dc;var(--color-var(--color-background))ded;var(--color-var(--color-background))af0'
        dur='7s'
        repeatCount='indefinite'
       />
      </stop>
      <stop offset='25%' stopColor='#ffd700' opacity='0.3' />
-     <stop offset='50%' stopColor='var(--color-white)8dc' />
+     <stop offset='50%' stopColor='var(--color-var(--color-background))8dc' />
      <stop offset='75%' stopColor='#ffd700' opacity='0.2' />
-     <stop offset='100%' stopColor='var(--color-white)af0' />
+     <stop offset='100%' stopColor='var(--color-var(--color-background))af0' />
     </linearGradient>
     <linearGradient
-     id={`octagon-whiteGoldGradient2-${renderKey}`}
+     id={`octagon-var(--color-background)GoldGradient2-${renderKey}`}
      x1='100%'
      y1='0%'
      x2='0%'
      y2='100%'
     >
-     <stop offset='0%' stopColor='var(--color-white)ded' />
-     <stop offset='50%' stopColor='var(--color-white)ff5' />
-     <stop offset='100%' stopColor='var(--color-white)8dc' />
+     <stop offset='0%' stopColor='var(--color-var(--color-background))ded' />
+     <stop offset='50%' stopColor='var(--color-var(--color-background))ff5' />
+     <stop offset='100%' stopColor='var(--color-var(--color-background))8dc' />
     </linearGradient>
 
     {/* Silver Holographic gradient */}
@@ -369,7 +381,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='0%' stopColor='#c8c8c8'>
       <animate
        attributeName='stop-color'
-       values='#c8c8c8;#ffb4b4;#b4ffb4;#b4b4ff;var(--color-white)fb4;#ffb4ff;#c8c8c8'
+       values='#c8c8c8;#ffb4b4;#b4ffb4;#b4b4ff;var(--color-var(--color-background))fb4;#ffb4ff;#c8c8c8'
        dur='5s'
        repeatCount='indefinite'
       />
@@ -377,7 +389,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='16.66%' stopColor='#ffb4b4' />
      <stop offset='33.33%' stopColor='#b4ffb4' />
      <stop offset='50%' stopColor='#b4b4ff' />
-     <stop offset='66.66%' stopColor='var(--color-white)fb4' />
+     <stop offset='66.66%' stopColor='var(--color-var(--color-background))fb4' />
      <stop offset='83.33%' stopColor='#ffb4ff' />
      <stop offset='100%' stopColor='#c8c8c8' />
     </linearGradient>
@@ -413,8 +425,8 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
           ? `url(#octagon-chromeGradient1-${renderKey})`
           : avatar.variant === 'frost-silver'
            ? `url(#octagon-frostGradient1-${renderKey})`
-           : avatar.variant === 'white-gold'
-            ? `url(#octagon-whiteGoldGradient1-${renderKey})`
+           : avatar.variant === 'var(--color-background)-gold'
+            ? `url(#octagon-var(--color-background)GoldGradient1-${renderKey})`
             : avatar.variant === 'silver-holographic'
              ? `url(#octagon-holoGradient1-${renderKey})`
              : frameStroke
@@ -426,7 +438,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
        'diamond-silver',
        'chrome-metal',
        'frost-silver',
-       'white-gold',
+       'var(--color-background)-gold',
        'silver-holographic',
       ].includes(avatar.variant)
        ? '6'
@@ -441,7 +453,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
           'diamond-silver',
           'chrome-metal',
           'frost-silver',
-          'white-gold',
+          'var(--color-background)-gold',
           'silver-holographic',
          ].includes(avatar.variant)
         ? 'premium-frame-border'
@@ -461,8 +473,8 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
           ? `url(#octagon-chromeGradient2-${renderKey})`
           : avatar.variant === 'frost-silver'
            ? `url(#octagon-frostGradient2-${renderKey})`
-           : avatar.variant === 'white-gold'
-            ? `url(#octagon-whiteGoldGradient2-${renderKey})`
+           : avatar.variant === 'var(--color-background)-gold'
+            ? `url(#octagon-var(--color-background)GoldGradient2-${renderKey})`
             : avatar.variant === 'silver-holographic'
              ? `url(#octagon-holoGradient2-${renderKey})`
              : frameStroke
@@ -474,7 +486,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
        'diamond-silver',
        'chrome-metal',
        'frost-silver',
-       'white-gold',
+       'var(--color-background)-gold',
        'silver-holographic',
       ].includes(avatar.variant)
        ? '4'
@@ -489,7 +501,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
           'diamond-silver',
           'chrome-metal',
           'frost-silver',
-          'white-gold',
+          'var(--color-background)-gold',
           'silver-holographic',
          ].includes(avatar.variant)
         ? 'premium-frame-border-outer'
@@ -511,8 +523,8 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
    <defs key={`tech-defs-${avatar.variant}-${renderKey}`}>
     {(profile?.verified_rank || isVerified) && (
      <mask id={`tech-frame-mask-${renderKey}`}>
-      <rect width='400' height='400' fill='white' />
-      <circle cx='350' cy='360' r='35' fill='black' />
+      <rect width='400' height='400' fill='var(--color-background)' />
+      <circle cx='350' cy='360' r='35' fill='var(--color-foreground)' />
      </mask>
     )}
 
@@ -557,8 +569,8 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
    <defs key={`premium-defs-${avatar.variant}-${renderKey}`}>
     {(profile?.verified_rank || isVerified) && (
      <mask id={`premium-frame-mask-${renderKey}`}>
-      <rect width='320' height='400' fill='white' />
-      <circle cx='280' cy='360' r='30' fill='black' />
+      <rect width='320' height='400' fill='var(--color-background)' />
+      <circle cx='280' cy='360' r='30' fill='var(--color-foreground)' />
      </mask>
     )}
 
@@ -571,9 +583,9 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      y2='100%'
     >
      <stop offset='0%' stopColor='#FFD700' />
-     <stop offset='25%' stopColor='var(--color-white)8DC' />
-     <stop offset='50%' stopColor='var(--color-white)' />
-     <stop offset='75%' stopColor='var(--color-white)8DC' />
+     <stop offset='25%' stopColor='var(--color-var(--color-background))8DC' />
+     <stop offset='50%' stopColor='var(--color-var(--color-background))' />
+     <stop offset='75%' stopColor='var(--color-var(--color-background))8DC' />
      <stop offset='100%' stopColor='#FFD700' />
     </linearGradient>
    </defs>
@@ -595,7 +607,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
    {/* Inner White Border - Matching inner path */}
    <path
     d='M 55 5 L 265 5 L 315 55 L 315 115 L 295 135 L 295 265 L 315 285 L 315 345 L 265 395 L 55 395 L 5 345 L 5 285 L 25 265 L 25 135 L 5 115 L 5 55 Z'
-    stroke='var(--color-white)'
+    stroke='var(--color-var(--color-background))'
     strokeWidth='2'
     fill='none'
     className='premium-octagon-inner'
@@ -738,7 +750,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='0%' stopColor='#00ffff'>
       <animate
        attributeName='stop-color'
-       values='#00ffff;#ff00ff;var(--color-white)f00;#00ff00;#00ffff'
+       values='#00ffff;#ff00ff;var(--color-var(--color-background))f00;#00ff00;#00ffff'
        dur='2s'
        repeatCount='indefinite'
       />
@@ -746,7 +758,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      <stop offset='100%' stopColor='#ff00ff'>
       <animate
        attributeName='stop-color'
-       values='#ff00ff;var(--color-white)f00;#00ff00;#00ffff;#ff00ff'
+       values='#ff00ff;var(--color-var(--color-background))f00;#00ff00;#00ffff;#ff00ff'
        dur='2s'
        repeatCount='indefinite'
       />
@@ -863,8 +875,8 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
 
  // Tính toán màu shadow dựa trên theme
  const shadowColor =
-  theme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
- const frameStroke = theme === 'light' ? 'var(--color-black)' : 'var(--color-white)';
+  theme === 'light' ? 'var(--color-var(--color-foreground)-10)' : 'rgba(255, 255, 255, 0.1)';
+ const frameStroke = theme === 'light' ? 'var(--color-var(--color-foreground))' : 'var(--color-var(--color-background))';
 
  // Tạo avatar URL với fallback
  const avatarSrc =
@@ -897,7 +909,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
      avatar.variant === 'diamond-silver' && 'diamond-silver-variant',
      avatar.variant === 'chrome-metal' && 'chrome-metal-variant',
      avatar.variant === 'frost-silver' && 'frost-silver-variant',
-     avatar.variant === 'white-gold' && 'white-gold-variant',
+     avatar.variant === 'var(--color-background)-gold' && 'var(--color-background)-gold-variant',
      avatar.variant === 'silver-holographic' &&
       'silver-holographic-variant'
     )}
@@ -1146,7 +1158,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
       style={{ filter: `drop-shadow(0 0 6px ${shadowColor})` }}
      >
       <img
-       src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//certified-sabo-arena.png'
+// // // //        src='https://exlqvlbawytbglioqfbc.supabase.co/storage/v1/object/public/logo//certified-sabo-arena.png'
        alt='Certified SABO ARENA'
        className='w-full h-full object-contain'
       />
@@ -1170,7 +1182,7 @@ export const SaboAvatar: React.FC<SaboAvatarProps> = ({
       className={cn(
        'flex items-center justify-center w-8 h-8 rounded-full cursor-pointer transition-all',
        theme === 'light'
-        ? 'bg-white border border-neutral-300 hover:bg-neutral-50'
+        ? 'bg-var(--color-background) border border-neutral-300 hover:bg-neutral-50'
         : 'bg-neutral-800 border border-gray-600 hover:bg-gray-700',
        (isUploading || avatar.isUploading) &&
         'opacity-50 cursor-not-allowed'

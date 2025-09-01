@@ -24,7 +24,7 @@ const ProductionReadyAppContent: React.FC<{ children: React.ReactNode }> = ({
   <ResponsiveErrorBoundary>
    {/* Development/Staging Banner */}
    {environment !== 'production' && (
-    <div className='bg-warning-100 border-b border-yellow-200 p-2'>
+    <div className='bg-warning-100 border-b border-warning p-2'>
      <div className='container mx-auto'>
       <Alert className='border-none bg-transparent p-2'>
        <Info className='h-4 w-4' />

@@ -4,7 +4,7 @@
 // =============================================
 
 import { useEffect, useCallback, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 interface UseSABO32RealtimeProps {
   tournamentId: string;
@@ -35,7 +35,7 @@ export const useSABO32Realtime = ({
     console.log('🔄 Setting up SABO-32 realtime subscription for tournament:', tournamentId);
 
     // Create realtime subscription
-    subscriptionRef.current = supabase
+//     subscriptionRef.current = supabase
       .channel(`sabo32_tournament_${tournamentId}`)
       .on('postgres_changes', {
         event: '*',

@@ -1,4 +1,5 @@
 import React from 'react';
+import { StandardCard, StandardButton, Heading, Text } from "@sabo/shared-ui";
 import { useOptimizedResponsive } from '@/hooks/useOptimizedResponsive';
 import { useNavigationConfig } from '@/config/NavigationConfig';
 import PlayerDesktopLayout from '@/components/desktop/PlayerDesktopLayout';

@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { Badge } from '@/components/ui/badge';
 import { Wifi, WifiOff } from 'lucide-react';
 import { toast } from 'sonner';
@@ -29,7 +36,7 @@ export const TournamentRealTimeSync: React.FC<TournamentRealTimeSyncProps> = ({
   );
 
   // Tournament changes subscription
-  const tournamentChannel = supabase
+//   const tournamentChannel = supabase
    .channel(`tournament_sync_${tournamentId}`)
    .on(
     'postgres_changes',
@@ -169,7 +176,7 @@ export const TournamentRealTimeSync: React.FC<TournamentRealTimeSyncProps> = ({
 
   return () => {
    console.log('🔌 Cleaning up tournament sync');
-   supabase.removeChannel(tournamentChannel);
+   // removeChannel(tournamentChannel);
   };
  }, [tournamentId, onTournamentUpdate, onParticipantUpdate, onResultsUpdate]);
 

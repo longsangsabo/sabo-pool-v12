@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { toast } from 'sonner';
 
 interface TournamentUtils {
@@ -21,9 +30,9 @@ export const useTournamentUtils = (): TournamentUtils => {
   setIsLoading(true);
 
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
-    .insert({
+    .create({
      name: params.name,
      description: params.description || 'Quick test tournament',
      tournament_type: params.type || 'single_elimination',
@@ -46,14 +55,14 @@ export const useTournamentUtils = (): TournamentUtils => {
      district: params.district || 'Quận 1',
      created_by: params.createdBy,
     })
-    .select()
+    .getAll()
     .single();
 
    if (error) throw error;
 
    // Use SABO tournament initialization for double elimination tournaments
    if (params.type === 'double_elimination') {
-    const { data: setupResult, error: setupError } = await supabase.rpc(
+    const { data: setupResult, error: setupError } = await tournamentService.callRPC(
      'initialize_sabo_tournament',
      {
       p_tournament_id: data.id,
@@ -163,28 +172,28 @@ export const useTournamentUtils = (): TournamentUtils => {
    await releaseDemoUsers(tournamentId);
 
    // Delete tournament registrations
-   await supabase
+//    await supabase
     .from('tournament_registrations')
     .delete()
-    .eq('tournament_id', tournamentId);
+    .getByTournamentId(tournamentId);
 
    // Delete tournament matches
-   await supabase
+//    await supabase
     .from('tournament_matches')
     .delete()
-    .eq('tournament_id', tournamentId);
+    .getByTournamentId(tournamentId);
 
    // Delete tournament brackets
-   await supabase
+//    await supabase
     .from('tournament_brackets')
     .delete()
-    .eq('tournament_id', tournamentId);
+    .getByTournamentId(tournamentId);
 
    // Mock delete tournament seeding since table doesn't exist
    console.log('Deleting tournament seeding for:', tournamentId);
 
    // Finally delete tournament
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('tournaments')
     .delete()
     .eq('id', tournamentId);

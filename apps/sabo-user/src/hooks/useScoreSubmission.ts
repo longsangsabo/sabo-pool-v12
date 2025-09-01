@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 
 export interface ScoreSubmissionData {
@@ -32,7 +32,7 @@ export const useSubmitScore = () => {
   return useMutation({
     mutationFn: async ({ challengeId, scoreChallenger, scoreOpponent, note }: ScoreSubmissionData) => {
       // Call the PostgreSQL function directly
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('challenges')
         .select('*')
         .eq('id', challengeId)
@@ -43,7 +43,7 @@ export const useSubmitScore = () => {
       }
 
       // For now, use a simple update - we'll enhance this after migration
-      const { error: updateError } = await supabase
+//       const { error: updateError } = await supabase
         .from('challenges')
         .update({
           challenger_score: scoreChallenger,
@@ -81,7 +81,7 @@ export const useConfirmScore = () => {
     mutationFn: async ({ challengeId, confirm }: ScoreConfirmationData) => {
       if (confirm) {
         // When both players confirm scores, change status to ongoing (waiting club approval)
-        const { error } = await supabase
+        // TODO: Replace with service call - const { error } = await supabase
           .from('challenges')
           .update({
             status: 'ongoing',  // Keep as ongoing while waiting for club approval
@@ -96,7 +96,7 @@ export const useConfirmScore = () => {
         }
       } else {
         // If rejected, keep in accepted status for re-submission
-        const { error } = await supabase
+        // TODO: Replace with service call - const { error } = await supabase
           .from('challenges')
           .update({
             response_message: 'Score rejected by opponent - please re-enter scores'
@@ -136,7 +136,7 @@ export const useClubApproval = () => {
   return useMutation({
     mutationFn: async ({ challengeId, approve, adminNote }: ClubApprovalData) => {
       // Simple database update - trigger will handle SPA transfer automatically
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('challenges')
         .update({
           club_confirmed: approve,

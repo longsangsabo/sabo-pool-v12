@@ -1,5 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 
 export interface TournamentTier {
  id: string;
@@ -30,7 +33,7 @@ export const useTournamentTiers = () => {
  } = useQuery({
   queryKey: ['tournament-tiers'],
   queryFn: async () => {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournament_tiers' as any)
     .select('*')
     .order('tier_level', { ascending: true });
@@ -47,7 +50,7 @@ export const useTournamentTiers = () => {
  } = useQuery({
   queryKey: ['elo-rules'],
   queryFn: async () => {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('elo_rules' as any)
     .select('*')
     .eq('is_active', true)

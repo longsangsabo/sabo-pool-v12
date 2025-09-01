@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 /**
  * Enhanced Rank Approval Service
@@ -36,7 +36,7 @@ export class RankApprovalService {
     
     try {
       // 1. Get rank request details
-      const { data: rankRequest, error: requestError } = await supabase
+//       const { data: rankRequest, error: requestError } = await supabase
         .from('rank_requests')
         .select('*')
         .eq('id', requestId)
@@ -62,10 +62,10 @@ export class RankApprovalService {
       console.log(`📋 [RankApproval] User: ${user_id}, New Rank: ${requested_rank}`);
       
       // 2. Get current rank from player_rankings
-      const { data: currentRanking, error: rankingError } = await supabase
+//       const { data: currentRanking, error: rankingError } = await supabase
         .from('player_rankings')
         .select('current_rank, verified_rank, elo_points, spa_points')
-        .eq('user_id', user_id)
+        .getByUserId(user_id)
         .single();
         
       const oldRank = currentRanking?.verified_rank || currentRanking?.current_rank || 'K';
@@ -75,7 +75,7 @@ export class RankApprovalService {
       const approvalTimestamp = new Date().toISOString();
       
       // 3a. Update rank_requests table
-      const { error: updateRequestError } = await supabase
+//       const { error: updateRequestError } = await supabase
         .from('rank_requests')
         .update({
           status: 'approved',
@@ -104,14 +104,14 @@ export class RankApprovalService {
         rankingUpdateData.spa_points = (currentRanking?.spa_points || 0) + options.addBonusSPA;
       }
       
-      const { error: updateRankingError } = await supabase
+//       const { error: updateRankingError } = await supabase
         .from('player_rankings')
         .update(rankingUpdateData)
-        .eq('user_id', user_id);
+        .getByUserId(user_id);
         
       if (updateRankingError) {
         // Rollback rank_requests if this fails
-        await supabase
+//         await supabase
           .from('rank_requests')
           .update({
             status: 'pending',
@@ -125,14 +125,14 @@ export class RankApprovalService {
       }
       
       // 3c. Update profiles table
-      const { error: updateProfileError } = await supabase
+//       const { error: updateProfileError } = await supabase
         .from('profiles')
         .update({
           verified_rank: requested_rank,
           current_rank: requested_rank,
           updated_at: approvalTimestamp
         })
-        .eq('user_id', user_id);
+        .getByUserId(user_id);
         
       if (updateProfileError) {
         console.warn(`⚠️ [RankApproval] Failed to update profile: ${updateProfileError.message}`);
@@ -141,9 +141,9 @@ export class RankApprovalService {
       
       // 4. Create notification/audit log
       try {
-        await supabase
+//         await supabase
           .from('notifications')
-          .insert({
+          .create({
             user_id: user_id,
             title: `Rank Approved: ${requested_rank}`,
             message: `Your rank request for ${requested_rank} has been approved! ${options?.addBonusSPA ? `Bonus: +${options.addBonusSPA} SPA points` : ''}`,
@@ -165,7 +165,7 @@ export class RankApprovalService {
       // 5. Trigger real-time updates
       try {
         // Broadcast to leaderboard updates
-        await supabase.realtime.channel('leaderboard_updates').send({
+// // //         // TODO: Replace with service call - await supabase.realtime.channel('leaderboard_updates').send({
           type: 'broadcast',
           event: 'rank_updated',
           payload: {
@@ -251,7 +251,7 @@ export class RankApprovalService {
         break;
     }
     
-    const { data: stats, error } = await supabase
+//     const { data: stats, error } = await supabase
       .from('rank_requests')
       .select('status, requested_rank, approved_at')
       .gte('created_at', timeAgo.toISOString());

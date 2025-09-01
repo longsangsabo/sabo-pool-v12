@@ -50,7 +50,7 @@ export const TournamentResultsPage: React.FC = () => {
    case 'ongoing':
     return 'bg-primary-100 text-primary-800 border-primary-200';
    case 'upcoming':
-    return 'bg-warning-100 text-warning-800 border-yellow-200';
+    return 'bg-warning-100 text-warning-800 border-warning';
    default:
     return 'bg-neutral-100 text-neutral-800 border-neutral-200';
   }

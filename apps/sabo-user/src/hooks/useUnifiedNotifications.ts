@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { useAuth } from './useAuth';
 
 // ================================================================================
@@ -150,7 +150,7 @@ export const useUnifiedNotifications = (
       setError(null);
 
       // Build query
-      let query = supabase
+//       let query = supabase
         .from('notifications')
         .select('*')
         .eq('user_id', user.id)
@@ -199,7 +199,7 @@ export const useUnifiedNotifications = (
         )
       );
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('notifications')
         .update({ is_read: true, updated_at: new Date().toISOString() })
         .eq('id', notificationId)
@@ -234,7 +234,7 @@ export const useUnifiedNotifications = (
         prev.map(n => ({ ...n, is_read: true }))
       );
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('notifications')
         .update({ is_read: true, updated_at: new Date().toISOString() })
         .in('id', unreadIds)
@@ -261,7 +261,7 @@ export const useUnifiedNotifications = (
         prev.filter(n => n.id !== notificationId)
       );
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('notifications')
         .update({ is_archived: true, updated_at: new Date().toISOString() })
         .eq('id', notificationId)
@@ -288,7 +288,7 @@ export const useUnifiedNotifications = (
         prev.filter(n => n.id !== notificationId)
       );
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('notifications')
         .update({ deleted_at: new Date().toISOString() })
         .eq('id', notificationId)
@@ -347,7 +347,7 @@ export const useUnifiedNotifications = (
 
     const setupSubscription = async () => {
       try {
-        subscription = supabase
+//         subscription = supabase
           .channel('unified_notifications_realtime')
           .on(
             'postgres_changes',

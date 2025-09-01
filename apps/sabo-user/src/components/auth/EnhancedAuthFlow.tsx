@@ -138,7 +138,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
  };
 
  return (
-  <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
+  <div className='fixed inset-0 bg-var(--color-foreground)/50 flex items-center justify-center z-50 p-4'>
    <motion.div
     initial={{ opacity: 0, scale: 0.9 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -199,7 +199,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
               />
              </div>
              {errors.email && (
-              <p className='text-body-small text-red-500 mt-1'>
+              <p className='text-body-small text-error-500 mt-1'>
                {errors.email}
               </p>
              )}
@@ -235,7 +235,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
               </Button>
              </div>
              {errors.password && (
-              <p className='text-body-small text-red-500 mt-1'>
+              <p className='text-body-small text-error-500 mt-1'>
                {errors.password}
               </p>
              )}
@@ -243,12 +243,12 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
 
             <Button
              type='submit'
-             className='w-full bg-primary-600 hover:bg-blue-700'
+             className='w-full bg-primary-600 hover:bg-primary-700'
              disabled={loading}
             >
              {loading ? (
               <>
-               <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+               <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-var(--color-background) mr-2'></div>
                Đang đăng nhập...
               </>
              ) : (
@@ -278,7 +278,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
               />
              </div>
              {errors.fullName && (
-              <p className='text-body-small text-red-500 mt-1'>
+              <p className='text-body-small text-error-500 mt-1'>
                {errors.fullName}
               </p>
              )}
@@ -302,7 +302,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
               />
              </div>
              {errors.phone && (
-              <p className='text-body-small text-red-500 mt-1'>
+              <p className='text-body-small text-error-500 mt-1'>
                {errors.phone}
               </p>
              )}
@@ -327,7 +327,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
               />
              </div>
              {errors.email && (
-              <p className='text-body-small text-red-500 mt-1'>
+              <p className='text-body-small text-error-500 mt-1'>
                {errors.email}
               </p>
              )}
@@ -363,7 +363,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
               </Button>
              </div>
              {errors.password && (
-              <p className='text-body-small text-red-500 mt-1'>
+              <p className='text-body-small text-error-500 mt-1'>
                {errors.password}
               </p>
              )}
@@ -390,7 +390,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
               />
              </div>
              {errors.confirmPassword && (
-              <p className='text-body-small text-red-500 mt-1'>
+              <p className='text-body-small text-error-500 mt-1'>
                {errors.confirmPassword}
               </p>
              )}
@@ -403,7 +403,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
             >
              {loading ? (
               <>
-               <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+               <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-var(--color-background) mr-2'></div>
                Đang đăng ký...
               </>
              ) : (
@@ -425,7 +425,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
          className='text-center space-y-6'
         >
          <div className='w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto'>
-          <MapPin className='w-8 h-8 text-blue-500' />
+          <MapPin className='w-8 h-8 text-primary-500' />
          </div>
          <div>
           <h3 className='text-body-large-semibold mb-2'>
@@ -445,7 +445,7 @@ export const EnhancedAuthFlow: React.FC<EnhancedAuthFlowProps> = ({
          <div className='space-y-3'>
           <Button
            onClick={handleLocationSetup}
-           className='w-full bg-primary-600 hover:bg-blue-700'
+           className='w-full bg-primary-600 hover:bg-primary-700'
           >
            🎯 Cho phép truy cập vị trí
           </Button>

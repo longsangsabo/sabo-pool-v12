@@ -102,7 +102,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
        <div
         className={`max-w-xs px-3 py-2 rounded-lg ${
          message.sender_id === currentUserId
-          ? 'bg-primary-500 text-white'
+          ? 'bg-primary-500 text-var(--color-background)'
           : 'bg-neutral-200 text-neutral-800'
         }`}
        >

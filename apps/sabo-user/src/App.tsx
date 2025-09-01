@@ -147,7 +147,7 @@ const AppContent = () => {
    return <div className='p-8 text-center'>Đang kiểm tra quyền...</div>;
   if (!isOwner)
    return (
-    <div className='p-8 text-center text-red-500'>
+    <div className='p-8 text-center text-error-500'>
      Bạn không có quyền truy cập khu vực quản lý CLB.
     </div>
    );
@@ -281,7 +281,7 @@ const AppContent = () => {
      path='/admin/*'
      element={
       <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
-       <div className="text-center text-white">
+       <div className="text-center text-var(--color-background)">
         <h1 className="text-3xl font-bold mb-4">🔄 Redirecting to Admin Panel</h1>
         <p className="text-gray-400 mb-6">
          The admin panel has been moved to a separate application for better performance and security.
@@ -293,7 +293,7 @@ const AppContent = () => {
         </div>
         <a
          href="http://localhost:8081"
-         className="inline-block bg-primary-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors"
+         className="inline-block bg-primary-600 hover:bg-primary-700 text-var(--color-background) px-6 py-3 rounded-lg transition-colors"
         >
          Go to Admin Panel
         </a>

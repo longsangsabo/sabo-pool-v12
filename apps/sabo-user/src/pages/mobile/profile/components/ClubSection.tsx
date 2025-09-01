@@ -27,7 +27,7 @@ export const ClubSection: React.FC<ClubSectionProps> = ({ theme, role }) => {
       >
        <div
         className={`text-body-small-medium ${
-         theme === 'dark' ? 'text-blue-200' : 'text-primary-800'
+         theme === 'dark' ? 'text-primary-200' : 'text-primary-800'
         }`}
        >
         Bạn đã là chủ CLB

@@ -21,14 +21,14 @@ const TableSelector = ({
  return (
   <div className='space-y-2'>
    <Label
-    className={`${isHighContrast ? 'text-white' : 'text-white'} text-body-large font-medium`}
+    className={`${isHighContrast ? 'text-var(--color-background)' : 'text-var(--color-background)'} text-body-large font-medium`}
    >
     Chọn bàn *
    </Label>
    {loading ? (
     <div className='flex items-center justify-center py-8'>
      <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400'></div>
-     <span className='ml-3 text-white'>Đang kiểm tra bàn trống...</span>
+     <span className='ml-3 text-var(--color-background)'>Đang kiểm tra bàn trống...</span>
     </div>
    ) : (
     <div className='grid grid-cols-4 gap-3'>
@@ -46,9 +46,9 @@ const TableSelector = ({
           ? selectedTable === table.toString()
            ? 'bg-yellow-400 text-green-900 hover:bg-warning-500'
            : isHighContrast
-            ? 'border-white text-white hover:bg-white hover:text-black'
+            ? 'border-var(--color-background) text-var(--color-background) hover:bg-var(--color-background) hover:text-var(--color-foreground)'
             : 'border-green-400 text-green-400 hover:bg-green-400 hover:text-green-900'
-          : 'opacity-50 cursor-not-allowed bg-red-800 text-red-200'
+          : 'opacity-50 cursor-not-allowed bg-red-800 text-error-200'
         }`}
         onClick={() => isAvailable && onSelectTable(table.toString())}
         disabled={!isAvailable}

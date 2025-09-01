@@ -13,7 +13,12 @@ import {
  Save,
  X,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
+import { emergencyCompleteMatch } from '../../services/tournamentService';
 import { toast } from 'sonner';
 
 interface BracketMatchProps {
@@ -73,15 +78,10 @@ export const BracketMatch: React.FC<BracketMatchProps> = ({
   setIsSubmitting(true);
 
   try {
-   const { data, error } = await supabase.rpc(
-    'emergency_complete_tournament_match',
-    {
-     p_match_id: match.id,
-     p_winner_id: p1Score > p2Score ? match.player1_id : match.player2_id,
-    }
+   const data = await emergencyCompleteMatch(
+    match.id,
+    p1Score > p2Score ? match.player1_id : match.player2_id
    );
-
-   if (error) throw error;
 
    toast.success('Đã cập nhật tỷ số thành công');
    setIsEditing(false);

@@ -9,7 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 import { Star, AlertTriangle } from 'lucide-react';
 
@@ -63,7 +67,7 @@ const PostMatchRatingModal = ({
   setLoading(true);
 
   try {
-   const { error } = await (supabase as any).from('notifications').insert({
+//    const { error } = await (supabase as any).from('notifications').insert({
     user_id: opponentId,
     type: 'rating',
     title: `Đánh giá từ trận đấu`,
@@ -125,7 +129,7 @@ const PostMatchRatingModal = ({
             }`}
            >
             {selectedRating === option.value && (
-             <div className='w-2 h-2 bg-white rounded-full m-0.5'></div>
+             <div className='w-2 h-2 bg-var(--color-background) rounded-full m-0.5'></div>
             )}
            </div>
            <div>
@@ -158,7 +162,7 @@ const PostMatchRatingModal = ({
      </div>
 
      {/* Warning */}
-     <div className='bg-warning-50 border border-yellow-200 rounded-lg p-3'>
+     <div className='bg-warning-50 border border-warning rounded-lg p-3'>
       <div className='flex'>
        <AlertTriangle className='w-4 h-4 text-warning-600 mr-2 flex-shrink-0 mt-0.5' />
        <div className='text-caption text-warning-800'>

@@ -39,7 +39,7 @@ export const QUICK_ACTION_BUTTON_STYLE = {
 };
 
 export const SECTION_CARD_STYLE = {
-  light: 'bg-white border-slate-200',
+  light: 'bg-var(--color-background) border-slate-200',
   dark: 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm',
 };
 

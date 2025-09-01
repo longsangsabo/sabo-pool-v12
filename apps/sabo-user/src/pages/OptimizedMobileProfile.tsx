@@ -75,12 +75,10 @@ const OptimizedMobileProfile: React.FC = () => {
   <div
    className={`pb-24 min-h-screen relative px-2 transition-colors duration-300 ${
     theme === 'light' 
-     ? 'bg-white' 
+     ? 'bg-var(--color-background)' 
      : 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'
    }`}
-   style={{
-    backgroundColor: theme === 'light' ? 'var(--color-white)' : undefined
-   }}
+   style={{ backgroundColor: theme === 'light' ? 'var(--color-var(--color-background))' : undefined }}
   >
    <Helmet>
     <title>Hồ sơ cá nhân - SABO ARENA</title>
@@ -114,7 +112,7 @@ const OptimizedMobileProfile: React.FC = () => {
       ranking={playerRanking?.ranking_position || 0}
       matches={playerStats?.total_matches || 0}
       
-      className='mb-8 shadow-2xl border-white/20 backdrop-blur-sm'
+      className='mb-8 shadow-2xl border-var(--color-background)/20 backdrop-blur-sm'
      />
     )}
    </div>
@@ -124,7 +122,7 @@ const OptimizedMobileProfile: React.FC = () => {
     className={`mx-2 mb-6 overflow-hidden mt-2 transition-all duration-300 ${
      theme === 'dark'
       ? 'bg-slate-900/90 border-slate-700/50 backdrop-blur-sm shadow-2xl'
-      : 'bg-white border-slate-200 shadow-lg'
+      : 'bg-var(--color-background) border-slate-200 shadow-lg'
     }`}
    >
     <CardContent className='p-0'>
@@ -178,7 +176,7 @@ const OptimizedMobileProfile: React.FC = () => {
      className={
       theme === 'dark'
        ? 'bg-slate-900/40 border-slate-700/50 backdrop-blur-sm'
-       : 'bg-white border-slate-200'
+       : 'bg-var(--color-background) border-slate-200'
      }
     >
      <CardContent className='p-6'>
@@ -244,7 +242,7 @@ const OptimizedMobileProfile: React.FC = () => {
      className={`fixed bottom-20 right-4 w-12 h-12 rounded-full shadow-lg z-50 ${
       theme === 'dark'
        ? 'bg-slate-800 border-slate-600 text-slate-200 hover:bg-slate-700'
-       : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+       : 'bg-var(--color-background) border-slate-200 text-slate-600 hover:bg-slate-50'
      }`}
      
      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}

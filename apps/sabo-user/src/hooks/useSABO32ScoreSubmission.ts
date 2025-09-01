@@ -4,7 +4,7 @@
 // =============================================
 
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 import { withScrollPreservation } from "@sabo/shared-utils"
 
@@ -23,7 +23,7 @@ export const useSABO32ScoreSubmission = (tournamentId: string, onMatchUpdate?: (
     
     try {
       // 1. Update match with score and winner
-      const { error: updateError } = await (supabase as any)
+//       const { error: updateError } = await (supabase as any)
         .from('sabo32_matches')
         .update({
           score_player1: submission.score_player1,
@@ -37,7 +37,7 @@ export const useSABO32ScoreSubmission = (tournamentId: string, onMatchUpdate?: (
       if (updateError) throw updateError;
 
       // 2. Get the completed match details for advancement
-      const { data: completedMatch, error: matchError } = await (supabase as any)
+//       const { data: completedMatch, error: matchError } = await (supabase as any)
         .from('sabo32_matches')
         .select('*')
         .eq('id', submission.matchId)
@@ -82,7 +82,7 @@ export const useSABO32ScoreSubmission = (tournamentId: string, onMatchUpdate?: (
       completedMatch.player2_id : completedMatch.player1_id;
 
     // Get all matches for advancement logic
-    const { data: allMatches } = await (supabase as any)
+//     const { data: allMatches } = await (supabase as any)
       .from('sabo32_matches')
       .select('*')
       .eq('tournament_id', tournamentId);
@@ -204,7 +204,7 @@ export const useSABO32ScoreSubmission = (tournamentId: string, onMatchUpdate?: (
 
     // Apply all updates
     for (const update of updates) {
-      await (supabase as any)
+//       await (supabase as any)
         .from('sabo32_matches')
         .update(update)
         .eq('id', update.id);

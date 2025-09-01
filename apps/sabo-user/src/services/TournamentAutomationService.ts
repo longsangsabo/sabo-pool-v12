@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 
 export type TournamentState =
   | 'registration_open'
@@ -16,7 +16,7 @@ async function callFunction<TReq extends Record<string, any>, TRes = any>({
   action,
   params,
 }: InvokeParams<TReq>) {
-  const { data, error } = await supabase.functions.invoke(
+// // //   // TODO: Replace with service call - const { data, error } = // TODO: Replace with service call - await supabase.functions.invoke(
     'tournament-automation',
     {
       body: { action, params },

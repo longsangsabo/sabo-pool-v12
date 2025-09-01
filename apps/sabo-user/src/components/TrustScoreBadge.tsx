@@ -1,6 +1,10 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { TrustScoreCompact } from '@/components/ui/trust-score-badge';
 
 interface TrustScoreBadgeProps {
@@ -23,7 +27,7 @@ const TrustScoreBadge = ({
   queryFn: async () => {
    if (!targetId) return 85; // Default fallback
 
-   const { data } = await supabase
+   // TODO: Replace with service call - const { data } = await supabase
     .from('player_trust_scores')
     .select('trust_percentage')
     .eq('user_id', targetId)

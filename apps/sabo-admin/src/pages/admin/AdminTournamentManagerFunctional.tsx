@@ -131,7 +131,7 @@ export default function AdminTournamentManagerFunctional() {
             <p className="text-gray-300">{error}</p>
             <button
               onClick={fetchTournaments}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-red-600 text-var(--color-background) rounded hover:bg-red-700 transition-colors"
             >
               Retry
             </button>
@@ -142,7 +142,7 @@ export default function AdminTournamentManagerFunctional() {
   }
 
   return (
-    <div className="text-white p-8">
+    <div className="text-var(--color-background) p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -150,7 +150,7 @@ export default function AdminTournamentManagerFunctional() {
             <h1 className="text-3xl font-bold mb-2">🏆 Tournament Management</h1>
             <p className="text-gray-400">Manage all tournaments and competitions</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-var(--color-background) rounded hover:bg-green-700 transition-colors">
             <Plus className="h-4 w-4" />
             Create Tournament
           </button>
@@ -167,7 +167,7 @@ export default function AdminTournamentManagerFunctional() {
                   placeholder="Search tournaments..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function AdminTournamentManagerFunctional() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-var(--color-background) focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">All Status</option>
                 <option value="registration_open">Registration Open</option>
@@ -190,7 +190,7 @@ export default function AdminTournamentManagerFunctional() {
         {/* Tournaments Grid */}
         <div className="bg-gray-800 rounded-lg border border-gray-700">
           <div className="p-6 border-b border-gray-700">
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold text-var(--color-background)">
               Tournaments ({filteredTournaments.length})
             </h2>
           </div>
@@ -202,7 +202,7 @@ export default function AdminTournamentManagerFunctional() {
               </div>
             ) : filteredTournaments.length === 0 ? (
               <div className="text-center py-12">
-                <Trophy className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                <Trophy className="h-16 w-16 text-neutral mx-auto mb-4" />
                 <p className="text-gray-400">No tournaments found</p>
               </div>
             ) : (
@@ -214,11 +214,11 @@ export default function AdminTournamentManagerFunctional() {
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-semibold text-white">{tournament.name}</h3>
-                        <span className={`px-2 py-1 text-xs text-white rounded ${getStatusColor(tournament.status)}`}>
+                        <h3 className="font-semibold text-var(--color-background)">{tournament.name}</h3>
+                        <span className={`px-2 py-1 text-xs text-var(--color-background) rounded ${getStatusColor(tournament.status)}`}>
                           {tournament.status.replace('_', ' ').toUpperCase()}
                         </span>
-                        <span className="px-2 py-1 text-xs bg-gray-600 text-white rounded">
+                        <span className="px-2 py-1 text-xs bg-gray-600 text-var(--color-background) rounded">
                           {tournament.tournament_type}
                         </span>
                       </div>
@@ -268,7 +268,7 @@ export default function AdminTournamentManagerFunctional() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-400">Total Tournaments</p>
-                <p className="text-2xl font-bold text-white">{tournaments.length}</p>
+                <p className="text-2xl font-bold text-var(--color-background)">{tournaments.length}</p>
               </div>
               <Trophy className="h-8 w-8 text-gray-400" />
             </div>

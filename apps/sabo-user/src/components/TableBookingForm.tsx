@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser } from '../services/userService';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar, Loader2 } from 'lucide-react';
@@ -63,8 +63,8 @@ const TableBookingForm = ({ club }: TableBookingFormProps) => {
   setLoading(true);
 
   try {
-   const { data: user } = await supabase.auth.getUser();
-   if (!user.user) {
+   const user = await getCurrentUser();
+   if (!user) {
     toast({
      title: 'Yêu cầu đăng nhập',
      description: 'Vui lòng đăng nhập để đặt bàn',
@@ -79,7 +79,7 @@ const TableBookingForm = ({ club }: TableBookingFormProps) => {
    // Mock booking submission since table_bookings table doesn't exist
    console.log('Mock table booking:', {
     club_id: club.id,
-    user_id: user.user.id,
+    user_id: user.id,
     table_number: 1,
     booking_date: selectedDate,
     start_time: selectedTime,

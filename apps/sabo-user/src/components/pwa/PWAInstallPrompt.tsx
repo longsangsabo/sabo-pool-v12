@@ -119,7 +119,7 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({
      <div className='flex gap-2'>
       <Button
        onClick={handleInstall}
-       className='flex-1 bg-primary-600 hover:bg-blue-700'
+       className='flex-1 bg-primary-600 hover:bg-primary-700'
       >
        <Download className='h-4 w-4 mr-2' />
        Cài đặt ngay

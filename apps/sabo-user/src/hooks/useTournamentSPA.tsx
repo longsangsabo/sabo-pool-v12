@@ -1,5 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { toast } from 'sonner';
 import { RankingService } from '@/services/rankingService';
 import type { RankCode, TournamentPosition } from '@sabo/shared-utils';
@@ -69,7 +78,7 @@ export function useTournamentSPA() {
    });
 
    // Award the SPA points
-   const { error } = await supabase.rpc('credit_spa_points', {
+   const { error } = await tournamentService.callRPC('credit_spa_points', {
     p_user_id: playerId,
     p_points: spaPoints,
     p_description: `Giải đấu - Hạng ${position}`,

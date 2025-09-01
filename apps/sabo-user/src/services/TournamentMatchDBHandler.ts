@@ -4,7 +4,7 @@
  * Uses service role to bypass RLS for bracket generation
  */
 
-import { supabaseService } from '@/integrations/supabase/service';
+// import { supabaseService } from '@/integrations/supabase/service';
 
 export class TournamentMatchDBHandler {
   static async checkTableStructure(tableName: string = 'tournament_matches') {
@@ -12,7 +12,7 @@ export class TournamentMatchDBHandler {
     
     try {
       // Test basic access
-      const { data, error } = await supabaseService
+      // TODO: Replace with service call - const { data, error } = await supabaseService
         .from(tableName)
         .select('*')
         .limit(1);
@@ -65,7 +65,7 @@ export class TournamentMatchDBHandler {
         status: 'test'
       };
 
-      const { data, error } = await supabaseService
+      // TODO: Replace with service call - const { data, error } = await supabaseService
         .from(tableName)
         .insert([testData])
         .select();
@@ -79,7 +79,7 @@ export class TournamentMatchDBHandler {
       
       // Clean up test data
       if (data && data.length > 0) {
-        await supabaseService
+//         await supabaseService
           .from(tableName)
           .delete()
           .eq('id', data[0].id);
@@ -113,7 +113,7 @@ export class TournamentMatchDBHandler {
     console.log('🗑️ Clearing existing matches...');
     
     try {
-      const { error } = await supabaseService
+      // TODO: Replace with service call - const { error } = await supabaseService
         .from(tableName)
         .delete()
         .eq('tournament_id', tournamentId);
@@ -177,7 +177,7 @@ export class TournamentMatchDBHandler {
       console.log(`📤 Batch ${batchNumber}/${totalBatches}`);
 
       try {
-        const { data, error } = await supabaseService
+        // TODO: Replace with service call - const { data, error } = await supabaseService
           .from(finalTableName)
           .insert(batch)
           .select();
@@ -188,7 +188,7 @@ export class TournamentMatchDBHandler {
           // Try individual saves for failed batch
           for (const match of batch) {
             try {
-              await supabaseService.from(finalTableName).insert([match]);
+//               await supabaseService.from(finalTableName).insert([match]);
               savedCount++;
               console.log(`✅ Individual save successful`);
             } catch (individualError) {

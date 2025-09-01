@@ -174,19 +174,19 @@ export function SABOBracketGenerator({
      </h4>
      <div className="grid gap-2">
       <div className="flex items-start gap-2 text-body-small">
-       <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+       <CheckCircle className="h-4 w-4 text-success-500 mt-0.5 flex-shrink-0" />
        <span className="text-muted-foreground">Winners Bracket (14 matches) + Losers Bracket (10 matches)</span>
       </div>
       <div className="flex items-start gap-2 text-body-small">
-       <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+       <CheckCircle className="h-4 w-4 text-success-500 mt-0.5 flex-shrink-0" />
        <span className="text-muted-foreground">Grand Finals (3 matches) with bracket reset capability</span>
       </div>
       <div className="flex items-start gap-2 text-body-small">
-       <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+       <CheckCircle className="h-4 w-4 text-success-500 mt-0.5 flex-shrink-0" />
        <span className="text-muted-foreground">3-Tier Fallback System (Database → Backup → Client-side)</span>
       </div>
       <div className="flex items-start gap-2 text-body-small">
-       <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+       <CheckCircle className="h-4 w-4 text-success-500 mt-0.5 flex-shrink-0" />
        <span className="text-muted-foreground">Professional tournament structure with complex advancement</span>
       </div>
      </div>

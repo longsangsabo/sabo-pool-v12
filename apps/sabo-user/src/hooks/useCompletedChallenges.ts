@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
 import { useAuth } from '@/hooks/useAuth';
 
 export const useCompletedChallenges = () => {
@@ -12,7 +12,7 @@ export const useCompletedChallenges = () => {
 
       console.log('🔍 Fetching completed challenges for user:', user.id);
 
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('challenges')
         .select(
           `

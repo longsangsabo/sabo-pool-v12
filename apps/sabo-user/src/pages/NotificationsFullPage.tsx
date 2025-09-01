@@ -27,7 +27,10 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -74,7 +77,7 @@ export const NotificationsFullPage: React.FC = () => {
    setLoading(true);
    console.log('🔍 Fetching notifications for user:', user.id);
    
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('notifications')
     .select('*')
     .eq('user_id', user.id)
@@ -99,7 +102,7 @@ export const NotificationsFullPage: React.FC = () => {
  // Mark notification as read
  const markAsRead = async (notificationId: string) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .update({ is_read: true })
     .eq('id', notificationId)
@@ -123,7 +126,7 @@ export const NotificationsFullPage: React.FC = () => {
  // Mark all as read
  const markAllAsRead = async () => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .update({ is_read: true })
     .eq('user_id', user?.id)
@@ -146,7 +149,7 @@ export const NotificationsFullPage: React.FC = () => {
  // Delete notification
  const deleteNotification = async (notificationId: string) => {
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .delete()
     .eq('id', notificationId)
@@ -172,7 +175,7 @@ export const NotificationsFullPage: React.FC = () => {
   if (selectedNotifications.length === 0) return;
 
   try {
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('notifications')
     .delete()
     .in('id', selectedNotifications)
@@ -249,9 +252,9 @@ export const NotificationsFullPage: React.FC = () => {
  const getPriorityColor = (priority: string) => {
   const colorMap: Record<string, string> = {
    low: 'bg-neutral-100 text-neutral-800 dark:bg-gray-700 dark:text-gray-200',
-   medium: 'bg-primary-100 text-primary-800 dark:bg-blue-900/50 dark:text-blue-200',
+   medium: 'bg-primary-100 text-primary-800 dark:bg-blue-900/50 dark:text-primary-200',
    high: 'bg-warning-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-200',
-   urgent: 'bg-error-100 text-error-800 dark:bg-red-900/50 dark:text-red-200',
+   urgent: 'bg-error-100 text-error-800 dark:bg-red-900/50 dark:text-error-200',
   };
 
   return colorMap[priority] || 'bg-neutral-100 text-neutral-800 dark:bg-gray-700 dark:text-gray-200';
@@ -304,7 +307,7 @@ export const NotificationsFullPage: React.FC = () => {
  useEffect(() => {
   if (!user?.id) return;
 
-  const subscription = supabase
+//   const subscription = supabase
    .channel('notifications_page_realtime')
    .on(
     'postgres_changes',
@@ -459,7 +462,7 @@ export const NotificationsFullPage: React.FC = () => {
      <div className="flex gap-2 overflow-x-auto pb-2">
       <DropdownMenu>
        <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="whitespace-nowrap">
+        <Button variant="outline" className="var(--color-background)space-nowrap">
          <Filter className="w-4 h-4 mr-1" />
          Mức độ
          {filters.priority !== 'all' && (
@@ -489,7 +492,7 @@ export const NotificationsFullPage: React.FC = () => {
 
       <DropdownMenu>
        <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="whitespace-nowrap">
+        <Button variant="outline" className="var(--color-background)space-nowrap">
          Loại
          {filters.type !== 'all' && (
           <Badge variant="secondary" className="ml-1 text-caption">1</Badge>
@@ -567,7 +570,7 @@ export const NotificationsFullPage: React.FC = () => {
              created_at: new Date().toISOString()
             };
             
-            const { error } = await supabase
+            // TODO: Replace with service call - const { error } = await supabase
              .from('notifications')
              .insert([testNotification]);
             

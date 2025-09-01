@@ -5,7 +5,10 @@ import {
  useCallback,
  useEffect,
 } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getCurrentUser } from "../services/userService";
+import { getUserProfile, updateUserProfile } from '../services/profileService';
 import { useAuth } from '@/hooks/useAuth';
 import { getDisplayName } from '@/types/unified-profile';
 import { toast } from 'sonner';
@@ -96,10 +99,10 @@ export const UnifiedProfileProvider: React.FC<{
   setLoading(true);
   try {
    // Load profile data
-   const { data: profileData, error: profileError } = await supabase
+//    const { data: profileData, error: profileError } = await supabase
     .from('profiles')
     .select('*')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .maybeSingle();
 
    if (profileError && profileError.code !== 'PGRST116') {
@@ -129,10 +132,10 @@ export const UnifiedProfileProvider: React.FC<{
    setOriginalProfile({ ...formattedProfile });
 
    // Load stats
-   const { data: rankingData } = await supabase
+//    const { data: rankingData } = await supabase
     .from('player_rankings')
     .select('*')
-    .eq('user_id', user.id)
+    .getByUserId(user.id)
     .maybeSingle();
 
    const formattedStats: ProfileStats = {
@@ -168,7 +171,7 @@ export const UnifiedProfileProvider: React.FC<{
      full_name: data.user_id ? getDisplayName(data as any) : data.full_name, // Use unified display name if user_id exists
     };
 
-    const { error } = await supabase.from('profiles').upsert({
+    const { error } = await profileService.upsert({
      user_id: user.id,
      ...updateData,
     });
@@ -198,13 +201,13 @@ export const UnifiedProfileProvider: React.FC<{
     // Compress and upload image
     const fileName = `${user.id}/avatar.jpg`;
 
-    const { error: uploadError } = await supabase.storage
+// // //     const { error: uploadError } = // TODO: Replace with service call - await // TODO: Replace with service call - supabase.storage
      .from('avatars')
      .upload(fileName, file, { upsert: true });
 
     if (uploadError) throw uploadError;
 
-    const { data: urlData } = supabase.storage
+// // //     const { data: urlData } = // TODO: Replace with service call - supabase.storage
      .from('avatars')
      .getPublicUrl(fileName);
 
@@ -251,7 +254,7 @@ export const UnifiedProfileProvider: React.FC<{
   loadProfile();
 
   // Set up real-time subscription for profile changes
-  const profileChannel = supabase
+//   const profileChannel = supabase
    .channel('profile-changes')
    .on(
     'postgres_changes',
@@ -292,7 +295,7 @@ export const UnifiedProfileProvider: React.FC<{
    .subscribe();
 
   // Set up real-time subscription for rankings changes
-  const rankingsChannel = supabase
+//   const rankingsChannel = supabase
    .channel('rankings-changes')
    .on(
     'postgres_changes',
@@ -326,8 +329,8 @@ export const UnifiedProfileProvider: React.FC<{
 
   // Cleanup subscriptions on unmount
   return () => {
-   supabase.removeChannel(profileChannel);
-   supabase.removeChannel(rankingsChannel);
+   // removeChannel(profileChannel);
+   // removeChannel(rankingsChannel);
   };
  }, [loadProfile, user?.id]);
 

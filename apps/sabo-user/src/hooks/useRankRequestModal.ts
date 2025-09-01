@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRankRequests } from '@/hooks/useRankRequests';
 import { toast } from 'sonner';
-import { User } from '@supabase/supabase-js';
+// import { User } from '@supabase/supabase-js';
 
 export const useRankRequestModal = (
   user: User | null | undefined,

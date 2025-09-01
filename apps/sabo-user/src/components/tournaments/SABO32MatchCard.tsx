@@ -140,9 +140,9 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
  const getStatusBadge = () => {
   switch (optimisticMatch.status) {
    case 'completed':
-    return <Badge variant="default" className="bg-success-600 hover:bg-success-700 text-white dark:bg-success-700 dark:hover:bg-green-800"><CheckCircle className="w-3 h-3 mr-1" />Hoàn thành</Badge>;
+    return <Badge variant="default" className="bg-success-600 hover:bg-success-700 text-var(--color-background) dark:bg-success-700 dark:hover:bg-green-800"><CheckCircle className="w-3 h-3 mr-1" />Hoàn thành</Badge>;
    case 'in_progress':
-    return <Badge variant="default" className="bg-primary-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"><Play className="w-3 h-3 mr-1" />Đang đấu</Badge>;
+    return <Badge variant="default" className="bg-primary-600 hover:bg-primary-700 text-var(--color-background) dark:bg-primary-700 dark:hover:bg-blue-800"><Play className="w-3 h-3 mr-1" />Đang đấu</Badge>;
    case 'scheduled':
     return <Badge variant="secondary" className="bg-neutral-200 text-neutral-800 dark:bg-gray-700 dark:text-gray-200"><Clock className="w-3 h-3 mr-1" />Đã lên lịch</Badge>;
    case 'bye':
@@ -182,7 +182,7 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
    {/* Loading overlay for optimistic updates */}
    {isOptimistic && (
     <div className="absolute inset-0 bg-primary-500/10 rounded-lg flex items-center justify-center z-10">
-     <div className="bg-primary-600 dark:bg-primary-500 text-white px-2 py-1 rounded text-caption-medium">
+     <div className="bg-primary-600 dark:bg-primary-500 text-var(--color-background) px-2 py-1 rounded text-caption-medium">
       Đang cập nhật...
      </div>
     </div>
@@ -264,7 +264,7 @@ export function SABO32MatchCard({ match, tournamentId, onUpdate }: SABO32MatchCa
      {isCompleted && getWinnerName() && (
       <>
        <Separator className="bg-border" />
-       <div className="flex items-center justify-center gap-2 text-body-small bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 p-2 rounded-lg border border-yellow-200 dark:border-yellow-700">
+       <div className="flex items-center justify-center gap-2 text-body-small bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 p-2 rounded-lg border border-warning dark:border-yellow-700">
         <Trophy className="w-4 h-4 text-warning-600 dark:text-yellow-400" />
         <span className="font-semibold text-warning-800 dark:text-yellow-200">
          Người thắng: {getWinnerName()}

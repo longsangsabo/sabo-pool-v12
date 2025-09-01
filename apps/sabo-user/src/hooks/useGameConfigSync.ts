@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { toast } from 'sonner';
 
 interface Inconsistency {
@@ -20,7 +26,7 @@ export const useGameConfigSync = () => {
       const issues: Inconsistency[] = [];
 
       // Check rank definitions consistency using existing ranks table
-      const { data: ranks } = await supabase
+//       const { data: ranks } = await supabase
         .from('ranks')
         .select('*')
         .order('rank_order');
@@ -108,8 +114,8 @@ export const useGameConfigSync = () => {
       // Export current configuration to JSON using existing tables
       const config = {
         timestamp: new Date().toISOString(),
-        ranks: await supabase.from('ranks').select('*'),
-        tournaments: await supabase.from('tournaments').select('*'),
+// // //         ranks: // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('ranks').select('*'),
+        tournaments: await tournamentService.select('*'),
       };
 
       const blob = new Blob([JSON.stringify(config, null, 2)], {

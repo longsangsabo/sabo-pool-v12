@@ -22,8 +22,8 @@ const PositionIcon = ({ position }: { position: number }) => {
   1: <Trophy className='w-5 h-5 text-yellow-500' />,
   2: <Medal className='w-5 h-5 text-gray-400' />,
   3: <Award className='w-5 h-5 text-amber-600' />,
-  4: <Star className='w-5 h-5 text-blue-500' />,
-  8: <Users className='w-5 h-5 text-green-500' />,
+  4: <Star className='w-5 h-5 text-primary-500' />,
+  8: <Users className='w-5 h-5 text-success-500' />,
   16: <Users className='w-5 h-5 text-purple-500' />,
  };
 

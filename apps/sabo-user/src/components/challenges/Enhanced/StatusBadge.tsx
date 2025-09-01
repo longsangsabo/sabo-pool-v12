@@ -72,7 +72,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
    pending: {
     label: 'Chờ xử lý',
     icon: Clock,
-    className: 'bg-warning-100 dark:bg-yellow-900/30 text-warning-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700/50',
+    className: 'bg-warning-100 dark:bg-yellow-900/30 text-warning-800 dark:text-yellow-300 border-warning dark:border-yellow-700/50',
     pulse: false
    },
    accepted: {
@@ -90,7 +90,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
    live: {
     label: 'LIVE',
     icon: Zap,
-    className: 'bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 shadow-lg shadow-red-500/25 dark:shadow-red-500/40',
+    className: 'bg-gradient-to-r from-red-500 to-orange-500 text-var(--color-background) border-0 shadow-lg shadow-red-500/25 dark:shadow-red-500/40',
     pulse: true
    },
    completed: {
@@ -115,13 +115,13 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
    urgent: {
     label: 'Khẩn cấp',
     icon: AlertTriangle,
-    className: 'bg-gradient-to-r from-orange-500 to-red-600 text-white border-0 shadow-lg shadow-orange-500/25 dark:shadow-orange-500/40',
+    className: 'bg-gradient-to-r from-orange-500 to-red-600 text-var(--color-background) border-0 shadow-lg shadow-orange-500/25 dark:shadow-orange-500/40',
     pulse: true
    },
    starting_soon: {
     label: 'Sắp bắt đầu',
     icon: Clock,
-    className: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-lg shadow-blue-500/25 dark:shadow-blue-500/40',
+    className: 'bg-gradient-to-r from-blue-500 to-purple-600 text-var(--color-background) border-0 shadow-lg shadow-blue-500/25 dark:shadow-blue-500/40',
     pulse: true
    }
   };

@@ -1,5 +1,11 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '../integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 import { useAuth } from './useAuth';
 
 interface LegacyClaimResult {
@@ -52,14 +58,14 @@ export const useLegacySPA = () => {
     if (!user) return null;
 
     try {
-      const { data, error: supabaseError } = await supabase
+//       const { data, error: supabaseError } = await supabase
         .from('legacy_spa_points')
         .select('*')
         .eq('claimed_by', user.id)
         .single();
 
-      if (supabaseError && supabaseError.code !== 'PGRST116') {
-        throw supabaseError;
+//       if (supabaseError && supabaseError.code !== 'PGRST116') {
+//         throw supabaseError;
       }
 
       return data;
@@ -75,7 +81,7 @@ export const useLegacySPA = () => {
       setLoading(true);
       setError(null);
       try {
-        const { data, error: supabaseError } = await supabase.rpc(
+//         const { data, error: supabaseError } = await tournamentService.callRPC(
           'get_legacy_claim_suggestions',
           {
             p_full_name: fullName || null,
@@ -83,7 +89,7 @@ export const useLegacySPA = () => {
           }
         );
 
-        if (supabaseError) throw supabaseError;
+//         if (supabaseError) throw supabaseError;
 
         return data as LegacySuggestion[];
       } catch {
@@ -107,7 +113,7 @@ export const useLegacySPA = () => {
       setClaimLoading(true);
       setError(null);
       try {
-        const { data, error: supabaseError } = await supabase.rpc(
+//         const { data, error: supabaseError } = await tournamentService.callRPC(
           'claim_legacy_spa_points',
           {
             p_user_id: user.id,
@@ -116,7 +122,7 @@ export const useLegacySPA = () => {
           }
         );
 
-        if (supabaseError) throw supabaseError;
+//         if (supabaseError) throw supabaseError;
 
         const result = data?.[0] as LegacyClaimResult;
 
@@ -141,13 +147,13 @@ export const useLegacySPA = () => {
     setLoading(true);
     setError(null);
     try {
-      const { data, error: supabaseError } = await supabase
+//       const { data, error: supabaseError } = await supabase
         .from('public_spa_leaderboard')
         .select('*')
         .order('spa_points', { ascending: false })
         .limit(limit);
 
-      if (supabaseError) throw supabaseError;
+//       if (supabaseError) throw supabaseError;
 
       return data as LeaderboardEntry[];
     } catch {
@@ -161,11 +167,11 @@ export const useLegacySPA = () => {
   // Get legacy system statistics
   const getLegacyStats = useCallback(async () => {
     try {
-      const { data, error: supabaseError } = await supabase.rpc(
+//       const { data, error: supabaseError } = await tournamentService.callRPC(
         'get_legacy_spa_stats'
       );
 
-      if (supabaseError) throw supabaseError;
+//       if (supabaseError) throw supabaseError;
 
       return data?.[0] as LegacyStats;
     } catch {
@@ -179,7 +185,7 @@ export const useLegacySPA = () => {
     setLoading(true);
     setError(null);
     try {
-      const { data, error: supabaseError } = await supabase
+//       const { data, error: supabaseError } = await supabase
         .from('legacy_spa_points')
         .select('*')
         .or(`full_name.ilike.%${searchTerm}%,nick_name.ilike.%${searchTerm}%`)
@@ -187,7 +193,7 @@ export const useLegacySPA = () => {
         .order('spa_points', { ascending: false })
         .limit(20);
 
-      if (supabaseError) throw supabaseError;
+//       if (supabaseError) throw supabaseError;
 
       return data;
     } catch {

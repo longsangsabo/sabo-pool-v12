@@ -82,13 +82,13 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
       }}
       exit={{ opacity: 0, y: -60 }}
       className="absolute top-0 left-0 right-0 z-50 flex items-center justify-center"
-      className="pull-refresh-container height-dynamic" style={{ "--dynamic-height": Math.max(pullDistance, 60) }}
+      className="pull-refresh-container height-dynamic" style={{"--dynamic-height": Math.max(pullDistance, 60) }}
      >
       <div className={cn(
        'flex flex-col items-center gap-2 p-4 rounded-full',
        'bg-card/90 dark:bg-card/95 backdrop-blur-sm',
        'border border-border/50 dark:border-border/30',
-       'shadow-lg dark:shadow-black/20'
+       'shadow-lg dark:shadow-var(--color-foreground)/20'
       )}>
        <motion.div
         animate={isRefreshing ? {
@@ -166,7 +166,7 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
       'bg-card/90 dark:bg-card/95 backdrop-blur-sm',
       'border border-border/50 dark:border-border/30',
       'text-caption text-muted-foreground',
-      'shadow-lg dark:shadow-black/20'
+      'shadow-lg dark:shadow-var(--color-foreground)/20'
      )}
     >
      <ChevronDown className="w-3 h-3" />

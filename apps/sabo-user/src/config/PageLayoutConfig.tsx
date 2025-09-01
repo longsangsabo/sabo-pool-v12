@@ -91,7 +91,7 @@ export const getPageLayouts = (getThemedValue: any) => ({
    mobile: 'px-0 py-0',
    desktop: 'px-0 py-0'
   },
-  background: getThemedValue('bg-white', 'bg-neutral-900'),
+  background: getThemedValue('bg-var(--color-background)', 'bg-neutral-900'),
   minHeight: 'min-h-screen'
  }
 }) as const;
@@ -121,7 +121,7 @@ export const SECTION_SPACING = {
 export const CARD_LAYOUTS = {
  // Standard card for content
  standard: {
-  wrapper: 'bg-white rounded-lg border border-neutral-200 shadow-sm',
+  wrapper: 'bg-var(--color-background) rounded-lg border border-neutral-200 shadow-sm',
   header: 'p-4 md:p-6 border-b border-neutral-200',
   content: 'p-4 md:p-6',
   footer: 'p-4 md:p-6 border-t border-neutral-200 bg-neutral-50'
@@ -129,7 +129,7 @@ export const CARD_LAYOUTS = {
  
  // Compact card for listings
  compact: {
-  wrapper: 'bg-white rounded-md border border-neutral-200 shadow-sm',
+  wrapper: 'bg-var(--color-background) rounded-md border border-neutral-200 shadow-sm',
   header: 'p-3 md:p-4 border-b border-neutral-200',
   content: 'p-3 md:p-4',
   footer: 'p-3 md:p-4 border-t border-neutral-200'
@@ -137,7 +137,7 @@ export const CARD_LAYOUTS = {
  
  // Feature card for highlights
  feature: {
-  wrapper: 'bg-white rounded-xl border border-neutral-200 shadow-md hover:shadow-lg transition-shadow',
+  wrapper: 'bg-var(--color-background) rounded-xl border border-neutral-200 shadow-md hover:shadow-lg transition-shadow',
   header: 'p-6 md:p-8 border-b border-neutral-200',
   content: 'p-6 md:p-8',
   footer: 'p-6 md:p-8 border-t border-neutral-200 bg-neutral-50'
@@ -145,7 +145,7 @@ export const CARD_LAYOUTS = {
  
  // Tournament specific card
  tournament: {
-  wrapper: 'bg-white rounded-lg border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200',
+  wrapper: 'bg-var(--color-background) rounded-lg border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200',
   header: 'relative h-48 md:h-56 rounded-t-lg overflow-hidden',
   content: 'p-4 md:p-6',
   footer: 'p-4 md:p-6 border-t border-neutral-200'
@@ -153,7 +153,7 @@ export const CARD_LAYOUTS = {
  
  // Challenge card
  challenge: {
-  wrapper: 'bg-white rounded-lg border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-all',
+  wrapper: 'bg-var(--color-background) rounded-lg border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-all',
   header: 'p-4 md:p-6',
   content: 'p-4 md:p-6 pt-0',
   footer: 'p-4 md:p-6 border-t border-neutral-200'
@@ -271,7 +271,7 @@ export const StandardPageHeader: React.FC<StandardPageHeaderProps> = ({
  
  return (
   <div className={cn(
-   getThemedValue('border-b border-neutral-200 bg-white', 'border-b border-gray-700 bg-neutral-800'),
+   getThemedValue('border-b border-neutral-200 bg-var(--color-background)', 'border-b border-gray-700 bg-neutral-800'),
    layout.padding.mobile,
    `md:${layout.padding.desktop}`,
    className

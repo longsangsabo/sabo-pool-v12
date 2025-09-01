@@ -17,7 +17,10 @@ import ClubChallengesTab from './pages/challenges/components/tabs/ClubChallenges
 import AdminTournamentResults from '@/components/tournament/AdminTournamentResults';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 
 const ClubManagement = () => {
  const { user } = useAuth();
@@ -29,7 +32,7 @@ const ClubManagement = () => {
    if (!user) return;
 
    try {
-    const { data: clubData } = await supabase
+//     const { data: clubData } = await supabase
      .from('club_profiles')
      .select('id')
      .eq('user_id', user.id)
@@ -174,7 +177,7 @@ const ClubManagement = () => {
         <Card>
          <CardContent className='pt-6'>
           <div className='text-center'>
-           <Users className='w-8 h-8 mx-auto mb-2 text-blue-500' />
+           <Users className='w-8 h-8 mx-auto mb-2 text-primary-500' />
            <p className='text-heading-bold'>0</p>
            <p className='text-body-small text-muted-foreground'>
             Lịch test tuần này
@@ -185,7 +188,7 @@ const ClubManagement = () => {
         <Card>
          <CardContent className='pt-6'>
           <div className='text-center'>
-           <Calendar className='w-8 h-8 mx-auto mb-2 text-green-500' />
+           <Calendar className='w-8 h-8 mx-auto mb-2 text-success-500' />
            <p className='text-heading-bold'>0</p>
            <p className='text-body-small text-muted-foreground'>
             Hạng đã duyệt tháng này

@@ -1,5 +1,11 @@
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
 
 export const useRealtimeTournamentData = (
   tournamentId: string | undefined,
@@ -13,7 +19,7 @@ export const useRealtimeTournamentData = (
       tournamentId
     );
 
-    const channel = supabase
+//     const channel = supabase
       .channel(`tournament_data_enhanced_${tournamentId}`)
       .on(
         'postgres_changes',
@@ -101,7 +107,7 @@ export const useRealtimeTournamentData = (
       console.log(
         '🔄 Cleaning up enhanced real-time subscription for tournament data'
       );
-      supabase.removeChannel(channel);
+      // removeChannel(channel);
     };
   }, [tournamentId, onUpdate]);
 };

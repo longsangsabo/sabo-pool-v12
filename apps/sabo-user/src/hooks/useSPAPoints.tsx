@@ -1,5 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { getCurrentUser, getUserStatus } from "../services/userService";
+import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification, getUserNotifications } from "../services/notificationService";
+import { getClubProfile, updateClubProfile } from "../services/clubService";
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getMatches } from "../services/matchService";
+import { getTournament } from "../services/tournamentService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -32,7 +41,7 @@ export const useSPAPoints = () => {
   result: ChallengeResult
  ): Promise<SPAPointsCalculation> => {
   // Get winner's profile and ranking
-  const { data: winnerProfile } = await supabase
+//   const { data: winnerProfile } = await supabase
    .from('profiles')
    .select(
     `
@@ -45,7 +54,7 @@ export const useSPAPoints = () => {
     )
    `
    )
-   .eq('user_id', result.winnerId)
+   .getByUserId(result.winnerId)
    .single();
 
   // Base points calculation
@@ -89,7 +98,7 @@ export const useSPAPoints = () => {
   // First win of the day bonus
   let firstWinBonus = 0;
   const today = new Date().toISOString().split('T')[0];
-  const { data: todayWins } = await supabase
+//   const { data: todayWins } = await supabase
    .from('challenges')
    .select('id')
    .eq('challenger_id', result.winnerId)
@@ -127,7 +136,7 @@ export const useSPAPoints = () => {
    const calculation = await calculateSPAPoints(result);
 
    // Update wallet balance with SPA points
-   const { error } = await supabase.rpc('update_wallet_balance', {
+   const { error } = await tournamentService.callRPC('update_wallet_balance', {
     p_user_id: result.winnerId,
     p_amount: calculation.totalPoints,
     p_transaction_type: 'spa_points',

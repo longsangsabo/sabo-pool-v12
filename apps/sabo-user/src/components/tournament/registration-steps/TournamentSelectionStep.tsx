@@ -172,7 +172,7 @@ export const TournamentSelectionStep: React.FC<
            <Trophy className='h-5 w-5 text-primary' />
            {tournament.name}
            {isSelected && (
-            <CheckCircle className='h-4 w-4 text-green-500' />
+            <CheckCircle className='h-4 w-4 text-success-500' />
            )}
           </CardTitle>
           <div className='flex flex-wrap gap-2'>

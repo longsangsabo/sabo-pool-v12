@@ -10,18 +10,18 @@
   --sabo-primary-50: #eff6ff;
   --sabo-primary-100: #dbeafe;
   --sabo-primary-200: #bfdbfe;
-  --sabo-primary-300: #93c5fd;
-  --sabo-primary-400: #60a5fa;
-  --sabo-primary-500: #3b82f6;  /* Main brand color */
-  --sabo-primary-600: #2563eb;
-  --sabo-primary-700: #1d4ed8;
-  --sabo-primary-800: #1e40af;
+  --sabo-primary-300: var(--color-primary-300);
+  --sabo-primary-400: var(--color-primary-400);
+  --sabo-primary-500: var(--color-primary-500);  /* Main brand color */
+  --sabo-primary-600: var(--color-primary-600);
+  --sabo-primary-700: var(--color-primary-700);
+  --sabo-primary-800: var(--color-primary-800);
   --sabo-primary-900: #1e3a8a;
   
   /* Secondary Colors - Mobile Synchronized */
-  --sabo-secondary-50: #f8fafc;
+  --sabo-secondary-50: var(--color-background);
   --sabo-secondary-100: #f1f5f9;
-  --sabo-secondary-200: #e2e8f0;
+  --sabo-secondary-200: var(--color-background-secondary);
   --sabo-secondary-300: #cbd5e1;
   --sabo-secondary-400: #94a3b8;
   --sabo-secondary-500: #64748b;
@@ -31,13 +31,13 @@
   --sabo-secondary-900: #0f172a;
   
   /* Accent Colors for Actions */
-  --sabo-accent-green: #10b981;
+  --sabo-accent-green: var(--color-success-500);
   --sabo-accent-green-light: #34d399;
-  --sabo-accent-orange: #f59e0b;
-  --sabo-accent-orange-light: #fbbf24;
-  --sabo-accent-red: #ef4444;
-  --sabo-accent-red-light: #f87171;
-  --sabo-accent-purple: #8b5cf6;
+  --sabo-accent-orange: var(--color-warning-500);
+  --sabo-accent-orange-light: var(--color-warning-400);
+  --sabo-accent-red: var(--color-error-500);
+  --sabo-accent-red-light: var(--color-error-400);
+  --sabo-accent-purple: var(--color-secondary-500);
   --sabo-accent-purple-light: #a78bfa;
   
   /* ============ TYPOGRAPHY SYSTEM - MOBILE ALIGNED ============ */
@@ -150,8 +150,8 @@
 
 [data-theme="dark"] {
   /* Dark mode color adjustments */
-  --sabo-primary-500: #60a5fa;
-  --sabo-secondary-500: #6b7280;
+  --sabo-primary-500: var(--color-primary-400);
+  --sabo-secondary-500: var(--color-gray-500);
   
   /* Dark mode specific shadows */
   --sabo-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2);
@@ -434,7 +434,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--color-black-10);
   pointer-events: none;
 }
 

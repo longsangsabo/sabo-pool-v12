@@ -43,11 +43,11 @@ const SPADashboard: React.FC = () => {
  const getMilestoneIcon = (type: string) => {
   switch (type) {
    case 'games_played':
-    return <Trophy className="h-6 w-6 text-blue-500" />;
+    return <Trophy className="h-6 w-6 text-primary-500" />;
    case 'wins':
     return <Star className="h-6 w-6 text-yellow-500" />;
    case 'spa_earned':
-    return <TrendingUp className="h-6 w-6 text-green-500" />;
+    return <TrendingUp className="h-6 w-6 text-success-500" />;
    case 'tournaments_joined':
     return <Users className="h-6 w-6 text-purple-500" />;
    default:
@@ -86,7 +86,7 @@ const SPADashboard: React.FC = () => {
      <h1 className="text-3xl font-bold text-neutral-900">SPA Dashboard</h1>
      <p className="text-neutral-600">Theo dõi điểm SPA và hoàn thành milestone</p>
     </div>
-    <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+    <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-var(--color-background)">
      <CardContent className="content-spacing">
       <div className="text-center">
        <div className="text-heading-bold">{currentPoints.toLocaleString()}</div>

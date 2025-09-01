@@ -132,7 +132,7 @@ export default function AdminAuditLogs() {
         <h1 className="text-3xl font-bold">📋 Audit Logs</h1>
         <button 
           onClick={handleExportLogs}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          className="px-4 py-2 bg-blue-600 text-var(--color-background) rounded-lg hover:bg-blue-700 flex items-center gap-2"
         >
           <Download className="h-4 w-4" />
           Export Logs
@@ -141,40 +141,40 @@ export default function AdminAuditLogs() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Events</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Total Events</p>
               <p className="text-2xl font-bold">1,247</p>
             </div>
             <Activity className="h-8 w-8 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Failed Attempts</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Failed Attempts</p>
               <p className="text-2xl font-bold">23</p>
             </div>
             <Shield className="h-8 w-8 text-red-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Unique Users</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Unique Users</p>
               <p className="text-2xl font-bold">145</p>
             </div>
             <User className="h-8 w-8 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Security Events</p>
+              <p className="text-sm text-neutral dark:text-gray-400">Security Events</p>
               <p className="text-2xl font-bold">8</p>
             </div>
             <Settings className="h-8 w-8 text-orange-500" />
@@ -183,7 +183,7 @@ export default function AdminAuditLogs() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
+      <div className="bg-var(--color-background) dark:bg-gray-800 p-4 rounded-lg shadow mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -230,14 +230,14 @@ export default function AdminAuditLogs() {
       </div>
 
       {/* Audit Logs Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-var(--color-background) dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <div className="px-6 py-4 border-b border-neutral dark:border-gray-700">
           <h2 className="text-lg font-semibold">Recent Activity</h2>
         </div>
         
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+            <thead className="bg-neutral-background dark:bg-gray-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Timestamp
@@ -261,7 +261,7 @@ export default function AdminAuditLogs() {
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr key={log.id} className="hover:bg-neutral-background dark:hover:bg-gray-700">
                   <td className="px-6 py-4 text-sm font-mono">{log.timestamp}</td>
                   <td className="px-6 py-4 text-sm">{log.user}</td>
                   <td className="px-6 py-4">
@@ -289,26 +289,26 @@ export default function AdminAuditLogs() {
 
       {/* Quick Actions */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">🔍 Advanced Search</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Search logs with complex filters</p>
-          <button className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Search logs with complex filters</p>
+          <button className="w-full px-4 py-2 bg-purple-600 text-var(--color-background) rounded hover:bg-purple-700">
             Advanced Search
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">🚨 Set Alerts</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Configure alerts for suspicious activity</p>
-          <button className="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">Configure alerts for suspicious activity</p>
+          <button className="w-full px-4 py-2 bg-orange-600 text-var(--color-background) rounded hover:bg-orange-700">
             Configure Alerts
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="bg-var(--color-background) dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-2">📊 Log Analytics</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">View detailed analytics and trends</p>
-          <button className="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">View detailed analytics and trends</p>
+          <button className="w-full px-4 py-2 bg-teal-600 text-var(--color-background) rounded hover:bg-teal-700">
             View Analytics
           </button>
         </div>

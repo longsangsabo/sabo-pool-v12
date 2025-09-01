@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
  Select,
@@ -79,7 +82,7 @@ const RankingPage = () => {
 
  const fetchClubs = async () => {
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('club_profiles')
     .select('id, club_name')
     .eq('verification_status', 'approved');

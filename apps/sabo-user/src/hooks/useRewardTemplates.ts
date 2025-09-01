@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getCurrentUser } from '../services/userService';
 import { toast } from 'sonner';
 import { TournamentRewards } from '@/types/tournament-extended';
 
@@ -23,7 +24,7 @@ export const useRewardTemplates = () => {
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ['reward-templates'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_reward_templates')
         .select('*')
         .eq('is_active', true)
@@ -65,7 +66,7 @@ export const useRewardTemplates = () => {
   const saveTemplateMutation = useMutation({
     mutationFn: async (rewards: TournamentRewards) => {
       // Clear existing templates
-      await supabase
+//       await supabase
         .from('tournament_reward_templates')
         .delete()
         .eq('is_active', true);
@@ -73,7 +74,7 @@ export const useRewardTemplates = () => {
       // Insert new template
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await getCurrentUser();
 
       if (!user) {
         throw new Error('User must be authenticated to create templates');
@@ -89,7 +90,7 @@ export const useRewardTemplates = () => {
         created_by: user.id,
       };
 
-      const { data, error } = await supabase
+      // TODO: Replace with service call - const { data, error } = await supabase
         .from('tournament_reward_templates')
         .insert([templateData])
         .select();
@@ -114,7 +115,7 @@ export const useRewardTemplates = () => {
   ) => {
     try {
       // Clear existing prize tiers
-      await supabase
+//       await supabase
         .from('tournament_prize_tiers')
         .delete()
         .eq('tournament_id', tournamentId);
@@ -131,7 +132,7 @@ export const useRewardTemplates = () => {
         physical_items: position.items || [],
       }));
 
-      const { error } = await supabase
+      // TODO: Replace with service call - const { error } = await supabase
         .from('tournament_prize_tiers')
         .insert(prizeData);
 

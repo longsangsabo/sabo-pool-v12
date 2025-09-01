@@ -1,3 +1,18 @@
+import { userService } from '../services/userService';
+import { profileService } from '../services/profileService';
+import { tournamentService } from '../services/tournamentService';
+import { clubService } from '../services/clubService';
+import { rankingService } from '../services/rankingService';
+import { statisticsService } from '../services/statisticsService';
+import { dashboardService } from '../services/dashboardService';
+import { notificationService } from '../services/notificationService';
+import { challengeService } from '../services/challengeService';
+import { verificationService } from '../services/verificationService';
+import { matchService } from '../services/matchService';
+import { walletService } from '../services/walletService';
+import { storageService } from '../services/storageService';
+import { settingsService } from '../services/settingsService';
+import { milestoneService } from '../services/milestoneService';
 import { onCLS, onINP, onFCP, onLCP, onTTFB } from 'web-vitals';
 
 interface WebVitalsMetric {
@@ -80,9 +95,9 @@ class WebVitalsTracker {
   private async sendMetric(metric: WebVitalsMetric) {
     try {
       // Send to Supabase for storage
-      const { supabase } = await import('./integrations/supabase/client');
+//       const { supabase } = await import('./integrations/supabase/client');
 
-      await supabase.from('web_vitals_metrics' as any).insert({
+// // //       // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('web_vitals_metrics' as any).create({
         metric_name: metric.name,
         metric_value: metric.value,
         rating: metric.rating,
@@ -103,7 +118,7 @@ class WebVitalsTracker {
 
     try {
       // Batch send metrics
-      const { supabase } = await import('./integrations/supabase/client');
+//       const { supabase } = await import('./integrations/supabase/client');
 
       const formattedMetrics = metricsToSend.map(metric => ({
         metric_name: metric.name,
@@ -114,7 +129,7 @@ class WebVitalsTracker {
         timestamp: new Date(metric.timestamp).toISOString(),
       }));
 
-      await supabase.from('web_vitals_metrics' as any).insert(formattedMetrics);
+// // //       // TODO: Replace with service call - await // TODO: Replace with service call - supabase.from('web_vitals_metrics' as any).create(formattedMetrics);
 
       console.log(`[WebVitals] Sent ${formattedMetrics.length} metrics`);
     } catch (error) {

@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile } from "../services/profileService";
+import { getTournament } from "../services/tournamentService";
+import { getWalletBalance } from "../services/walletService";
+import { getCurrentUser } from '../services/userService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -72,7 +76,7 @@ const ClubDetailPage = () => {
   setLoading(true);
   try {
    // Fetch club info
-   const { data: clubData, error: clubError } = await supabase
+//    const { data: clubData, error: clubError } = await supabase
     .from('club_profiles')
     .select('*')
     .eq('id', id)
@@ -136,7 +140,7 @@ const ClubDetailPage = () => {
 
  const handleJoinClub = async () => {
   try {
-   const { data: user } = await supabase.auth.getUser();
+   const { data: user } = await getCurrentUser();
    if (!user.user) {
     toast({
      title: 'Yêu cầu đăng nhập',
@@ -146,7 +150,7 @@ const ClubDetailPage = () => {
     return;
    }
 
-   const { error } = await supabase
+   // TODO: Replace with service call - const { error } = await supabase
     .from('profiles')
     .update({
      bio: `Member of club ${id}`, // Using bio field instead of non-existent club_id
@@ -299,8 +303,8 @@ const ClubDetailPage = () => {
         className='w-full h-full object-cover'
        />
       )}
-      <div className='absolute inset-0 bg-black bg-opacity-40'></div>
-      <div className='absolute bottom-6 left-6 text-white'>
+      <div className='absolute inset-0 bg-var(--color-foreground) bg-opacity-40'></div>
+      <div className='absolute bottom-6 left-6 text-var(--color-background)'>
        <h1 className='text-3xl font-bold mb-2'>{club.name}</h1>
        <div className='flex items-center space-x-4 text-sm'>
         <div className='flex items-center'>
@@ -452,7 +456,7 @@ const ClubDetailPage = () => {
                   className='w-10 h-10 rounded-full object-cover'
                  />
                 ) : (
-                 <span className='text-white font-medium'>
+                 <span className='text-var(--color-background) font-medium'>
                   {member.full_name?.charAt(0) || '?'}
                  </span>
                 )}
@@ -691,7 +695,7 @@ const ClubDetailPage = () => {
            <div className='flex-shrink-0'>
             {index < 3 ? (
              <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center text-caption font-bold text-white ${
+              className={`w-6 h-6 rounded-full flex items-center justify-center text-caption font-bold text-var(--color-background) ${
                index === 0
                 ? 'bg-warning-500'
                 : index === 1
@@ -708,7 +712,7 @@ const ClubDetailPage = () => {
             )}
            </div>
            <div className='w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center'>
-            <span className='text-white text-caption-medium'>
+            <span className='text-var(--color-background) text-caption-medium'>
              {member.full_name?.charAt(0) || '?'}
             </span>
            </div>

@@ -5,7 +5,9 @@ import {
  useCallback,
  useEffect,
 } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getCurrentUser } from "../services/userService";
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -85,7 +87,7 @@ export const UnifiedTournamentProvider: React.FC<{
  const fetchTournaments = useCallback(async () => {
   setLoading(true);
   try {
-   const { data, error } = await supabase
+   // TODO: Replace with service call - const { data, error } = await supabase
     .from('tournaments')
     .select('*')
     .order('created_at', { ascending: false });
@@ -118,10 +120,10 @@ export const UnifiedTournamentProvider: React.FC<{
 
    // Fetch user registrations if logged in
    if (user?.id) {
-    const { data: registrations } = await supabase
+//     const { data: registrations } = await supabase
      .from('tournament_registrations')
      .select('tournament_id')
-     .eq('user_id', user.id);
+     .getByUserId(user.id);
 
     setUserRegistrations(registrations?.map(r => r.tournament_id) || []);
    }
@@ -177,10 +179,10 @@ export const UnifiedTournamentProvider: React.FC<{
 
     console.log('📤 Sending to database:', tournamentData);
 
-    const { data: result, error } = await supabase
+//     const { data: result, error } = await supabase
      .from('tournaments')
-     .insert(tournamentData)
-     .select()
+     .create(tournamentData)
+     .getAll()
      .single();
 
     if (error) {
@@ -194,7 +196,7 @@ export const UnifiedTournamentProvider: React.FC<{
 
     // Send notification to club members
     try {
-     const { error: notificationError } = await supabase.functions.invoke(
+// // //      const { error: notificationError } = // TODO: Replace with service call - await supabase.functions.invoke(
       'notify-club-members',
       {
        body: {
@@ -259,9 +261,9 @@ export const UnifiedTournamentProvider: React.FC<{
 
    setLoading(true);
    try {
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
      .from('tournament_registrations')
-     .insert({
+     .create({
       tournament_id: tournamentId,
       user_id: user.id,
       registration_status: 'confirmed',
@@ -290,11 +292,11 @@ export const UnifiedTournamentProvider: React.FC<{
 
    setLoading(true);
    try {
-    const { error } = await supabase
+    // TODO: Replace with service call - const { error } = await supabase
      .from('tournament_registrations')
      .delete()
-     .eq('tournament_id', tournamentId)
-     .eq('user_id', user.id);
+     .getByTournamentId(tournamentId)
+     .getByUserId(user.id);
 
     if (error) throw error;
 

@@ -14,7 +14,11 @@ import { Separator } from '@/components/ui/separator';
 import { AlertTriangle, Users, Trophy, Shuffle, Settings } from 'lucide-react';
 import { useBracketGeneration } from '@/hooks/useBracketGeneration';
 import { useSABOBracket } from '@/hooks/useSABOBracket';
-import { supabase } from '@/integrations/supabase/client';
+// Removed supabase import - migrated to services
+import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getWalletBalance, updateWalletBalance } from "../services/walletService";
+import { createNotification } from "../services/notificationService";
+import { uploadFile, getPublicUrl } from "../services/storageService";
 import { toast } from 'sonner';
 
 interface BracketGeneratorProps {

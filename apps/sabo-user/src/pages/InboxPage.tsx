@@ -240,7 +240,7 @@ const InboxPage = () => {
      <div className='mb-6'>
       <div className='flex items-center justify-between mb-6'>
        <div className='flex items-center gap-4'>
-        <div className='p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-white'>
+        <div className='p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-var(--color-background)'>
          <Mail className='w-7 h-7' />
         </div>
         <div>
@@ -318,21 +318,21 @@ const InboxPage = () => {
        <TabsList className='grid w-full grid-cols-3 h-12 bg-neutral-100 rounded-xl p-1'>
         <TabsTrigger
          value='unread'
-         className='data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg transition-all'
+         className='data-[state=active]:bg-var(--color-background) data-[state=active]:shadow-sm rounded-lg transition-all'
         >
          <EyeOff className='w-4 h-4 mr-2' />
          Chưa đọc ({getUnreadCount()})
         </TabsTrigger>
         <TabsTrigger
          value='read'
-         className='data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg transition-all'
+         className='data-[state=active]:bg-var(--color-background) data-[state=active]:shadow-sm rounded-lg transition-all'
         >
          <Eye className='w-4 h-4 mr-2' />
          Đã đọc ({getReadCount()})
         </TabsTrigger>
         <TabsTrigger
          value='deleted'
-         className='data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg transition-all'
+         className='data-[state=active]:bg-var(--color-background) data-[state=active]:shadow-sm rounded-lg transition-all'
         >
          <Trash2 className='w-4 h-4 mr-2' />
          Đã xóa ({getDeletedCount()})
@@ -360,7 +360,7 @@ const InboxPage = () => {
             <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500'></div>
            </div>
           ) : error ? (
-           <div className='text-center py-12 text-red-500'>
+           <div className='text-center py-12 text-error-500'>
             <AlertCircle className='w-12 h-12 mx-auto mb-4' />
             <p>{error}</p>
            </div>

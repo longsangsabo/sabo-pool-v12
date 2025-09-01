@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
     <div className="bg-neutral-800 p-8 rounded-xl border border-gray-700 shadow-2xl">
      {/* Header */}
      <div className="text-center mb-8">
-      <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
+      <h1 className="text-3xl font-bold text-var(--color-background) mb-2">Welcome Back</h1>
       <p className="text-gray-400">Sign in to your SABO Arena account</p>
      </div>
 
@@ -58,7 +58,7 @@ const LoginPage: React.FC = () => {
          required
          value={email}
          onChange={(e) => setEmail(e.target.value)}
-         className="w-full pl-12 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+         className="w-full pl-12 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
          placeholder="Enter your email"
         />
        </div>
@@ -77,7 +77,7 @@ const LoginPage: React.FC = () => {
          required
          value={password}
          onChange={(e) => setPassword(e.target.value)}
-         className="w-full pl-12 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+         className="w-full pl-12 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-var(--color-background) placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
          placeholder="Enter your password"
         />
         <Button
@@ -94,7 +94,7 @@ const LoginPage: React.FC = () => {
       <Button
        type="submit"
        disabled={loading}
-       className="w-full bg-primary-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition-colors"
+       className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-var(--color-background) py-3 rounded-lg font-semibold transition-colors"
       >
        {loading ? 'Signing in...' : 'Sign In'}
       </Button>

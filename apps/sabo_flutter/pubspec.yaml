@@ -22,6 +22,7 @@ dependencies:
   dio: ^5.4.0
   retrofit: ^4.0.3
   json_annotation: ^4.8.1
+  http: ^1.1.0
   
   # Database
   supabase_flutter: ^2.3.4
@@ -40,6 +41,19 @@ dependencies:
   # Payment & WebView
   webview_flutter: ^4.4.2
   url_launcher: ^6.2.2
+  
+  # Native Device Features
+  image_picker: ^1.0.4
+  permission_handler: ^11.0.1
+  local_auth: ^2.1.6
+  local_auth_android: ^1.0.34
+  local_auth_ios: ^1.0.15
+  connectivity_plus: ^5.0.1
+  device_info_plus: ^9.1.0
+  
+  # Push Notifications (Future)
+  # firebase_messaging: ^14.7.0
+  # firebase_core: ^2.15.1
   
   # Utils
   freezed_annotation: ^2.4.1

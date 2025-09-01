@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sabo_flutter/core/theme/app_theme.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
   runApp(
@@ -18,9 +18,9 @@ class SaboArenaApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SABO Arena',
-      theme: AppTheme.darkTheme, // Copy theme từ web
+      theme: SaboTheme.darkTheme, // Sử dụng theme system mới
       debugShowCheckedModeBanner: false,
-      home: const WelcomeScreen(), // Start với welcome screen
+      home: const WelcomeScreen(),
     );
   }
 }

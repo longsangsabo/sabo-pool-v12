@@ -141,7 +141,7 @@ importers:
         version: 13.3.2(expo@53.0.22)(react@19.0.0)
       expo-router:
         specifier: ~5.1.5
-        version: 5.1.5(@types/react@19.0.14)(expo-constants@17.1.7)(expo-linking@7.0.5)(expo@53.0.22)(react-native-safe-area-context@5.4.0)(react-native-screens@4.11.1)(react-native@0.79.5)(react@19.0.0)
+        version: 5.1.5(@types/react@19.0.14)(expo-constants@17.1.7)(expo-linking@7.1.7)(expo@53.0.22)(react-native-safe-area-context@5.4.0)(react-native-screens@4.15.4)(react-native@0.79.5)(react@19.0.0)
       expo-splash-screen:
         specifier: ~0.30.0
         version: 0.30.10(expo@53.0.22)
@@ -161,8 +161,8 @@ importers:
         specifier: 5.4.0
         version: 5.4.0(react-native@0.79.5)(react@19.0.0)
       react-native-screens:
-        specifier: ~4.11.1
-        version: 4.11.1(react-native@0.79.5)(react@19.0.0)
+        specifier: ~4.15.4
+        version: 4.15.4(react-native@0.79.5)(react@19.0.0)
       react-native-web:
         specifier: ~0.20.0
         version: 0.20.0(react-dom@19.0.0)(react@19.0.0)
@@ -1880,53 +1880,8 @@ packages:
       - supports-color
     dev: false
 
-  /@expo/config-plugins@9.0.17:
-    resolution: {integrity: sha512-m24F1COquwOm7PBl5wRbkT9P9DviCXe0D7S7nQsolfbhdCWuvMkfXeoWmgjtdhy7sDlOyIgBrAdnB6MfsWKqIg==}
-    dependencies:
-      '@expo/config-types': 52.0.5
-      '@expo/json-file': 9.0.2
-      '@expo/plist': 0.2.2
-      '@expo/sdk-runtime-versions': 1.0.0
-      chalk: 4.1.2
-      debug: 4.4.1
-      getenv: 1.0.0
-      glob: 10.4.5
-      resolve-from: 5.0.0
-      semver: 7.7.2
-      slash: 3.0.0
-      slugify: 1.6.6
-      xcode: 3.0.1
-      xml2js: 0.6.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@expo/config-types@52.0.5:
-    resolution: {integrity: sha512-AMDeuDLHXXqd8W+0zSjIt7f37vUd/BP8p43k68NHpyAvQO+z8mbQZm3cNQVAMySeayK2XoPigAFB1JF2NFajaA==}
-    dev: false
-
   /@expo/config-types@53.0.5:
     resolution: {integrity: sha512-kqZ0w44E+HEGBjy+Lpyn0BVL5UANg/tmNixxaRMLS6nf37YsDrLk2VMAmeKMMk5CKG0NmOdVv3ngeUjRQMsy9g==}
-    dev: false
-
-  /@expo/config@10.0.11:
-    resolution: {integrity: sha512-nociJ4zr/NmbVfMNe9j/+zRlt7wz/siISu7PjdWE4WE+elEGxWWxsGzltdJG0llzrM+khx8qUiFK5aiVcdMBww==}
-    dependencies:
-      '@babel/code-frame': 7.10.4
-      '@expo/config-plugins': 9.0.17
-      '@expo/config-types': 52.0.5
-      '@expo/json-file': 9.1.5
-      deepmerge: 4.3.1
-      getenv: 1.0.0
-      glob: 10.4.5
-      require-from-string: 2.0.2
-      resolve-from: 5.0.0
-      resolve-workspace-root: 2.0.0
-      semver: 7.7.2
-      slugify: 1.6.6
-      sucrase: 3.35.0
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /@expo/config@11.0.13:
@@ -1955,18 +1910,6 @@ packages:
       '@expo/sudo-prompt': 9.3.2
       debug: 3.2.7
       glob: 10.4.5
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@expo/env@0.4.2:
-    resolution: {integrity: sha512-TgbCgvSk0Kq0e2fLoqHwEBL4M0ztFjnBEz0YCDm5boc1nvkV1VMuIMteVdeBwnTh8Z0oPJTwHCD49vhMEt1I6A==}
-    dependencies:
-      chalk: 4.1.2
-      debug: 4.4.1
-      dotenv: 16.4.7
-      dotenv-expand: 11.0.7
-      getenv: 1.0.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2015,14 +1958,6 @@ packages:
       semver: 7.7.2
       temp-dir: 2.0.0
       unique-string: 2.0.0
-    dev: false
-
-  /@expo/json-file@9.0.2:
-    resolution: {integrity: sha512-yAznIUrybOIWp3Uax7yRflB0xsEpvIwIEqIjao9SGi2Gaa+N0OamWfe0fnXBSWF+2zzF4VvqwT4W5zwelchfgw==}
-    dependencies:
-      '@babel/code-frame': 7.10.4
-      json5: 2.2.3
-      write-file-atomic: 2.4.3
     dev: false
 
   /@expo/json-file@9.1.5:
@@ -2083,14 +2018,6 @@ packages:
       npm-package-arg: 11.0.3
       ora: 3.4.0
       resolve-workspace-root: 2.0.0
-    dev: false
-
-  /@expo/plist@0.2.2:
-    resolution: {integrity: sha512-ZZGvTO6vEWq02UAPs3LIdja+HRO18+LRI5QuDl6Hs3Ps7KX7xU6Y6kjahWKY37Rx2YjNpX07dGpBFzzC+vKa2g==}
-    dependencies:
-      '@xmldom/xmldom': 0.7.13
-      base64-js: 1.5.1
-      xmlbuilder: 14.0.0
     dev: false
 
   /@expo/plist@0.3.5:
@@ -3907,7 +3834,7 @@ packages:
       react-native: 0.79.5(@babel/core@7.28.3)(@types/react@19.0.14)(react@19.0.0)
     dev: false
 
-  /@react-navigation/bottom-tabs@7.4.7(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.4.0)(react-native-screens@4.11.1)(react-native@0.79.5)(react@19.0.0):
+  /@react-navigation/bottom-tabs@7.4.7(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.4.0)(react-native-screens@4.15.4)(react-native@0.79.5)(react@19.0.0):
     resolution: {integrity: sha512-SQ4KuYV9yr3SV/thefpLWhAD0CU2CrBMG1l0w/QKl3GYuGWdN5OQmdQdmaPZGtsjjVOb+N9Qo7Tf6210P4TlpA==}
     peerDependencies:
       '@react-navigation/native': ^7.1.17
@@ -3922,7 +3849,7 @@ packages:
       react: 19.0.0
       react-native: 0.79.5(@babel/core@7.28.3)(@types/react@19.0.14)(react@19.0.0)
       react-native-safe-area-context: 5.4.0(react-native@0.79.5)(react@19.0.0)
-      react-native-screens: 4.11.1(react-native@0.79.5)(react@19.0.0)
+      react-native-screens: 4.15.4(react-native@0.79.5)(react@19.0.0)
     transitivePeerDependencies:
       - '@react-native-masked-view/masked-view'
     dev: false
@@ -3963,7 +3890,7 @@ packages:
       use-sync-external-store: 1.5.0(react@19.0.0)
     dev: false
 
-  /@react-navigation/native-stack@7.3.26(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.4.0)(react-native-screens@4.11.1)(react-native@0.79.5)(react@19.0.0):
+  /@react-navigation/native-stack@7.3.26(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.4.0)(react-native-screens@4.15.4)(react-native@0.79.5)(react@19.0.0):
     resolution: {integrity: sha512-EjaBWzLZ76HJGOOcWCFf+h/M+Zg7M1RalYioDOb6ZdXHz7AwYNidruT3OUAQgSzg3gVLqvu5OYO0jFsNDPCZxQ==}
     peerDependencies:
       '@react-navigation/native': ^7.1.17
@@ -3977,7 +3904,7 @@ packages:
       react: 19.0.0
       react-native: 0.79.5(@babel/core@7.28.3)(@types/react@19.0.14)(react@19.0.0)
       react-native-safe-area-context: 5.4.0(react-native@0.79.5)(react@19.0.0)
-      react-native-screens: 4.11.1(react-native@0.79.5)(react@19.0.0)
+      react-native-screens: 4.15.4(react-native@0.79.5)(react@19.0.0)
       warn-once: 0.1.1
     transitivePeerDependencies:
       - '@react-native-masked-view/masked-view'
@@ -4767,12 +4694,6 @@ packages:
   /@vue/shared@3.5.20:
     resolution: {integrity: sha512-SoRGP596KU/ig6TfgkCMbXkr4YJ91n/QSdMuqeP5r3hVIYA3CPHUBCc7Skak0EAKV+5lL4KyIh61VA/pK1CIAA==}
     dev: true
-
-  /@xmldom/xmldom@0.7.13:
-    resolution: {integrity: sha512-lm2GW5PkosIzccsaZIz7tp8cPADSIlIHWDFTR1N0SzfinhhYgeIQjFMz4rYzanCScr3DqQLeomUDArp6MWKm+g==}
-    engines: {node: '>=10.0.0'}
-    deprecated: this version is no longer supported, please update to at least 0.8.*
-    dev: false
 
   /@xmldom/xmldom@0.8.11:
     resolution: {integrity: sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==}
@@ -6022,20 +5943,6 @@ packages:
       - supports-color
     dev: false
 
-  /expo-constants@17.0.8(expo@53.0.22)(react-native@0.79.5):
-    resolution: {integrity: sha512-XfWRyQAf1yUNgWZ1TnE8pFBMqGmFP5Gb+SFSgszxDdOoheB/NI5D4p7q86kI2fvGyfTrxAe+D+74nZkfsGvUlg==}
-    peerDependencies:
-      expo: '*'
-      react-native: '*'
-    dependencies:
-      '@expo/config': 10.0.11
-      '@expo/env': 0.4.2
-      expo: 53.0.22(@babel/core@7.28.3)(react-native@0.79.5)(react@19.0.0)
-      react-native: 0.79.5(@babel/core@7.28.3)(@types/react@19.0.14)(react@19.0.0)
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /expo-constants@17.1.7(expo@53.0.22)(react-native@0.79.5):
     resolution: {integrity: sha512-byBjGsJ6T6FrLlhOBxw4EaiMXrZEn/MlUYIj/JAd+FS7ll5X/S4qVRbIimSJtdW47hXMq0zxPfJX6njtA56hHA==}
     peerDependencies:
@@ -6081,13 +5988,13 @@ packages:
       react: 19.0.0
     dev: false
 
-  /expo-linking@7.0.5(expo@53.0.22)(react-native@0.79.5)(react@19.0.0):
-    resolution: {integrity: sha512-3KptlJtcYDPWohk0MfJU75MJFh2ybavbtcSd84zEPfw9s1q3hjimw3sXnH03ZxP54kiEWldvKmmnGcVffBDB1g==}
+  /expo-linking@7.1.7(expo@53.0.22)(react-native@0.79.5)(react@19.0.0):
+    resolution: {integrity: sha512-ZJaH1RIch2G/M3hx2QJdlrKbYFUTOjVVW4g39hfxrE5bPX9xhZUYXqxqQtzMNl1ylAevw9JkgEfWbBWddbZ3UA==}
     peerDependencies:
       react: '*'
       react-native: '*'
     dependencies:
-      expo-constants: 17.0.8(expo@53.0.22)(react-native@0.79.5)
+      expo-constants: 17.1.7(expo@53.0.22)(react-native@0.79.5)
       invariant: 2.2.4
       react: 19.0.0
       react-native: 0.79.5(@babel/core@7.28.3)(@types/react@19.0.14)(react@19.0.0)
@@ -6115,7 +6022,7 @@ packages:
       invariant: 2.2.4
     dev: false
 
-  /expo-router@5.1.5(@types/react@19.0.14)(expo-constants@17.1.7)(expo-linking@7.0.5)(expo@53.0.22)(react-native-safe-area-context@5.4.0)(react-native-screens@4.11.1)(react-native@0.79.5)(react@19.0.0):
+  /expo-router@5.1.5(@types/react@19.0.14)(expo-constants@17.1.7)(expo-linking@7.1.7)(expo@53.0.22)(react-native-safe-area-context@5.4.0)(react-native-screens@4.15.4)(react-native@0.79.5)(react@19.0.0):
     resolution: {integrity: sha512-VPhS21DPP+riJIUshs/qpb11L/nzmRK7N7mqSFCr/mjpziznYu/qS+BPeQ88akIuXv6QsXipY5UTfYINdV+P0Q==}
     peerDependencies:
       '@react-navigation/drawer': ^7.3.9
@@ -6138,18 +6045,18 @@ packages:
       '@expo/schema-utils': 0.1.0
       '@expo/server': 0.6.3
       '@radix-ui/react-slot': 1.2.0(@types/react@19.0.14)(react@19.0.0)
-      '@react-navigation/bottom-tabs': 7.4.7(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.4.0)(react-native-screens@4.11.1)(react-native@0.79.5)(react@19.0.0)
+      '@react-navigation/bottom-tabs': 7.4.7(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.4.0)(react-native-screens@4.15.4)(react-native@0.79.5)(react@19.0.0)
       '@react-navigation/native': 7.1.17(react-native@0.79.5)(react@19.0.0)
-      '@react-navigation/native-stack': 7.3.26(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.4.0)(react-native-screens@4.11.1)(react-native@0.79.5)(react@19.0.0)
+      '@react-navigation/native-stack': 7.3.26(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.4.0)(react-native-screens@4.15.4)(react-native@0.79.5)(react@19.0.0)
       client-only: 0.0.1
       expo: 53.0.22(@babel/core@7.28.3)(react-native@0.79.5)(react@19.0.0)
       expo-constants: 17.1.7(expo@53.0.22)(react-native@0.79.5)
-      expo-linking: 7.0.5(expo@53.0.22)(react-native@0.79.5)(react@19.0.0)
+      expo-linking: 7.1.7(expo@53.0.22)(react-native@0.79.5)(react@19.0.0)
       invariant: 2.2.4
       react-fast-compare: 3.2.2
       react-native-is-edge-to-edge: 1.2.1(react-native@0.79.5)(react@19.0.0)
       react-native-safe-area-context: 5.4.0(react-native@0.79.5)(react@19.0.0)
-      react-native-screens: 4.11.1(react-native@0.79.5)(react@19.0.0)
+      react-native-screens: 4.15.4(react-native@0.79.5)(react@19.0.0)
       semver: 7.6.3
       server-only: 0.0.1
       shallowequal: 1.1.0
@@ -6438,11 +6345,6 @@ packages:
   /get-package-type@0.1.0:
     resolution: {integrity: sha512-pjzuKtY64GYfWizNAJ0fr9VqttZkNiK2iS430LtIHzjBEr6bX8Am2zm4sW4Ro5wjWW5cAlRL1qAMTcXbjNAO2Q==}
     engines: {node: '>=8.0.0'}
-    dev: false
-
-  /getenv@1.0.0:
-    resolution: {integrity: sha512-7yetJWqbS9sbn0vIfliPsFgoXMKn/YMF+Wuiog97x+urnSRRRZ7xB+uVkwGKzRgq9CDFfMQnE9ruL5DHv9c6Xg==}
-    engines: {node: '>=6'}
     dev: false
 
   /getenv@2.0.0:
@@ -8185,8 +8087,8 @@ packages:
       react-native: 0.79.5(@babel/core@7.28.3)(@types/react@19.0.14)(react@19.0.0)
     dev: false
 
-  /react-native-screens@4.11.1(react-native@0.79.5)(react@19.0.0):
-    resolution: {integrity: sha512-F0zOzRVa3ptZfLpD0J8ROdo+y1fEPw+VBFq1MTY/iyDu08al7qFUO5hLMd+EYMda5VXGaTFCa8q7bOppUszhJw==}
+  /react-native-screens@4.15.4(react-native@0.79.5)(react@19.0.0):
+    resolution: {integrity: sha512-aKHPDScUbpQiZEG9eZssHdG5jEQs4yiJ8eMx6g81Ex/xU7DZkv3911enzdCb+v4eJE79X8waizY0ZhauZJQmrw==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -9498,14 +9400,6 @@ packages:
   /wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  /write-file-atomic@2.4.3:
-    resolution: {integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==}
-    dependencies:
-      graceful-fs: 4.2.11
-      imurmurhash: 0.1.4
-      signal-exit: 3.0.7
-    dev: false
-
   /write-file-atomic@4.0.2:
     resolution: {integrity: sha512-7KxauUdBmSdWnmpaGFg+ppNjKF8uNLry8LyzjauQDOVONfFLNKrKvQOxZ/VuTIcS/gge/YNahf5RIIQWTSarlg==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
@@ -9573,11 +9467,6 @@ packages:
   /xmlbuilder@11.0.1:
     resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
     engines: {node: '>=4.0'}
-    dev: false
-
-  /xmlbuilder@14.0.0:
-    resolution: {integrity: sha512-ts+B2rSe4fIckR6iquDjsKbQFK2NlUk6iG5nf14mDEyldgoc2nEKZ3jZWMPTxGQwVgToSjt6VGIho1H8/fNFTg==}
-    engines: {node: '>=8.0'}
     dev: false
 
   /xmlbuilder@15.1.1:

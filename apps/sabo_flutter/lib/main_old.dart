@@ -1,6 +1,32 @@
 import 'package:flutter/material.dart';
+import 'screens/home_screen.dart';
+import 'screens/tournament_screen.dart';
+import 'screens/club_screen.dart';
+import 'screens/profile_screen.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'SABO Pool Arena',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
+      home: const MainNavigationScreen(),
+    );
+  }
+}
+
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sabo_flutter/core/theme/app_theme.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
   runApp(
@@ -64,7 +90,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-
+                
                 // Welcome text
                 Text(
                   'Welcome to SABO Arena',
@@ -72,16 +98,16 @@ class WelcomeScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
-
+                
                 Text(
                   'The ultimate pool tournament platform',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: const Color(0xFF94A3B8), // AppColors.foregroundMuted
-                      ),
+                    color: const Color(0xFF94A3B8), // AppColors.foregroundMuted
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-
+                
                 // CTA Buttons
                 SizedBox(
                   width: double.infinity,
@@ -97,7 +123,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-
+                
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
@@ -105,21 +131,21 @@ class WelcomeScreen extends StatelessWidget {
                     child: const Text('Learn More'),
                   ),
                 ),
-
+                
                 const SizedBox(height: 48),
-
+                
                 // Feature highlights
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildFeatureItem(
                       context,
-                      Icons.emoji_events,
+                      Icons.tournament,
                       'Tournaments',
                     ),
                     _buildFeatureItem(
                       context,
-                      Icons.sports_score,
+                      Icons.emoji_events,
                       'Challenges',
                     ),
                     _buildFeatureItem(
@@ -161,6 +187,59 @@ class WelcomeScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
+    );
+  }
+}
+
+  @override
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+}
+
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const TournamentScreen(),
+    const ClubScreen(),
+    const ProfileScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_events),
+            label: 'Tournaments',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sports_bar),
+            label: 'Clubs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+      ),
     );
   }
 }

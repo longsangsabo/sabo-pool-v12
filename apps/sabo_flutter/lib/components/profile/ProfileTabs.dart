@@ -48,7 +48,7 @@ class ProfileTabs extends StatelessWidget {
         border: Border(
           bottom: BorderSide(
             color: isDark
-                ? Colors.grey.shade700.withValues(alpha: 0.5)
+                ? Colors.grey.shade700.withOpacity(0.5)
                 : Colors.grey.shade200,
             width: 1,
           ),

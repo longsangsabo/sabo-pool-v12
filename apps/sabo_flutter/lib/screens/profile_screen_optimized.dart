@@ -228,19 +228,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                           margin: const EdgeInsets.symmetric(horizontal: 8),
                           decoration: BoxDecoration(
                             color: isDark
-                                ? const Color(0xFF1e293b).withValues(alpha: 0.9)
+                                ? const Color(0xFF1e293b).withOpacity(0.9)
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: isDark
-                                  ? Colors.grey[700]!.withValues(alpha: 0.5)
+                                  ? Colors.grey[700]!.withOpacity(0.5)
                                   : Colors.grey[200]!,
                             ),
                             boxShadow: [
                               BoxShadow(
                                 color: isDark
-                                    ? Colors.black.withValues(alpha: 0.3)
-                                    : Colors.grey.withValues(alpha: 0.1),
+                                    ? Colors.black.withOpacity(0.3)
+                                    : Colors.grey.withOpacity(0.1),
                                 blurRadius: 16,
                                 offset: const Offset(0, 4),
                               ),
@@ -341,12 +341,12 @@ class _ProfileScreenState extends State<ProfileScreen>
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: isDark
-                  ? Colors.grey[800]!.withValues(alpha: 0.3)
+                  ? Colors.grey[800]!.withOpacity(0.3)
                   : Colors.grey[50],
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isDark
-                    ? Colors.grey[700]!.withValues(alpha: 0.3)
+                    ? Colors.grey[700]!.withOpacity(0.3)
                     : Colors.grey[200]!,
               ),
             ),
@@ -356,7 +356,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.2),
+                    color: Colors.green.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Icon(
@@ -441,11 +441,11 @@ class _ProfileScreenState extends State<ProfileScreen>
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color:
-            isDark ? Colors.grey[800]!.withValues(alpha: 0.3) : Colors.grey[50],
+            isDark ? Colors.grey[800]!.withOpacity(0.3) : Colors.grey[50],
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isDark
-              ? Colors.grey[700]!.withValues(alpha: 0.3)
+              ? Colors.grey[700]!.withOpacity(0.3)
               : Colors.grey[200]!,
         ),
       ),
@@ -455,7 +455,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: (activity['color'] as Color).withValues(alpha: 0.2),
+              color: (activity['color'] as Color).withOpacity(0.2),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
@@ -643,13 +643,13 @@ class _ProfileScreenState extends State<ProfileScreen>
           decoration: InputDecoration(
             filled: true,
             fillColor: isDark
-                ? Colors.grey[800]!.withValues(alpha: 0.3)
+                ? Colors.grey[800]!.withOpacity(0.3)
                 : Colors.grey[50],
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
                 color: isDark
-                    ? Colors.grey[700]!.withValues(alpha: 0.3)
+                    ? Colors.grey[700]!.withOpacity(0.3)
                     : Colors.grey[300]!,
               ),
             ),
@@ -657,7 +657,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
                 color: isDark
-                    ? Colors.grey[700]!.withValues(alpha: 0.3)
+                    ? Colors.grey[700]!.withOpacity(0.3)
                     : Colors.grey[300]!,
               ),
             ),
@@ -735,7 +735,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: isDark
-                  ? Colors.grey[800]!.withValues(alpha: 0.3)
+                  ? Colors.grey[800]!.withOpacity(0.3)
                   : Colors.grey[50],
               borderRadius: BorderRadius.circular(12),
             ),
@@ -824,12 +824,12 @@ class _ProfileScreenState extends State<ProfileScreen>
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isDark
-                  ? const Color(0xFF1e293b).withValues(alpha: 0.4)
+                  ? const Color(0xFF1e293b).withOpacity(0.4)
                   : Colors.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: isDark
-                    ? Colors.grey[700]!.withValues(alpha: 0.5)
+                    ? Colors.grey[700]!.withOpacity(0.5)
                     : Colors.grey[200]!,
               ),
             ),
@@ -874,12 +874,12 @@ class _ProfileScreenState extends State<ProfileScreen>
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isDark
-                  ? const Color(0xFF1e293b).withValues(alpha: 0.4)
+                  ? const Color(0xFF1e293b).withOpacity(0.4)
                   : Colors.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: isDark
-                    ? Colors.grey[700]!.withValues(alpha: 0.5)
+                    ? Colors.grey[700]!.withOpacity(0.5)
                     : Colors.grey[200]!,
               ),
             ),
@@ -917,7 +917,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 LinearProgressIndicator(
                   value: profile.completionPercentage / 100,
                   backgroundColor: isDark
-                      ? Colors.grey[700]!.withValues(alpha: 0.5)
+                      ? Colors.grey[700]!.withOpacity(0.5)
                       : Colors.grey[200],
                   valueColor: AlwaysStoppedAnimation<Color>(
                     isDark ? Colors.blue[300]! : Colors.blue[600]!,
@@ -943,10 +943,10 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.2),
+        color: color.withOpacity(0.2),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: color.withValues(alpha: 0.3),
+          color: color.withOpacity(0.3),
         ),
       ),
       child: Text(

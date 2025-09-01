@@ -54,8 +54,8 @@ class MobileCardAvatar extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.15),
+                ? Colors.black.withOpacity(0.3)
+                : Colors.grey.withOpacity(0.15),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -81,7 +81,7 @@ class MobileCardAvatar extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.withValues(alpha: 0.3),
+                          color: Colors.blue.withOpacity(0.3),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -107,7 +107,7 @@ class MobileCardAvatar extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.black.withValues(alpha: 0.5),
+                          color: Colors.black.withOpacity(0.5),
                         ),
                         child: const Center(
                           child: CircularProgressIndicator(
@@ -128,7 +128,7 @@ class MobileCardAvatar extends StatelessWidget {
                         color: isDark ? Colors.blue[400] : Colors.blue[600],
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.blue.withValues(alpha: 0.4),
+                            color: Colors.blue.withOpacity(0.4),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -199,12 +199,12 @@ class MobileCardAvatar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: isDark
-              ? Colors.grey[800]!.withValues(alpha: 0.3)
+              ? Colors.grey[800]!.withOpacity(0.3)
               : Colors.grey[50],
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isDark
-                ? Colors.grey[700]!.withValues(alpha: 0.3)
+                ? Colors.grey[700]!.withOpacity(0.3)
                 : Colors.grey[200]!,
           ),
         ),

@@ -40,8 +40,8 @@ class Avatar extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.grey.shade900.withValues(alpha: 0.9),
-                  Colors.grey.shade800.withValues(alpha: 0.95),
+                  Colors.grey.shade900.withOpacity(0.9),
+                  Colors.grey.shade800.withOpacity(0.95),
                 ],
               )
             : LinearGradient(
@@ -54,12 +54,12 @@ class Avatar extends StatelessWidget {
               ),
         boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
+              color: Colors.black.withOpacity(0.3),
               blurRadius: 12,
               spreadRadius: 2,
         border: Border.all(
           color: isDark
-              ? Colors.grey.shade700.withValues(alpha: 0.5)
+              ? Colors.grey.shade700.withOpacity(0.5)
               : Colors.grey.shade200,
           width: 1,
         ),
@@ -82,8 +82,8 @@ class Avatar extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.blue.shade600.withValues(alpha: 0.1),
-                        Colors.purple.shade600.withValues(alpha: 0.1),
+                        Colors.blue.shade600.withOpacity(0.1),
+                        Colors.purple.shade600.withOpacity(0.1),
                       ],
                     ),
                   ),
@@ -110,7 +110,7 @@ class Avatar extends StatelessWidget {
                       if (uploading)
                         Positioned.fill(
                           child: Container(
-                            color: Colors.black.withValues(alpha: 0.5),
+                            color: Colors.black.withOpacity(0.5),
                             child: const Center(
                               child: CircularProgressIndicator(
                                 color: Colors.white,
@@ -133,7 +133,7 @@ class Avatar extends StatelessWidget {
                                 end: Alignment.bottomCenter,
                                 colors: [
                                   Colors.transparent,
-                                  Colors.black.withValues(alpha: 0.8),
+                                  Colors.black.withOpacity(0.8),
                                 ],
                               ),
                             ),
@@ -171,8 +171,8 @@ class Avatar extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: isDark
-                      ? Colors.grey.shade800.withValues(alpha: 0.95)
-                      : Colors.white.withValues(alpha: 0.95),
+                      ? Colors.grey.shade800.withOpacity(0.95)
+                      : Colors.white.withOpacity(0.95),
                   border: Border(
                     top: BorderSide(
                       color:

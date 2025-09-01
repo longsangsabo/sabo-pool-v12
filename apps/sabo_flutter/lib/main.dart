@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'screens/home_screen.dart';
 import 'screens/tournament_screen.dart';
 import 'screens/club_screen.dart';
 import 'screens/challenges_screen.dart';
 import 'screens/profile_screen_optimized.dart';
+import 'screens/auth_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,14 +23,43 @@ void main() {
   runApp(const MyApp());
 }
 
+// GoRouter configuration
+final GoRouter _router = GoRouter(
+  routes: [
+    // Main app route
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const MainNavigationScreen(),
+    ),
+    // Auth routes
+    GoRoute(
+      path: '/auth/login',
+      builder: (context, state) => const AuthScreen(mode: 'login'),
+    ),
+    GoRoute(
+      path: '/auth/register',
+      builder: (context, state) => const AuthScreen(mode: 'register'),
+    ),
+    GoRoute(
+      path: '/auth/forgot-password',
+      builder: (context, state) => const AuthScreen(mode: 'forgot-password'),
+    ),
+    GoRoute(
+      path: '/auth/reset-password',
+      builder: (context, state) => const AuthScreen(mode: 'reset-password'),
+    ),
+  ],
+);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'SABO Pool Arena',
       debugShowCheckedModeBanner: false,
+      routerConfig: _router,
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
@@ -48,7 +79,6 @@ class MyApp extends StatelessWidget {
           elevation: 8,
         ),
       ),
-      home: const MainNavigationScreen(),
     );
   }
 }
@@ -89,7 +119,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: Colors.black.withOpacity(0.2),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),

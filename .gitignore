@@ -251,3 +251,5 @@ enable_http_extension.sql
 create_test_user.sh
 test_milestone_http.sh
 # Build trigger Fri Aug 22 07:59:29 UTC 2025
+flutter/
+flutter_linux_3.24.3-stable.tar.xz

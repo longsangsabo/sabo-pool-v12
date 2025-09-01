@@ -13,49 +13,10 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.sabopool.arena",
-      "buildNumber": "1",
-      "infoPlist": {
-        "UILaunchStoryboardName": "SplashScreen",
-        "CFBundleURLTypes": [
-          {
-            "CFBundleURLName": "sabopool",
-            "CFBundleURLSchemes": [
-              "sabopool"
-            ]
-          }
-        ]
-      }
-    },
-    "android": {
-      "package": "com.sabopool.arena",
-      "versionCode": 1,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.INTERNET",
-        "android.permission.ACCESS_NETWORK_STATE"
-      ]
-    },
-    "web": {
-      "bundler": "metro",
-      "favicon": "./assets/favicon.png"
-    },
+    "scheme": "sabopool",
     "plugins": [
-      "expo-router",
       "expo-font",
-      "expo-secure-store"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "sabopool-arena-mobile"
-      }
-    },
-    "owner": "longsangsabo"
+      "expo-router"
+    ]
   }
 }

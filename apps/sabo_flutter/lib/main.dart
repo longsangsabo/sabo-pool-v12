@@ -18,6 +18,8 @@ import 'screens/auth_screen.dart';
 import 'screens/auth/onboarding_screen.dart';
 import 'screens/auth/otp_verification_screen.dart';
 import 'screens/auth/password_reset_screen.dart';
+import 'screens/settings_screen.dart';
+import 'screens/rankings_leaderboard_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -105,6 +107,16 @@ class SaboPoolApp extends ConsumerWidget {
           path: '/password-reset',
           name: 'password-reset',
           builder: (context, state) => const PasswordResetScreenWrapper(),
+        ),
+        GoRoute(
+          path: '/settings',
+          name: 'settings',
+          builder: (context, state) => const SettingsScreen(),
+        ),
+        GoRoute(
+          path: '/rankings',
+          name: 'rankings',
+          builder: (context, state) => const RankingsLeaderboardScreen(currentUserId: 'demo-user-123'),
         ),
         
         // Main App Routes with Bottom Navigation

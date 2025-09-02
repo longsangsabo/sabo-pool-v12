@@ -33,6 +33,7 @@ dependencies:
   flutter_svg: ^2.0.9
   flutter_hooks: ^0.20.3
   hooks_riverpod: ^2.4.9
+  smooth_page_indicator: ^1.1.0
   
   # Storage
   shared_preferences: ^2.2.2

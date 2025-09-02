@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../models/auth_state_simple.dart'; // Import for extension
 import '../providers/real_auth_provider.dart';
 import '../providers/data_providers.dart';
@@ -23,9 +24,47 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: Colors.blue[800],
+        title: const Text('Hồ sơ cá nhân'),
+        backgroundColor: const Color(0xFF0d1421),
         foregroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.red),
+            tooltip: 'Đăng xuất',
+            onPressed: () async {
+              // Show confirmation dialog
+              bool? shouldLogout = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Xác nhận đăng xuất'),
+                  content: const Text('Bạn có chắc chắn muốn đăng xuất?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Hủy'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
+                      child: const Text('Đăng xuất'),
+                    ),
+                  ],
+                ),
+              );
+              
+              if (shouldLogout == true) {
+                // Sign out
+                await ref.read(realAuthStateProvider.notifier).signOut();
+                
+                // Navigate to onboarding
+                if (context.mounted) {
+                  context.go('/onboarding');
+                }
+              }
+            },
+          ),
+        ],
       ),
       body: userDataAsync.when(
         data: (userData) {
@@ -56,6 +95,21 @@ class ProfileScreen extends ConsumerWidget {
                         Text(
                           user.name.isNotEmpty ? user.name : 'User',
                           style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'Đã đăng nhập',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -152,14 +206,6 @@ class ProfileScreen extends ConsumerWidget {
                           trailing: const Icon(Icons.arrow_forward_ios),
                           onTap: () {
                             // TODO: Navigate to match history
-                          },
-                        ),
-                        const Divider(),
-                        ListTile(
-                          leading: const Icon(Icons.logout, color: Colors.red),
-                          title: const Text('Đăng xuất', style: TextStyle(color: Colors.red)),
-                          onTap: () async {
-                            await ref.read(realAuthStateProvider.notifier).signOut();
                           },
                         ),
                       ],

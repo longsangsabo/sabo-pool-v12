@@ -6,14 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 // Core imports
 import 'providers/real_auth_provider.dart';
-import 'models/auth_state_simple.dart' as AppAuth;
+import 'models/auth_state_simple.dart';
 
 // Enhanced Screen imports - All Available Screens
 import 'screens/home_screen_enhanced.dart';
 import 'screens/tournament_screen_enhanced.dart';
 import 'screens/club_screen_enhanced.dart';
 import 'screens/challenges_screen.dart';
-import 'screens/profile_screen_simple.dart';
+import 'screens/profile_screen_optimized.dart';
 import 'screens/auth_screen.dart';
 import 'screens/auth/onboarding_screen.dart';
 import 'screens/auth/otp_verification_screen.dart';
@@ -53,7 +53,7 @@ class SaboPoolApp extends ConsumerWidget {
       initialLocation: '/onboarding',
       redirect: (context, state) {
         final authState = ref.read(realAuthStateProvider);
-        final isAuthenticated = authState is AppAuth.AuthStateAuthenticated;
+        final isAuthenticated = authState is AuthStateAuthenticated;
         
         // Enhanced routing logic
         if (!isAuthenticated) {
@@ -80,11 +80,6 @@ class SaboPoolApp extends ConsumerWidget {
           path: '/onboarding',
           name: 'onboarding',
           builder: (context, state) => const OnboardingScreenWrapper(),
-        ),
-        GoRoute(
-          path: '/auth',
-          name: 'auth',
-          redirect: (context, state) => '/auth/login',
         ),
         GoRoute(
           path: '/auth/login',
@@ -116,7 +111,7 @@ class SaboPoolApp extends ConsumerWidget {
             GoRoute(
               path: '/home',
               name: 'home',
-              builder: (context, state) => const HomeScreen(),
+              builder: (context, state) => const HomeScreenEnhanced(),
             ),
             GoRoute(
               path: '/tournaments',
@@ -126,7 +121,7 @@ class SaboPoolApp extends ConsumerWidget {
             GoRoute(
               path: '/clubs',
               name: 'clubs',
-              builder: (context, state) => const ClubScreen(),
+              builder: (context, state) => const ClubScreenEnhanced(),
             ),
             GoRoute(
               path: '/challenges',
@@ -136,7 +131,7 @@ class SaboPoolApp extends ConsumerWidget {
             GoRoute(
               path: '/profile',
               name: 'profile',
-              builder: (context, state) => const ProfileScreen(),
+              builder: (context, state) => const ProfileScreenOptimized(),
             ),
           ],
         ),
@@ -306,45 +301,7 @@ class AuthScreenWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Listen to auth state changes
-    ref.listen<AppAuth.AuthState>(realAuthStateProvider, (previous, next) {
-      if (next is AppAuth.AuthStateAuthenticated) {
-        // Đăng nhập thành công - chuyển thẳng đến home, bỏ qua OTP
-        context.go('/home');
-      } else if (next is AppAuth.AuthStateError) {
-        // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.message),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    });
-
-    return AuthScreen(
-      onSubmit: (data) async {
-        final authNotifier = ref.read(realAuthStateProvider.notifier);
-        final currentRoute = GoRouterState.of(context).matchedLocation;
-        
-        if (currentRoute.contains('register')) {
-          // Handle register
-          await authNotifier.register(
-            fullName: data['fullName'] ?? '',
-            email: data['identifier'] ?? '',
-            password: data['password'] ?? '',
-            phone: data['method'] == 'phone' ? data['identifier'] : null,
-          );
-        } else {
-          // Handle login - will redirect to /home on success
-          await authNotifier.login(
-            email: data['identifier'] ?? '',
-            password: data['password'] ?? '',
-          );
-        }
-      },
-    );
+    return const AuthScreen();
   }
 }
 
@@ -354,10 +311,7 @@ class OTPVerificationScreenWrapper extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return OTPVerificationScreen(
-      phoneNumber: '+84961167717',
-      email: 'demo@sabo.vn',
-      verificationType: 'phone',
-      onVerify: (otp) {
+      onVerified: () {
         context.go('/home');
       },
     );

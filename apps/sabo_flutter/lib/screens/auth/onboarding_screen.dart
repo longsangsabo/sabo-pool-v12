@@ -119,7 +119,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     if (widget.onCompleted != null) {
       widget.onCompleted!();
     } else {
-      context.go('/auth');
+      context.go('/auth/login');
     }
   }
 

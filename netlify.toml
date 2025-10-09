@@ -7,7 +7,13 @@
     NODE_VERSION = "18"
     PNPM_VERSION = "8.15.0"
 
-# Redirect rules for SPA
+# Redirect rules for static pages
+[[redirects]]
+  from = "/delete-account"
+  to = "/delete-account.html"
+  status = 200
+
+# Redirect rules for SPA (catch-all)
 [[redirects]]
   from = "/*"
   to = "/index.html"

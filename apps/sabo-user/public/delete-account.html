@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Xóa Tài Khoản - SABO ARENA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">Yêu cầu Xóa Tài Khoản</h1>
+                <div class="text-sm text-gray-500 mb-4">
+                    <p><strong>Ứng dụng:</strong> SABO ARENA</p>
+                    <p><strong>Nhà phát triển:</strong> SABO TECH</p>
+                </div>
+                <p class="text-gray-600">
+                    Theo quy định của Google Play Store, chúng tôi cung cấp trang này để bạn có thể yêu cầu xóa tài khoản và dữ liệu cá nhân khỏi ứng dụng SABO ARENA.
+                </p>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <div class="flex">
+                    <svg class="w-5 h-5 text-yellow-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-yellow-800">Lưu ý quan trọng</h3>
+                        <p class="mt-1 text-sm text-yellow-700">
+                            Việc xóa tài khoản sẽ xóa vĩnh viễn tất cả dữ liệu của bạn và không thể hoàn tác.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="deleteForm" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email tài khoản *
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Nhập email tài khoản của bạn"
+                    />
+                </div>
+
+                <div>
+                    <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">
+                        Lý do xóa tài khoản (tùy chọn)
+                    </label>
+                    <textarea
+                        id="reason"
+                        name="reason"
+                        rows="4"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Chia sẻ lý do để chúng tôi cải thiện dịch vụ..."
+                    ></textarea>
+                </div>
+
+                <div class="flex items-start">
+                    <input
+                        type="checkbox"
+                        id="confirm"
+                        name="confirm"
+                        required
+                        class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <label for="confirm" class="ml-2 text-sm text-gray-700">
+                        Tôi xác nhận muốn xóa tài khoản và hiểu rằng hành động này không thể hoàn tác *
+                    </label>
+                </div>
+
+                <div class="flex gap-4">
+                    <button
+                        type="button"
+                        onclick="window.location.href='/'"
+                        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    >
+                        Quay về trang chủ
+                    </button>
+                    <button
+                        type="submit"
+                        class="flex-1 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    >
+                        Gửi Yêu Cầu Xóa
+                    </button>
+                </div>
+            </form>
+
+            <div id="successMessage" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-green-800">Yêu cầu đã được gửi thành công!</h3>
+                        <p class="mt-1 text-sm text-green-700">
+                            Chúng tôi sẽ xử lý yêu cầu của bạn trong vòng 30 ngày. Bạn sẽ nhận được email xác nhận khi quá trình hoàn tất.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Các bước thực hiện yêu cầu xóa tài khoản</h3>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <ol class="list-decimal list-inside space-y-2 text-sm text-blue-800">
+                        <li>Điền đầy đủ thông tin trong biểu mẫu trên (email tài khoản là bắt buộc)</li>
+                        <li>Xác nhận bạn hiểu rằng việc xóa tài khoản không thể hoàn tác</li>
+                        <li>Nhấn nút "Gửi Yêu Cầu Xóa" để gửi yêu cầu</li>
+                        <li>Chúng tôi sẽ gửi email xác nhận đến địa chỉ email của bạn</li>
+                        <li>Tài khoản và dữ liệu sẽ được xóa trong vòng 30 ngày</li>
+                        <li>Bạn sẽ nhận được email thông báo khi quá trình hoàn tất</li>
+                    </ol>
+                </div>
+
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Thông tin về dữ liệu và thời gian lưu giữ</h3>
+                <div class="space-y-4 text-sm text-gray-700">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-800 mb-2">Dữ liệu sẽ được XÓA VĨNH VIỄN:</h4>
+                        <ul class="list-disc list-inside space-y-1 text-green-700">
+                            <li>Thông tin tài khoản cá nhân (tên, email, ảnh đại diện)</li>
+                            <li>Lịch sử thi đấu và thống kê cá nhân</li>
+                            <li>Tin nhắn và tương tác trong ứng dụng</li>
+                            <li>Thông tin câu lạc bộ và giải đấu đã tạo</li>
+                            <li>Cài đặt và tùy chọn cá nhân</li>
+                        </ul>
+                        <p class="mt-2 text-xs text-green-600"><strong>Thời gian:</strong> Xóa hoàn toàn trong vòng 30 ngày</p>
+                    </div>
+
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-orange-800 mb-2">Dữ liệu có thể ĐƯỢC GIỮ LẠI (theo quy định pháp lý):</h4>
+                        <ul class="list-disc list-inside space-y-1 text-orange-700">
+                            <li>Thông tin thanh toán (để phục vụ kế toán và thuế)</li>
+                            <li>Báo cáo vi phạm và tranh chấp</li>
+                            <li>Dữ liệu thống kê tổng hợp (đã ẩn danh)</li>
+                            <li>Log hệ thống cho mục đích bảo mật</li>
+                        </ul>
+                        <p class="mt-2 text-xs text-orange-600"><strong>Thời gian lưu giữ:</strong> Tối đa 7 năm theo quy định pháp luật Việt Nam</p>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">Liên hệ hỗ trợ:</h4>
+                        <p class="text-gray-600">
+                            Nếu bạn có thắc mắc về việc xóa tài khoản hoặc quyền riêng tư, 
+                            vui lòng liên hệ: <strong>longsangsabo@gmail.com</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('deleteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const reason = document.getElementById('reason').value;
+            const confirm = document.getElementById('confirm').checked;
+            
+            if (!email || !confirm) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+                return;
+            }
+            
+            // Gửi yêu cầu đến email
+            const subject = encodeURIComponent('[SABO ARENA] Yêu cầu xóa tài khoản');
+            const body = encodeURIComponent(`
+Yêu cầu xóa tài khoản SABO ARENA
+
+Email tài khoản: ${email}
+Lý do: ${reason || 'Không có'}
+
+Tôi xác nhận muốn xóa tài khoản và hiểu rằng hành động này không thể hoàn tác.
+
+Ngày gửi: ${new Date().toLocaleString('vi-VN')}
+            `);
+            
+            // Mở email client với thông tin đã điền
+            window.location.href = `mailto:longsangsabo@gmail.com?subject=${subject}&body=${body}`;
+            
+            // Hiển thị thông báo thành công
+            document.getElementById('deleteForm').style.display = 'none';
+            document.getElementById('successMessage').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>

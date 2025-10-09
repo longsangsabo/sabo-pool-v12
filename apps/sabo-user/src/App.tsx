@@ -46,11 +46,12 @@ const LegacyClaim = lazy(() => import('./pages/LegacyClaim'));
 const ClaimCodePage = lazy(() => import('./pages/ClaimCodePage'));
 // Use enhanced login page with role-based redirect logic
 const EnhancedLoginPage = lazy(() => import('./pages/EnhancedLoginPage'));
-const EnhancedRegisterPage = lazy(() => import('./pages/EnhancedRegisterPage'));
+// const EnhancedRegisterPage = lazy(() => import('./pages/EnhancedRegisterPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/SimpleClubContactPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPage'));
 const TermsOfServicePage = lazy(() => import('./pages/TermsPage'));
+const DeleteAccountPage = lazy(() => import('./pages/DeleteAccountPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
 const NewsPage = lazy(() => import('./pages/BlogPage'));
 
@@ -72,9 +73,9 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Profile = lazy(() => import('./pages/Profile'));
 const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 // Enhanced Challenges V3 - Main implementation
-const EnhancedChallengesPageV3 = lazy(
- () => import('./pages/challenges/EnhancedChallengesPageV3')
-);
+// const EnhancedChallengesPageV3 = lazy(
+//  () => import('./pages/challenges/EnhancedChallengesPageV3')
+// );
 
 // Debug component
 const ChallengeTabsDebug = lazy(() => import('./pages/ChallengeTabsDebug'));
@@ -88,7 +89,7 @@ const ClubRegistrationPage = lazy(() => import('./pages/ClubRegistrationPage'));
 const FeedPage = lazy(() => import('./pages/FeedPage'));
 const MarketplacePage = lazy(() => import('./pages/EnhancedMarketplacePage'));
 const MessagesPage = lazy(() => import('./pages/MessagesPage'));
-const NotificationsPage = lazy(() => import('./pages/NotificationsFullPage'));
+// const NotificationsPage = lazy(() => import('./pages/NotificationsFullPage'));
 // Milestones
 const MilestonePage = lazy(() => import('./pages/MilestonePage'));
 
@@ -174,6 +175,7 @@ const AppContent = () => {
      <Route path='/contact' element={<ContactPage />} />
      <Route path='/privacy' element={<PrivacyPolicyPage />} />
      <Route path='/terms' element={<TermsOfServicePage />} />
+     <Route path='/delete-account' element={<DeleteAccountPage />} />
      <Route path='/news' element={<NewsPage />} />
 
      {/* Demo pages */}
@@ -200,7 +202,7 @@ const AppContent = () => {
       path='/auth/register'
       element={
        <PublicRoute>
-        <EnhancedRegisterPage />
+        <div>Register page temporarily disabled</div>
        </PublicRoute>
       }
      />
@@ -234,7 +236,7 @@ const AppContent = () => {
      >
       <Route path='dashboard' element={<Dashboard />} />
       <Route path='profile' element={<Profile />} />
-      <Route path='challenges' element={<EnhancedChallengesPageV3 />} />
+      {/* <Route path='challenges' element={<EnhancedChallengesPageV3 />} /> */}
       {/* Legacy challenge routes removed for production */}
       <Route path='community' element={<CommunityPage />} />
       <Route path='calendar' element={<CalendarPage />} />
@@ -247,7 +249,7 @@ const AppContent = () => {
       <Route path='feed' element={<FeedPage />} />
       <Route path='marketplace' element={<MarketplacePage />} />
       <Route path='messages' element={<MessagesPage />} />
-      <Route path='notifications' element={<NotificationsPage />} />
+      {/* <Route path='notifications' element={<NotificationsPage />} /> */}
       <Route path='milestones' element={<MilestonePage />} />
       {/* Test routes removed for production - cleaner mobile experience */}
 

@@ -52,34 +52,18 @@ const TournamentsPage = () => {
  const fetchTournaments = async () => {
   try {
    setLoading(true);
-   // TODO: Replace with service call - const { data, error } = await supabase
-    .from('tournaments')
-    .select(
-     `
-     *,
-     club_profiles(*)
-    `
-    )
-    .in('status', [
-     'completed',
-     'registration_open',
-     'registration_closed',
-     'ongoing',
-     'upcoming',
-    ])
-    .order('created_at', { ascending: false });
-
-   if (error) {
-    console.error('Error fetching tournaments:', error);
-    toast({
-     title: 'Lỗi',
-     description: 'Không thể tải danh sách giải đấu',
-     variant: 'destructive',
-    });
-    return;
-   }
-
-   setTournaments((data as any) || []);
+   // TODO: Replace with service call when supabase is available
+   // Mock data for now
+   const mockTournaments = [
+    {
+     id: 'mock-1',
+     name: 'Mock Tournament',
+     status: 'completed',
+     club_profiles: { name: 'Mock Club' }
+    }
+   ];
+   
+   setTournaments(mockTournaments);
   } catch (err) {
    console.error('Unexpected error:', err);
    toast({
@@ -98,15 +82,16 @@ const TournamentsPage = () => {
     data: { user },
    } = await getCurrentUser();
    if (user) {
-//     const { data: profile, error } = await supabase
-     .from('club_profiles')
-     .select('*')
-     .eq('user_id', user.id)
-     .maybeSingle();
+    // TODO: Replace with service call when supabase is available
+    // const { data: profile, error } = await supabase
+    //   .from('club_profiles')
+    //   .select('*')
+    //   .eq('user_id', user.id)
+    //   .maybeSingle();
 
-    if (!error) {
-     setUserProfile(profile);
-    }
+    // Mock profile for now
+    const mockProfile = { id: 'mock', user_id: user.id, name: 'Mock Club' };
+    setUserProfile(mockProfile);
    }
   } catch (error) {
    console.error('Error fetching user profile:', error);
@@ -184,25 +169,19 @@ const TournamentsPage = () => {
     is_visible: true,
    };
 
-   // TODO: Replace with service call - const { data, error } = await supabase
-    .from('tournaments')
-    .insert([tournamentData])
-    .select()
-    .single();
+   // TODO: Replace with service call when supabase is available
+   // const { data, error } = await supabase
+   //   .from('tournaments')
+   //   .insert([tournamentData])
+   //   .select()
+   //   .single();
 
-   if (error) {
-    console.error('Error creating tournament:', error);
-    toast({
-     title: 'Lỗi',
-     description: `Không thể tạo giải đấu: ${error.message}`,
-     variant: 'destructive',
-    });
-    return;
-   }
-
+   // Mock success for now
+   console.log('Mock tournament created:', tournamentData.name);
+   
    toast({
     title: 'Thành công',
-    description: 'Đã tạo giải đấu test thành công',
+    description: 'Đã tạo giải đấu test thành công (mock)',
    });
 
    fetchTournaments(); // Refresh the list

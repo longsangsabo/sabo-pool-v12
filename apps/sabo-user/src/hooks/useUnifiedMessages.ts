@@ -307,8 +307,8 @@ export const useUnifiedMessages = () => {
   useEffect(() => {
     if (!user?.id) return;
 
-//     const channel = supabase
-      .channel('unified_messages')
+    // TODO: Replace with service call
+    // const channel = supabase.channel('unified_messages')
       .on(
         'postgres_changes',
         {

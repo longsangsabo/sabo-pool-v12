@@ -20,7 +20,7 @@ import type { Database } from './types';
 // ✅ Use environment variables with fallback to hardcoded values for backward compatibility
 const SUPABASE_URL =
   import.meta.env.VITE_SUPABASE_URL ||
-// // // //   'https://exlqvlbawytbglioqfbc.supabase.co';
+  'https://exlqvlbawytbglioqfbc.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY =
   import.meta.env.VITE_SUPABASE_ANON_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHF2bGJhd3l0YmdsaW9xZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODAwODgsImV4cCI6MjA2ODY1NjA4OH0.-WHrBx32yHJwhqXAYUOdW5fytPvpzc4AFttXBl3MykA';

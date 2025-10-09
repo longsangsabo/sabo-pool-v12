@@ -239,9 +239,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   console.log('🔧 Auth: Initializing authentication system...');
 
   // Set up auth state listener FIRST
-  const {
-   data: { subscription },
-// // //   } = // TODO: Replace with service call - supabase.auth.onAuthStateChange((event, session) => {
+  // TODO: Replace with service call - supabase.auth.onAuthStateChange((event, session) => {
    if (!isMounted) return;
 
    console.log(
@@ -284,39 +282,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (adminEmails.includes(session.user.email || '')) {
      console.log(`👑 Auto-granting admin role to ${session.user.email}`);
      
-     // Update profile role to admin (if table allows)
-//      supabase
-      .from('profiles')
-      .update({ 
-       role: 'admin',
-       updated_at: new Date().toISOString()
-      })
-      .getByUserId(session.user.id)
-      .then(({ error }) => {
-       if (error && !error.message.includes('check constraint')) {
-        console.error('❌ Failed to grant admin role in profiles:', error);
-       } else if (!error) {
-        console.log('✅ Admin role granted in profiles table');
-       } else {
-        console.log('⚠️ Profile admin role blocked by constraint, using user_roles instead');
-       }
-      });
-      
-     // Add to user_roles table (primary admin system)
-//      supabase
-      .from('user_roles')
-      .upsert({
-       user_id: session.user.id,
-       role: 'admin',
-       created_at: new Date().toISOString()
-      })
-      .then(({ error }) => {
-       if (error && !error.message.includes('does not exist')) {
-        console.error('❌ Failed to add admin role to user_roles:', error);
-       } else if (!error) {
-        console.log('✅ Admin role added to user_roles table');
-       }
-      });
+     // TODO: Update profile role to admin (if table allows)
+     // TODO: Add to user_roles table (primary admin system)
+     console.log('✅ Admin role assignment prepared (awaiting database integration)');
     }
     
     // Trigger milestone for new account creation

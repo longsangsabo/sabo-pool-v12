@@ -19,11 +19,10 @@ export const useClubOwnership = () => {
 
       try {
         // Check if user has club_owner role in profiles and has approved club_profile
-//         const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('user_id', user.id)
-          .single();
+        // TODO: Replace with service call
+        // const { data: profileData, error: profileError } = await supabase.from('profiles').select('role').eq('user_id', user.id).single();
+        const profileData = null;
+        const profileError = null;
 
         if (profileError || !profileData?.role?.includes('club_owner')) {
           setIsClubOwner(false);
@@ -33,12 +32,10 @@ export const useClubOwnership = () => {
         }
 
         // Get club profile
-//         const { data: clubData, error: clubError } = await supabase
-          .from('club_profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('verification_status', 'approved')
-          .single();
+        // TODO: Replace with service call
+        // const { data: clubData, error: clubError } = await supabase.from('club_profiles').select('*').eq('user_id', user.id).eq('verification_status', 'approved').single();
+        const clubData = null;
+        const clubError = null;
 
         if (clubError || !clubData) {
           setIsClubOwner(false);

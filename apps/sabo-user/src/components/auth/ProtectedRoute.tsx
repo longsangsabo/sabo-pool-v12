@@ -1,25 +1,7 @@
 import React from 'react';
-import { getCurrentUser, getUserStatus } from "../services/userService";
-import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
-import { getUserProfile, updateUserProfile } from "../services/profileService";
-import { getWalletBalance, updateWalletBalance } from "../services/walletService";
-import { createNotification, getUserNotifications } from "../services/notificationService";
-import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { Navigate, useLocation } from 'react-router-dom';
-import { getCurrentUser, getUserStatus } from "../services/userService";
-import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
-import { getUserProfile, updateUserProfile } from "../services/profileService";
-import { getWalletBalance, updateWalletBalance } from "../services/walletService";
-import { createNotification, getUserNotifications } from "../services/notificationService";
-import { getClubProfile, updateClubProfile } from "../services/clubService";
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
-import { getCurrentUser, getUserStatus } from "../services/userService";
-import { getTournament, createTournament, joinTournament } from "../services/tournamentService";
-import { getUserProfile, updateUserProfile } from "../services/profileService";
-import { getWalletBalance, updateWalletBalance } from "../services/walletService";
-import { createNotification, getUserNotifications } from "../services/notificationService";
-import { getClubProfile, updateClubProfile } from "../services/clubService";
 
 interface ProtectedRouteProps {
  children: React.ReactNode;

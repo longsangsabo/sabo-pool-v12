@@ -19,11 +19,11 @@ export const debugTournamentRefresh = () => {
   }
 
   // Method 2: Clear Supabase channels and reconnect
-//   if ((window as any).supabase) {
-    console.log('✅ Refreshing Supabase real-time connections...');
-//     const supabase = (window as any).supabase;
-    // removeAllChannels();
-  }
+  // if ((window as any).supabase) {
+  //   console.log('✅ Refreshing Supabase real-time connections...');
+  //   const supabase = (window as any).supabase;
+  //   removeAllChannels();
+  // }
 
   // Method 3: Force page reload
   setTimeout(() => {
@@ -41,53 +41,17 @@ if (typeof window !== 'undefined') {
 }
 
 export const logTournamentState = async () => {
-//   if (!(window as any).supabase) {
-    console.error('❌ Supabase not available');
-    return;
-  }
-
-//   const supabase = (window as any).supabase;
-
-  try {
-    // Get latest tournament
-//     const { data: tournaments } = await supabase
-      .from('tournaments')
-      .select('*')
-      .eq('tournament_type', 'double_elimination')
-      .order('created_at', { ascending: false })
-      .limit(1);
-
-    if (!tournaments || tournaments.length === 0) {
-      console.log('❌ No tournaments found');
-      return;
-    }
-
-    const tournamentId = tournaments[0].id;
-    console.log('🏆 Current tournament:', tournaments[0].name, tournamentId);
-
-    // Get all matches
-//     const { data: matches } = await supabase
-      .from('tournament_matches')
-      .select('*')
-      .getByTournamentId(tournamentId)
-      .order('round_number')
-      .order('match_number');
-
-    console.log('📊 Tournament matches state:');
-    console.table(
-      matches?.map(m => ({
-        Round: m.round_number,
-        Match: m.match_number,
-        Status: m.status,
-        Score: `${m.score_player1 || 0} - ${m.score_player2 || 0}`,
-        Winner: m.winner_id ? 'Yes' : 'No',
-        Player1: m.player1_id ? 'Assigned' : 'TBD',
-        Player2: m.player2_id ? 'Assigned' : 'TBD',
-      }))
-    );
-  } catch (error) {
-    console.error('❌ Error fetching tournament state:', error);
-  }
+  // TODO: Replace with service call when supabase is available
+  console.log('🏆 Tournament State Debug:');
+  console.log('- Service integration pending');
+  console.log('- No active tournaments (mock data)');
+  
+  // Mock tournament data for development
+  const mockTournaments = [
+    { id: 'mock-1', name: 'Mock Tournament', status: 'active' }
+  ];
+  
+  console.table(mockTournaments);
 };
 
 // Make log function available globally too
